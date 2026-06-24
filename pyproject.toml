@@ -1,0 +1,20 @@
+[project]
+name = "jarvis"
+version = "0.1.0"
+description = "JARVIS AI Platform"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["jarvis/tests"]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pytest",
+]
+[tool.setuptools]
+packages = ["jarvis"]
