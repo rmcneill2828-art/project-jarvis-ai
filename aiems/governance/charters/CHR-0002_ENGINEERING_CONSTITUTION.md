@@ -1,18 +1,20 @@
-# PJAI-0002 – Engineering Constitution
+# CHR-0002 – Engineering Constitution
 
 > *"Great engineering is achieved not through speed or complexity, but through discipline, evidence and continuous improvement."*
 
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
 # Purpose
 
-The Engineering Constitution establishes the guiding principles, behaviours and standards that govern all engineering activities undertaken within Project JARVIS AI and the AI Engineering Management System (AIEMS).
+The Engineering Constitution establishes the guiding principles, behaviours and standards that govern all engineering activities undertaken within the **AI Engineering Platform (AEP)** and the **AI Engineering Management System (AIEMS)**.
 
-It exists to ensure every engineering decision contributes towards the creation of trustworthy, maintainable and scalable systems.
+It exists to ensure every engineering decision contributes to the delivery of trustworthy, maintainable and scalable AI-enabled systems.
 
 The Constitution applies equally to human contributors and AI-assisted engineering.
+
+Together with **CHR-0001 – Platform Charter**, this Constitution establishes the engineering principles that guide the design, development and continual improvement of the Platform.
 
 ---
 
@@ -119,7 +121,7 @@ All contributors are expected to:
 
 # AI Collaboration Principles
 
-AI is recognised as an engineering participant operating within AIEMS governance.
+AI is recognised as an engineering participant operating within the governance of the AI Engineering Management System (AIEMS).`
 
 AI may:
 
@@ -156,13 +158,16 @@ Design
 Approve
     │
     ▼
-Build
+Implement
     │
     ▼
-Verify
+Quality Assurance
     │
     ▼
-Improve
+Baseline
+    │
+    ▼
+Continual Improvement
 ```
 
 The lifecycle repeats continuously throughout the programme.
@@ -173,14 +178,15 @@ The lifecycle repeats continuously throughout the programme.
 
 Engineering governance is achieved through:
 
-- Project Charter
-- Engineering Constitution
-- Architecture Decision Records
-- Risk Register
-- Action Register
-- Strategic Alignment Reviews
-- Engineering Session Reports
-- Lessons Learned Register
+Engineering governance is achieved through:
+
+- CHR-0001 – Platform Charter
+- CHR-0002 – Engineering Constitution
+- Architecture Decision Records (ADR)
+- Controlled Artefact Registers (REG)
+- Strategic Alignment Reviews (SAR)
+- Engineering Session Reports (ESR)
+- Lessons Learned
 
 ---
 
@@ -210,8 +216,7 @@ Continuous learning is considered a mandatory engineering activity.
 
 # Repository Standards
 
-All significant work shall be undertaken using controlled feature branches.
-
+Repository practices shall follow the standards defined by AIEMS.
 Repository modifications shall:
 
 - Follow approved Change Sets.
@@ -225,7 +230,7 @@ The primary branch (`main`) represents the approved engineering baseline.
 
 # Strategic Alignment
 
-Before every programme phase:
+Before every major Platform milestone
 
 A Strategic Alignment Review shall determine:
 
@@ -252,11 +257,7 @@ This principle applies equally to software, documentation, architecture, governa
 
 # Constitutional Commitment
 
-Project JARVIS AI believes that responsible AI engineering begins with responsible engineering.
-
-AIEMS exists to ensure that every system built using its principles is trustworthy, transparent, maintainable and continuously improving.
-
-The Constitution represents a commitment not only to technical excellence, but also to engineering integrity.
+The AI Engineering Platform is founded on the belief that responsible AI engineering begins with responsible engineering.
 
 ---
 
@@ -266,3 +267,4 @@ The Constitution represents a commitment not only to technical excellence, but a
 |---------|------------|----------------------------|--------------------------------------------------------------|
 | 1.0 | 22 June 2026 | Project Sponsor | Initial Engineering Constitution established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to establish AIEMS engineering principles, behavioural standards, AI collaboration, governance lifecycle and continuous improvement philosophy. |
+| 2.1	24 June 2026	Programme Sponsor & Chief Engineering Advisor	Repository architecture alignment. Updated Platform terminology, governance hierarchy and engineering lifecycle. |

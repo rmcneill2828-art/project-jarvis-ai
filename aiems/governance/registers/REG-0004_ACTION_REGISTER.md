@@ -1,8 +1,8 @@
-# PJAI-0005 – Action Register
+# REG-0004 – Action Register
 
 > *"Actions transform strategy into delivery. Every action should have a purpose, an owner and a measurable outcome."*
 
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -111,3 +111,4 @@ Every action should contribute towards improving AIEMS, JARVIS or both.
 |---------|------------|----------------------------|---------------------------------------------------------------|
 | 1.0 | 23 June 2026 | Project Sponsor | Initial Action Register established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to support AIEMS with linked ADRs, risks, change sets, ownership, priorities and lifecycle management. |
+| 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |

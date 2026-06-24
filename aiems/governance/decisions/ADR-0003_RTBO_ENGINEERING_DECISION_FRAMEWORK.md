@@ -8,9 +8,9 @@
 |------|------|
 | ADR ID | ADR-0003 |
 | Title | RTBO Engineering Decision Framework |
-| Version | 1.0 |
+| Version | 2.0 |
 | Status | Approved |
-| Owner | Project Sponsor & Chief Architect |
+| Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 23 June 2026 |
 | Review Trigger | See Section 10 |
 
@@ -26,11 +26,11 @@ Without a consistent decision-making framework, important considerations can be 
 
 # 2. Background
 
-During Phase 0, Project JARVIS AI adopted a simple decision framework known as RTBO:
+During Phase 0, the AI Engineering Platform (AEP) adopted a simple engineering decision framework known as RTBO:
 
 **Review Twice. Build Once. Improve for Everyone.**
 
-The framework was developed to encourage evidence-based decision making while maintaining delivery momentum.
+The framework was developed to encourage evidence-based decision making while maintaining disciplined engineering and delivery momentum.
 
 ---
 
@@ -70,9 +70,9 @@ The framework was developed to encourage evidence-based decision making while ma
 
 # 4. Decision
 
-Project JARVIS AI adopts RTBO as its primary engineering decision framework.
+The AI Engineering Platform adopts RTBO as its primary engineering decision framework.
 
-RTBO shall be applied to significant architectural, technical, security and governance decisions throughout the project.
+RTBO shall be applied to significant architectural, technical, security and governance decisions throughout the Platform.
 
 ---
 
@@ -156,7 +156,7 @@ RTBO is intended to improve engineering—not slow it down.
 
 # 9. Evidence
 
-This framework was developed through the collaborative planning of Project JARVIS AI.
+This framework was developed through the collaborative engineering of the AI Engineering Platform.
 
 It reflects practical engineering experience, governance principles and continuous improvement practices.
 
@@ -168,7 +168,7 @@ Review if:
 
 - RTBO becomes unnecessarily bureaucratic.
 - The framework no longer supports effective delivery.
-- Significant improvements are identified through project experience.
+- Significant improvements are identified through Platform engineering experience.
 
 ---
 

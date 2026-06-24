@@ -1,8 +1,8 @@
-# PJAI-0003 – Architectural Decision Register
+# REG-0002 – Architectural Decision Register
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -126,3 +126,4 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 |---------|------------|----------------------------|-------------------------------------------------------------|
 | 1.0 | 23 June 2026 | Project Sponsor | Initial ADR Register established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to include AIEMS governance, ADR lifecycle, approval process, review policy and new strategic decisions ADR-0004 and ADR-0005. |
+| 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |

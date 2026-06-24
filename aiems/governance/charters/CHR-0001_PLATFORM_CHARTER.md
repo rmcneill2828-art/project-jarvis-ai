@@ -1,41 +1,43 @@
-# PJAI-0001 – Project Charter
+# CHR-0001 – Platform Charter
 
-> *"Great engineering is not defined by the complexity of the systems it creates, but by the discipline with which it creates them. Project JARVIS AI is founded on the belief that responsible governance, thoughtful architecture and continuous learning are prerequisites for building trustworthy AI systems. This Charter defines that commitment."*
+> *"Great engineering is not defined by the complexity of the systems it creates, but by the discipline with which it creates them. The AI Engineering Platform is founded on the belief that responsible governance, thoughtful architecture and continuous learning are prerequisites for building trustworthy AI systems. This Charter defines that commitment."*
 
-**Version:** 2.0
+---
+
+**Version:** 2.1
 
 ---
 
 # Purpose
 
-This Charter defines the vision, strategic objectives, governance model and engineering philosophy for Project JARVIS AI.
+This Charter defines the vision, strategic objectives, governance model and engineering philosophy of the **AI Engineering Platform (AEP)**.
 
-It establishes the authority under which the programme operates and provides the strategic direction for all engineering activities undertaken within the project.
+It establishes the authority under which the Platform operates and provides the strategic direction for all engineering activities undertaken within the Platform.
 
-This Charter is the highest-level governance document for Project JARVIS AI and recognises the AI Engineering Management System (AIEMS) as the engineering framework governing the programme.
+This Charter is the highest governing **Controlled Artefact** within the AI Engineering Platform and recognises the **AI Engineering Management System (AIEMS)** as the engineering framework governing the Platform.
 
 ---
 
 # Executive Summary
 
-Project JARVIS AI was initiated to design and develop a trustworthy, extensible and intelligent AI platform.
+The **AI Engineering Platform (AEP)** was established to provide a structured engineering environment for designing, governing and delivering trustworthy AI-enabled products.
 
-During Phase 0, the programme evolved through structured engineering, governance and continuous review. This led to the recognition of two strategic deliverables:
+During **Phase 0**, the Platform evolved through structured engineering, governance and continuous review. This resulted in the establishment of two complementary strategic capabilities:
 
-- **AIEMS** – the AI Engineering Management System.
-- **JARVIS** – the flagship AI platform developed using AIEMS.
+- **AIEMS** – the AI Engineering Management System that defines governance, standards and engineering practices.
+- **JARVIS** – the flagship AI product engineered using AIEMS.
 
-AIEMS provides the engineering framework.
+AIEMS defines **how** the Platform is engineered.
 
-JARVIS demonstrates the framework.
+JARVIS demonstrates **what** the Platform can build.
 
-Together they establish a repeatable methodology for engineering trustworthy AI-enabled systems.
+Together they provide a repeatable approach for engineering scalable, maintainable and trustworthy AI-enabled systems.
 
 ---
 
-# Programme Vision
+# Platform Vision
 
-To develop a world-class AI platform while simultaneously creating a reusable engineering management framework capable of supporting future AI and software engineering programmes.
+To establish a world-class AI Engineering Platform while simultaneously developing a reusable engineering management framework capable of supporting future AI and software engineering initiatives.
 
 ---
 
@@ -45,7 +47,19 @@ To engineer trustworthy, scalable and well-governed AI systems through disciplin
 
 ---
 
-# Strategic Deliverables
+AIEMS is the engineering management framework of the AI Engineering Platform.
+
+Its purpose is to define how AI-enabled systems are:
+
+- Governed
+- Designed
+- Engineered
+- Validated
+- Reviewed
+- Improved
+- Maintained
+
+AIEMS is intended to become a reusable engineering framework capable of supporting future AI and software engineering initiatives.
 
 ## Deliverable One – AIEMS
 
@@ -77,15 +91,15 @@ It serves both as:
 - a practical demonstration of AIEMS;
 - a reference implementation for future AIEMS adopters.
 
-Every engineering improvement made while building JARVIS should strengthen AIEMS.
+Every engineering improvement made through the development of JARVIS should strengthen AIEMS.
 
 Every improvement made to AIEMS should benefit JARVIS.
 
 ---
 
-# Programme Objectives
+# Platform Objectives
 
-The programme shall:
+The Platform shall:
 
 - Deliver a trustworthy AI platform.
 - Develop AIEMS into a reusable engineering framework.
@@ -100,7 +114,7 @@ The programme shall:
 
 # Engineering Philosophy
 
-Project JARVIS AI follows two guiding principles.
+The Platform is guided by two fundamental engineering principles.
 
 ## Engineering Motto
 
@@ -132,7 +146,7 @@ The programme is committed to:
 
 # Governance Model
 
-Project JARVIS AI is governed by **AIEMS**.
+The AI Engineering Platform is governed by AIEMS.
 
 AIEMS provides:
 
@@ -150,10 +164,10 @@ AIEMS provides:
 
 # Programme Roles
 
-| AIEMS Role | Current Assignment |
-|-------------|-------------------|
-| Programme Sponsor | Robert McNeill |
-| Chief Architect | ChatGPT |
+| AIEMS Role                | Current Assignment |
+| ------------------------- | ------------------ |
+| Programme Sponsor         | Robert McNeill     |
+| Chief Engineering Advisor | ChatGPT            |
 
 These assignments may change over time without affecting the AIEMS framework.
 
@@ -192,20 +206,20 @@ Each report shall record:
 - Progress
 - Next steps
 
-The ESR forms part of the permanent engineering history of the programme.
+The ESR forms part of the permanent engineering history of the Platform.
 
 ---
 
 # Success Criteria
 
-Project JARVIS AI shall be considered successful when:
+The AI Engineering Platform shall be considered successful when:
 
 - AIEMS becomes a mature and reusable engineering management system.
 - JARVIS successfully demonstrates AIEMS.
 - Engineering governance remains effective throughout the programme.
 - Every phase is validated before progression.
 - Lessons learned continuously improve both AIEMS and JARVIS.
-- The engineering methodology can be reused by future AI and software engineering programmes.
+- Engineering governance remains effective throughout the Platform lifecycle.
 
 ---
 
@@ -236,7 +250,7 @@ This lifecycle shall repeat throughout the lifetime of the programme.
 
 # Guiding Commitment
 
-Project JARVIS AI is committed to engineering excellence through disciplined governance, evidence-based decision making, continuous learning and responsible collaboration between human expertise and artificial intelligence.
+The AI Engineering Platform is committed to engineering excellence through disciplined governance, evidence-based decision making, continuous learning and responsible collaboration between human expertise and artificial intelligence.
 
 The programme exists not only to build an exceptional AI platform, but also to establish a reusable engineering management framework capable of benefiting future AI and software engineering initiatives.
 
@@ -248,3 +262,4 @@ The programme exists not only to build an exceptional AI platform, but also to e
 |---------|------------|----------------------------|---------------------------------------------------------|
 | 1.0 | 22 June 2026 | Programme Sponsor | Initial Project Charter established. |
 | 2.0 | 24 June 2026 | Programme Sponsor & Chief Architect | Charter expanded to recognise AIEMS as a strategic deliverable, establish programme governance, introduce Strategic Alignment Reviews (SAR), Engineering Session Reports (ESR) and define the long-term vision for both AIEMS and JARVIS. |
+| 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Platform terminology updated. Repository structure and governance references aligned with the AI Engineering Platform. |

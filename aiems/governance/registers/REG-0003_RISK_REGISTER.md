@@ -1,8 +1,8 @@
-# PJAI-0004 – Risk Register
+# REG-0003 – Risk Register
 
 > *"Every identified risk is an opportunity to improve the engineering system before it becomes a problem."*
 
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -153,3 +153,4 @@ They are recorded to enable informed engineering decisions.
 |---------|------------|----------------------------|---------------------------------------------------------------|
 | 1.0 | 23 June 2026 | Project Sponsor | Initial Risk Register established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to support AIEMS with structured risk categories, scoring, governance and strategic programme risks. |
+| 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |

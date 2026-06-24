@@ -8,9 +8,9 @@
 |------|------|
 | ADR ID | ADR-0002 |
 | Title | Git Repository Strategy |
-| Version | 1.0 |
+| Version | 2.0 |
 | Status | Approved |
-| Owner | Project Sponsor & Chief Architect |
+| Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 23 June 2026 |
 | Review Trigger | See Section 10 |
 
@@ -18,17 +18,17 @@
 
 # 1. Problem Statement
 
-Project JARVIS AI is developed across multiple devices.
+The AI Engineering Platform (AEP) is developed across multiple authorised development environments.
 
-Without a consistent version control strategy there is a risk of conflicting changes, knowledge loss and inconsistent project history.
+Without a consistent version control strategy there is a risk of conflicting changes, knowledge loss and an inconsistent engineering history.
 
 ---
 
 # 2. Background
 
-The project is developed using a work laptop and a home PC.
+The Platform is developed across multiple authorised development environments, including a work laptop and a home PC.
 
-The engineering workflow requires seamless transition between development environments while maintaining a complete and reliable history of the project.
+The engineering workflow requires seamless transition between development environments while maintaining a complete, reliable and auditable engineering history.
 
 Git was selected as the version control system, with GitHub providing the primary hosted repository.
 
@@ -72,17 +72,17 @@ Git was selected as the version control system, with GitHub providing the primar
 
 # 4. Decision
 
-Project JARVIS AI shall use Git as its version control system.
+The AI Engineering Platform adopts Git as its version control system.
 
-GitHub shall be used as the primary hosted repository.
+GitHub shall remain the primary hosted repository.
 
-The GitHub repository becomes the central location for synchronising approved project changes between authorised development devices.
+The GitHub repository represents the authoritative source for synchronising approved engineering changes between authorised development environments.
 
 ---
 
 # 5. Rationale
 
-A professional version control strategy is essential for a long-term engineering programme.
+A professional version control strategy is essential for a long-term engineering platform.
 
 Using Git enables traceability, controlled change, and confidence when evolving the platform.
 
@@ -95,7 +95,7 @@ This decision is considered successful when:
 - Development continues seamlessly across multiple devices.
 - Every approved change is committed to Git.
 - Repository history remains complete and understandable.
-- GitHub accurately reflects the approved project baseline.
+- GitHub accurately reflects the approved Platform baseline.
 
 ---
 

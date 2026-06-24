@@ -8,9 +8,9 @@
 |------|------|
 | ADR ID | ADR-0001 |
 | Title | Documentation First Development |
-| Version | 1.0 |
+| Version | 2.0 |
 | Status | Approved |
-| Owner | Project Sponsor & Chief Architect |
+| Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 23 June 2026 |
 | Review Trigger | See Section 10 |
 
@@ -20,13 +20,13 @@
 
 Many software projects begin implementation before architecture, governance and engineering standards have been agreed. This frequently leads to inconsistent design, unnecessary technical debt and undocumented decisions.
 
-Project JARVIS AI is intended to be a long-term engineering programme. It therefore requires a consistent engineering approach from the outset.
+The AI Engineering Platform (AEP) is intended to provide a long-term engineering environment for the design, governance and delivery of AI-enabled products.
 
 ---
 
 # 2. Background
 
-At project initiation, a conscious decision was taken to prioritise establishing governance, architecture and engineering standards before writing production code.
+At Platform initiation, a conscious decision was taken to establish governance, architecture and engineering standards before writing production code.
 
 The objective was not to increase documentation, but to reduce future rework and improve long-term maintainability.
 
@@ -70,7 +70,7 @@ The objective was not to increase documentation, but to reduce future rework and
 
 # 4. Decision
 
-Project JARVIS AI will adopt a **Documentation First** engineering methodology.
+The AI Engineering Platform adopts a **Documentation First** engineering methodology.
 
 Major architectural, security and governance decisions shall be reviewed and documented before implementation begins.
 
@@ -80,7 +80,7 @@ Documentation must support engineering and decision-making. It must never become
 
 # 5. Rationale
 
-The project is expected to evolve over many years.
+The Platform is expected to evolve over many years.
 
 A well-defined engineering baseline significantly reduces implementation risk, improves consistency and enables informed decision-making throughout the project's lifecycle.
 
@@ -145,9 +145,9 @@ This ADR shall be reviewed if:
 
 # 11. Related Decisions
 
-- ADR-0003 — RTBO Engineering Process
-- ADR-0004 — Verify Before Deciding
-- ADR-0006 — Engineering Knowledge Capture
+Related Decisions
+
+This ADR shall be reviewed alongside future Architecture Decision Records relating to engineering governance and repository management.
 
 ---
 
