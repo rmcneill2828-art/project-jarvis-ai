@@ -1,88 +1,128 @@
-# Architecture Decision Register (ADR Register)
+# PJAI-0003 – Architectural Decision Register
 
----
+> *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-## Document Control
-
-| Field | Value |
-|------|------|
-| Document ID | PJAI-1003 |
-| Document Title | Architecture Decision Register |
-| Version | 0.1 Foundation |
-| Status | Approved Baseline |
-| Owner | Joint |
-| Approved By | Project Sponsor & Chief Architect |
-| Programme | Project JARVIS AI |
-| Product | JARVIS OS |
-| Classification | Internal |
-| Last Updated | 23 June 2026 |
-| Next Review | Phase Gate Review |
+**Version:** 2.0
 
 ---
 
 # Purpose
 
-The Architecture Decision Register provides a permanent record of the significant architectural and engineering decisions made throughout Project JARVIS AI.
+The Architectural Decision Register (ADR Register) is the authoritative record of all significant architectural and engineering decisions made within Project JARVIS AI and AIEMS.
 
-Its purpose is to preserve not only *what* was decided, but also *why* the decision was made.
+Each Architecture Decision Record (ADR) captures the context, rationale, decision and consequences of a significant engineering choice.
 
-Detailed Architecture Decision Records (ADRs) shall be stored separately and referenced from this register.
+The register provides traceability, supports future decision making and preserves organisational knowledge.
 
 ---
 
-# Decision Status
+# Scope
 
-| Status | Meaning |
-|---------|---------|
-| Proposed | Under discussion |
-| Approved | Accepted and adopted |
-| Superseded | Replaced by a later decision |
-| Retired | No longer applicable |
+This register includes Architecture Decision Records relating to:
+
+- Project Governance
+- Engineering Practices
+- Architecture
+- Development Standards
+- AI Collaboration
+- Repository Management
+- Strategic Direction
 
 ---
 
 # Architecture Decision Register
 
-| ADR | Title | Status |
-|-----|-------|--------|
-| ADR-0001 | Documentation First Development | Approved |
-| ADR-0002 | GitHub as the Single Source of Truth | Approved |
-| ADR-0003 | RTBO Engineering Process | Approved |
-| ADR-0004 | Verify Before Deciding | Approved |
-| ADR-0005 | AI Requires Human Approval for Significant Changes | Approved |
-| ADR-0006 | Engineering Knowledge Capture | Approved |
-| ADR-0007 | Modular Service Architecture | Approved |
-| ADR-0008 | Project JARVIS AI / JARVIS OS Naming | Approved |
-| ADR-0009 | Multi-Device Development Strategy | Approved |
-| ADR-0010 | Family-First Design Philosophy | Approved |
+| ADR | Title | Domain | Status | Date Approved | Supersedes | Summary |
+|------|-------------------------------|--------------|-----------|---------------|------------|---------------------------------------------------------------|
+| ADR-0001 | Documentation First | Engineering | Approved | 22 Jun 2026 | - | Established documentation as the foundation for engineering activities. |
+| ADR-0002 | Git Repository Strategy | Engineering | Approved | 22 Jun 2026 | - | Defined GitHub as the authoritative source for project artefacts and version control. |
+| ADR-0003 | RTBO Engineering Decision Framework | Engineering | Approved | 23 Jun 2026 | - | Adopted the Review Twice. Build Once. Improve for Everyone decision-making framework. |
+| ADR-0004 | AI Repository Interaction Policy | Governance | Approved | 24 Jun 2026 | - | Defined governance, approval model and responsibilities for AI-assisted repository interaction. |
+| ADR-0005 | AIEMS Strategic Scope | Strategy | Approved | 24 Jun 2026 | - | Recognised AIEMS as an independent strategic deliverable and JARVIS as its flagship implementation. |
 
 ---
 
-# Architecture Decision Process
+# ADR Lifecycle
 
-Every significant architectural decision follows the lifecycle below:
+Every Architecture Decision Record progresses through the following lifecycle.
 
-1. Identify the problem.
-2. Review available evidence.
-3. Challenge assumptions.
-4. Consider alternatives.
-5. Agree the preferred solution.
-6. Record the decision.
-7. Implement.
-8. Review when required.
+Proposed
+
+↓
+
+Review
+
+↓
+
+Approved
+
+↓
+
+Active
+
+↓
+
+Superseded (if applicable)
+
+↓
+
+Archived
 
 ---
 
-# Review Triggers
+# Approval Process
 
-Architecture decisions should only be reviewed when:
+Every ADR shall:
 
-- New evidence becomes available.
-- A security concern is identified.
-- A significant technology change occurs.
-- The original decision no longer meets project objectives.
-- A later ADR supersedes the current decision.
+- Describe the problem.
+- Explain the available options.
+- Record the selected decision.
+- Explain the rationale.
+- Describe the consequences.
+- Receive explicit approval from the Programme Sponsor.
+- Be entered into this register.
 
 ---
 
-# End of Approved Content
+# Governance Principles
+
+Architecture decisions should:
+
+- Be evidence based.
+- Be proportionate.
+- Be traceable.
+- Be reviewable.
+- Be understandable.
+- Be reusable where practical.
+
+---
+
+# Review Policy
+
+Architecture Decision Records shall be reviewed:
+
+- During every Strategic Alignment Review.
+- Following significant technology changes.
+- Following major architectural changes.
+- When superseded by a newer ADR.
+
+Historical ADRs shall never be deleted.
+
+They remain part of the permanent engineering history of AIEMS.
+
+---
+
+# Relationship to AIEMS
+
+Architecture Decision Records form one of the core knowledge management mechanisms within AIEMS.
+
+They ensure that engineering reasoning is preserved alongside engineering implementation, allowing future contributors to understand not only what decisions were made, but why they were made.
+
+---
+
+# Version History
+
+| Version | Date | Author | Summary |
+|---------|------------|----------------------------|-------------------------------------------------------------|
+| 1.0 | 23 June 2026 | Project Sponsor | Initial ADR Register established. |
+| 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to include AIEMS governance, ADR lifecycle, approval process, review policy and new strategic decisions ADR-0004 and ADR-0005. |

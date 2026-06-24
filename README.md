@@ -1,196 +1,289 @@
 # Project JARVIS AI
 
-> **Review Twice. Build Once. Improve for Everyone.**
+> **"Review Twice. Build Once. Improve for Everyone."**
 
-**Building JARVIS OS**
+Supporting Principle:
 
----
-
-## Overview
-
-Project JARVIS AI is a long-term engineering programme to design, develop and maintain **JARVIS OS** — a secure, modular, AI-powered personal operating system inspired by the concept of JARVIS from the Marvel universe.
-
-Unlike a traditional chatbot, JARVIS OS is intended to become an intelligent digital companion capable of assisting with productivity, communication, knowledge management, automation, home monitoring and future AI capabilities, while remaining trustworthy, maintainable and family-friendly.
-
-The project follows a documentation-first approach where significant decisions are reviewed, challenged and approved before implementation.
+> **"Assume Nothing. Verify Everything."**
 
 ---
 
-## Project Vision
-
-To build the world's most trusted personal AI operating system through disciplined engineering, thoughtful design and continuous improvement.
-
----
-
-## Project Motto
-
-> **Review Twice. Build Once. Improve for Everyone.**
-
-This principle applies to every decision made throughout the project, including:
-
-- Architecture
-- Documentation
-- Development
-- Security
-- Technology Selection
-- Project Governance
-- Future Enhancements
-
----
-
-## Current Status
+# Project Status
 
 | Item | Status |
-|-------|--------|
-| Programme | Active |
-| Current Phase | Phase 0 – Foundation & Governance |
-| Product | JARVIS OS |
-| Product Version | 0.1 Foundation |
-| Repository Status | Initial Setup |
-| Development Model | Documentation First |
+|------|--------|
+| Project | Project JARVIS AI |
+| Current Phase | **Phase 0 – ✅ Validated & Completed** |
+| Next Milestone | **SAR-001 – Strategic Alignment Review** |
+| Development Status | **Phase 1 Not Yet Open** |
+| Repository Status | Operational |
+| Engineering Framework | AIEMS v1.0 (In Development) |
 
 ---
 
-## Project Goals
+# Vision
 
-Project JARVIS AI aims to create an AI platform capable of:
+Project JARVIS AI aims to design and build a trusted, extensible and intelligent AI platform capable of assisting users through natural conversation, automation, decision support and continuous learning.
 
-- Natural voice conversation
-- Visual recognition and understanding
-- Persistent memory
-- Family-aware assistance
-- Secure identity management
-- Intelligent automation
+The project is built upon strong engineering governance rather than rapid development, ensuring every decision remains traceable, auditable and maintainable throughout the lifetime of the system.
+
+---
+
+# Two Deliverables
+
+Project JARVIS AI consists of two complementary deliverables.
+
+## JARVIS
+
+The intelligent AI platform.
+
+JARVIS represents the software product that will evolve throughout the project.
+
+Its objectives include:
+
+- Intelligent conversation
+- Personal assistance
+- Automation
 - Knowledge management
-- Local and cloud AI integration
-- Future smart home integration
-- Long-term continuous learning
+- Decision support
+- Extensible AI architecture
 
 ---
 
-## Engineering Principles
+## AIEMS
 
-The project follows several core principles:
+**AI Engineering Management System**
 
-- Documentation serves the project.
-- Simplicity beats unnecessary complexity.
-- Security is designed in from the beginning.
-- Every feature must justify its existence.
-- Every significant decision is reviewed before implementation.
-- Long-term maintainability is more important than short-term speed.
+AIEMS is the engineering framework developed alongside JARVIS.
 
----
+It defines how AI-enabled systems are planned, governed, engineered, validated and maintained.
 
-## Repository Structure
+AIEMS includes:
 
-```text
-Project AI
-│
-├── docs/
-├── services/
-├── assets/
-├── config/
-├── database/
-├── logs/
-├── scripts/
-├── tests/
-├── tools/
-├── backups/
-└── Project-JARVIS-AI.code-workspace
-```
+- Governance
+- Engineering Standards
+- Architecture
+- Risk Management
+- Strategic Reviews
+- Engineering Session Reports
+- Lessons Learned
+- AI Collaboration
+- Repository Governance
+
+Although created during Project JARVIS AI, AIEMS is intended to be reusable for future AI engineering programmes.
 
 ---
 
-## Documentation
+# Engineering Philosophy
 
-The project documentation is located within the **docs** directory.
+Project JARVIS AI is built upon a simple philosophy.
 
-The most important documents are:
+> **Review Twice. Build Once. Improve for Everyone.**
+
+Supporting every engineering decision is an equally important principle.
+
+> **Assume Nothing. Verify Everything.**
+
+Together these principles encourage thoughtful engineering, evidence-based decisions and continuous improvement.
+
+---
+
+# Engineering Governance
+
+The project follows a documentation-first engineering methodology.
+
+Key governance documents include:
 
 | Document | Purpose |
 |----------|---------|
-| Project Charter | Defines the programme, governance and objectives |
-| Master Specification | Defines the technical design of JARVIS OS |
-| Project Constitution | Defines engineering culture and decision making |
-
-Documentation is considered the authoritative source of project knowledge.
-
----
-
-## Development Workflow
-
-Development follows a simple workflow:
-
-1. Open the VS Code workspace.
-2. Pull the latest changes from GitHub.
-3. Complete a single well-defined objective.
-4. Review all work.
-5. Commit with a meaningful message.
-6. Push changes to GitHub.
-7. Continue development on any authorised machine.
+| Project Charter | Vision, scope and governance |
+| Engineering Constitution | Engineering principles and standards |
+| ADR Register | Architectural decisions |
+| Risk Register | Active project risks |
+| Action Register | Approved actions |
+| Master Specification | Technical architecture |
+| Engineering Session Log | Engineering history |
+| Lessons Learned Register | Organisational knowledge |
 
 ---
 
-## Technology Stack (Current)
+# AI-Assisted Engineering
 
-| Technology | Purpose |
-|------------|---------|
-| Python | AI services and backend |
-| Node.js | Frontend and tooling |
-| VS Code | Development environment |
-| Git | Version control |
-| GitHub | Source repository |
+Project JARVIS AI is developed using an AI-assisted engineering model.
 
-Additional technologies will only be introduced where they provide measurable value.
+Artificial Intelligence is used to support:
 
----
+- Architecture
+- Documentation
+- Technical analysis
+- Engineering reviews
+- Repository analysis
+- Development planning
 
-## Current Milestone
+AI operates within the project's governance framework.
 
-**M0.1 – Multi-Device Development**
-
-Objective:
-
-Enable seamless development between the work laptop and home PC using GitHub as the single source of truth.
-
-Target Completion:
-
-**Wednesday 24 June 2026**
+Final authority for architectural direction and project approval remains with the Project Sponsor.
 
 ---
 
-## Project Philosophy
+# Development Workflow
 
-Project JARVIS AI is not intended to become the largest personal AI project.
+Every significant engineering activity follows the AIEMS workflow.
 
-It is intended to become one of the most thoughtfully engineered.
+```text
+Review
+    ↓
+Approve
+    ↓
+Implement
+    ↓
+Verify
+    ↓
+Review
+    ↓
+Improve
+```
 
-Every design decision should improve the platform without compromising simplicity, maintainability or trust.
+Repository changes follow an approved engineering process using:
+
+- Change Sets (CS)
+- Repository Update Identifiers (RUI)
+- Engineering Session Reports (ESR)
+- Architecture Decision Records (ADR)
 
 ---
 
-## License
+# Repository Structure
 
-This repository is currently private.
+```text
+docs/
+│
+├── 0000-Governance/
+├── 0100-Architecture/
+├── 0200-Engineering/
+├── 0300-Development/
+├── 0400-Testing/
+├── 0500-Operations/
+└── ...
+```
 
-Licensing will be reviewed before any public release.
+(The repository will expand as Project JARVIS AI progresses.)
 
 ---
 
-## Maintainers
+# Strategic Alignment Reviews
+
+Before the commencement of every project phase, a Strategic Alignment Review (SAR) is conducted.
+
+Each review confirms:
+
+- Vision remains valid
+- Goals remain achievable
+- Technology assumptions remain current
+- Architecture remains appropriate
+- Governance remains effective
+- Risks remain acceptable
+
+Only after successful completion of the SAR may the next phase begin.
+
+---
+
+# Current Roadmap
+
+## ✅ Phase 0
+
+Project Foundation
+
+- Governance
+- Repository
+- Engineering Standards
+- Architecture Foundation
+- Development Environment
+
+**Status:** Completed & Validated
+
+---
+
+## ⏳ SAR-001
+
+Strategic Alignment Review
+
+Review Phase 0
+
+Confirm readiness for Phase 1.
+
+---
+
+## 🚧 Phase 1
+
+Core Platform Architecture
+
+(Begins following SAR-001 approval.)
+
+---
+
+# Repository Standards
+
+The primary branch (`main`) represents the approved project baseline.
+
+Development is undertaken using controlled feature branches.
+
+No significant repository change is made without Project Sponsor approval.
+
+---
+
+# Project Principles
+
+Every contribution should leave the project in a better state than it was found.
+
+Continuous improvement is considered a core engineering responsibility.
+
+---
+
+# Version History
+
+| Version | Date | Author | Summary |
+|----------|------------|----------------------|---------------------------------------------------------------|
+| 1.0 | 22 June 2026 | Project Sponsor | Initial repository created and project introduced. |
+| 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Phase 0 validated and completed. Introduced AIEMS, Engineering Philosophy, Strategic Alignment Reviews, AI-assisted engineering model, repository governance and updated project roadmap. |
+
+------
+
+# Version History
+
+| Version | Date | Author | Summary |
+|----------|------------|----------------------|---------------------------------------------------------------|
+| 1.0 | 22 June 2026 | Project Sponsor | Initial repository created and project introduced. |
+| 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Phase 0 validated and completed. Introduced AIEMS, Engineering Philosophy, Strategic Alignment Reviews, AI-assisted engineering model, repository governance and updated project roadmap. |
+
+---
+
+# Acknowledgements
+
+Project JARVIS AI is a collaborative engineering programme between:
 
 **Project Sponsor**
 
 Robert McNeill
 
+and
+
 **Chief Architect**
 
 ChatGPT
 
+Working together under the AI Engineering Management System (AIEMS) to build trustworthy, scalable and well-governed AI systems.
+
 ---
 
-**Project JARVIS AI**
+**Engineering Health**
 
-**Building JARVIS OS**
+🟢 Green
 
-**Version 0.1 – Foundation**
+Phase 0 validated.
+
+Repository operational.
+
+Engineering governance established.
+
+Ready for Strategic Alignment Review 001.

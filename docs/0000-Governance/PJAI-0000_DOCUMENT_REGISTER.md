@@ -1,199 +1,247 @@
-# Document Register
+# PJAI-0001 – Project Charter
+
+> **Project JARVIS AI**
+
+**Version:** 2.0
 
 ---
 
-## Document Control
+# Purpose
 
-| Field          | Value                             |
-| -------------- | --------------------------------- |
-| Document ID    | PJAI-0000                         |
-| Document Title | Document Register                 |
-| Version        | 1.0                               |
-| Status         | Approved Baseline                 |
-| Owner          | Project Sponsor & Chief Architect |
-| Programme      | Project JARVIS AI                 |
-| Product        | JARVIS OS                         |
-| Classification | Internal                          |
-| Last Updated   | 23 June 2026                      |
-| Next Review    | Phase Gate Review                 |
+This Charter defines the vision, strategic objectives, governance, engineering philosophy and delivery approach for Project JARVIS AI.
+
+It establishes the principles under which the programme will be governed and provides the authority for all engineering activities undertaken within the project.
+
+This Charter serves as the highest-level governance document for both Project JARVIS AI and its associated engineering framework, AIEMS.
 
 ---
 
-# 1. Purpose
+# Executive Summary
 
-The Document Register is the authoritative source for document control within Project JARVIS AI.
+Project JARVIS AI began as an initiative to design and develop an advanced AI platform.
 
-It defines the document numbering scheme, naming standards, versioning approach and the register of all controlled project documentation.
+Following the successful completion and validation of Phase 0, the programme evolved to recognise two distinct strategic deliverables:
 
-This document shall be consulted before creating any new controlled document.
+- **AIEMS** – the AI Engineering Management System
+- **JARVIS** – the flagship AI platform built using AIEMS
+
+AIEMS provides the engineering, governance and operational framework.
+
+JARVIS demonstrates that framework through practical implementation.
+
+Together they create a repeatable methodology for engineering trustworthy AI-enabled systems.
 
 ---
 
-# 2. Document Control Standard
+# Programme Vision
 
-## 2.1 Naming Convention
+To engineer a world-class AI platform whilst simultaneously creating a reusable engineering management framework capable of supporting future AI and software engineering programmes.
 
-All controlled documents shall follow the naming standard:
+---
+
+# Mission Statement
+
+To develop trustworthy, scalable and well-governed AI systems through disciplined engineering, evidence-based decision making and responsible collaboration between human expertise and artificial intelligence.
+
+---
+
+# Strategic Deliverables
+
+## Deliverable One
+
+# AIEMS
+
+**AI Engineering Management System**
+
+AIEMS defines how AI-enabled systems are:
+
+- Governed
+- Designed
+- Engineered
+- Reviewed
+- Validated
+- Improved
+- Maintained
+
+AIEMS is intended to become an independent engineering framework capable of supporting future AI and software development programmes beyond Project JARVIS AI.
+
+---
+
+## Deliverable Two
+
+# JARVIS
+
+JARVIS is the flagship implementation of AIEMS.
+
+It serves both as:
+
+- an intelligent AI platform, and
+- a practical demonstration of the effectiveness of AIEMS.
+
+Every engineering improvement made during JARVIS development should strengthen AIEMS.
+
+Every improvement to AIEMS should improve JARVIS.
+
+---
+
+# Programme Objectives
+
+The programme shall:
+
+- Deliver a trustworthy AI platform.
+- Develop AIEMS into a reusable engineering framework.
+- Establish best practice for AI-assisted engineering.
+- Maintain complete engineering traceability.
+- Support continuous organisational learning.
+- Promote responsible AI collaboration.
+- Minimise technical debt through disciplined governance.
+- Validate every project phase before progression.
+
+---
+
+# Engineering Philosophy
+
+Project JARVIS AI follows a simple philosophy.
+
+> **Review Twice. Build Once. Improve for Everyone.**
+
+Supporting Principle
+
+> **Assume Nothing. Verify Everything.**
+
+These principles apply equally to architecture, governance, engineering, testing and strategic decision making.
+
+---
+
+# Core Engineering Principles
+
+The programme commits to:
+
+- Documentation First
+- Evidence Before Opinion
+- Human Approval for Strategic Decisions
+- Continuous Improvement
+- Responsible AI Collaboration
+- Transparent Governance
+- Engineering Before Implementation
+- Reusable Solutions Before Project-Specific Solutions
+
+---
+
+# Governance Model
+
+The programme operates under AIEMS.
+
+AIEMS provides:
+
+- Governance
+- Architecture
+- Engineering Standards
+- Decision Management
+- Risk Management
+- Lessons Learned
+- Engineering Session Reports
+- Strategic Alignment Reviews
+
+---
+
+# Programme Roles
+
+| AIEMS Role | Current Assignment |
+|------------|-------------------|
+| Programme Sponsor | Robert McNeill |
+| Chief Architect | ChatGPT |
+
+These assignments may change over time without affecting AIEMS itself.
+
+---
+
+# Strategic Alignment Reviews
+
+A Strategic Alignment Review (SAR) shall be completed before every new programme phase.
+
+Each review shall determine:
+
+- Does the vision remain valid?
+- Are the objectives still achievable?
+- Has technology changed?
+- Does the architecture remain appropriate?
+- Is governance still effective?
+- What have we learned?
+- Should the next phase proceed?
+
+No phase shall commence until the Strategic Alignment Review has been completed and approved.
+
+---
+
+# Engineering Session Reports
+
+An Engineering Session Report (ESR) shall be produced following every engineering session.
+
+Each report shall record:
+
+- Engineering decisions
+- Lessons learned
+- Technical discoveries
+- Repository updates
+- Risks
+- Actions
+- Progress
+- Next steps
+
+The ESR becomes part of the permanent engineering history of the programme.
+
+---
+
+# Success Criteria
+
+Project JARVIS AI shall be considered successful when:
+
+- AIEMS becomes a mature and reusable engineering management system.
+- JARVIS successfully demonstrates AIEMS.
+- Engineering governance remains effective throughout the programme.
+- Every phase is validated before progression.
+- Lessons learned continuously improve both AIEMS and JARVIS.
+- The engineering methodology can be reused by future projects.
+
+---
+
+# Programme Lifecycle
 
 ```text
-<Document ID>_<DOCUMENT_NAME>.md
+Vision
+    │
+    ▼
+Governance
+    │
+    ▼
+Engineering
+    │
+    ▼
+Validation
+    │
+    ▼
+Strategic Alignment Review
+    │
+    ▼
+Next Phase
 ```
 
-Example:
-
-```text
-PJAI-0001_PROJECT_CHARTER.md
-PJAI-1001_MASTER_SPECIFICATION.md
-PJAI-0003_ADR_REGISTER.md
-```
+This lifecycle shall repeat throughout the lifetime of the programme.
 
 ---
 
-## 2.2 Repository Structure
+# Guiding Commitment
 
-Repository folder numbers organise content.
+Project JARVIS AI is committed to engineering excellence through disciplined governance, evidence-based decision making, continuous learning and responsible collaboration between human expertise and artificial intelligence.
 
-Document IDs identify controlled documents.
-
-These numbering systems are independent.
-
-Example:
-
-```text
-docs/
-├── 0000-Governance/
-├── 0100-Architecture/
-└── 0900-Engineering-Knowledge/
-```
-
-is separate from
-
-```text
-PJAI-0001
-PJAI-1001
-ADR-0001
-```
+The programme exists not only to build an exceptional AI platform, but also to establish a reusable engineering management framework capable of benefiting future AI and software engineering initiatives.
 
 ---
 
-## 2.3 Versioning Standard
+# Version History
 
-| Version | Meaning                 |
-| ------- | ----------------------- |
-| 0.x     | Draft                   |
-| 1.0     | First Approved Baseline |
-| 1.x     | Minor approved revision |
-| 2.0+    | Major approved revision |
-
----
-
-# 3. Document Numbering Scheme
-
-| Range          | Category                 | Status   |
-| -------------- | ------------------------ | -------- |
-| PJAI-0000–0099 | Governance               | Active   |
-| PJAI-1000–1999 | Architecture             | Active   |
-| PJAI-2000–2999 | Security                 | Reserved |
-| PJAI-3000–3999 | Development Standards    | Reserved |
-| PJAI-4000–4999 | Technical Specifications | Reserved |
-| PJAI-5000–5999 | User Documentation       | Reserved |
-| PJAI-6000–6999 | Operations               | Reserved |
-| PJAI-7000–7999 | Research                 | Reserved |
-| PJAI-8000–8999 | Archive                  | Reserved |
-| PJAI-9000–9999 | Engineering Knowledge    | Active   |
-
-Architecture Decision Records (ADRs) use an independent numbering scheme:
-
-```text
-ADR-0001
-ADR-0002
-ADR-0003
-```
-
----
-
-# 4. Document Lifecycle
-
-All controlled documents follow the lifecycle below:
-
-```text
-Draft
-   │
-   ▼
-Review
-   │
-   ▼
-Approved Baseline
-   │
-   ▼
-Revision
-```
-
-Document IDs are allocated once and shall never be reused.
-
-Retired documents retain their original identifier for traceability.
-
----
-
-# 5. Controlled Document Register
-
-| Document ID | Title                    | Location          | Owner           | Status   |
-| ----------- | ------------------------ | ----------------- | --------------- | -------- |
-| PJAI-0000   | Document Register        | 0000-Governance   | Joint           | Approved |
-| PJAI-0001   | Project Charter          | 0000-Governance   | Project Sponsor | Approved |
-| PJAI-0002   | Engineering Constitution | 0000-Governance   | Joint           | Approved |
-| PJAI-0003   | ADR Register             | 0000-Governance   | Joint           | Approved |
-| PJAI-1001   | Master Specification     | 0100-Architecture | Chief Architect | Approved |
-
----
-
-# 6. Governance Rules
-
-The following rules apply to all controlled documents:
-
-* Every controlled document shall have a unique Document ID.
-* Document IDs shall never be reused.
-* Every document shall have a defined owner.
-* Every approved document shall include document control information.
-* Significant engineering decisions shall be recorded using ADRs.
-* Controlled documents shall be maintained within Git.
-* Changes to approved documents shall be reviewed before implementation.
-* The filename, document title and Document ID shall always match.
-
----
-
-# 7. Responsibilities
-
-## Project Sponsor
-
-Responsible for:
-
-* Governance approval.
-* Document approval.
-* Business ownership.
-* Strategic direction.
-
----
-
-## Chief Architect
-
-Responsible for:
-
-* Technical authorship.
-* Document quality.
-* Architecture consistency.
-* Engineering standards.
-
----
-
-# 8. Revision History
-
-| Version | Date         | Description                |
-| ------- | ------------ | -------------------------- |
-| 1.0     | 23 June 2026 | Initial approved baseline. |
-
----
-
-# End of Approved Content
-
-Any content below this point is considered draft until formally approved.
+| Version | Date | Author | Summary |
+|---------|------------|----------------------------|---------------------------------------------------------|
+| 1.0 | 22 June 2026 | Project Sponsor | Initial Project Charter created. |
+| 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Charter evolved to recognise AIEMS as a strategic deliverable, introduce programme governance, Strategic Alignment Reviews, Engineering Session Reports and the revised engineering vision. |

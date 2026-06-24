@@ -1,194 +1,268 @@
-# Engineering Constitution
+# PJAI-0002 – Engineering Constitution
 
----
+> *"Great engineering is achieved not through speed or complexity, but through discipline, evidence and continuous improvement."*
 
-## Document Control
-
-| Field | Value |
-|------|------|
-| Document ID | PJAI-1002 |
-| Document Title | Engineering Constitution |
-| Version | 1.0 |
-| Status | Approved Baseline |
-| Owner | Project Sponsor & Chief Architect |
-| Programme | Project JARVIS AI |
-| Product | JARVIS OS |
-| Classification | Internal |
-| Last Updated | 23 June 2026 |
-| Next Review | Phase Gate Review |
+**Version:** 2.0
 
 ---
 
 # Purpose
 
-The Engineering Constitution defines the principles, behaviours and standards that guide every engineering decision made throughout Project JARVIS AI.
+The Engineering Constitution establishes the guiding principles, behaviours and standards that govern all engineering activities undertaken within Project JARVIS AI and the AI Engineering Management System (AIEMS).
 
-It establishes how the project is engineered, how decisions are made and how quality is maintained.
+It exists to ensure every engineering decision contributes towards the creation of trustworthy, maintainable and scalable systems.
 
-Technology will evolve throughout the life of the project.
-
-These principles are intended to endure.
+The Constitution applies equally to human contributors and AI-assisted engineering.
 
 ---
 
-# Our Mission
+# Engineering Philosophy
 
-To build JARVIS OS as a secure, modular and trustworthy AI platform through disciplined engineering, evidence-based decision making and continuous improvement.
+Everything developed within AIEMS shall be guided by two core principles.
 
----
-
-# Our Engineering Principles
-
-## Principle 1 — Review Twice. Build Once. Improve for Everyone.
-
-Every significant decision should be reviewed before implementation.
-
-Quality begins long before code is written.
-
----
-
-## Principle 2 — Verify Before Deciding
-
-Facts take precedence over assumptions.
-
-Where uncertainty exists it should be acknowledged, investigated and verified before significant decisions are made.
-
----
-
-## Principle 3 — Documentation Serves Engineering
-
-Documentation exists to improve engineering quality.
-
-Every document must justify its existence.
-
-If documentation no longer provides value, it should be reviewed or removed.
-
----
-
-## Principle 4 — Security by Design
-
-Security is part of the design process from the beginning.
-
-It is never added as an afterthought.
-
----
-
-## Principle 5 — Simplicity Before Complexity
-
-Simple solutions should always be preferred unless evidence demonstrates that additional complexity provides genuine value.
-
----
-
-## Principle 6 — Build Modular Systems
-
-Every service should have a clearly defined responsibility.
-
-Loose coupling and clear interfaces improve maintainability and long-term scalability.
-
----
-
-## Principle 7 — Human Accountability
-
-Artificial Intelligence is an engineering partner.
-
-Humans remain accountable for significant project decisions.
-
-Major architectural, security or governance changes require joint approval.
-
----
-
-## Principle 8 — Constructive Challenge
-
-Questions are encouraged.
-
-Ideas may be challenged respectfully.
-
-Better solutions should be adopted regardless of whether they originate from the Project Sponsor or the Chief Architect.
-
-Evidence always outweighs opinion.
-
----
-
-## Principle 9 — Knowledge Must Be Captured
-
-Important engineering knowledge should become part of the project.
-
-Knowledge should never exist solely within conversations.
-
----
-
-## Principle 10 — Continuous Improvement
-
-Every phase concludes with reflection.
-
-Lessons learned become engineering improvements.
-
-Small improvements made consistently create exceptional systems.
-
----
-
-## Principle 11 — Leave It Better Than You Found It
-
-Every document, design, process and line of code should improve the overall quality of Project JARVIS AI.
-
----
-
-# Engineering Behaviours
-
-We will:
-
-- Seek understanding before implementation.
-- Explain the reasoning behind important decisions.
-- Challenge assumptions professionally.
-- Learn from mistakes.
-- Keep solutions maintainable.
-- Value quality over speed when the decision has long-term consequences.
-- Balance engineering discipline with delivery momentum.
-
----
-
-# Decision Framework
-
-Project JARVIS AI uses the RTBO Engineering Decision Framework.
-
-Review.
-
-Review Again.
-
-Build.
-
-Improve.
-
-This framework applies equally to software engineering, cybersecurity, governance, infrastructure and operational decisions.
-
----
-
-# Working Partnership
-
-Project JARVIS AI is built upon complementary expertise.
-
-The Project Sponsor provides leadership, governance, operational experience and strategic direction.
-
-The Chief Architect provides software architecture, AI engineering, technical analysis and implementation guidance.
-
-Success depends upon collaboration, professional trust and shared ownership.
-
----
-
-# Closing Statement
-
-Technology will continue to evolve.
-
-Strong engineering principles remain valuable regardless of programming language, framework or AI model.
-
-This Constitution exists to ensure that every future decision contributes to a platform that is trustworthy, maintainable and built to last.
-
----
-
-## Project Motto
+## Engineering Motto
 
 > **Review Twice. Build Once. Improve for Everyone.**
 
+Supporting Principle
+
+> **Assume Nothing. Verify Everything.**
+
+Together these principles encourage thoughtful engineering, disciplined execution and continuous organisational learning.
+
 ---
 
-**Approved**
+# Constitutional Principles
+
+## 1. Engineering Before Implementation
+
+Understanding the problem is more valuable than rushing towards a solution.
+
+Architecture shall precede implementation.
+
+---
+
+## 2. Documentation First
+
+Significant engineering decisions shall be documented before implementation whenever practical.
+
+Documentation is considered an engineering asset rather than administrative overhead.
+
+---
+
+## 3. Evidence Before Opinion
+
+Engineering decisions shall be supported by evidence, testing or measurable reasoning.
+
+Assumptions should always be challenged respectfully.
+
+---
+
+## 4. Human Accountability
+
+Artificial Intelligence assists engineering.
+
+Humans remain accountable.
+
+Strategic direction and approval always remain under human control.
+
+---
+
+## 5. Continuous Improvement
+
+Every engineering activity should improve the programme.
+
+No session should leave the project in a poorer state than it was found.
+
+---
+
+## 6. Reusable Before Project-Specific
+
+Where practical, reusable engineering solutions shall be preferred over project-specific implementations.
+
+Every improvement made while building JARVIS should strengthen AIEMS.
+
+Every improvement made to AIEMS should improve JARVIS.
+
+---
+
+## 7. Technology Serves the Process
+
+Engineering processes shall never become dependent upon a single technology or vendor.
+
+Technology exists to support engineering—not define it.
+
+---
+
+## 8. Simplicity Before Cleverness
+
+Good engineering should be understandable before it becomes impressive.
+
+Clarity shall always be preferred over unnecessary complexity.
+
+---
+
+# Engineering Behaviour
+
+All contributors are expected to:
+
+- Challenge assumptions respectfully.
+- Welcome constructive challenge.
+- Verify before concluding.
+- Share knowledge openly.
+- Record significant decisions.
+- Learn from mistakes.
+- Improve documentation continuously.
+- Leave the project better than they found it.
+
+---
+
+# AI Collaboration Principles
+
+AI is recognised as an engineering participant operating within AIEMS governance.
+
+AI may:
+
+- Assist engineering.
+- Recommend solutions.
+- Draft documentation.
+- Analyse architecture.
+- Review engineering work.
+- Support implementation.
+
+AI shall not:
+
+- Override governance.
+- Replace human accountability.
+- Circumvent approval processes.
+- Modify protected baselines without approval.
+
+---
+
+# Engineering Lifecycle
+
+Every engineering activity shall follow the AIEMS lifecycle.
+
+```text
+Review
+    │
+    ▼
+Understand
+    │
+    ▼
+Design
+    │
+    ▼
+Approve
+    │
+    ▼
+Build
+    │
+    ▼
+Verify
+    │
+    ▼
+Improve
+```
+
+The lifecycle repeats continuously throughout the programme.
+
+---
+
+# Engineering Governance
+
+Engineering governance is achieved through:
+
+- Project Charter
+- Engineering Constitution
+- Architecture Decision Records
+- Risk Register
+- Action Register
+- Strategic Alignment Reviews
+- Engineering Session Reports
+- Lessons Learned Register
+
+---
+
+# Decision Making
+
+Significant engineering decisions shall be:
+
+- Discussed
+- Challenged
+- Reviewed
+- Approved
+- Recorded
+
+Architecture Decision Records shall be used to preserve engineering rationale.
+
+---
+
+# Learning Culture
+
+Mistakes are recognised as opportunities to improve engineering.
+
+Lessons learned shall be documented and shared.
+
+Continuous learning is considered a mandatory engineering activity.
+
+---
+
+# Repository Standards
+
+All significant work shall be undertaken using controlled feature branches.
+
+Repository modifications shall:
+
+- Follow approved Change Sets.
+- Be traceable.
+- Be reviewable.
+- Be reversible.
+
+The primary branch (`main`) represents the approved engineering baseline.
+
+---
+
+# Strategic Alignment
+
+Before every programme phase:
+
+A Strategic Alignment Review shall determine:
+
+- Vision alignment.
+- Technical suitability.
+- Engineering readiness.
+- Governance effectiveness.
+- Risk acceptability.
+- Programme priorities.
+
+No phase shall commence without approval.
+
+---
+
+# Engineering Promise
+
+Every contributor to AIEMS commits to:
+
+> Leave the project in a better state than it was found.
+
+This principle applies equally to software, documentation, architecture, governance and organisational knowledge.
+
+---
+
+# Constitutional Commitment
+
+Project JARVIS AI believes that responsible AI engineering begins with responsible engineering.
+
+AIEMS exists to ensure that every system built using its principles is trustworthy, transparent, maintainable and continuously improving.
+
+The Constitution represents a commitment not only to technical excellence, but also to engineering integrity.
+
+---
+
+# Version History
+
+| Version | Date | Author | Summary |
+|---------|------------|----------------------------|--------------------------------------------------------------|
+| 1.0 | 22 June 2026 | Project Sponsor | Initial Engineering Constitution established. |
+| 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to establish AIEMS engineering principles, behavioural standards, AI collaboration, governance lifecycle and continuous improvement philosophy. |

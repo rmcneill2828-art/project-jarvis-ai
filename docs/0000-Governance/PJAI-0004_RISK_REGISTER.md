@@ -1,121 +1,155 @@
+# PJAI-0004 – Risk Register
+
+> *"Every identified risk is an opportunity to improve the engineering system before it becomes a problem."*
+
+**Version:** 2.0
+
+---
+
+# Purpose
+
+The Risk Register is the authoritative record of all identified risks associated with Project JARVIS AI and the AI Engineering Management System (AIEMS).
+
+Its purpose is to identify, assess, monitor and manage risks that may affect the successful delivery of the programme, ensuring risks are actively managed rather than reactively addressed.
+
+---
+
+# Scope
+
+The register includes risks relating to:
+
+- Strategic Direction
+- Programme Delivery
+- Engineering
+- Technology
+- Operations
+- AI Governance
+- Security
+- Knowledge Management
+
+---
+
+# Risk Assessment Method
+
+Each risk is assessed using:
+
+| Score | Probability | Impact |
+|------:|-------------|---------|
+| 1 | Very Low | Negligible |
+| 2 | Low | Minor |
+| 3 | Medium | Moderate |
+| 4 | High | Major |
+| 5 | Very High | Critical |
+
+**Overall Risk Score = Probability × Impact**
+
+| Score | Classification |
+|--------|----------------|
+| 1–5 | Low |
+| 6–10 | Medium |
+| 11–15 | High |
+| 16–25 | Critical |
+
+---
+
 # Risk Register
 
----
-
-## Document Control
-
-| Field | Value |
-|------|------|
-| Document ID | PJAI-0004 |
-| Document Title | Risk Register |
-| Version | 1.0 |
-| Status | Approved Baseline |
-| Owner | Project Sponsor & Chief Architect |
-| Programme | Project JARVIS AI |
-| Product | JARVIS OS |
-| Classification | Internal |
-| Last Updated | 23 June 2026 |
-| Next Review | Phase Gate Review |
+| Risk ID | Category | Risk Description | Probability | Impact | Score | Owner | Mitigation | Status |
+|---------|----------|------------------|------------:|--------:|------:|-------|------------|--------|
+| RSK-0001 | Strategic | AIEMS and JARVIS objectives become misaligned. | 2 | 5 | 10 | Programme Sponsor | Strategic Alignment Reviews before every phase. | Monitoring |
+| RSK-0002 | Strategic | AIEMS becomes tightly coupled to JARVIS, reducing reuse. | 2 | 5 | 10 | Chief Architect | Maintain clear separation between framework and product. | Monitoring |
+| RSK-0003 | Programme | Programme scope expands faster than governance can support. | 3 | 4 | 12 | Programme Sponsor | Phase gates, controlled change sets and governance reviews. | Open |
+| RSK-0004 | Technical | Architectural decisions become inconsistent over time. | 2 | 4 | 8 | Chief Architect | Maintain ADR Register and Architecture Reviews. | Monitoring |
+| RSK-0005 | Technical | Technology choices become obsolete during development. | 3 | 4 | 12 | Chief Architect | Review technology during every Strategic Alignment Review. | Open |
+| RSK-0006 | Operational | Documentation becomes outdated. | 2 | 4 | 8 | Chief Architect | Documentation reviewed at every phase close-out. | Monitoring |
+| RSK-0007 | Operational | Knowledge lost between engineering sessions. | 2 | 4 | 8 | Chief Architect | Engineering Session Reports and Lessons Learned Register. | Monitoring |
+| RSK-0008 | AI Governance | AI repository interaction exceeds approved governance. | 1 | 5 | 5 | Programme Sponsor | AI Repository Interaction Policy (ADR-0004). | Mitigated |
+| RSK-0009 | Security | Repository credentials or integrations become compromised. | 2 | 5 | 10 | Programme Sponsor | Principle of least privilege, MFA and periodic access reviews. | Monitoring |
+| RSK-0010 | Knowledge | Key engineering rationale is not recorded. | 2 | 4 | 8 | Chief Architect | ADRs, ESRs and documentation-first engineering. | Monitoring |
 
 ---
 
-# 1. Purpose
+# Risk Categories
 
-The Risk Register records the significant risks that could affect the successful delivery of Project JARVIS AI.
+## Strategic
 
-The objective is not to eliminate all risk, but to identify, assess and actively manage risks throughout the project lifecycle.
-
----
-
-# 2. Risk Assessment Scale
-
-| Likelihood | Description |
-|------------|-------------|
-| Low | Unlikely |
-| Medium | Possible |
-| High | Likely |
-
-| Impact | Description |
-|---------|-------------|
-| Low | Minor impact |
-| Medium | Noticeable impact requiring management |
-| High | Significant impact to the project |
-
-Overall Risk = Professional judgement based on likelihood and impact.
+Risks affecting the long-term vision, objectives or viability of the programme.
 
 ---
 
-# 3. Active Risk Register
+## Programme
 
-| ID | Category | Risk | Likelihood | Impact | Mitigation | Owner | Status |
-|----|----------|------|------------|--------|------------|-------|--------|
-| R-001 | Delivery | Loss of momentum or project burnout | Medium | High | Maintain realistic pace, take regular breaks, work in achievable increments | Project Sponsor | Open |
-| R-002 | Governance | Process drift from agreed standards | Medium | High | Follow Engineering Constitution, ADRs and RTBO. Challenge deviations. | Joint | Open |
-| R-003 | Knowledge | Important decisions not captured | Medium | Medium | Maintain ADR Register and controlled documentation. | Chief Architect | Open |
-| R-004 | Technical | Overengineering delays delivery | Medium | High | Regularly review whether documentation and process continue to add value. | Joint | Open |
-| R-005 | Security | Accidental exposure of credentials or sensitive information | Low | High | Use Git ignore rules, avoid storing secrets in the repository and review before committing. | Project Sponsor | Open |
-| R-006 | Infrastructure | Loss of development environment or hardware failure | Low | High | Use GitHub as the primary repository and verify commits before switching devices. | Project Sponsor | Open |
-| R-007 | External | Significant changes to AI platforms, APIs or licensing | Medium | Medium | Design modular architecture and regularly review technology choices. | Chief Architect | Open |
-| R-008 | Delivery | Competing work or family priorities reduce available development time | High | Medium | Plan realistic milestones and prioritise consistency over speed. | Project Sponsor | Open |
+Risks affecting delivery of Project JARVIS AI.
 
 ---
 
-# 4. Risk Review Process
+## Technical
 
-Risks shall be reviewed:
-
-- At each Engineering Checkpoint.
-- At the end of every project phase.
-- Following any significant architectural decision.
-- When a new material risk is identified.
-
-Closed risks remain recorded for historical reference.
+Risks affecting architecture, engineering or technology.
 
 ---
 
-# 5. Risk Response Strategy
+## Operational
 
-Project JARVIS AI follows four response options:
-
-- Avoid
-- Reduce
-- Transfer
-- Accept
-
-The preferred response is to reduce risk where practical through good engineering and governance.
+Risks affecting engineering activities and day-to-day project management.
 
 ---
 
-# 6. Responsibilities
+## AI Governance
 
-## Project Sponsor
-
-Responsible for:
-
-- Reviewing project risks.
-- Accepting business risk.
-- Escalating new risks.
+Risks associated with AI-assisted engineering.
 
 ---
 
-## Chief Architect
+## Security
 
-Responsible for:
-
-- Identifying technical risks.
-- Recommending mitigations.
-- Reviewing architectural impacts.
+Risks relating to confidentiality, integrity and availability.
 
 ---
 
-## 7. Revision History
+## Knowledge
 
-| Version | Date | Description |
-|----------|------|-------------|
-| 1.0 | 23 June 2026 | Initial approved baseline. |
+Risks affecting organisational learning and engineering continuity.
 
 ---
 
-# End of Approved Content
+# Risk Management Process
 
-Any content below this point is considered draft until formally approved.
+Every identified risk shall be:
+
+1. Identified
+2. Assessed
+3. Assigned
+4. Mitigated
+5. Monitored
+6. Reviewed
+7. Closed or Accepted
+
+---
+
+# Review Policy
+
+The Risk Register shall be reviewed:
+
+- At every Strategic Alignment Review.
+- At the completion of every project phase.
+- Following significant architectural decisions.
+- Following major incidents.
+- When new strategic risks are identified.
+
+---
+
+# Engineering Principle
+
+Risks are not recorded to discourage innovation.
+
+They are recorded to enable informed engineering decisions.
+
+---
+
+# Version History
+
+| Version | Date | Author | Summary |
+|---------|------------|----------------------------|---------------------------------------------------------------|
+| 1.0 | 23 June 2026 | Project Sponsor | Initial Risk Register established. |
+| 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to support AIEMS with structured risk categories, scoring, governance and strategic programme risks. |

@@ -1,424 +1,250 @@
-# Project JARVIS AI – Project Charter
+# PJAI-0001 – Project Charter
 
-## Document Control
+> *"Great engineering is not defined by the complexity of the systems it creates, but by the discipline with which it creates them. Project JARVIS AI is founded on the belief that responsible governance, thoughtful architecture and continuous learning are prerequisites for building trustworthy AI systems. This Charter defines that commitment."*
 
-| Field | Value |
-|---|---|
-| Document ID | PJAI-1000 |
-| Document Title | Project JARVIS AI – Project Charter |
-| Version | 0.1.0 |
-| Release Name | Foundation |
-| Status | Draft |
-| Owner | Robert McNeill |
-| Author | Robert McNeill & ChatGPT |
-| Reviewer | Robert McNeill |
-| Approved By | Pending |
-| Classification | Internal Project Documentation |
-| Created | 22 June 2026 |
-| Last Updated | 22 June 2026 |
-| Next Review Date | 22 September 2026 |
-| Related Documents | README.md; PJAI-1001 Master Specification; PJAI-1002 Project Constitution |
-| Related ADRs | To be created as part of Phase 0 governance |
+**Version:** 2.0
 
 ---
 
-## 1. Purpose
+# Purpose
 
-Project JARVIS AI exists to design, build, test, and maintain a personal AI operating layer that supports everyday productivity, home assistance, knowledge management, communication, automation, safety, and long-term intelligent interaction.
+This Charter defines the vision, strategic objectives, governance model and engineering philosophy for Project JARVIS AI.
 
-The project is not intended to be a short-term experiment or a simple chatbot wrapper. It is to be treated as a governed engineering programme with clear documentation, disciplined architecture, secure development practices, and long-term maintainability.
+It establishes the authority under which the programme operates and provides the strategic direction for all engineering activities undertaken within the project.
 
-The software platform produced by the programme will be known internally as **JARVIS OS**.
-
----
-
-## 2. Vision Statement
-
-To build a secure, extensible, family-aware AI assistant platform that can operate as an intelligent layer across devices, services, workflows, knowledge sources, and future home systems.
-
-JARVIS OS should be useful, understandable, trustworthy, maintainable, and capable of evolving over many years without losing architectural clarity.
-
-The guiding vision is:
-
-> Build today what we will still be proud to maintain ten years from now.
+This Charter is the highest-level governance document for Project JARVIS AI and recognises the AI Engineering Management System (AIEMS) as the engineering framework governing the programme.
 
 ---
 
-## 3. Programme Identity
+# Executive Summary
 
-| Term | Meaning |
-|---|---|
-| Project JARVIS AI | The overall engineering programme. |
-| JARVIS OS | The AI operating layer being designed and built. |
-| JARVIS | The assistant personality users interact with. |
-| Project Bible | The complete set of governing project documentation stored in the `docs` folder. |
-| Domain | A business capability grouping such as Identity, Memory, Communication, Vision, Security, or Automation. |
-| Service | A modular software component that performs a defined function. |
+Project JARVIS AI was initiated to design and develop a trustworthy, extensible and intelligent AI platform.
 
----
+During Phase 0, the programme evolved through structured engineering, governance and continuous review. This led to the recognition of two strategic deliverables:
 
-## 4. Background
+- **AIEMS** – the AI Engineering Management System.
+- **JARVIS** – the flagship AI platform developed using AIEMS.
 
-Modern AI assistants are powerful but often fragmented. They may answer questions, run simple automations, or integrate with specific platforms, but they rarely provide a fully governed, personalised, secure, and extensible assistant architecture that can grow with a user or household over time.
+AIEMS provides the engineering framework.
 
-Project JARVIS AI aims to address that gap by creating a deliberately engineered AI platform rather than an ad hoc collection of scripts or disconnected tools.
+JARVIS demonstrates the framework.
 
-This project will prioritise:
-
-- Strong documentation before implementation.
-- Modular architecture before feature expansion.
-- Security and privacy before convenience.
-- Maintainability before speed.
-- Evidence-based decisions before assumptions.
-- Clear governance before production code.
+Together they establish a repeatable methodology for engineering trustworthy AI-enabled systems.
 
 ---
 
-## 5. Objectives
+# Programme Vision
 
-The primary objectives of Project JARVIS AI are:
-
-1. Create a secure and extensible AI assistant platform.
-2. Establish a governed software engineering programme before development begins.
-3. Build a documentation-first foundation for all future work.
-4. Design the platform around clear domains and modular services.
-5. Support personal productivity, communication, knowledge management, automation, and future home intelligence.
-6. Ensure the architecture can evolve without becoming chaotic or unmaintainable.
-7. Maintain strong privacy, security, auditability, and operational discipline.
-8. Develop the project in a way that could eventually support wider household or family use.
+To develop a world-class AI platform while simultaneously creating a reusable engineering management framework capable of supporting future AI and software engineering programmes.
 
 ---
 
-## 6. Non-Objectives
+# Mission Statement
 
-The project will not initially attempt to:
-
-1. Replace Windows, macOS, Linux, Android, or iOS.
-2. Build a public commercial SaaS platform.
-3. Create robotics, drone, vehicle, or wearable integrations during early phases.
-4. Store unnecessary personal data.
-5. Prioritise novelty over reliability.
-6. Add features without governance and review.
-7. Write production code before Phase 0 is completed.
-8. Implement heavy formal ITIL change management before it is needed.
+To engineer trustworthy, scalable and well-governed AI systems through disciplined engineering, evidence-based decision making and responsible collaboration between human expertise and artificial intelligence.
 
 ---
 
-## 7. Scope
+# Strategic Deliverables
 
-### 7.1 In Scope
+## Deliverable One – AIEMS
 
-The following are in scope for the programme:
+**AI Engineering Management System**
 
-- Project governance.
-- Documentation standards.
-- Architecture decision records.
-- Risk and assumption management.
-- AI assistant core design.
-- Identity and access concepts.
-- Memory and knowledge management.
-- Communication interfaces.
-- Automation workflows.
-- Security and audit logging.
-- Monitoring and health reporting.
-- Future support for home systems and family-safe operation.
+AIEMS is the strategic engineering framework created through Project JARVIS AI.
 
-### 7.2 Out of Scope for Phase 0
+Its purpose is to define how AI-enabled systems are:
 
-The following are explicitly out of scope for Phase 0:
+- Governed
+- Designed
+- Engineered
+- Validated
+- Reviewed
+- Improved
+- Maintained
 
-- Production code.
-- Public release.
-- Live AI integrations.
-- Home automation implementation.
-- Camera or vision processing.
-- Mobile application development.
-- Robotics, drones, vehicles, wearables, or AR integrations.
-- Formal change advisory board processes.
-- Production support processes.
+AIEMS is intended to become a reusable engineering framework capable of supporting future AI and software engineering programmes beyond Project JARVIS AI.
 
 ---
 
-## 8. Guiding Principles
+## Deliverable Two – JARVIS
 
-Project JARVIS AI will be governed by the following principles:
+JARVIS is the flagship implementation of AIEMS.
 
-1. **Documentation First**  
-   If it is not documented, it is not a project decision.
+It serves both as:
 
-2. **No Code Before Governance**  
-   Production code must not begin until Phase 0 has completed review.
+- an intelligent AI platform;
+- a practical demonstration of AIEMS;
+- a reference implementation for future AIEMS adopters.
 
-3. **Measure Twice, Cut Once**  
-   Important decisions should be reviewed before implementation.
+Every engineering improvement made while building JARVIS should strengthen AIEMS.
 
-4. **Evidence Over Opinion**  
-   Technical choices should be justified by evidence, not preference.
-
-5. **Security by Design**  
-   Security must be built into the architecture, not added afterwards.
-
-6. **Privacy by Default**  
-   Personal data should only be collected, stored, and processed when there is a clear purpose.
-
-7. **Modularity Over Monoliths**  
-   Services should be designed as clear, replaceable components.
-
-8. **Pragmatism Over Perfection**  
-   The project should avoid unnecessary complexity.
-
-9. **Nothing is Sacred**  
-   Any decision can be challenged when better evidence is available.
-
-10. **The Right Process at the Right Time**  
-   Governance should match the maturity and risk of the project.
-
-11. **Protect Decision Quality**  
-   Breaks should be taken when fatigue may reduce the quality of technical or architectural decisions.
-
-12. **Long-Term Maintainability**  
-   The project must be understandable and maintainable years after its original creation.
+Every improvement made to AIEMS should benefit JARVIS.
 
 ---
 
-## 9. Delivery Horizons
+# Programme Objectives
 
-Project JARVIS AI will use three planning horizons.
+The programme shall:
 
-### Horizon 1 – Foundation and Core
-
-Focus: Build the governed foundation and initial assistant capability.
-
-Examples:
-
-- Project governance.
-- Documentation.
-- Git repository.
-- AI core.
-- Basic user interface.
-- Basic memory.
-- Basic identity.
-- Initial testing framework.
-
-### Horizon 2 – Household Intelligence
-
-Focus: Expand into broader home and family-supporting capabilities.
-
-Examples:
-
-- Voice interaction.
-- Notifications.
-- Camera vision.
-- Guardian Mode.
-- Workflow engine.
-- Home Assistant integration.
-- Monitoring dashboard.
-
-### Horizon 3 – Advanced and Future Capabilities
-
-Focus: Long-term experimental and advanced capabilities.
-
-Examples:
-
-- Robotics.
-- Drone integration.
-- Vehicle integration.
-- Wearables.
-- AR glasses.
-- Multi-agent AI.
-- Advanced proactive intelligence.
+- Deliver a trustworthy AI platform.
+- Develop AIEMS into a reusable engineering framework.
+- Establish best practice for AI-assisted engineering.
+- Maintain complete engineering traceability.
+- Support continuous organisational learning.
+- Promote responsible AI collaboration.
+- Minimise technical debt through disciplined governance.
+- Validate every programme phase before progression.
 
 ---
 
-## 10. Initial Domain Model
+# Engineering Philosophy
 
-The project will initially be organised around the following domains:
+Project JARVIS AI follows two guiding principles.
 
-| Domain | Purpose |
-|---|---|
-| Identity | Authentication, permissions, profiles, and user context. |
-| Memory | Long-term information storage, recall, and knowledge continuity. |
-| Communication | Chat, voice, notifications, email, and user interaction channels. |
-| Vision | Cameras, image understanding, recognition, and future perception systems. |
-| Automation | Workflows, scheduled actions, integrations, and agentic tasks. |
-| Security | Safety, audit, access control, privacy, and Guardian Mode. |
-| Knowledge | Documents, references, search, and structured information retrieval. |
-| Monitoring | Health checks, logging, diagnostics, and service status. |
-| Integration | External APIs, platforms, devices, and third-party systems. |
-| Experience | User interface, assistant personality, accessibility, and usability. |
+## Engineering Motto
 
-This model may evolve through formal architecture review and ADR approval.
+> **Review Twice. Build Once. Improve for Everyone.**
+
+Supporting Principle
+
+> **Assume Nothing. Verify Everything.**
+
+These principles apply equally to governance, architecture, engineering, testing and strategic decision making.
 
 ---
 
-## 11. Governance Model
+# Core Engineering Principles
 
-Project governance will initially be lightweight but disciplined.
+The programme is committed to:
 
-### 11.1 Current Governance Level
-
-During Phase 0 and early Phase 1, governance will require:
-
-- Documented decisions.
-- Architecture Decision Records for significant technical choices.
-- Risk review.
-- Assumption review.
-- Version control.
-- Review and approval gates.
-- Clear separation between ideas, decisions, and implementation.
-
-### 11.2 Future Governance Level
-
-Formal change management will be introduced later when the project has:
-
-- Active users.
-- Production services.
-- Release schedules.
-- Operational risk.
-- Support expectations.
-- Multiple environments.
-
-Formal Change Enablement is currently recorded as a future capability rather than an immediate requirement.
+- Documentation First
+- Evidence Before Opinion
+- Engineering Before Implementation
+- Human Accountability
+- Responsible AI Collaboration
+- Continuous Improvement
+- Transparent Governance
+- Reusable Solutions Before Project-Specific Solutions
+- Technology Serves the Engineering Process
 
 ---
 
-## 12. Roles and Responsibilities
+# Governance Model
 
-| Role | Responsibility |
-|---|---|
-| Project Sponsor | Owns the vision, priorities, and final approval of major decisions. |
-| Chief Architect | Challenges assumptions, proposes architecture, identifies risks, and maintains design integrity. |
-| Developer | Implements approved work according to standards. |
-| Reviewer | Reviews documents, designs, tests, and implementation quality. |
-| Future Users | Provide feedback, requirements, and usability insight when the project reaches beta stages. |
+Project JARVIS AI is governed by **AIEMS**.
 
-At project inception, Robert McNeill acts as Project Sponsor and primary owner. ChatGPT acts as supporting Chief Architect and documentation partner.
+AIEMS provides:
 
----
-
-## 13. Success Criteria
-
-Phase 0 will be considered successful when:
-
-1. The Project Charter is approved.
-2. The README is approved.
-3. The Master Specification is approved.
-4. The Project Constitution is approved.
-5. The `.gitignore` file is created.
-6. Git is initialised.
-7. The first commit is completed.
-8. The repository structure is agreed.
-9. Phase 0 review confirms readiness to begin Phase 1.
-
-Longer-term success will be measured by:
-
-- The platform is useful in real daily workflows.
-- The system remains understandable and maintainable.
-- Security and privacy controls are effective.
-- Features can be added without architectural chaos.
-- Documentation remains accurate.
-- The assistant earns user trust through reliability and transparency.
+- Governance
+- Architecture
+- Engineering Standards
+- Decision Management
+- Risk Management
+- Knowledge Management
+- Engineering Session Reports
+- Strategic Alignment Reviews
+- Continuous Improvement
 
 ---
 
-## 14. Key Risks
+# Programme Roles
 
-| Risk ID | Risk | Initial Mitigation |
-|---|---|---|
-| R-001 | Over-engineering before value is delivered. | Use pragmatic review gates and avoid unnecessary process. |
-| R-002 | Feature creep. | Maintain backlog categories and planning horizons. |
-| R-003 | Weak documentation discipline. | Apply the rule: if it is not documented, it is not a decision. |
-| R-004 | Security weaknesses introduced early. | Apply security by design from the beginning. |
-| R-005 | Fatigue leading to poor decisions. | Use structured breaks and avoid major decisions when tired. |
-| R-006 | Technology choices becoming obsolete. | Use assumption reviews and ADRs. |
-| R-007 | Platform becoming too dependent on one vendor. | Document vendor assumptions and review periodically. |
-| R-008 | Privacy risks from personal data handling. | Minimise data collection and document data flows. |
+| AIEMS Role | Current Assignment |
+|-------------|-------------------|
+| Programme Sponsor | Robert McNeill |
+| Chief Architect | ChatGPT |
+
+These assignments may change over time without affecting the AIEMS framework.
 
 ---
 
-## 15. Initial Assumptions
+# Strategic Alignment Reviews (SAR)
 
-| Assumption ID | Assumption | Review Frequency |
-|---|---|---|
-| A-001 | Windows is the primary development and operating platform. | Every 6 months |
-| A-002 | GitHub will be used for source control and repository hosting. | Every 12 months |
-| A-003 | Python and Node.js are likely early technology choices. | Every 6 months |
-| A-004 | The project will initially be private and not publicly released. | Every 6 months |
-| A-005 | JARVIS OS will begin as a desktop-first assistant platform. | Every 6 months |
-| A-006 | Formal change management is not required during Phase 0. | Every phase review |
-| A-007 | Documentation will remain the single source of truth. | Continuous |
+A Strategic Alignment Review shall be completed before the commencement of every programme phase.
 
----
+Each review shall determine:
 
-## 16. Break and Decision Quality Rule
+- Does the vision remain valid?
+- Are the objectives still achievable?
+- Has technology changed?
+- Does the architecture remain appropriate?
+- Is governance still effective?
+- What have we learned?
+- Should the programme proceed?
 
-Project JARVIS AI recognises that long work sessions can reduce decision quality.
-
-The project will therefore follow a decision-quality working rule:
-
-- After 60–90 minutes of focused work, consider a short break.
-- After 2–3 hours of focused work, take a longer break.
-- Do not make major architectural, security, or irreversible decisions when tired.
-- End long sessions with review, not major new commitments.
-- The Chief Architect may challenge continued work if fatigue appears likely to reduce decision quality.
-
-This principle exists to protect the quality of the project, not to slow progress.
+No new phase shall commence until the Strategic Alignment Review has been completed and approved.
 
 ---
 
-## 17. Approval Model
+# Engineering Session Reports (ESR)
 
-A document or decision becomes approved only when:
+An Engineering Session Report shall be produced following every significant engineering session.
 
-1. It has been written down.
-2. It has been reviewed.
-3. The Project Sponsor agrees it is correct.
-4. The status is changed from Draft to Approved.
-5. Any related documents or registers are updated.
+Each report shall record:
 
-Conversation alone does not constitute formal approval unless captured in project documentation.
+- Engineering decisions
+- Lessons learned
+- Technical discoveries
+- Repository updates
+- Risks
+- Actions
+- Progress
+- Next steps
 
----
-
-## 18. Review Cadence
-
-The Project Charter must be reviewed:
-
-- At the end of Phase 0.
-- At the start of each major phase.
-- When the project vision materially changes.
-- When the intended user base changes.
-- At least every three months during active development.
+The ESR forms part of the permanent engineering history of the programme.
 
 ---
 
-## 19. Initial Phase 0 Deliverables
+# Success Criteria
 
-The initial Phase 0 deliverables are:
+Project JARVIS AI shall be considered successful when:
 
-1. `PROJECT_CHARTER.md`
-2. `README.md`
-3. `PJAI-1001-Master-Specification.md`
-4. `PJAI-1002-Project-Constitution.md`
-5. `.gitignore`
-6. Initial Git repository
-7. First commit
-8. Phase 0 review record
+- AIEMS becomes a mature and reusable engineering management system.
+- JARVIS successfully demonstrates AIEMS.
+- Engineering governance remains effective throughout the programme.
+- Every phase is validated before progression.
+- Lessons learned continuously improve both AIEMS and JARVIS.
+- The engineering methodology can be reused by future AI and software engineering programmes.
 
 ---
 
-## 20. Charter Statement
+# Programme Lifecycle
 
-Project JARVIS AI is authorised as a governed personal AI engineering programme.
+```text
+Vision
+    │
+    ▼
+Governance
+    │
+    ▼
+Engineering
+    │
+    ▼
+Validation
+    │
+    ▼
+Strategic Alignment Review
+    │
+    ▼
+Next Phase
+```
 
-The programme will proceed using a documentation-first, security-conscious, modular, and maintainable approach.
-
-The project will prioritise disciplined foundations before implementation and will not begin production code until the agreed Phase 0 governance documents and repository controls are in place.
+This lifecycle shall repeat throughout the lifetime of the programme.
 
 ---
 
-## 21. Review History
+# Guiding Commitment
+
+Project JARVIS AI is committed to engineering excellence through disciplined governance, evidence-based decision making, continuous learning and responsible collaboration between human expertise and artificial intelligence.
+
+The programme exists not only to build an exceptional AI platform, but also to establish a reusable engineering management framework capable of benefiting future AI and software engineering initiatives.
+
+---
+
+# Version History
 
 | Version | Date | Author | Summary |
-|---|---|---|---|
-| 0.1.0 | 22 June 2026 | Robert McNeill & ChatGPT | Initial draft of the Project Charter for Phase 0 governance. |
+|---------|------------|----------------------------|---------------------------------------------------------|
+| 1.0 | 22 June 2026 | Programme Sponsor | Initial Project Charter established. |
+| 2.0 | 24 June 2026 | Programme Sponsor & Chief Architect | Charter expanded to recognise AIEMS as a strategic deliverable, establish programme governance, introduce Strategic Alignment Reviews (SAR), Engineering Session Reports (ESR) and define the long-term vision for both AIEMS and JARVIS. |
