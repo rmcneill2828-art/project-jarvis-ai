@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -108,6 +108,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | REG-0003 | Register | Risk Register | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
+| AIE-0001 | Review | AI Engineering Workflow Evaluation | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/models/` |
 
 ---
@@ -152,4 +153,5 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.1 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered AIE-0001 as a controlled governance review artefact. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Controlled Artefact Register established following the AI Engineering Platform repository refactor. |
