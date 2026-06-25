@@ -1,4 +1,4 @@
-from jarvis.core.jarvis import Jarvis, JarvisState
+from jarvis import Jarvis, JarvisState
 
 
 def test_jarvis_starts_in_stopped_state() -> None:

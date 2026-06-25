@@ -51,6 +51,8 @@ The feature deliberately excluded:
 ## Files Updated
 
 ```text
+jarvis/__init__.py
+jarvis/core/__init__.py
 jarvis/core/jarvis.py
 jarvis/tests/test_jarvis.py
 ```
@@ -76,6 +78,16 @@ The root platform object now supports:
 
 JARVIS is initialised in the `STOPPED` state and transitions between supported lifecycle states through controlled methods.
 
+### Public Package API
+
+The JARVIS package now exposes the lifecycle root object and lifecycle state through a stable package-level API:
+
+```python
+from jarvis import Jarvis, JarvisState
+```
+
+This establishes `jarvis` as the public import boundary while allowing the internal `jarvis.core` implementation structure to evolve without requiring callers to depend directly on internal module paths.
+
 ---
 
 # 4. Verification
@@ -99,6 +111,7 @@ Tests Verified:
 * Initial lifecycle state.
 * Successful platform startup.
 * Successful platform shutdown.
+* Package-level public API import.
 
 ---
 
@@ -108,6 +121,7 @@ The following capabilities were successfully demonstrated:
 
 * JARVIS maintains an internal lifecycle state.
 * Platform state transitions operate correctly.
+* The lifecycle API is available through the stable `jarvis` package boundary.
 * Lifecycle behaviour is automatically verified through unit testing.
 * Engineering toolchain validates successfully.
 
