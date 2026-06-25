@@ -16,5 +16,5 @@ dev = [
     "ruff",
     "pytest",
 ]
-[tool.setuptools]
-packages = ["jarvis"]
+[tool.setuptools.packages.find]
+include = ["jarvis", "jarvis.*"]
