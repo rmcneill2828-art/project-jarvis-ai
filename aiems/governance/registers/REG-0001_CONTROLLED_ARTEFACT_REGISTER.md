@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -103,6 +103,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0001 | Architecture Decision Record | Documentation First | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0002 | Architecture Decision Record | Git Repository Strategy | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0003 | Architecture Decision Record | RTBO Engineering Decision Framework | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | REG-0001 | Register | Controlled Artefact Register | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -110,6 +111,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/models/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 
 ---
 
@@ -153,5 +155,6 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.2 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ADR-0006 and PBK-0001 for the introduction of Playbooks as a controlled governance artefact. |
 | 1.1 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered AIE-0001 as a controlled governance review artefact. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Controlled Artefact Register established following the AI Engineering Platform repository refactor. |
