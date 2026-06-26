@@ -300,7 +300,7 @@ Controlled Artefacts should reference authoritative sources rather than reproduc
 
 # 16. Compliance
 
-Compliance with this standard shall be verified through Engineering Assurance Reviews (EARs) or other approved governance activities.
+Compliance with this standard shall be verified through Engineering Reviews or other approved governance activities.
 
 A Controlled Artefact is considered compliant when it:
 
