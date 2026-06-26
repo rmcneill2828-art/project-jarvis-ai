@@ -90,7 +90,7 @@ Repository integrity shall be verified by confirming that:
 - Cross-references remain valid.
 - The repository contains only one current version of each Controlled Artefact.
 
-Repository integrity shall be verified during Repository Hygiene activities and Engineering Assurance Reviews.
+Repository integrity shall be verified during Repository Hygiene activities and Engineering Reviews.
 
 ---
 
@@ -122,7 +122,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | PBK-0001 | Playbook | AI Engineering Playbook | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
-| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
+| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.1 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 
 ---
 
@@ -140,9 +140,9 @@ The Register shall be reviewed whenever:
 
 ---
 
-# Engineering Assurance
+# Engineering Review
 
-Engineering Assurance Reviews (EAR) shall verify that:
+Engineering Reviews shall verify that:
 
 - Every Controlled Artefact is present within this Register.
 - Metadata accurately reflects the current repository baseline.
@@ -150,7 +150,7 @@ Engineering Assurance Reviews (EAR) shall verify that:
 - Parent artefact relationships remain accurate.
 - Governance status reflects the current approved state.
 
-Any discrepancies identified during an Engineering Assurance Review shall be corrected before the Platform baseline is updated.
+Any discrepancies identified during an Engineering Review shall be corrected before the Platform baseline is updated.
 
 ---
 
