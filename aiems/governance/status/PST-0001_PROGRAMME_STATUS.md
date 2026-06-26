@@ -63,7 +63,7 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Current Mode                  | Governance-led engineering moving into engineering standards completion                                         |
 | Current Phase                 | Phase 2 – Engineering Standards                                                                                 |
 | Current Workflow              | AIEMS Engineering Workflow v3                                                                                   |
-| Current Engineering Objective | Complete the minimum viable Engineering Standards baseline before platform decomposition and JARVIS development |
+| Current Engineering Objective | Repository State Alignment – P2-003B |
 
 ---
 
@@ -94,7 +94,7 @@ COC-0001 is the authoritative collaboration context for this workflow.
 | ----------------------- | ----------- | -------- | --------------------------------------------------------------------------------------- |
 | Repository Architecture | Complete    | Complete | Repository structure, package layout and governance separation are established.         |
 | Governance Framework    | In Progress | High     | Core AIEMS governance artefacts exist and are stabilising.                              |
-| Engineering Standards   | In Progress | High     | STD-0001 and STD-0002 are approved; additional build-facing standards remain planned.   |
+| Engineering Standards   | In Progress | High     | STD-0001, STD-0002 and STD-0003 are approved; additional build-facing standards remain planned. |
 | Platform Architecture   | Planned     | Partial  | MOD-0001 exists but requires decomposition into implementable subsystem specifications. |
 | JARVIS Development      | Planned     | Early    | JARVIS lifecycle skeleton exists; product capabilities are not yet implemented.         |
 
@@ -110,6 +110,7 @@ COC-0001 is the authoritative collaboration context for this workflow.
 | Engineering Standards Gap Review completed                     | Complete |
 | STD-0001 Controlled Artefact Standard approved                 | Complete |
 | STD-0002 Engineering Documentation Standard approved           | Complete |
+| STD-0003 Software / Python Engineering Standard approved       | Complete |
 | REG-0001 Controlled Artefact Register independently verified   | Complete |
 | REG-0004 Action Register independently verified                | Complete |
 | EIP-based implementation workflow validated                    | Complete |
@@ -122,7 +123,7 @@ COC-0001 is the authoritative collaboration context for this workflow.
 | -------- | -------- | ----------------------------------------------------------------------- |
 | STD-0001 | Approved | Controlled Artefact Standard approved and independently verified.       |
 | STD-0002 | Approved | Engineering Documentation Standard approved and independently verified. |
-| STD-0003 | Planned  | Software / Python Engineering Standard.                                 |
+| STD-0003 | Approved | Software / Python Engineering Standard. Baseline accepted.              |
 | STD-0004 | Planned  | Engineering Verification or Validation and Quality Assurance Standard.  |
 | STD-0005 | Planned  | Development Environment Standard.                                       |
 | STD-0006 | Planned  | Configuration and Secrets Standard.                                     |
@@ -132,15 +133,27 @@ COC-0001 is the authoritative collaboration context for this workflow.
 
 # 8. Active and Next Planned Work
 
-| Item                 | Status                                                          | Notes                                                               |
-| -------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Active EIP           | None                                                            | No implementation activity is currently active at time of creation. |
-| Next Planned EIP     | P2-003 – Create STD-0003 Software / Python Engineering Standard | Recommended next standards activity.                                |
-| Current Review State | P2-002 baselining completed                                     | Existing standards and related registers have been verified.        |
+| Item                         | Status                              | Notes                                                     |
+| ---------------------------- | ----------------------------------- | --------------------------------------------------------- |
+| Current Engineering Session  | ESR-0001                            | Current accepted Engineering Session Report.              |
+| Current Engineering Activity | P2-003B Repository State Alignment  | Active repository state alignment activity.               |
+| P2-003                       | Complete                            | STD-0003 Software / Python Engineering Standard approved. |
+| Next Engineering Session     | ESR-0002 Planned                    | Next session identifier.                                  |
+| Current Review State         | P2-003A health review completed     | Repository health reviewed as Good.                       |
 
 ---
 
-# 9. Outstanding Observations
+# 9. Repository Health
+
+| Item                                | Status                             |
+| ----------------------------------- | ---------------------------------- |
+| Repository Health                   | Good                               |
+| Latest Repository Engineering Health Review | ESR-0001 / P2-003A         |
+| Current Activity                    | P2-003B Repository State Alignment |
+
+---
+
+# 10. Outstanding Observations
 
 The following observations remain open for future engineering consideration:
 
@@ -152,7 +165,7 @@ The following observations remain open for future engineering consideration:
 
 ---
 
-# 10. Session Start Guidance
+# 11. Session Start Guidance
 
 At the start of a new engineering session:
 
@@ -167,7 +180,7 @@ This allows future sessions to start from a clean conversational state while pre
 
 ---
 
-# 11. Maintenance
+# 12. Maintenance
 
 PST-0001 shall be reviewed and updated:
 
