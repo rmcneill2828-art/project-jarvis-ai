@@ -130,13 +130,37 @@ This workflow has been validated through repeated implementation, remediation an
 
 The approved next-session model is hybrid.
 
-At the start of a future engineering session:
+## Engineering Session Anchor
 
-1. Load COC-0001.
-2. Load PBK-0001.
-3. Load PST-0001.
-4. Load the latest ESR.
-5. Optionally review the previous conversation summary if it contains ideas not yet reflected in the repository.
+Future engineering conversations shall begin by referencing the latest accepted Engineering Session Report.
+
+The standard opening format is:
+
+```text
+Engineering Session: ESR-0001
+```
+
+For each future session, the ESR number shall reflect the latest accepted Engineering Session Report.
+
+Examples:
+
+```text
+Engineering Session: ESR-0001
+Engineering Session: ESR-0002
+Engineering Session: ESR-0003
+```
+
+The ESR reference acts as the session anchor and identifies the latest accepted engineering baseline from which the new session shall continue.
+
+The Engineering Session Anchor does not replace Engineering Synchronisation. It identifies the starting point for Engineering Synchronisation.
+
+The approved new-session startup sequence is:
+
+1. Read the referenced ESR.
+2. Load COC-0001.
+3. Load PBK-0001.
+4. Load PST-0001.
+5. Optionally review the previous conversation summary if supplied and relevant.
 6. Perform Engineering Synchronisation.
 7. Confirm repository baseline.
 8. Confirm current engineering objective.
@@ -177,14 +201,13 @@ The session produced the following lessons:
 
 The following artefacts should be updated in future EIPs to fully integrate ESR into AIEMS:
 
-| Artefact | Required Update                                                                |
-| -------- | ------------------------------------------------------------------------------ |
-| STD-0001 | Add ESR as a controlled artefact category.                                     |
-| REG-0001 | Register ESR-0001 and future ESR artefacts.                                    |
-| PBK-0001 | Add Engineering Session Lifecycle and ESR session-closure process.             |
-| COC-0001 | Add reference that engineering sessions normally conclude with ESR generation. |
-| PST-0001 | Add latest ESR reference once PST-0001 is baselined.                           |
-| REG-0004 | Add actions only if future ESR integration work needs tracking.                |
+| Artefact | Required Update                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------------------ |
+| COC-0001 | Add the Engineering Session Anchor as the standard new-conversation startup instruction.                     |
+| PBK-0001 | Add Engineering Session Lifecycle, including ESR anchoring, Engineering Synchronisation and session closure. |
+| PST-0001 | Record the latest accepted ESR as the current session anchor.                                                |
+| STD-0001 | Add ESR as a controlled artefact category.                                                                   |
+| REG-0001 | Register ESR-0001 and future ESR artefacts.                                                                  |
 
 ---
 

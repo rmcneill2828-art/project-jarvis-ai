@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | Phase 1 - Engineering Readiness |
+| Current Phase | Phase 2 - Engineering Standards |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | JARVIS lifecycle skeleton established |
-| Current Engineering Focus | Repository integrity, AIEMS maturity and PBK-0001 operational workflow |
+| Current Engineering Focus | Complete the minimum viable Engineering Standards baseline before platform decomposition and JARVIS development |
 
 ---
 
@@ -178,15 +178,26 @@ Delivered:
 
 ## Phase 1 - Engineering Readiness
 
+Status: Completed and validated.
+
+Delivered:
+
+- Initial AIEMS standards baseline.
+- Repository integrity remediation.
+- Operational Engineering Workflow v3.
+- Programme status reload point.
+- Engineering Session Report model.
+
+## Phase 2 - Engineering Standards
+
 Status: In progress.
 
 Current focus:
 
-- Complete AIEMS standards library.
-- Maintain repository integrity.
-- Establish operational engineering workflow.
-- Expand JARVIS core skeleton from governed architecture.
-- Strengthen repeatable validation and documentation practices.
+- Complete the minimum viable Engineering Standards baseline.
+- Create build-facing engineering standards.
+- Prepare for platform decomposition.
+- Preserve repository-backed session continuity.
 
 ---
 
