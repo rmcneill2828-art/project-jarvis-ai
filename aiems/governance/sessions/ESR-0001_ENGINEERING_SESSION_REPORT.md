@@ -2,7 +2,7 @@
 
 > *"A session is temporary. Engineering evidence is permanent."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,8 +12,8 @@
 | ---------------- | --------------------------------------------- |
 | Artefact ID      | ESR-0001                                      |
 | Title            | Engineering Session Report                    |
-| Version          | 1.0                                           |
-| Status           | Approved                                      |
+| Version          | 1.1                                           |
+| Status           | Completed                                     |
 | Owner            | Programme Sponsor & Chief Engineering Advisor |
 | Approved By      | Programme Sponsor                             |
 | Classification   | Internal                                      |
@@ -42,7 +42,7 @@ This artefact complements COC-0001, PBK-0001 and PST-0001.
 | Repository         | project-jarvis-ai                                                                               |
 | Branch             | main                                                                                            |
 | Session Focus      | AIEMS workflow maturation, standards baselining, repository verification and session continuity |
-| Session Outcome    | AIEMS Engineering Workflow v3 validated and operationalised                                     |
+| Session Outcome    | ESR-0001 formally closed; repository baseline accepted and handed over to planned ESR-0002       |
 
 ---
 
@@ -75,7 +75,9 @@ The session objectives were to:
 | P2-008  | Create ESR-0001 Engineering Session Report | Completed        |
 | P2-003  | Create STD-0003 Software / Python Engineering Standard | Completed        |
 | P2-003A | Repository Engineering Health Review        | Completed        |
-| P2-003B | Repository State Alignment                  | In Progress      |
+| P2-003B | Repository State Alignment                  | Completed        |
+| P2-004A | Engineering Session Lifecycle Alignment     | Completed        |
+| ESC-002 | Formal Engineering Session Closure          | Completed        |
 
 ---
 
@@ -91,6 +93,12 @@ The following artefacts were independently reviewed using the GitHub read-only c
 | REG-0001 | Pass   | COC-0001 version and Engineering Review terminology corrected and verified.  |
 | REG-0004 | Pass   | Action Register verified; ACT-0009 correctly completed.                      |
 | STD-0003 | Pass   | Software / Python Engineering Standard created, independently verified and accepted into the engineering baseline. |
+| PST-0001 | Pass   | Programme status reflected the accepted Phase 2 engineering baseline.                            |
+| ESR-0001 | Pass   | Engineering Session Report updated to record completed activities and session closure.           |
+| README.md | Pass  | README aligned with current AIEMS workflow, repository structure and engineering baseline.        |
+| PBK-0001 | Pass   | Engineering Implementer workflow and WP0A / WP0B lifecycle guidance recorded.                    |
+| Governance Terminology | Pass | Engineering Review terminology aligned across reviewed governance artefacts.             |
+| Repository Consistency | Pass | Repository consistency verification completed; remaining debt recorded as deferred work. |
 
 ---
 
@@ -312,60 +320,140 @@ If the engineering process changed, the authoritative artefacts shall be updated
 | Platform Architecture   | Planned     | Partial  |
 | JARVIS Development      | Planned     | Early    |
 
+Repository baseline: **Accepted**.
+
+Engineering progression: **Approved**.
+
+Engineering Session status: **Completed**.
+
 ---
 
-# 13. Lessons Learned
+# 13. Engineering Outcomes
+
+ESR-0001 produced the following principal outcomes:
+
+* Repository-first engineering established.
+* WP0A – Repository Synchronisation established.
+* WP0B – Engineering Session Initialisation established.
+* Single Active Engineering Session rule established.
+* Engineering Session handover model established.
+* Engineering Architect / Reviewer and Engineering Implementer roles clarified.
+* Independent Repository Verification embedded into the workflow.
+* Repository Engineering Health Review introduced.
+* Documentation architecture based on single primary responsibility introduced.
+* Engineering Implementer operational workflow formalised in PBK-0001.
+* STD-0003 accepted into the engineering baseline.
+* Repository considered suitable for engineering progression.
+
+All approved activities and work packages were independently verified and accepted into the repository baseline.
+
+---
+
+# 14. Engineering Session Achievement
+
+Engineering Session ESR-0001 transformed AIEMS from an initial governance framework into a repeatable engineering operating model. The session established repository-first engineering, formalised Human-AI engineering roles, embedded independent repository verification, and demonstrated that AI-assisted engineering can operate under disciplined governance. ESR-0001 therefore serves as the reference engineering session for future AIEMS development.
+
+During closure of ESR-0001, the need for a controlled Engineering Backlog Register was identified. This enhancement has been approved for implementation during ESR-0002 to complete the engineering governance lifecycle.
+
+---
+
+# 15. Lessons Learned
 
 The session produced the following lessons:
 
-* Long conversations degrade response speed and should be replaced by repository-backed session continuity.
-* Engineering Implementation Packages reduce ambiguity and improve implementation speed.
-* Independent verification after Git push is effective and should remain mandatory.
-* Repository artefacts should become the programme memory.
-* Conversation summaries are useful only as temporary bridges between sessions.
-* AIEMS now supports operational engineering rather than merely describing governance.
-* Repository-first engineering reduces reliance on conversation history.
-* Repository Engineering Health Reviews improve baseline confidence.
-* WP0A Repository Synchronisation and WP0B Engineering Session Initialisation make startup repeatable and auditable.
-* Engineering Architect and Engineering Implementer roles require distinct startup responsibilities.
-* PBK-0001 is the authoritative Engineering Implementer playbook.
+* Repository baseline is more reliable than conversation history.
+* Small independently verified work packages reduce engineering risk.
+* Repository Health Reviews identify governance drift early.
+* AI engineering roles benefit from clearly defined responsibilities.
+* Evidence-based engineering improves decision quality.
+* Repository artefacts should remain the authoritative programme memory.
+* AIEMS process changes must be captured in authoritative artefacts before session closure.
 
 ---
 
-# 14. Outstanding Artefact Updates
+# 16. Remaining Technical Debt and Deferred Work
 
-The following artefacts should be updated in future EIPs to fully integrate ESR into AIEMS:
+The following items are deferred for future engineering work and do not block engineering progression:
 
-| Artefact | Required Update                                                                                              |
-| -------- | ------------------------------------------------------------------------------------------------------------ |
-| COC-0001 | Add the Engineering Session Anchor as the standard new-conversation startup instruction.                     |
-| PBK-0001 | Add Engineering Session Lifecycle, including ESR anchoring, Engineering Synchronisation and session closure. |
-| PST-0001 | Record the latest accepted ESR as the current session anchor.                                                |
-| STD-0001 | Add ESR as a controlled artefact category.                                                                   |
-| REG-0001 | Register ESR-0001 and future ESR artefacts.                                                                  |
-
----
-
-# 15. Recommended Next Engineering Activity
-
-The recommended next engineering activity is:
-
-P2-003B – Repository State Alignment
-
-P2-003B remains in progress until all approved Repository State Alignment work packages are completed, verified and accepted into the engineering baseline.
+* ADR-0004 recovery or formal supersession.
+* ADR-0005 recovery or formal supersession.
+* Lifecycle promotion review for COC-0001.
+* Lifecycle promotion review for PBK-0001.
+* REG-0001 alignment following P2-004A metadata changes.
+* REV-0002 – Repository Baseline Verification.
+* EBR-0001 – Engineering Backlog Register.
 
 ---
 
-# 16. Engineering Session Closure Rule
+# 17. Engineering Metrics
 
-An Engineering Session is complete only when:
+| Metric | Value |
+|--------|------:|
+| Engineering Activities Completed | 4 |
+| Work Package Series Completed | 1 |
+| Work Packages Completed | 6 |
+| Repository Health Reviews Performed | 1 |
+| Independent Baseline Verifications | 8 |
+| Standards Baselined | 1 |
+| Repository Health | Good |
+| Engineering Progression | Approved |
 
-1. All approved Engineering Activities for the session have been completed.
-2. Independent repository verification has been performed.
-3. The updated repository baseline has been accepted.
-4. The Engineering Session Report has been updated to record the accepted baseline.
+---
 
-ESR-0001 remains active until the current Repository State Alignment activity is completed and accepted.
+# 18. Engineering Session Handover
+
+| Item | Value |
+|------|-------|
+| Current Session | ESR-0001 – Completed |
+| Repository Baseline | Accepted |
+| Repository Health | Good |
+| Engineering Progression | Approved |
+| Next Engineering Session | ESR-0002 |
+| Status | Planned |
+| Programme Phase | Phase 2 – Engineering Standards |
+| Session Purpose | Commence structured engineering development using the operational AIEMS model established during ESR-0001. |
+
+Initial Engineering Objectives for ESR-0002:
+
+* Create EBR-0001 – Engineering Backlog Register.
+* Migrate approved deferred engineering items identified during ESR-0001 into EBR-0001.
+* Recover or formally supersede ADR-0004 and ADR-0005.
+* Review lifecycle status of operational governance artefacts, including COC-0001 and PBK-0001.
+* Align REG-0001 with P2-004A metadata changes where required.
+* Create REV-0002 – Repository Baseline Verification.
+* Begin STD-0004 – Validation and Quality Assurance Standard.
+* Continue development of the AIEMS Standards Library.
+* Prepare the engineering environment for JARVIS core implementation.
+
+Success Criteria for ESR-0002:
+
+* Repository governance remains internally consistent.
+* Engineering Backlog Register is created and populated with approved deferred items.
+* Outstanding governance technical debt is reduced.
+* STD-0004 is approved and baselined or advanced through an approved Engineering Implementation Package.
+* Phase 2 engineering foundation advances without compromising repository integrity.
+
+---
+
+# 19. Programme Phase and Engineering Session Distinction
+
+Programme Phases are long-running strategic milestones.
+
+Engineering Sessions are bounded operational engineering periods within a Programme Phase.
+
+Multiple Engineering Sessions may contribute to the same Programme Phase before a Strategic Alignment Review authorises progression to the next phase.
+
+---
+
+# 20. Formal Closure Statement
+
+Engineering Session ESR-0001 is formally closed.
+
+All approved engineering activities have been completed, independently verified, and accepted into the repository baseline.
+
+The repository is considered suitable for continued engineering under AIEMS governance.
+
+Engineering responsibility is handed over to the planned Engineering Session ESR-0002, which shall commence following successful Repository Synchronisation and Engineering Session Initialisation in accordance with the approved AIEMS lifecycle.
 
 ---
 
@@ -379,6 +467,7 @@ ESR-0001 remains active until the current Repository State Alignment activity is
 
 | Version | Date         | Author                                        | Summary                                                                                                                                                 |
 | ------- | ------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1     | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Formally closed ESR-0001, recorded accepted repository baseline, deferred work, session metrics and handover to planned ESR-0002. |
 | 1.0     | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Session Report recording AIEMS workflow validation, standards baselining, repository verification and session-continuity decisions. |
 
 ---
