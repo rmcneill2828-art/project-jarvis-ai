@@ -84,9 +84,9 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 10. After the Human Engineer completes the requested action, the AI collaborator shall continue immediately with the next engineering activity and shall not revisit completed work unless:
 
-* requested by the Human Engineer;
-* implementation cannot proceed; or
-* new objective evidence materially changes the engineering position.
+   * requested by the Human Engineer;
+   * implementation cannot proceed; or
+   * new objective evidence materially changes the engineering position.
 
 11. Recommendations are provided only at natural review points unless they block engineering progress.
 
