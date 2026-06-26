@@ -72,7 +72,10 @@ The session objectives were to:
 | P2-002B | STD-0002 Terminology Alignment             | Completed        |
 | P2-002C | REG-0001 Register Alignment                | Completed        |
 | P2-007  | Create PST-0001 Programme Status Artefact  | Prepared         |
-| P2-008  | Create ESR-0001 Engineering Session Report | Current activity |
+| P2-008  | Create ESR-0001 Engineering Session Report | Completed        |
+| P2-003  | Create STD-0003 Software / Python Engineering Standard | Completed        |
+| P2-003A | Repository Engineering Health Review        | Completed        |
+| P2-003B | Repository State Alignment                  | In Progress      |
 
 ---
 
@@ -87,10 +90,23 @@ The following artefacts were independently reviewed using the GitHub read-only c
 | STD-0002 | Pass   | Approved baseline confirmed after Engineering Review terminology correction. |
 | REG-0001 | Pass   | COC-0001 version and Engineering Review terminology corrected and verified.  |
 | REG-0004 | Pass   | Action Register verified; ACT-0009 correctly completed.                      |
+| STD-0003 | Pass   | Software / Python Engineering Standard created, independently verified and accepted into the engineering baseline. |
 
 ---
 
-# 6. Engineering Decisions and Approved Recommendations
+# 6. Repository Engineering Health Review
+
+A read-only Repository Engineering Health Review was performed during ESR-0001.
+
+Repository Health was assessed as **Good**.
+
+Findings were reviewed and recommendations were considered for future Engineering Implementation Packages.
+
+The review activity itself did not modify repository artefacts.
+
+---
+
+# 7. Engineering Decisions and Approved Recommendations
 
 The Programme Sponsor approved the following recommendations during the session:
 
@@ -107,7 +123,7 @@ The Programme Sponsor approved the following recommendations during the session:
 
 ---
 
-# 7. AIEMS Engineering Workflow v3
+# 8. AIEMS Engineering Workflow v3
 
 The approved workflow is:
 
@@ -124,9 +140,75 @@ The approved workflow is:
 
 This workflow has been validated through repeated implementation, remediation and verification cycles.
 
+Approved Engineering Principle:
+
+> **Synchronise before you think. Verify before you build. Baseline before you continue.**
+
+Approved Repository Principle:
+
+> **The Git repository is the authoritative engineering baseline. Conversations provide working context but do not define project state.**
+
 ---
 
-# 8. Next Session Initialisation Model
+# 9. WP0 – Engineering Synchronisation
+
+Every Engineering Activity shall begin with WP0 – Engineering Synchronisation.
+
+No engineering design or implementation package shall be produced until WP0 has successfully completed.
+
+WP0 shall include, where applicable:
+
+* Connect to GitHub using the read-only connector.
+* Review the latest Engineering Session Report.
+* Review PST-0001.
+* Review PBK-0001.
+* Review COC-0001 for Engineering Architect sessions.
+* Review the previous chat summary as temporary working memory only where supplied.
+* Perform Repository Engineering Health Review.
+* Confirm the current repository baseline.
+* Confirm the current engineering objective.
+* Identify the next approved Engineering Implementation Package.
+* Await Programme Sponsor approval.
+
+---
+
+# 10. Engineering Startup Responsibilities
+
+## Engineering Architect / Reviewer Startup
+
+Engineering Architect and Reviewer startup shall include:
+
+* GitHub read-only repository synchronisation.
+* Review of ESR.
+* Review of PST.
+* Review of PBK.
+* Review of COC.
+* Optional previous chat summary as temporary working memory only.
+* Repository Engineering Health Review.
+* Confirmation of repository baseline.
+* Confirmation of current engineering objective.
+* Identification of next approved Engineering Implementation Package.
+* Awaiting Programme Sponsor approval before engineering design or implementation proceeds.
+
+## Engineering Implementer Startup
+
+Every clean AI implementation session shall:
+
+* Review the current Engineering Session Report.
+* Review PST-0001.
+* Review PBK-0001.
+* Treat PBK-0001 as the authoritative Engineering Implementer playbook.
+* Review the approved Engineering Implementation Package.
+* Review repository artefacts referenced by the approved EIP.
+* Confirm implementation scope.
+* Implement approved scope only.
+* Perform self-review.
+* Produce an Engineering Completion Report.
+* Perform no Git operations unless explicitly authorised.
+
+---
+
+# 11. Next Session Initialisation Model
 
 The approved next-session model is hybrid.
 
@@ -172,7 +254,7 @@ Any information that becomes part of the programme shall be incorporated into co
 
 ---
 
-# 9. Programme State at Session Close
+# 12. Programme State at Session Close
 
 | Capability              | Status      | Maturity |
 | ----------------------- | ----------- | -------- |
@@ -184,7 +266,7 @@ Any information that becomes part of the programme shall be incorporated into co
 
 ---
 
-# 10. Lessons Learned
+# 13. Lessons Learned
 
 The session produced the following lessons:
 
@@ -194,10 +276,15 @@ The session produced the following lessons:
 * Repository artefacts should become the programme memory.
 * Conversation summaries are useful only as temporary bridges between sessions.
 * AIEMS now supports operational engineering rather than merely describing governance.
+* Repository-first engineering reduces reliance on conversation history.
+* Repository Engineering Health Reviews improve baseline confidence.
+* WP0 Engineering Synchronisation makes startup repeatable and auditable.
+* Engineering Architect and Engineering Implementer roles require distinct startup responsibilities.
+* PBK-0001 is the authoritative Engineering Implementer playbook.
 
 ---
 
-# 11. Outstanding Artefact Updates
+# 14. Outstanding Artefact Updates
 
 The following artefacts should be updated in future EIPs to fully integrate ESR into AIEMS:
 
@@ -211,24 +298,26 @@ The following artefacts should be updated in future EIPs to fully integrate ESR 
 
 ---
 
-# 12. Recommended Next Engineering Activity
+# 15. Recommended Next Engineering Activity
 
 The recommended next engineering activity is:
 
-P2-003 – Create STD-0003 Software / Python Engineering Standard
+P2-003B � Repository State Alignment
 
-This should follow completion, verification and baselining of PST-0001 and ESR-0001.
+P2-003B remains in progress until all approved Repository State Alignment work packages are completed, verified and accepted into the engineering baseline.
 
 ---
 
-# 13. Session Closure Recommendation
+# 16. Engineering Session Closure Rule
 
-This session should be closed after:
+An Engineering Session is complete only when:
 
-1. PST-0001 is created, committed, pushed and verified.
-2. ESR-0001 is created, committed, pushed and verified.
-3. The repository baseline is accepted.
-4. A new conversation begins with the instruction: Start Engineering Session.
+1. All approved Engineering Activities for the session have been completed.
+2. Independent repository verification has been performed.
+3. The updated repository baseline has been accepted.
+4. The Engineering Session Report has been updated to record the accepted baseline.
+
+ESR-0001 remains active until the current Repository State Alignment activity is completed and accepted.
 
 ---
 
