@@ -2,7 +2,7 @@
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.2
+**Version:** 2.3
 
 ---
 
@@ -40,6 +40,16 @@ This register includes Architecture Decision Records relating to:
 | ADR-0004 | AI Repository Interaction Policy | Governance | Approved | 24 Jun 2026 | - | Defined governance, approval model and responsibilities for AI-assisted repository interaction. |
 | ADR-0005 | AIEMS Strategic Scope | Strategy | Approved | 24 Jun 2026 | - | Recognised AIEMS as an independent strategic deliverable and JARVIS as its flagship implementation. |
 | ADR-0006 | Introduction of Playbooks as a Controlled Governance Artefact | Governance | Draft | 25 Jun 2026 | - | Established Playbooks as a new controlled governance artefact category within AIEMS. |
+
+---
+
+# Repository Integrity Notes
+
+The ADR Register preserves historical approved references to ADR-0004 and ADR-0005.
+
+The current repository baseline does not contain corresponding ADR-0004 or ADR-0005 files under `aiems/governance/decisions/`.
+
+These references are retained because they are linked from approved registers and historical governance records. A future repository hygiene activity should either reconstruct the missing ADR artefacts from approved evidence or formally supersede the references through an approved governance activity.
 
 ---
 
@@ -129,3 +139,4 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to include AIEMS governance, ADR lifecycle, approval process, review policy and new strategic decisions ADR-0004 and ADR-0005. |
 | 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |
 | 2.2 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ADR-0006 for the introduction of Playbooks as a controlled governance artefact while preserving existing ADR-0004 and ADR-0005 register history. |
+| 2.3 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added repository integrity note identifying missing ADR-0004 and ADR-0005 artefact files while preserving historical register references. |

@@ -1,6 +1,6 @@
 # FE-0003 – Introduction of Playbooks as a Controlled Governance Artefact
 
-**Status:** Draft
+**Status:** Complete
 
 **Version:** 1.0
 
@@ -49,12 +49,12 @@ Directory:
 Files:
 
 * `PBK-0001_AI_ENGINEERING_PLAYBOOK.md`
-* `ADR-0004_INTRODUCTION_OF_PLAYBOOKS_AS_A_CONTROLLED_GOVERNANCE_ARTEFACT.md`
+* `ADR-0006_INTRODUCTION_OF_PLAYBOOKS_AS_A_CONTROLLED_GOVERNANCE_ARTEFACT.md`
 
 ## Update
 
 * `REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`
-* `REG-0002_ARCHITECTURAL_DECISION_REGISTER.md`
+* `REG-0002_ADR_REGISTER.md`
 
 ---
 
@@ -80,7 +80,7 @@ This feature shall be considered complete when:
 
 * The `playbooks` directory exists.
 * `PBK-0001` has been created as a controlled artefact.
-* `ADR-0004` has been created.
+* `ADR-0006` has been created.
 * Governance registers have been updated.
 * No files outside the approved scope have been modified.
 
@@ -108,4 +108,4 @@ The introduction of Playbooks provides a new governance artefact category that t
 | Version | Date         | Author                                        | Summary                                                                                               |
 | ------- | ------------ | --------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | 1.0     | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Feature created to introduce Playbooks as a new Controlled Artefact within AIEMS. |
-
+| 1.1     | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled implemented ADR and register filenames with the current repository baseline. |

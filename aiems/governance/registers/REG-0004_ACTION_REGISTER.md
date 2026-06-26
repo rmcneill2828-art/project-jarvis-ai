@@ -2,7 +2,7 @@
 
 > *"Actions transform strategy into delivery. Every action should have a purpose, an owner and a measurable outcome."*
 
-**Version:** 2.1
+**Version:** 2.2
 
 ---
 
@@ -32,9 +32,9 @@ The register records actions arising from:
 
 | Action ID | Title | Description | Linked ADR | Linked Risk | Change Set | Owner | Priority | Target Phase | Status | Completion Date |
 |------------|------------------------------|------------------------------------------------------|-------------|-------------|------------|-----------------|----------|--------------|-------------|----------------|
-| ACT-0001 | Complete Phase 0 Close-out | Complete all governance updates following Phase 0 validation. | ADR-0005 | RSK-0003 | CS-0001 | Programme Sponsor / Chief Architect | Critical | Phase 0 | In Progress | - |
-| ACT-0002 | Conduct SAR-001 | Complete the first Strategic Alignment Review before opening Phase 1. | ADR-0005 | RSK-0001 | CS-0002 | Programme Sponsor | Critical | Phase 0 | Open | - |
-| ACT-0003 | Open Phase 1 | Formally open Phase 1 following successful completion of SAR-001. | ADR-0005 | RSK-0003 | CS-0003 | Programme Sponsor | Critical | Phase 1 | Open | - |
+| ACT-0001 | Complete Phase 0 Close-out | Complete all governance updates following Phase 0 validation. | ADR-0005 | RSK-0003 | CS-0001 | Programme Sponsor / Chief Architect | Critical | Phase 0 | Completed | 24 Jun 2026 |
+| ACT-0002 | Conduct SAR-0001 | Complete the first Strategic Alignment Review before opening Phase 1. | ADR-0005 | RSK-0001 | CS-0002 | Programme Sponsor | Critical | Phase 0 | Completed | 24 Jun 2026 |
+| ACT-0003 | Open Phase 1 | Formally open Phase 1 following successful completion of SAR-0001. | ADR-0005 | RSK-0003 | CS-0003 | Programme Sponsor | Critical | Phase 1 | Completed | 24 Jun 2026 |
 | ACT-0004 | Create AI Repository Interaction Policy | Produce ADR-0004 defining AI repository governance. | ADR-0004 | RSK-0008 | CS-0001 | Chief Architect | High | Phase 0 | Completed | 24 Jun 2026 |
 | ACT-0005 | Create Development Environment Guide | Document the verified development environment and AI integration process. | ADR-0004 | RSK-0009 | CS-0001 | Chief Architect | High | Phase 0 | Open | - |
 | ACT-0006 | Create Engineering Session Log | Establish the permanent Engineering Session Log. | ADR-0005 | RSK-0007 | CS-0001 | Chief Architect | Medium | Phase 0 | Open | - |
@@ -112,3 +112,4 @@ Every action should contribute towards improving AIEMS, JARVIS or both.
 | 1.0 | 23 June 2026 | Project Sponsor | Initial Action Register established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to support AIEMS with linked ADRs, risks, change sets, ownership, priorities and lifecycle management. |
 | 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |
+| 2.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled Phase 0 and SAR-0001 action statuses with the current repository baseline. |
