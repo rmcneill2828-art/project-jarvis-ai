@@ -79,7 +79,7 @@ Significant achievements during Phase 0 include:
 - Creation of the initial Architecture Decision Records
 - Establishment of the Controlled Artefact Register
 - Reconstruction of the Platform Architecture Model
-- Adoption of a disciplined Engineering Assurance Review process
+- Adoption of a disciplined Engineering Review process
 
 These achievements provide a stable and governed foundation for future engineering activities.
 
@@ -115,7 +115,7 @@ Phase 0 established:
 
 - Constitutional governance
 - Operational governance
-- Engineering Assurance Reviews
+- Engineering Reviews
 - Repository Baselines
 - Controlled Artefact management
 
@@ -163,9 +163,9 @@ Aligning the repository with the Platform architecture simplified documentation,
 
 ---
 
-## Engineering Assurance Adds Value
+## Engineering Review Adds Value
 
-Engineering Assurance Reviews improved quality by identifying inconsistencies before they became part of the approved baseline.
+Engineering Reviews improved quality by identifying inconsistencies before they became part of the approved baseline.
 
 ---
 
@@ -233,7 +233,7 @@ The following strategic risks were considered during this review.
 | Loss of engineering discipline | Low | Continue operating under AIEMS governance |
 | Premature feature development | Medium | Prioritise engineering readiness before functionality |
 | Technology change | Low | Continue Strategic Alignment Reviews before each programme phase |
-| Repository inconsistency | Low | Maintain Engineering Assurance Reviews and controlled artefact management |
+| Repository inconsistency | Low | Maintain Engineering Reviews and controlled artefact management |
 
 No strategic risks were identified that would prevent progression to Phase 1.
 

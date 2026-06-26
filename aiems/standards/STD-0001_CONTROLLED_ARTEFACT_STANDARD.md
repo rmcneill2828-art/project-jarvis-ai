@@ -224,7 +224,7 @@ Controlled Artefacts shall be reviewed:
 - when required by a Strategic Alignment Review;
 - at other intervals defined by the owning artefact.
 
-Engineering Assurance Reviews should be used to verify compliance with this standard.
+Engineering Reviews should be used to verify compliance with this standard.
 
 ---
 
@@ -333,7 +333,7 @@ This standard shall be reviewed when:
 
 - new Controlled Artefact categories are introduced;
 - governance processes change significantly;
-- improvements are identified through Engineering Assurance Reviews;
+- improvements are identified through Engineering Reviews;
 - Strategic Alignment Reviews recommend revision.
 
 The Programme Sponsor is responsible for ensuring that this standard remains current and effective.

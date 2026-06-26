@@ -28,7 +28,7 @@ The **Programme Sponsor** and **Chief Engineering Advisor** jointly concluded th
 - No critical risks remain that would prevent progression.
 - Remaining actions relate to Repository Hygiene and documentation alignment and do not affect the integrity of the Platform foundation.
 
-The Platform is therefore authorised to proceed to **SAR-001 – Strategic Alignment Review**, following completion of the remaining approved Repository Hygiene activities.
+The Platform is therefore authorised to proceed to **SAR-0001 – Strategic Alignment Review**, following completion of the remaining approved Repository Hygiene activities.
 
 ## **PASS**
 
@@ -44,4 +44,4 @@ The Programme Sponsor and Chief Architect jointly concluded that:
 - No critical risks remain that would prevent progression.
 - Remaining actions are administrative improvements and do not affect the integrity of the engineering foundation.
 
-The programme is therefore authorised to proceed to **SAR-001 – Strategic Alignment Review**, following completion of the remaining approved governance artefacts.
+The programme is therefore authorised to proceed to **SAR-0001 – Strategic Alignment Review**, following completion of the remaining approved governance artefacts.

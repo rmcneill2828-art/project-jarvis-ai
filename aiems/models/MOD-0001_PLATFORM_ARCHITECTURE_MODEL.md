@@ -198,7 +198,7 @@ Knowledge shall be:
 
 Encourage continuous learning through:
 
-- Engineering Assurance Reviews
+- Engineering Reviews
 - Strategic Alignment Reviews
 - Architecture Decision Records
 - Lessons Learned
@@ -298,7 +298,7 @@ Engineering Assurance provides confidence that engineering outputs remain aligne
 
 Engineering Assurance activities include:
 
-- Engineering Assurance Reviews (EAR)
+- Engineering Reviews
 - Strategic Alignment Reviews (SAR)
 - Repository Hygiene
 - Architecture Reviews
@@ -635,7 +635,7 @@ Every significant engineering decision shall be traceable through:
 
 - Controlled Artefacts
 - Architecture Decision Records
-- Engineering Assurance Reviews
+- Engineering Reviews
 - Version history
 - Repository history
 
@@ -715,7 +715,7 @@ Architectural governance is maintained through:
 - Engineering Constitution
 - Architecture Decision Records
 - Platform Architecture Model
-- Engineering Assurance Reviews
+- Engineering Reviews
 - Strategic Alignment Reviews
 - Controlled Artefact Register
 
@@ -753,7 +753,7 @@ Architectural changes shall:
 - Maintain alignment with the Platform Charter and Engineering Constitution.
 - Be supported by Architecture Decision Records where appropriate.
 
-Significant architectural changes shall be subject to Engineering Assurance Review before becoming part of the approved Platform baseline.
+Significant architectural changes shall be subject to Engineering Review before becoming part of the approved Platform baseline.
 
 ---
 
