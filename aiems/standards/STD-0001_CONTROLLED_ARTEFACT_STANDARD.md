@@ -2,7 +2,7 @@
 
 > *"A controlled artefact is more than a document—it is governed engineering evidence. Consistent artefacts enable consistent engineering."*
 
-**Version:** 1.0
+**Version:** 1.2
 
 ---
 
@@ -12,12 +12,13 @@
 |------|------|
 | Artefact ID | STD-0001 |
 | Title | Controlled Artefact Standard |
-| Version | 1.0 |
-| Status | In Review |
+| Version | 1.2 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
-| Effective Date | Upon Approval |
+| Review Frequency | Triggered or Periodic (as defined by the artefact) |
+| Effective Date | 26 June 2026 |
 | Next Review | As Required |
 
 ---
@@ -87,6 +88,8 @@ Controlled Artefacts shall provide:
 
 Every Controlled Artefact shall contribute to the engineering integrity of the AI Engineering Platform.
 
+---
+
 # 5. Controlled Artefact Principles
 
 Every Controlled Artefact shall support the following engineering principles.
@@ -120,9 +123,10 @@ Controlled Artefacts should reference authoritative artefacts rather than reprod
 ## Continual Improvement
 
 Controlled Artefacts shall evolve through controlled engineering change and continual learning while preserving governance and traceability.
+
 ---
 
-# 5. Applicability
+# 6. Applicability
 
 Unless specifically exempted, every Controlled Artefact shall comply with the requirements defined within this standard.
 
@@ -130,7 +134,9 @@ Where another AIEMS standard defines additional requirements, those requirements
 
 If conflicting requirements are identified, this standard shall take precedence unless superseded by an approved Architecture Decision Record.
 
-# 6. Controlled Artefact Definition
+---
+
+# 7. Controlled Artefact Definition
 
 A Controlled Artefact is an engineering artefact that is subject to formal governance under AIEMS.
 
@@ -147,7 +153,7 @@ Artefacts that do not meet these criteria shall not be regarded as Controlled Ar
 
 ---
 
-# 7. Mandatory Artefact Structure
+# 8. Mandatory Artefact Structure
 
 Unless specifically exempted, every Controlled Artefact shall contain the following sections.
 
@@ -170,7 +176,7 @@ The use of optional sections shall be determined by the purpose of the artefact.
 
 ---
 
-# 8. Document Control Requirements
+# 9. Document Control Requirements
 
 Every Controlled Artefact shall include a Document Control section.
 
@@ -192,7 +198,7 @@ Additional fields may be added where required by the specific artefact type.
 
 ---
 
-# 9. Artefact Lifecycle
+# 10. Artefact Lifecycle
 
 Every Controlled Artefact shall exist within one of the following lifecycle states.
 
@@ -208,7 +214,7 @@ Only artefacts with a status of **Approved** shall be regarded as part of the cu
 
 ---
 
-# 10. Review Requirements
+# 11. Review Requirements
 
 Controlled Artefacts shall be reviewed:
 
@@ -222,7 +228,7 @@ Engineering Assurance Reviews should be used to verify compliance with this stan
 
 ---
 
-# 11. Ownership and Accountability
+# 12. Ownership and Accountability
 
 Every Controlled Artefact shall have a designated Owner.
 
@@ -235,9 +241,10 @@ The Owner is responsible for:
 - recommending approval where appropriate.
 
 Approval authority shall be defined by the governance applicable to the artefact type.
+
 ---
 
-# 12. Versioning Requirements
+# 13. Versioning Requirements
 
 Controlled Artefacts shall follow a consistent versioning approach.
 
@@ -252,7 +259,7 @@ Version numbers shall increase sequentially and shall be recorded within the Ver
 
 ---
 
-# 13. Naming and Identification
+# 14. Naming and Identification
 
 Every Controlled Artefact shall possess a unique Artefact Identifier.
 
@@ -277,7 +284,7 @@ Superseded artefacts shall retain their original identifiers.
 
 ---
 
-# 14. Cross-Referencing
+# 15. Cross-Referencing
 
 Where relationships exist between Controlled Artefacts, those relationships should be explicitly referenced.
 
@@ -291,7 +298,7 @@ Controlled Artefacts should reference authoritative sources rather than reproduc
 
 ---
 
-# 15. Compliance
+# 16. Compliance
 
 Compliance with this standard shall be verified through Engineering Assurance Reviews (EARs) or other approved governance activities.
 
@@ -308,7 +315,7 @@ Non-conformities shall be recorded and corrected through the AIEMS change proces
 
 ---
 
-# 16. Exceptions
+# 17. Exceptions
 
 Exceptions to this standard shall only be permitted where:
 
@@ -320,7 +327,7 @@ Approved exceptions shall be documented and remain traceable.
 
 ---
 
-# 17. Maintenance of this Standard
+# 18. Maintenance of this Standard
 
 This standard shall be reviewed when:
 
@@ -344,4 +351,5 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------------------|--------------------------------------------------------------|
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Controlled Artefact Standard establishing the mandatory requirements for all AIEMS Controlled Artefacts. |
-| 1.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Perfective improvements introducing Controlled Artefact Principles, Review Frequency and clarification of mandatory artefact structure.
+| 1.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Perfective improvements introducing Controlled Artefact Principles, Review Frequency and clarification of mandatory artefact structure. |
+| 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Approved and baselined following engineering review and metadata remediation. |

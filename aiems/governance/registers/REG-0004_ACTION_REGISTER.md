@@ -2,7 +2,7 @@
 
 > *"Actions transform strategy into delivery. Every action should have a purpose, an owner and a measurable outcome."*
 
-**Version:** 2.2
+**Version:** 2.3
 
 ---
 
@@ -40,7 +40,7 @@ The register records actions arising from:
 | ACT-0006 | Create Engineering Session Log | Establish the permanent Engineering Session Log. | ADR-0005 | RSK-0007 | CS-0001 | Chief Architect | Medium | Phase 0 | Open | - |
 | ACT-0007 | Create Lessons Learned Register | Establish a permanent organisational learning register. | ADR-0005 | RSK-0010 | CS-0001 | Chief Architect | Medium | Phase 0 | Open | - |
 | ACT-0008 | Validate AI Repository Maintenance Workflow | Confirm whether AI can reliably perform ongoing repository maintenance. | ADR-0004 | RSK-0008 | CS-0001 | Programme Sponsor / Chief Architect | Medium | Phase 1 | Open | - |
-| ACT-0009 | Develop AIEMS Documentation Standard | Create a common documentation standard for all controlled artefacts. | ADR-0005 | RSK-0006 | Phase 1 | Chief Architect | High | Phase 1 | Planned | - |
+| ACT-0009 | Develop AIEMS Documentation Standard | Create a common documentation standard for all controlled artefacts. | ADR-0005 | RSK-0006 | Phase 1 | Chief Architect | High | Phase 1 | Completed | 26 Jun 2026 |
 
 ---
 
@@ -113,3 +113,4 @@ Every action should contribute towards improving AIEMS, JARVIS or both.
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to support AIEMS with linked ADRs, risks, change sets, ownership, priorities and lifecycle management. |
 | 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |
 | 2.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled Phase 0 and SAR-0001 action statuses with the current repository baseline. |
+| 2.3 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled completed AIEMS Documentation Standard action following standards baselining. |

@@ -2,7 +2,7 @@
 
 > *"Engineering documentation exists to improve engineering decisions. Its value is measured not by its volume, but by the clarity, accuracy and traceability it provides."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,13 +12,13 @@
 |------|------|
 | Artefact ID | STD-0002 |
 | Title | Engineering Documentation Standard |
-| Version | 1.0 |
-| Status | In Review |
+| Version | 1.1 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Review Frequency | Triggered or Periodic (as defined by the artefact) |
-| Effective Date | Upon Approval |
+| Effective Date | 26 June 2026 |
 | Next Review | As Required |
 
 ---
@@ -120,6 +120,7 @@ Duplication should be avoided.
 Documentation should communicate information using the simplest language capable of conveying the required engineering meaning.
 
 Complexity shall only be introduced where technically necessary.
+
 ---
 
 # 6. Writing Standards
@@ -235,9 +236,10 @@ Cross-references shall:
 - support engineering traceability.
 
 Where conflicts arise, the authoritative Controlled Artefact shall take precedence.
+
 ---
 
-# 14. Documentation Reviews
+# 13. Documentation Reviews
 
 Engineering documentation shall be reviewed:
 
@@ -251,7 +253,7 @@ Reviews shall verify both technical accuracy and compliance with this standard.
 
 ---
 
-# 13. Engineering Documentation as a Deliverable
+# 14. Engineering Documentation as a Deliverable
 
 Engineering documentation is a deliverable of the engineering process.
 
@@ -315,3 +317,4 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------------------|--------------------------------------------------------------|
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Documentation Standard establishing the principles, language and quality requirements for engineering documentation within AIEMS. |
+| 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Approved and baselined following engineering review and section numbering remediation. |
