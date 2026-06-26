@@ -728,8 +728,6 @@ Human–AI collaboration continually strengthens the engineering capability of t
 
 Engineering Maturity is achieved not by eliminating human judgement or maximising AI automation, but by combining the strengths of both through disciplined engineering practice.
 
-Engineering Maturity is achieved not by eliminating human judgement or maximising AI automation, but by combining the strengths of both through disciplined engineering practice.
-
 ---
 
 # Approved Scope
