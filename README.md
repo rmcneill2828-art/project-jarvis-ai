@@ -50,6 +50,7 @@ Current AIEMS capabilities include:
 - Engineering feature reviews.
 - AI engineering playbooks.
 - Human-AI collaboration context.
+- Programme status and engineering session reporting.
 
 ## JARVIS
 
@@ -70,15 +71,24 @@ Current JARVIS implementation includes:
 
 ```text
 aiems/
+  glossary/
   governance/
+    change/
     charters/
     conversation/
     decisions/
     playbooks/
     registers/
     reviews/
+    sessions/
+    status/
+  guides/
   models/
+  policies/
+  principles/
+  procedures/
   standards/
+  templates/
 jarvis/
   automation/
   core/
@@ -96,7 +106,11 @@ tools/
 
 # Engineering Governance
 
-The project follows a documentation-first and evidence-led engineering methodology.
+The project follows a documentation-first, repository-first and evidence-led engineering methodology.
+
+The Git repository is the authoritative engineering baseline. Conversations provide working context but do not define project state.
+
+Repository continuity replaces dependence upon long conversation history by recording engineering state, decisions and baselines in controlled artefacts.
 
 Key controlled artefact families include:
 
@@ -106,10 +120,24 @@ Key controlled artefact families include:
 | ADRs | Architectural and engineering decisions |
 | Registers | Controlled artefacts, ADRs, risks and actions |
 | Reviews | Strategic reviews, engineering features and evaluations |
-| Standards | Controlled artefact and documentation standards |
+| Standards | Controlled artefact, documentation and software engineering standards |
 | Models | Platform architecture model |
 | Playbooks | Practical AI engineering behaviour and workflow |
 | Conversation Context | Lightweight Human-AI session operating context |
+| Programme Status | Current programme state and engineering focus |
+| Session Reports | Engineering session continuity and accepted baseline records |
+
+Key engineering artefacts include:
+
+| Artefact | Purpose |
+|----------|---------|
+| COC-0001 | Human-AI collaboration context |
+| PBK-0001 | AI Engineering Playbook |
+| PST-0001 | Programme status |
+| ESR-0001 | Engineering session report |
+| STD-0001 | Controlled Artefact Standard |
+| STD-0002 | Engineering Documentation Standard |
+| STD-0003 | Software / Python Engineering Standard |
 
 ---
 
@@ -117,14 +145,14 @@ Key controlled artefact families include:
 
 Project JARVIS AI is developed using a governed Human-AI engineering model.
 
-AI is used to support:
+Human-AI engineering roles are deliberately separated.
 
-- Architecture.
-- Documentation.
-- Repository analysis.
-- Engineering implementation.
-- Engineering reviews.
-- Development planning.
+| Role | Responsibility |
+|------|----------------|
+| Programme Sponsor | Engineering authority, approval and Git operations |
+| Engineering Architect / Reviewer | Engineering design, review and independent verification |
+| Engineering Implementer | Approved implementation and completion reporting |
+| Git Repository | Authoritative engineering baseline |
 
 Final authority for engineering direction, approval and Git operations remains with the Human Engineer / Programme Sponsor.
 
@@ -132,21 +160,49 @@ Final authority for engineering direction, approval and Git operations remains w
 
 # Development Workflow
 
-Every significant engineering activity follows the AIEMS workflow.
+Every significant engineering activity follows the approved AIEMS workflow at a high level.
 
 ```text
-Review
+WP0 - Engineering Synchronisation
     |
-Approve
+Engineering Design
     |
-Execute
+Engineering Implementation Package
     |
-Verify
+Programme Sponsor Approval
     |
-Improve
+Engineering Implementation
+    |
+Engineering Self Review
+    |
+Git Commit & Push
+    |
+Independent Repository Verification
+    |
+Baseline Acceptance
+    |
+Continue Engineering
 ```
 
-Repository changes are expected to remain traceable to controlled engineering activities and approved governance artefacts.
+Operational workflow detail is maintained in PBK-0001 and ESR-0001. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
+
+Repository changes are expected to remain traceable to controlled engineering activities, approved Engineering Implementation Packages and approved governance artefacts.
+
+---
+
+# Repository Engineering Health Review
+
+Repository Engineering Health Reviews are performed during Engineering Synchronisation to identify governance drift, documentation inconsistencies, missing artefacts, technical debt and recommended Engineering Implementation Packages.
+
+Operational detail is recorded in Engineering Session Reports.
+
+---
+
+# Engineering Philosophy
+
+Project JARVIS AI applies repository-first engineering through small, independently verified engineering changes.
+
+Engineering work is evidence-led: context is gathered before implementation, decisions are captured in controlled artefacts and repository changes are validated before baseline acceptance.
 
 ---
 
@@ -156,7 +212,7 @@ Repository changes are expected to remain traceable to controlled engineering ac
 |------------|--------|----------------------|----------|
 | Repository Architecture | Complete | Complete | Repository structure separates AIEMS governance from JARVIS implementation. |
 | Governance Framework | In Progress | Mature | Core governance exists; register and artefact consistency is actively managed. |
-| Engineering Standards | In Progress | Partial | STD-0001 and STD-0002 exist; additional standards remain future work. |
+| Engineering Standards | In Progress | High | STD-0001, STD-0002 and STD-0003 are approved; additional build-facing standards remain planned. |
 | Platform Architecture | In Progress | Partial | MOD-0001 defines the platform architecture; implementation decomposition remains future work. |
 | JARVIS Development | In Progress | Partial | Lifecycle skeleton, public API, packaging configuration and tests exist. |
 
@@ -195,7 +251,7 @@ Status: In progress.
 Current focus:
 
 - Complete the minimum viable Engineering Standards baseline.
-- Create build-facing engineering standards.
+- Complete remaining build-facing engineering standards.
 - Prepare for platform decomposition.
 - Preserve repository-backed session continuity.
 
@@ -222,3 +278,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 1.0 | 22 June 2026 | Project Sponsor | Initial repository created and project introduced. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Phase 0 validated and completed. Introduced AIEMS, Engineering Philosophy, Strategic Alignment Reviews, AI-assisted engineering model, repository governance and updated project roadmap. |
 | 3.0 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled README with current AIEMS repository structure, governance artefacts, project roadmap and JARVIS implementation baseline. |
+| 3.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned README with AIEMS Workflow v3, repository-first engineering, current engineering roles, repository health review practice and STD-0003 baseline status. |
