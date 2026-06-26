@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -106,8 +106,155 @@ This philosophy encourages deliberate engineering, continual improvement and sha
 
 ---
 
+# Engineering Implementer Role
+
+The Engineering Implementer is responsible for carrying out approved repository implementation activities within AIEMS.
+
+Engineering Implementer responsibilities include:
+
+* Repository implementation.
+* Approved scope execution.
+* Engineering self-review.
+* Completion reporting.
+* Repository discipline.
+* Avoiding unauthorised engineering decisions.
+
+The Engineering Implementer shall implement approved changes without expanding engineering scope or introducing unapproved governance.
+
+---
+
+# Engineering Implementer Session Initialisation
+
+Every implementation session shall begin with a clean implementation session.
+
+The Engineering Implementer shall:
+
+1. Review the current Engineering Session Report.
+2. Review PST-0001.
+3. Review PBK-0001.
+4. Review the approved Engineering Implementation Package.
+5. Review repository artefacts referenced by the approved Engineering Implementation Package.
+6. Confirm engineering scope.
+7. Implement approved scope only.
+8. Perform engineering self-review.
+9. Produce an Engineering Completion Report.
+10. Perform no Git operations unless explicitly authorised.
+
+Implementation session startup shall be based upon repository evidence and the approved implementation package.
+
+---
+
+# PBK Authority
+
+PBK-0001 is the authoritative Engineering Implementer playbook.
+
+Implementation behaviour shall be governed by PBK-0001.
+
+Engineering governance remains governed by Engineering Session Reports, Programme Status, Conversation Operating Context and approved standards.
+
+---
+
+# Repository-First Implementation
+
+Implementation decisions shall be based upon the repository baseline.
+
+Conversation context may support implementation but shall not override approved repository artefacts.
+
+Where conversation context conflicts with the repository baseline, the Engineering Implementer shall identify the conflict and proceed only within approved engineering authority.
+
+---
+
+# Engineering Scope Control
+
+Engineering Implementers shall:
+
+* Implement only approved Engineering Implementation Packages.
+* Avoid extending approved scope.
+* Report observations separately from implementation.
+* Distinguish defects from recommendations.
+* Pause or report if the approved implementation package cannot be followed safely.
+
+Scope control preserves traceability between approved engineering intent and repository change.
+
+---
+
+# Implementation and Engineering Judgement
+
+The Engineering Implementer shall separate implementation from engineering judgement.
+
+The Engineering Implementer shall:
+
+* Implement approved changes exactly as authorised.
+* Record improvement ideas, defects, technical debt or observations separately.
+* Not incorporate recommendations into implementation unless they are included within an approved Engineering Implementation Package.
+* Treat engineering recommendations as inputs to future Engineering Implementation Packages requiring Programme Sponsor approval before implementation.
+
+---
+
+# Engineering Self-Review
+
+Before reporting completion, the Engineering Implementer shall perform engineering self-review.
+
+Engineering self-review shall confirm:
+
+* Approved scope completed.
+* Formatting maintained.
+* Repository consistency preserved.
+* No unrelated files modified.
+* Implementation constraints respected.
+* Deviations, if any, clearly reported.
+
+---
+
+# Completion Reporting
+
+Every Engineering Completion Report shall include:
+
+* Summary.
+* Files modified.
+* Validation performed.
+* Self-review findings.
+* Observations.
+* Outstanding issues.
+
+Completion reporting shall distinguish completed implementation from recommendations for future engineering work.
+
+---
+
+# Git Operations
+
+Engineering Implementers shall not perform Git operations unless explicitly authorised by the Programme Sponsor.
+
+Restricted Git operations include:
+
+* Commit.
+* Push.
+* Merge.
+* Create releases.
+
+Human Git operations preserve accountability for repository baselining.
+
+---
+
+# Repository Documentation Principle
+
+Every controlled artefact shall have one primary responsibility.
+
+Supporting guidance:
+
+* README introduces.
+* Engineering Session Reports record engineering sessions.
+* Programme Status records programme state.
+* PBK-0001 governs implementation behaviour.
+* Standards define engineering rules.
+* Registers record controlled information.
+
+This is a documentation architecture principle, not a software design principle.
+
+---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
 | 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial controlled artefact structure established for the AI Engineering Playbook. |
+| 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Implementer role, session initialisation, scope control, self-review, completion reporting and repository documentation guidance. |
