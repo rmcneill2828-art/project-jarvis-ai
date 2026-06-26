@@ -202,7 +202,7 @@ Engineering documentation should demonstrate the following quality characteristi
 | Relevance | Contains only information that supports engineering objectives |
 | Verifiability | Statements can be confirmed through evidence or approved governance |
 
-These characteristics shall form the basis of documentation reviews and Engineering Assurance Reviews.
+These characteristics shall form the basis of documentation reviews and Engineering Reviews.
 
 ---
 
@@ -247,7 +247,7 @@ Engineering documentation shall be reviewed:
 - following significant engineering change;
 - when affected by an approved Architecture Decision Record;
 - when required by a Strategic Alignment Review;
-- when improvements are identified through Engineering Assurance Reviews.
+- when improvements are identified through Engineering Reviews.
 
 Reviews shall verify both technical accuracy and compliance with this standard.
 
@@ -265,7 +265,7 @@ Engineering activities shall not be considered complete until the associated doc
 
 # 15. Compliance
 
-Compliance with this standard shall be demonstrated through Engineering Assurance Reviews (EARs) or other approved governance activities.
+Compliance with this standard shall be demonstrated through Engineering Reviews or other approved governance activities.
 
 Documentation is considered compliant when it:
 
@@ -296,7 +296,7 @@ Approved exceptions shall remain documented and traceable.
 
 This standard shall be reviewed when:
 
-- improvements are identified through Engineering Assurance Reviews;
+- improvements are identified through Engineering Reviews;
 - documentation practices evolve significantly;
 - AIEMS governance changes;
 - new documentation categories are introduced;
