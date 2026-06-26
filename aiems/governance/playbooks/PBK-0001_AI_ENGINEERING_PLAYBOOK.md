@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -125,22 +125,70 @@ The Engineering Implementer shall implement approved changes without expanding e
 
 # Engineering Implementer Session Initialisation
 
-Every implementation session shall begin with a clean implementation session.
+Every implementation session shall begin with repository-based Engineering Synchronisation.
 
 The Engineering Implementer shall:
 
-1. Review the current Engineering Session Report.
-2. Review PST-0001.
-3. Review PBK-0001.
-4. Review the approved Engineering Implementation Package.
-5. Review repository artefacts referenced by the approved Engineering Implementation Package.
-6. Confirm engineering scope.
-7. Implement approved scope only.
-8. Perform engineering self-review.
-9. Produce an Engineering Completion Report.
-10. Perform no Git operations unless explicitly authorised.
+1. Start a clean implementation session.
+2. Review the current Engineering Session Report.
+3. Review PST-0001.
+4. Review PBK-0001.
+5. Review the approved Engineering Implementation Package.
+6. Review repository artefacts referenced by the approved Engineering Implementation Package.
+7. Confirm engineering scope.
+8. Implement approved scope only.
+9. Perform engineering self-review.
+10. Produce an Engineering Completion Report.
+11. Perform no Git operations unless explicitly authorised.
 
 Implementation session startup shall be based upon repository evidence and the approved implementation package.
+
+The Engineering Implementer shall not create a new Engineering Session Report during closure of a previous Engineering Session.
+
+Only one Engineering Session shall be active at any time.
+
+---
+
+# Engineering Session Lifecycle
+
+Engineering Session lifecycle management is composed of two startup stages.
+
+## WP0A – Repository Synchronisation
+
+WP0A confirms the repository baseline before creating or continuing an Engineering Session.
+
+WP0A shall confirm:
+
+* The latest accepted Engineering Session Report.
+* PST-0001.
+* PBK-0001.
+* COC-0001 where relevant.
+* Repository Engineering Health Review outcome.
+* Previous Engineering Session status.
+* Repository baseline.
+* Repository suitability for engineering progression.
+
+## WP0B – Engineering Session Initialisation
+
+WP0B creates or confirms the active Engineering Session only after repository synchronisation is complete.
+
+WP0B shall confirm:
+
+* The next planned Engineering Session identifier.
+* The active Engineering Session.
+* Programme phase.
+* Repository baseline reference.
+* Initial session objective.
+* Planned engineering activities.
+* Programme Sponsor approval before engineering activity begins.
+
+A new Engineering Session Report shall be created during WP0B only after Repository Synchronisation confirms that the previous Engineering Session has been formally closed.
+
+Previous Engineering Sessions shall hand over to the next planned Engineering Session Report but shall not create it.
+
+Programme Phases are long-running strategic milestones. Engineering Sessions are bounded operational engineering periods within a Programme Phase.
+
+Before closing an Engineering Session, the Engineering Architect shall check whether AIEMS itself changed during the session. If the engineering process changed, the authoritative artefacts shall be updated and baselined before closure.
 
 ---
 
@@ -258,3 +306,4 @@ This is a documentation architecture principle, not a software design principle.
 |---------|------------|-------------------------------|------------------------------------------------------------|
 | 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial controlled artefact structure established for the AI Engineering Playbook. |
 | 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Implementer role, session initialisation, scope control, self-review, completion reporting and repository documentation guidance. |
+| 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Session lifecycle guidance covering WP0A, WP0B, session creation, handover and closure checks. |

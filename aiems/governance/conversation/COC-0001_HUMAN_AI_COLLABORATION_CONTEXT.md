@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -51,9 +51,29 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 2. Engineering Synchronisation is the first engineering activity.
 
-3. Follow the engineering lifecycle:
+3. Engineering Synchronisation is composed of two stages:
 
-   * Engineering Synchronisation
+   * WP0A – Repository Synchronisation
+   * WP0B – Engineering Session Initialisation
+
+4. WP0A – Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
+
+5. WP0B – Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
+
+6. A new Engineering Session Report shall be created during WP0B, after successful Repository Synchronisation and confirmation that the previous Engineering Session has been formally closed.
+
+7. A new Engineering Session Report shall not be created during closure of the previous Engineering Session.
+
+8. Only one Engineering Session shall be active at any time.
+
+9. Previous Engineering Sessions must be completed before a new Engineering Session becomes active.
+
+10. Programme Phases are long-running strategic milestones. Engineering Sessions are bounded operational engineering periods within a Programme Phase.
+
+11. Follow the engineering lifecycle:
+
+   * WP0A – Repository Synchronisation
+   * WP0B – Engineering Session Initialisation
    * Planning
    * Engineering Implementation Package
    * Engineering Review
@@ -65,15 +85,15 @@ This document complements AIEMS. It does not replace engineering governance or r
    * Baseline Acceptance
    * Phase Closure
 
-4. ChatGPT shall produce one complete Engineering Implementation Package for each approved implementation activity.
+12. ChatGPT shall produce one complete Engineering Implementation Package for each approved implementation activity.
 
-5. The Engineering Implementation Package shall be the single reviewable implementation specification for the activity.
+13. The Engineering Implementation Package shall be the single reviewable implementation specification for the activity.
 
-6. The Human Engineer shall review and approve the complete Engineering Implementation Package before implementation begins.
+14. The Human Engineer shall review and approve the complete Engineering Implementation Package before implementation begins.
 
-7. Codex shall use the approved Engineering Implementation Package as the sole implementation specification.
+15. Codex shall use the approved Engineering Implementation Package as the sole implementation specification.
 
-8. Engineering Implementation Packages shall contain, where applicable:
+16. Engineering Implementation Packages shall contain, where applicable:
 
    * Engineering Context
    * Objective
@@ -84,25 +104,25 @@ This document complements AIEMS. It does not replace engineering governance or r
    * Completion Report Requirements
    * Success Criteria
 
-9. The responses **"Approved"** and **"Agreed"** are explicit engineering decisions.
+17. The responses **"Approved"** and **"Agreed"** are explicit engineering decisions.
 
-10. Upon receiving **"Approved"** or **"Agreed"**, execution begins immediately. The approved decision shall not be reopened unless:
+18. Upon receiving **"Approved"** or **"Agreed"**, execution begins immediately. The approved decision shall not be reopened unless:
 
    * requested by the Human Engineer;
    * new objective evidence materially changes the engineering position; or
    * implementation cannot proceed.
 
-11. When Human action is required, the AI collaborator shall issue a single, clear, and explicit request.
+19. When Human action is required, the AI collaborator shall issue a single, clear, and explicit request.
 
-12. Human action requests shall:
+20. Human action requests shall:
 
    * clearly identify the required action;
    * state the expected outcome;
    * identify the next engineering step where appropriate.
 
-13. Where the action is intended for another AI collaborator (for example, Codex), the AI collaborator shall provide a complete, concise, copy-ready Engineering Implementation Package or instruction that can be transferred without modification.
+21. Where the action is intended for another AI collaborator (for example, Codex), the AI collaborator shall provide a complete, concise, copy-ready Engineering Implementation Package or instruction that can be transferred without modification.
 
-14. Copy-ready instructions shall:
+22. Copy-ready instructions shall:
 
    * contain all required engineering context;
    * define the approved scope;
@@ -110,25 +130,25 @@ This document complements AIEMS. It does not replace engineering governance or r
    * define the expected completion report;
    * avoid unnecessary explanation or conversational filler.
 
-15. AI collaborators shall use available repository access capabilities before requesting information from the Human Engineer that is already available from the repository.
+23. AI collaborators shall use available repository access capabilities before requesting information from the Human Engineer that is already available from the repository.
 
-16. After the Human Engineer completes the requested action, the AI collaborator shall continue immediately with the next engineering activity and shall not revisit completed work unless:
+24. After the Human Engineer completes the requested action, the AI collaborator shall continue immediately with the next engineering activity and shall not revisit completed work unless:
 
    * requested by the Human Engineer;
    * implementation cannot proceed; or
    * new objective evidence materially changes the engineering position.
 
-17. Recommendations are provided only at natural review points unless they block engineering progress.
+25. Recommendations are provided only at natural review points unless they block engineering progress.
 
-18. Human performs all Git operations.
+26. Human performs all Git operations.
 
-19. ChatGPT performs engineering design and independent repository verification.
+27. ChatGPT performs engineering design and independent repository verification.
 
-20. Codex performs engineering implementation and produces implementation reports.
+28. Codex performs engineering implementation and produces implementation reports.
 
-21. Every new document must remove more engineering effort than it creates.
+29. Every new document must remove more engineering effort than it creates.
 
-22. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
+30. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
 
 ---
 
@@ -151,7 +171,9 @@ Before beginning engineering activities:
 
 * Review the repository baseline.
 * Load this Collaboration Context.
-* Perform Engineering Synchronisation.
+* Perform WP0A – Repository Synchronisation.
+* Perform WP0B – Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
 * Confirm the current engineering objective.
 * Confirm whether an Engineering Implementation Package is required.
+* Confirm whether AIEMS changed during the previous session before closure.
 * Begin the approved engineering activity.

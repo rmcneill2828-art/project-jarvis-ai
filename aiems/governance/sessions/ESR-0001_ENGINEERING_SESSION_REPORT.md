@@ -150,25 +150,51 @@ Approved Repository Principle:
 
 ---
 
-# 9. WP0 â€“ Engineering Synchronisation
+# 9. WP0 – Engineering Synchronisation and Session Initialisation
 
-Every Engineering Activity shall begin with WP0 â€“ Engineering Synchronisation.
+WP0 is composed of two stages:
 
-No engineering design or implementation package shall be produced until WP0 has successfully completed.
+* WP0A – Repository Synchronisation.
+* WP0B – Engineering Session Initialisation.
 
-WP0 shall include, where applicable:
+No engineering design or implementation package shall be produced until WP0A has successfully completed.
+
+## WP0A – Repository Synchronisation
+
+Purpose:
+
+Confirm the repository baseline before creating or continuing an Engineering Session.
+
+WP0A shall include:
 
 * Connect to GitHub using the read-only connector.
-* Review the latest Engineering Session Report.
+* Review the latest accepted Engineering Session Report.
 * Review PST-0001.
 * Review PBK-0001.
-* Review COC-0001 for Engineering Architect sessions.
+* Review COC-0001 where relevant.
 * Review the previous chat summary as temporary working memory only where supplied.
 * Perform Repository Engineering Health Review.
-* Confirm the current repository baseline.
-* Confirm the current engineering objective.
-* Identify the next approved Engineering Implementation Package.
-* Await Programme Sponsor approval.
+* Confirm previous Engineering Session status.
+* Confirm repository baseline.
+* Confirm repository is suitable for engineering progression.
+
+## WP0B – Engineering Session Initialisation
+
+Purpose:
+
+Create or confirm the active Engineering Session only after repository synchronisation is complete.
+
+WP0B shall include:
+
+* Confirm the next planned Engineering Session identifier.
+* Create the new Engineering Session Report only when starting a new Engineering Session.
+* Record programme phase.
+* Record repository baseline reference.
+* Record initial session objective.
+* Record planned engineering activities.
+* Confirm one active Engineering Session.
+* Commit the new Engineering Session Report before implementation work begins.
+* Await Programme Sponsor approval before commencing engineering activity.
 
 ---
 
@@ -210,7 +236,7 @@ Every clean AI implementation session shall:
 
 # 11. Next Session Initialisation Model
 
-The approved next-session model is hybrid.
+The approved next-session model is repository-led.
 
 ## Engineering Session Anchor
 
@@ -232,25 +258,47 @@ Engineering Session: ESR-0002
 Engineering Session: ESR-0003
 ```
 
-The ESR reference acts as the session anchor and identifies the latest accepted engineering baseline from which the new session shall continue.
+The ESR reference acts as the session anchor and identifies the latest accepted engineering baseline from which Repository Synchronisation shall begin.
 
-The Engineering Session Anchor does not replace Engineering Synchronisation. It identifies the starting point for Engineering Synchronisation.
+The Engineering Session Anchor does not replace WP0A – Repository Synchronisation or WP0B – Engineering Session Initialisation.
 
-The approved new-session startup sequence is:
+## New ESR Creation Rule
 
-1. Read the referenced ESR.
-2. Load COC-0001.
-3. Load PBK-0001.
-4. Load PST-0001.
-5. Optionally review the previous conversation summary if supplied and relevant.
-6. Perform Engineering Synchronisation.
-7. Confirm repository baseline.
-8. Confirm current engineering objective.
-9. Continue with the next approved EIP.
+A new Engineering Session Report shall be created during WP0B – Engineering Session Initialisation, after successful Repository Synchronisation and confirmation that the previous Engineering Session has been formally closed.
 
-The previous conversation summary is temporary working memory only.
+A new Engineering Session Report shall not be created during closure of the previous Engineering Session.
 
-Any information that becomes part of the programme shall be incorporated into controlled artefacts or repository changes. Otherwise, it expires after the following session.
+## Single Active Engineering Session Rule
+
+Only one Engineering Session shall be active at any time.
+
+Previous Engineering Sessions must be completed before a new Engineering Session becomes active.
+
+## Session Closure Handover Rule
+
+The previous Engineering Session Report shall hand over to the next planned Engineering Session Report but shall not create it.
+
+Closure shall record:
+
+* Current session completion.
+* Repository baseline acceptance.
+* Next planned Engineering Session identifier.
+* Deferred technical debt.
+* Recommended initial objectives for the next Engineering Session.
+
+## Programme Phase and Engineering Session Distinction
+
+Programme Phases are long-running strategic milestones.
+
+Engineering Sessions are bounded operational engineering periods within a Programme Phase.
+
+Multiple Engineering Sessions may contribute to the same Programme Phase before a Strategic Alignment Review authorises progression to the next phase.
+
+## End-of-Session AIEMS Change Check
+
+Before closing an Engineering Session, the Engineering Architect shall check whether AIEMS itself changed during the session.
+
+If the engineering process changed, the authoritative artefacts shall be updated and baselined before the session is closed.
 
 ---
 
@@ -278,7 +326,7 @@ The session produced the following lessons:
 * AIEMS now supports operational engineering rather than merely describing governance.
 * Repository-first engineering reduces reliance on conversation history.
 * Repository Engineering Health Reviews improve baseline confidence.
-* WP0 Engineering Synchronisation makes startup repeatable and auditable.
+* WP0A Repository Synchronisation and WP0B Engineering Session Initialisation make startup repeatable and auditable.
 * Engineering Architect and Engineering Implementer roles require distinct startup responsibilities.
 * PBK-0001 is the authoritative Engineering Implementer playbook.
 
