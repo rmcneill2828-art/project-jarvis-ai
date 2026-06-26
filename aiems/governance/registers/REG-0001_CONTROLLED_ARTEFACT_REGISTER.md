@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 1.4
+**Version:** 1.5
 
 ---
 
@@ -104,7 +104,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0002 | Architecture Decision Record | Git Repository Strategy | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0003 | Architecture Decision Record | RTBO Engineering Decision Framework | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 1.4 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 1.5 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -123,6 +123,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | PBK-0001 | Playbook | AI Engineering Playbook | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.1 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
+| PST-0001 | Programme Status | Programme Status | 1.0 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 
 ---
 
@@ -166,6 +167,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.5 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered PST-0001 Programme Status artefact. |
 | 1.4 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered approved standards baseline and reconciled Action Register version reference. |
 | 1.3 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled controlled artefact register with current repository baseline, registered FE and COC artefacts, and updated register version references. |
 | 1.2 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ADR-0006 and PBK-0001 for the introduction of Playbooks as a controlled governance artefact. |
