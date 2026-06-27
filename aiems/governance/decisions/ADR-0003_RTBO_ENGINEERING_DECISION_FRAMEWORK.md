@@ -176,7 +176,7 @@ Review if:
 
 - ADR-0001 — Documentation First Development
 - ADR-0002 — Git Repository Strategy
-- ADR-0004 — Verify Before Deciding
+- ADR-0004 - AI Repository Interaction Policy
 
 ---
 

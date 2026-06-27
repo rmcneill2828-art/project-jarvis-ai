@@ -1,8 +1,8 @@
-# REG-0001 – Controlled Artefact Register
+﻿# REG-0001 â€“ Controlled Artefact Register
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -43,20 +43,20 @@ Every Controlled Artefact shall progress through the following lifecycle:
 
 ```text
 Draft
-    │
-    ▼
+    â”‚
+    â–¼
 In Review
-    │
-    ▼
+    â”‚
+    â–¼
 Approved
-    │
-    ▼
+    â”‚
+    â–¼
 Baselined
-    │
-    ▼
+    â”‚
+    â–¼
 Superseded
-    │
-    ▼
+    â”‚
+    â–¼
 Retired
 ```
 
@@ -103,12 +103,14 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0001 | Architecture Decision Record | Documentation First | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0002 | Architecture Decision Record | Git Repository Strategy | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0003 | Architecture Decision Record | RTBO Engineering Decision Framework | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0004 | Architecture Decision Record | AI Repository Interaction Policy | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0005 | Architecture Decision Record | AIEMS Strategic Scope | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 2.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0002 | Register | Architectural Decision Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 2.1 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0002 | Register | Architectural Decision Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.0 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -171,6 +173,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 2.1 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered recovered ADR-0004 and ADR-0005 artefacts and restored ADR traceability. |
 | 2.0 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered EBR-0001 and aligned controlled artefact metadata with the current repository baseline. |
 | 1.9 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ESR-0002 Engineering Session Report artefact. |
 | 1.8 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled PBK-0001 version and MOD-0001 status following repository consistency verification. |

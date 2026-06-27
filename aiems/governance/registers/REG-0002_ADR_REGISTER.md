@@ -1,8 +1,8 @@
-# REG-0002 – Architectural Decision Register
+﻿# REG-0002 â€“ Architectural Decision Register
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.3
+**Version:** 2.4
 
 ---
 
@@ -45,11 +45,9 @@ This register includes Architecture Decision Records relating to:
 
 # Repository Integrity Notes
 
-The ADR Register preserves historical approved references to ADR-0004 and ADR-0005.
+ADR-0004 and ADR-0005 were recovered during ESR-0003 EIP-R2 from approved repository evidence.
 
-The current repository baseline does not contain corresponding ADR-0004 or ADR-0005 files under `aiems/governance/decisions/`.
-
-These references are retained because they are linked from approved registers and historical governance records. A future repository hygiene activity should either reconstruct the missing ADR artefacts from approved evidence or formally supersede the references through an approved governance activity.
+The recovered ADR files preserve historical approved decisions and restore decision traceability for existing register, risk, action and session references.
 
 ---
 
@@ -59,23 +57,23 @@ Every Architecture Decision Record progresses through the following lifecycle.
 
 Proposed
 
-↓
+â†“
 
 Review
 
-↓
+â†“
 
 Approved
 
-↓
+â†“
 
 Active
 
-↓
+â†“
 
 Superseded (if applicable)
 
-↓
+â†“
 
 Archived
 
@@ -140,3 +138,4 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 | 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |
 | 2.2 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ADR-0006 for the introduction of Playbooks as a controlled governance artefact while preserving existing ADR-0004 and ADR-0005 register history. |
 | 2.3 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added repository integrity note identifying missing ADR-0004 and ADR-0005 artefact files while preserving historical register references. |
+| 2.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded recovery of ADR-0004 and ADR-0005 from approved repository evidence. |

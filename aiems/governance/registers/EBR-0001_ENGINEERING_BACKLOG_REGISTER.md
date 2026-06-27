@@ -1,8 +1,8 @@
-# EBR-0001 - Engineering Backlog Register
+﻿# EBR-0001 - Engineering Backlog Register
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -67,8 +67,8 @@ Engineering backlog management shall follow these principles:
 
 | Backlog ID | Title | Source | Status | Priority | Owner | Notes |
 |------------|-------|--------|--------|----------|-------|-------|
-| EBG-0001 | ADR-0004 recovery or formal supersession | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Recover the missing ADR-0004 artefact or formally supersede the historical reference. |
-| EBG-0002 | ADR-0005 recovery or formal supersession | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Recover the missing ADR-0005 artefact or formally supersede the historical reference. |
+| EBG-0001 | ADR-0004 recovery or formal supersession | ESR-0001 deferred work | Completed | Medium | Programme Sponsor | ADR-0004 recovered during ESR-0003 EIP-R2 from approved repository evidence. |
+| EBG-0002 | ADR-0005 recovery or formal supersession | ESR-0001 deferred work | Completed | Medium | Programme Sponsor | ADR-0005 recovered during ESR-0003 EIP-R2 from approved repository evidence. |
 | EBG-0003 | Lifecycle review of COC-0001 | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Review lifecycle status of COC-0001 and determine whether promotion or continued draft status is appropriate. |
 | EBG-0004 | Lifecycle review of PBK-0001 | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Review lifecycle status of PBK-0001 and determine whether promotion or continued draft status is appropriate. |
 | EBG-0005 | REG-0001 metadata alignment following P2-004A | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Align REG-0001 metadata where required following P2-004A changes. |
@@ -170,6 +170,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Marked ADR-0004 and ADR-0005 recovery backlog items completed following ESR-0003 EIP-R2. |
 | 1.0 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Backlog Register created with ESR-0001 deferred work items. |
 
 ---
