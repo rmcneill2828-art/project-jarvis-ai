@@ -146,9 +146,34 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 28. Codex performs engineering implementation and produces implementation reports.
 
-29. Every new document must remove more engineering effort than it creates.
+29. Repository Engineering Health Reviews shall compare findings against EBR-0001, the authoritative Engineering Backlog Register.
 
-30. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
+30. Repository Engineering Health Reviews shall distinguish:
+
+   * New Findings
+   * Confirmed Existing Backlog
+   * Completed Backlog Items
+   * Superseded Backlog Items
+   * Duplicate Backlog Items
+   * New Candidate Backlog Items
+
+31. Repository Engineering Health Reviews shall include a mandatory Backlog Validation section reporting:
+
+   * Total Approved Backlog Items Reviewed
+   * Confirmed Valid Backlog Items
+   * Completed Backlog Items
+   * Superseded Backlog Items
+   * Duplicate Backlog Items
+   * New Candidate Backlog Items
+   * Recommendation on whether EBR-0001 requires updating
+
+32. The Engineering Reviewer shall not modify EBR-0001 during a Repository Engineering Health Review.
+
+33. Repository Engineering Health Review recommendations remain advisory only until reviewed and approved by the Programme Sponsor.
+
+34. Every new document must remove more engineering effort than it creates.
+
+35. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
 
 ---
 

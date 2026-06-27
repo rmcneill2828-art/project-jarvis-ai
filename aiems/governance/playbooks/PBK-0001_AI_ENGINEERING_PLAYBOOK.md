@@ -192,6 +192,39 @@ Before closing an Engineering Session, the Engineering Architect shall check whe
 
 ---
 
+# Repository Engineering Health Review Guidance
+
+Repository Engineering Health Reviews shall compare review findings against EBR-0001 before making recommendations.
+
+EBR-0001 is the authoritative engineering backlog for approved, deferred, planned and candidate engineering backlog items.
+
+Repository Engineering Health Review findings shall distinguish:
+
+* New Findings.
+* Confirmed Existing Backlog.
+* Completed Backlog Items.
+* Superseded Backlog Items.
+* Duplicate Backlog Items.
+* New Candidate Backlog Items.
+
+Every Repository Engineering Health Review shall include a mandatory Backlog Validation section.
+
+Backlog Validation shall report:
+
+* Total Approved Backlog Items Reviewed.
+* Confirmed Valid Backlog Items.
+* Completed Backlog Items.
+* Superseded Backlog Items.
+* Duplicate Backlog Items.
+* New Candidate Backlog Items.
+* Recommendation on whether EBR-0001 requires updating.
+
+The Engineering Reviewer shall not modify EBR-0001 during a Repository Engineering Health Review.
+
+Repository Engineering Health Review recommendations remain advisory only until reviewed and approved by the Programme Sponsor.
+
+---
+
 # PBK Authority
 
 PBK-0001 is the authoritative Engineering Implementer playbook.
