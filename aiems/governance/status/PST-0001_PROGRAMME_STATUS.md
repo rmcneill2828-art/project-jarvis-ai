@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 1.1                                                |
+| Version          | 1.2                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -63,7 +63,7 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Current Mode                  | Governance-led engineering moving into engineering standards completion                                         |
 | Current Phase                 | Phase 2 – Engineering Standards                                                                                 |
 | Current Workflow              | AIEMS Engineering Workflow v3                                                                                   |
-| Current Engineering Objective | ESR-0002 closure complete; next recommended activity EBG-0005 |
+| Current Engineering Objective | ESR-0002 closed; next recommended activity EBG-0005 |
 
 ---
 
@@ -135,7 +135,7 @@ COC-0001 is the authoritative collaboration context for this workflow.
 
 | Item                         | Status                              | Notes                                                     |
 | ---------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| Current Engineering Session  | ESR-0002 Completed                  | Engineering Session closed with repository accepted with observations. |
+| Current Engineering Session  | ESR-0002 Closed                     | Engineering Session closed with repository accepted with observations. |
 | Current Engineering Activity | ESC-0002 Formal Engineering Session Closure | Completed. |
 | P2-003                       | Complete                            | STD-0003 Software / Python Engineering Standard approved. |
 | Next Engineering Session     | ESR-0003 Planned                    | Next session identifier. |
@@ -210,6 +210,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1.2     | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded final ESR-0002 closure wording and Engineering Session Archive reference position. |
 | 1.1     | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0002 closure, repository health outcome, ESR-0003 handover and next recommended activity. |
 | 1.0     | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Programme Status artefact created to preserve session continuity and reduce dependency on long conversation history. |
 

@@ -13,7 +13,7 @@
 | Artefact ID | ESR-0002 |
 | Title | Engineering Session Report |
 | Version | 1.0 |
-| Status | Completed |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
@@ -25,9 +25,11 @@
 
 # 1. Purpose
 
-This Engineering Session Report records the engineering work completed during Engineering Session ESR-0002 for Project JARVIS AI.
+This Engineering Session Report formally closes Engineering Session ESR-0002 for Project JARVIS AI.
 
-It preserves the session outcome as controlled repository evidence and provides the formal handover to ESR-0003.
+It records engineering outcomes, preserves implementation and verification evidence, and hands over the accepted repository baseline to ESR-0003.
+
+ESR-0002 is also the reference Engineering Session for future AIEMS Engineering Session Archives.
 
 This artefact complements COC-0001, PBK-0001, PST-0001 and EBR-0001.
 
@@ -42,10 +44,11 @@ This artefact complements COC-0001, PBK-0001, PST-0001 and EBR-0001.
 | Repository | project-jarvis-ai |
 | Branch | main |
 | Programme Phase | Phase 2 - Engineering Standards |
-| Session | ESR-0002 |
-| Session Status | Completed |
-| Session Focus | Engineering backlog creation, backlog governance, repository health review guidance and session closure readiness |
-| Session Outcome | Repository accepted with observations and handed over to planned ESR-0003 |
+| Engineering Session | ESR-0002 |
+| Session Status | Closed |
+| Session Theme | Engineering backlog governance and final session closure readiness |
+| Session Outcome | Repository accepted with observations and handed over to ESR-0003 |
+| Next Engineering Session | ESR-0003 |
 
 ---
 
@@ -53,21 +56,54 @@ This artefact complements COC-0001, PBK-0001, PST-0001 and EBR-0001.
 
 The session objectives were to:
 
-* create EBR-0001 as the authoritative Engineering Backlog Register;
-* migrate approved deferred engineering work into EBR-0001;
+* establish EBR-0001 as the authoritative Engineering Backlog Register;
 * introduce Candidate Backlog governance;
-* expand the approved backlog to EBG-0013 following Programme Sponsor approval;
+* expand approved backlog coverage through EBG-0013;
+* strengthen mandatory Engineering Implementer WP0A and repository-first engineering behaviour;
 * enhance Repository Engineering Health Review guidance;
-* introduce Backlog Validation into health reviews;
-* introduce Engineering Handover to Next Session guidance;
-* introduce Backlog Progression Analysis and Backlog Acceleration Opportunity guidance;
-* introduce JARVIS Development Readiness Assessment guidance;
+* introduce mandatory Backlog Validation for Repository Engineering Health Reviews;
+* introduce Engineering Handover guidance;
+* introduce Backlog Progression Analysis;
+* introduce Backlog Acceleration Opportunities;
+* introduce JARVIS Development Readiness Assessment;
+* approve Engineering Session Archive standardisation as future EBG-0009 scope;
 * complete the final Repository Engineering Health Review for ESR-0002;
 * formally close ESR-0002 and hand over to ESR-0003.
 
 ---
 
-# 4. Engineering Implementation Packages Completed
+# 4. Engineering Synchronisation Summary
+
+WP0A - Repository Synchronisation was performed for each ESR-0002 implementation and review activity.
+
+Synchronisation confirmed:
+
+* ESR-0001 was completed and handed over to ESR-0002.
+* PST-0001 remained the programme status reload point.
+* PBK-0001 remained the authoritative Engineering Implementer playbook.
+* COC-0001 remained the Human-AI collaboration operating context.
+* EBR-0001 became the authoritative Engineering Backlog Register during ESR-0002.
+* The Git repository remained the authoritative engineering baseline.
+* Conversation context remained working context only.
+
+---
+
+# 5. Engineering Timeline
+
+| Sequence | Activity | Outcome |
+|----------|----------|---------|
+| 1 | WP0A repository synchronisation | Completed before implementation activity. |
+| 2 | EIP-0001 - Create EBR-0001 Engineering Backlog Register | EBR-0001 created and populated with ESR-0001 deferred work. |
+| 3 | EIP-0001A - Promote Approved Candidate Backlog Items | Approved backlog expanded through EBG-0013. |
+| 4 | REV-0002 - Repository Engineering Health Review | Read-only health review completed; repository accepted with observations. |
+| 5 | EIP-0003 - Repository Health Review Template Enhancement | Backlog Validation and finding categorisation guidance added. |
+| 6 | EIP-0004 - Repository Health Review Handover and Development Readiness Enhancement | Handover, backlog progression, acceleration and JARVIS readiness guidance added. |
+| 7 | ESR-0003 EIP-0001 - Expand EBG-0009 | Engineering Session Archive standardisation added to future Engineering Session Standard backlog scope. |
+| 8 | ESC-0002 - Formal Engineering Session Closure Final | ESR-0002 closed and handed over to ESR-0003. |
+
+---
+
+# 6. Engineering Implementation Packages Completed
 
 | EIP / Activity | Title | Outcome |
 |----------------|-------|---------|
@@ -76,62 +112,111 @@ The session objectives were to:
 | REV-0002 | Repository Engineering Health Review | Completed |
 | EIP-0003 | Repository Health Review Template Enhancement | Completed |
 | EIP-0004 | Repository Health Review Handover and Development Readiness Enhancement | Completed |
-| ESC-0002 | Formal Engineering Session Closure | Completed |
+| ESR-0003 EIP-0001 | Expand EBG-0009 to Include Engineering Session Archive Standard | Completed as backlog scope clarification |
+| ESC-0002 | Formal Engineering Session Closure Final | Completed |
 
 ---
 
-# 5. Repository Baseline Changes
+# 7. Repository Baseline Acceptance History
 
-ESR-0002 produced the following repository baseline changes:
-
-* EBR-0001 was created as the authoritative Engineering Backlog Register.
-* Candidate Backlog governance was introduced.
-* Approved backlog entries were created for EBG-0001 through EBG-0007.
-* Approved backlog entries were expanded through EBG-0013 following Candidate Backlog review.
-* PBK-0001 was enhanced with Repository Engineering Health Review Backlog Validation guidance.
-* COC-0001 was enhanced with Repository Engineering Health Review Backlog Validation guidance.
-* PBK-0001 was enhanced with Engineering Handover to Next Session, Backlog Progression Analysis, Backlog Acceleration Opportunity and JARVIS Development Readiness Assessment guidance.
-* COC-0001 was enhanced with corresponding operating rules for final Repository Engineering Health Reviews.
-* PST-0001 was aligned to record ESR-0002 completion and ESR-0003 handover.
-* REG-0001 was updated only to register ESR-0002 as a controlled artefact.
-
-Full REG-0001 metadata alignment was not performed during this closure activity and remains within EBG-0005.
+| Baseline Event | Outcome |
+|----------------|---------|
+| ESR-0001 closure baseline | Accepted and handed over to ESR-0002. |
+| EBR-0001 creation | Accepted as authoritative Engineering Backlog Register. |
+| Approved backlog expansion | Accepted through EBG-0013. |
+| Health Review guidance enhancement | Accepted in PBK-0001 and COC-0001. |
+| Final Repository Engineering Health Review | Repository accepted with observations. |
+| ESR-0002 closure baseline | Ready for ESR-0003 handover. |
 
 ---
 
-# 6. Repository Verification Outcomes
+# 8. Repository Verification History
 
-The final Repository Engineering Health Review for ESR-0002 confirmed:
+| Verification Activity | Result | Notes |
+|-----------------------|--------|-------|
+| EBR-0001 creation validation | Pass | Correct path, seven initial backlog entries, Candidate Backlog rules and unique IDs confirmed. |
+| EBR-0001 expansion validation | Pass | EBG-0008 through EBG-0013 added as Approved Backlog entries with unique IDs. |
+| Repository Engineering Health Review | Good | Repository accepted with observations; no closure blockers. |
+| Backlog Validation | Pass | 13 approved backlog items reviewed, 13 confirmed valid, no duplicate backlog IDs. |
+| EBG-0009 archive scope validation | Pass | Engineering Session Archive standardisation represented in EBG-0009 without creating new artefacts. |
+| Final closure validation | Pass | ESR-0002 status, health outcome, handover and JARVIS readiness recorded. |
 
-| Item | Outcome |
-|------|---------|
+---
+
+# 9. Engineering Decisions and Rationale
+
+| Decision | Rationale |
+|----------|-----------|
+| Establish EBR-0001 as authoritative Engineering Backlog Register | Prevent deferred engineering work from being lost and separate approved backlog from candidate intake. |
+| Introduce Candidate Backlog governance | Preserve historical session findings without promoting them into approved scope before Programme Sponsor review. |
+| Expand approved backlog through EBG-0013 | Capture approved future governance, validation, roadmap and decision traceability work. |
+| Add Backlog Validation to Repository Engineering Health Reviews | Ensure new findings are distinguished from confirmed existing backlog. |
+| Add final health review handover guidance | Make final reviews actionable for the next Engineering Session without determining Programme Sponsor priorities. |
+| Add JARVIS Development Readiness Assessment | Tie JARVIS development timing to evidence of AIEMS maturity, standards maturity, repository verification and technical debt. |
+| Add Engineering Session Archive standardisation to EBG-0009 | Future Engineering Session Standards should define consistent archives covering evidence, metrics, decisions, backlog evolution and handover. |
+| Leave full REG-0001 metadata alignment to EBG-0005 | Avoid implementing approved backlog outside the closure scope. |
+
+---
+
+# 10. Repository Baseline Changes
+
+ESR-0002 introduced the following baseline changes:
+
+* EBR-0001 established.
+* Candidate Backlog governance introduced.
+* Approved Backlog expanded through EBG-0013.
+* Mandatory Engineering Implementer WP0A strengthened.
+* Repository-first engineering strengthened.
+* Repository Engineering Health Review guidance enhanced.
+* Backlog Validation introduced.
+* Engineering Handover introduced.
+* Backlog Progression Analysis introduced.
+* Backlog Acceleration Opportunities introduced.
+* JARVIS Development Readiness Assessment introduced.
+* Engineering Session Archive standardisation approved as future EBG-0009 scope.
+* Final Repository Engineering Health Review completed.
+* Repository accepted with observations.
+
+---
+
+# 11. AIEMS Improvements Introduced
+
+ESR-0002 improved AIEMS by adding:
+
+* A controlled Engineering Backlog Register.
+* Candidate Backlog intake rules and review outcomes.
+* Explicit separation between new findings and confirmed existing backlog.
+* Mandatory Backlog Validation in Repository Engineering Health Reviews.
+* Final health review Engineering Handover guidance.
+* Backlog Progression Analysis for next-session planning.
+* Backlog Acceleration Opportunity assessment.
+* Evidence-based JARVIS Development Readiness Assessment.
+* Engineering Session Archive standardisation scope under EBG-0009.
+
+---
+
+# 12. Repository Engineering Health Review Summary
+
+| Item | Result |
+|------|--------|
 | Repository Health Rating | Good |
-| Repository Acceptance | Accepted with observations |
+| Repository Status | Accepted with observations |
 | Ready to close ESR-0002 | Yes |
-| Ready to begin ESR-0003 | Yes |
-| Blockers to closure | None |
-| Duplicate controlled artefact IDs | None identified |
-| Duplicate backlog IDs | None identified |
-| Approved backlog items reviewed | 13 |
-| New Candidate Backlog Items | None |
+| Ready to commence ESR-0003 | Yes |
+| Blockers | None |
+| Recommended first EIP | EBG-0005 - REG-0001 Metadata Alignment following P2-004A |
+| Recommended JARVIS Readiness | Continue AIEMS Engineering |
+
+JARVIS development should be reassessed after:
+
+* EBG-0005.
+* EBG-0006.
+* EBG-0007.
+* Preferably EBG-0010.
 
 ---
 
-# 7. Final Repository Engineering Health Review Summary
-
-The final Repository Engineering Health Review assessed repository architecture, controlled artefact consistency, cross-reference integrity, AIEMS workflow consistency, EBR-0001 backlog health, standards status, technical debt, repository readiness, engineering handover to ESR-0003 and JARVIS development readiness.
-
-Repository health was assessed as Good.
-
-The repository was accepted with observations.
-
-The repository is suitable for ESR-0002 closure and ESR-0003 initiation.
-
-Remaining observations relate primarily to known governance metadata and historical ADR debt represented in the approved backlog.
-
----
-
-# 8. Backlog Validation Summary
+# 13. Backlog Validation Summary
 
 | Backlog Validation Item | Result |
 |-------------------------|--------|
@@ -141,137 +226,186 @@ Remaining observations relate primarily to known governance metadata and histori
 | Superseded Backlog Items | 0 |
 | Duplicate Backlog Items | 0 |
 | New Candidate Backlog Items | 0 |
-| EBR-0001 update required | No immediate update required from the final health review |
+| EBR-0001 update required by final review | No immediate update required |
 
-Approved backlog available for future prioritisation:
+Outstanding approved backlog remains EBG-0001 through EBG-0013.
 
-* EBG-0001 - ADR-0004 recovery or formal supersession.
-* EBG-0002 - ADR-0005 recovery or formal supersession.
-* EBG-0003 - Lifecycle review of COC-0001.
-* EBG-0004 - Lifecycle review of PBK-0001.
-* EBG-0005 - REG-0001 metadata alignment following P2-004A.
-* EBG-0006 - REV-0002 Repository Baseline Verification.
-* EBG-0007 - STD-0004 Validation and Quality Assurance Standard.
-* EBG-0008 - Create Engineering Implementation Package Standard.
-* EBG-0009 - Create Engineering Session Standard.
-* EBG-0010 - Define repository metadata and cross-reference validation rules.
-* EBG-0011 - Create AI Roles and Capability Matrix.
-* EBG-0012 - Establish AIEMS roadmap and release planning artefact.
-* EBG-0013 - Create Engineering Decision Index.
+Backlog status was not modified during this closure activity.
 
 ---
 
-# 9. Engineering Decisions and Approved Recommendations
+# 14. Engineering Recommendations Accepted
 
-The following engineering decisions and approved recommendations were recorded during ESR-0002:
+The following recommendations were accepted for handover consideration:
 
-* EBR-0001 shall act as the authoritative Engineering Backlog Register.
-* Backlog items discovered from historical chat sessions shall remain Candidate Backlog until reviewed and accepted by the Programme Sponsor.
-* Approved Candidate Backlog items were promoted into EBR-0001 through EBG-0013.
-* Repository Engineering Health Reviews shall compare findings against EBR-0001.
-* Repository Engineering Health Reviews shall distinguish new findings from confirmed existing backlog.
-* Final Repository Engineering Health Reviews shall include Backlog Validation.
-* Final Repository Engineering Health Reviews shall include Engineering Handover to Next Session guidance.
-* Final Repository Engineering Health Reviews shall include Backlog Progression Analysis and Backlog Acceleration Opportunities.
-* Final Repository Engineering Health Reviews shall include JARVIS Development Readiness Assessment.
-* All review recommendations remain advisory until Programme Sponsor approval.
+* ESR-0003 should begin with EBG-0005 unless the Programme Sponsor directs otherwise.
+* Alternative priorities are EBG-0001, EBG-0002 and EBG-0006.
+* Full JARVIS Engineering is not recommended as the first ESR-0003 activity.
+* New backlog creation is not recommended as the first ESR-0003 activity.
+* JARVIS development should continue to wait while AIEMS engineering maturity, validation standards and repository metadata authority improve.
+
+Recommendations remain advisory until the Programme Sponsor approves a specific Engineering Implementation Package.
 
 ---
 
-# 10. Lessons Learned
+# 15. Lessons Learned
 
 ESR-0002 produced the following lessons:
 
-* A controlled backlog register reduces risk of losing deferred engineering work.
-* Candidate Backlog governance preserves useful historical context without expanding approved implementation scope.
-* Repository health reviews are more actionable when findings are compared against approved backlog.
-* Final health reviews should support next-session handover without determining Programme Sponsor priorities.
-* JARVIS development readiness should be assessed from repository evidence, governance maturity and approved backlog rather than aspiration alone.
-* Metadata alignment should remain separately scoped where it has already been captured as approved backlog.
+* A controlled backlog register materially improves engineering continuity.
+* Candidate Backlog governance prevents premature scope expansion.
+* Repository Health Reviews become more useful when findings are compared with existing approved backlog.
+* Session closure should record evidence, not merely status.
+* Next-session handover benefits from explicit priorities, alternatives, dependencies and items not recommended.
+* JARVIS development readiness should be assessed using evidence from governance maturity, standards maturity, repository verification and technical debt.
+* Engineering Session Archives should be standardised so future sessions preserve comparable engineering evidence.
 
 ---
 
-# 11. Repository Health
+# 16. Session Metrics
+
+| Metric | Value |
+|--------|------:|
+| Engineering Backlog Register Created | 1 |
+| Approved Backlog Items Recorded | 13 |
+| Candidate Backlog Governance Rules Added | 1 |
+| Repository Engineering Health Reviews Completed | 2 |
+| AIEMS Workflow Artefacts Enhanced | 2 |
+| Engineering Session Reports Created or Finalised | 1 |
+| Controlled Artefacts Created | 1 |
+| Controlled Artefacts Updated During Closure | 2 |
+| Duplicate Backlog IDs Found | 0 |
+| Closure Blockers Identified | 0 |
+
+---
+
+# 17. Repository Health
 
 | Item | Status |
 |------|--------|
 | Repository Health Rating | Good |
 | Repository Acceptance | Accepted with observations |
-| Ready to close ESR-0002 | Yes |
-| Ready to begin ESR-0003 | Yes |
-| Blockers to closure | None |
-| Recommended first ESR-0003 EIP | EBG-0005 - REG-0001 metadata alignment following P2-004A |
-| JARVIS Development Readiness | Continue AIEMS engineering only |
-
-JARVIS development should be reassessed after EBG-0005, EBG-0006, EBG-0007 and preferably EBG-0010 are complete or materially advanced.
+| ESR-0002 Closure Readiness | Ready |
+| ESR-0003 Commencement Readiness | Ready |
+| Closure Blockers | None |
+| Current Programme Phase | Phase 2 - Engineering Standards |
 
 ---
 
-# 12. Outstanding Technical Debt
+# 18. Outstanding Technical Debt
 
 The following approved backlog remains available for future prioritisation:
 
 * EBG-0001 through EBG-0013.
 
-Priority observations from the final Repository Engineering Health Review:
-
-* REG-0001 metadata alignment remains outstanding under EBG-0005.
-* ADR-0004 and ADR-0005 recovery or formal supersession remain outstanding under EBG-0001 and EBG-0002.
-* REV-0002 controlled repository baseline verification remains outstanding under EBG-0006.
-* STD-0004 validation and quality assurance standard remains outstanding under EBG-0007.
-* Repository metadata and cross-reference validation rules remain outstanding under EBG-0010.
-
----
-
-# 13. Handover to ESR-0003
-
-| Item | Value |
-|------|-------|
-| Current Engineering Session | ESR-0002 - Completed |
-| Next Engineering Session | ESR-0003 |
-| Suggested ESR-0003 Objective | Restore controlled-register consistency and reduce governance metadata debt before advancing standards and JARVIS readiness. |
-| Recommended First EIP | EBG-0005 - REG-0001 metadata alignment following P2-004A |
-| Alternative Priorities | EBG-0001, EBG-0002, EBG-0006 |
-| Items Not Recommended First | Full JARVIS engineering and new backlog creation |
-| Programme Phase | Phase 2 - Engineering Standards |
-
-Recommended first ESR-0003 EIP:
+Priority technical debt identified for ESR-0003 consideration:
 
 * EBG-0005 - REG-0001 metadata alignment following P2-004A.
-
-Alternative ESR-0003 priorities:
-
 * EBG-0001 - ADR-0004 recovery or formal supersession.
 * EBG-0002 - ADR-0005 recovery or formal supersession.
 * EBG-0006 - REV-0002 Repository Baseline Verification.
+* EBG-0007 - STD-0004 Validation and Quality Assurance Standard.
+* EBG-0010 - Repository metadata and cross-reference validation rules.
 
-Items explicitly not recommended first:
+---
 
-* Full JARVIS engineering.
+# 19. Engineering Handover
+
+| Handover Item | Value |
+|---------------|-------|
+| Engineering Session | ESR-0003 |
+| Engineering Theme | Repository Governance Alignment |
+| Primary Objective | Restore repository metadata authority and reduce governance technical debt. |
+| Recommended First EIP | EBG-0005 - REG-0001 Metadata Alignment following P2-004A |
+| Alternative Priorities | EBG-0001, EBG-0002, EBG-0006 |
+| Items Not Recommended | Full JARVIS Engineering; New backlog creation |
+
+ESR-0003 should begin by restoring controlled-register consistency and reducing governance metadata debt before advancing standards and JARVIS readiness.
+
+---
+
+# 20. ESR-0003 Recommended Objective
+
+Recommended objective for ESR-0003:
+
+Restore repository metadata authority and reduce governance technical debt before advancing standards and JARVIS readiness.
+
+Recommended first EIP:
+
+* EBG-0005 - REG-0001 Metadata Alignment following P2-004A.
+
+Alternative priorities:
+
+* EBG-0001.
+* EBG-0002.
+* EBG-0006.
+
+Items not recommended first:
+
+* Full JARVIS Engineering.
 * New backlog creation.
 
 ---
 
-# 14. Formal Closure Statement
+# 21. JARVIS Development Readiness Recommendation
 
-Engineering Session ESR-0002 is formally closed.
+Recommended JARVIS readiness position:
 
-All approved ESR-0002 implementation activities have been completed within their authorised scope.
+* Continue AIEMS Engineering.
 
-The final Repository Engineering Health Review assessed repository health as Good and accepted the repository with observations.
+JARVIS development should be reassessed after:
 
-The repository is ready to close ESR-0002 and begin ESR-0003.
+* EBG-0005.
+* EBG-0006.
+* EBG-0007.
+* Preferably EBG-0010.
 
-No blockers to Engineering Session closure were identified.
+Rationale:
 
-Engineering responsibility is handed over to the planned Engineering Session ESR-0003, with EBG-0005 recommended as the first Engineering Implementation Package subject to Programme Sponsor approval.
+The repository is stable and ready for ESR-0003, but AIEMS should first improve repository metadata authority, baseline verification, validation and quality assurance standards, and metadata / cross-reference validation rules before JARVIS engineering begins in earnest.
 
 ---
 
-# 15. Version History
+# 22. Engineering Session Archive
+
+ESR-0002 is the reference Engineering Session for future AIEMS Engineering Session Archives.
+
+Future Engineering Session Standards under EBG-0009 shall standardise archives including:
+
+* Engineering Timeline.
+* Approved EIPs.
+* Repository Verification Log.
+* Repository Baseline History.
+* Engineering Decisions.
+* Backlog Evolution.
+* AIEMS Improvements.
+* Session Metrics.
+* Lessons Learned.
+* Repository Health Review.
+* Engineering Handover.
+
+---
+
+# 23. Formal Closure Statement
+
+Engineering Session ESR-0002 is formally closed.
+
+All approved ESR-0002 implementation and review activities have been completed within their authorised scope.
+
+The final Repository Engineering Health Review assessed repository health as Good and accepted the repository with observations.
+
+The repository is ready to close ESR-0002 and commence ESR-0003.
+
+No blockers to Engineering Session closure were identified.
+
+Engineering responsibility is handed over to ESR-0003 with EBG-0005 recommended as the first Engineering Implementation Package, subject to Programme Sponsor approval.
+
+---
+
+# 24. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| 1.0 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Session Report for ESR-0002 closure and handover to ESR-0003. |
+| 1.0 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Final Engineering Session Report for ESR-0002 closure and handover to ESR-0003. |
 
 ---
