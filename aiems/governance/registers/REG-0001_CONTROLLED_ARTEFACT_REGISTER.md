@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 1.8
+**Version:** 1.9
 
 ---
 
@@ -126,6 +126,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.1 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | PST-0001 | Programme Status | Programme Status | 1.0 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.0 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 
 ---
 
@@ -169,6 +170,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.9 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ESR-0002 Engineering Session Report artefact. |
 | 1.8 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled PBK-0001 version and MOD-0001 status following repository consistency verification. |
 | 1.7 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered STD-0003 Software / Python Engineering Standard. |
 | 1.6 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ESR-0001 Engineering Session Report artefact. |

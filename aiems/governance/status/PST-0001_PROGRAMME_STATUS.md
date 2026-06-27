@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 1.0                                                |
+| Version          | 1.1                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -63,7 +63,7 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Current Mode                  | Governance-led engineering moving into engineering standards completion                                         |
 | Current Phase                 | Phase 2 – Engineering Standards                                                                                 |
 | Current Workflow              | AIEMS Engineering Workflow v3                                                                                   |
-| Current Engineering Objective | Repository State Alignment – P2-003B |
+| Current Engineering Objective | ESR-0002 closure complete; next recommended activity EBG-0005 |
 
 ---
 
@@ -135,11 +135,12 @@ COC-0001 is the authoritative collaboration context for this workflow.
 
 | Item                         | Status                              | Notes                                                     |
 | ---------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| Current Engineering Session  | ESR-0001                            | Current accepted Engineering Session Report.              |
-| Current Engineering Activity | P2-003B Repository State Alignment  | Active repository state alignment activity.               |
+| Current Engineering Session  | ESR-0002 Completed                  | Engineering Session closed with repository accepted with observations. |
+| Current Engineering Activity | ESC-0002 Formal Engineering Session Closure | Completed. |
 | P2-003                       | Complete                            | STD-0003 Software / Python Engineering Standard approved. |
-| Next Engineering Session     | ESR-0002 Planned                    | Next session identifier.                                  |
-| Current Review State         | P2-003A health review completed     | Repository health reviewed as Good.                       |
+| Next Engineering Session     | ESR-0003 Planned                    | Next session identifier. |
+| Next Recommended Activity    | EBG-0005                            | REG-0001 metadata alignment following P2-004A. |
+| Current Review State         | Final ESR-0002 health review completed | Repository health reviewed as Good. |
 
 ---
 
@@ -148,8 +149,9 @@ COC-0001 is the authoritative collaboration context for this workflow.
 | Item                                | Status                             |
 | ----------------------------------- | ---------------------------------- |
 | Repository Health                   | Good                               |
-| Latest Repository Engineering Health Review | ESR-0001 / P2-003A         |
-| Current Activity                    | P2-003B Repository State Alignment |
+| Repository Acceptance               | Accepted with observations         |
+| Latest Repository Engineering Health Review | ESR-0002 Final Repository Engineering Health Review |
+| Current Activity                    | ESR-0002 closed; ESR-0003 planned  |
 
 ---
 
@@ -174,7 +176,8 @@ At the start of a new engineering session:
 3. Perform Engineering Synchronisation.
 4. Confirm the current repository baseline.
 5. Confirm the current engineering objective.
-6. Continue from the next planned EIP unless the Programme Sponsor directs otherwise.
+6. Continue from the next approved EIP unless the Programme Sponsor directs otherwise.
+7. Current recommended first ESR-0003 EIP is EBG-0005, subject to Programme Sponsor approval.
 
 This allows future sessions to start from a clean conversational state while preserving programme continuity through repository evidence.
 
@@ -207,6 +210,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1.1     | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0002 closure, repository health outcome, ESR-0003 handover and next recommended activity. |
 | 1.0     | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Programme Status artefact created to preserve session continuity and reduce dependency on long conversation history. |
 
 ---
