@@ -171,9 +171,36 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 33. Repository Engineering Health Review recommendations remain advisory only until reviewed and approved by the Programme Sponsor.
 
-34. Every new document must remove more engineering effort than it creates.
+34. Final Repository Engineering Health Reviews shall include Engineering Handover to Next Session guidance covering:
 
-35. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
+   * Recommended first Engineering Implementation Package for the next Engineering Session
+   * Alternative engineering priorities
+   * Dependencies
+   * Risks
+   * Items explicitly not recommended
+   * Suggested Engineering Session objective
+
+35. Final Repository Engineering Health Reviews shall include Backlog Progression Analysis by examining EBR-0001 and recommending activities that best progress Project JARVIS AI during the next Engineering Session.
+
+36. Backlog Progression Analysis shall consider dependencies between backlog items, engineering sequencing, governance maturity, repository readiness, engineering risk, engineering benefit, estimated implementation effort, opportunities to complete related backlog items within the same session, and backlog acceleration opportunities.
+
+37. Each recommended backlog activity shall include backlog item reference, priority, engineering benefit, estimated effort, dependencies, recommended Engineering Session and rationale.
+
+38. Repository Engineering Health Reviews shall identify Backlog Acceleration Opportunities where grouping related backlog items within the same Engineering Session would reduce repeated verification, reduce baseline overhead or improve engineering flow without weakening governance.
+
+39. Final Repository Engineering Health Reviews shall include a JARVIS Development Readiness Assessment answering: "Based on the current repository baseline, engineering maturity, and approved backlog, when should development of Project JARVIS AI commence, and what evidence supports that recommendation?"
+
+40. JARVIS Development Readiness Assessment shall consider AIEMS governance maturity, repository governance, engineering workflow maturity, standards maturity, repository verification capability, outstanding governance backlog, outstanding technical debt, repository stability, engineering repeatability and quality assurance capability.
+
+41. The reviewer shall recommend one of: Continue AIEMS engineering only; Begin JARVIS Proof of Concept; Begin JARVIS Foundation Development; Begin Parallel AIEMS and JARVIS Development; AIEMS sufficiently mature for full JARVIS Engineering.
+
+42. If JARVIS development is recommended, the reviewer shall identify the recommended Engineering Session, proposed objective, prerequisite backlog items, governance work that can continue in parallel and recommended first JARVIS engineering activity.
+
+43. All handover, backlog progression and JARVIS readiness recommendations are advisory only; the Programme Sponsor determines engineering priorities; no Engineering Implementation Package shall be created or executed from these recommendations without Programme Sponsor approval.
+
+44. Every new document must remove more engineering effort than it creates.
+
+45. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
 
 ---
 
