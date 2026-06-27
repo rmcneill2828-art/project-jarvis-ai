@@ -1,4 +1,4 @@
-# PBK-0001 – AI Engineering Playbook
+# PBK-0001 â€“ AI Engineering Playbook
 
 ---
 
@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -153,7 +153,7 @@ Only one Engineering Session shall be active at any time.
 
 Engineering Session lifecycle management is composed of two startup stages.
 
-## WP0A � Repository Synchronisation
+## WP0A ï¿½ Repository Synchronisation
 
 WP0A confirms the repository baseline before creating or continuing an Engineering Session.
 
@@ -168,7 +168,7 @@ WP0A shall confirm:
 * Repository baseline.
 * Repository suitability for engineering progression.
 
-## WP0B � Engineering Session Initialisation
+## WP0B ï¿½ Engineering Session Initialisation
 
 WP0B creates or confirms the active Engineering Session only after repository synchronisation is complete.
 
@@ -341,6 +341,26 @@ Where AIEMS requires WP6, independent GitHub repository verification remains man
 
 ---
 
+# Working Report Lifecycle
+
+A Working Report is an engineering report produced to present findings, analysis or proposed remediation for review.
+
+Working Reports are not controlled repository artefacts unless a separate approved Engineering Implementation Package explicitly creates or registers a controlled artefact.
+
+The Working Report lifecycle is:
+
+1. Codex produces the engineering report.
+2. ChatGPT performs engineering review.
+3. The Programme Sponsor makes the engineering decision.
+4. ChatGPT prepares an Engineering Implementation Package where repository remediation is approved.
+5. Codex implements only the approved Engineering Implementation Package.
+
+Working Reports may inform Engineering Reviews and Engineering Implementation Packages, but they do not themselves authorise repository remediation.
+
+Controlled repository artefacts shall be created or modified only following explicit Programme Sponsor approval and an approved implementation instruction.
+
+---
+
 # Engineering Scope Control
 
 Engineering Implementers shall:
@@ -437,3 +457,4 @@ This is a documentation architecture principle, not a software design principle.
 | 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Implementer role, session initialisation, scope control, self-review, completion reporting and repository documentation guidance. |
 | 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Session lifecycle guidance covering WP0A, WP0B, session creation, handover and closure checks. |
 | 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
+| 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |

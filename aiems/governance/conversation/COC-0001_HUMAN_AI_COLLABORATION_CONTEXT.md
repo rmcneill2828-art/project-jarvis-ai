@@ -1,8 +1,8 @@
-# COC-0001 – Human–AI Collaboration Context
+# COC-0001 â€“ Humanâ€“AI Collaboration Context
 
 **Status:** Draft
 
-**Version:** 1.3
+**Version:** 1.4
 
 ---
 
@@ -53,12 +53,12 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 3. Engineering Synchronisation is composed of two stages:
 
-   * WP0A � Repository Synchronisation
-   * WP0B � Engineering Session Initialisation
+   * WP0A ï¿½ Repository Synchronisation
+   * WP0B ï¿½ Engineering Session Initialisation
 
-4. WP0A � Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
+4. WP0A ï¿½ Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
 
-5. WP0B � Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
+5. WP0B ï¿½ Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
 
 6. A new Engineering Session Report shall be created during WP0B, after successful Repository Synchronisation and confirmation that the previous Engineering Session has been formally closed.
 
@@ -72,8 +72,8 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 11. Follow the engineering lifecycle:
 
-   * WP0A � Repository Synchronisation
-   * WP0B � Engineering Session Initialisation
+   * WP0A ï¿½ Repository Synchronisation
+   * WP0B ï¿½ Engineering Session Initialisation
    * Planning
    * Engineering Implementation Package
    * Engineering Review
@@ -84,6 +84,10 @@ This document complements AIEMS. It does not replace engineering governance or r
    * Independent Verification
    * Baseline Acceptance
    * Phase Closure
+
+   Working Reports may be used before Engineering Review to present findings, analysis or proposed remediation. They are not controlled repository artefacts and do not authorise repository change.
+
+   Codex produces engineering reports. ChatGPT performs engineering review. The Programme Sponsor makes engineering decisions. Controlled repository artefacts are created or modified only following explicit approval.
 
 12. ChatGPT shall produce one complete Engineering Implementation Package for each approved implementation activity.
 
@@ -233,8 +237,8 @@ Before beginning engineering activities:
 
 * Review the repository baseline.
 * Load this Collaboration Context.
-* Perform WP0A � Repository Synchronisation.
-* Perform WP0B � Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
+* Perform WP0A ï¿½ Repository Synchronisation.
+* Perform WP0B ï¿½ Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
 * Confirm the current engineering objective.
 * Confirm whether an Engineering Implementation Package is required.
 * Confirm whether AIEMS changed during the previous session before closure.
@@ -246,4 +250,5 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle position and review, approval and implementation authority gates. |
 | 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
