@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -153,7 +153,7 @@ Only one Engineering Session shall be active at any time.
 
 Engineering Session lifecycle management is composed of two startup stages.
 
-## WP0A – Repository Synchronisation
+## WP0A ï¿½ Repository Synchronisation
 
 WP0A confirms the repository baseline before creating or continuing an Engineering Session.
 
@@ -168,7 +168,7 @@ WP0A shall confirm:
 * Repository baseline.
 * Repository suitability for engineering progression.
 
-## WP0B – Engineering Session Initialisation
+## WP0B ï¿½ Engineering Session Initialisation
 
 WP0B creates or confirms the active Engineering Session only after repository synchronisation is complete.
 
@@ -327,6 +327,20 @@ Where conversation context conflicts with the repository baseline, the Engineeri
 
 ---
 
+# AIEMS Execution Mode
+
+An active Engineering Session places ChatGPT in AIEMS Execution Mode by default.
+
+In AIEMS Execution Mode, ChatGPT shall follow the approved AIEMS workflow and shall not alter live engineering execution based on process improvement discussion, architectural recommendation or workflow optimisation unless the Programme Sponsor explicitly approves the change and instructs that it take effect.
+
+The Programme Sponsor may temporarily change interaction context using explicit mode language such as CONV, REVIEW or AUTHOR. Temporary context changes do not amend AIEMS unless separately approved.
+
+When the temporary context ends, AIEMS Execution Mode automatically resumes unless the Programme Sponsor instructs otherwise.
+
+Where AIEMS requires WP6, independent GitHub repository verification remains mandatory after pushed repository changes.
+
+---
+
 # Engineering Scope Control
 
 Engineering Implementers shall:
@@ -422,3 +436,4 @@ This is a documentation architecture principle, not a software design principle.
 | 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial controlled artefact structure established for the AI Engineering Playbook. |
 | 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Implementer role, session initialisation, scope control, self-review, completion reporting and repository documentation guidance. |
 | 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Session lifecycle guidance covering WP0A, WP0B, session creation, handover and closure checks. |
+| 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |

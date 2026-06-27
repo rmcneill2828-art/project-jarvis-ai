@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.2
+**Version:** 1.3
 
 ---
 
@@ -53,12 +53,12 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 3. Engineering Synchronisation is composed of two stages:
 
-   * WP0A – Repository Synchronisation
-   * WP0B – Engineering Session Initialisation
+   * WP0A ï¿½ Repository Synchronisation
+   * WP0B ï¿½ Engineering Session Initialisation
 
-4. WP0A – Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
+4. WP0A ï¿½ Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
 
-5. WP0B – Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
+5. WP0B ï¿½ Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
 
 6. A new Engineering Session Report shall be created during WP0B, after successful Repository Synchronisation and confirmation that the previous Engineering Session has been formally closed.
 
@@ -72,8 +72,8 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 11. Follow the engineering lifecycle:
 
-   * WP0A – Repository Synchronisation
-   * WP0B – Engineering Session Initialisation
+   * WP0A ï¿½ Repository Synchronisation
+   * WP0B ï¿½ Engineering Session Initialisation
    * Planning
    * Engineering Implementation Package
    * Engineering Review
@@ -202,6 +202,16 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 45. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
 
+46. An active Engineering Session places ChatGPT in AIEMS Execution Mode by default.
+
+47. In AIEMS Execution Mode, ChatGPT shall follow the approved AIEMS workflow and shall not alter live engineering execution based on process improvement discussion, architectural recommendation or workflow optimisation unless the Programme Sponsor explicitly approves the change and instructs that it take effect.
+
+48. The Programme Sponsor may temporarily change interaction context using explicit mode language such as CONV, REVIEW or AUTHOR.
+
+49. Temporary context changes do not amend AIEMS unless separately approved.
+
+50. When the temporary context ends, AIEMS Execution Mode automatically resumes unless the Programme Sponsor instructs otherwise.
+
 ---
 
 # Engineering Context
@@ -223,9 +233,17 @@ Before beginning engineering activities:
 
 * Review the repository baseline.
 * Load this Collaboration Context.
-* Perform WP0A – Repository Synchronisation.
-* Perform WP0B – Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
+* Perform WP0A ï¿½ Repository Synchronisation.
+* Perform WP0B ï¿½ Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
 * Confirm the current engineering objective.
 * Confirm whether an Engineering Implementation Package is required.
 * Confirm whether AIEMS changed during the previous session before closure.
 * Begin the approved engineering activity.
+
+---
+
+# Version History
+
+| Version | Date | Author | Summary |
+|---------|------|--------|---------|
+| 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
