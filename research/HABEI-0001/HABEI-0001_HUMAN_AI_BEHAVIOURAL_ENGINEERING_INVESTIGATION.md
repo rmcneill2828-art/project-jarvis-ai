@@ -189,7 +189,52 @@ No JARVIS behavioural feature is implemented by this artefact.
 
 ---
 
-# 15. Research / Governance Boundary
+# 15. Final Investigation Conclusions
+
+## 15.1 Principal Finding
+
+Effective Human-AI engineering behaviour emerges from the interaction between the human participant and the AI participant rather than from either participant in isolation.
+
+The HABEI evidence does not support treating behavioural continuity as solely an AI memory problem or solely a human process discipline problem. The observed engineering behaviour improved when both participants adapted: the human participant clarified expectations, corrected drift and increased structure; the AI participant re-anchored to repository evidence, narrowed scope and improved recovery behaviour.
+
+## 15.2 Supporting Findings
+
+The investigation preserves evidence that behavioural stability improved as interaction became more structured.
+
+Human behaviour adapted during the investigation through clearer approval boundaries, more explicit correction, more precise implementation packages and stronger insistence on repository-first execution.
+
+AI behaviour adapted during the investigation through improved scope control, stronger repository discipline, clearer separation between evidence and recommendation, and better recovery after correction.
+
+Engineering quality improved as synchronisation increased. Across the evidence set, better shared context, stronger session structure and clearer role boundaries were associated with more disciplined engineering output.
+
+Repository-first thinking became shared behaviour. The human participant increasingly required repository evidence, and the AI participant increasingly used the repository as the authoritative baseline.
+
+Engineering discipline became shared behaviour. Both participants contributed to preserving approval boundaries, separating recommendations from implementation and maintaining research / governance separation.
+
+## 15.3 Context Transition Finding
+
+Engineering trigger recognition can be influenced by significant conversational context transitions.
+
+This remains an observed research finding requiring future validation. It does not establish a governance rule, but it suggests that future WP0 or behavioural continuity work may need to consider how major context shifts affect recognition of engineering mode, scope and approval boundaries.
+
+## 15.4 Behavioural Synchronisation Finding
+
+The investigation suggests behavioural continuity is a property of the Human-AI engineering partnership rather than solely an AI capability.
+
+Continuity appears to improve when both participants synchronise around shared repository evidence, explicit role expectations, approved scope and correction/recovery patterns.
+
+## 15.5 Research Boundary for Final Conclusions
+
+These findings do not modify AIEMS.
+
+They do not authorise governance change.
+
+They provide research evidence only.
+
+They may inform future Engineering Implementation Packages following separate approval.
+
+---
+# 16. Research / Governance Boundary
 
 This artefact is research evidence.
 
