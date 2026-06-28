@@ -1,4 +1,4 @@
-# PBK-0001 â€“ AI Engineering Playbook
+﻿# PBK-0001 Ã¢â‚¬â€œ AI Engineering Playbook
 
 ---
 
@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -112,10 +112,14 @@ The Engineering Implementer is responsible for carrying out approved repository 
 
 Engineering Implementer responsibilities include:
 
-* Repository implementation.
 * Approved scope execution.
+* Repository implementation.
+* Repository staging when authorised.
+* Repository commit when authorised.
+* Repository push when authorised.
 * Engineering self-review.
 * Completion reporting.
+* Reporting commit SHA, commit message and repository status after repository execution.
 * Repository discipline.
 * Avoiding unauthorised engineering decisions.
 
@@ -139,7 +143,7 @@ The Engineering Implementer shall:
 8. Implement approved scope only.
 9. Perform engineering self-review.
 10. Produce an Engineering Completion Report.
-11. Perform no Git operations unless explicitly authorised.
+11. Perform repository operations only when explicitly authorised by the Programme Sponsor or approved Engineering Implementation Package.
 
 Implementation session startup shall be based upon repository evidence and the approved implementation package.
 
@@ -153,7 +157,7 @@ Only one Engineering Session shall be active at any time.
 
 Engineering Session lifecycle management is composed of two startup stages.
 
-## WP0A ï¿½ Repository Synchronisation
+## WP0A Ã¯Â¿Â½ Repository Synchronisation
 
 WP0A confirms the repository baseline before creating or continuing an Engineering Session.
 
@@ -168,7 +172,7 @@ WP0A shall confirm:
 * Repository baseline.
 * Repository suitability for engineering progression.
 
-## WP0B ï¿½ Engineering Session Initialisation
+## WP0B Ã¯Â¿Â½ Engineering Session Initialisation
 
 WP0B creates or confirms the active Engineering Session only after repository synchronisation is complete.
 
@@ -414,22 +418,52 @@ Every Engineering Completion Report shall include:
 * Observations.
 * Outstanding issues.
 
+Where repository execution is authorised, completion reporting shall also include:
+
+* Commit SHA.
+* Commit message.
+* Repository status.
+
 Completion reporting shall distinguish completed implementation from recommendations for future engineering work.
+
+---
+
+# Repository Lifecycle and Separation of Duties
+
+Repository execution is part of Engineering Implementer responsibility when explicitly authorised by the Programme Sponsor or an approved Engineering Implementation Package.
+
+The validated repository lifecycle is:
+
+1. Programme Sponsor approves engineering work, implementation scope and repository changes.
+2. Engineering Implementer implements the approved scope.
+3. Engineering Implementer performs authorised repository staging, commit and push.
+4. Engineering Implementer reports commit SHA, commit message and repository status.
+5. Engineering Reviewer performs WP6 Independent GitHub Verification.
+6. Engineering Reviewer performs WP7 Repository Baseline Acceptance.
+
+The Programme Sponsor remains accountable for approval of engineering work, implementation scope and repository changes. The Programme Sponsor is not responsible for repository execution unless separately directed.
+
+The Engineering Reviewer shall not perform repository implementation. The Engineering Reviewer independently verifies repository state using WP6 and confirms repository baseline using WP7.
 
 ---
 
 # Git Operations
 
-Engineering Implementers shall not perform Git operations unless explicitly authorised by the Programme Sponsor.
+Engineering Implementers shall perform repository staging, commit and push only when explicitly authorised by the Programme Sponsor or an approved Engineering Implementation Package.
 
-Restricted Git operations include:
+Repository operations include:
 
+* Stage.
 * Commit.
 * Push.
+
+Restricted Git operations remain outside Engineering Implementer authority unless explicitly authorised, including:
+
 * Merge.
 * Create releases.
+* Rewrite repository history.
 
-Human Git operations preserve accountability for repository baselining.
+Repository execution by the Engineering Implementer preserves operational traceability. WP6 and WP7 preserve independent review and baseline acceptance.
 
 ---
 
@@ -458,3 +492,4 @@ This is a documentation architecture principle, not a software design principle.
 | 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Session lifecycle guidance covering WP0A, WP0B, session creation, handover and closure checks. |
 | 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |
+| 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |

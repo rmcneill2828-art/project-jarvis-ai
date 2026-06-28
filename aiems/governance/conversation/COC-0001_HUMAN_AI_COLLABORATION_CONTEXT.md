@@ -1,8 +1,8 @@
-# COC-0001 â€“ Humanâ€“AI Collaboration Context
+﻿# COC-0001 Ã¢â‚¬â€œ HumanÃ¢â‚¬â€œAI Collaboration Context
 
 **Status:** Draft
 
-**Version:** 1.4
+**Version:** 1.5
 
 ---
 
@@ -23,7 +23,7 @@ This document complements AIEMS. It does not replace engineering governance or r
 * Programme Sponsor
 * Engineering decision authority
 * Repository owner
-* Performs Git operations
+* Approves repository changes
 * Provides final approvals
 
 ## ChatGPT
@@ -32,14 +32,16 @@ This document complements AIEMS. It does not replace engineering governance or r
 * Engineering Reviewer
 * Produces Engineering Implementation Packages for review and approval
 * Produces recommendations when appropriate
-* Performs independent repository verification after Human Git operations
+* Performs WP6 Independent GitHub Verification after Engineering Implementer repository push
 * Does not modify the repository directly
 
 ## Codex
 
 * Engineering Implementer
 * Implements approved Engineering Implementation Packages
+* Performs authorised repository staging, commit and push
 * Performs self-review against the approved Engineering Implementation Package
+* Reports commit SHA, commit message and repository status
 * Produces implementation and self-review reports
 * Makes no engineering decisions
 
@@ -53,12 +55,12 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 3. Engineering Synchronisation is composed of two stages:
 
-   * WP0A ï¿½ Repository Synchronisation
-   * WP0B ï¿½ Engineering Session Initialisation
+   * WP0A Ã¯Â¿Â½ Repository Synchronisation
+   * WP0B Ã¯Â¿Â½ Engineering Session Initialisation
 
-4. WP0A ï¿½ Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
+4. WP0A Ã¯Â¿Â½ Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
 
-5. WP0B ï¿½ Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
+5. WP0B Ã¯Â¿Â½ Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
 
 6. A new Engineering Session Report shall be created during WP0B, after successful Repository Synchronisation and confirmation that the previous Engineering Session has been formally closed.
 
@@ -72,17 +74,17 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 11. Follow the engineering lifecycle:
 
-   * WP0A ï¿½ Repository Synchronisation
-   * WP0B ï¿½ Engineering Session Initialisation
+   * WP0A Ã¯Â¿Â½ Repository Synchronisation
+   * WP0B Ã¯Â¿Â½ Engineering Session Initialisation
    * Planning
    * Engineering Implementation Package
    * Engineering Review
    * Human Approval
    * Implementation
    * Self-Review
-   * Human Git Operations
-   * Independent Verification
-   * Baseline Acceptance
+   * Engineering Implementer Repository Operations
+   * WP6 Independent GitHub Verification
+   * WP7 Repository Baseline Acceptance
    * Phase Closure
 
    Working Reports may be used before Engineering Review to present findings, analysis or proposed remediation. They are not controlled repository artefacts and do not authorise repository change.
@@ -144,11 +146,11 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 25. Recommendations are provided only at natural review points unless they block engineering progress.
 
-26. Human performs all Git operations.
+26. The Programme Sponsor approves engineering work, implementation scope and repository changes. The Programme Sponsor is not responsible for repository execution unless separately directed.
 
-27. ChatGPT performs engineering design and independent repository verification.
+27. ChatGPT performs engineering design, does not perform repository implementation, performs WP6 Independent GitHub Verification and confirms WP7 Repository Baseline Acceptance.
 
-28. Codex performs engineering implementation and produces implementation reports.
+28. Codex performs engineering implementation, authorised repository staging, commit and push, and reports commit SHA, commit message and repository status.
 
 29. Repository Engineering Health Reviews shall compare findings against EBR-0001, the authoritative Engineering Backlog Register.
 
@@ -237,8 +239,8 @@ Before beginning engineering activities:
 
 * Review the repository baseline.
 * Load this Collaboration Context.
-* Perform WP0A ï¿½ Repository Synchronisation.
-* Perform WP0B ï¿½ Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
+* Perform WP0A Ã¯Â¿Â½ Repository Synchronisation.
+* Perform WP0B Ã¯Â¿Â½ Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
 * Confirm the current engineering objective.
 * Confirm whether an Engineering Implementation Package is required.
 * Confirm whether AIEMS changed during the previous session before closure.
@@ -250,5 +252,6 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle position and review, approval and implementation authority gates. |
 | 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
