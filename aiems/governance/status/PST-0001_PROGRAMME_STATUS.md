@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 1.2
+**Version:** 1.4
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 1.3                                                |
+| Version          | 1.4                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -60,10 +60,10 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System            | AI Engineering Management System (AIEMS)                                                                        |
 | Repository                    | project-jarvis-ai                                                                                               |
 | Primary Branch                | main                                                                                                            |
-| Current Mode                  | Governance-led engineering moving into engineering standards completion                                         |
+| Current Mode                  | Governance baseline refreshed following ESR-0003 remediation                                                   |
 | Current Phase                 | Phase 2 – Engineering Standards                                                                                 |
-| Current Workflow              | AIEMS Engineering Workflow v3                                                                                   |
-| Current Engineering Objective | ESR-0002 closed; next recommended activity EBG-0005 |
+| Current Workflow              | AIEMS Engineering Workflow v3 with Engineering Implementer repository lifecycle                                 |
+| Current Engineering Objective | ESR-0003 complete; repository baseline reviewed through EBR-0002; next recommended activity EIP-WS1-006 closure verification |
 
 ---
 
@@ -79,12 +79,39 @@ Workflow sequence:
 4. Human Engineering Review
 5. Human Approval
 6. Codex Implementation and Self-Review
-7. Human Git Commit and Push
-8. Independent Repository Verification
-9. Baseline Acceptance
+7. Engineering Implementer Repository Operations
+8. WP6 Independent GitHub Verification
+9. WP7 Repository Baseline Acceptance
 10. Phase Closure
 
 COC-0001 is the authoritative collaboration context for this workflow.
+
+Repository execution separation of duties:
+
+```text
+Programme Sponsor
+    |
+    v
+Approves Engineering Implementation
+    |
+    v
+Engineering Implementer
+    |
+    +-- Implements
+    +-- Stages
+    +-- Commits
+    +-- Pushes
+    +-- Reports Repository Completion
+    |
+    v
+Engineering Reviewer
+    |
+    v
+WP6 Independent GitHub Verification
+    |
+    v
+WP7 Repository Baseline Acceptance
+```
 
 ---
 
@@ -114,6 +141,10 @@ COC-0001 is the authoritative collaboration context for this workflow.
 | REG-0001 Controlled Artefact Register independently verified   | Complete |
 | REG-0004 Action Register independently verified                | Complete |
 | EIP-based implementation workflow validated                    | Complete |
+| AIEMS governance remediation completed through ESR-0003         | Complete |
+| Engineering Implementer repository lifecycle implemented        | Complete |
+| HABEI research capability established                           | Complete |
+| Repository baseline reviewed through EBR-0002                   | Complete |
 
 ---
 
@@ -135,12 +166,15 @@ COC-0001 is the authoritative collaboration context for this workflow.
 
 | Item                         | Status                              | Notes                                                     |
 | ---------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| Current Engineering Session  | ESR-0002 Closed                     | Engineering Session closed with repository accepted with observations. |
-| Current Engineering Activity | ESC-0002 Formal Engineering Session Closure | Completed. |
+| Current Engineering Session  | ESR-0003 Complete                   | Engineering Session implementation complete; pending Engineering Reviewer repository baseline acceptance following EBR-0002 completion. |
+| Current Engineering Activity | EIP-WS1-006 PST-0001 Engineering Session Baseline Refresh | Complete following repository commit and push. |
+| ESR-0001                     | Closed                              | Latest accepted Engineering Session Report reviewed as historical baseline. |
+| ESR-0002                     | Closed                              | Engineering Session closed with repository accepted with observations. |
+| ESR-0003                     | Complete                            | Pending Engineering Reviewer repository baseline acceptance following EBR-0002 completion. |
 | P2-003                       | Complete                            | STD-0003 Software / Python Engineering Standard approved. |
-| Next Engineering Session     | ESR-0003 Planned                    | Next session identifier. |
-| Next Recommended Activity    | EBG-0005                            | REG-0001 metadata alignment following P2-004A. |
-| Current Review State         | Final ESR-0002 health review completed | Repository health reviewed as Good. |
+| Next Engineering Session     | ESR-0004 Pending                    | To be initiated after ESR-0003 repository baseline acceptance and closure. |
+| Next Recommended Activity    | ESR-0003 closure and WP7 Repository Baseline Acceptance | Complete repository baseline acceptance before starting ESR-0004. |
+| Current Review State         | EBR-0002 baseline review completed | REG-0001 metadata drift remediated; PST-0001 drift remediated by this refresh. |
 
 ---
 
@@ -149,9 +183,10 @@ COC-0001 is the authoritative collaboration context for this workflow.
 | Item                                | Status                             |
 | ----------------------------------- | ---------------------------------- |
 | Repository Health                   | Good                               |
-| Repository Acceptance               | Accepted with observations         |
-| Latest Repository Engineering Health Review | ESR-0002 Final Repository Engineering Health Review |
-| Current Activity                    | ESR-0002 closed; ESR-0003 planned  |
+| Repository Acceptance               | Pending WP7 Repository Baseline Acceptance |
+| Latest Repository Engineering Health Review | EBR-0002 Repository Baseline Review |
+| Baseline Review Scope               | Post-ESR-0003 governance integrity, register alignment and research separation |
+| Current Activity                    | ESR-0003 complete; pending repository baseline acceptance |
 
 ---
 
@@ -159,11 +194,12 @@ COC-0001 is the authoritative collaboration context for this workflow.
 
 The following observations remain open for future engineering consideration:
 
-* ADR-0004 and ADR-0005 remain historically referenced but corresponding artefact files are absent.
+* ADR-0004 and ADR-0005 have been recovered as controlled ADR artefacts and are registered in REG-0001 and REG-0002.
 * Additional build-facing engineering standards are required before substantive JARVIS development.
 * MOD-0001 requires decomposition into implementable subsystem specifications.
 * JARVIS remains at lifecycle skeleton stage.
 * A future AI collaboration or engineering assurance standard may be appropriate after further workflow evidence is gathered.
+* Encoding artefacts identified during EBR-0002 remain candidates for separately approved remediation.
 
 ---
 
@@ -177,7 +213,7 @@ At the start of a new engineering session:
 4. Confirm the current repository baseline.
 5. Confirm the current engineering objective.
 6. Continue from the next approved EIP unless the Programme Sponsor directs otherwise.
-7. Current recommended first ESR-0003 EIP is EBG-0005, subject to Programme Sponsor approval.
+7. Current recommended next activity is ESR-0003 repository baseline acceptance and formal closure before ESR-0004 initiation.
 8. Confirm the current interaction context. An active Engineering Session defaults to AIEMS Execution Mode unless the Programme Sponsor explicitly changes the context.
 
 This allows future sessions to start from a clean conversational state while preserving programme continuity through repository evidence.
@@ -211,6 +247,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1.4     | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Refreshed programme status following ESR-0003 completion, repository lifecycle alignment, ADR recovery and EBR-0002 baseline review. |
 | 1.3     | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
 | 1.2     | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded final ESR-0002 closure wording and Engineering Session Archive reference position. |
 | 1.1     | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0002 closure, repository health outcome, ESR-0003 handover and next recommended activity. |
