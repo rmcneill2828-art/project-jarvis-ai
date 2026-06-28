@@ -56,7 +56,7 @@ AI repository interaction is permitted only within the approved AIEMS governance
 
 AI collaborators shall operate within assigned roles, approved scope and explicit human authority. Repository modification shall occur only when authorised by an approved engineering activity or direct Programme Sponsor instruction.
 
-Human engineers remain accountable for repository direction, approval, Git commit and push activity, and final baseline acceptance.
+Human engineers remain accountable for repository direction, approval and final baseline acceptance. Operational repository execution responsibilities are governed by the current approved AIEMS workflow in PBK-0001 and COC-0001.
 
 ---
 
@@ -75,7 +75,7 @@ This decision is successful when:
 - AI repository work is traceable to approved engineering authority.
 - AI collaborators remain within approved scope.
 - Human approval is required before controlled repository change.
-- Git commit and push authority remains with the Programme Sponsor or authorised human engineer.
+- Repository execution responsibilities are assigned and controlled by the current approved AIEMS workflow in PBK-0001 and COC-0001.
 - Repository verification and baseline acceptance remain explicit workflow steps.
 
 ---
