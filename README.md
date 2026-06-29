@@ -58,6 +58,7 @@ JARVIS is the intelligent AI platform and flagship implementation of AIEMS.
 
 Current JARVIS implementation includes:
 
+- Product architecture blueprint in `jarvis/architecture/JARVIS_PRODUCT_ARCHITECTURE.md`.
 - Python package structure.
 - Root `Jarvis` lifecycle object.
 - `JarvisState` lifecycle enumeration.
@@ -90,6 +91,7 @@ aiems/
   standards/
   templates/
 jarvis/
+  architecture/
   automation/
   core/
   guardian/
@@ -213,7 +215,7 @@ Engineering work is evidence-led: context is gathered before implementation, dec
 | Repository Architecture | Complete | Complete | Repository structure separates AIEMS governance from JARVIS implementation. |
 | Governance Framework | In Progress | Mature | Core governance exists; register and artefact consistency is actively managed. |
 | Engineering Standards | In Progress | High | STD-0001, STD-0002 and STD-0003 are approved; additional build-facing standards remain planned. |
-| Platform Architecture | In Progress | Partial | MOD-0001 defines the platform architecture; implementation decomposition remains future work. |
+| Platform Architecture | In Progress | Partial | MOD-0001 defines the platform architecture; JARVIS product architecture now defines the product blueprint. |
 | JARVIS Development | In Progress | Partial | Lifecycle skeleton, public API, packaging configuration and tests exist. |
 
 ---
@@ -279,3 +281,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Phase 0 validated and completed. Introduced AIEMS, Engineering Philosophy, Strategic Alignment Reviews, AI-assisted engineering model, repository governance and updated project roadmap. |
 | 3.0 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled README with current AIEMS repository structure, governance artefacts, project roadmap and JARVIS implementation baseline. |
 | 3.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned README with AIEMS Workflow v3, repository-first engineering, current engineering roles, repository health review practice and STD-0003 baseline status. |
+| 3.2 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added reference to the JARVIS OS product architecture blueprint. |
