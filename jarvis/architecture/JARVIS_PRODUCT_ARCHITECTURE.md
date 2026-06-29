@@ -8,7 +8,7 @@
 |------|-------|
 | Document ID | JARVIS-PRODUCT-ARCHITECTURE |
 | Title | JARVIS Product Architecture |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved Product Architecture |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Product | JARVIS OS |
@@ -27,6 +27,10 @@ JARVIS OS is the flagship product of Project JARVIS AI.
 AIEMS governs engineering. JARVIS OS is the product that demonstrates those engineering principles through practical, useful and enjoyable capability.
 
 The product vision is to create a trusted AI companion for everyday family life: helpful in conversation, useful for household tasks, respectful of privacy, safe for children, and capable of growing into a broader intelligent operating environment over time.
+
+JARVIS exists to make capable AI assistance feel understandable, calm and useful in ordinary life. It should help the family ask questions, learn, create, organise, troubleshoot and safely interact with connected technology without requiring the user to understand the engineering behind it.
+
+The long-term product intent is not only to build a chat interface. JARVIS OS should become a trusted family AI operating environment: present across devices, aware of user context where permission allows, respectful of boundaries, transparent about its limits and extensible without becoming uncontrolled.
 
 ---
 
@@ -64,6 +68,15 @@ JARVIS OS shall follow these product design principles:
 
 The product should feel useful before it feels complex. Each capability should make daily life easier, safer, more creative or more enjoyable.
 
+JARVIS OS shall also follow these recovered product principles:
+
+- Product before process: governance exists to support the product, not obscure it.
+- Human authority: people remain in control of identity, permissions, memory, integrations and high-risk actions.
+- Technology independence: JARVIS shall not be tied permanently to a single AI provider, device platform or integration technology.
+- Trust through transparency: JARVIS should explain what it can do, what it cannot do and when a capability is unavailable.
+- Calm interaction: JARVIS should avoid noisy, alarming or manipulative behaviour.
+- Design intent preservation: important product intent shall be recorded before implementation details obscure why a feature exists.
+
 ---
 
 # 5. Minimum Lovable Product (MLP)
@@ -86,6 +99,40 @@ MLP 0.1 shall include:
 - Service Status Dashboard.
 
 The MLP should establish the emotional and practical product foundation: JARVIS should feel present, responsive, understandable and safe, even before advanced automation or external integrations are introduced.
+
+## Product Personality and Behaviour
+
+JARVIS should behave like a calm, capable and trustworthy assistant.
+
+Expected behaviour:
+
+- Clear rather than clever.
+- Helpful without pretending to know more than it does.
+- Polite and steady under uncertainty.
+- Transparent when a service, provider or device capability is unavailable.
+- Respectful of family context and individual privacy.
+- Careful around children, sensitive information and high-risk actions.
+- Willing to ask for human approval rather than guessing.
+
+JARVIS should feel present, but not intrusive. Animation, voice and visual feedback should support understanding rather than distract from the task.
+
+## User Experience Philosophy
+
+The JARVIS experience should make system state visible.
+
+The GUI should help users understand:
+
+- what JARVIS heard or received;
+- what JARVIS is doing;
+- which services are online, offline or unavailable;
+- whether a response is local, provider-backed or limited by unavailable capability;
+- when human approval is required.
+
+The avatar or orb is a presence indicator, not decoration only. Its animation should communicate calm availability, thinking, degraded service or attention where useful.
+
+The dashboard should grow into a family operations surface showing useful status, service health, shared context and safe shortcuts. It should not become a noisy control panel.
+
+Multi-device interaction should preserve continuity while respecting device permissions. Windows-first delivery remains the initial priority, but phone, tablet, wearable and future device experiences should feel like extensions of the same JARVIS identity.
 
 ---
 
@@ -115,6 +162,52 @@ All services shall communicate through documented APIs.
 
 Failure of one service shall not stop the Core. JARVIS OS shall degrade gracefully, report service status clearly and continue operating with available capabilities wherever practical.
 
+## Capability Hierarchy
+
+JARVIS capabilities shall be organised as a hierarchy so future implementation remains understandable.
+
+```text
+JARVIS OS
+|
++-- Experience
+|   +-- GUI
+|   +-- Avatar / Orb
+|   +-- Conversation
+|   +-- Dashboard
+|
++-- Intelligence
+|   +-- Conversation Orchestration
+|   +-- AI Provider Abstraction
+|   +-- Planning
+|   +-- Learning Support
+|
++-- Knowledge and Memory
+|   +-- Session Memory
+|   +-- Personal Memory
+|   +-- Shared Family Memory
+|   +-- AIEMS Knowledge Capability
+|
++-- Interaction Services
+|   +-- Voice
+|   +-- Vision
+|   +-- Internet
+|   +-- Local Agent
+|
++-- Protection
+|   +-- Guardian
+|   +-- Permissions
+|   +-- Human Approval
+|   +-- Audit Logging
+|
++-- Extensibility
+    +-- Plugin Manager
+    +-- Smart Home
+    +-- Engineering Assistance
+    +-- Future Device Integrations
+```
+
+Capability relationships shall remain explicit. Memory supports intelligence. Guardian constrains high-risk actions. The GUI exposes service state. Provider abstraction protects the product from long-term dependency on any single AI provider.
+
 ---
 
 # 7. Core Services
@@ -137,6 +230,7 @@ Future Expansion:
 - Advanced planning.
 - Context-aware orchestration.
 - Provider selection across local and cloud AI capabilities.
+- AIEMS knowledge explanation.
 
 ## JARVIS Memory
 
@@ -155,6 +249,7 @@ Future Expansion:
 - Memory review and editing.
 - Consent-aware memory controls.
 - Context retrieval across devices.
+- Repository-backed engineering knowledge where approved.
 
 ## JARVIS Voice
 
@@ -209,6 +304,8 @@ Future Expansion:
 - Cyber monitoring.
 - Policy-aware automation.
 - Family safety reporting.
+- Pre-approved emergency action framework.
+- Parental oversight controls.
 
 ## JARVIS Internet
 
@@ -245,6 +342,7 @@ Future Expansion:
 - Device health checks.
 - Local file assistance.
 - Family IT support automation.
+- Strict local permission boundaries.
 
 ## JARVIS Plugin Manager
 
@@ -373,6 +471,7 @@ Roadmap phases describe product direction. Each implementation package shall sti
 Future JARVIS OS capability may include:
 
 - Smart Home.
+- Home Assistant integration assessment.
 - Cyber Monitoring.
 - Camera Monitoring.
 - Robotics.
@@ -380,6 +479,9 @@ Future JARVIS OS capability may include:
 - Vehicle Integration.
 - Multiple AI Providers.
 - Agent Collaboration.
+- AIEMS Knowledge Capability.
+- Engineering Assistance.
+- Backup and Recovery Assistance.
 
 Future capabilities shall remain modular, secure, privacy-aware and subject to human approval where risk requires it.
 
@@ -396,8 +498,14 @@ JARVIS OS engineering shall follow these principles:
 - Deliver value early.
 - Protect user privacy.
 - Remain modular.
+- Product before process.
+- Feature-first delivery.
+- Engineer for maintainable cost.
+- Preserve design intent before implementation detail.
 
 The product should grow through small, validated increments that make JARVIS more useful while preserving trust.
+
+Engineering economics matter. JARVIS should prefer simple, maintainable, low-cost solutions until complexity is justified by product value, safety or scalability.
 
 ---
 
@@ -406,3 +514,4 @@ The product should grow through small, validated increments that make JARVIS mor
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial JARVIS OS product architecture blueprint created. |
+| 1.1 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Promoted recovered product vision, behaviour, user experience, capability hierarchy and engineering intent into the product architecture. |

@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.4
+**Version:** 1.5
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -83,6 +83,15 @@ Engineering backlog management shall follow these principles:
 | EBG-0014 | Assess repository validation automation | ESR-0003 EIP-R4; GSF-020 | Approved Backlog | Medium | Programme Sponsor | Assess future automation for repository metadata and cross-reference validation after validation rules are defined; do not implement automation until separately approved. |
 | EBG-0015 | Investigate JARVIS Human-AI Interaction Memory and Behavioural Intelligence Layer | ESR-0003 EIP-R4 | Approved Backlog | Medium | Programme Sponsor | Investigate future JARVIS memory and behavioural intelligence capability, including governance boundaries, risks and controls; no implementation is authorised by this backlog entry. |
 | EBG-0016 | Consider renaming WP0 from "Engineering Synchronisation" to "Engineering & Repository Synchronisation" | ESR-0004 WP3 Governance Refinement | Deferred | Low | Programme Sponsor | Candidate terminology refinement for future consideration. Potentially clearer, but not required for the current implementation. |
+| EBG-0017 | JARVIS Product Requirements and Capability Backlog | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Create or identify the authoritative product requirements backlog for recovered JARVIS capability intent, avoiding raw transcript import and duplicate product documentation. |
+| EBG-0018 | JARVIS AI Provider Abstraction Architecture | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Define provider independence before any external AI provider integration. Preserve technology independence and avoid coupling JARVIS to one model or vendor. |
+| EBG-0019 | JARVIS Memory and Data Storage Architecture | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Define memory, storage, privacy and consent boundaries before long-term memory or family knowledge is implemented. |
+| EBG-0020 | JARVIS Guardian, Family Safety and Emergency Controls | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Define parental oversight, child safety, human approval and pre-approved emergency action boundaries before Guardian capability is implemented. |
+| EBG-0021 | JARVIS Local Agent Permission Boundary | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Define local device control limits before local agent implementation; local agents must not receive unlimited control. |
+| EBG-0022 | JARVIS AIEMS Knowledge Capability | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Investigate enabling JARVIS to understand and explain AIEMS using repository artefacts as governed knowledge. |
+| EBG-0023 | JARVIS Backup, Recovery and Data Protection Guidance | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Define backup and recovery expectations before persistent memory, family data or local operational state becomes significant. |
+| EBG-0024 | JARVIS Cost Strategy | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Define cost principles before paid providers, cloud services, voice, vision or storage decisions materially affect the programme. |
+| EBG-0025 | JARVIS Home Assistant and Smart Home Integration Assessment | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Assess Home Assistant and smart-home integration options before any smart-home implementation package is approved. |
 
 ---
 
@@ -173,6 +182,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added recovered knowledge promotion candidate backlog items from ESR-0004 EIP-EKR-0001. |
 | 1.4 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Marked STD-0004 Validation and Quality Assurance Standard backlog item completed following ESR-0004 EIP-ESR0004-02. |
 | 1.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added deferred candidate backlog item for future WP0 naming consideration following ESR-0004 WP3. |
 | 1.2 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Consolidated future validation, capability, automation and EIP/session standardisation backlog themes from ESR-0003 EIP-R4. |

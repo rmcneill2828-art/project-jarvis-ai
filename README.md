@@ -16,8 +16,8 @@ Supporting principle:
 | Current Phase | Phase 2 - Engineering Standards |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
-| Product Implementation | JARVIS lifecycle skeleton established |
-| Current Engineering Focus | Complete the minimum viable Engineering Standards baseline before platform decomposition and JARVIS development |
+| Product Implementation | JARVIS First Light skeleton established |
+| Current Engineering Focus | Consolidate recovered product knowledge and continue small validated JARVIS increments |
 
 ---
 
@@ -55,6 +55,8 @@ Current AIEMS capabilities include:
 ## JARVIS
 
 JARVIS is the intelligent AI platform and flagship implementation of AIEMS.
+
+The authoritative product blueprint is maintained in `jarvis/architecture/JARVIS_PRODUCT_ARCHITECTURE.md`. That document explains why JARVIS exists, how it should behave, what it should become and how product capabilities relate to each other.
 
 Current JARVIS implementation includes:
 
@@ -296,3 +298,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned README with AIEMS Workflow v3, repository-first engineering, current engineering roles, repository health review practice and STD-0003 baseline status. |
 | 3.2 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added reference to the JARVIS OS product architecture blueprint. |
 | 3.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added First Light launch guidance and updated JARVIS implementation summary. |
+| 3.4 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified the JARVIS product architecture as the authoritative home for recovered product vision and behaviour. |

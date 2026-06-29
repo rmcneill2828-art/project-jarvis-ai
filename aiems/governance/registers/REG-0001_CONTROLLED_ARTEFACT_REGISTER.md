@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 2.6
+**Version:** 2.7
 
 ---
 
@@ -106,11 +106,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0004 | Architecture Decision Record | AI Repository Interaction Policy | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0005 | Architecture Decision Record | AIEMS Strategic Scope | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 2.6 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 2.7 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.5 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -175,6 +175,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 2.7 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned EBR-0001 metadata following recovered knowledge promotion backlog consolidation. |
 | 2.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered STD-0004 Validation and Quality Assurance Standard and aligned EBR-0001 and PST-0001 metadata. |
 | 2.5 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned PBK-0001, COC-0001, PST-0001 and EBR-0001 metadata following ESR-0004 WP3 README WP0 review update. |
 | 2.4 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ESR-0003 closure report and aligned PST-0001 metadata for repository baseline acceptance. |
