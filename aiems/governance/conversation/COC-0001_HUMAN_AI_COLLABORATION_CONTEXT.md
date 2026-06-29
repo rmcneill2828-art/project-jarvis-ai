@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.5
+**Version:** 1.6
 
 ---
 
@@ -59,6 +59,8 @@ This document complements AIEMS. It does not replace engineering governance or r
    * WP0B Ã¯Â¿Â½ Engineering Session Initialisation
 
 4. WP0A Ã¯Â¿Â½ Repository Synchronisation shall confirm the repository baseline before creating or continuing an Engineering Session.
+
+   WP0A shall review README.md first for repository orientation and platform context. README introduces; controlled artefacts govern.
 
 5. WP0B Ã¯Â¿Â½ Engineering Session Initialisation shall create or confirm the active Engineering Session only after Repository Synchronisation is complete.
 
@@ -238,6 +240,7 @@ Record the current engineering state before beginning work.
 Before beginning engineering activities:
 
 * Review the repository baseline.
+* Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A Ã¯Â¿Â½ Repository Synchronisation.
 * Perform WP0B Ã¯Â¿Â½ Engineering Session Initialisation where a new or active Engineering Session must be confirmed.
@@ -252,6 +255,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 review artefact for repository orientation while preserving controlled artefact authority. |
 | 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle position and review, approval and implementation authority gates. |
 | 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |

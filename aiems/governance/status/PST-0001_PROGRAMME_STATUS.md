@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 1.5                                                |
+| Version          | 1.6                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -207,16 +207,21 @@ The following observations remain open for future engineering consideration:
 
 At the start of a new engineering session:
 
-1. Load COC-0001.
+1. Review README.md for repository orientation and platform context.
 2. Load PST-0001.
-3. Perform Engineering Synchronisation.
-4. Confirm the current repository baseline.
-5. Confirm the current engineering objective.
-6. Continue from the next approved EIP unless the Programme Sponsor directs otherwise.
-7. Current recommended next activity is ESR-0004 WP0A Repository Synchronisation from the accepted repository baseline.
-8. Confirm the current interaction context. An active Engineering Session defaults to AIEMS Execution Mode unless the Programme Sponsor explicitly changes the context.
+3. Review the previous Engineering Session Report.
+4. Load PBK-0001.
+5. Load COC-0001.
+6. Perform Engineering Synchronisation.
+7. Confirm the current repository baseline.
+8. Confirm the current engineering objective.
+9. Continue from the next approved EIP unless the Programme Sponsor directs otherwise.
+10. Current recommended next activity is ESR-0004 WP0A Repository Synchronisation from the accepted repository baseline.
+11. Confirm the current interaction context. An active Engineering Session defaults to AIEMS Execution Mode unless the Programme Sponsor explicitly changes the context.
 
 This allows future sessions to start from a clean conversational state while preserving programme continuity through repository evidence.
+
+README.md introduces the repository and platform context. Controlled AIEMS artefacts remain authoritative for programme status, governance, execution and collaboration rules.
 
 ---
 
@@ -247,6 +252,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1.6     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 review artefact before controlled governance artefacts. |
 | 1.5     | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0003 closure and repository baseline acceptance for ESR-0004. |
 | 1.4     | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Refreshed programme status following ESR-0003 completion, repository lifecycle alignment, ADR recovery and EBR-0002 baseline review. |
 | 1.3     | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |

@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -134,16 +134,18 @@ Every implementation session shall begin with repository-based Engineering Synch
 The Engineering Implementer shall:
 
 1. Start a clean implementation session.
-2. Review the current Engineering Session Report.
+2. Review README.md for repository orientation and platform context.
 3. Review PST-0001.
-4. Review PBK-0001.
-5. Review the approved Engineering Implementation Package.
-6. Review repository artefacts referenced by the approved Engineering Implementation Package.
-7. Confirm engineering scope.
-8. Implement approved scope only.
-9. Perform engineering self-review.
-10. Produce an Engineering Completion Report.
-11. Perform repository operations only when explicitly authorised by the Programme Sponsor or approved Engineering Implementation Package.
+4. Review the current Engineering Session Report.
+5. Review PBK-0001.
+6. Review COC-0001 where relevant.
+7. Review the approved Engineering Implementation Package.
+8. Review repository artefacts referenced by the approved Engineering Implementation Package.
+9. Confirm engineering scope.
+10. Implement approved scope only.
+11. Perform engineering self-review.
+12. Produce an Engineering Completion Report.
+13. Perform repository operations only when explicitly authorised by the Programme Sponsor or approved Engineering Implementation Package.
 
 Implementation session startup shall be based upon repository evidence and the approved implementation package.
 
@@ -163,14 +165,17 @@ WP0A confirms the repository baseline before creating or continuing an Engineeri
 
 WP0A shall confirm:
 
-* The latest accepted Engineering Session Report.
+* README.md for repository orientation and platform context.
 * PST-0001.
+* The latest accepted Engineering Session Report.
 * PBK-0001.
 * COC-0001 where relevant.
 * Repository Engineering Health Review outcome.
 * Previous Engineering Session status.
 * Repository baseline.
 * Repository suitability for engineering progression.
+
+README.md introduces the repository and platform context. Controlled AIEMS artefacts remain authoritative for governance, status, execution and collaboration rules.
 
 ## WP0B Ã¯Â¿Â½ Engineering Session Initialisation
 
@@ -493,3 +498,4 @@ This is a documentation architecture principle, not a software design principle.
 | 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |
 | 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
+| 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 Engineering Synchronisation review artefact while preserving controlled artefact authority. |

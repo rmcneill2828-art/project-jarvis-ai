@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -82,6 +82,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0013 | Create Engineering Decision Index | ESR-0002 Candidate Backlog Review | Approved Backlog | Medium | Programme Sponsor | Create a searchable controlled index of ADRs, Engineering Decisions and significant governance changes to improve decision traceability. |
 | EBG-0014 | Assess repository validation automation | ESR-0003 EIP-R4; GSF-020 | Approved Backlog | Medium | Programme Sponsor | Assess future automation for repository metadata and cross-reference validation after validation rules are defined; do not implement automation until separately approved. |
 | EBG-0015 | Investigate JARVIS Human-AI Interaction Memory and Behavioural Intelligence Layer | ESR-0003 EIP-R4 | Approved Backlog | Medium | Programme Sponsor | Investigate future JARVIS memory and behavioural intelligence capability, including governance boundaries, risks and controls; no implementation is authorised by this backlog entry. |
+| EBG-0016 | Consider renaming WP0 from "Engineering Synchronisation" to "Engineering & Repository Synchronisation" | ESR-0004 WP3 Governance Refinement | Deferred | Low | Programme Sponsor | Candidate terminology refinement for future consideration. Potentially clearer, but not required for the current implementation. |
 
 ---
 
@@ -172,6 +173,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added deferred candidate backlog item for future WP0 naming consideration following ESR-0004 WP3. |
 | 1.2 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Consolidated future validation, capability, automation and EIP/session standardisation backlog themes from ESR-0003 EIP-R4. |
 | 1.1 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Marked ADR-0004 and ADR-0005 recovery backlog items completed following ESR-0003 EIP-R2. |
 | 1.0 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Backlog Register created with ESR-0001 deferred work items. |
