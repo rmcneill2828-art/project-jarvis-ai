@@ -4,7 +4,7 @@ from enum import Enum
 from types import MappingProxyType
 from typing import Mapping
 
-from jarvis.services import ServiceStatus
+from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
 
 
 class JarvisState(Enum):
@@ -19,12 +19,33 @@ class Jarvis:
 
     def __init__(self) -> None:
         self._state = JarvisState.STOPPED
-        self._services: dict[str, ServiceStatus] = {
-            "Core": ServiceStatus.ONLINE,
-            "Memory": ServiceStatus.UNAVAILABLE,
-            "Voice": ServiceStatus.UNAVAILABLE,
-            "Vision": ServiceStatus.UNAVAILABLE,
-            "Internet": ServiceStatus.OFFLINE,
+        self._services: dict[str, JarvisService] = {
+            "Core": JarvisService(
+                name="Core",
+                status=ServiceStatus.ONLINE,
+                health=ServiceHealth.HEALTHY,
+                capabilities=("lifecycle", "conversation-routing", "service-status"),
+            ),
+            "Memory": JarvisService(
+                name="Memory",
+                status=ServiceStatus.UNAVAILABLE,
+                capabilities=("basic-conversation-context",),
+            ),
+            "Voice": JarvisService(
+                name="Voice",
+                status=ServiceStatus.UNAVAILABLE,
+                capabilities=("future-voice-input",),
+            ),
+            "Vision": JarvisService(
+                name="Vision",
+                status=ServiceStatus.UNAVAILABLE,
+                capabilities=("future-visual-understanding",),
+            ),
+            "Internet": JarvisService(
+                name="Internet",
+                status=ServiceStatus.OFFLINE,
+                capabilities=("future-online-assistance",),
+            ),
         }
 
     def start(self) -> JarvisState:
@@ -51,9 +72,20 @@ class Jarvis:
             msg = "Service name must not be empty."
             raise ValueError(msg)
 
-        self._services[name] = status
+        existing_service = self._services.get(name)
+        if existing_service is None:
+            self._services[name] = JarvisService(name=name, status=status)
+        else:
+            existing_service.status = status
 
     def service_statuses(self) -> Mapping[str, ServiceStatus]:
         """Return current service statuses."""
+
+        return MappingProxyType(
+            {name: service.status for name, service in self._services.items()}
+        )
+
+    def services(self) -> Mapping[str, JarvisService]:
+        """Return current service models."""
 
         return MappingProxyType(dict(self._services))

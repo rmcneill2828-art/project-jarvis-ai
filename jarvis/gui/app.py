@@ -66,6 +66,9 @@ class JarvisApp:
         send_button = ttk.Button(conversation_frame, text="Send", command=self._send_message)
         send_button.grid(row=1, column=1, sticky="e", padx=(8, 0), pady=(8, 0))
 
+        self._conversation_status = ttk.Label(conversation_frame, text="Ready")
+        self._conversation_status.grid(row=2, column=0, columnspan=2, sticky="w", pady=(4, 0))
+
         service_frame = ttk.LabelFrame(self._root, text="Service Status")
         service_frame.grid(row=1, column=1, rowspan=2, sticky="nsew", padx=(0, 16), pady=8)
         service_frame.columnconfigure(1, weight=1)
@@ -80,8 +83,11 @@ class JarvisApp:
         if message:
             self._append_message("You", message)
 
+        self._conversation_status.configure(text="JARVIS is thinking...")
+        self._root.update_idletasks()
         response = self._conversation.respond(message)
         self._append_message("JARVIS", response)
+        self._conversation_status.configure(text="Ready")
 
     def _append_message(self, speaker: str, message: str) -> None:
         self._conversation_display.configure(state="normal")

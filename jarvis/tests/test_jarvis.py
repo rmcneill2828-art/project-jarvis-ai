@@ -1,4 +1,4 @@
-from jarvis import Jarvis, JarvisState, ServiceStatus
+from jarvis import Jarvis, JarvisState, ServiceHealth, ServiceStatus
 
 
 def test_jarvis_starts_in_stopped_state() -> None:
@@ -41,3 +41,12 @@ def test_jarvis_can_register_service_status() -> None:
     jarvis.register_service("Voice", ServiceStatus.STARTING)
 
     assert jarvis.service_statuses()["Voice"] == ServiceStatus.STARTING
+
+
+def test_jarvis_reports_service_model_health_and_capabilities() -> None:
+    jarvis = Jarvis()
+
+    core_service = jarvis.services()["Core"]
+
+    assert core_service.health == ServiceHealth.HEALTHY
+    assert core_service.supports("conversation-routing")

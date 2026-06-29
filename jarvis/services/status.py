@@ -10,3 +10,11 @@ class ServiceStatus(Enum):
     OFFLINE = "Offline"
     UNAVAILABLE = "Unavailable"
     STARTING = "Starting"
+
+
+class ServiceHealth(Enum):
+    """Supported service health values."""
+
+    HEALTHY = "Healthy"
+    DEGRADED = "Degraded"
+    UNKNOWN = "Unknown"
