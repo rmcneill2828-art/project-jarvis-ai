@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 1.7
+**Version:** 1.8
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 1.7                                                |
+| Version          | 1.8                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -60,10 +60,10 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System            | AI Engineering Management System (AIEMS)                                                                        |
 | Repository                    | project-jarvis-ai                                                                                               |
 | Primary Branch                | main                                                                                                            |
-| Current Mode                  | Governance baseline refreshed following ESR-0003 remediation                                                   |
-| Current Phase                 | Phase 2 – Engineering Standards                                                                                 |
+| Current Mode                  | ESR-0004 repository baseline assessment complete pending Programme Sponsor acceptance                          |
+| Current Phase                 | Foundation Phase closure readiness; ESR-0005 Product Capability Delivery recommended                          |
 | Current Workflow              | AIEMS Engineering Workflow v3 with Engineering Implementer repository lifecycle                                 |
-| Current Engineering Objective | ESR-0003 closed; repository baseline accepted for ESR-0004 |
+| Current Engineering Objective | RBA-0001 completed against baseline candidate `b626548cac97a9d1348618ff7ee2aa3a78656a25`; ESR-0005 handover recommended |
 
 ---
 
@@ -120,10 +120,11 @@ WP7 Repository Baseline Acceptance
 | Capability              | Status      | Maturity | Notes                                                                                   |
 | ----------------------- | ----------- | -------- | --------------------------------------------------------------------------------------- |
 | Repository Architecture | Complete    | Complete | Repository structure, package layout and governance separation are established.         |
-| Governance Framework    | In Progress | High     | Core AIEMS governance artefacts exist and are stabilising.                              |
-| Engineering Standards   | In Progress | High     | STD-0001, STD-0002 and STD-0003 are approved; additional build-facing standards remain planned. |
+| Governance Framework    | In Progress | High     | Core AIEMS governance artefacts exist and are sufficient to support controlled product delivery. |
+| Engineering Standards   | In Progress | High     | STD-0001, STD-0002, STD-0003 and STD-0004 are approved; additional build-facing standards remain planned. |
 | Platform Architecture   | Planned     | Partial  | MOD-0001 exists but requires decomposition into implementable subsystem specifications. |
-| JARVIS Development      | Planned     | Early    | JARVIS lifecycle skeleton exists; product capabilities are not yet implemented.         |
+| JARVIS Product Architecture | Complete | High | JARVIS product vision, behaviour, principles and capability relationships are represented in the product architecture. |
+| JARVIS Development      | In Progress | Early    | First Light executable skeleton exists; product capabilities remain foundation-level.   |
 
 ---
 
@@ -145,6 +146,11 @@ WP7 Repository Baseline Acceptance
 | Engineering Implementer repository lifecycle implemented        | Complete |
 | HABEI research capability established                           | Complete |
 | Repository baseline reviewed through EBR-0002                   | Complete |
+| README.md added to WP0 synchronisation review                   | Complete |
+| STD-0004 Validation and Quality Assurance Standard approved     | Complete |
+| JARVIS product architecture established and recovered knowledge promoted | Complete |
+| JARVIS First Light executable skeleton established              | Complete |
+| ESR-0004 repository baseline assessed through RBA-0001          | Complete |
 
 ---
 
@@ -166,15 +172,16 @@ WP7 Repository Baseline Acceptance
 
 | Item                         | Status                              | Notes                                                     |
 | ---------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| Current Engineering Session  | ESR-0003 Closed                     | Engineering Session formally closed with repository baseline accepted for ESR-0004. |
-| Current Engineering Activity | ESR-0003 Engineering Session Closure Report | Complete. |
+| Current Engineering Session  | ESR-0004 Pending Sponsor Acceptance | Repository baseline assessment and handover completed for Programme Sponsor review. |
+| Current Engineering Activity | RBA-0001 ESR-0004 Repository Baseline Assessment | Complete. |
 | ESR-0001                     | Closed                              | Latest accepted Engineering Session Report reviewed as historical baseline. |
 | ESR-0002                     | Closed                              | Engineering Session closed with repository accepted with observations. |
 | ESR-0003                     | Closed                              | Repository baseline accepted for ESR-0004. |
+| ESR-0004                     | Pending Sponsor Acceptance          | Repository baseline assessed for ESR-0005 handover. |
 | P2-003                       | Complete                            | STD-0003 Software / Python Engineering Standard approved. |
-| Next Engineering Session     | ESR-0004 Pending                    | To be initiated from the accepted ESR-0003 repository baseline. |
-| Next Recommended Activity    | ESR-0004 WP0A Repository Synchronisation | Begin ESR-0004 from the accepted repository baseline. |
-| Current Review State         | EBR-0002 final verification completed | Repository Baseline Accepted for ESR-0004. |
+| Next Engineering Session     | ESR-0005 Recommended                | Recommended as Product Capability Delivery, pending Programme Sponsor decision. |
+| Next Recommended Activity    | ESR-0005 WP0 Engineering Synchronisation and Product Capability Backlog Prioritisation | Begin from RBA-0001 and select a small executable conversation capability slice. |
+| Current Review State         | RBA-0001 complete                   | ESR-0004 Repository Baseline Assessment recommends handover into ESR-0005. |
 
 ---
 
@@ -183,10 +190,10 @@ WP7 Repository Baseline Acceptance
 | Item                                | Status                             |
 | ----------------------------------- | ---------------------------------- |
 | Repository Health                   | Good                               |
-| Repository Acceptance               | Accepted for ESR-0004 |
-| Latest Repository Engineering Health Review | EBR-0002 Repository Baseline Review |
-| Baseline Review Scope               | Post-ESR-0003 governance integrity, register alignment and research separation |
-| Current Activity                    | ESR-0003 closed; ESR-0004 pending |
+| Repository Acceptance               | Recommended for ESR-0005 handover pending Programme Sponsor acceptance |
+| Latest Repository Engineering Health Review | RBA-0001 ESR-0004 Repository Baseline Assessment |
+| Baseline Review Scope               | ESR-0004 final repository baseline, product knowledge consolidation and ESR-0005 readiness |
+| Current Activity                    | ESR-0004 closure and ESR-0005 handover |
 
 ---
 
@@ -195,9 +202,12 @@ WP7 Repository Baseline Acceptance
 The following observations remain open for future engineering consideration:
 
 * ADR-0004 and ADR-0005 have been recovered as controlled ADR artefacts and are registered in REG-0001 and REG-0002.
-* Additional build-facing engineering standards are required before substantive JARVIS development.
+* Additional build-facing engineering standards remain planned and should be added only when they directly support delivery.
 * MOD-0001 requires decomposition into implementable subsystem specifications.
-* JARVIS remains at lifecycle skeleton stage.
+* JARVIS implementation remains at First Light skeleton stage.
+* JARVIS product requirements and capability backlog prioritisation should open ESR-0005.
+* AI provider abstraction, memory/data storage, Guardian safety, local agent permissions and cost strategy remain candidate backlog topics until separately approved.
+* Repeatable local validation tooling should be confirmed early in ESR-0005.
 * A future AI collaboration or engineering assurance standard may be appropriate after further workflow evidence is gathered.
 * Encoding artefacts identified during EBR-0002 remain candidates for separately approved remediation.
 
@@ -216,7 +226,7 @@ At the start of a new engineering session:
 7. Confirm the current repository baseline.
 8. Confirm the current engineering objective.
 9. Continue from the next approved EIP unless the Programme Sponsor directs otherwise.
-10. Current recommended next activity is ESR-0004 WP0A Repository Synchronisation from the accepted repository baseline.
+10. Current recommended next activity is ESR-0005 WP0 Engineering Synchronisation followed by Product Capability Backlog Prioritisation.
 11. Confirm the current interaction context. An active Engineering Session defaults to AIEMS Execution Mode unless the Programme Sponsor explicitly changes the context.
 
 This allows future sessions to start from a clean conversational state while preserving programme continuity through repository evidence.
@@ -252,6 +262,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1.8     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded RBA-0001 ESR-0004 repository baseline assessment and ESR-0005 handover recommendation. |
 | 1.7     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded STD-0004 Validation and Quality Assurance Standard as approved. |
 | 1.6     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 review artefact before controlled governance artefacts. |
 | 1.5     | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0003 closure and repository baseline acceptance for ESR-0004. |
