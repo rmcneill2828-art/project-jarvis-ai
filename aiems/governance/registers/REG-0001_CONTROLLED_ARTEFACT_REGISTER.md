@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 2.8
+**Version:** 2.9
 
 ---
 
@@ -106,7 +106,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0004 | Architecture Decision Record | AI Repository Interaction Policy | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0005 | Architecture Decision Record | AIEMS Strategic Scope | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 2.8 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 2.9 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -115,6 +115,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | STD-0002 | Standard | Engineering Documentation Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0004 | Standard | Validation and Quality Assurance Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
+| RBL-0004 | Repository Baseline | ESR-0004 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.0 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -177,6 +178,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 2.9 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered RBL-0004 as the accepted ESR-0004 repository baseline for ESR-0005. |
 | 2.8 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered RBA-0001 and ESR-0004 session report and aligned PST-0001 metadata for ESR-0005 handover. |
 | 2.7 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned EBR-0001 metadata following recovered knowledge promotion backlog consolidation. |
 | 2.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered STD-0004 Validation and Quality Assurance Standard and aligned EBR-0001 and PST-0001 metadata. |
