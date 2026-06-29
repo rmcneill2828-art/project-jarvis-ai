@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.2
+**Version:** 1.4
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -73,7 +73,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0004 | Lifecycle review of PBK-0001 | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Review lifecycle status of PBK-0001 and determine whether promotion or continued draft status is appropriate. |
 | EBG-0005 | REG-0001 metadata alignment following P2-004A | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Align REG-0001 metadata where required following P2-004A changes. |
 | EBG-0006 | REV-0002 Repository Baseline Verification | ESR-0001 deferred work | Approved Backlog | Medium | Programme Sponsor | Create REV-0002 as a controlled Repository Baseline Verification artefact. |
-| EBG-0007 | STD-0004 Validation and Quality Assurance Standard | ESR-0001 deferred work; GSF-011 | Approved Backlog | Medium | Programme Sponsor | Create or advance STD-0004 through an approved Engineering Implementation Package. Include WP6/WP7 verification standardisation and approved AI behavioural validation risk/control requirements. |
+| EBG-0007 | STD-0004 Validation and Quality Assurance Standard | ESR-0001 deferred work; GSF-011 | Completed | Medium | Programme Sponsor | STD-0004 created during ESR-0004 EIP-ESR0004-02. |
 | EBG-0008 | Create Engineering Implementation Package Standard | ESR-0002 Candidate Backlog Review; GSF-028 | Approved Backlog | Medium | Programme Sponsor | Create a dedicated controlled standard defining Engineering Implementation Package format, lifecycle, mandatory sections, numbering and approval rules to reduce repeated instruction overhead. |
 | EBG-0009 | Create Engineering Session Standard | ESR-0002 Candidate Backlog Review; GSF-028 | Approved Backlog | Medium | Programme Sponsor | Create a dedicated controlled standard for Engineering Session initiation, execution, closure, handover, continuity, single active session governance and Engineering Session Archive standardisation to reduce repeated session overhead. Include an Engineering Session Archive template / standard with consistent archive sections for engineering session overview, engineering timeline, approved EIPs, baseline acceptance history, repository verification log, engineering decisions and rationale, backlog changes, AIEMS improvements introduced, session metrics, lessons learned, final repository health review outcome and handover to the next Engineering Session. |
 | EBG-0010 | Define repository metadata and cross-reference validation rules | ESR-0002 Candidate Backlog Review | Approved Backlog | Medium | Programme Sponsor | Define validation rules for repository metadata, identifier uniqueness, artefact cross-references, parent artefact consistency and controlled document traceability as the rule baseline for future automation. |
@@ -173,6 +173,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Marked STD-0004 Validation and Quality Assurance Standard backlog item completed following ESR-0004 EIP-ESR0004-02. |
 | 1.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added deferred candidate backlog item for future WP0 naming consideration following ESR-0004 WP3. |
 | 1.2 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Consolidated future validation, capability, automation and EIP/session standardisation backlog themes from ESR-0003 EIP-R4. |
 | 1.1 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Marked ADR-0004 and ADR-0005 recovery backlog items completed following ESR-0003 EIP-R2. |

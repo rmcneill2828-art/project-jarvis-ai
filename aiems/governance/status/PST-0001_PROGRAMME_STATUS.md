@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 1.5
+**Version:** 1.7
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 1.6                                                |
+| Version          | 1.7                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -155,7 +155,7 @@ WP7 Repository Baseline Acceptance
 | STD-0001 | Approved | Controlled Artefact Standard approved and independently verified.       |
 | STD-0002 | Approved | Engineering Documentation Standard approved and independently verified. |
 | STD-0003 | Approved | Software / Python Engineering Standard. Baseline accepted.              |
-| STD-0004 | Planned  | Engineering Verification or Validation and Quality Assurance Standard.  |
+| STD-0004 | Approved | Validation and Quality Assurance Standard.                              |
 | STD-0005 | Planned  | Development Environment Standard.                                       |
 | STD-0006 | Planned  | Configuration and Secrets Standard.                                     |
 | STD-0008 | Planned  | Engineering Review and Assurance Standard.                              |
@@ -252,6 +252,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1.7     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded STD-0004 Validation and Quality Assurance Standard as approved. |
 | 1.6     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 review artefact before controlled governance artefacts. |
 | 1.5     | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0003 closure and repository baseline acceptance for ESR-0004. |
 | 1.4     | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Refreshed programme status following ESR-0003 completion, repository lifecycle alignment, ADR recovery and EBR-0002 baseline review. |
