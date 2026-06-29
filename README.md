@@ -59,6 +59,7 @@ JARVIS is the intelligent AI platform and flagship implementation of AIEMS.
 Current JARVIS implementation includes:
 
 - Product architecture blueprint in `jarvis/architecture/JARVIS_PRODUCT_ARCHITECTURE.md`.
+- First Light application skeleton launchable with `python -m jarvis`.
 - Python package structure.
 - Root `Jarvis` lifecycle object.
 - `JarvisState` lifecycle enumeration.
@@ -192,6 +193,18 @@ Repository changes are expected to remain traceable to controlled engineering ac
 
 ---
 
+# Launching JARVIS
+
+Run the First Light application skeleton from the repository root:
+
+```text
+python -m jarvis
+```
+
+The current application provides a simple GUI shell, animated orb placeholder, deterministic chat response and service status panel. No external AI provider is required.
+
+---
+
 # Repository Engineering Health Review
 
 Repository Engineering Health Reviews are performed during Engineering Synchronisation to identify governance drift, documentation inconsistencies, missing artefacts, technical debt and recommended Engineering Implementation Packages.
@@ -216,7 +229,7 @@ Engineering work is evidence-led: context is gathered before implementation, dec
 | Governance Framework | In Progress | Mature | Core governance exists; register and artefact consistency is actively managed. |
 | Engineering Standards | In Progress | High | STD-0001, STD-0002 and STD-0003 are approved; additional build-facing standards remain planned. |
 | Platform Architecture | In Progress | Partial | MOD-0001 defines the platform architecture; JARVIS product architecture now defines the product blueprint. |
-| JARVIS Development | In Progress | Partial | Lifecycle skeleton, public API, packaging configuration and tests exist. |
+| JARVIS Development | In Progress | Partial | First Light application skeleton, lifecycle object, public API, packaging configuration and tests exist. |
 
 ---
 
@@ -282,3 +295,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.0 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled README with current AIEMS repository structure, governance artefacts, project roadmap and JARVIS implementation baseline. |
 | 3.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned README with AIEMS Workflow v3, repository-first engineering, current engineering roles, repository health review practice and STD-0003 baseline status. |
 | 3.2 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added reference to the JARVIS OS product architecture blueprint. |
+| 3.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added First Light launch guidance and updated JARVIS implementation summary. |

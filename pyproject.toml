@@ -16,5 +16,9 @@ dev = [
     "ruff",
     "pytest",
 ]
+
+[project.scripts]
+jarvis = "jarvis.app:main"
+
 [tool.setuptools.packages.find]
 include = ["jarvis", "jarvis.*"]
