@@ -1,0 +1,35 @@
+# --------------------------------------------------
+# Project JARVIS AI Repository Line Endings
+# --------------------------------------------------
+# Keep text files consistent across Windows, macOS and Linux.
+# Repository text content is normalised to LF to prevent ghost changes.
+
+* text=auto eol=lf
+
+# Markdown and engineering documentation
+*.md text eol=lf
+*.txt text eol=lf
+
+# Configuration and structured data
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+
+# Scripts
+*.py text eol=lf
+*.ps1 text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
