@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.1
+**Version:** 2.2
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 2.1                                                |
+| Version          | 2.2                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -95,14 +95,18 @@ Approves Engineering Implementation
     v
 Engineering Implementer
     |
-    +-- Implements
+    +-- Implements Approved Scope
+    |
+    v
+Programme Sponsor Validation
+    |
+    v
+Engineering Implementer
+    |
     +-- Stages
     +-- Commits
     +-- Pushes
     +-- Reports Repository Completion
-    |
-    v
-Programme Sponsor Validation
     |
     v
 Engineering Reviewer
@@ -111,7 +115,10 @@ Engineering Reviewer
 WP6 Independent Repository Verification
     |
     v
-WP7 Programme Sponsor Baseline Acceptance
+Programme Sponsor
+    |
+    v
+WP7 Repository Baseline Acceptance
 ```
 
 Engineering Approval authorises work. Validation provides evidence. Verification confirms implementation. Acceptance establishes engineering authority for the repository baseline.
@@ -288,6 +295,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2.2     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Corrected authority lifecycle diagram so Programme Sponsor Validation occurs before Engineering Implementer commit and push. |
 | 2.1     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified current workflow distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |
 | 2.0     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 opening objectives and success criteria for engineering readiness. |
 | 1.9     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded RBL-0004 accepted ESR-0004 repository baseline and ESR-0005 readiness. |
