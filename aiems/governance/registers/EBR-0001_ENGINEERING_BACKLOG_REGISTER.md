@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.5
+**Version:** 1.6
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -92,6 +92,18 @@ Engineering backlog management shall follow these principles:
 | EBG-0023 | JARVIS Backup, Recovery and Data Protection Guidance | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Define backup and recovery expectations before persistent memory, family data or local operational state becomes significant. |
 | EBG-0024 | JARVIS Cost Strategy | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Define cost principles before paid providers, cloud services, voice, vision or storage decisions materially affect the programme. |
 | EBG-0025 | JARVIS Home Assistant and Smart Home Integration Assessment | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Assess Home Assistant and smart-home integration options before any smart-home implementation package is approved. |
+| EBG-0026 | Transcript Export Workflow Enhancement | ESR-0005 RBL-0006 observation | Candidate Backlog | Medium | Programme Sponsor | Improve transcript export with default save location, automatic naming convention, GUI acknowledgement and no popup save dialogue where practical. |
+| EBG-0027 | JRM-0001 JARVIS Product Roadmap | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Create a controlled product roadmap for JARVIS capability sequencing without expanding implementation scope. |
+| EBG-0028 | GUI Evolution Roadmap | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Define staged GUI maturity from First Light through operational workspace and future product surfaces. |
+| EBG-0029 | Product Growth Philosophy | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Record the principle that JARVIS grows by acquiring capabilities rather than accumulating features. |
+| EBG-0030 | Sentinel Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Sentinel responsibilities, boundaries and relationship to Guardian before Sentinel implementation. |
+| EBG-0031 | Guardian Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Guardian safety, permission, approval and protection boundaries before Guardian implementation. |
+| EBG-0032 | Historical Engineering Register | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Consider a controlled register for historically significant engineering baselines, tags and milestones. |
+| EBG-0033 | AIEMS Improvement Register / AIEMS Improvement Review | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Define a controlled mechanism for recording AIEMS process improvements without disrupting active engineering flow. |
+| EBG-0034 | Engineering Authority by Work Package | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define authority boundaries by work package type so implementation, assessment, correction and verification packages remain distinct. |
+| EBG-0035 | Context Activation Guidance | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define how package context, repository baseline, role authority and relevant artefacts are activated before execution or verification. |
+| EBG-0036 | WP6 Repository Content Verification Standard | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define repeatable WP6 repository content verification expectations, evidence requirements and reporting structure. |
+| EBG-0037 | Engineering Package Classifications: EIP / EAP / ECP | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Define controlled package classifications for Engineering Implementation Packages, Engineering Assessment Packages and Engineering Corrective Packages. |
 
 ---
 
@@ -182,6 +194,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 closure backlog items for export workflow, product roadmaps, Sentinel and Guardian architecture, context activation and engineering package authority guidance. |
 | 1.5 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added recovered knowledge promotion candidate backlog items from ESR-0004 EIP-EKR-0001. |
 | 1.4 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Marked STD-0004 Validation and Quality Assurance Standard backlog item completed following ESR-0004 EIP-ESR0004-02. |
 | 1.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added deferred candidate backlog item for future WP0 naming consideration following ESR-0004 WP3. |

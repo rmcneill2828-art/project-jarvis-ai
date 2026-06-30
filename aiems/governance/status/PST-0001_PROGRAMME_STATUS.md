@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.2
+**Version:** 2.3
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 2.2                                                |
+| Version          | 2.3                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -60,10 +60,10 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System            | AI Engineering Management System (AIEMS)                                                                        |
 | Repository                    | project-jarvis-ai                                                                                               |
 | Primary Branch                | main                                                                                                            |
-| Current Mode                  | ESR-0004 repository baseline accepted; ESR-0005 ready to commence                                             |
-| Current Phase                 | Foundation Phase complete; ESR-0005 Product Capability Delivery ready                                         |
+| Current Mode                  | ESR-0005 closed; RBL-0006 accepted with observations                                                          |
+| Current Phase                 | Foundation Phase complete; ESR-0006 planning ready from Operational First Light / Conversation Workspace      |
 | Current Workflow              | AIEMS Engineering Workflow v3 with Engineering Implementer repository lifecycle                                 |
-| Current Engineering Objective | RBL-0004 accepted at commit `9007331ae0219b9a500564adbc9cf9738bd94681`; ESR-0005 handover ready |
+| Current Engineering Objective | RBL-0006 accepted at commit `4f2b091`; ESR-0006 planning should begin from the accepted Conversation Workspace baseline. |
 
 ---
 
@@ -162,6 +162,8 @@ Engineering Approval authorises work. Validation provides evidence. Verification
 | JARVIS First Light executable skeleton established              | Complete |
 | ESR-0004 repository baseline assessed through RBA-0001          | Complete |
 | ESR-0004 repository baseline accepted through RBL-0004          | Complete |
+| JARVIS Conversation Workspace operationally validated            | Complete |
+| ESR-0005 repository baseline accepted through RBL-0006           | Complete |
 
 ---
 
@@ -183,16 +185,17 @@ Engineering Approval authorises work. Validation provides evidence. Verification
 
 | Item                         | Status                              | Notes                                                     |
 | ---------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| Current Engineering Session  | ESR-0004 Ready for Final Closure     | Repository baseline accepted through RBL-0004. |
-| Current Engineering Activity | RBL-0004 ESR-0004 Repository Baseline | Accepted. |
+| Current Engineering Session  | ESR-0005 Closed                      | Repository baseline accepted through RBL-0006. |
+| Current Engineering Activity | RBL-0006 ESR-0005 Repository Baseline | Accepted with observations. |
 | ESR-0001                     | Closed                              | Latest accepted Engineering Session Report reviewed as historical baseline. |
 | ESR-0002                     | Closed                              | Engineering Session closed with repository accepted with observations. |
 | ESR-0003                     | Closed                              | Repository baseline accepted for ESR-0004. |
-| ESR-0004                     | Ready for Final Closure             | Repository baseline accepted for ESR-0005 handover. |
+| ESR-0004                     | Closed                              | Repository baseline accepted for ESR-0005 handover. |
+| ESR-0005                     | Closed                              | Operational First Light / Conversation Workspace accepted through RBL-0006. |
 | P2-003                       | Complete                            | STD-0003 Software / Python Engineering Standard approved. |
-| Next Engineering Session     | ESR-0005 Ready                      | Product Capability Delivery ready to commence from RBL-0004. |
-| Next Recommended Activity    | ESR-0005 WP0 Engineering Synchronisation and Product Capability Backlog Prioritisation | Begin from RBL-0004 and select a small executable conversation capability slice. |
-| Current Review State         | RBL-0004 accepted                   | ESR-0004 repository baseline accepted for ESR-0005. |
+| Next Engineering Session     | ESR-0006 Planning Ready             | Begin from RBL-0006 and select the next controlled product or governance increment. |
+| Next Recommended Activity    | ESR-0006 WP0 Engineering Synchronisation from RBL-0006 | Confirm closure artefacts, review backlog and select the next approved implementation package. |
+| Current Review State         | RBL-0006 accepted with observations | ESR-0005 repository baseline accepted for ESR-0006 planning. |
 
 ---
 
@@ -201,11 +204,11 @@ Engineering Approval authorises work. Validation provides evidence. Verification
 | Item                                | Status                             |
 | ----------------------------------- | ---------------------------------- |
 | Repository Health                   | Good                               |
-| Repository Acceptance               | Accepted for ESR-0005 handover through RBL-0004 |
-| Current Repository Baseline         | RBL-0004 / `9007331ae0219b9a500564adbc9cf9738bd94681` |
-| Latest Repository Engineering Health Review | RBA-0001 ESR-0004 Repository Baseline Assessment |
-| Baseline Review Scope               | ESR-0004 final repository baseline, product knowledge consolidation and ESR-0005 readiness |
-| Current Activity                    | ESR-0004 final closure and ESR-0005 start readiness |
+| Repository Acceptance               | Accepted with observations through RBL-0006 |
+| Current Repository Baseline         | RBL-0006 / `4f2b091` |
+| Latest Repository Engineering Health Review | WP6.2 Independent Repository Content Verification |
+| Baseline Review Scope               | ESR-0005 final repository baseline, Conversation Workspace and ESR-0006 readiness |
+| Current Activity                    | ESR-0005 closure and ESR-0006 planning readiness |
 
 ---
 
@@ -222,27 +225,29 @@ The following observations remain open for future engineering consideration:
 * Repeatable local validation tooling should be confirmed early in ESR-0005.
 * A future AI collaboration or engineering assurance standard may be appropriate after further workflow evidence is gathered.
 * Encoding artefacts identified during EBR-0002 remain candidates for separately approved remediation.
+* Transcript export workflow should be enhanced with default save location, automatic naming and GUI acknowledgement in a future approved package.
+* Context Activation guidance and Engineering Authority by Work Package guidance should be considered for future AIEMS maturity.
 
 ---
 
-# 11. ESR-0005 Opening Objectives
+# 11. ESR-0006 Opening Objectives
 
-1. Prioritise Product Capability Backlog.
-2. Approve first Engineering Implementation Package.
-3. Deliver first user-visible capability.
-4. Maintain Repository-First Engineering.
+1. Start from RBL-0006 accepted baseline.
+2. Review ESR-0005 closure artefacts and backlog updates.
+3. Select the next controlled product or governance increment.
+4. Preserve Operational First Light / Conversation Workspace while planning future capability growth.
 
 ---
 
-# 12. ESR-0005 Success Criteria
+# 12. ESR-0006 Success Criteria
 
-ESR-0005 should be considered successful when:
+ESR-0006 should be considered successful when:
 
-* one new executable capability is delivered;
-* tests are updated;
-* documentation is updated;
-* a repository baseline is produced;
-* repository health is maintained.
+* the next Engineering Implementation Package is selected from RBL-0006 evidence;
+* approved work remains traceable to backlog or closure observations;
+* no strategic roadmap capability is introduced without architecture and approval;
+* repository health is maintained;
+* the next repository baseline is independently verified before acceptance.
 
 ---
 
@@ -259,7 +264,7 @@ At the start of a new engineering session:
 7. Confirm the current repository baseline.
 8. Confirm the current engineering objective.
 9. Continue from the next approved EIP unless the Programme Sponsor directs otherwise.
-10. Current recommended next activity is ESR-0005 WP0 Engineering Synchronisation from RBL-0004 followed by Product Capability Backlog Prioritisation.
+10. Current recommended next activity is ESR-0006 WP0 Engineering Synchronisation from RBL-0006 followed by backlog review and next-package selection.
 11. Confirm the current interaction context. An active Engineering Session defaults to AIEMS Execution Mode unless the Programme Sponsor explicitly changes the context.
 
 This allows future sessions to start from a clean conversational state while preserving programme continuity through repository evidence.
@@ -295,6 +300,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2.3     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0005 closure, RBL-0006 accepted baseline and ESR-0006 planning readiness. |
 | 2.2     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Corrected authority lifecycle diagram so Programme Sponsor Validation occurs before Engineering Implementer commit and push. |
 | 2.1     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified current workflow distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |
 | 2.0     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 opening objectives and success criteria for engineering readiness. |

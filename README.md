@@ -16,8 +16,8 @@ Supporting principle:
 | Current Phase | Phase 2 - Engineering Standards |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
-| Product Implementation | JARVIS First Light skeleton established |
-| Current Engineering Focus | Consolidate recovered product knowledge and continue small validated JARVIS increments |
+| Product Implementation | Operational First Light / Conversation Workspace |
+| Current Engineering Focus | Continue from RBL-0006 with controlled product capability planning and small validated JARVIS increments |
 
 ---
 
@@ -62,6 +62,7 @@ Current JARVIS implementation includes:
 
 - Product architecture blueprint in `jarvis/architecture/JARVIS_PRODUCT_ARCHITECTURE.md`.
 - First Light application skeleton launchable with `python -m jarvis`.
+- Operational Conversation Workspace with deterministic offline chat, session metadata and transcript export.
 - Python package structure.
 - Root `Jarvis` lifecycle object.
 - `JarvisState` lifecycle enumeration.
@@ -201,7 +202,7 @@ Run the First Light application skeleton from the repository root:
 python -m jarvis
 ```
 
-The current application provides a simple GUI shell, animated orb placeholder, deterministic chat response and service status panel. No external AI provider is required.
+The current application provides an operational First Light Conversation Workspace with a simple GUI shell, animated orb placeholder, deterministic chat response, service status panel, session metadata, New Conversation, Clear Conversation and user-initiated transcript export. No external AI provider is required.
 
 ---
 
@@ -229,7 +230,7 @@ Engineering work is evidence-led: context is gathered before implementation, dec
 | Governance Framework | In Progress | Mature | Core governance exists; register and artefact consistency is actively managed. |
 | Engineering Standards | In Progress | High | STD-0001, STD-0002 and STD-0003 are approved; additional build-facing standards remain planned. |
 | Platform Architecture | In Progress | Partial | MOD-0001 defines the platform architecture; JARVIS product architecture now defines the product blueprint. |
-| JARVIS Development | In Progress | Partial | First Light application skeleton, lifecycle object, public API, packaging configuration and tests exist. |
+| JARVIS Development | In Progress | Partial | Operational First Light / Conversation Workspace, lifecycle object, public API, packaging configuration and tests exist. |
 
 ---
 
@@ -297,3 +298,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.2 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added reference to the JARVIS OS product architecture blueprint. |
 | 3.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added First Light launch guidance and updated JARVIS implementation summary. |
 | 3.4 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified the JARVIS product architecture as the authoritative home for recovered product vision and behaviour. |
+| 3.5 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Updated current product state to Operational First Light / Conversation Workspace following RBL-0006 acceptance. |
