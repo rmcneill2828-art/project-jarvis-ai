@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -58,9 +58,11 @@ The accountable human engineer remains responsible for engineering direction, ap
 
 ## 4. Validation Before Completion
 
-AI shall verify that completed work satisfies the approved engineering activity before reporting completion.
+AI shall validate that completed work satisfies the approved engineering activity before reporting completion.
 
 Validation may include reviewing file scope, inspecting differences, executing agreed quality checks and confirming alignment with the approved implementation plan.
+
+Validation provides evidence. It does not itself establish repository acceptance.
 
 ## 5. Human Accountability
 
@@ -437,18 +439,29 @@ Completion reporting shall distinguish completed implementation from recommendat
 
 Repository execution is part of Engineering Implementer responsibility when explicitly authorised by the Programme Sponsor or an approved Engineering Implementation Package.
 
-The validated repository lifecycle is:
+The AIEMS authority lifecycle distinguishes approval, validation, verification and acceptance.
+
+Engineering Approval authorises work to proceed within a defined scope. Approval may authorise implementation and repository execution, but it is not the same as Repository Baseline Acceptance.
+
+Validation provides evidence that the completed work matches the approved scope. Validation may be performed by the Engineering Implementer and by the Programme Sponsor, depending on the activity and approved package.
+
+Verification independently confirms repository evidence after implementation. Independent Repository Verification shall be performed after pushed repository changes where the workflow requires WP6.
+
+Acceptance establishes engineering authority for the repository baseline. Only the Programme Sponsor may accept a Repository Baseline.
+
+The clarified repository lifecycle is:
 
 1. Programme Sponsor approves engineering work, implementation scope and repository changes.
 2. Engineering Implementer implements the approved scope.
-3. Engineering Implementer performs authorised repository staging, commit and push.
-4. Engineering Implementer reports commit SHA, commit message and repository status.
-5. Engineering Reviewer performs WP6 Independent GitHub Verification.
-6. Engineering Reviewer performs WP7 Repository Baseline Acceptance.
+3. Programme Sponsor validates the completed work or receives validation evidence as required by the approved package.
+4. Engineering Implementer performs authorised repository staging, commit and push.
+5. Engineering Implementer reports commit SHA, commit message and repository status.
+6. Engineering Reviewer performs WP6 Independent Repository Verification.
+7. Programme Sponsor performs WP7 Repository Baseline Acceptance.
 
 The Programme Sponsor remains accountable for approval of engineering work, implementation scope and repository changes. The Programme Sponsor is not responsible for repository execution unless separately directed.
 
-The Engineering Reviewer shall not perform repository implementation. The Engineering Reviewer independently verifies repository state using WP6 and confirms repository baseline using WP7.
+The Engineering Reviewer shall not perform repository implementation. The Engineering Reviewer independently verifies repository state using WP6 and may recommend baseline acceptance. Repository Baseline Acceptance remains a Programme Sponsor authority.
 
 ---
 
@@ -499,3 +512,4 @@ This is a documentation architecture principle, not a software design principle.
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |
 | 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
 | 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 Engineering Synchronisation review artefact while preserving controlled artefact authority. |
+| 1.7 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |

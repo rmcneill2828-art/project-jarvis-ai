@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 2.0                                                |
+| Version          | 2.1                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -69,20 +69,18 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 
 # 4. Current Engineering Workflow
 
-The current approved workflow is AIEMS Engineering Workflow v3.
+The current approved workflow is AIEMS Engineering Workflow v3 with clarified authority, validation, verification and acceptance lifecycle.
 
 Workflow sequence:
 
-1. Engineering Synchronisation
-2. Planning and Scope Agreement
-3. Engineering Implementation Package
-4. Human Engineering Review
-5. Human Approval
-6. Codex Implementation and Self-Review
-7. Engineering Implementer Repository Operations
-8. WP6 Independent GitHub Verification
-9. WP7 Repository Baseline Acceptance
-10. Phase Closure
+1. Engineering Planning
+2. Programme Sponsor Approval
+3. Implementation
+4. Programme Sponsor Validation
+5. Commit and Push
+6. Independent Repository Verification
+7. Programme Sponsor Baseline Acceptance
+8. Phase Closure
 
 COC-0001 is the authoritative collaboration context for this workflow.
 
@@ -104,14 +102,19 @@ Engineering Implementer
     +-- Reports Repository Completion
     |
     v
+Programme Sponsor Validation
+    |
+    v
 Engineering Reviewer
     |
     v
-WP6 Independent GitHub Verification
+WP6 Independent Repository Verification
     |
     v
-WP7 Repository Baseline Acceptance
+WP7 Programme Sponsor Baseline Acceptance
 ```
+
+Engineering Approval authorises work. Validation provides evidence. Verification confirms implementation. Acceptance establishes engineering authority for the repository baseline.
 
 ---
 
@@ -285,6 +288,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2.1     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified current workflow distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |
 | 2.0     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 opening objectives and success criteria for engineering readiness. |
 | 1.9     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded RBL-0004 accepted ESR-0004 repository baseline and ESR-0005 readiness. |
 | 1.8     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded RBA-0001 ESR-0004 repository baseline assessment and ESR-0005 handover recommendation. |

@@ -2,7 +2,7 @@
 
 > *"A deliverable is complete when evidence shows it is correct, reviewed and ready for the repository baseline."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | STD-0004 |
 | Title | Validation and Quality Assurance Standard |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -77,7 +77,30 @@ Validation effort shall be appropriate to the risk, complexity and permanence of
 
 ---
 
-# 6. Definition of Done
+# 6. Authority and Assurance Definitions
+
+AIEMS distinguishes the following assurance and authority terms:
+
+| Term | Meaning |
+|------|---------|
+| Engineering Approval | Programme Sponsor authorisation for a defined engineering activity, scope or repository operation to proceed. |
+| Validation | Evidence-gathering that confirms the completed work satisfies the approved scope, constraints and checks. |
+| Verification | Independent confirmation that implementation evidence is present in the repository and matches the reported outcome. |
+| Acceptance | Programme Sponsor decision that establishes the accepted engineering or repository baseline. |
+
+Validation provides evidence.
+
+Verification confirms implementation.
+
+Acceptance establishes engineering authority.
+
+Engineering Approval is distinct from Acceptance. Approval authorises work to begin or proceed. Acceptance confirms the resulting baseline after implementation, validation and verification.
+
+Only the Programme Sponsor may accept a Repository Baseline.
+
+---
+
+# 7. Definition of Done
 
 An engineering deliverable is done when the approved scope has been implemented, reviewed, verified and accepted or explicitly deferred by the appropriate authority.
 
@@ -92,24 +115,30 @@ An engineering deliverable is done when the approved scope has been implemented,
 
 ---
 
-# 7. Validation Gates
+# 8. Validation Gates
 
 Engineering deliverables shall progress through the following validation gates where applicable:
 
 ```text
+Engineering Planning
+    |
+    v
+Programme Sponsor Approval
+    |
+    v
 Implementation
     |
     v
-Engineering Review
+Programme Sponsor Validation
     |
     v
-Independent Verification
+Commit & Push
     |
     v
-GitHub Repository Verification
+Independent Repository Verification
     |
     v
-Programme Sponsor Acceptance
+Programme Sponsor Baseline Acceptance
     |
     v
 Repository Baseline Accepted
@@ -119,11 +148,12 @@ Validation gates may be scaled for small or low-risk changes, but any skipped or
 
 ---
 
-# 8. Verification Types
+# 9. Verification Types
 
 | Verification Type | Definition |
 |-------------------|------------|
-| Self Verification | The implementer confirms that the completed work matches the approved scope and reports checks performed. |
+| Self Validation | The implementer confirms that the completed work matches the approved scope and reports checks performed. |
+| Programme Sponsor Validation | The Programme Sponsor validates that the completed work satisfies the approved intent before repository baseline progression. |
 | Independent Engineering Review | A reviewer evaluates the deliverable against the approved scope, repository evidence and applicable standards. |
 | Human Verified | Confirmation supplied by the Programme Sponsor or Engineering Implementer. |
 | AI Verified | Independent verification using GitHub connector, repository evidence or equivalent available verification capability. |
@@ -133,7 +163,7 @@ Verification evidence shall identify what was checked, the result and any findin
 
 ---
 
-# 9. Repository Baseline Acceptance
+# 10. Repository Baseline Acceptance
 
 Repository Baseline Acceptance requires the following minimum conditions:
 
@@ -147,9 +177,13 @@ Repository Baseline Acceptance requires the following minimum conditions:
 
 If any condition cannot be completed, the limitation shall be recorded before acceptance is recommended.
 
+Independent verification may recommend acceptance. It does not establish acceptance.
+
+Repository Baseline Acceptance is established only when the Programme Sponsor accepts the verified repository baseline.
+
 ---
 
-# 10. Validation Checklist
+# 11. Validation Checklist
 
 Future Engineering Implementation Packages may use the following checklist:
 
@@ -168,7 +202,7 @@ Future Engineering Implementation Packages may use the following checklist:
 
 ---
 
-# 11. Quality Review Findings
+# 12. Quality Review Findings
 
 Quality review findings shall use the following severity levels:
 
@@ -192,7 +226,7 @@ Quality review outcomes shall be:
 
 ---
 
-# 12. Maintenance Requirements
+# 13. Maintenance Requirements
 
 STD-0004 shall remain concise and delivery-focused.
 
@@ -202,8 +236,9 @@ This standard shall be reviewed when validation practice changes materially, rec
 
 ---
 
-# 13. Version History
+# 14. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Validation and Quality Assurance Standard created for Project JARVIS AI. |
+| 1.1 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified engineering approval, validation, independent verification and Programme Sponsor baseline acceptance lifecycle. |
