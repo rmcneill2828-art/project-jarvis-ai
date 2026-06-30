@@ -1,4 +1,4 @@
-﻿# EBR-0001 - Engineering Backlog Register
+# EBR-0001 - Engineering Backlog Register
 
 > *"Deferred work remains governed work."*
 

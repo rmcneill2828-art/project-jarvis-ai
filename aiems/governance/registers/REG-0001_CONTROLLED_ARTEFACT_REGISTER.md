@@ -1,4 +1,4 @@
-﻿# REG-0001 â€“ Controlled Artefact Register
+# REG-0001 â€“ Controlled Artefact Register
 
 > *"You cannot govern what you cannot identify."*
 
