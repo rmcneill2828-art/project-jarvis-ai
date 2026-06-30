@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 1.9
+**Version:** 2.0
 
 ---
 
@@ -12,7 +12,7 @@
 | ---------------- | -------------------------------------------------- |
 | Artefact ID      | PST-0001                                           |
 | Title            | Programme Status                                   |
-| Version          | 1.9                                                |
+| Version          | 2.0                                                |
 | Status           | Approved                                           |
 | Owner            | Programme Sponsor & Chief Engineering Advisor      |
 | Approved By      | Programme Sponsor                                  |
@@ -215,7 +215,28 @@ The following observations remain open for future engineering consideration:
 
 ---
 
-# 11. Session Start Guidance
+# 11. ESR-0005 Opening Objectives
+
+1. Prioritise Product Capability Backlog.
+2. Approve first Engineering Implementation Package.
+3. Deliver first user-visible capability.
+4. Maintain Repository-First Engineering.
+
+---
+
+# 12. ESR-0005 Success Criteria
+
+ESR-0005 should be considered successful when:
+
+* one new executable capability is delivered;
+* tests are updated;
+* documentation is updated;
+* a repository baseline is produced;
+* repository health is maintained.
+
+---
+
+# 13. Session Start Guidance
 
 At the start of a new engineering session:
 
@@ -237,7 +258,7 @@ README.md introduces the repository and platform context. Controlled AIEMS artef
 
 ---
 
-# 12. Maintenance
+# 14. Maintenance
 
 PST-0001 shall be reviewed and updated:
 
@@ -264,6 +285,7 @@ It shall not duplicate detailed content from controlled artefacts.
 
 | Version | Date         | Author                                        | Summary                                                                                                                      |
 | ------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2.0     | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 opening objectives and success criteria for engineering readiness. |
 | 1.9     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded RBL-0004 accepted ESR-0004 repository baseline and ESR-0005 readiness. |
 | 1.8     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded RBA-0001 ESR-0004 repository baseline assessment and ESR-0005 handover recommendation. |
 | 1.7     | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded STD-0004 Validation and Quality Assurance Standard as approved. |
