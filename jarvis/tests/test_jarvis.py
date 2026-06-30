@@ -29,6 +29,7 @@ def test_jarvis_reports_initial_service_statuses() -> None:
     statuses = jarvis.service_statuses()
 
     assert statuses["Core"] == ServiceStatus.ONLINE
+    assert statuses["Conversation"] == ServiceStatus.ONLINE
     assert statuses["Memory"] == ServiceStatus.UNAVAILABLE
     assert statuses["Voice"] == ServiceStatus.UNAVAILABLE
     assert statuses["Vision"] == ServiceStatus.UNAVAILABLE
@@ -47,6 +48,9 @@ def test_jarvis_reports_service_model_health_and_capabilities() -> None:
     jarvis = Jarvis()
 
     core_service = jarvis.services()["Core"]
+    conversation_service = jarvis.services()["Conversation"]
 
     assert core_service.health == ServiceHealth.HEALTHY
     assert core_service.supports("conversation-routing")
+    assert conversation_service.health == ServiceHealth.HEALTHY
+    assert conversation_service.supports("session-transcript")

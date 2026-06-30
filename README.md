@@ -75,9 +75,8 @@ Current JARVIS implementation includes:
 
 ```text
 aiems/
-  glossary/
   governance/
-    change/
+    baselines/
     charters/
     conversation/
     decisions/
@@ -86,25 +85,24 @@ aiems/
     reviews/
     sessions/
     status/
-  guides/
   models/
-  policies/
-  principles/
-  procedures/
   standards/
-  templates/
+docs/
+  0000-Governance/
 jarvis/
   architecture/
   automation/
+  config/
   core/
   guardian/
+  gui/
   interfaces/
   memory/
+  services/
   shared/
   tests/
 research/
-shared/
-tools/
+  HABEI-0001/
 ```
 
 ---

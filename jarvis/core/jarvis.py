@@ -26,6 +26,12 @@ class Jarvis:
                 health=ServiceHealth.HEALTHY,
                 capabilities=("lifecycle", "conversation-routing", "service-status"),
             ),
+            "Conversation": JarvisService(
+                name="Conversation",
+                status=ServiceStatus.ONLINE,
+                health=ServiceHealth.HEALTHY,
+                capabilities=("deterministic-local-provider", "session-transcript"),
+            ),
             "Memory": JarvisService(
                 name="Memory",
                 status=ServiceStatus.UNAVAILABLE,
