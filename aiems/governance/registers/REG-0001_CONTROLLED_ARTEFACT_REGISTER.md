@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.0
+**Version:** 3.1
 
 ---
 
@@ -116,6 +116,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0004 | Standard | Validation and Quality Assurance Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | RBL-0004 | Repository Baseline | ESR-0004 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
+| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.0 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -174,10 +175,22 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 ---
 
+# Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current ESR-0006 repository baseline registered as a controlled artefact. |
+| [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] | Previous accepted repository baseline and source baseline for ESR-0006. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records follow-up engineering backlog items associated with ESR-0006 repository readiness and OSE outcomes. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status artefact that consumes the current controlled repository baseline context. |
+
+---
+
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.1 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Registered RBL-0007 as the accepted ESR-0006 repository baseline and added related artefact traceability. |
 | 3.0 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned PBK-0001, STD-0004 and PST-0001 metadata following engineering authority lifecycle clarification. |
 | 2.9 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered RBL-0004 as the accepted ESR-0004 repository baseline for ESR-0005. |
 | 2.8 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered RBA-0001 and ESR-0004 session report and aligned PST-0001 metadata for ESR-0005 handover. |
