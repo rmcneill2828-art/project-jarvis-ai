@@ -1,4 +1,4 @@
-# STD-0003 – Software / Python Engineering Standard
+# STD-0003 - Software / Python Engineering Standard
 
 > *"Software engineering quality begins with clear boundaries, repeatable validation and accountable change."*
 
@@ -273,13 +273,25 @@ This standard shall be reviewed when:
 
 Future language-specific standards may supplement this standard where required.
 
-This standard shall remain aligned with AIEMS governance, approved repository architecture and the current engineering workflow.
+This standard shall remain aligned with AIEMS governance, [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|approved repository architecture]] and the current engineering workflow.
 
 ---
 
 # Guiding Principle
 
 > *"Software is not complete when it works once. It is complete when it can be understood, validated, maintained and safely changed."*
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Defines controlled artefact requirements that govern this standard. |
+| [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] | Defines documentation quality expectations for software engineering evidence. |
+| [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] | Defines validation and quality assurance expectations for software deliverables. |
+| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture context for repository and software structure. |
+| [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture context for JARVIS software implementation. |
 
 ---
 

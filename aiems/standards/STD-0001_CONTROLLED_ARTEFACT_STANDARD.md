@@ -1,4 +1,4 @@
-# STD-0001 – Controlled Artefact Standard
+# STD-0001 - Controlled Artefact Standard
 
 > *"A controlled artefact is more than a document—it is governed engineering evidence. Consistent artefacts enable consistent engineering."*
 
@@ -35,7 +35,7 @@ The objectives of this standard are to:
 - simplify maintenance and review;
 - improve readability and reuse across the AI Engineering Platform.
 
-All Controlled Artefacts shall comply with this standard unless an approved Architecture Decision Record explicitly states otherwise.
+All Controlled Artefacts shall comply with this standard unless an approved [[REG-0002_ADR_REGISTER|Architecture Decision Record]] explicitly states otherwise.
 
 ---
 
@@ -71,7 +71,7 @@ AIEMS recognises the following categories of Controlled Artefacts.
 | GDE | Guide |
 | TMP | Template |
 
-Additional categories may be introduced through an approved Architecture Decision Record.
+Additional categories may be introduced through an approved [[REG-0002_ADR_REGISTER|Architecture Decision Record]].
 
 ---
 
@@ -147,7 +147,7 @@ A Controlled Artefact shall:
 - have an identified Owner;
 - be subject to review and approval;
 - maintain a version history;
-- be recorded within the Controlled Artefact Register where applicable.
+- be recorded within the [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|Controlled Artefact Register]] where applicable.
 
 Artefacts that do not meet these criteria shall not be regarded as Controlled Artefacts.
 
@@ -220,8 +220,8 @@ Controlled Artefacts shall be reviewed:
 
 - before initial approval;
 - following significant engineering change;
-- when triggered by an Architecture Decision Record;
-- when required by a Strategic Alignment Review;
+- when triggered by an [[REG-0002_ADR_REGISTER|Architecture Decision Record]];
+- when required by a [[SAR-0001_PHASE_1_STRATEGIC_ALIGNMENT_REVIEW|Strategic Alignment Review]];
 - at other intervals defined by the owning artefact.
 
 Engineering Reviews should be used to verify compliance with this standard.
@@ -343,6 +343,17 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 # Guiding Principle
 
 > *"Consistent engineering begins with consistent evidence. Every Controlled Artefact contributes to the integrity, traceability and continual improvement of the AI Engineering Platform."*
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Authoritative register for controlled artefacts governed by this standard. |
+| [[REG-0002_ADR_REGISTER|REG-0002]] | Register of Architecture Decision Records that may approve exceptions or new artefact categories. |
+| [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] | Complementary standard defining documentation quality and writing requirements. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and approved standards position. |
 
 ---
 

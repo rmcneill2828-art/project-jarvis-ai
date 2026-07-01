@@ -1,4 +1,4 @@
-# STD-0002 – Engineering Documentation Standard
+# STD-0002 - Engineering Documentation Standard
 
 > *"Engineering documentation exists to improve engineering decisions. Its value is measured not by its volume, but by the clarity, accuracy and traceability it provides."*
 
@@ -36,7 +36,7 @@ Its objectives are to:
 - provide traceable engineering evidence;
 - enable long-term maintainability of engineering knowledge.
 
-This standard complements **STD-0001 – Controlled Artefact Standard** by defining how engineering documentation shall be written rather than how Controlled Artefacts shall be governed.
+This standard complements [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] by defining how engineering documentation shall be written rather than how Controlled Artefacts shall be governed.
 
 ---
 
@@ -159,7 +159,7 @@ These terms shall be used consistently throughout AIEMS Controlled Artefacts.
 
 # 8. Documentation Structure
 
-The structural requirements of Controlled Artefacts are defined by **STD-0001 – Controlled Artefact Standard**.
+The structural requirements of Controlled Artefacts are defined by [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]].
 
 Engineering documentation should:
 
@@ -245,8 +245,8 @@ Engineering documentation shall be reviewed:
 
 - before initial approval;
 - following significant engineering change;
-- when affected by an approved Architecture Decision Record;
-- when required by a Strategic Alignment Review;
+- when affected by an approved [[REG-0002_ADR_REGISTER|Architecture Decision Record]];
+- when required by a [[SAR-0001_PHASE_1_STRATEGIC_ALIGNMENT_REVIEW|Strategic Alignment Review]];
 - when improvements are identified through Engineering Reviews.
 
 Reviews shall verify both technical accuracy and compliance with this standard.
@@ -309,6 +309,17 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 # Guiding Principle
 
 > *"Good engineering documentation does not describe engineering after the fact; it enables better engineering before, during and after implementation."*
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Defines controlled artefact structure that this standard complements. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records controlled artefacts subject to documentation quality requirements. |
+| [[REG-0002_ADR_REGISTER|REG-0002]] | Records decisions that may affect documentation requirements or exceptions. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and approved standards position. |
 
 ---
 

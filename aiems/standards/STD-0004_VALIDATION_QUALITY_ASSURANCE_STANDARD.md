@@ -236,6 +236,19 @@ This standard shall be reviewed when validation practice changes materially, rec
 
 ---
 
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Defines controlled artefact requirements validated by this standard. |
+| [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] | Defines documentation quality expectations validated by this standard. |
+| [[STD-0003_SOFTWARE_PYTHON_ENGINEERING_STANDARD|STD-0003]] | Defines software engineering expectations validated by this standard. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Operational engineering behaviour related to validation and repository execution. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and approved validation position. |
+| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline context. |
+
+---
+
 # 14. Version History
 
 | Version | Date | Author | Summary |
