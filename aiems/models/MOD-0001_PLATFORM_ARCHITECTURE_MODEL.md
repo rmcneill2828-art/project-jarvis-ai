@@ -63,7 +63,7 @@ The **AI Engineering Platform (AEP)** exists to achieve two strategic objectives
 
 Provide a reusable engineering management framework capable of supporting the governance, design, engineering and continual improvement of AI-enabled systems.
 
-This objective is achieved through the **AI Engineering Management System (AIEMS)**.
+This objective is achieved through the **AI Engineering Management System (AIEMS)** and its controlled governance artefacts, including [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]], [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] and [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 
 ---
 
@@ -71,7 +71,7 @@ This objective is achieved through the **AI Engineering Management System (AIEMS
 
 Develop an intelligent AI platform that demonstrates the engineering principles established by AIEMS through practical implementation.
 
-This objective is achieved through **JARVIS**.
+This objective is achieved through **JARVIS**, whose product direction is recorded in [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] and [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]].
 
 ---
 
@@ -254,7 +254,7 @@ Platform Charter
 Engineering Constitution
         │
         ▼
-Architecture Decision Records
+[[REG-0002_ADR_REGISTER|Architecture Decision Records]]
         │
         ▼
 Standards
@@ -286,7 +286,7 @@ Every Controlled Artefact shall:
 - Maintain version history.
 - Be subject to engineering review.
 - Be traceable throughout its lifecycle.
-- Be recorded within the Controlled Artefact Register.
+- Be recorded within the [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|Controlled Artefact Register]].
 
 Controlled Artefacts form the governed knowledge base of the AI Engineering Platform.
 
@@ -401,7 +401,7 @@ JARVIS
 
 Each service represents a logical architectural domain.
 
-Detailed component designs shall be maintained within their own controlled architectural artefacts.
+Detailed component designs shall be maintained within their own controlled architectural artefacts. Current JARVIS product architecture is recorded in [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]].
 
 ---
 
@@ -517,7 +517,7 @@ JARVIS shall be engineered using the architectural principles defined by AIEMS.
 
 No architectural component shall operate outside the governance established by the AI Engineering Management System.
 
-Engineering decisions affecting JARVIS shall remain traceable through controlled artefacts, Architecture Decision Records and Engineering Assurance activities.
+Engineering decisions affecting JARVIS shall remain traceable through controlled artefacts, [[REG-0002_ADR_REGISTER|Architecture Decision Records]] and Engineering Assurance activities.
 
 ---
 
@@ -542,7 +542,7 @@ Together they form the complete AI Engineering Platform.
 
 The AI Engineering Platform is engineered in accordance with the constitutional governance established by AIEMS.
 
-All architectural and engineering activities shall align with the Platform Charter, Engineering Constitution and Architecture Decision Records.
+All architectural and engineering activities shall align with the Platform Charter, Engineering Constitution and [[REG-0002_ADR_REGISTER|Architecture Decision Records]].
 
 Architecture exists to support engineering.
 
@@ -634,7 +634,7 @@ Controlled Artefacts provide the primary mechanism for preserving engineering kn
 Every significant engineering decision shall be traceable through:
 
 - Controlled Artefacts
-- Architecture Decision Records
+- [[REG-0002_ADR_REGISTER|Architecture Decision Records]]
 - Engineering Reviews
 - Version history
 - Repository history
@@ -713,11 +713,11 @@ Architectural governance is maintained through:
 
 - Platform Charter
 - Engineering Constitution
-- Architecture Decision Records
+- [[REG-0002_ADR_REGISTER|Architecture Decision Records]]
 - Platform Architecture Model
 - Engineering Reviews
 - Strategic Alignment Reviews
-- Controlled Artefact Register
+- [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|Controlled Artefact Register]]
 
 Together these artefacts establish the authoritative architectural baseline of the AI Engineering Platform.
 ---
@@ -731,8 +731,8 @@ The baseline consists of:
 - Repository architecture
 - Platform governance
 - Engineering Constitution
-- Architecture Decision Records
-- Controlled Artefact Register
+- [[REG-0002_ADR_REGISTER|Architecture Decision Records]]
+- [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|Controlled Artefact Register]]
 - Engineering review process
 - Repository hygiene process
 - Platform architecture model
@@ -751,7 +751,7 @@ Architectural changes shall:
 - Be reviewed before implementation.
 - Preserve architectural integrity.
 - Maintain alignment with the Platform Charter and Engineering Constitution.
-- Be supported by Architecture Decision Records where appropriate.
+- Be supported by [[REG-0002_ADR_REGISTER|Architecture Decision Records]] where appropriate.
 
 Significant architectural changes shall be subject to Engineering Review before becoming part of the approved Platform baseline.
 
@@ -836,6 +836,19 @@ Engineering Implementation
 ```
 
 This relationship provides architectural traceability throughout the AI Engineering Platform.
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers MOD-0001 and other controlled AIEMS artefacts. |
+| [[REG-0002_ADR_REGISTER|REG-0002]] | Records architecture decisions that support platform evolution. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme status and architecture-related observations. |
+| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline for ESR-0007. |
+| [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
+| [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability readiness view supporting JARVIS product engineering. |
 
 ---
 

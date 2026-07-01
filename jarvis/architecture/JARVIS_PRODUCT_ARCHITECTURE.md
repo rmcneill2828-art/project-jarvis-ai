@@ -24,7 +24,7 @@ JARVIS OS is a modular, family-friendly AI Operating System designed to provide 
 
 JARVIS OS is the flagship product of Project JARVIS AI.
 
-AIEMS governs engineering. JARVIS OS is the product that demonstrates those engineering principles through practical, useful and enjoyable capability.
+AIEMS governs engineering. JARVIS OS is the product that demonstrates those engineering principles through practical, useful and enjoyable capability. The platform-level architecture context is recorded in [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]].
 
 The product vision is to create a trusted AI companion for everyday family life: helpful in conversation, useful for household tasks, respectful of privacy, safe for children, and capable of growing into a broader intelligent operating environment over time.
 
@@ -206,7 +206,7 @@ JARVIS OS
     +-- Future Device Integrations
 ```
 
-Capability relationships shall remain explicit. Memory supports intelligence. Guardian constrains high-risk actions. The GUI exposes service state. Provider abstraction protects the product from long-term dependency on any single AI provider.
+Capability relationships shall remain explicit. Memory supports intelligence. Guardian constrains high-risk actions. The GUI exposes service state. Provider abstraction protects the product from long-term dependency on any single AI provider. Capability readiness is tracked in [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]].
 
 ---
 
@@ -462,7 +462,7 @@ JARVIS OS shall evolve through vertical increments that deliver visible family v
 | MLP 0.8 Guardian | Expand permission, safety, audit and approval controls. |
 | Version 1.0 | Family AI Operating System. |
 
-Roadmap phases describe product direction. Each implementation package shall still be separately approved through AIEMS.
+Roadmap phases describe product direction. Each implementation package shall still be separately approved through AIEMS and selected against [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] where appropriate.
 
 ---
 
@@ -506,6 +506,18 @@ JARVIS OS engineering shall follow these principles:
 The product should grow through small, validated increments that make JARVIS more useful while preserving trust.
 
 Engineering economics matter. JARVIS should prefer simple, maintainable, low-cost solutions until complexity is justified by product value, safety or scalability.
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture model that JARVIS implements as flagship product. |
+| [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability maturity view supporting package selection. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and ESR-0007 handover position. |
+| [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Current session returning focus to JARVIS product engineering. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register containing JARVIS product engineering candidates. |
 
 ---
 

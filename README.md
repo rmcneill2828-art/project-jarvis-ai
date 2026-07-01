@@ -17,7 +17,7 @@ Supporting principle:
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | Operational First Light / Conversation Workspace |
-| Current Engineering Focus | Continue from RBL-0006 with controlled product capability planning and small validated JARVIS increments |
+| Current Engineering Focus | Continue from [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] into [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] JARVIS product engineering |
 
 ---
 
@@ -56,11 +56,11 @@ Current AIEMS capabilities include:
 
 JARVIS is the intelligent AI platform and flagship implementation of AIEMS.
 
-The authoritative product blueprint is maintained in `jarvis/architecture/JARVIS_PRODUCT_ARCHITECTURE.md`. That document explains why JARVIS exists, how it should behave, what it should become and how product capabilities relate to each other.
+The authoritative product blueprint is maintained in [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]]. That document explains why JARVIS exists, how it should behave, what it should become and how product capabilities relate to each other.
 
 Current JARVIS implementation includes:
 
-- Product architecture blueprint in `jarvis/architecture/JARVIS_PRODUCT_ARCHITECTURE.md`.
+- Product architecture blueprint in [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]].
 - First Light application skeleton launchable with `python -m jarvis`.
 - Operational Conversation Workspace with deterministic offline chat, session metadata and transcript export.
 - Python package structure.
@@ -135,13 +135,15 @@ Key engineering artefacts include:
 
 | Artefact | Purpose |
 |----------|---------|
-| COC-0001 | Human-AI collaboration context |
-| PBK-0001 | AI Engineering Playbook |
-| PST-0001 | Programme status |
-| ESR-0001 | Engineering session report |
-| STD-0001 | Controlled Artefact Standard |
-| STD-0002 | Engineering Documentation Standard |
-| STD-0003 | Software / Python Engineering Standard |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Human-AI collaboration context |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | AI Engineering Playbook |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status |
+| [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Current initialised engineering session report |
+| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Engineering backlog register |
+| [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Controlled Artefact Standard |
+| [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] | Engineering Documentation Standard |
+| [[STD-0003_SOFTWARE_PYTHON_ENGINEERING_STANDARD|STD-0003]] | Software / Python Engineering Standard |
 
 ---
 
@@ -188,7 +190,7 @@ Baseline Acceptance
 Continue Engineering
 ```
 
-Operational workflow detail is maintained in PBK-0001 and ESR-0001. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
+Operational workflow detail is maintained in [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and current Engineering Session Reports. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
 
 Repository changes are expected to remain traceable to controlled engineering activities, approved Engineering Implementation Packages and approved governance artefacts.
 
@@ -228,8 +230,8 @@ Engineering work is evidence-led: context is gathered before implementation, dec
 |------------|--------|----------------------|----------|
 | Repository Architecture | Complete | Complete | Repository structure separates AIEMS governance from JARVIS implementation. |
 | Governance Framework | In Progress | Mature | Core governance exists; register and artefact consistency is actively managed. |
-| Engineering Standards | In Progress | High | STD-0001, STD-0002 and STD-0003 are approved; additional build-facing standards remain planned. |
-| Platform Architecture | In Progress | Partial | MOD-0001 defines the platform architecture; JARVIS product architecture now defines the product blueprint. |
+| Engineering Standards | In Progress | High | [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]], [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] and [[STD-0003_SOFTWARE_PYTHON_ENGINEERING_STANDARD|STD-0003]] are approved; additional build-facing standards remain planned. |
+| Platform Architecture | In Progress | Partial | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] defines the platform architecture; [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] defines the product blueprint. |
 | JARVIS Development | In Progress | Partial | Operational First Light / Conversation Workspace, lifecycle object, public API, packaging configuration and tests exist. |
 
 ---
@@ -284,6 +286,20 @@ No significant repository change should be made without Human Engineer approval 
 # Acknowledgements
 
 Project JARVIS AI is a collaborative engineering programme between the Programme Sponsor and AI engineering collaborators working under AIEMS.
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point. |
+| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline. |
+| [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Current initialised engineering session. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog source for selecting future engineering packages. |
+| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture model. |
+| [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Authoritative JARVIS product architecture. |
+| [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability maturity and prioritisation support. |
 
 ---
 
