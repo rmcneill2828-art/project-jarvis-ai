@@ -154,7 +154,7 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 28. Codex performs engineering implementation, authorised repository staging, commit and push, and reports commit SHA, commit message and repository status.
 
-29. Repository Engineering Health Reviews shall compare findings against EBR-0001, the authoritative Engineering Backlog Register.
+29. Repository Engineering Health Reviews shall compare findings against [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]], the authoritative Engineering Backlog Register.
 
 30. Repository Engineering Health Reviews shall distinguish:
 
@@ -173,9 +173,9 @@ This document complements AIEMS. It does not replace engineering governance or r
    * Superseded Backlog Items
    * Duplicate Backlog Items
    * New Candidate Backlog Items
-   * Recommendation on whether EBR-0001 requires updating
+   * Recommendation on whether [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] requires updating
 
-32. The Engineering Reviewer shall not modify EBR-0001 during a Repository Engineering Health Review.
+32. The Engineering Reviewer shall not modify [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] during a Repository Engineering Health Review.
 
 33. Repository Engineering Health Review recommendations remain advisory only until reviewed and approved by the Programme Sponsor.
 
@@ -188,7 +188,7 @@ This document complements AIEMS. It does not replace engineering governance or r
    * Items explicitly not recommended
    * Suggested Engineering Session objective
 
-35. Final Repository Engineering Health Reviews shall include Backlog Progression Analysis by examining EBR-0001 and recommending activities that best progress Project JARVIS AI during the next Engineering Session.
+35. Final Repository Engineering Health Reviews shall include Backlog Progression Analysis by examining [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] and recommending activities that best progress Project JARVIS AI during the next Engineering Session.
 
 36. Backlog Progression Analysis shall consider dependencies between backlog items, engineering sequencing, governance maturity, repository readiness, engineering risk, engineering benefit, estimated implementation effort, opportunities to complete related backlog items within the same session, and backlog acceleration opportunities.
 
@@ -239,7 +239,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review the repository baseline.
+* Review [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]].
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -248,6 +248,17 @@ Before beginning engineering activities:
 * Confirm whether an Engineering Implementation Package is required.
 * Confirm whether AIEMS changed during the previous session before closure.
 * Begin the approved engineering activity.
+
+---
+
+# Related Artefacts
+
+* [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
+* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the accepted repository baseline for current engineering continuity.
+* [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] is the current Engineering Session initialised from the accepted baseline.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
+* [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
 
 ---
 

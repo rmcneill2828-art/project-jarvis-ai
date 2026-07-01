@@ -137,10 +137,10 @@ The Engineering Implementer shall:
 
 1. Start a clean implementation session.
 2. Review README.md for repository orientation and platform context.
-3. Review PST-0001.
+3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 4. Review the current Engineering Session Report.
 5. Review PBK-0001.
-6. Review COC-0001 where relevant.
+6. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
 7. Review the approved Engineering Implementation Package.
 8. Review repository artefacts referenced by the approved Engineering Implementation Package.
 9. Confirm engineering scope.
@@ -168,10 +168,10 @@ WP0A confirms the repository baseline before creating or continuing an Engineeri
 WP0A shall confirm:
 
 * README.md for repository orientation and platform context.
-* PST-0001.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 * The latest accepted Engineering Session Report.
 * PBK-0001.
-* COC-0001 where relevant.
+* [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
 * Repository Engineering Health Review outcome.
 * Previous Engineering Session status.
 * Repository baseline.
@@ -205,9 +205,9 @@ Before closing an Engineering Session, the Engineering Architect shall check whe
 
 # Repository Engineering Health Review Guidance
 
-Repository Engineering Health Reviews shall compare review findings against EBR-0001 before making recommendations.
+Repository Engineering Health Reviews shall compare review findings against [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] before making recommendations.
 
-EBR-0001 is the authoritative engineering backlog for approved, deferred, planned and candidate engineering backlog items.
+[[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog for approved, deferred, planned and candidate engineering backlog items.
 
 Repository Engineering Health Review findings shall distinguish:
 
@@ -228,9 +228,9 @@ Backlog Validation shall report:
 * Superseded Backlog Items.
 * Duplicate Backlog Items.
 * New Candidate Backlog Items.
-* Recommendation on whether EBR-0001 requires updating.
+* Recommendation on whether [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] requires updating.
 
-The Engineering Reviewer shall not modify EBR-0001 during a Repository Engineering Health Review.
+The Engineering Reviewer shall not modify [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] during a Repository Engineering Health Review.
 
 Repository Engineering Health Review recommendations remain advisory only until reviewed and approved by the Programme Sponsor.
 
@@ -247,7 +247,7 @@ Engineering Handover to Next Session shall include:
 
 Final Repository Engineering Health Reviews shall include Backlog Progression Analysis.
 
-Backlog Progression Analysis shall examine EBR-0001 and recommend activities that best progress Project JARVIS AI during the next Engineering Session.
+Backlog Progression Analysis shall examine [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] and recommend activities that best progress Project JARVIS AI during the next Engineering Session.
 
 Backlog Progression Analysis shall consider:
 
@@ -501,6 +501,19 @@ Supporting guidance:
 This is a documentation architecture principle, not a software design principle.
 
 ---
+# Related Artefacts
+
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current programme status used during implementation session initialisation.
+* [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines the lightweight collaboration context that complements this playbook.
+* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the accepted repository baseline for ESR-0007 engineering continuity.
+* [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] is the current Engineering Session initialised from the accepted baseline.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
+* [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] defines controlled artefact governance expectations.
+* [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] defines engineering documentation expectations.
+* [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations.
+
+---
+
 # Version History
 
 | Version | Date | Author | Summary |
