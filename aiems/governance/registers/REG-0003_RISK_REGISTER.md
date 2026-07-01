@@ -1,4 +1,4 @@
-# REG-0003 – Risk Register
+# REG-0003 - Risk Register
 
 > *"Every identified risk is an opportunity to improve the engineering system before it becomes a problem."*
 
@@ -41,14 +41,14 @@ Each risk is assessed using:
 | 4 | High | Major |
 | 5 | Very High | Critical |
 
-**Overall Risk Score = Probability × Impact**
+**Overall Risk Score = Probability x Impact**
 
 | Score | Classification |
 |--------|----------------|
-| 1–5 | Low |
-| 6–10 | Medium |
-| 11–15 | High |
-| 16–25 | Critical |
+| 1-5 | Low |
+| 6-10 | Medium |
+| 11-15 | High |
+| 16-25 | Critical |
 
 ---
 
@@ -59,11 +59,11 @@ Each risk is assessed using:
 | RSK-0001 | Strategic | AIEMS and JARVIS objectives become misaligned. | 2 | 5 | 10 | Programme Sponsor | Strategic Alignment Reviews before every phase. | Monitoring |
 | RSK-0002 | Strategic | AIEMS becomes tightly coupled to JARVIS, reducing reuse. | 2 | 5 | 10 | Chief Architect | Maintain clear separation between framework and product. | Monitoring |
 | RSK-0003 | Programme | Programme scope expands faster than governance can support. | 3 | 4 | 12 | Programme Sponsor | Phase gates, controlled change sets and governance reviews. | Open |
-| RSK-0004 | Technical | Architectural decisions become inconsistent over time. | 2 | 4 | 8 | Chief Architect | Maintain ADR Register and Architecture Reviews. | Monitoring |
+| RSK-0004 | Technical | Architectural decisions become inconsistent over time. | 2 | 4 | 8 | Chief Architect | Maintain [[REG-0002_ADR_REGISTER]] and Architecture Reviews. | Monitoring |
 | RSK-0005 | Technical | Technology choices become obsolete during development. | 3 | 4 | 12 | Chief Architect | Review technology during every Strategic Alignment Review. | Open |
 | RSK-0006 | Operational | Documentation becomes outdated. | 2 | 4 | 8 | Chief Architect | Documentation reviewed at every phase close-out. | Monitoring |
 | RSK-0007 | Operational | Knowledge lost between engineering sessions. | 2 | 4 | 8 | Chief Architect | Engineering Session Reports and Lessons Learned Register. | Monitoring |
-| RSK-0008 | AI Governance | AI repository interaction exceeds approved governance. | 1 | 5 | 5 | Programme Sponsor | AI Repository Interaction Policy (ADR-0004). | Mitigated |
+| RSK-0008 | AI Governance | AI repository interaction exceeds approved governance. | 1 | 5 | 5 | Programme Sponsor | AI Repository Interaction Policy ([[ADR-0004_AI_REPOSITORY_INTERACTION_POLICY]]). | Mitigated |
 | RSK-0009 | Security | Repository credentials or integrations become compromised. | 2 | 5 | 10 | Programme Sponsor | Principle of least privilege, MFA and periodic access reviews. | Monitoring |
 | RSK-0010 | Knowledge | Key engineering rationale is not recorded. | 2 | 4 | 8 | Chief Architect | ADRs, ESRs and documentation-first engineering. | Monitoring |
 
@@ -144,6 +144,16 @@ The Risk Register shall be reviewed:
 Risks are not recorded to discourage innovation.
 
 They are recorded to enable informed engineering decisions.
+
+---
+
+# Related Artefacts
+
+* [[REG-0002_ADR_REGISTER|REG-0002]] records architectural decisions referenced by risk mitigations.
+* [[REG-0004_ACTION_REGISTER|REG-0004]] records actions linked to programme and engineering risks.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] records engineering backlog items that may address risk-related work.
+* [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to risk control.
 
 ---
 

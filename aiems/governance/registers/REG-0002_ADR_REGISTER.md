@@ -34,18 +34,18 @@ This register includes Architecture Decision Records relating to:
 
 | ADR | Title | Domain | Status | Date Approved | Supersedes | Summary |
 |------|-------------------------------|--------------|-----------|---------------|------------|---------------------------------------------------------------|
-| ADR-0001 | Documentation First | Engineering | Approved | 22 Jun 2026 | - | Established documentation as the foundation for engineering activities. |
-| ADR-0002 | Git Repository Strategy | Engineering | Approved | 22 Jun 2026 | - | Defined GitHub as the authoritative source for project artefacts and version control. |
-| ADR-0003 | RTBO Engineering Decision Framework | Engineering | Approved | 23 Jun 2026 | - | Adopted the Review Twice. Build Once. Improve for Everyone decision-making framework. |
-| ADR-0004 | AI Repository Interaction Policy | Governance | Approved | 24 Jun 2026 | - | Defined governance, approval model and responsibilities for AI-assisted repository interaction. |
-| ADR-0005 | AIEMS Strategic Scope | Strategy | Approved | 24 Jun 2026 | - | Recognised AIEMS as an independent strategic deliverable and JARVIS as its flagship implementation. |
-| ADR-0006 | Introduction of Playbooks as a Controlled Governance Artefact | Governance | Draft | 25 Jun 2026 | - | Established Playbooks as a new controlled governance artefact category within AIEMS. |
+| [[ADR-0001_DOCUMENTATION_FIRST]] | Documentation First | Engineering | Approved | 22 Jun 2026 | - | Established documentation as the foundation for engineering activities. |
+| [[ADR-0002_GIT_REPOSITORY_STRATEGY]] | Git Repository Strategy | Engineering | Approved | 22 Jun 2026 | - | Defined GitHub as the authoritative source for project artefacts and version control. |
+| [[ADR-0003_RTBO_ENGINEERING_DECISION_FRAMEWORK]] | RTBO Engineering Decision Framework | Engineering | Approved | 23 Jun 2026 | - | Adopted the Review Twice. Build Once. Improve for Everyone decision-making framework. |
+| [[ADR-0004_AI_REPOSITORY_INTERACTION_POLICY]] | AI Repository Interaction Policy | Governance | Approved | 24 Jun 2026 | - | Defined governance, approval model and responsibilities for AI-assisted repository interaction. |
+| [[ADR-0005_AIEMS_STRATEGIC_SCOPE]] | AIEMS Strategic Scope | Strategy | Approved | 24 Jun 2026 | - | Recognised AIEMS as an independent strategic deliverable and JARVIS as its flagship implementation. |
+| [[ADR-0006_INTRODUCTION_OF_PLAYBOOKS_AS_A_CONTROLLED_GOVERNANCE_ARTEFACT]] | Introduction of Playbooks as a Controlled Governance Artefact | Governance | Draft | 25 Jun 2026 | - | Established Playbooks as a new controlled governance artefact category within AIEMS. |
 
 ---
 
 # Repository Integrity Notes
 
-ADR-0004 and ADR-0005 were recovered during ESR-0003 EIP-R2 from approved repository evidence.
+[[ADR-0004_AI_REPOSITORY_INTERACTION_POLICY|ADR-0004]] and [[ADR-0005_AIEMS_STRATEGIC_SCOPE|ADR-0005]] were recovered during [[ESR-0003_ENGINEERING_SESSION_REPORT|ESR-0003]] EIP-R2 from approved repository evidence.
 
 The recovered ADR files preserve historical approved decisions and restore decision traceability for existing register, risk, action and session references.
 
@@ -126,6 +126,16 @@ They remain part of the permanent engineering history of AIEMS.
 Architecture Decision Records form one of the core knowledge management mechanisms within AIEMS.
 
 They ensure that engineering reasoning is preserved alongside engineering implementation, allowing future contributors to understand not only what decisions were made, but why they were made.
+
+---
+
+# Related Artefacts
+
+* [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] records controlled artefact registration for AIEMS governance artefacts.
+* [[REG-0003_RISK_REGISTER|REG-0003]] records risks that may reference architectural decisions.
+* [[REG-0004_ACTION_REGISTER|REG-0004]] records actions arising from decisions and risks.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
+* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the current accepted repository baseline.
 
 ---
 
