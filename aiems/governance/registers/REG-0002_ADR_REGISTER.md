@@ -1,4 +1,4 @@
-﻿# REG-0002 â€“ Architectural Decision Register
+# REG-0002 - Architectural Decision Register
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
@@ -57,23 +57,23 @@ Every Architecture Decision Record progresses through the following lifecycle.
 
 Proposed
 
-â†“
+v
 
 Review
 
-â†“
+v
 
 Approved
 
-â†“
+v
 
 Active
 
-â†“
+v
 
 Superseded (if applicable)
 
-â†“
+v
 
 Archived
 

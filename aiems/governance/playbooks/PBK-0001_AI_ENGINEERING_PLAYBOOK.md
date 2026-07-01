@@ -1,4 +1,4 @@
-﻿# PBK-0001 Ã¢â‚¬â€œ AI Engineering Playbook
+# PBK-0001 - AI Engineering Playbook
 
 ---
 
@@ -161,7 +161,7 @@ Only one Engineering Session shall be active at any time.
 
 Engineering Session lifecycle management is composed of two startup stages.
 
-## WP0A Ã¯Â¿Â½ Repository Synchronisation
+## WP0A - Repository Synchronisation
 
 WP0A confirms the repository baseline before creating or continuing an Engineering Session.
 
@@ -179,7 +179,7 @@ WP0A shall confirm:
 
 README.md introduces the repository and platform context. Controlled AIEMS artefacts remain authoritative for governance, status, execution and collaboration rules.
 
-## WP0B Ã¯Â¿Â½ Engineering Session Initialisation
+## WP0B - Engineering Session Initialisation
 
 WP0B creates or confirms the active Engineering Session only after repository synchronisation is complete.
 

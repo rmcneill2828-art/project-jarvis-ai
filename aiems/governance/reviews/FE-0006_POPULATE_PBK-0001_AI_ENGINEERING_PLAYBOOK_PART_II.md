@@ -1,4 +1,4 @@
-# FE-0006 â€“ Populate PBK-0001 AI Engineering Playbook (Part II â€“ Operational Engineering Workflow)
+# FE-0006 - Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow)
 
 **Status:** Complete
 
@@ -8,7 +8,7 @@
 
 # Purpose
 
-This Engineering Feature authorises the future implementation of **Part II â€“ Operational Engineering Workflow** within **PBK-0001 â€“ AI Engineering Playbook**.
+This Engineering Feature authorises the future implementation of **Part II - Operational Engineering Workflow** within **PBK-0001 - AI Engineering Playbook**.
 
 The purpose of FE-0006 is to define the approved engineering activity that will translate the Five Foundational Principles of AI Engineering into repeatable operational engineering practice.
 
@@ -127,4 +127,4 @@ The future Part II implementation shall be considered complete when:
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
-| 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Feature created to authorise future population of PBK-0001 Part II â€“ Operational Engineering Workflow. |
+| 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Feature created to authorise future population of PBK-0001 Part II - Operational Engineering Workflow. |

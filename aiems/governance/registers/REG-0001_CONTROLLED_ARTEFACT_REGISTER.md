@@ -1,4 +1,4 @@
-# REG-0001 â€“ Controlled Artefact Register
+# REG-0001 - Controlled Artefact Register
 
 > *"You cannot govern what you cannot identify."*
 
@@ -43,20 +43,20 @@ Every Controlled Artefact shall progress through the following lifecycle:
 
 ```text
 Draft
-    â”‚
-    â–¼
+    |
+    v
 In Review
-    â”‚
-    â–¼
+    |
+    v
 Approved
-    â”‚
-    â–¼
+    |
+    v
 Baselined
-    â”‚
-    â–¼
+    |
+    v
 Superseded
-    â”‚
-    â–¼
+    |
+    v
 Retired
 ```
 
