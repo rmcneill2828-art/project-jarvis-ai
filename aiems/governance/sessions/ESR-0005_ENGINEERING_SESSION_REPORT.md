@@ -32,7 +32,7 @@ Key outcomes:
 - Session metadata and transcript capability were strengthened.
 - Transcript export was introduced in Markdown and plain text formats.
 - Independent repository content verification was completed through WP6.2.
-- Repository baseline RBL-0006 was accepted with observations.
+- Repository baseline [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] was accepted with observations.
 - Historical product tag `v0.1.0-first-light` was recorded.
 
 ---
@@ -41,7 +41,7 @@ Key outcomes:
 
 | Item | Value |
 |------|-------|
-| Accepted Baseline | RBL-0006 |
+| Accepted Baseline | [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] |
 | Accepted Commit | `4f2b091` |
 | Previous Baseline | RBL-0005 |
 | Previous Baseline Commit | `ee98fe2fbc4a44f2dba4711bdb2d4e8d691cefc6` |
@@ -207,7 +207,7 @@ Transcript Export Workflow Enhancement is also recorded as future product refine
 
 Recommended ESR-0006 starting position:
 
-1. Begin from RBL-0006 accepted baseline.
+1. Begin from [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] accepted baseline.
 2. Treat JARVIS as Operational First Light / Conversation Workspace.
 3. Preserve deterministic offline operation until provider architecture is explicitly approved.
 4. Address backlog prioritisation before expanding strategic roadmap capability.
@@ -224,9 +224,17 @@ Product capability planning and controlled next-step selection from the RBL-0006
 
 # 14. Closure Statement
 
-ESR-0005 is closed with RBL-0006 accepted by the Programme Sponsor.
+ESR-0005 is closed with [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] accepted by the Programme Sponsor.
 
 The repository baseline is accepted with observations and is ready for ESR-0006 planning.
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] | Accepted repository baseline for ESR-0005 closure. |
 
 ---
 
@@ -235,4 +243,3 @@ The repository baseline is accepted with observations and is ready for ESR-0006 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial ESR-0005 closure report recording RBL-0006, EIP-0003, validation, verification and ESR-0006 handover position. |
-

@@ -158,3 +158,12 @@ This ADR shall be reviewed alongside future Architecture Decision Records relati
 ---
 
 > **"Documentation serves the project—not the other way around."**
+
+---
+
+## Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers ADR-0001 as a controlled artefact. |
+| [[REG-0002_ADR_REGISTER|REG-0002]] | Registers ADR-0001 as an Architecture Decision Record. |
