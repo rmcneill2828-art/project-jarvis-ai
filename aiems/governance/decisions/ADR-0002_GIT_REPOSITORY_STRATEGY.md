@@ -1,4 +1,4 @@
-# ADR-0002 — Git Repository Strategy
+# ADR-0002 - Git Repository Strategy
 
 ---
 
@@ -36,7 +36,7 @@ Git was selected as the version control system, with GitHub providing the primar
 
 # 3. Options Considered
 
-## Option A — Manual File Synchronisation
+## Option A - Manual File Synchronisation
 
 ### Advantages
 
@@ -52,7 +52,7 @@ Git was selected as the version control system, with GitHub providing the primar
 
 ---
 
-## Option B — Git with GitHub (Selected)
+## Option B - Git with GitHub (Selected)
 
 ### Advantages
 
@@ -140,9 +140,9 @@ Review if:
 
 # 11. Related Decisions
 
-- ADR-0001 — Documentation First Development
-- ADR-0003 — RTBO Engineering Process
-- ADR-0009 — Multi-Device Development Strategy
+- [[ADR-0001_DOCUMENTATION_FIRST|ADR-0001]] - Documentation First Development
+- [[ADR-0003_RTBO_ENGINEERING_DECISION_FRAMEWORK|ADR-0003]] - RTBO Engineering Process
+- ADR-0009 - Multi-Device Development Strategy
 
 ---
 
@@ -153,3 +153,12 @@ Review if:
 ---
 
 > **Version control protects the project's history; disciplined commits protect its quality.**
+
+---
+
+## Related Artefacts
+
+* [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0002 as an Architecture Decision Record.
+* [[REG-0004_ACTION_REGISTER|REG-0004]] records actions linked to repository and governance activity.
+* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the current accepted repository baseline.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.

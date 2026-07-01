@@ -28,7 +28,7 @@ Without an explicit strategic scope decision, AIEMS could become tightly coupled
 
 The repository contains historical approved references to ADR-0005 but the original ADR file was absent from `aiems/governance/decisions/` during ESR-0003 WS1 governance stabilisation.
 
-Repository evidence records ADR-0005 as an approved strategy decision dated 24 June 2026. REG-0002 describes its intent as recognising AIEMS as an independent strategic deliverable and JARVIS as its flagship implementation. CHR-0001 version history records expansion of the Charter to recognise AIEMS as a strategic deliverable and define the long-term vision for AIEMS and JARVIS.
+Repository evidence records ADR-0005 as an approved strategy decision dated 24 June 2026. [[REG-0002_ADR_REGISTER|REG-0002]] describes its intent as recognising AIEMS as an independent strategic deliverable and JARVIS as its flagship implementation. [[CHR-0001_PLATFORM_CHARTER|CHR-0001]] version history records expansion of the Charter to recognise AIEMS as a strategic deliverable and define the long-term vision for AIEMS and JARVIS.
 
 This recovered ADR preserves that approved decision using repository evidence. The original detailed ADR text was not recoverable from the repository baseline.
 
@@ -103,11 +103,11 @@ Recovered from repository evidence during ESR-0003 EIP-R2.
 
 Evidence includes:
 
-- REG-0002 row for ADR-0005: AIEMS Strategic Scope, Strategy, Approved, 24 Jun 2026.
-- REG-0004 ACT-0001, ACT-0002, ACT-0003, ACT-0006, ACT-0007 and ACT-0009 references to ADR-0005.
-- CHR-0001 version history entry 2.0 recognising AIEMS as a strategic deliverable and defining the long-term vision for AIEMS and JARVIS.
-- ESR-0001 and ESR-0002 references to ADR-0005 recovery or formal supersession.
-- EBR-0001 EBG-0002 approved backlog item for ADR-0005 recovery or formal supersession.
+- [[REG-0002_ADR_REGISTER|REG-0002]] row for ADR-0005: AIEMS Strategic Scope, Strategy, Approved, 24 Jun 2026.
+- [[REG-0004_ACTION_REGISTER|REG-0004]] ACT-0001, ACT-0002, ACT-0003, ACT-0006, ACT-0007 and ACT-0009 references to ADR-0005.
+- [[CHR-0001_PLATFORM_CHARTER|CHR-0001]] version history entry 2.0 recognising AIEMS as a strategic deliverable and defining the long-term vision for AIEMS and JARVIS.
+- [[ESR-0001_ENGINEERING_SESSION_REPORT|ESR-0001]] and [[ESR-0002_ENGINEERING_SESSION_REPORT|ESR-0002]] references to ADR-0005 recovery or formal supersession.
+- [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0002 approved backlog item for ADR-0005 recovery or formal supersession.
 
 ---
 
@@ -124,16 +124,26 @@ Review this ADR if:
 
 # 11. Related Decisions
 
-- ADR-0001 - Documentation First Development
-- ADR-0002 - Git Repository Strategy
-- ADR-0003 - RTBO Engineering Decision Framework
-- ADR-0004 - AI Repository Interaction Policy
+- [[ADR-0001_DOCUMENTATION_FIRST|ADR-0001]] - Documentation First Development
+- [[ADR-0002_GIT_REPOSITORY_STRATEGY|ADR-0002]] - Git Repository Strategy
+- [[ADR-0003_RTBO_ENGINEERING_DECISION_FRAMEWORK|ADR-0003]] - RTBO Engineering Decision Framework
+- [[ADR-0004_AI_REPOSITORY_INTERACTION_POLICY|ADR-0004]] - AI Repository Interaction Policy
 
 ---
 
 # 12. Status
 
 **Approved - recovered from repository evidence**
+
+---
+
+# Related Artefacts
+
+* [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0005 as an Architecture Decision Record.
+* [[REG-0004_ACTION_REGISTER|REG-0004]] records actions linked to ADR-0005.
+* [[CHR-0001_PLATFORM_CHARTER|CHR-0001]] records the strategic AIEMS and JARVIS relationship.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
+* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the current accepted repository baseline.
 
 ---
 

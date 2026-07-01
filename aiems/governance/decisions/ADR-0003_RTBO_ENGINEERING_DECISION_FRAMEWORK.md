@@ -1,4 +1,4 @@
-# ADR-0003 — RTBO Engineering Decision Framework
+# ADR-0003 - RTBO Engineering Decision Framework
 
 ---
 
@@ -36,7 +36,7 @@ The framework was developed to encourage evidence-based decision making while ma
 
 # 3. Options Considered
 
-## Option A — Ad-hoc Decision Making
+## Option A - Ad-hoc Decision Making
 
 ### Advantages
 
@@ -51,7 +51,7 @@ The framework was developed to encourage evidence-based decision making while ma
 
 ---
 
-## Option B — RTBO Engineering Decision Framework (Selected)
+## Option B - RTBO Engineering Decision Framework (Selected)
 
 ### Advantages
 
@@ -150,7 +150,7 @@ Important decisions require deliberate review before implementation.
 
 Minor routine tasks should continue to use professional judgement without unnecessary process.
 
-RTBO is intended to improve engineering—not slow it down.
+RTBO is intended to improve engineering - not slow it down.
 
 ---
 
@@ -174,9 +174,9 @@ Review if:
 
 # 11. Related Decisions
 
-- ADR-0001 — Documentation First Development
-- ADR-0002 — Git Repository Strategy
-- ADR-0004 - AI Repository Interaction Policy
+- [[ADR-0001_DOCUMENTATION_FIRST|ADR-0001]] - Documentation First Development
+- [[ADR-0002_GIT_REPOSITORY_STRATEGY|ADR-0002]] - Git Repository Strategy
+- [[ADR-0004_AI_REPOSITORY_INTERACTION_POLICY|ADR-0004]] - AI Repository Interaction Policy
 
 ---
 
@@ -187,3 +187,12 @@ Review if:
 ---
 
 > **"Review Twice. Build Once. Improve for Everyone."**
+
+---
+
+## Related Artefacts
+
+* [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0003 as an Architecture Decision Record.
+* [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines engineering implementer behaviour aligned with RTBO principles.
+* [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines collaboration context for human and AI engineering work.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.

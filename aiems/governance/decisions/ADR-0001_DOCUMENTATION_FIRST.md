@@ -1,4 +1,4 @@
-# ADR-0001 — Documentation First Development
+# ADR-0001 - Documentation First Development
 
 ---
 
@@ -34,7 +34,7 @@ The objective was not to increase documentation, but to reduce future rework and
 
 # 3. Options Considered
 
-## Option A — Code First
+## Option A - Code First
 
 ### Advantages
 
@@ -50,7 +50,7 @@ The objective was not to increase documentation, but to reduce future rework and
 
 ---
 
-## Option B — Documentation First (Selected)
+## Option B - Documentation First (Selected)
 
 ### Advantages
 
@@ -145,9 +145,7 @@ This ADR shall be reviewed if:
 
 # 11. Related Decisions
 
-Related Decisions
-
-This ADR shall be reviewed alongside future Architecture Decision Records relating to engineering governance and repository management.
+This ADR shall be reviewed alongside future Architecture Decision Records relating to engineering governance and repository management, including [[ADR-0002_GIT_REPOSITORY_STRATEGY|ADR-0002]] and [[ADR-0003_RTBO_ENGINEERING_DECISION_FRAMEWORK|ADR-0003]].
 
 ---
 
@@ -157,13 +155,13 @@ This ADR shall be reviewed alongside future Architecture Decision Records relati
 
 ---
 
-> **"Documentation serves the project—not the other way around."**
+> **"Documentation serves the project - not the other way around."**
 
 ---
 
 ## Related Artefacts
 
-| Artefact | Relationship |
-|----------|--------------|
-| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers ADR-0001 as a controlled artefact. |
-| [[REG-0002_ADR_REGISTER|REG-0002]] | Registers ADR-0001 as an Architecture Decision Record. |
+* [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] registers ADR-0001 as a controlled artefact.
+* [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0001 as an Architecture Decision Record.
+* [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] defines engineering documentation expectations that align with Documentation First.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.

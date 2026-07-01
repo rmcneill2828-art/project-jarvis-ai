@@ -1,4 +1,4 @@
-# ADR-0006 — Introduction of Playbooks as a Controlled Governance Artefact
+# ADR-0006 - Introduction of Playbooks as a Controlled Governance Artefact
 
 ---
 
@@ -85,6 +85,16 @@ To be completed under a subsequent approved engineering activity.
 # 12. Status
 
 **Draft**
+
+---
+
+# Related Artefacts
+
+* [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0006 as an Architecture Decision Record.
+* [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] records controlled artefact registration for governance artefacts.
+* [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] is the controlled playbook artefact related to this draft decision.
+* [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] records operational collaboration context related to playbook use.
+* [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] defines controlled artefact expectations relevant to playbook governance.
 
 ---
 
