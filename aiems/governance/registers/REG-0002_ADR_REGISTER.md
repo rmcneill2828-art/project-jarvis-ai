@@ -2,7 +2,7 @@
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.5
+**Version:** 2.6
 
 ---
 
@@ -136,6 +136,16 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 
 ---
 
+# OSE Relationships
+
+* [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] defines the retrospective relationship-only enrichment rule applied to this register.
+* [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] establishes Engineering Ecosystem Synchronisation and the repository-compatible OSE context for decision traceability.
+* [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] records authoritative ADR artefact identity, ownership, status and current version.
+* [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] provides product vision traceability context for architectural decisions.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
+* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is the current accepted repository baseline supporting this retrospective OSE pass.
+
+---
 # Related Artefacts
 
 * [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] records controlled artefact registration for AIEMS governance artefacts.
@@ -150,6 +160,7 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 
 | Version | Date | Author | Summary |
 |---------|------------|----------------------------|-------------------------------------------------------------|
+| 2.6 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing ADR governance. |
 | 2.5 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 architectural decisions ADR-0007 through ADR-0013. |
 | 1.0 | 23 June 2026 | Project Sponsor | Initial ADR Register established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to include AIEMS governance, ADR lifecycle, approval process, review policy and new strategic decisions ADR-0004 and ADR-0005. |

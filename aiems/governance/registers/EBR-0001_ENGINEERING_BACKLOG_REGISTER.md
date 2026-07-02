@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.9
+**Version:** 1.10
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.9 |
+| Version | 1.10 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -187,7 +187,20 @@ Where conflict exists, approved Engineering Implementation Packages define curre
 
 ---
 
-# 10. Related Artefacts
+# 10. OSE Relationships
+
+| Artefact | OSE Relationship |
+|----------|------------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective relationship-only enrichment rule applied to this backlog register. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and the repository-compatible OSE context for backlog traceability. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version for controlled backlog-related artefacts. |
+| [[REG-0004_ACTION_REGISTER|REG-0004]] | Records governed actions that may become, complete or relate to backlog work. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Provides product vision traceability context for backlog candidates and deferred work. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme status and backlog review context. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline supporting this retrospective OSE pass. |
+
+---
+# 11. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
@@ -199,7 +212,7 @@ Where conflict exists, approved Engineering Implementation Packages define curre
 
 ---
 
-# 11. Maintenance
+# 12. Maintenance
 
 The Engineering Backlog Register shall be reviewed:
 
@@ -213,11 +226,12 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 ---
 
-# 12. Version History
+# 13. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| 1.9 | 2 July 2026 | Codex Engineering Implementer | Completed EBG-0039 by moving prototype JARVIS chat exports into `logs/chats/` runtime evidence archive. |
+| 1.10 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing backlog governance. |
+| 1.9 | 2 July 2026 | Codex Engineering Implementer | Completed EBG-0039 by moving prototype JARVIS chat exports into logs/chats/ runtime evidence archive. |
 | 1.8 | 2 July 2026 | Codex Engineering Implementer | Added ESR-0008 closure candidate backlog items for UXP, Guardian identity, Agent Framework, Engineering Ecosystem Synchronisation, Obsidian/OSE, strategic value, device independence, Sentinel and Guardian governance. |
 | 1.7 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0006 follow-up backlog items for AIEMS standards review, JARVIS runtime chat archive and repository integrity troubleshooting playbook. |
 | 1.6 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 closure backlog items for export workflow, product roadmaps, Sentinel and Guardian architecture, context activation and engineering package authority guidance. |
