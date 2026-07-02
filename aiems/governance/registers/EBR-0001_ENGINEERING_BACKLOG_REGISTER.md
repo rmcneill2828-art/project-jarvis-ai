@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.8
+**Version:** 1.9
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.8 |
+| Version | 1.9 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -105,7 +105,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0036 | WP6 Repository Content Verification Standard | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define repeatable WP6 repository content verification expectations, evidence requirements and reporting structure. |
 | EBG-0037 | Engineering Package Classifications: EIP / EAP / ECP | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Define controlled package classifications for Engineering Implementation Packages, Engineering Assessment Packages and Engineering Corrective Packages. |
 | EBG-0038 | Formal AIEMS Standards Review | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]]; ESR-0006 continuous improvement | Candidate Backlog | High | Programme Sponsor | Validate CI-0001 through CI-0007 and determine which ESR-0006 working practices require formal standardisation. Rationale: preserves AIEMS improvement discipline while avoiding premature standard creation. |
-| EBG-0039 | JARVIS Runtime Chat Archive | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]]; ESR-0006 repository readiness classification | Candidate Backlog | High | Programme Sponsor | Define and implement the approved future runtime archive location for JARVIS chat exports under `JARVIS/Logs/Chats/`, including handling of `Jarvis one.md` and `Jarvis two.md`. Rationale: separates product runtime artefacts from AIEMS controlled artefacts while preserving export evidence. |
+| EBG-0039 | JARVIS Runtime Chat Archive | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]]; ESR-0006 repository readiness classification | Completed | High | Programme Sponsor | Runtime chat exports moved from repository root to `logs/chats/`, including `Jarvis one.md` and `Jarvis two.md`. Rationale: separates product runtime artefacts from AIEMS controlled artefacts while preserving export evidence. |
 | EBG-0040 | AIEMS Repository Integrity Troubleshooting Playbook | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]]; ESR-0006 repository readiness review | Candidate Backlog | Medium | Programme Sponsor | Create practical troubleshooting guidance for environmental Git status, line-ending normalization, ignored workspace state and baseline-readiness checks. Rationale: captures repeatable repository integrity learning from ESR-0006. |
 | EBG-0041 | Guardian Identity Architecture Validation | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Candidate Backlog | High | Programme Sponsor | Validate [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] and determine implementation sequencing for Guardian identity and faculties. |
 | EBG-0042 | Agent Framework Architecture | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]]; [[ADR-0011_AGENT_FRAMEWORK|ADR-0011]] | Candidate Backlog | High | Programme Sponsor | Define specialist agent contracts, including Engineering Agent, while preserving Guardian as the singular user-facing identity. |
@@ -217,6 +217,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.9 | 2 July 2026 | Codex Engineering Implementer | Completed EBG-0039 by moving prototype JARVIS chat exports into `logs/chats/` runtime evidence archive. |
 | 1.8 | 2 July 2026 | Codex Engineering Implementer | Added ESR-0008 closure candidate backlog items for UXP, Guardian identity, Agent Framework, Engineering Ecosystem Synchronisation, Obsidian/OSE, strategic value, device independence, Sentinel and Guardian governance. |
 | 1.7 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0006 follow-up backlog items for AIEMS standards review, JARVIS runtime chat archive and repository integrity troubleshooting playbook. |
 | 1.6 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 closure backlog items for export workflow, product roadmaps, Sentinel and Guardian architecture, context activation and engineering package authority guidance. |

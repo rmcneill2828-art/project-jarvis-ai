@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.7
+**Version:** 2.8
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.7 |
+| Version | 2.8 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -122,6 +122,7 @@ The likely first implementation direction is JARVIS Platform / UXP / Platform Se
 | JARVIS Product Capability Baseline | Accepted | Foundation | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] records the accepted operational product baseline. |
 | JARVIS Capability Maturity | Maintained | Early | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] remains the authoritative maturity model. |
 | JARVIS Development | In Progress | Early | First Light / Conversation Workspace is accepted as the current operational foundation. |
+| Runtime Chat Archive | Complete | Foundation | Prototype chat exports are archived under `logs/chats/`; EBG-0039 is completed in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]. |
 
 ---
 
@@ -170,6 +171,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Next Recommended Activity | ESR-0009 architecture validation and implementation package selection | Validate ESR-0008 architectural artefacts before implementation. |
 | Likely First Implementation Direction | JARVIS Platform / UXP / Platform Services foundation | Candidate direction only; final selection requires ESR-0009 review. |
 | Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register. |
+| Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports moved from repository root into runtime evidence archive. |
 
 ---
 
@@ -192,7 +194,6 @@ The following observations remain open for future engineering consideration:
 
 - ESR-0009 should validate ESR-0008 architecture before implementation package selection.
 - The likely first implementation direction is JARVIS Platform / UXP / Platform Services foundation, subject to ESR-0009 review.
-- EBG-0039 JARVIS Runtime Chat Archive remains a candidate backlog item but is no longer the primary next-session recommendation.
 - External AI providers, persistent memory, voice, vision, Guardian, local agent and internet-backed assistance remain outside the accepted operational product baseline.
 - RFEP, RFDP and Continuous Repository Synchronisation may be considered in a future formal AIEMS standards review.
 - Engineering Ecosystem Synchronisation may be considered in a future formal AIEMS standards review.
@@ -211,6 +212,7 @@ The following observations remain open for future engineering consideration:
 7. Updated [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]], [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] and [[REG-0002_ADR_REGISTER|REG-0002]].
 8. Created [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]].
 9. Accepted [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] as the ESR-0008 repository baseline.
+10. Completed EBG-0039 JARVIS Runtime Chat Archive by moving prototype exports into `logs/chats/`.
 
 ---
 
@@ -282,7 +284,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Previous accepted repository baseline and ESR-0007 starting point. |
 | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] | Repository product capability assessment completed during ESR-0007. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Current accepted product capability baseline. |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source and EBG-0039 candidate source. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source and EBG-0039 completion record. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture created during ESR-0008. |
 | [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Product vision traceability model created during ESR-0008 WP1. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture context for JARVIS engineering. |
@@ -295,6 +297,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.8 | 2 July 2026 | Codex Engineering Implementer | Recorded completion of EBG-0039 JARVIS Runtime Chat Archive and movement of prototype chat exports into `logs/chats/`. |
 | 2.7 | 2 July 2026 | Codex Engineering Implementer | Recorded ESR-0008 baseline acceptance through RBL-0009 and updated ESR-0009 handover guidance. |
 | 2.6 | 2 July 2026 | Codex Engineering Implementer | Recorded ESR-0008 closure, Guardian identity, JARVIS Platform architecture, Engineering Ecosystem Synchronisation and ESR-0009 readiness. |
 | 2.5 | 1 July 2026 | Codex Engineering Implementer | Recorded ESR-0007 closure, RBL-0008 acceptance, PCB-0001 acceptance, RPCA-0001 completion, repository-first working practices and ESR-0008 readiness. |
