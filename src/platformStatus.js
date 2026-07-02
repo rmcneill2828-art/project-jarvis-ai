@@ -1,4 +1,5 @@
 export const STATUS = Object.freeze({
+  OPERATIONAL: "Operational",
   AVAILABLE: "Available",
   PLACEHOLDER: "Placeholder",
   NOT_IMPLEMENTED: "Not Implemented",
@@ -7,99 +8,110 @@ export const STATUS = Object.freeze({
 });
 
 export const guardianStatus = Object.freeze({
-  title: "Guardian Interface",
+  title: "Guardian",
   state: STATUS.AVAILABLE,
-  message: "Good evening. Guardian interface is online.",
-  detail:
-    "Guardian is the trusted companion at the centre of this desktop experience. Runtime intelligence is not implemented in this shell.",
+  greeting: "Good evening, Richard.",
+  role: "I am Guardian, your trusted AI companion.",
+  platform: "The JARVIS Platform is operational.",
+  assurance: "I am here to help, support and protect your world.",
+  boundary: "Conversation runtime is not yet implemented.",
 });
 
 export const platformSignals = Object.freeze([
   {
-    label: "Platform Status",
-    state: STATUS.PLACEHOLDER,
-    detail: "Desktop shell available; platform services are preparing.",
+    id: "platform",
+    label: "JARVIS Platform",
+    state: STATUS.OPERATIONAL,
+    detail: "Core platform online",
   },
   {
+    id: "services",
     label: "Core Services",
-    state: STATUS.AVAILABLE,
-    detail: "Python platform foundation exists for bootstrap and status reporting.",
+    state: STATUS.OPERATIONAL,
+    detail: "All core services healthy",
   },
   {
+    id: "providers",
     label: "External Providers",
     state: STATUS.OFFLINE,
-    detail: "No AI provider integration is connected in this shell.",
+    detail: "No providers connected",
   },
 ]);
 
 export const capabilityStatuses = Object.freeze([
   {
-    id: "guardian-interface",
-    label: "Guardian Interface",
-    state: STATUS.AVAILABLE,
-    detail: "Primary trusted user-facing companion shell.",
+    id: "sentinel",
+    label: "Sentinel Gateway",
+    state: STATUS.PLACEHOLDER,
+    detail: "Trust gateway before Platform Services",
   },
   {
-    id: "sentinel",
-    label: "Sentinel Trust Posture",
+    id: "platform-services",
+    label: "Platform Services",
     state: STATUS.PLACEHOLDER,
-    detail: "Trust posture is visible only; no enforcement engine is active.",
+    detail: "Reserved service boundary for future capabilities",
   },
   {
     id: "memory",
     label: "Memory",
     state: STATUS.NOT_IMPLEMENTED,
-    detail: "Persistent memory is outside this implementation package.",
+    detail: "Persistent memory is outside this implementation",
   },
   {
     id: "providers",
     label: "Providers",
     state: STATUS.OFFLINE,
-    detail: "Provider adapters are not connected and no external calls are made.",
+    detail: "No provider adapters connected",
   },
   {
     id: "agent-framework",
     label: "Agent Framework",
     state: STATUS.PLACEHOLDER,
-    detail: "Future specialist capabilities extend Guardian; no agent execution exists.",
-  },
-  {
-    id: "skills",
-    label: "Skills",
-    state: STATUS.NOT_IMPLEMENTED,
-    detail: "Skill execution is not implemented in this desktop shell.",
-  },
-  {
-    id: "settings",
-    label: "Settings",
-    state: STATUS.PLACEHOLDER,
-    detail: "Settings navigation placeholder; no routed feature is active.",
-  },
-]);
-
-export const conversationMessages = Object.freeze([
-  {
-    speaker: "Guardian",
-    state: STATUS.AVAILABLE,
-    text: "Good evening. Guardian interface is online.",
-  },
-  {
-    speaker: "Platform",
-    state: STATUS.PLACEHOLDER,
-    text: "Core services are preparing.",
-  },
-  {
-    speaker: "Boundary",
-    state: STATUS.NOT_IMPLEMENTED,
-    text: "Conversation runtime is not yet implemented.",
+    detail: "Specialist capabilities will extend Guardian",
   },
 ]);
 
 export const diagnostics = Object.freeze([
-  ["Build mode", "Vite + Tauri React shell"],
-  ["Shell status", "Available"],
-  ["Sentinel posture", "Trust posture placeholder only"],
-  ["Capability count", "7 visible capabilities"],
-  ["Placeholder boundary", "Runtime, memory, providers and agents inactive"],
-  ["Validation status", "External command evidence only"],
+  {
+    id: "boundary",
+    label: "Implementation Boundary",
+    state: STATUS.UNKNOWN,
+    detail: "Tauri + React UXP shell",
+  },
+  {
+    id: "shell",
+    label: "Shell Status",
+    state: STATUS.UNKNOWN,
+    detail: "Interface shell only",
+  },
+  {
+    id: "guardian",
+    label: "Guardian",
+    state: STATUS.OPERATIONAL,
+    detail: "Interface active",
+  },
+  {
+    id: "sentinel",
+    label: "Sentinel",
+    state: STATUS.PLACEHOLDER,
+    detail: "Trust gateway placeholder",
+  },
+  {
+    id: "providers",
+    label: "Providers",
+    state: STATUS.OFFLINE,
+    detail: "Not connected",
+  },
+  {
+    id: "agents",
+    label: "Agents",
+    state: STATUS.OFFLINE,
+    detail: "No execution",
+  },
+  {
+    id: "first-light",
+    label: "First Light",
+    state: STATUS.OPERATIONAL,
+    detail: "Python reference preserved",
+  },
 ]);
