@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.2
+**Version:** 1.3
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | In Review |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -915,6 +915,18 @@ This relationship provides architectural traceability throughout the AI Engineer
 
 ---
 
+# OSE Relationships
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the rule for applying OSE to architecture and operating artefacts without changing their authority. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and OSE as repository-compatible relationship support. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Traceability model that references MOD-0001 as the platform and architectural domain authority. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned with MOD-0001 during ESR-0008. |
+| [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline and ESR-0009 handover point. |
+
+---
 # Version History
 
 | Version | Date | Author | Summary |
@@ -922,6 +934,7 @@ This relationship provides architectural traceability throughout the AI Engineer
 | 0.1 | 23 June 2026 | Project Sponsor & Chief Architect | Initial JARVIS OS Foundation Specification. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Re-authored as the Platform Architecture Model following establishment of the AI Engineering Platform and AIEMS architecture. |
 | 1.1 | 2 July 2026 | Codex Engineering Implementer | Aligned platform architecture with ESR-0008 Sentinel, Guardian, UXP, Provider Architecture, Agent Framework and device independence outcomes. |
+| 1.3 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships for ESR-0009 operating-artefact navigation. |
 | 1.2 | 2 July 2026 | Codex Engineering Implementer | Reconciled Guardian Services, Sentinel, Platform Services, Guardian identity and UXP into the canonical ESR-0008 architectural interpretation. |
 
 ---

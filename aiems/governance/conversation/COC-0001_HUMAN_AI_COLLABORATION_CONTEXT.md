@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.6
+**Version:** 1.7
 
 ---
 
@@ -239,7 +239,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]].
+* Review [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -255,17 +255,30 @@ Before beginning engineering activities:
 
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
-* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the accepted repository baseline for current engineering continuity.
-* [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] is the current Engineering Session initialised from the accepted baseline.
+* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] records the current accepted repository baseline and ESR-0009 handover point.
+* [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
 
 ---
 
+# OSE Relationships
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines how OSE relationship updates are applied to current operating artefacts. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing Engineering Implementer behaviour that complements COC-0001. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used for session reload and synchronisation. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0009 readiness. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed session report that hands over to ESR-0009 validation readiness. |
+
+---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.7 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned session start context with RBL-0009 and ESR-0009 readiness. |
 | 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 review artefact for repository orientation while preserving controlled artefact authority. |
 | 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle position and review, approval and implementation authority gates. |

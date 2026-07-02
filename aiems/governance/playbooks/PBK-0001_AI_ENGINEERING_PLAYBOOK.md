@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -505,8 +505,8 @@ This is a documentation architecture principle, not a software design principle.
 
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current programme status used during implementation session initialisation.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines the lightweight collaboration context that complements this playbook.
-* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the accepted repository baseline for ESR-0007 engineering continuity.
-* [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] is the current Engineering Session initialised from the accepted baseline.
+* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] records the current accepted repository baseline and ESR-0009 handover point.
+* [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
 * [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] defines controlled artefact governance expectations.
 * [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] defines engineering documentation expectations.
@@ -514,6 +514,18 @@ This is a documentation architecture principle, not a software design principle.
 
 ---
 
+# OSE Relationships
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines how OSE relationship updates are applied without changing playbook authority. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used during engineering synchronisation and session reload. |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0009 readiness. |
+
+---
 # Version History
 
 | Version | Date | Author | Summary |
@@ -525,4 +537,5 @@ This is a documentation architecture principle, not a software design principle.
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |
 | 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
 | 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 Engineering Synchronisation review artefact while preserving controlled artefact authority. |
+| 1.8 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned related artefact context with ESR-0009 readiness. |
 | 1.7 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |
