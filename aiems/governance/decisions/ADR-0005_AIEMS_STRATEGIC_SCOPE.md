@@ -8,7 +8,7 @@
 |------|------|
 | ADR ID | ADR-0005 |
 | Title | AIEMS Strategic Scope |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 24 June 2026 |
@@ -137,13 +137,27 @@ Review this ADR if:
 
 ---
 
+# Subsequent OSE Relationships
+
+The following relationships were added after original artefact creation to support repository navigation. They do not change the original decision, status or approval basis.
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective OSE enrichment rule applied to this ADR. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and OSE as repository-compatible relationship support. |
+| [[CHR-0001_PLATFORM_CHARTER|CHR-0001]] | Charter preserving the strategic relationship between AIEMS and JARVIS. |
+| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture model separating AIEMS governance from JARVIS implementation. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status for AIEMS and JARVIS strategic progression. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline and ESR-0009 handover point. |
+
+---
 # Related Artefacts
 
 * [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0005 as an Architecture Decision Record.
 * [[REG-0004_ACTION_REGISTER|REG-0004]] records actions linked to ADR-0005.
 * [[CHR-0001_PLATFORM_CHARTER|CHR-0001]] records the strategic AIEMS and JARVIS relationship.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
-* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the current accepted repository baseline.
+* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] records the current accepted repository baseline and ESR-0009 handover point.
 
 ---
 
@@ -151,4 +165,5 @@ Review this ADR if:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 2 July 2026 | Codex Engineering Implementer | Added subsequent OSE relationships for retrospective repository navigation. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recovered approved ADR from repository evidence during ESR-0003 EIP-R2. |

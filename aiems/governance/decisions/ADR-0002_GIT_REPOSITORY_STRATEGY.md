@@ -8,7 +8,7 @@
 |------|------|
 | ADR ID | ADR-0002 |
 | Title | Git Repository Strategy |
-| Version | 2.0 |
+| Version | 2.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 23 June 2026 |
@@ -156,9 +156,33 @@ Review if:
 
 ---
 
+# Subsequent OSE Relationships
+
+The following relationships were added after original artefact creation to support repository navigation. They do not change the original decision, status or approval basis.
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective OSE enrichment rule applied to this ADR. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and OSE as repository-compatible relationship support. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Controlled artefact register governed through repository-first source control. |
+| [[REG-0002_ADR_REGISTER|REG-0002]] | ADR register preserving decision traceability in the Git repository. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status confirming repository-first engineering continuity. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline and ESR-0009 handover point. |
+
+---
+
 ## Related Artefacts
 
 * [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0002 as an Architecture Decision Record.
 * [[REG-0004_ACTION_REGISTER|REG-0004]] records actions linked to repository and governance activity.
-* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the current accepted repository baseline.
+* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] records the current accepted repository baseline and ESR-0009 handover point.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
+
+---
+
+# Version History
+
+| Version | Date | Author | Summary |
+|---------|------|--------|---------|
+| 2.1 | 2 July 2026 | Codex Engineering Implementer | Added subsequent OSE relationships for retrospective repository navigation. |
+| 2.0 | 23 June 2026 | Programme Sponsor & Chief Engineering Advisor | Existing approved ADR version recorded before retrospective OSE enrichment. |

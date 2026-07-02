@@ -8,7 +8,7 @@
 |------|------|
 | ADR ID | ADR-0001 |
 | Title | Documentation First Development |
-| Version | 2.0 |
+| Version | 2.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 23 June 2026 |
@@ -159,9 +159,33 @@ This ADR shall be reviewed alongside future Architecture Decision Records relati
 
 ---
 
+# Subsequent OSE Relationships
+
+The following relationships were added after original artefact creation to support repository navigation. They do not change the original decision, status or approval basis.
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective OSE enrichment rule applied to this ADR. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and OSE as repository-compatible relationship support. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Provides repository traceability context for documentation-first engineering knowledge. |
+| [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] | Documentation standard aligned with the Documentation First decision. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status consuming documentation-first repository evidence. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline and ESR-0009 handover point. |
+
+---
+
 ## Related Artefacts
 
 * [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] registers ADR-0001 as a controlled artefact.
 * [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0001 as an Architecture Decision Record.
 * [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] defines engineering documentation expectations that align with Documentation First.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
+
+---
+
+# Version History
+
+| Version | Date | Author | Summary |
+|---------|------|--------|---------|
+| 2.1 | 2 July 2026 | Codex Engineering Implementer | Added subsequent OSE relationships for retrospective repository navigation. |
+| 2.0 | 23 June 2026 | Programme Sponsor & Chief Engineering Advisor | Existing approved ADR version recorded before retrospective OSE enrichment. |

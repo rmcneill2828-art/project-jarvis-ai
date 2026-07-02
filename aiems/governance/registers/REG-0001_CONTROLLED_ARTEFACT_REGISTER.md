@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.12
+**Version:** 3.13
 
 ---
 
@@ -100,12 +100,12 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 |--------------|---------------|-------|---------|------------|----------------------|----------------|--------------------------------|
 | CHR-0001 | Charter | Platform Charter | 2.1 | In Review | Programme Sponsor | - | `aiems/governance/charters/` |
 | CHR-0002 | Charter | Engineering Constitution | 2.1 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/charters/` |
-| ADR-0001 | Architecture Decision Record | Documentation First | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| ADR-0002 | Architecture Decision Record | Git Repository Strategy | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| ADR-0003 | Architecture Decision Record | RTBO Engineering Decision Framework | 2.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| ADR-0004 | Architecture Decision Record | AI Repository Interaction Policy | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| ADR-0005 | Architecture Decision Record | AIEMS Strategic Scope | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0001 | Architecture Decision Record | Documentation First | 2.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0002 | Architecture Decision Record | Git Repository Strategy | 2.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0003 | Architecture Decision Record | RTBO Engineering Decision Framework | 2.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0004 | Architecture Decision Record | AI Repository Interaction Policy | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0005 | Architecture Decision Record | AIEMS Strategic Scope | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
+| ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.1 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0007 | Architecture Decision Record | User Experience Platform Selection | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0008 | Architecture Decision Record | Hybrid AI Runtime Strategy | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0009 | Architecture Decision Record | Sentinel Gate of Durin Pattern | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.12 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.13 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.5 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -213,6 +213,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.13 | 2 July 2026 | Codex Engineering Implementer | Aligned ADR-0001 through ADR-0006 versions following Phase 3 retrospective OSE enrichment. |
 | 3.12 | 2 July 2026 | Codex Engineering Implementer | Aligned MOD-0001, PBK-0001 and COC-0001 versions following Phase 2 OSE enrichment. |
 | 3.11 | 2 July 2026 | Codex Engineering Implementer | Registered OSE-0001 Organic Semantic Enhancement Update Rule for Phase 1 retrospective OSE enrichment. |
 | 3.10 | 2 July 2026 | Codex Engineering Implementer | Aligned controlled artefact versions and OSE relationship wording following ESR-0009 readiness pass. |

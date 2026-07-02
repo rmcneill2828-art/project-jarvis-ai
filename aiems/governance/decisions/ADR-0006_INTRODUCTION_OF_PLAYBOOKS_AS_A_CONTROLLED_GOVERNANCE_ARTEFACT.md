@@ -8,7 +8,7 @@
 |------|------|
 | ADR ID | ADR-0006 |
 | Title | Introduction of Playbooks as a Controlled Governance Artefact |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | Pending |
@@ -88,6 +88,20 @@ To be completed under a subsequent approved engineering activity.
 
 ---
 
+# Subsequent OSE Relationships
+
+The following relationships were added after original artefact creation to support repository navigation. They do not change the original decision, status or approval basis.
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective OSE enrichment rule applied to this ADR. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and OSE as repository-compatible relationship support. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Controlled playbook artefact related to this draft decision. |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration context applying playbook guidance to human-AI engineering work. |
+| [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Controlled artefact standard relevant to playbook governance. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline and ESR-0009 handover point. |
+
+---
 # Related Artefacts
 
 * [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0006 as an Architecture Decision Record.
@@ -102,4 +116,5 @@ To be completed under a subsequent approved engineering activity.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.1 | 2 July 2026 | Codex Engineering Implementer | Added subsequent OSE relationships for retrospective repository navigation. |
 | 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial controlled artefact structure established for ADR-0006. |

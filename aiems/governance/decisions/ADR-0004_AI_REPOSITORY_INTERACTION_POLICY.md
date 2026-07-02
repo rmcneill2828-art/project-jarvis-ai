@@ -8,7 +8,7 @@
 |------|------|
 | ADR ID | ADR-0004 |
 | Title | AI Repository Interaction Policy |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 24 June 2026 |
@@ -139,13 +139,27 @@ Review this ADR if:
 
 ---
 
+# Subsequent OSE Relationships
+
+The following relationships were added after original artefact creation to support repository navigation. They do not change the original decision, status or approval basis.
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective OSE enrichment rule applied to this ADR. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and OSE as repository-compatible relationship support. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing authorised AI repository implementation behaviour. |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration context defining AI and human repository responsibilities. |
+| [[REG-0003_RISK_REGISTER|REG-0003]] | Risk register containing AI repository interaction risk mitigation. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline and ESR-0009 handover point. |
+
+---
 # Related Artefacts
 
 * [[REG-0002_ADR_REGISTER|REG-0002]] registers ADR-0004 as an Architecture Decision Record.
 * [[REG-0003_RISK_REGISTER|REG-0003]] records AI repository interaction risk mitigation.
 * [[REG-0004_ACTION_REGISTER|REG-0004]] records the completed action to create the AI Repository Interaction Policy.
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] and [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] define operational AI collaboration responsibilities.
-* [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] records the current accepted repository baseline.
+* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] records the current accepted repository baseline and ESR-0009 handover point.
 
 ---
 
@@ -153,4 +167,5 @@ Review this ADR if:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 2 July 2026 | Codex Engineering Implementer | Added subsequent OSE relationships for retrospective repository navigation. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recovered approved ADR from repository evidence during ESR-0003 EIP-R2. |
