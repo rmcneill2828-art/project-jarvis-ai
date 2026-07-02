@@ -2,7 +2,7 @@
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.4
+**Version:** 2.5
 
 ---
 
@@ -40,6 +40,13 @@ This register includes Architecture Decision Records relating to:
 | [[ADR-0004_AI_REPOSITORY_INTERACTION_POLICY]] | AI Repository Interaction Policy | Governance | Approved | 24 Jun 2026 | - | Defined governance, approval model and responsibilities for AI-assisted repository interaction. |
 | [[ADR-0005_AIEMS_STRATEGIC_SCOPE]] | AIEMS Strategic Scope | Strategy | Approved | 24 Jun 2026 | - | Recognised AIEMS as an independent strategic deliverable and JARVIS as its flagship implementation. |
 | [[ADR-0006_INTRODUCTION_OF_PLAYBOOKS_AS_A_CONTROLLED_GOVERNANCE_ARTEFACT]] | Introduction of Playbooks as a Controlled Governance Artefact | Governance | Draft | 25 Jun 2026 | - | Established Playbooks as a new controlled governance artefact category within AIEMS. |
+| [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION]] | User Experience Platform Selection | Architecture | Approved | 2 Jul 2026 | - | Selected Tauri + React as the UXP direction and clarified that UXP visualises state only. |
+| [[ADR-0008_HYBRID_AI_RUNTIME_STRATEGY]] | Hybrid AI Runtime Strategy | Architecture | Approved | 2 Jul 2026 | - | Approved local-first hybrid runtime with provider abstraction and cloud use where strategic value justifies cost. |
+| [[ADR-0009_SENTINEL_GATE_OF_DURIN_PATTERN]] | Sentinel Gate of Durin Pattern | Architecture | Approved | 2 Jul 2026 | - | Established Sentinel as the trust gateway before Platform Services. |
+| [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE]] | Guardian Identity and HITL Governance | Architecture | Approved | 2 Jul 2026 | - | Established Guardian as the singular trusted digital companion and HITL governance entity. |
+| [[ADR-0011_AGENT_FRAMEWORK]] | Agent Framework | Architecture | Approved | 2 Jul 2026 | - | Established specialist agents as capabilities serving Guardian, not separate identities. |
+| [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE]] | Device Independence and Portable Restore | Architecture | Approved | 2 Jul 2026 | - | Established devices as execution environments with portable memory, configuration and restore requirements. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION]] | Engineering Ecosystem Synchronisation | Governance | Approved | 2 Jul 2026 | - | Established WP0 Engineering Ecosystem Synchronisation including GitHub, AIEMS, OSE, Obsidian and session evidence. |
 
 ---
 
@@ -143,6 +150,7 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 
 | Version | Date | Author | Summary |
 |---------|------------|----------------------------|-------------------------------------------------------------|
+| 2.5 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 architectural decisions ADR-0007 through ADR-0013. |
 | 1.0 | 23 June 2026 | Project Sponsor | Initial ADR Register established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to include AIEMS governance, ADR lifecycle, approval process, review policy and new strategic decisions ADR-0004 and ADR-0005. |
 | 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |

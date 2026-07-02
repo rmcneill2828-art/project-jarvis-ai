@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.7
+**Version:** 1.8
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -94,7 +94,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0025 | JARVIS Home Assistant and Smart Home Integration Assessment | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Assess Home Assistant and smart-home integration options before any smart-home implementation package is approved. |
 | EBG-0026 | Transcript Export Workflow Enhancement | ESR-0005 RBL-0006 observation | Candidate Backlog | Medium | Programme Sponsor | Improve transcript export with default save location, automatic naming convention, GUI acknowledgement and no popup save dialogue where practical. |
 | EBG-0027 | JRM-0001 JARVIS Product Roadmap | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Create a controlled product roadmap for JARVIS capability sequencing without expanding implementation scope. |
-| EBG-0028 | GUI Evolution Roadmap | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Define staged GUI maturity from First Light through operational workspace and future product surfaces. |
+| EBG-0028 | UXP Evolution Roadmap | ESR-0005 closure recommendation; ESR-0008 terminology alignment | Candidate Backlog | Medium | Programme Sponsor | Define staged User Experience Platform maturity from First Light through operational workspace and future product surfaces. GUI is preserved as the historical alias for earlier presentation-layer work. |
 | EBG-0029 | Product Growth Philosophy | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Record the principle that JARVIS grows by acquiring capabilities rather than accumulating features. |
 | EBG-0030 | Sentinel Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Sentinel responsibilities, boundaries and relationship to Guardian before Sentinel implementation. |
 | EBG-0031 | Guardian Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Guardian safety, permission, approval and protection boundaries before Guardian implementation. |
@@ -107,6 +107,14 @@ Engineering backlog management shall follow these principles:
 | EBG-0038 | Formal AIEMS Standards Review | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]]; ESR-0006 continuous improvement | Candidate Backlog | High | Programme Sponsor | Validate CI-0001 through CI-0007 and determine which ESR-0006 working practices require formal standardisation. Rationale: preserves AIEMS improvement discipline while avoiding premature standard creation. |
 | EBG-0039 | JARVIS Runtime Chat Archive | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]]; ESR-0006 repository readiness classification | Candidate Backlog | High | Programme Sponsor | Define and implement the approved future runtime archive location for JARVIS chat exports under `JARVIS/Logs/Chats/`, including handling of `Jarvis one.md` and `Jarvis two.md`. Rationale: separates product runtime artefacts from AIEMS controlled artefacts while preserving export evidence. |
 | EBG-0040 | AIEMS Repository Integrity Troubleshooting Playbook | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]]; ESR-0006 repository readiness review | Candidate Backlog | Medium | Programme Sponsor | Create practical troubleshooting guidance for environmental Git status, line-ending normalization, ignored workspace state and baseline-readiness checks. Rationale: captures repeatable repository integrity learning from ESR-0006. |
+| EBG-0041 | Guardian Identity Architecture Validation | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Candidate Backlog | High | Programme Sponsor | Validate [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] and determine implementation sequencing for Guardian identity and faculties. |
+| EBG-0042 | Agent Framework Architecture | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]]; [[ADR-0011_AGENT_FRAMEWORK|ADR-0011]] | Candidate Backlog | High | Programme Sponsor | Define specialist agent contracts, including Engineering Agent, while preserving Guardian as the singular user-facing identity. |
+| EBG-0043 | Engineering Ecosystem Synchronisation Workflow | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Candidate Backlog | High | Programme Sponsor | Define repeatable WP0 workflow covering GitHub, AIEMS, OSE, Obsidian, registers, controlled artefacts, previous ESRs and summaries. |
+| EBG-0044 | Obsidian / OSE Validation Workflow | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Candidate Backlog | Medium | Programme Sponsor | Define how Obsidian as the human-facing Engineering Knowledge Workspace validates and navigates repository Markdown without replacing GitHub as source of truth. |
+| EBG-0045 | Cost and Strategic Value Framework | [[ADR-0008_HYBRID_AI_RUNTIME_STRATEGY|ADR-0008]] | Candidate Backlog | High | Programme Sponsor | Define evaluation criteria for cloud providers, commercial options, cost, privacy, strategic value and product benefit. |
+| EBG-0046 | Device Independence and Restore Architecture | [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]] | Candidate Backlog | High | Programme Sponsor | Define bootstrap, progressive restore, portable memory, configuration and encrypted sync requirements. |
+| EBG-0047 | Sentinel Gate of Durin Architecture Specification | [[ADR-0009_SENTINEL_GATE_OF_DURIN_PATTERN|ADR-0009]] | Candidate Backlog | High | Programme Sponsor | Extend EBG-0030 with Sentinel trust gateway, trust tiers and platform-entry validation details. |
+| EBG-0048 | Guardian HITL Governance Specification | [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]] | Candidate Backlog | High | Programme Sponsor | Extend EBG-0031 with consent, policy, privacy, approval, memory retention and trusted mobile approve/deny governance. |
 
 ---
 
@@ -209,6 +217,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.8 | 2 July 2026 | Codex Engineering Implementer | Added ESR-0008 closure candidate backlog items for UXP, Guardian identity, Agent Framework, Engineering Ecosystem Synchronisation, Obsidian/OSE, strategic value, device independence, Sentinel and Guardian governance. |
 | 1.7 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0006 follow-up backlog items for AIEMS standards review, JARVIS runtime chat archive and repository integrity troubleshooting playbook. |
 | 1.6 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added ESR-0005 closure backlog items for export workflow, product roadmaps, Sentinel and Guardian architecture, context activation and engineering package authority guidance. |
 | 1.5 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added recovered knowledge promotion candidate backlog items from ESR-0004 EIP-EKR-0001. |

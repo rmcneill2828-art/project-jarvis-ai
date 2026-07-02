@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | EIR-0001 |
 | Title | Engineering Implementation Recommendation |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Pending Programme Sponsor Review |
@@ -68,11 +68,15 @@ EIR-0001 is based on:
 
 ## Recommendation
 
-ESR-0008 should proceed to:
+ESR-0008 proceeded to:
 
 **Technology, Service and Application Evaluation for JARVIS Subsystems.**
 
 This work should compare candidate services, applications and technologies against recovered product intent, repository-approved architecture and AIEMS governance before any adoption or implementation is proposed.
+
+Following ESR-0008 closure, ESR-0009 should validate the ESR-0008 architectural artefacts before implementation begins.
+
+The first implementation package should likely be JARVIS Platform / UXP / Platform Services foundation, but final selection remains subject to ESR-0009 review and Programme Sponsor approval.
 
 ---
 
@@ -160,13 +164,13 @@ Technology selection shall remain an engineering recommendation until approved t
 
 ## Recommended Next Work Package
 
-### WP2 - JARVIS Subsystem Service and Application Evaluation
+### ESR-0009 - Architecture Validation and First Implementation Package Selection
 
 Purpose:
 
-Evaluate and recommend services, applications and technologies for each JARVIS architectural domain and recovered subsystem candidate.
+Validate ESR-0008 architectural artefacts and select the first implementation package through governed review.
 
-WP2 should produce evidence-led recommendations that can feed later architecture review, backlog handling or implementation packages without prematurely changing product source code or repository baselines.
+The likely first implementation direction is JARVIS Platform / UXP / Platform Services foundation. ESR-0009 shall confirm or revise that selection using repository-first evidence.
 
 ---
 
@@ -180,6 +184,8 @@ WP2 should produce evidence-led recommendations that can feed later architecture
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Defines product vision and service intent for evaluation. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Provides capability maturity context for evaluation sequencing. |
 | [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] | Provides strategic handover evidence for ESR-0008 subsystem evaluation. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Records ESR-0008 closure and updates the next recommended activity. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Provides Guardian identity architecture that ESR-0009 should validate. |
 
 ---
 
@@ -196,6 +202,8 @@ WP2 should produce evidence-led recommendations that can feed later architecture
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog authority for future approved work. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme state and session context source. |
 | [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] | ESR-0008 strategic handover source. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | ESR-0008 closure report driving the ESR-0009 recommendation. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity architecture requiring validation before implementation. |
 
 ---
 
@@ -203,4 +211,5 @@ WP2 should produce evidence-led recommendations that can feed later architecture
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 2 July 2026 | Codex Engineering Implementer | Updated next recommendation for ESR-0009 validation of ESR-0008 architecture before implementation package selection. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 WP1 to recommend WP2 subsystem service and application evaluation. |

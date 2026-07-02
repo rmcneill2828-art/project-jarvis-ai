@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PVTM-0001 |
 | Title | Product Vision Traceability Model |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Pending Programme Sponsor Review |
@@ -178,6 +178,20 @@ It shall use WikiLinks to existing artefacts only. It shall not create speculati
 
 PVTM-0001 supports OSE by showing how controlled artefacts, architecture, capability evidence, implementation records and baselines relate to each other.
 
+## ESR-0008 Architecture Traceability
+
+ESR-0008 extends PVTM traceability with the following architecture outcomes:
+
+| Outcome | Traceability Position |
+|---------|----------------------|
+| Guardian Identity Architecture | Traced through [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] and [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]]. |
+| UXP | Traced through [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION|ADR-0007]] and product architecture alignment. |
+| Sentinel Gate of Durin | Traced through [[ADR-0009_SENTINEL_GATE_OF_DURIN_PATTERN|ADR-0009]]. |
+| Agent Framework | Traced through [[ADR-0011_AGENT_FRAMEWORK|ADR-0011]]. |
+| Obsidian / OSE Engineering Ecosystem | Traced through [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]]. |
+| Hybrid AI Runtime | Traced through [[ADR-0008_HYBRID_AI_RUNTIME_STRATEGY|ADR-0008]]. |
+| Device Independence / Portable Restore | Traced through [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]]. |
+
 ---
 
 # OSE Relationships
@@ -186,6 +200,8 @@ PVTM-0001 supports OSE by showing how controlled artefacts, architecture, capabi
 |----------|--------------|
 | [[ERR-0001_ENGINEERING_RECOVERY_REPORT|ERR-0001]] | Records the WP1 recovery evidence and findings that informed this traceability model. |
 | [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]] | Uses this traceability model to recommend the next ESR-0008 evaluation work package. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Defines Guardian identity and cognitive architecture traced from ESR-0008 recovery. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Records ESR-0008 closure outcomes that extend this traceability model. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Authoritative platform and JARVIS architectural domain source. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Authoritative JARVIS product vision and product architecture source. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Authoritative capability maturity and readiness view. |
@@ -211,6 +227,8 @@ PVTM-0001 supports OSE by showing how controlled artefacts, architecture, capabi
 | [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] | ESR-0008 strategic handover source. |
 | [[ERR-0001_ENGINEERING_RECOVERY_REPORT|ERR-0001]] | WP1 recovery findings source. |
 | [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]] | Recommended next activity based on WP1 recovery. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity architecture traced by PVTM-0001. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | ESR-0008 closure report recording architecture outcomes. |
 
 ---
 
@@ -218,4 +236,5 @@ PVTM-0001 supports OSE by showing how controlled artefacts, architecture, capabi
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 2 July 2026 | Codex Engineering Implementer | Updated traceability for ESR-0008 Guardian identity, UXP, Sentinel, Agent Framework, Obsidian/OSE, hybrid runtime and portable restore outcomes. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 WP1 to define the product vision traceability model. |

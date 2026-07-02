@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.3
+**Version:** 3.4
 
 ---
 
@@ -106,11 +106,18 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0004 | Architecture Decision Record | AI Repository Interaction Policy | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0005 | Architecture Decision Record | AIEMS Strategic Scope | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0006 | Architecture Decision Record | Introduction of Playbooks as a Controlled Governance Artefact | 1.0 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.2 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0002 | Register | Architectural Decision Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| ADR-0007 | Architecture Decision Record | User Experience Platform Selection | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
+| ADR-0008 | Architecture Decision Record | Hybrid AI Runtime Strategy | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
+| ADR-0009 | Architecture Decision Record | Sentinel Gate of Durin Pattern | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
+| ADR-0010 | Architecture Decision Record | Guardian Identity and HITL Governance | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
+| ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
+| ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
+| ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.4 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0002 | Register | Architectural Decision Register | 2.5 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.5 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -119,11 +126,12 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0008 | Repository Baseline | ESR-0007 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
-| MOD-0001 | Model | Platform Architecture Model | 1.0 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
-| PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
+| MOD-0001 | Model | Platform Architecture Model | 1.1 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
+| AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
+| PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
-| ERR-0001 | Review | Engineering Recovery Report | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
-| EIR-0001 | Review | Engineering Implementation Recommendation | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
+| ERR-0001 | Review | Engineering Recovery Report | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
+| EIR-0001 | Review | Engineering Implementation Recommendation | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | FE-0001 | Engineering Feature | First Executable JARVIS Component | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -143,6 +151,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0003 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0004 | Engineering Session Report | Engineering Session Report | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0007 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0008 | Engineering Session Report | Engineering Session Report | 1.0 | In Review | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 
 ---
 
@@ -200,6 +209,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.4 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 closure artefacts including AAM-0001, ADR-0007 through ADR-0013 and ESR-0008, and aligned updated artefact versions. |
 | 3.3 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 WP1 controlled artefacts PVTM-0001, ERR-0001 and EIR-0001. |
 | 3.2 | 1 July 2026 | Codex Engineering Implementer | Registered ESR-0007, RPCA-0001, PCB-0001 and RBL-0008 for ESR-0007 closure. |
 | 3.1 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Registered RBL-0007 as the accepted ESR-0006 repository baseline and added related artefact traceability. |

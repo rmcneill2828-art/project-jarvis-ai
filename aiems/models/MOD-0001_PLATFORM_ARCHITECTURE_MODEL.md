@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | In Review |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -402,6 +402,35 @@ JARVIS
 Each service represents a logical architectural domain.
 
 Detailed component designs shall be maintained within their own controlled architectural artefacts. Current JARVIS product architecture is recorded in [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]].
+
+ESR-0008 aligns the service architecture with the JARVIS Platform and Guardian identity model:
+
+```text
+User / Device / External Capability
+  |
+  v
+Sentinel
+  |
+  v
+Platform Services
+  |
+  v
+Guardian
+  |
+  +-- Provider Architecture
+  +-- Agent Framework
+  +-- Automation
+  +-- Voice
+  +-- Vision
+  +-- Memory
+  |
+  v
+User Experience Platform
+```
+
+Sentinel sits before Platform Services as the trust gateway. Platform Services include bootstrap, configuration, device registry, progressive restore, health, capability registry and backup/sync coordination. Guardian is the cognitive and governance entity hosted by the JARVIS Platform. UXP visualises state and interaction without owning business logic or system state.
+
+Provider Architecture allows JARVIS to request capabilities rather than vendors. The Agent Framework provides specialist capability agents serving Guardian. Device independence and portable restore ensure devices host JARVIS but do not define JARVIS.
 
 ---
 
@@ -849,6 +878,8 @@ This relationship provides architectural traceability throughout the AI Engineer
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline for ESR-0007. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability readiness view supporting JARVIS product engineering. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned with the platform model during ESR-0008. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Engineering session that recorded Sentinel, Guardian, UXP, Provider Architecture, Agent Framework and device independence outcomes. |
 
 ---
 
@@ -858,6 +889,7 @@ This relationship provides architectural traceability throughout the AI Engineer
 |---------|------------|-----------------------------------------|--------------------------------------------------------------------------|
 | 0.1 | 23 June 2026 | Project Sponsor & Chief Architect | Initial JARVIS OS Foundation Specification. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Re-authored as the Platform Architecture Model following establishment of the AI Engineering Platform and AIEMS architecture. |
+| 1.1 | 2 July 2026 | Codex Engineering Implementer | Aligned platform architecture with ESR-0008 Sentinel, Guardian, UXP, Provider Architecture, Agent Framework and device independence outcomes. |
 
 ---
 

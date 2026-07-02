@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ERR-0001 |
 | Title | Engineering Recovery Report |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Pending Programme Sponsor Review |
@@ -93,6 +93,12 @@ Repository validation included [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]]
 | WP1-F005 | Historical engineering discussions contain architecture concepts not yet fully reflected in [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]]. |
 | WP1-F006 | Sentinel / Guardian separation was recovered: Sentinel protects system, repository, AIEMS, infrastructure and cyber/security boundaries; Guardian protects family, home, privacy, welfare and trusted human boundaries. |
 | WP1-F007 | AIEMS, GitHub, OSE, controlled artefacts and [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] form an engineering information architecture. |
+| WP1-F008 | ESR-0008 discovered Guardian as the trusted digital companion / AI entity hosted by the JARVIS Platform. |
+| WP1-F009 | Engineering Assistant was corrected into an Engineering Agent / specialist agent within the Agent Framework. |
+| WP1-F010 | Obsidian was corrected into the Engineering Ecosystem as the human-facing Engineering Knowledge Workspace for OSE. |
+| WP1-F011 | Device independence requires portable memory, configuration, bootstrap and restore capability. |
+| WP1-F012 | Strategic value is required before cloud providers, commercial services or complex technology choices are adopted. |
+| WP1-F013 | WP0 evolves from repository synchronisation into Engineering Ecosystem Synchronisation. |
 
 ---
 
@@ -156,6 +162,7 @@ During WP1, the following assumptions were withdrawn:
 - Consider whether Engineering Assistant should become an architectural domain or capability.
 - Evaluate service/application options for each JARVIS subsystem in the next ESR-0008 Work Package.
 - Create Engineering Session Work Packages for OSE consistency and progressive migration if approved.
+- Validate ESR-0008 architectural artefacts during ESR-0009 before runtime implementation.
 
 ---
 
@@ -169,6 +176,8 @@ During WP1, the following assumptions were withdrawn:
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product vision and capability hierarchy source reviewed during recovery. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability maturity source reviewed during recovery. |
 | [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] | Strategic handover evidence into ESR-0008 product vision recovery. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Records the Guardian identity discovery and cognitive architecture outcome. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Records ESR-0008 closure outputs related to this recovery report. |
 
 ---
 
@@ -186,6 +195,8 @@ During WP1, the following assumptions were withdrawn:
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog authority reviewed during WP1. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status source reviewed during WP1. |
 | [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] | ESR-0008 strategic handover source. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity architecture created from ESR-0008 recovery. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | ESR-0008 closure report. |
 
 ---
 
@@ -193,4 +204,5 @@ During WP1, the following assumptions were withdrawn:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 2 July 2026 | Codex Engineering Implementer | Added ESR-0008 closure findings for Guardian identity, Agent Framework, Obsidian/OSE, device independence, strategic value and Engineering Ecosystem Synchronisation. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 WP1 to record engineering recovery findings. |

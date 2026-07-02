@@ -8,7 +8,7 @@
 |------|-------|
 | Document ID | JARVIS-PRODUCT-ARCHITECTURE |
 | Title | JARVIS Product Architecture |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved Product Architecture |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Product | JARVIS OS |
@@ -140,6 +140,16 @@ Multi-device interaction should preserve continuity while respecting device perm
 
 JARVIS OS is composed of a user experience layer, a conversation layer, a core engine and independent supporting services.
 
+ESR-0008 clarifies the current architectural terminology:
+
+- Project JARVIS AI is the engineering programme.
+- JARVIS Platform is the runtime operating platform.
+- Guardian is the trusted digital companion / AI entity hosted by the JARVIS Platform.
+- Sentinel is the trust gateway before Platform Services.
+- User Experience Platform (UXP) is the current architectural term for the presentation layer.
+
+Historical GUI references remain valid where they describe earlier implementation or user-interface work. Current architecture uses UXP. UXP visualises state and interaction; it does not own business logic or system state.
+
 ```text
                     GUI
                      |
@@ -161,6 +171,12 @@ JARVIS OS is composed of a user experience layer, a conversation layer, a core e
 All services shall communicate through documented APIs.
 
 Failure of one service shall not stop the Core. JARVIS OS shall degrade gracefully, report service status clearly and continue operating with available capabilities wherever practical.
+
+Sentinel asks whether an input can be trusted before it reaches Platform Services. Guardian asks whether an action should happen and governs consent, policy, privacy, approval, memory retention and human-in-the-loop decisions.
+
+Specialist agents provide domain capability to Guardian. Engineering Assistant is treated as an Engineering Agent / specialist agent, not a separate AI identity.
+
+Obsidian is part of the Engineering Ecosystem as the human-facing Engineering Knowledge Workspace for OSE. It is not part of the JARVIS runtime platform. GitHub remains the source of truth.
 
 ## Capability Hierarchy
 
@@ -515,6 +531,8 @@ Engineering economics matter. JARVIS should prefer simple, maintainable, low-cos
 |----------|--------------|
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture model that JARVIS implements as flagship product. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability maturity view supporting package selection. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned during ESR-0008. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Engineering session that recorded JARVIS Platform, UXP, Sentinel and Guardian architecture outcomes. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and ESR-0007 handover position. |
 | [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Current session returning focus to JARVIS product engineering. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register containing JARVIS product engineering candidates. |
@@ -527,3 +545,4 @@ Engineering economics matter. JARVIS should prefer simple, maintainable, low-cos
 |---------|------|--------|---------|
 | 1.0 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial JARVIS OS product architecture blueprint created. |
 | 1.1 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Promoted recovered product vision, behaviour, user experience, capability hierarchy and engineering intent into the product architecture. |
+| 1.2 | 2 July 2026 | Codex Engineering Implementer | Aligned product architecture with ESR-0008 JARVIS Platform, Guardian identity, Sentinel, UXP, Agent Framework and Obsidian/OSE terminology. |
