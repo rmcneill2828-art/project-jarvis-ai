@@ -2,6 +2,20 @@
 
 ---
 
+# Document Control
+
+| Field | Value |
+|-------|-------|
+| Artefact ID | AIE-0001 |
+| Title | AI Engineering Workflow Evaluation |
+| Version | Unversioned Draft |
+| Status | Draft |
+| Owner | Programme Sponsor |
+| Approved By | Pending Programme Sponsor Review |
+| Classification | Internal |
+
+---
+
 # 1. Executive Summary
 
 Project JARVIS AI has reached a stage where engineering productivity is increasingly constrained by manual interaction between development tools, documentation and AI-assisted engineering. While the current workflow has successfully established governance, engineering standards and the initial JARVIS platform, it relies heavily on manual context sharing and repetitive copy-and-paste operations.

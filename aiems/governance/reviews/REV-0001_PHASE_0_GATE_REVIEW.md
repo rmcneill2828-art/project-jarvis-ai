@@ -1,3 +1,21 @@
+# REV-0001 - Phase 0 Gate Review
+
+---
+
+# Document Control
+
+| Field | Value |
+|-------|-------|
+| Artefact ID | REV-0001 |
+| Title | Phase 0 Gate Review |
+| Version | 1.0 |
+| Status | Complete |
+| Owner | Programme Sponsor |
+| Approved By | Programme Sponsor |
+| Classification | Internal |
+
+---
+
 # Gate Outcome Classification
 
 Every phase gate shall conclude with one of the following outcomes:
