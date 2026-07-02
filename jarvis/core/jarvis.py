@@ -4,6 +4,7 @@ from enum import Enum
 from types import MappingProxyType
 from typing import Mapping
 
+from jarvis.core.platform import PlatformFoundation, PlatformStatus
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
 
 
@@ -19,6 +20,7 @@ class Jarvis:
 
     def __init__(self) -> None:
         self._state = JarvisState.STOPPED
+        self._platform = PlatformFoundation()
         self._services: dict[str, JarvisService] = {
             "Core": JarvisService(
                 name="Core",
@@ -57,6 +59,7 @@ class Jarvis:
     def start(self) -> JarvisState:
         """Start the platform."""
 
+        self.bootstrap_platform()
         self._state = JarvisState.RUNNING
         return self._state
 
@@ -70,6 +73,16 @@ class Jarvis:
         """Return the current platform state."""
 
         return self._state
+
+    def bootstrap_platform(self) -> PlatformStatus:
+        """Bootstrap the platform foundation boundary."""
+
+        return self._platform.bootstrap(self._services)
+
+    def platform_status(self) -> PlatformStatus:
+        """Return the current platform foundation status."""
+
+        return self._platform.status(self._services)
 
     def register_service(self, name: str, status: ServiceStatus) -> None:
         """Register or update a service status."""
