@@ -196,6 +196,24 @@ Repository changes are expected to remain traceable to controlled engineering ac
 
 ---
 
+# Repository Validation
+
+Run lightweight repository governance validation from the repository root:
+
+```text
+python scripts/validate_repository.py
+```
+
+For documentation or governance-only packages:
+
+```text
+python scripts/validate_repository.py --governance-only
+```
+
+This checks WikiLinks, controlled artefact registration, stale programme status references and prohibited source/test changes during governance-only work.
+
+---
+
 # Launching JARVIS
 
 Run the First Light application skeleton from the repository root:
