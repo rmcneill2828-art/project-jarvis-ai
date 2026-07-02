@@ -1,0 +1,23 @@
+{
+  "name": "jarvis-guardian-desktop-shell",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "JARVIS Guardian Desktop Platform Shell",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}
