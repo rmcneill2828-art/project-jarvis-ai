@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | Phase 2 - Engineering Standards |
+| Current Phase | ESR-0009 readiness following ESR-0008 architecture evaluation |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | Operational First Light / Conversation Workspace |
-| Current Engineering Focus | Continue from [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] into [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] JARVIS product engineering |
+| Current Engineering Focus | Validate ESR-0008 architecture from [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] before selecting the first ESR-0009 implementation package |
 
 ---
 
@@ -69,6 +69,18 @@ Current JARVIS implementation includes:
 - Package-level public API.
 - Automated tests for lifecycle behaviour and public API import.
 - Packaging configuration using package discovery.
+
+Current JARVIS architecture direction includes:
+
+- JARVIS Platform as the runtime operating platform.
+- Guardian as the trusted digital companion / AI entity.
+- Sentinel as the trust gateway before Platform Services.
+- User Experience Platform (UXP) as the current presentation-layer architecture term.
+- Provider Architecture for capability-based provider selection.
+- Agent Framework for specialist capabilities serving Guardian.
+- Device independence and portable restore as architecture requirements.
+
+The canonical Guardian identity and cognitive architecture is recorded in [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]]. ESR-0008 closure and baseline acceptance are recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] and [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
 
 ---
 
@@ -138,8 +150,9 @@ Key engineering artefacts include:
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Human-AI collaboration context |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | AI Engineering Playbook |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status |
-| [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Current initialised engineering session report |
-| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed engineering session report for ESR-0008 architecture evaluation |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Engineering backlog register |
 | [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Controlled Artefact Standard |
 | [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] | Engineering Documentation Standard |
@@ -169,7 +182,7 @@ Final authority for engineering direction, approval and Git operations remains w
 Every significant engineering activity follows the approved AIEMS workflow at a high level.
 
 ```text
-WP0 - Engineering Synchronisation
+WP0 - Engineering Ecosystem Synchronisation
     |
 Engineering Design
     |
@@ -190,7 +203,7 @@ Baseline Acceptance
 Continue Engineering
 ```
 
-Operational workflow detail is maintained in [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and current Engineering Session Reports. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
+Operational workflow detail is maintained in [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and current Engineering Session Reports. ESR-0008 introduced Engineering Ecosystem Synchronisation as the current WP0 working practice, explicitly accounting for GitHub, AIEMS, OSE, Obsidian, controlled artefacts, registers, previous ESRs and summaries. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
 
 Repository changes are expected to remain traceable to controlled engineering activities, approved Engineering Implementation Packages and approved governance artefacts.
 
@@ -224,6 +237,8 @@ python -m jarvis
 
 The current application provides an operational First Light Conversation Workspace with a simple GUI shell, animated orb placeholder, deterministic chat response, service status panel, session metadata, New Conversation, Clear Conversation and user-initiated transcript export. No external AI provider is required.
 
+GUI remains the historical implementation term for the current Tkinter interface. Current architecture uses User Experience Platform (UXP) for future presentation-layer planning.
+
 ---
 
 # Repository Engineering Health Review
@@ -249,7 +264,8 @@ Engineering work is evidence-led: context is gathered before implementation, dec
 | Repository Architecture | Complete | Complete | Repository structure separates AIEMS governance from JARVIS implementation. |
 | Governance Framework | In Progress | Mature | Core governance exists; register and artefact consistency is actively managed. |
 | Engineering Standards | In Progress | High | [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]], [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] and [[STD-0003_SOFTWARE_PYTHON_ENGINEERING_STANDARD|STD-0003]] are approved; additional build-facing standards remain planned. |
-| Platform Architecture | In Progress | Partial | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] defines the platform architecture; [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] defines the product blueprint. |
+| Platform Architecture | In Review | High | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] defines the platform architecture; [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] defines Guardian identity and cognitive architecture. |
+| Engineering Ecosystem | In Progress | High | ESR-0008 recognised Obsidian as the human-facing Engineering Knowledge Workspace for OSE while GitHub remains source of truth. |
 | JARVIS Development | In Progress | Partial | Operational First Light / Conversation Workspace, lifecycle object, public API, packaging configuration and tests exist. |
 
 ---
@@ -280,16 +296,17 @@ Delivered:
 - Programme status reload point.
 - Engineering Session Report model.
 
-## Phase 2 - Engineering Standards
+## Phase 2 - JARVIS Architecture Readiness
 
 Status: In progress.
 
 Current focus:
 
-- Complete the minimum viable Engineering Standards baseline.
-- Complete remaining build-facing engineering standards.
-- Prepare for platform decomposition.
-- Preserve repository-backed session continuity.
+- Validate ESR-0008 architecture outcomes before implementation.
+- Confirm first ESR-0009 implementation package selection.
+- Preserve the distinction between JARVIS Platform, Guardian, Sentinel, Platform Services and UXP.
+- Keep AIEMS governance proportionate to product delivery.
+- Preserve repository-backed session continuity through Engineering Ecosystem Synchronisation.
 
 ---
 
@@ -312,8 +329,9 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | Artefact | Relationship |
 |----------|--------------|
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point. |
-| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline. |
-| [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Current initialised engineering session. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline. |
+| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed engineering session for ESR-0008 architecture evaluation. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog source for selecting future engineering packages. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture model. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Authoritative JARVIS product architecture. |
@@ -333,3 +351,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.3 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added First Light launch guidance and updated JARVIS implementation summary. |
 | 3.4 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified the JARVIS product architecture as the authoritative home for recovered product vision and behaviour. |
 | 3.5 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Updated current product state to Operational First Light / Conversation Workspace following RBL-0006 acceptance. |
+| 3.6 | 2 July 2026 | Codex Engineering Implementer | Refreshed README for ESR-0008 closure, RBL-0009, Guardian, Sentinel, UXP and Engineering Ecosystem Synchronisation. |
