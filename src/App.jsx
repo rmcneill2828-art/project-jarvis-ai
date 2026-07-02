@@ -1,5 +1,6 @@
 import {
   capabilityStatuses,
+  conversationMessages,
   diagnostics,
   guardianStatus,
   platformSignals,
@@ -8,103 +9,162 @@ import {
 
 const statusClass = (state) => state.toLowerCase().replaceAll(" ", "-");
 
-function StatusPill({ state }) {
-  return <span className={`status-pill status-${statusClass(state)}`}>{state}</span>;
-}
-
-function GuardianPanel() {
+function StatusPill({ state, compact = false }) {
   return (
-    <section className="guardian-panel" aria-labelledby="guardian-title">
-      <div className="guardian-orbit" aria-hidden="true">
-        <div className="guardian-core" />
-      </div>
-      <div className="guardian-copy">
-        <p className="eyebrow">JARVIS Guardian Desktop Shell</p>
-        <h1 id="guardian-title">Guardian is the trusted interface to JARVIS.</h1>
-        <p className="guardian-message">{guardianStatus.message}</p>
-        <p className="guardian-detail">{guardianStatus.detail}</p>
-        <div className="guardian-actions" aria-label="Guardian shell state">
-          <StatusPill state={guardianStatus.state} />
-          <span>JARVIS Platform is preparing core services.</span>
-        </div>
-      </div>
-    </section>
+    <span className={`status-pill status-${statusClass(state)}${compact ? " status-pill-compact" : ""}`}>
+      {state}
+    </span>
   );
 }
 
-function PlatformSignals() {
+function TopStatusStrip() {
   return (
-    <section className="signal-strip" aria-label="Platform status summary">
+    <section className="status-strip" aria-label="Platform and provider status">
       {platformSignals.map((signal) => (
-        <article className="signal-item" key={signal.label}>
+        <article className="status-summary" key={signal.label}>
           <div>
-            <h2>{signal.label}</h2>
+            <p className="panel-kicker">{signal.label}</p>
             <p>{signal.detail}</p>
           </div>
-          <StatusPill state={signal.state} />
+          <StatusPill state={signal.state} compact />
         </article>
       ))}
     </section>
   );
 }
 
-function CapabilityStatusGrid() {
+function CapabilityPanel() {
   return (
-    <section className="capability-section" aria-labelledby="capability-heading">
-      <div className="section-heading">
-        <p className="eyebrow">Capability posture</p>
-        <h2 id="capability-heading">Platform placeholders are visible but inactive.</h2>
+    <aside className="capability-panel" aria-labelledby="capability-heading">
+      <div className="panel-heading">
+        <p className="panel-kicker">Capabilities</p>
+        <h2 id="capability-heading">Navigation awareness</h2>
       </div>
-      <div className="capability-grid">
-        {capabilityStatuses.map((capability) => (
-          <article className="capability-card" key={capability.id}>
+      <nav aria-label="Guardian capability awareness">
+        <ul className="capability-list">
+          {capabilityStatuses.map((capability) => (
+            <li className="capability-item" key={capability.id}>
+              <div>
+                <span className="capability-label">{capability.label}</span>
+                <span className="capability-detail">{capability.detail}</span>
+              </div>
+              <StatusPill state={capability.state} compact />
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  );
+}
+
+function GuardianOrb() {
+  return (
+    <div className="guardian-orb" role="img" aria-label="Guardian visual presence">
+      <span className="orb-ring orb-ring-outer" />
+      <span className="orb-ring orb-ring-middle" />
+      <span className="orb-core" />
+      <span className="orb-glint" />
+    </div>
+  );
+}
+
+function GuardianPresence() {
+  return (
+    <section className="guardian-presence" aria-labelledby="guardian-title">
+      <div className="guardian-presence-copy">
+        <p className="panel-kicker">{guardianStatus.title}</p>
+        <h1 id="guardian-title">Guardian</h1>
+        <p className="guardian-message">{guardianStatus.message}</p>
+        <p className="guardian-detail">{guardianStatus.detail}</p>
+        <div className="guardian-state" aria-label="Guardian shell state">
+          <StatusPill state={guardianStatus.state} />
+          <span>Desktop interface shell only</span>
+        </div>
+      </div>
+      <GuardianOrb />
+    </section>
+  );
+}
+
+function ConversationArea() {
+  return (
+    <section className="conversation-area" aria-labelledby="conversation-heading">
+      <div className="panel-heading conversation-heading-row">
+        <div>
+          <p className="panel-kicker">Conversation</p>
+          <h2 id="conversation-heading">Primary interaction surface</h2>
+        </div>
+        <StatusPill state={STATUS.NOT_IMPLEMENTED} compact />
+      </div>
+      <div className="conversation-thread" aria-label="Static conversation placeholders">
+        {conversationMessages.map((message) => (
+          <article className="conversation-message" key={`${message.speaker}-${message.text}`}>
             <header>
-              <h3>{capability.label}</h3>
-              <StatusPill state={capability.state} />
+              <span>{message.speaker}</span>
+              <StatusPill state={message.state} compact />
             </header>
-            <p>{capability.detail}</p>
+            <p>{message.text}</p>
           </article>
         ))}
+      </div>
+      <div className="conversation-boundary" aria-label="Conversation runtime boundary">
+        <span>Input unavailable</span>
+        <strong>Conversation runtime is not yet implemented.</strong>
       </div>
     </section>
   );
 }
 
-function DiagnosticsPanel() {
+function DiagnosticsPanel({ capabilityCount, unavailableCount }) {
+  const valueFor = ([label, value]) => {
+    if (label === "Capability count") {
+      return `${capabilityCount} visible capabilities`;
+    }
+
+    if (label === "Placeholder boundary") {
+      return `${unavailableCount} capabilities unavailable or inactive by design`;
+    }
+
+    return value;
+  };
+
   return (
-    <section className="diagnostics-panel" aria-labelledby="diagnostics-heading">
-      <div className="section-heading">
-        <p className="eyebrow">Diagnostics</p>
-        <h2 id="diagnostics-heading">Implementation boundary</h2>
+    <aside className="diagnostics-panel" aria-labelledby="diagnostics-heading">
+      <div className="panel-heading">
+        <p className="panel-kicker">Diagnostics</p>
+        <h2 id="diagnostics-heading">Runtime boundary</h2>
       </div>
       <dl>
-        {diagnostics.map(([label, value]) => (
-          <div className="diagnostic-row" key={label}>
-            <dt>{label}</dt>
-            <dd>{value}</dd>
+        {diagnostics.map((diagnostic) => (
+          <div className="diagnostic-row" key={diagnostic[0]}>
+            <dt>{diagnostic[0]}</dt>
+            <dd>{valueFor(diagnostic)}</dd>
           </div>
         ))}
       </dl>
-    </section>
+    </aside>
   );
 }
 
 export function App() {
   const unavailableCount = capabilityStatuses.filter(
-    (capability) => capability.state === STATUS.NOT_IMPLEMENTED || capability.state === STATUS.OFFLINE,
+    (capability) => capability.state !== STATUS.AVAILABLE,
   ).length;
 
   return (
     <main className="app-shell">
-      <GuardianPanel />
-      <PlatformSignals />
-      <div className="content-grid">
-        <CapabilityStatusGrid />
-        <DiagnosticsPanel />
+      <TopStatusStrip />
+      <div className="guardian-layout" aria-label="Guardian desktop experience layout">
+        <CapabilityPanel />
+        <div className="guardian-main-column">
+          <GuardianPresence />
+          <ConversationArea />
+        </div>
+        <DiagnosticsPanel capabilityCount={capabilityStatuses.length} unavailableCount={unavailableCount} />
       </div>
       <footer className="shell-footer">
-        <span>{unavailableCount} capabilities remain unavailable by design.</span>
-        <span>No Guardian runtime, Sentinel enforcement, providers, memory or agents are implemented.</span>
+        <span>{unavailableCount} capabilities remain unavailable or inactive by design.</span>
+        <span>No AI runtime, provider calls, Sentinel enforcement, memory, agents, voice or vision are implemented.</span>
       </footer>
     </main>
   );
