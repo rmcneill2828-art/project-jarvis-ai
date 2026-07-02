@@ -2,7 +2,7 @@
 
 > *"A controlled artefact is more than a document—it is governed engineering evidence. Consistent artefacts enable consistent engineering."*
 
-**Version:** 1.2
+**Version:** 1.3
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | STD-0001 |
 | Title | Controlled Artefact Standard |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -346,6 +346,18 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 
 ---
 
+## OSE Relationships
+
+| Artefact | OSE Relationship |
+|----------|------------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective relationship-only enrichment rule applied to controlled artefacts. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and the repository-compatible OSE context. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Provides vision-to-artefact traceability supported by controlled artefact discipline. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme readiness and approved standards position. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline supporting this retrospective OSE pass. |
+
+---
 ## Related Artefacts
 
 | Artefact | Relationship |
@@ -364,3 +376,4 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Controlled Artefact Standard establishing the mandatory requirements for all AIEMS Controlled Artefacts. |
 | 1.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Perfective improvements introducing Controlled Artefact Principles, Review Frequency and clarification of mandatory artefact structure. |
 | 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Approved and baselined following engineering review and metadata remediation. |
+| 1.3 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing standard requirements. |

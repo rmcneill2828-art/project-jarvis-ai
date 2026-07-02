@@ -2,7 +2,7 @@
 
 > *"A deliverable is complete when evidence shows it is correct, reviewed and ready for the repository baseline."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | STD-0004 |
 | Title | Validation and Quality Assurance Standard |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -236,6 +236,17 @@ This standard shall be reviewed when validation practice changes materially, rec
 
 ---
 
+## OSE Relationships
+
+| Artefact | OSE Relationship |
+|----------|------------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective relationship-only enrichment rule applied to validation artefacts. |
+| [[STD-0003_SOFTWARE_PYTHON_ENGINEERING_STANDARD|STD-0003]] | Defines software engineering expectations validated through this standard. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme readiness and approved validation position. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline supporting this retrospective OSE pass. |
+
+---
 ## Related Artefacts
 
 | Artefact | Relationship |
@@ -255,3 +266,4 @@ This standard shall be reviewed when validation practice changes materially, rec
 |---------|------|--------|---------|
 | 1.0 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Validation and Quality Assurance Standard created for Project JARVIS AI. |
 | 1.1 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified engineering approval, validation, independent verification and Programme Sponsor baseline acceptance lifecycle. |
+| 1.2 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing validation requirements. |

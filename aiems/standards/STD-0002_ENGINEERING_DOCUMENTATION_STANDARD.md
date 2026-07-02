@@ -2,7 +2,7 @@
 
 > *"Engineering documentation exists to improve engineering decisions. Its value is measured not by its volume, but by the clarity, accuracy and traceability it provides."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | STD-0002 |
 | Title | Engineering Documentation Standard |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -312,6 +312,18 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 
 ---
 
+## OSE Relationships
+
+| Artefact | OSE Relationship |
+|----------|------------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective relationship-only enrichment rule applied to documentation artefacts. |
+| [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Defines controlled artefact structure that this standard complements. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Provides vision-to-documentation traceability context. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and the repository-compatible OSE context. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme readiness and approved standards position. |
+
+---
 ## Related Artefacts
 
 | Artefact | Relationship |
@@ -329,3 +341,4 @@ The Programme Sponsor is responsible for ensuring that this standard remains cur
 |---------|------------|-------------------------------------------|--------------------------------------------------------------|
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Engineering Documentation Standard establishing the principles, language and quality requirements for engineering documentation within AIEMS. |
 | 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Approved and baselined following engineering review and section numbering remediation. |
+| 1.2 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing documentation requirements. |

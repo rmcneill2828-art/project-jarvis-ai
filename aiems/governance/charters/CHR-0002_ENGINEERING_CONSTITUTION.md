@@ -2,7 +2,7 @@
 
 > *"Great engineering is achieved not through speed or complexity, but through discipline, evidence and continuous improvement."*
 
-**Version:** 2.1
+**Version:** 2.2
 
 ---
 
@@ -261,10 +261,23 @@ The AI Engineering Platform is founded on the belief that responsible AI enginee
 
 ---
 
+# OSE Relationships
+
+| Artefact | OSE Relationship |
+|----------|------------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective relationship-only enrichment rule applied to this constitution. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and the repository-compatible OSE context. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Operationalises the engineering behaviours expressed by this constitution. |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Captures collaboration expectations that support constitutional engineering behaviour. |
+| [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Defines controlled artefact discipline required by constitutional governance. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme readiness and baseline context. |
+
+---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|----------------------------|--------------------------------------------------------------|
 | 1.0 | 22 June 2026 | Project Sponsor | Initial Engineering Constitution established. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Expanded to establish AIEMS engineering principles, behavioural standards, AI collaboration, governance lifecycle and continuous improvement philosophy. |
-| 2.1	24 June 2026	Programme Sponsor & Chief Engineering Advisor	Repository architecture alignment. Updated Platform terminology, governance hierarchy and engineering lifecycle. |
+| 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated Platform terminology, governance hierarchy and engineering lifecycle. |
+| 2.2 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing constitutional authority. |

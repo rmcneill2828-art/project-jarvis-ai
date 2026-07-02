@@ -4,7 +4,7 @@
 
 ---
 
-**Version:** 2.1
+**Version:** 2.2
 
 ---
 
@@ -256,6 +256,18 @@ The programme exists not only to build an exceptional AI platform, but also to e
 
 ---
 
+# OSE Relationships
+
+| Artefact | OSE Relationship |
+|----------|------------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective relationship-only enrichment rule applied to this charter. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation and the repository-compatible OSE context. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Provides traceability between platform vision themes and governed artefacts. |
+| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Describes the current platform architecture model governed beneath this charter. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme readiness and baseline context. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline supporting this retrospective OSE pass. |
+
+---
 # Version History
 
 | Version | Date | Author | Summary |
@@ -263,3 +275,4 @@ The programme exists not only to build an exceptional AI platform, but also to e
 | 1.0 | 22 June 2026 | Programme Sponsor | Initial Project Charter established. |
 | 2.0 | 24 June 2026 | Programme Sponsor & Chief Architect | Charter expanded to recognise AIEMS as a strategic deliverable, establish programme governance, introduce Strategic Alignment Reviews (SAR), Engineering Session Reports (ESR) and define the long-term vision for both AIEMS and JARVIS. |
 | 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Platform terminology updated. Repository structure and governance references aligned with the AI Engineering Platform. |
+| 2.2 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing charter authority. |

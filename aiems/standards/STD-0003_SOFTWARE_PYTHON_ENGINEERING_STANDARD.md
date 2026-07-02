@@ -2,7 +2,7 @@
 
 > *"Software engineering quality begins with clear boundaries, repeatable validation and accountable change."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | STD-0003 |
 | Title | Software / Python Engineering Standard |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -283,6 +283,18 @@ This standard shall remain aligned with AIEMS governance, [[MOD-0001_PLATFORM_AR
 
 ---
 
+## OSE Relationships
+
+| Artefact | OSE Relationship |
+|----------|------------------|
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the retrospective relationship-only enrichment rule applied to software engineering artefacts. |
+| [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] | Defines validation expectations that support software engineering evidence. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Operationalises repository execution behaviour related to software delivery. |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Captures human-AI collaboration expectations for software engineering work. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme readiness and approved standards position. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline supporting this retrospective OSE pass. |
+
+---
 ## Related Artefacts
 
 | Artefact | Relationship |
@@ -300,3 +312,4 @@ This standard shall remain aligned with AIEMS governance, [[MOD-0001_PLATFORM_AR
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------------------|--------------------------------------------------------------|
 | 1.0 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Software / Python Engineering Standard established for Project JARVIS AI. |
+| 1.1 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing software engineering requirements. |

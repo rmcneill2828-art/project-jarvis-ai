@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.13
+**Version:** 3.14
 
 ---
 
@@ -98,8 +98,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 
 | Artefact ID | Artefact Type | Title | Version | Status | Owner | Parent | Repository Location |
 |--------------|---------------|-------|---------|------------|----------------------|----------------|--------------------------------|
-| CHR-0001 | Charter | Platform Charter | 2.1 | In Review | Programme Sponsor | - | `aiems/governance/charters/` |
-| CHR-0002 | Charter | Engineering Constitution | 2.1 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/charters/` |
+| CHR-0001 | Charter | Platform Charter | 2.2 | In Review | Programme Sponsor | - | `aiems/governance/charters/` |
+| CHR-0002 | Charter | Engineering Constitution | 2.2 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/charters/` |
 | ADR-0001 | Architecture Decision Record | Documentation First | 2.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0002 | Architecture Decision Record | Git Repository Strategy | 2.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
 | ADR-0003 | Architecture Decision Record | RTBO Engineering Decision Framework | 2.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/decisions/` |
@@ -113,15 +113,15 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.13 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.14 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.5 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | EBR-0001 | Register | Engineering Backlog Register | 1.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| STD-0001 | Standard | Controlled Artefact Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
-| STD-0002 | Standard | Engineering Documentation Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
-| STD-0003 | Standard | Software / Python Engineering Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
-| STD-0004 | Standard | Validation and Quality Assurance Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
+| STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
+| STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
+| STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
+| STD-0004 | Standard | Validation and Quality Assurance Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | RBL-0004 | Repository Baseline | ESR-0004 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0008 | Repository Baseline | ESR-0007 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
@@ -213,6 +213,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.14 | 2 July 2026 | Codex Engineering Implementer | Aligned Phase 4 governance backbone artefact versions following retrospective OSE enrichment. |
 | 3.13 | 2 July 2026 | Codex Engineering Implementer | Aligned ADR-0001 through ADR-0006 versions following Phase 3 retrospective OSE enrichment. |
 | 3.12 | 2 July 2026 | Codex Engineering Implementer | Aligned MOD-0001, PBK-0001 and COC-0001 versions following Phase 2 OSE enrichment. |
 | 3.11 | 2 July 2026 | Codex Engineering Implementer | Registered OSE-0001 Organic Semantic Enhancement Update Rule for Phase 1 retrospective OSE enrichment. |

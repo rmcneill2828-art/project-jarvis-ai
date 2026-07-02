@@ -2,7 +2,7 @@
 
 > *"Actions transform strategy into delivery. Every action should have a purpose, an owner and a measurable outcome."*
 
-**Version:** 2.3
+**Version:** 2.4
 
 ---
 
@@ -115,6 +115,15 @@ Every action should contribute towards improving AIEMS, JARVIS or both.
 
 ---
 
+# OSE Relationships
+
+* [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] defines the retrospective relationship-only enrichment rule applied to this register.
+* [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] establishes Engineering Ecosystem Synchronisation and the repository-compatible OSE context relevant to action traceability.
+* [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] records authoritative artefact identity, ownership, status and current version.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] records engineering backlog items that may supersede or continue action register work.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status and governance position.
+
+---
 # Version History
 
 | Version | Date | Author | Summary |
@@ -124,3 +133,4 @@ Every action should contribute towards improving AIEMS, JARVIS or both.
 | 2.1 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository architecture alignment. Updated artefact identifiers, Platform terminology and repository references. |
 | 2.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled Phase 0 and SAR-0001 action statuses with the current repository baseline. |
 | 2.3 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled completed AIEMS Documentation Standard action following standards baselining. |
+| 2.4 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing action governance. |
