@@ -8,12 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0008 |
 | Title | Engineering Session Report |
-| Version | 1.0 |
-| Status | In Review |
+| Version | 1.1 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
-| Approved By | Pending Programme Sponsor Review |
+| Approved By | Programme Sponsor |
 | Classification | Internal |
 | Session | ESR-0008 |
+| Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] |
+| Previous Baseline | [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] |
 | Review Frequency | At session closure or transition |
 
 ---
@@ -110,6 +112,7 @@ The first implementation package should likely address JARVIS Platform / UXP / P
 | [[ERR-0001_ENGINEERING_RECOVERY_REPORT|ERR-0001]] | Recovery report updated with ESR-0008 closure findings. |
 | [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]] | Recommendation updated for ESR-0009 validation. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Registers ESR-0008 architectural decisions. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Accepted repository baseline closing ESR-0008. |
 
 ---
 
@@ -124,6 +127,7 @@ The first implementation package should likely address JARVIS Platform / UXP / P
 | [[ADR-0011_AGENT_FRAMEWORK|ADR-0011]] | Agent Framework decision. |
 | [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]] | Device independence and restore decision. |
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Engineering Ecosystem Synchronisation decision. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | ESR-0008 accepted repository baseline and handover to ESR-0009. |
 
 ---
 
@@ -131,4 +135,5 @@ The first implementation package should likely address JARVIS Platform / UXP / P
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 2 July 2026 | Codex Engineering Implementer | Closed ESR-0008 following Programme Sponsor approval and RBL-0009 baseline acceptance. |
 | 1.0 | 2 July 2026 | Codex Engineering Implementer | Initial ESR-0008 closure report recording WP1, WP2, architecture decisions and closure recommendation. |

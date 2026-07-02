@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.6
+**Version:** 2.7
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.6 |
+| Version | 2.7 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,8 +60,8 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | ESR-0008 architecture evaluation closed locally and ready for Programme Sponsor review. |
-| Current Repository Baseline | [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] accepted as current repository baseline. |
+| Current Mode | ESR-0008 closed and accepted through [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]]. |
+| Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] accepted as current repository baseline. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] accepted as current operational JARVIS product baseline. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
 | Current Phase | ESR-0009 readiness following ESR-0008 architecture evaluation and closure artefact creation. |
@@ -100,7 +100,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-ESR-0008 is recorded locally and ready for Programme Sponsor review.
+ESR-0008 is closed and accepted through [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
 
 The current engineering focus transitions to ESR-0009 readiness. ESR-0009 should begin with Engineering Ecosystem Synchronisation, then validate ESR-0008 architectural artefacts before implementation package selection.
 
@@ -163,8 +163,8 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | ESR-0008 closure recorded | Closure recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] and ready for Programme Sponsor review. |
-| Current Repository Baseline | [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Accepted ESR-0007 repository baseline. |
+| Current Engineering Session | ESR-0008 closed | Closure recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] and accepted through [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]]. |
+| Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Accepted ESR-0008 repository baseline. |
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Accepted operational JARVIS product baseline. |
 | Current Review State | ESR-0009 readiness | Repository is prepared for next-session Engineering Ecosystem Synchronisation. |
 | Next Recommended Activity | ESR-0009 architecture validation and implementation package selection | Validate ESR-0008 architectural artefacts before implementation. |
@@ -178,8 +178,8 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Item | Status |
 |------|--------|
 | Repository Health | Good |
-| Repository Acceptance | Accepted through [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] |
-| Current Repository Baseline | [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] |
+| Repository Acceptance | Accepted through [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] |
+| Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
 | Current Activity | ESR-0009 readiness and ESR-0008 architecture validation preparation |
@@ -190,7 +190,6 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 The following observations remain open for future engineering consideration:
 
-- ESR-0008 architecture artefacts require Programme Sponsor review before baseline acceptance.
 - ESR-0009 should validate ESR-0008 architecture before implementation package selection.
 - The likely first implementation direction is JARVIS Platform / UXP / Platform Services foundation, subject to ESR-0009 review.
 - EBG-0039 JARVIS Runtime Chat Archive remains a candidate backlog item but is no longer the primary next-session recommendation.
@@ -211,6 +210,7 @@ The following observations remain open for future engineering consideration:
 6. Aligned [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] and [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] with ESR-0008 architecture outcomes.
 7. Updated [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]], [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] and [[REG-0002_ADR_REGISTER|REG-0002]].
 8. Created [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]].
+9. Accepted [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] as the ESR-0008 repository baseline.
 
 ---
 
@@ -233,17 +233,18 @@ ESR-0008 success criteria have been met for local documentation implementation:
 At the start of ESR-0009:
 
 1. Perform Engineering Ecosystem Synchronisation.
-2. Review [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]].
-3. Review [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]].
-4. Review [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]].
-5. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
-6. Review [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]].
-7. Review [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]].
-8. Review [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]].
-9. Review ADR-0007 through ADR-0013.
-10. Review [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] and [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]].
-11. Validate ESR-0008 architecture before implementation package selection.
-12. Confirm approved scope before implementation.
+2. Review [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
+3. Review [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]].
+4. Review [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]].
+5. Review [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]].
+6. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
+7. Review [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]].
+8. Review [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]].
+9. Review [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]].
+10. Review ADR-0007 through ADR-0013.
+11. Review [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] and [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]].
+12. Validate ESR-0008 architecture before implementation package selection.
+13. Confirm approved scope before implementation.
 
 This guidance is textual handover only. No ESR-0009 artefact is created by PST-0001.
 
@@ -275,8 +276,9 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | Artefact | Relationship |
 |----------|--------------|
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Engineering session report recording ESR-0008 architecture evaluation and closure outputs. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline closing ESR-0008. |
 | [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Closed engineering session that established ESR-0008 readiness. |
-| [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Current accepted repository baseline. |
+| [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Previous accepted repository baseline. |
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Previous accepted repository baseline and ESR-0007 starting point. |
 | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] | Repository product capability assessment completed during ESR-0007. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Current accepted product capability baseline. |
@@ -293,6 +295,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.7 | 2 July 2026 | Codex Engineering Implementer | Recorded ESR-0008 baseline acceptance through RBL-0009 and updated ESR-0009 handover guidance. |
 | 2.6 | 2 July 2026 | Codex Engineering Implementer | Recorded ESR-0008 closure, Guardian identity, JARVIS Platform architecture, Engineering Ecosystem Synchronisation and ESR-0009 readiness. |
 | 2.5 | 1 July 2026 | Codex Engineering Implementer | Recorded ESR-0007 closure, RBL-0008 acceptance, PCB-0001 acceptance, RPCA-0001 completion, repository-first working practices and ESR-0008 readiness. |
 | 2.4 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded ESR-0006 outcomes, RBL-0007 accepted baseline, validated working practices and ESR-0007 product engineering handover position. |

@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.5
+**Version:** 3.6
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.5 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.6 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.5 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.1 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.3 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -125,6 +125,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0004 | Repository Baseline | ESR-0004 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0008 | Repository Baseline | ESR-0007 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
+| RBL-0009 | Repository Baseline | ESR-0008 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.1 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
@@ -145,13 +146,13 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.6 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.6 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.7 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0003 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0004 | Engineering Session Report | Engineering Session Report | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0007 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0008 | Engineering Session Report | Engineering Session Report | 1.0 | In Review | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0008 | Engineering Session Report | Engineering Session Report | 1.1 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 
 ---
 
@@ -195,7 +196,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Current ESR-0007 repository baseline registered as a controlled artefact. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current ESR-0008 repository baseline registered as a controlled artefact. |
+| [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Previous ESR-0007 repository baseline registered as a controlled artefact. |
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Previous ESR-0006 repository baseline. |
 | [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] | Previous accepted repository baseline and source baseline for ESR-0006. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records follow-up engineering backlog items associated with ESR-0006 repository readiness and OSE outcomes. |
@@ -209,6 +211,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.6 | 2 July 2026 | Codex Engineering Implementer | Registered RBL-0009, closed ESR-0008 metadata and aligned PST-0001 following ESR-0008 baseline acceptance. |
 | 3.5 | 2 July 2026 | Codex Engineering Implementer | Aligned PST-0001 metadata following ESR-0008 closure and ESR-0009 readiness update. |
 | 3.4 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 closure artefacts including AAM-0001, ADR-0007 through ADR-0013 and ESR-0008, and aligned updated artefact versions. |
 | 3.3 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 WP1 controlled artefacts PVTM-0001, ERR-0001 and EIR-0001. |
