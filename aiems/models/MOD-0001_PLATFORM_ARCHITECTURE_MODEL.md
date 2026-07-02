@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | In Review |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -401,9 +401,11 @@ JARVIS
 
 Each service represents a logical architectural domain.
 
+The historical service list above is retained as the repository-defined JARVIS service-domain view. ESR-0008 refines how trust, judgement, platform entry and presentation responsibilities are interpreted inside that service-domain view.
+
 Detailed component designs shall be maintained within their own controlled architectural artefacts. Current JARVIS product architecture is recorded in [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]].
 
-ESR-0008 aligns the service architecture with the JARVIS Platform and Guardian identity model:
+ESR-0008 aligns the service architecture with the JARVIS Platform and Guardian identity model. [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] is the canonical identity and cognitive architecture model for Guardian, Sentinel, Platform Services and the Agent Framework.
 
 ```text
 User / Device / External Capability
@@ -431,6 +433,28 @@ User Experience Platform
 Sentinel sits before Platform Services as the trust gateway. Platform Services include bootstrap, configuration, device registry, progressive restore, health, capability registry and backup/sync coordination. Guardian is the cognitive and governance entity hosted by the JARVIS Platform. UXP visualises state and interaction without owning business logic or system state.
 
 Provider Architecture allows JARVIS to request capabilities rather than vendors. The Agent Framework provides specialist capability agents serving Guardian. Device independence and portable restore ensure devices host JARVIS but do not define JARVIS.
+
+## Canonical ESR-0008 Domain Interpretation
+
+| Domain / Concept | Canonical Interpretation |
+|------------------|--------------------------|
+| Sentinel | Trust gateway before Platform Services. Sentinel asks: Can this be trusted? |
+| Platform Services | Governed runtime services behind Sentinel, including bootstrap, configuration, device registry, progressive restore, health, capability registry and backup/sync coordination. |
+| Guardian | Trusted digital companion / AI entity hosted by the JARVIS Platform. Guardian asks: Should this happen? |
+| Guardian Services | Legacy service-domain wording now interpreted as Guardian governance capabilities plus Sentinel trust-gateway integration. It is not a separate identity from Guardian. |
+| User Experience Platform | Presentation layer that visualises state and interaction without owning business logic or system state. GUI remains a historical term. |
+| Provider Architecture | Capability-contract layer allowing JARVIS to request capabilities rather than vendors. |
+| Agent Framework | Specialist capability agents serving Guardian without becoming separate user-facing identities. |
+
+Future architecture work should preserve this separation:
+
+```text
+Sentinel = trust gate
+Platform Services = governed runtime foundation
+Guardian = judgement and trusted companion identity
+UXP = presentation and state visualisation
+Agents = specialist capabilities serving Guardian
+```
 
 ---
 
@@ -485,17 +509,22 @@ Potential capabilities include:
 
 ---
 
-## Guardian Services
+## Guardian, Sentinel and Trust Governance
 
-Guardian Services provide security, governance and monitoring capabilities.
+Guardian is the trusted digital companion / AI entity hosted by the JARVIS Platform.
 
-Responsibilities may include:
+Sentinel is the trust gateway protecting platform entry before Platform Services.
 
-- Identity management
-- Security monitoring
-- Policy enforcement
-- Audit support
-- Risk monitoring
+The older term Guardian Services is retained only as repository service-domain history. Current architecture separates the responsibilities as follows:
+
+| Responsibility | Owner |
+|----------------|-------|
+| Trust validation at platform entry | Sentinel |
+| Consent, policy, privacy and approval judgement | Guardian |
+| Runtime bootstrap, configuration, device registry and health | Platform Services |
+| Audit and risk evidence routing | Guardian, Sentinel and Platform Services together under governed architecture |
+
+Guardian and Sentinel shall not be collapsed into a single architectural component. Sentinel answers whether input can be trusted. Guardian answers whether an action should happen.
 
 ---
 
@@ -512,9 +541,11 @@ Potential responsibilities include:
 
 ---
 
-## User Experience
+## User Experience Platform
 
-The User Experience layer provides consistent interaction across all supported interfaces.
+The User Experience Platform provides consistent interaction across all supported interfaces.
+
+UXP visualises state and interaction. It does not own business logic, system state, trust decisions or Guardian judgement.
 
 Future interfaces may include:
 
@@ -875,7 +906,8 @@ This relationship provides architectural traceability throughout the AI Engineer
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers MOD-0001 and other controlled AIEMS artefacts. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architecture decisions that support platform evolution. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme status and architecture-related observations. |
-| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Current accepted repository baseline for ESR-0007. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0008. |
+| [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Previous accepted repository baseline for ESR-0007. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability readiness view supporting JARVIS product engineering. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned with the platform model during ESR-0008. |
@@ -890,6 +922,7 @@ This relationship provides architectural traceability throughout the AI Engineer
 | 0.1 | 23 June 2026 | Project Sponsor & Chief Architect | Initial JARVIS OS Foundation Specification. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Re-authored as the Platform Architecture Model following establishment of the AI Engineering Platform and AIEMS architecture. |
 | 1.1 | 2 July 2026 | Codex Engineering Implementer | Aligned platform architecture with ESR-0008 Sentinel, Guardian, UXP, Provider Architecture, Agent Framework and device independence outcomes. |
+| 1.2 | 2 July 2026 | Codex Engineering Implementer | Reconciled Guardian Services, Sentinel, Platform Services, Guardian identity and UXP into the canonical ESR-0008 architectural interpretation. |
 
 ---
 
