@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.2
+**Version:** 3.3
 
 ---
 
@@ -120,7 +120,10 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0008 | Repository Baseline | ESR-0007 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.0 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
+| PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
+| ERR-0001 | Review | Engineering Recovery Report | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
+| EIR-0001 | Review | Engineering Implementation Recommendation | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | FE-0001 | Engineering Feature | First Executable JARVIS Component | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -197,6 +200,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.3 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 WP1 controlled artefacts PVTM-0001, ERR-0001 and EIR-0001. |
 | 3.2 | 1 July 2026 | Codex Engineering Implementer | Registered ESR-0007, RPCA-0001, PCB-0001 and RBL-0008 for ESR-0007 closure. |
 | 3.1 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Registered RBL-0007 as the accepted ESR-0006 repository baseline and added related artefact traceability. |
 | 3.0 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Aligned PBK-0001, STD-0004 and PST-0001 metadata following engineering authority lifecycle clarification. |
@@ -220,4 +224,3 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 | 1.2 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered ADR-0006 and PBK-0001 for the introduction of Playbooks as a controlled governance artefact. |
 | 1.1 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Registered AIE-0001 as a controlled governance review artefact. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial Controlled Artefact Register established following the AI Engineering Platform repository refactor. |
-
