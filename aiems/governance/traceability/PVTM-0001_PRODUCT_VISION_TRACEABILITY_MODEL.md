@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PVTM-0001 |
 | Title | Product Vision Traceability Model |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Pending Programme Sponsor Review |
@@ -81,7 +81,7 @@ PVTM-0001 was prepared from repository-first validation of the following evidenc
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]].
 - [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 - [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]].
-- Current ESR-0008 WP1 engineering directive.
+- ESR-0008 WP1 engineering directive and closure evidence.
 
 ---
 
@@ -199,7 +199,7 @@ ESR-0008 extends PVTM traceability with the following architecture outcomes:
 | Artefact | Relationship |
 |----------|--------------|
 | [[ERR-0001_ENGINEERING_RECOVERY_REPORT|ERR-0001]] | Records the WP1 recovery evidence and findings that informed this traceability model. |
-| [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]] | Uses this traceability model to recommend the next ESR-0008 evaluation work package. |
+| [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]] | Uses this traceability model to recommend ESR-0009 architecture validation and first implementation package selection. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Defines Guardian identity and cognitive architecture traced from ESR-0008 recovery. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Records ESR-0008 closure outcomes that extend this traceability model. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Authoritative platform and JARVIS architectural domain source. |
@@ -236,5 +236,6 @@ ESR-0008 extends PVTM traceability with the following architecture outcomes:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 2 July 2026 | Codex Engineering Implementer | Aligned OSE relationship wording with ESR-0008 closure and ESR-0009 validation readiness. |
 | 0.2 | 2 July 2026 | Codex Engineering Implementer | Updated traceability for ESR-0008 Guardian identity, UXP, Sentinel, Agent Framework, Obsidian/OSE, hybrid runtime and portable restore outcomes. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 WP1 to define the product vision traceability model. |

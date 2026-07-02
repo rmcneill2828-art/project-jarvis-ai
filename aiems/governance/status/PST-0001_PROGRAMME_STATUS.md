@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.8
+**Version:** 2.9
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.8 |
+| Version | 2.9 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -289,7 +289,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Product vision traceability model created during ESR-0008 WP1. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture context for JARVIS engineering. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Authoritative capability maturity model. |
-| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Controlled artefact register updated for ESR-0007 closure. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Controlled artefact register updated for ESR-0008 closure and subsequent metadata alignment. |
 
 ---
 
@@ -297,6 +297,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.9 | 2 July 2026 | Codex Engineering Implementer | Aligned related artefact wording following OSE repository pass for ESR-0009 readiness. |
 | 2.8 | 2 July 2026 | Codex Engineering Implementer | Recorded completion of EBG-0039 JARVIS Runtime Chat Archive and movement of prototype chat exports into `logs/chats/`. |
 | 2.7 | 2 July 2026 | Codex Engineering Implementer | Recorded ESR-0008 baseline acceptance through RBL-0009 and updated ESR-0009 handover guidance. |
 | 2.6 | 2 July 2026 | Codex Engineering Implementer | Recorded ESR-0008 closure, Guardian identity, JARVIS Platform architecture, Engineering Ecosystem Synchronisation and ESR-0009 readiness. |

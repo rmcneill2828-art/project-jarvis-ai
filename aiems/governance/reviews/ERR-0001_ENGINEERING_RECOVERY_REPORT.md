@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ERR-0001 |
 | Title | Engineering Recovery Report |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Pending Programme Sponsor Review |
@@ -74,7 +74,7 @@ The recovery reviewed the following evidence categories:
 - ESR records.
 - ESR summaries.
 - Full historical chats.
-- Current ESR-0008 discussion.
+- ESR-0008 discussion and closure evidence.
 
 Repository validation included [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]], [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]], [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]], [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]], [[REG-0002_ADR_REGISTER|REG-0002]], [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]], [[PST-0001_PROGRAMME_STATUS|PST-0001]] and [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]].
 
@@ -152,7 +152,7 @@ During WP1, the following assumptions were withdrawn:
 - Produce [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]].
 - Defer broader OSE consistency improvements to future Engineering Session Work Packages.
 - Treat MOD-0001 alignment items as future architecture review candidates.
-- Proceed to the next ESR-0008 Work Package: evaluate and recommend services/applications for JARVIS subsystems.
+- Proceeded through ESR-0008 architecture evaluation and closure; ESR-0009 should validate resulting artefacts before implementation.
 
 ---
 
@@ -160,7 +160,7 @@ During WP1, the following assumptions were withdrawn:
 
 - Consider MOD-0001 alignment for Sentinel and Guardian.
 - Consider whether Engineering Assistant should become an architectural domain or capability.
-- Evaluate service/application options for each JARVIS subsystem in the next ESR-0008 Work Package.
+- Validate service/application and architecture options for each JARVIS subsystem during ESR-0009 before implementation package selection.
 - Create Engineering Session Work Packages for OSE consistency and progressive migration if approved.
 - Validate ESR-0008 architectural artefacts during ESR-0009 before runtime implementation.
 
@@ -171,7 +171,7 @@ During WP1, the following assumptions were withdrawn:
 | Artefact | Relationship |
 |----------|--------------|
 | [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Converts WP1 recovery findings into a controlled traceability model. |
-| [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]] | Uses the recovery findings to recommend the next ESR-0008 activity. |
+| [[EIR-0001_ENGINEERING_IMPLEMENTATION_RECOMMENDATION|EIR-0001]] | Uses the recovery findings to recommend ESR-0009 validation and first implementation package selection. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Current repository architecture authority used for reconciliation. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product vision and capability hierarchy source reviewed during recovery. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability maturity source reviewed during recovery. |
@@ -204,5 +204,6 @@ During WP1, the following assumptions were withdrawn:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 2 July 2026 | Codex Engineering Implementer | Aligned recovery recommendations and outstanding actions with ESR-0008 closure and ESR-0009 validation readiness. |
 | 0.2 | 2 July 2026 | Codex Engineering Implementer | Added ESR-0008 closure findings for Guardian identity, Agent Framework, Obsidian/OSE, device independence, strategic value and Engineering Ecosystem Synchronisation. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 WP1 to record engineering recovery findings. |

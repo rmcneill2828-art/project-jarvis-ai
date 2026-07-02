@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | EIR-0001 |
 | Title | Engineering Implementation Recommendation |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Pending Programme Sponsor Review |
@@ -22,15 +22,15 @@
 
 EIR-0001 records the recommended next engineering activity based on the recovered architecture and WP1 evidence.
 
-It is not an implementation package. It feeds the next approved ESR-0008 Work Package and does not itself authorise service adoption, source code change, test change or baseline creation.
+It is not an implementation package. Following ESR-0008 closure, it supports ESR-0009 architecture validation and first implementation package selection without authorising service adoption, source code change, test change or baseline creation.
 
 ---
 
 # Scope
 
-EIR-0001 recommends the next engineering activity after ESR-0008 WP1 Product Vision Recovery.
+EIR-0001 records the recommendation path from ESR-0008 WP1 Product Vision Recovery through ESR-0008 closure into ESR-0009 validation readiness.
 
-It is limited to recommendation and evaluation preparation. It does not select technologies, approve implementation, change architecture, create a baseline or close ESR-0008.
+It is limited to recommendation and validation preparation. It does not select technologies, approve implementation, change architecture, create a baseline or authorise ESR-0009 implementation.
 
 ---
 
@@ -60,7 +60,7 @@ EIR-0001 is based on:
 - [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] product vision and service intent.
 - [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] capability readiness evidence.
 - [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] ESR-0008 strategic handover.
-- Current ESR-0008 WP1 engineering directive.
+- ESR-0008 WP1 engineering directive and closure evidence.
 
 ---
 
@@ -158,7 +158,7 @@ Each recommendation must demonstrate:
 - maintainability;
 - traceability to recovered design intent.
 
-Technology selection shall remain an engineering recommendation until approved through the appropriate ESR-0008 work package authority.
+Technology selection shall remain an engineering recommendation until approved through the appropriate ESR-0009 work package authority.
 
 ---
 
@@ -179,11 +179,11 @@ The likely first implementation direction is JARVIS Platform / UXP / Platform Se
 | Artefact | Relationship |
 |----------|--------------|
 | [[ERR-0001_ENGINEERING_RECOVERY_REPORT|ERR-0001]] | Provides the WP1 evidence and findings that justify this recommendation. |
-| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Provides the traceability model WP2 should use when evaluating subsystem options. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Provides the traceability model ESR-0009 should use when validating subsystem options. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Defines repository-approved architectural domains for evaluation. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Defines product vision and service intent for evaluation. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Provides capability maturity context for evaluation sequencing. |
-| [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] | Provides strategic handover evidence for ESR-0008 subsystem evaluation. |
+| [[ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0007A]] | Provides strategic handover evidence that informed ESR-0008 evaluation and ESR-0009 readiness. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Records ESR-0008 closure and updates the next recommended activity. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Provides Guardian identity architecture that ESR-0009 should validate. |
 
@@ -194,7 +194,7 @@ The likely first implementation direction is JARVIS Platform / UXP / Platform Se
 | Artefact | Relationship |
 |----------|--------------|
 | [[ERR-0001_ENGINEERING_RECOVERY_REPORT|ERR-0001]] | Recovery findings supporting this recommendation. |
-| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Traceability model to guide WP2 evaluation. |
+| [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Traceability model to guide ESR-0009 architecture validation. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Architecture source for repository-defined domains. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture source for subsystem intent. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability readiness source for evaluation context. |
@@ -211,5 +211,6 @@ The likely first implementation direction is JARVIS Platform / UXP / Platform Se
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 2 July 2026 | Codex Engineering Implementer | Aligned recommendation wording with ESR-0008 closure and ESR-0009 validation readiness. |
 | 0.2 | 2 July 2026 | Codex Engineering Implementer | Updated next recommendation for ESR-0009 validation of ESR-0008 architecture before implementation package selection. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 WP1 to recommend WP2 subsystem service and application evaluation. |

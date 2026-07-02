@@ -8,7 +8,7 @@
 |------|-------|
 | Document ID | JARVIS-PRODUCT-ARCHITECTURE |
 | Title | JARVIS Product Architecture |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved Product Architecture |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Product | JARVIS OS |
@@ -533,8 +533,8 @@ Engineering economics matter. JARVIS should prefer simple, maintainable, low-cos
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability maturity view supporting package selection. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned during ESR-0008. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Engineering session that recorded JARVIS Platform, UXP, Sentinel and Guardian architecture outcomes. |
-| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and ESR-0007 handover position. |
-| [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Current session returning focus to JARVIS product engineering. |
+| [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and ESR-0009 readiness position. |
+| [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Closed session that established ESR-0008 readiness and product engineering context. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register containing JARVIS product engineering candidates. |
 
 ---
@@ -545,4 +545,5 @@ Engineering economics matter. JARVIS should prefer simple, maintainable, low-cos
 |---------|------|--------|---------|
 | 1.0 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial JARVIS OS product architecture blueprint created. |
 | 1.1 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Promoted recovered product vision, behaviour, user experience, capability hierarchy and engineering intent into the product architecture. |
+| 1.3 | 2 July 2026 | Codex Engineering Implementer | Aligned related artefact context with ESR-0009 readiness and RBL-0009 handover. |
 | 1.2 | 2 July 2026 | Codex Engineering Implementer | Aligned product architecture with ESR-0008 JARVIS Platform, Guardian identity, Sentinel, UXP, Agent Framework and Obsidian/OSE terminology. |
