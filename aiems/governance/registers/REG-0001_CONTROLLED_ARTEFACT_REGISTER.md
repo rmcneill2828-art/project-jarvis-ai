@@ -150,7 +150,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.7 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.10 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.11 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0003 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |

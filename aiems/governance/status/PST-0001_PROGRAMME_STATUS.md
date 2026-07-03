@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.10
+**Version:** 2.11
 
 ---
 
@@ -12,14 +12,14 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.10 |
+| Version | 2.11 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Review Frequency | At phase closure or engineering session transition |
 | Effective Date | 2 July 2026 |
-| Next Review | At ESR-0009 transition or next phase closure |
+| Next Review | At ESR-0010 transition or next baseline review |
 
 ---
 
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | ESR-0008 closed and accepted through [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]]. |
-| Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] accepted as current repository baseline. |
+| Current Mode | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] closed. |
+| Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] remains the current accepted baseline pending EIP-ESR0009-008 baseline review. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] accepted as current operational JARVIS product baseline. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0009 readiness following ESR-0008 architecture evaluation and closure artefact creation. |
+| Current Phase | ESR-0009 closure complete; ESR-0010 approved. |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. |
-| Current Engineering Objective | Validate ESR-0008 architectural artefacts and select the first governed implementation package during ESR-0009. |
+| Current Engineering Objective | Prepare ESR-0010 AIEMS Engineering Ecosystem Modernisation after ESR-0009 baseline review. |
 
 ---
 
@@ -100,11 +100,11 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-ESR-0008 is closed and accepted through [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
+[[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] is closed.
 
-The current engineering focus transitions to ESR-0009 readiness. ESR-0009 should begin with Engineering Ecosystem Synchronisation, then validate ESR-0008 architectural artefacts before implementation package selection.
+[[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] remains the current accepted repository baseline until EIP-ESR0009-008 completes baseline review.
 
-The likely first implementation direction is JARVIS Platform / UXP / Platform Services foundation. Final selection remains subject to ESR-0009 review and Programme Sponsor approval. Implementation is not authorised by PST-0001.
+The current engineering focus transitions to ESR-0009 baseline review and preparation for ESR-0010 AIEMS Engineering Ecosystem Modernisation. ESR-0010 is approved as the next engineering session, but PST-0001 does not create ESR-0010 or authorise implementation scope by itself.
 
 ---
 
@@ -117,11 +117,14 @@ The likely first implementation direction is JARVIS Platform / UXP / Platform Se
 | Engineering Standards | In Progress | High | Approved standards remain in place; RFEP, RFDP and Continuous Repository Synchronisation are working practices pending any future standards review. |
 | JARVIS Product Architecture | Complete | High | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] remains the product architecture authority. |
 | JARVIS Platform Architecture | Draft | High | ESR-0008 recorded JARVIS Platform, Sentinel, Platform Services, UXP, Provider Architecture and Agent Framework alignment in [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] and [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]]. |
-| Guardian Cognitive Architecture | Draft | High | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] records Guardian identity and cognitive architecture for ESR-0009 validation. |
+| Sentinel Trust Architecture | Draft | High | [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] records the Sentinel trust boundary established during ESR-0009. |
+| Guardian Cognitive Architecture | Draft | High | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] records Guardian identity and cognitive architecture. |
+| Guardian Experience Architecture | Approved Baseline | High | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] records Guardian Experience Architecture v1.0 established during ESR-0009. |
 | Engineering Ecosystem Architecture | Draft | High | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] records Obsidian/OSE and Engineering Ecosystem Synchronisation. |
+| User Experience Platform | Established | Foundation | [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION|ADR-0007]] records Tauri + React as the UXP direction; ESR-0009 adopted it as the UXP implementation baseline. |
 | JARVIS Product Capability Baseline | Accepted | Foundation | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] records the accepted operational product baseline. |
 | JARVIS Capability Maturity | Maintained | Early | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] remains the authoritative maturity model. |
-| JARVIS Development | In Progress | Early | First Light / Conversation Workspace is accepted as the current operational foundation. |
+| JARVIS Development | In Progress | Early | Guardian Desktop Platform Shell is established and Guardian Experience v1.0 is implemented; unimplemented runtime capabilities remain outside the accepted operational product baseline. |
 | Runtime Chat Archive | Complete | Foundation | Prototype chat exports are archived under `logs/chats/`; EBG-0039 is completed in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]. |
 
 ---
@@ -151,6 +154,14 @@ The likely first implementation direction is JARVIS Platform / UXP / Platform Se
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] Guardian Identity and Cognitive Architecture created | Complete |
 | ADR-0007 through ADR-0013 created for ESR-0008 architecture decisions | Complete |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] closure report created | Complete |
+| [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]] Engineering Execution Package Template created | Complete |
+| Guardian Desktop Platform Shell established | Complete |
+| Tauri + React adopted as UXP implementation baseline | Complete |
+| [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] Sentinel Trust Architecture established | Complete |
+| [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Guardian Experience Architecture v1.0 established | Complete |
+| Guardian Experience v1.0 implemented | Complete |
+| [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] Engineering Session Report created | Complete |
+| ESR-0009 closed | Complete |
 
 ---
 
@@ -164,12 +175,12 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | ESR-0008 closed | Closure recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] and accepted through [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]]. |
-| Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Accepted ESR-0008 repository baseline. |
+| Current Engineering Session | ESR-0009 closed | Closure recorded in [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]]. |
+| Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Accepted ESR-0008 repository baseline remains current pending EIP-ESR0009-008 baseline review. |
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Accepted operational JARVIS product baseline. |
-| Current Review State | ESR-0009 readiness | Repository is prepared for next-session Engineering Ecosystem Synchronisation. |
-| Next Recommended Activity | ESR-0009 architecture validation and implementation package selection | Validate ESR-0008 architectural artefacts before implementation. |
-| Likely First Implementation Direction | JARVIS Platform / UXP / Platform Services foundation | Candidate direction only; final selection requires ESR-0009 review. |
+| Current Review State | ESR-0009 closure complete | Repository is ready for the reserved ESR-0009 baseline review activity. |
+| Next Required Closure Activity | EIP-ESR0009-008 Repository Baseline Review | Complete baseline review before accepting any new repository baseline. |
+| Next Engineering Session | ESR-0010 approved | ESR-0010 is approved as AIEMS Engineering Ecosystem Modernisation. |
 | Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register. |
 | Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports moved from repository root into runtime evidence archive. |
 
@@ -184,7 +195,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Repository Baseline | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | ESR-0009 readiness and ESR-0008 architecture validation preparation |
+| Current Activity | ESR-0009 baseline review preparation and ESR-0010 handover readiness |
 
 ---
 
@@ -192,8 +203,8 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 The following observations remain open for future engineering consideration:
 
-- ESR-0009 should validate ESR-0008 architecture before implementation package selection.
-- The likely first implementation direction is JARVIS Platform / UXP / Platform Services foundation, subject to ESR-0009 review.
+- EIP-ESR0009-008 should complete repository baseline review before any new baseline is accepted.
+- ESR-0010 is approved as AIEMS Engineering Ecosystem Modernisation.
 - External AI providers, persistent memory, voice, vision, Guardian, local agent and internet-backed assistance remain outside the accepted operational product baseline.
 - RFEP, RFDP and Continuous Repository Synchronisation may be considered in a future formal AIEMS standards review.
 - Engineering Ecosystem Synchronisation may be considered in a future formal AIEMS standards review.
@@ -230,29 +241,40 @@ ESR-0008 success criteria have been met for local documentation implementation:
 
 ---
 
-# 13. Session Start Guidance
+# 13. ESR-0009 Outcomes
 
-At the start of ESR-0009:
-
-1. Perform Engineering Ecosystem Synchronisation.
-2. Review [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
-3. Review [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]].
-4. Review [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]].
-5. Review [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]].
-6. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
-7. Review [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]].
-8. Review [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]].
-9. Review [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]].
-10. Review ADR-0007 through ADR-0013.
-11. Review [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] and [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]].
-12. Validate ESR-0008 architecture before implementation package selection.
-13. Confirm approved scope before implementation.
-
-This guidance is textual handover only. No ESR-0009 artefact is created by PST-0001.
+1. Created [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]] as the Engineering Execution Package Template.
+2. Adopted Tauri + React as the UXP implementation baseline following [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION|ADR-0007]].
+3. Established the Guardian Desktop Platform Shell.
+4. Established [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]].
+5. Established [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]].
+6. Implemented Guardian Experience v1.0.
+7. Created [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]].
+8. Approved ESR-0010 as AIEMS Engineering Ecosystem Modernisation.
+9. Confirmed [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] remains the current accepted baseline until EIP-ESR0009-008 completes baseline review.
 
 ---
 
-# 14. Maintenance
+# 14. Session Start Guidance
+
+At the start of ESR-0010:
+
+1. Confirm EIP-ESR0009-008 Repository Baseline Review status.
+2. Review [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
+3. Review [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]].
+4. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
+5. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
+6. Review [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]].
+7. Review [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]].
+8. Review [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]].
+9. Review [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] and current OSE practice.
+10. Confirm approved ESR-0010 scope before implementation.
+
+This guidance is textual handover only. No ESR-0010 artefact is created by PST-0001.
+
+---
+
+# 15. Maintenance
 
 [[PST-0001_PROGRAMME_STATUS|PST-0001]] shall be reviewed and updated:
 
@@ -283,16 +305,26 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architectural decision context relevant to programme status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records backlog context that informs current and next engineering work. |
-| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Engineering session report recording the current ESR-0009 handover position. |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline supporting this retrospective OSE pass. |
+| [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Engineering session report recording ESR-0009 closure and ESR-0010 handover. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline pending ESR-0009 baseline review. |
+| [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]] | Engineering Execution Package Template established during ESR-0009. |
+| [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] | Sentinel Trust Architecture established during ESR-0009. |
+| [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Guardian Experience Architecture v1.0 established during ESR-0009. |
+| [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION|ADR-0007]] | Decision authority for Tauri + React UXP direction. |
 
 ---
 ## Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
+| [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Engineering session report recording ESR-0009 closure, delivered artefacts and ESR-0010 handover. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline pending EIP-ESR0009-008 baseline review. |
+| [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]] | Engineering Execution Package Template established during ESR-0009. |
+| [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] | Sentinel Trust Architecture established during ESR-0009. |
+| [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Guardian Experience Architecture v1.0 established during ESR-0009. |
+| [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION|ADR-0007]] | Tauri + React UXP decision authority. |
+| [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Engineering Ecosystem Synchronisation decision authority for ESR-0010 preparation. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Engineering session report recording ESR-0008 architecture evaluation and closure outputs. |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline closing ESR-0008. |
 | [[ESR-0007_ENGINEERING_SESSION_REPORT|ESR-0007]] | Closed engineering session that established ESR-0008 readiness. |
 | [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Previous accepted repository baseline. |
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Previous accepted repository baseline and ESR-0007 starting point. |
@@ -311,6 +343,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.11 | 3 July 2026 | Codex Engineering Implementer | Updated programme status for ESR-0009 closure, ESR-0010 approval, Guardian Desktop Platform Shell, TPL-0001, SAM-0001, UAM-0001 and Guardian Experience v1.0. |
 | 2.10 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing programme status. |
 | 2.9 | 2 July 2026 | Codex Engineering Implementer | Aligned related artefact wording following OSE repository pass for ESR-0009 readiness. |
 | 2.8 | 2 July 2026 | Codex Engineering Implementer | Recorded completion of EBG-0039 JARVIS Runtime Chat Archive and movement of prototype chat exports into `logs/chats/`. |
