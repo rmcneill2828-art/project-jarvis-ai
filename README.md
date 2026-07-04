@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | ESR-0009 readiness following ESR-0008 architecture evaluation |
+| Current Phase | ESR-0010 closure / AIEMS Engineering Ecosystem Modernisation |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | Operational First Light / Conversation Workspace |
-| Current Engineering Focus | Validate ESR-0008 architecture from [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] before selecting the first ESR-0009 implementation package |
+| Current Engineering Focus | Close ESR-0010 Engineering Ecosystem Modernisation from [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] as the accepted repository baseline |
 
 ---
 
@@ -80,7 +80,7 @@ Current JARVIS architecture direction includes:
 - Agent Framework for specialist capabilities serving Guardian.
 - Device independence and portable restore as architecture requirements.
 
-The canonical Guardian identity and cognitive architecture is recorded in [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]]. ESR-0008 closure and baseline acceptance are recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] and [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
+The canonical Guardian identity and cognitive architecture is recorded in [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]]. ESR-0008 architecture closure is recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]], and ESR-0009 closure / ESR-0010 handover are recorded in [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] and [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
 
 ---
 
@@ -150,8 +150,8 @@ Key engineering artefacts include:
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Human-AI collaboration context |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | AI Engineering Playbook |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status |
-| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed engineering session report for ESR-0008 architecture evaluation |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline |
+| [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Closed engineering session report for ESR-0009 closure and ESR-0010 handover |
+| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Engineering backlog register |
 | [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Controlled Artefact Standard |
@@ -302,8 +302,8 @@ Status: In progress.
 
 Current focus:
 
-- Validate ESR-0008 architecture outcomes before implementation.
-- Confirm first ESR-0009 implementation package selection.
+- Complete ESR-0010 closure alignment for AIEMS Engineering Ecosystem Modernisation.
+- Preserve [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] as the accepted repository baseline for ESR-0010 closure.
 - Preserve the distinction between JARVIS Platform, Guardian, Sentinel, Platform Services and UXP.
 - Keep AIEMS governance proportionate to product delivery.
 - Preserve repository-backed session continuity through Engineering Ecosystem Synchronisation.
@@ -329,8 +329,8 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | Artefact | Relationship |
 |----------|--------------|
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point. |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline. |
-| [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed engineering session for ESR-0008 architecture evaluation. |
+| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline. |
+| [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Closed engineering session for ESR-0009 closure and ESR-0010 handover. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog source for selecting future engineering packages. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture model. |
@@ -352,3 +352,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.4 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified the JARVIS product architecture as the authoritative home for recovered product vision and behaviour. |
 | 3.5 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Updated current product state to Operational First Light / Conversation Workspace following RBL-0006 acceptance. |
 | 3.6 | 2 July 2026 | Codex Engineering Implementer | Refreshed README for ESR-0008 closure, RBL-0009, Guardian, Sentinel, UXP and Engineering Ecosystem Synchronisation. |
+| 3.7 | 4 July 2026 | Codex Engineering Implementer | Aligned repository status with ESR-0010 closure context and RBL-0010 accepted baseline. |
