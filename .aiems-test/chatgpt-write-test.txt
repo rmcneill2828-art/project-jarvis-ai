@@ -1,3 +1,0 @@
-AIEMS temporary write capability test.
-Created by ChatGPT under explicit Programme Sponsor instruction.
-This file is expected to be deleted immediately after write capability verification.
