@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.12
+**Version:** 2.13
 
 ---
 
@@ -12,14 +12,14 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.12 |
+| Version | 2.13 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Review Frequency | At phase closure or engineering session transition |
-| Effective Date | 2 July 2026 |
-| Next Review | At ESR-0010 transition or next baseline review |
+| Effective Date | 4 July 2026 |
+| Next Review | At next approved engineering session or next baseline review |
 
 ---
 
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] closed. |
-| Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] accepted as the ESR-0009 repository baseline. |
+| Current Mode | [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] closed. |
+| Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline pending any future controlled baseline creation. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] accepted as current operational JARVIS product baseline. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0009 closure complete; ESR-0010 approved. |
+| Current Phase | ESR-0010 closure complete. |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. |
-| Current Engineering Objective | Prepare ESR-0010 AIEMS Engineering Ecosystem Modernisation using [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] as the accepted starting baseline. |
+| Current Engineering Objective | Prepare the next approved engineering session from the verified ESR-0010 closure state. |
 
 ---
 
@@ -100,11 +100,11 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] is closed.
+[[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] is closed.
 
-[[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] is accepted as the ESR-0009 repository baseline.
+[[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline pending any future controlled baseline creation.
 
-The current engineering focus transitions to ESR-0010 AIEMS Engineering Ecosystem Modernisation preparation. ESR-0010 is approved as the next engineering session, but PST-0001 does not create ESR-0010 or authorise implementation scope by itself.
+The current engineering focus transitions to preparation for the next approved engineering session from the verified ESR-0010 closure state. PST-0001 does not create or approve ESR-0011 or any future implementation scope by itself.
 
 ---
 
@@ -164,6 +164,12 @@ The current engineering focus transitions to ESR-0010 AIEMS Engineering Ecosyste
 | ESR-0009 closed | Complete |
 | [[RBR-ESR0009-001_REPOSITORY_BASELINE_REVIEW|RBR-ESR0009-001]] Repository Baseline Review completed | Complete |
 | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] accepted as ESR-0009 repository baseline | Complete |
+| ESR-0010 Engineering Ecosystem Modernisation completed | Complete |
+| ChatGPT Desktop adopted as preferred Engineering Reasoning Environment | Complete |
+| GitHub Desktop adopted as preferred Local Repository Management / Programme Sponsor Review Tool | Complete |
+| Guardian UXP Orb design direction approved | Complete |
+| ESR-0010 Repository Baseline Review accepted | Complete |
+| [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Engineering Session Report created | Complete |
 
 ---
 
@@ -177,12 +183,12 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | ESR-0009 closed | Closure recorded in [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]]. |
-| Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Accepted ESR-0009 repository baseline. |
+| Current Engineering Session | ESR-0010 closed | Closure recorded in [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]]. |
+| Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Accepted repository baseline pending any future controlled baseline creation. |
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Accepted operational JARVIS product baseline. |
-| Current Review State | RBL-0010 accepted | ESR-0009 repository baseline is accepted and ready for ESR-0010 handover. |
-| Next Required Closure Activity | None for ESR-0009 | RBL-0010 acceptance completes the ESR-0009 baseline closure path. |
-| Next Engineering Session | ESR-0010 approved | ESR-0010 is approved as AIEMS Engineering Ecosystem Modernisation. |
+| Current Review State | ESR-0010 closure review accepted | Repository correction and Repository Baseline Review accepted for ESR-0010 closure. |
+| Next Required Closure Activity | None for ESR-0010 | ESR-0010 closure is recorded in [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]]. |
+| Next Engineering Session | Future / pending Programme Sponsor approval | PST-0001 does not create or approve ESR-0011. |
 | Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register. |
 | Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports moved from repository root into runtime evidence archive. |
 
@@ -197,7 +203,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | ESR-0010 handover readiness |
+| Current Activity | ESR-0010 closure report completed |
 
 ---
 
@@ -205,8 +211,9 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 The following observations remain open for future engineering consideration:
 
-- [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] is accepted as the ESR-0009 repository baseline.
-- ESR-0010 is approved as AIEMS Engineering Ecosystem Modernisation.
+- [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains accepted as the current repository baseline pending any future controlled baseline creation.
+- [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] is closed as AIEMS Engineering Ecosystem Modernisation.
+- ESR-0011 is not created or approved by PST-0001.
 - External AI providers, persistent memory, voice, vision, Guardian, local agent and internet-backed assistance remain outside the accepted operational product baseline.
 - RFEP, RFDP and Continuous Repository Synchronisation may be considered in a future formal AIEMS standards review.
 - Engineering Ecosystem Synchronisation may be considered in a future formal AIEMS standards review.
@@ -258,27 +265,36 @@ ESR-0008 success criteria have been met for local documentation implementation:
 
 ---
 
-# 14. Session Start Guidance
+# 14. ESR-0010 Outcomes
 
-At the start of ESR-0010:
-
-1. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
-2. Review [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
-3. Review [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]].
-4. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
-5. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
-6. Review [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]].
-7. Review [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]].
-8. Review [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]].
-9. Review [[RBR-ESR0009-001_REPOSITORY_BASELINE_REVIEW|RBR-ESR0009-001]].
-10. Review [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] and current OSE practice.
-11. Confirm approved ESR-0010 scope before implementation.
-
-This guidance is textual handover only. No ESR-0010 artefact is created by PST-0001.
+1. Completed AIEMS Engineering Ecosystem Modernisation.
+2. Validated ChatGPT Desktop as the preferred Engineering Reasoning Environment.
+3. Validated GitHub Desktop as the preferred Local Repository Management / Programme Sponsor Review Tool.
+4. Approved Guardian UXP Orb design direction as a future implementation direction.
+5. Recorded GitHub connector / DCE findings as observations only.
+6. Accepted ESR-0010 Repository Baseline Review outcome.
+7. Created [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] as the formal session closure report.
+8. Retained [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] as the current accepted repository baseline.
 
 ---
 
-# 15. Maintenance
+# 15. Session Start Guidance
+
+At the start of the next approved engineering session:
+
+1. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
+2. Review [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]].
+3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
+4. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
+5. Review [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]].
+6. Review [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] and current OSE practice.
+7. Confirm approved future session scope before implementation.
+
+This guidance is textual handover only. PST-0001 does not create or approve ESR-0011.
+
+---
+
+# 16. Maintenance
 
 [[PST-0001_PROGRAMME_STATUS|PST-0001]] shall be reviewed and updated:
 
@@ -309,6 +325,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architectural decision context relevant to programme status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records backlog context that informs current and next engineering work. |
+| [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Engineering session report recording ESR-0010 closure and future handover state. |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Engineering session report recording ESR-0009 closure and ESR-0010 handover. |
 | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline for ESR-0010 handover. |
 | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Previous accepted repository baseline and ESR-0009 starting point. |
@@ -324,6 +341,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | Artefact | Relationship |
 |----------|--------------|
 | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted ESR-0009 repository baseline and ESR-0010 handover point. |
+| [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Engineering session report recording ESR-0010 closure, Engineering Ecosystem Modernisation outcomes and future handover state. |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Engineering session report recording ESR-0009 closure, delivered artefacts and ESR-0010 handover. |
 | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Previous accepted ESR-0008 repository baseline and ESR-0009 starting point. |
 | [[RBR-ESR0009-001_REPOSITORY_BASELINE_REVIEW|RBR-ESR0009-001]] | Repository baseline readiness review that recommended RBL-0010 creation. |
@@ -343,7 +361,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Product vision traceability model created during ESR-0008 WP1. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture context for JARVIS engineering. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Authoritative capability maturity model. |
-| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Controlled artefact register updated for ESR-0008 closure and subsequent metadata alignment. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Controlled artefact register updated for ESR-0010 closure and current metadata alignment. |
 
 ---
 
@@ -351,6 +369,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.13 | 4 July 2026 | Codex Engineering Implementer | Recorded ESR-0010 closure, Engineering Ecosystem Modernisation outcomes, accepted repository review state and next-session handover guidance. |
 | 2.12 | 3 July 2026 | Codex Engineering Implementer | Recorded RBL-0010 acceptance as the ESR-0009 repository baseline and updated ESR-0010 handover state. |
 | 2.11 | 3 July 2026 | Codex Engineering Implementer | Updated programme status for ESR-0009 closure, ESR-0010 approval, Guardian Desktop Platform Shell, TPL-0001, SAM-0001, UAM-0001 and Guardian Experience v1.0. |
 | 2.10 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing programme status. |
