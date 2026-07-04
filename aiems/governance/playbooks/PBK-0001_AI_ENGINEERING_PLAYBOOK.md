@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.8 |
+| Version | 1.9 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -139,15 +139,16 @@ The Engineering Implementer shall:
 2. Review README.md for repository orientation and platform context.
 3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 4. Review the current Engineering Session Report.
-5. Review PBK-0001.
-6. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
-7. Review the approved Engineering Implementation Package.
-8. Review repository artefacts referenced by the approved Engineering Implementation Package.
-9. Confirm engineering scope.
-10. Implement approved scope only.
-11. Perform engineering self-review.
-12. Produce an Engineering Completion Report.
-13. Perform repository operations only when explicitly authorised by the Programme Sponsor or approved Engineering Implementation Package.
+5. Review AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0010_ESR-0010_CHAT_HISTORY|HST-0010]] during session start.
+6. Review PBK-0001.
+7. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
+8. Review the approved Engineering Implementation Package.
+9. Review repository artefacts referenced by the approved Engineering Implementation Package.
+10. Confirm engineering scope.
+11. Implement approved scope only.
+12. Perform engineering self-review.
+13. Produce an Engineering Completion Report.
+14. Perform repository operations only when explicitly authorised by the Programme Sponsor or approved Engineering Implementation Package.
 
 Implementation session startup shall be based upon repository evidence and the approved implementation package.
 
@@ -170,6 +171,7 @@ WP0A shall confirm:
 * README.md for repository orientation and platform context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 * The latest accepted Engineering Session Report.
+* AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0010_ESR-0010_CHAT_HISTORY|HST-0010]] shall be reviewed during session start.
 * PBK-0001.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
 * Repository Engineering Health Review outcome.
@@ -524,12 +526,14 @@ This is a documentation architecture principle, not a software design principle.
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0009 readiness. |
+| [[HST-0010_ESR-0010_CHAT_HISTORY|HST-0010]] | Latest historical session record added to WP0 session start review. |
 
 ---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.9 | 4 July 2026 | Codex Engineering Implementer | Added AIEMS History artefacts to WP0 session start review. |
 | 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial controlled artefact structure established for the AI Engineering Playbook. |
 | 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Implementer role, session initialisation, scope control, self-review, completion reporting and repository documentation guidance. |
 | 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Session lifecycle guidance covering WP0A, WP0B, session creation, handover and closure checks. |
