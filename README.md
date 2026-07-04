@@ -89,6 +89,7 @@ The canonical Guardian identity and cognitive architecture is recorded in [[AAM-
 ```text
 aiems/
   History/
+    Full Chat/
   governance/
     baselines/
     charters/
@@ -143,7 +144,7 @@ Key controlled artefact families include:
 | Conversation Context | Lightweight Human-AI session operating context |
 | Programme Status | Current programme state and engineering focus |
 | Session Reports | Engineering session continuity and accepted baseline records |
-| History Records | Repository-preserved session chat history used for WP0 continuity review |
+| History Records | Repository-preserved session chat history and full chat evidence used for WP0 continuity review |
 
 Key engineering artefacts include:
 
@@ -205,7 +206,7 @@ Baseline Acceptance
 Continue Engineering
 ```
 
-Operational workflow detail is maintained in [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and current Engineering Session Reports. ESR-0008 introduced Engineering Ecosystem Synchronisation as the current WP0 working practice, explicitly accounting for GitHub, AIEMS, OSE, Obsidian, controlled artefacts, registers, previous ESRs and summaries. AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0010_ESR-0010_CHAT_HISTORY|HST-0010]] must be reviewed during WP0 session start. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
+Operational workflow detail is maintained in [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and current Engineering Session Reports. ESR-0008 introduced Engineering Ecosystem Synchronisation as the current WP0 working practice, explicitly accounting for GitHub, AIEMS, OSE, Obsidian, controlled artefacts, registers, previous ESRs and summaries. AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0010_ESR-0010_CHAT_HISTORY|HST-0010]] must be reviewed during WP0 session start. AIEMS Full Chat artefacts [[FCH-0000_INITIAL_PROJECT_SESSION_FULL_CHAT_HISTORY|FCH-0000]] through [[FCH-0010_ESR-0010_FULL_CHAT_HISTORY|FCH-0010]] must be reviewed during WP0 session start as historic evidence of full chat sessions. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
 
 Repository changes are expected to remain traceable to controlled engineering activities, approved Engineering Implementation Packages and approved governance artefacts.
 
@@ -356,3 +357,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.6 | 2 July 2026 | Codex Engineering Implementer | Refreshed README for ESR-0008 closure, RBL-0009, Guardian, Sentinel, UXP and Engineering Ecosystem Synchronisation. |
 | 3.7 | 4 July 2026 | Codex Engineering Implementer | Aligned repository status with ESR-0010 closure context and RBL-0010 accepted baseline. |
 | 3.8 | 4 July 2026 | Codex Engineering Implementer | Added AIEMS History folder orientation and WP0 session start review guidance for HST artefacts. |
+| 3.9 | 4 July 2026 | Codex Engineering Implementer | Added AIEMS Full Chat folder orientation and WP0 session start review guidance for FCH historical evidence. |
