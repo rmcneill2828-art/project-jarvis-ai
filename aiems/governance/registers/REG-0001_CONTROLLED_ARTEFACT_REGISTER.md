@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.24
+**Version:** 3.25
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.24 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.25 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.6 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -147,7 +147,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.10 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.11 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.7 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
@@ -173,6 +173,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | HST-0008 | Historical Session Record | ESR-0008 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/History/` |
 | HST-0009 | Historical Session Record | ESR-0009 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0009 | `aiems/History/` |
 | HST-0010 | Historical Session Record | ESR-0010 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0010 | `aiems/History/` |
+| HST-0011 | Historical Session Record | ESR-0011 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0011 | `aiems/History/` |
 | FCH-0000 | Full Chat Historical Evidence | Initial Project Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | Initial Project Session | `aiems/History/Full Chat/` |
 | FCH-0001 | Full Chat Historical Evidence | ESR-0001 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/Full Chat/` |
 | FCH-0002 | Full Chat Historical Evidence | ESR-0002 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/Full Chat/` |
@@ -184,6 +185,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FCH-0008 | Full Chat Historical Evidence | ESR-0008 Full Chat Review History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/History/Full Chat/` |
 | FCH-0009 | Full Chat Historical Evidence | ESR-0009 Full Chat Review Issue History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0009 | `aiems/History/Full Chat/` |
 | FCH-0010 | Full Chat Historical Evidence | ESR-0010 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0010 | `aiems/History/Full Chat/` |
+| FCH-0011 | Full Chat Historical Evidence | ESR-0011 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0011 | `aiems/History/Full Chat/` |
 
 ---
 
@@ -244,6 +246,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.25 | 5 July 2026 | Codex Engineering Implementer | Registered HST-0011 and FCH-0011 ESR-0011 history artefacts and aligned PBK-0001 / README WP0 session start guidance. |
 | 3.24 | 5 July 2026 | Codex Engineering Implementer | Registered ESR-0011 Engineering Session Report and aligned programme status for ESR-0011 closure and ESR-0012 implementation handover. |
 | 3.23 | 4 July 2026 | Codex Engineering Implementer | Registered FCH-0000 through FCH-0010 Full Chat historical evidence artefacts and aligned PBK-0001 WP0 session start guidance. |
 | 3.22 | 4 July 2026 | Codex Engineering Implementer | Registered HST-0001 through HST-0010 AIEMS History artefacts and aligned PBK-0001 WP0 session start guidance. |

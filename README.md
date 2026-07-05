@@ -207,7 +207,7 @@ Baseline Acceptance
 Continue Engineering
 ```
 
-Operational workflow detail is maintained in [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and current Engineering Session Reports. ESR-0008 introduced Engineering Ecosystem Synchronisation as the current WP0 working practice, explicitly accounting for GitHub, AIEMS, OSE, Obsidian, controlled artefacts, registers, previous ESRs and summaries. AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0010_ESR-0010_CHAT_HISTORY|HST-0010]] must be reviewed during WP0 session start. AIEMS Full Chat artefacts [[FCH-0000_INITIAL_PROJECT_SESSION_FULL_CHAT_HISTORY|FCH-0000]] through [[FCH-0010_ESR-0010_FULL_CHAT_HISTORY|FCH-0010]] must be reviewed during WP0 session start as historic evidence of full chat sessions. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
+Operational workflow detail is maintained in [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and current Engineering Session Reports. ESR-0008 introduced Engineering Ecosystem Synchronisation as the current WP0 working practice, explicitly accounting for GitHub, AIEMS, OSE, Obsidian, controlled artefacts, registers, previous ESRs and summaries. AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0011_ESR-0011_CHAT_HISTORY|HST-0011]] must be reviewed during WP0 session start. AIEMS Full Chat artefacts [[FCH-0000_INITIAL_PROJECT_SESSION_FULL_CHAT_HISTORY|FCH-0000]] through [[FCH-0011_ESR-0011_FULL_CHAT_HISTORY|FCH-0011]] must be reviewed during WP0 session start as historic evidence of full chat sessions. README introduces the workflow and directs engineers to the authoritative controlled artefacts.
 
 Repository changes are expected to remain traceable to controlled engineering activities, approved Engineering Implementation Packages and approved governance artefacts.
 
@@ -362,3 +362,4 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.8 | 4 July 2026 | Codex Engineering Implementer | Added AIEMS History folder orientation and WP0 session start review guidance for HST artefacts. |
 | 3.9 | 4 July 2026 | Codex Engineering Implementer | Added AIEMS Full Chat folder orientation and WP0 session start review guidance for FCH historical evidence. |
 | 3.10 | 5 July 2026 | Codex Engineering Implementer | Aligned repository orientation with ESR-0011 closure, implementation readiness and ESR-0012 handover guidance. |
+| 3.11 | 5 July 2026 | Codex Engineering Implementer | Extended WP0 session start review guidance to HST-0011 and FCH-0011 ESR-0011 history artefacts. |
