@@ -43,6 +43,11 @@ def test_platform_status_is_available_after_jarvis_start() -> None:
     assert platform_status.bootstrap_state == PlatformBootstrapState.BOOTSTRAPPED
     assert "Core" in platform_status.service_health
     assert "Conversation" in platform_status.service_health
+    assert platform_status.service_health["Guardian Runtime"].status == ServiceStatus.ONLINE
+    assert (
+        platform_status.service_health["Guardian Memory Boundary"].status
+        == ServiceStatus.UNAVAILABLE
+    )
 
 
 def test_platform_foundation_registers_placeholder_capabilities_without_execution() -> None:

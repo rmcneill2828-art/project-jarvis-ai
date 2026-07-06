@@ -5,6 +5,7 @@ from types import MappingProxyType
 from typing import Mapping
 
 from jarvis.core.platform import PlatformFoundation, PlatformStatus
+from jarvis.guardian import GuardianRuntime
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
 
 
@@ -21,6 +22,7 @@ class Jarvis:
     def __init__(self) -> None:
         self._state = JarvisState.STOPPED
         self._platform = PlatformFoundation()
+        self._guardian_runtime = GuardianRuntime()
         self._services: dict[str, JarvisService] = {
             "Core": JarvisService(
                 name="Core",
@@ -59,6 +61,7 @@ class Jarvis:
     def start(self) -> JarvisState:
         """Start the platform."""
 
+        self._guardian_runtime.start()
         self.bootstrap_platform()
         self._state = JarvisState.RUNNING
         return self._state
@@ -66,6 +69,7 @@ class Jarvis:
     def stop(self) -> JarvisState:
         """Stop the platform."""
 
+        self._guardian_runtime.stop()
         self._state = JarvisState.STOPPED
         return self._state
 
@@ -77,12 +81,17 @@ class Jarvis:
     def bootstrap_platform(self) -> PlatformStatus:
         """Bootstrap the platform foundation boundary."""
 
-        return self._platform.bootstrap(self._services)
+        return self._platform.bootstrap(self._platform_services())
 
     def platform_status(self) -> PlatformStatus:
         """Return the current platform foundation status."""
 
-        return self._platform.status(self._services)
+        return self._platform.status(self._platform_services())
+
+    def guardian_runtime(self) -> GuardianRuntime:
+        """Return the Guardian runtime owned by the JARVIS lifecycle."""
+
+        return self._guardian_runtime
 
     def register_service(self, name: str, status: ServiceStatus) -> None:
         """Register or update a service status."""
@@ -101,10 +110,15 @@ class Jarvis:
         """Return current service statuses."""
 
         return MappingProxyType(
-            {name: service.status for name, service in self._services.items()}
+            {name: service.status for name, service in self._platform_services().items()}
         )
 
     def services(self) -> Mapping[str, JarvisService]:
         """Return current service models."""
 
-        return MappingProxyType(dict(self._services))
+        return MappingProxyType(self._platform_services())
+
+    def _platform_services(self) -> dict[str, JarvisService]:
+        services = dict(self._services)
+        services.update(self._guardian_runtime.services())
+        return services
