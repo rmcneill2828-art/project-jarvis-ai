@@ -4,6 +4,10 @@ from jarvis import (
     EngineeringReadinessContext,
     EngineeringRequest,
     GiaBootstrap,
+    GuardianDiagnosticEvent,
+    GuardianRuntime,
+    GuardianRuntimeConfig,
+    GuardianRuntimeState,
     Jarvis,
     JarvisService,
     JarvisState,
@@ -47,3 +51,11 @@ def test_public_api_exports_gia_bootstrap_components() -> None:
 
     assert context.state == ReadinessState.READY
     assert isinstance(context, EngineeringReadinessContext)
+
+
+def test_public_api_exports_guardian_runtime_components() -> None:
+    runtime = GuardianRuntime()
+
+    assert runtime.status() == GuardianRuntimeState.STOPPED
+    assert GuardianRuntimeConfig().runtime_name == "Guardian"
+    assert GuardianDiagnosticEvent is not None

@@ -14,6 +14,12 @@ from jarvis.gia import (
     GiaBootstrap,
     ReadinessState,
 )
+from jarvis.guardian import (
+    GuardianDiagnosticEvent,
+    GuardianRuntime,
+    GuardianRuntimeConfig,
+    GuardianRuntimeState,
+)
 from jarvis.services import (
     CapabilityDescriptor,
     CapabilityRegistry,
@@ -28,6 +34,10 @@ __all__ = [
     "EngineeringReadinessContext",
     "EngineeringRequest",
     "GiaBootstrap",
+    "GuardianDiagnosticEvent",
+    "GuardianRuntime",
+    "GuardianRuntimeConfig",
+    "GuardianRuntimeState",
     "Jarvis",
     "JarvisService",
     "JarvisState",
