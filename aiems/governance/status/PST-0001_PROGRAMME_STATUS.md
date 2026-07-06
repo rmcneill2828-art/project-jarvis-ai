@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.14
+**Version:** 2.15
 
 ---
 
@@ -12,13 +12,13 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.14 |
+| Version | 2.15 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Review Frequency | At phase closure or engineering session transition |
-| Effective Date | 5 July 2026 |
+| Effective Date | 6 July 2026 |
 | Next Review | At next approved engineering session or next baseline review |
 
 ---
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] closed. |
+| Current Mode | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] closed. |
 | Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline pending any future controlled baseline creation. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] accepted as current operational JARVIS product baseline. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0011 closure complete; ESR-0012 approved as implementation phase handover. |
+| Current Phase | ESR-0012 closure complete; Implementation Phase Initiation recorded and closed. |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. |
-| Current Engineering Objective | Prepare ESR-0012 implementation startup from the verified ESR-0011 closure state, beginning with AIEMS Engineering Agent Bootstrap. |
+| Current Engineering Objective | ESR-0012 formally closed; no future engineering objective is created by this status update. |
 
 ---
 
@@ -100,13 +100,13 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] is closed.
+[[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] is closed.
 
 [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline pending any future controlled baseline creation.
 
-The current engineering focus transitions to ESR-0012 implementation startup from the verified ESR-0011 closure state. The first approved work package is WP1 - AIEMS Engineering Agent Bootstrap.
+ESR-0012 completed Implementation Phase Initiation by validating AIEMS implementation workflow, Codex implementation workflow, independent engineering review workflow, the GIA-BOOT Proof of Concept and AIEMS Engineering Agent live use.
 
-PST-0001 records the ESR-0011 handover only. It does not create ESR-0012 as a session report, create a repository baseline or approve a future implementation package beyond the recorded handover direction.
+PST-0001 records the ESR-0012 closure state only. It does not create ESR-0013, create a repository baseline, approve future engineering objectives or approve implementation outside separately authorised engineering work.
 
 ---
 
@@ -122,12 +122,12 @@ PST-0001 records the ESR-0011 handover only. It does not create ESR-0012 as a se
 | Sentinel Trust Architecture | Draft | High | [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] records the Sentinel trust boundary; [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] validated Sentinel as the trust gateway before Platform Services. |
 | Guardian Cognitive Architecture | Draft | High | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] records Guardian identity and cognitive architecture. |
 | Guardian Experience Architecture | Approved Baseline | High | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] records Guardian Experience Architecture v1.0; [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] confirms Guardian Orb should consume real observable state. |
-| Engineering Ecosystem Architecture | Draft | High | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] records Obsidian/OSE and Engineering Ecosystem Synchronisation; ESR-0012 begins AIEMS operational validation through implementation. |
-| Guardian Instrumentation Agent | Planned | Implementation Ready | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] defines GIA as a local-first observability and instrumentation capability for workstation and platform state. |
+| Engineering Ecosystem Architecture | Implementation Validated | High | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] records Obsidian/OSE and Engineering Ecosystem Synchronisation; ESR-0012 validated AIEMS operationally through implementation. |
+| Guardian Instrumentation Agent | Proof of Concept Complete | Early | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] completed GIA-BOOT as a Proof of Concept; further GIA implementation is deferred. |
 | User Experience Platform | Established | Foundation | [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION|ADR-0007]] records Tauri + React as the UXP direction; ESR-0009 adopted it as the UXP implementation baseline. |
 | JARVIS Product Capability Baseline | Accepted | Foundation | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] records the accepted operational product baseline. |
 | JARVIS Capability Maturity | Maintained | Early | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] remains the authoritative maturity model. |
-| JARVIS Development | In Progress | Early | Guardian Desktop Platform Shell is established and Guardian Experience v1.0 is implemented; unimplemented runtime capabilities remain outside the accepted operational product baseline. |
+| JARVIS Development | In Progress | Early | Guardian Desktop Platform Shell, Guardian Experience v1.0 and GIA-BOOT Proof of Concept exist; unimplemented runtime capabilities remain outside the accepted operational product baseline. |
 | Runtime Chat Archive | Complete | Foundation | Prototype chat exports are archived under `logs/chats/`; EBG-0039 is completed in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]. |
 
 ---
@@ -177,6 +177,14 @@ PST-0001 records the ESR-0011 handover only. It does not create ESR-0012 as a se
 | GIA local observability direction approved | Complete |
 | ESR-0012 implementation phase handover approved | Complete |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] Engineering Session Report created | Complete |
+| ESR-0012 Implementation Phase Initiation completed | Complete |
+| AIEMS implementation workflow validated through ESR-0012 | Complete |
+| Codex implementation workflow validated through ESR-0012 | Complete |
+| Independent engineering review workflow validated through ESR-0012 | Complete |
+| GIA-BOOT Proof of Concept completed | Complete |
+| AIEMS Engineering Agent created and live validated | Complete |
+| ChatGPT and Guardian operating environments separated | Complete |
+| [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] Engineering Session Report created | Complete |
 
 ---
 
@@ -190,15 +198,17 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | ESR-0011 closed | Closure recorded in [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]]. |
+| Current Engineering Session | ESR-0012 closed | Closure recorded in [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]]. |
 | Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Accepted repository baseline pending any future controlled baseline creation. |
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Accepted operational JARVIS product baseline. |
-| Current Review State | ESR-0011 closure accepted | Architecture Validation and Implementation Readiness accepted for ESR-0011 closure. |
-| Next Required Closure Activity | None for ESR-0011 | ESR-0011 closure is recorded in [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]]. |
-| Next Engineering Session | ESR-0012 approved for implementation startup | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] approves ESR-0012 as the start of the implementation phase without creating an ESR-0012 artefact in PST-0001. |
-| Initial ESR-0012 Work Package | AIEMS Engineering Agent Bootstrap | WP1 handover target before Guardian Instrumentation Agent implementation planning. |
+| Current Review State | ESR-0012 closure accepted | Implementation Phase Initiation outcomes recorded for closure. |
+| Next Required Closure Activity | None for ESR-0012 | ESR-0012 closure is recorded in [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]]. |
+| Next Engineering Session | Not created by this status update | Future session creation requires separate approval and repository synchronisation. |
+| ESR-0012 Initial Work Package | AIEMS Engineering Agent Bootstrap | Completed and live validated. |
+| GIA-BOOT Proof of Concept | Complete | Accepted as Proof of Concept; further GIA implementation deferred. |
+| Deferred Work | Recorded | Remaining Engineering Agent validation, future GIA implementation and future EAC implementation are deferred. |
 | Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register. |
-| Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports moved from repository root into runtime evidence archive. |
+| Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports remain archived under runtime evidence archive. |
 
 ---
 
@@ -211,7 +221,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | ESR-0011 closure report completed |
+| Current Activity | ESR-0012 closure report completed |
 
 ---
 
@@ -220,12 +230,17 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 The following observations remain open for future engineering consideration:
 
 - [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains accepted as the current repository baseline pending any future controlled baseline creation.
-- [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] is closed as Architecture Validation and Implementation Readiness.
-- ESR-0012 is approved as the start of the implementation phase; PST-0001 does not create an ESR-0012 artefact by itself.
-- AIEMS Engineering Agent Bootstrap is the first ESR-0012 work package.
-- Guardian Instrumentation Agent is ready for implementation planning as a local-first observability capability.
+- [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] is closed as Implementation Phase Initiation.
+- GIA-BOOT is accepted as a Proof of Concept.
+- Further GIA implementation is deferred.
+- AIEMS Engineering Agent is adopted for ChatGPT engineering support.
+- Remaining Engineering Agent validation is deferred.
+- Future EAC implementation is deferred.
+- Repository First is reinforced by ESR-0012 operational evidence.
+- Look Inward Before Looking Outward is identified as an engineering principle derived from operational evidence, but is not introduced as a new AIEMS standard by this status update.
+- ChatGPT and Guardian operating environments remain separated.
 - Guardian Orb implementation remains deferred until real observable platform state exists.
-- Resilience Before Disablement / local fallback is accepted as an engineering direction pending implementation evidence.
+- Resilience Before Disablement / local fallback remains accepted as an engineering direction pending implementation evidence.
 - External AI providers, persistent memory, voice, vision and internet-backed assistance remain outside the accepted operational product baseline.
 - RFEP, RFDP, Continuous Repository Synchronisation and Engineering Ecosystem Synchronisation may be considered in a future formal AIEMS standards review.
 - Obsidian is recognised as the human-facing Engineering Knowledge Workspace for OSE while GitHub remains the source of truth.
@@ -303,24 +318,44 @@ ESR-0008 success criteria have been met for local documentation implementation:
 
 ---
 
-# 16. Session Start Guidance
+# 16. ESR-0012 Outcomes
 
-At the start of ESR-0012 or the next approved implementation session:
-
-1. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
-2. Review [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]].
-3. Review [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]].
-4. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
-5. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
-6. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]].
-7. Review [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] and current OSE practice.
-8. Confirm WP1 - AIEMS Engineering Agent Bootstrap scope before implementation.
-
-This guidance records the ESR-0011 handover only. PST-0001 does not create ESR-0012 as a session report, create a repository baseline or approve implementation outside the ESR-0011 handover direction.
+1. Validated AIEMS implementation workflow.
+2. Validated Codex implementation workflow.
+3. Validated independent engineering review workflow.
+4. Completed GIA-BOOT Proof of Concept.
+5. Created AIEMS Engineering Agent.
+6. Completed Engineering Agent live validation.
+7. Demonstrated repository-first engineering.
+8. Separated ChatGPT and Guardian operating environments.
+9. Accepted GIA-BOOT as a Proof of Concept.
+10. Deferred further GIA implementation.
+11. Adopted AIEMS Engineering Agent for ChatGPT engineering.
+12. Reinforced Repository First.
+13. Identified Look Inward Before Looking Outward as an engineering principle derived from operational evidence.
+14. Created [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] as the formal session closure report.
+15. Retained [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] as the current accepted repository baseline.
 
 ---
 
-# 17. Maintenance
+# 17. Session Start Guidance
+
+At the start of the next separately approved engineering session or approved implementation activity:
+
+1. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
+2. Review [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]].
+3. Review [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]].
+4. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
+5. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
+6. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]].
+7. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]].
+8. Confirm Programme Sponsor approval before creating any future Engineering Session Report or future engineering objective.
+
+This guidance records the ESR-0012 closure state only. PST-0001 does not create ESR-0013, create a repository baseline or approve implementation outside separately authorised engineering work.
+
+---
+
+# 18. Maintenance
 
 [[PST-0001_PROGRAMME_STATUS|PST-0001]] shall be reviewed and updated:
 
@@ -334,7 +369,6 @@ This guidance records the ESR-0011 handover only. PST-0001 does not create ESR-0
 PST-0001 should remain concise and must not duplicate detailed controlled artefacts.
 
 ---
-
 # Guiding Principle
 
 > *"The repository is the programme memory. PST-0001 is the session reload point."*
@@ -351,10 +385,11 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architectural decision context relevant to programme status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records backlog context that informs current and next engineering work. |
+| [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] | Engineering session report recording ESR-0012 closure, GIA-BOOT Proof of Concept completion and AIEMS Engineering Agent validation. |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] | Engineering session report recording ESR-0011 closure, Architecture Validation and Implementation Readiness outcomes and ESR-0012 implementation handover. |
 | [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Engineering session report recording ESR-0010 closure and ESR-0011 handover state. |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Engineering session report recording ESR-0009 closure and ESR-0010 handover. |
-| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline for ESR-0010 handover. |
+| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline retained through ESR-0012 closure. |
 | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Previous accepted repository baseline and ESR-0009 starting point. |
 | [[RBR-ESR0009-001_REPOSITORY_BASELINE_REVIEW|RBR-ESR0009-001]] | Repository baseline review that recommended RBL-0010 creation. |
 | [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]] | Engineering Execution Package Template established during ESR-0009. |
@@ -367,7 +402,8 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted ESR-0009 repository baseline and ESR-0010 handover point. |
+| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline retained through ESR-0012 closure. |
+| [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] | Engineering session report recording ESR-0012 closure, GIA-BOOT Proof of Concept completion and AIEMS Engineering Agent validation. |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] | Engineering session report recording ESR-0011 closure, Architecture Validation and Implementation Readiness outcomes and ESR-0012 implementation handover. |
 | [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Engineering session report recording ESR-0010 closure, Engineering Ecosystem Modernisation outcomes and ESR-0011 handover state. |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Engineering session report recording ESR-0009 closure, delivered artefacts and ESR-0010 handover. |
@@ -397,6 +433,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.15 | 6 July 2026 | Codex Engineering Implementer | Recorded ESR-0012 closure, GIA-BOOT Proof of Concept completion, AIEMS Engineering Agent validation, deferred work and retained RBL-0010 as the current accepted repository baseline. |
 | 2.14 | 5 July 2026 | Codex Engineering Implementer | Recorded ESR-0011 closure, Architecture Validation and Implementation Readiness outcomes, ESR-0012 implementation handover and retained RBL-0010 as the current accepted repository baseline. |
 | 2.13 | 4 July 2026 | Codex Engineering Implementer | Recorded ESR-0010 closure, Engineering Ecosystem Modernisation outcomes, accepted repository review state and next-session handover guidance. |
 | 2.12 | 3 July 2026 | Codex Engineering Implementer | Recorded RBL-0010 acceptance as the ESR-0009 repository baseline and updated ESR-0010 handover state. |
