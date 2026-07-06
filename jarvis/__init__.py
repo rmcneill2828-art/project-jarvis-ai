@@ -8,6 +8,12 @@ from jarvis.core import (
     PlatformStatus,
     ServiceHealthSummary,
 )
+from jarvis.gia import (
+    EngineeringReadinessContext,
+    EngineeringRequest,
+    GiaBootstrap,
+    ReadinessState,
+)
 from jarvis.services import (
     CapabilityDescriptor,
     CapabilityRegistry,
@@ -19,12 +25,16 @@ from jarvis.services import (
 __all__ = [
     "CapabilityDescriptor",
     "CapabilityRegistry",
+    "EngineeringReadinessContext",
+    "EngineeringRequest",
+    "GiaBootstrap",
     "Jarvis",
     "JarvisService",
     "JarvisState",
     "PlatformBootstrapState",
     "PlatformFoundation",
     "PlatformStatus",
+    "ReadinessState",
     "ServiceHealth",
     "ServiceHealthSummary",
     "ServiceStatus",

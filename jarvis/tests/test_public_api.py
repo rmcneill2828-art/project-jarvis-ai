@@ -1,12 +1,16 @@
 from jarvis import (
     CapabilityDescriptor,
     CapabilityRegistry,
+    EngineeringReadinessContext,
+    EngineeringRequest,
+    GiaBootstrap,
     Jarvis,
     JarvisService,
     JarvisState,
     PlatformBootstrapState,
     PlatformFoundation,
     PlatformStatus,
+    ReadinessState,
     ServiceHealth,
     ServiceHealthSummary,
     ServiceStatus,
@@ -30,3 +34,16 @@ def test_public_api_exports_platform_foundation_components() -> None:
     assert foundation.status({}).bootstrap_state == PlatformBootstrapState.NOT_BOOTSTRAPPED
     assert PlatformStatus is not None
     assert ServiceHealthSummary is not None
+
+
+def test_public_api_exports_gia_bootstrap_components() -> None:
+    request = EngineeringRequest(
+        identifier="EIP-0001",
+        objective="Implement GIA-BOOT v1.",
+        scope=("Export public interfaces.",),
+    )
+
+    context = GiaBootstrap().evaluate(request)
+
+    assert context.state == ReadinessState.READY
+    assert isinstance(context, EngineeringReadinessContext)

@@ -1,7 +1,6 @@
-"""Guardian Instrumentation Agent engineering capability primitives."""
+"""Guardian Instrumentation Agent bootstrap interfaces."""
 
 from jarvis.gia.bootstrap import (
-    ArtefactReview,
     EngineeringReadinessContext,
     EngineeringRequest,
     GiaBootstrap,
@@ -9,7 +8,6 @@ from jarvis.gia.bootstrap import (
 )
 
 __all__ = [
-    "ArtefactReview",
     "EngineeringReadinessContext",
     "EngineeringRequest",
     "GiaBootstrap",
