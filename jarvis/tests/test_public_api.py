@@ -8,6 +8,8 @@ from jarvis import (
     GuardianRuntime,
     GuardianRuntimeConfig,
     GuardianRuntimeState,
+    GuardianRuntimeStatus,
+    GuardianServiceSnapshot,
     Jarvis,
     JarvisService,
     JarvisState,
@@ -59,3 +61,5 @@ def test_public_api_exports_guardian_runtime_components() -> None:
     assert runtime.status() == GuardianRuntimeState.STOPPED
     assert GuardianRuntimeConfig().runtime_name == "Guardian"
     assert GuardianDiagnosticEvent is not None
+    assert GuardianRuntimeStatus is not None
+    assert GuardianServiceSnapshot is not None

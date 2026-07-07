@@ -7,6 +7,7 @@ from typing import Mapping
 from jarvis.guardian.config import GuardianRuntimeConfig
 from jarvis.guardian.diagnostics import GuardianDiagnosticEvent
 from jarvis.guardian.state import GuardianRuntimeState
+from jarvis.guardian.status import GuardianRuntimeStatus
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
 
 logger = logging.getLogger(__name__)
@@ -101,6 +102,18 @@ class GuardianRuntime:
         """Return Guardian runtime diagnostic events."""
 
         return tuple(self._diagnostics)
+
+    def status_snapshot(self) -> GuardianRuntimeStatus:
+        """Return a structured Guardian runtime status snapshot."""
+
+        return GuardianRuntimeStatus.from_runtime(
+            state=self._state,
+            runtime_name=self._config.runtime_name,
+            persistence_enabled=self._config.persistence_enabled,
+            diagnostics_enabled=self._config.diagnostics_enabled,
+            services=self._services,
+            diagnostics=self.diagnostics(),
+        )
 
     def _record(self, name: str, message: str) -> GuardianDiagnosticEvent:
         event = GuardianDiagnosticEvent(name=name, state=self._state, message=message)

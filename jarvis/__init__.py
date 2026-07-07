@@ -19,6 +19,8 @@ from jarvis.guardian import (
     GuardianRuntime,
     GuardianRuntimeConfig,
     GuardianRuntimeState,
+    GuardianRuntimeStatus,
+    GuardianServiceSnapshot,
 )
 from jarvis.services import (
     CapabilityDescriptor,
@@ -38,6 +40,8 @@ __all__ = [
     "GuardianRuntime",
     "GuardianRuntimeConfig",
     "GuardianRuntimeState",
+    "GuardianRuntimeStatus",
+    "GuardianServiceSnapshot",
     "Jarvis",
     "JarvisService",
     "JarvisState",

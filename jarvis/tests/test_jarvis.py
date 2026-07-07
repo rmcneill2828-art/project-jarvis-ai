@@ -76,3 +76,13 @@ def test_jarvis_exposes_owned_guardian_runtime() -> None:
 
     assert guardian_runtime.status() == GuardianRuntimeState.STOPPED
     assert guardian_runtime is jarvis.guardian_runtime()
+
+
+def test_jarvis_exposes_guardian_runtime_status_snapshot_after_start() -> None:
+    jarvis = Jarvis()
+
+    jarvis.start()
+    snapshot = jarvis.guardian_runtime().status_snapshot()
+
+    assert snapshot.state == GuardianRuntimeState.RUNNING
+    assert snapshot.services["Guardian Runtime"].status == ServiceStatus.ONLINE
