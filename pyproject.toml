@@ -21,4 +21,4 @@ dev = [
 jarvis = "jarvis.app:main"
 
 [tool.setuptools.packages.find]
-include = ["jarvis", "jarvis.*"]
+include = ["jarvis", "jarvis.*", "sentinel", "sentinel.*"]
