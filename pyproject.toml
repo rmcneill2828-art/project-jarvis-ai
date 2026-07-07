@@ -10,6 +10,7 @@ target-version = "py312"
 
 [tool.pytest.ini_options]
 testpaths = ["jarvis/tests"]
+pythonpath = ["."]
 
 [project.optional-dependencies]
 dev = [
