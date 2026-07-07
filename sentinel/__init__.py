@@ -7,6 +7,7 @@ from sentinel.core import (
     SentinelResponse,
     SentinelTrustGateway,
 )
+from sentinel.local_provider import LocalEchoProvider, create_local_provider_registry
 from sentinel.providers import (
     ExecutionProvider,
     ProviderRegistry,
@@ -17,6 +18,7 @@ from sentinel.providers import (
 
 __all__ = [
     "ExecutionProvider",
+    "LocalEchoProvider",
     "ProviderRegistry",
     "ProviderRequest",
     "ProviderResponse",
@@ -25,5 +27,6 @@ __all__ = [
     "SentinelRequest",
     "SentinelResponse",
     "SentinelTrustGateway",
+    "create_local_provider_registry",
     "execute_with_sentinel_decision",
 ]
