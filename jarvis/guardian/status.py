@@ -40,10 +40,12 @@ class GuardianRuntimeStatus:
     """Structured snapshot of Guardian runtime state and diagnostics."""
 
     state: GuardianRuntimeState
+    runtime_health: ServiceHealth
     runtime_name: str
     persistence_enabled: bool
     diagnostics_enabled: bool
     services: Mapping[str, GuardianServiceSnapshot]
+    events: tuple[GuardianDiagnosticEvent, ...]
     diagnostic_count: int
     latest_diagnostic: GuardianDiagnosticEvent | None
 
@@ -52,6 +54,7 @@ class GuardianRuntimeStatus:
         cls,
         *,
         state: GuardianRuntimeState,
+        runtime_health: ServiceHealth,
         runtime_name: str,
         persistence_enabled: bool,
         diagnostics_enabled: bool,
@@ -66,10 +69,12 @@ class GuardianRuntimeStatus:
         }
         return cls(
             state=state,
+            runtime_health=runtime_health,
             runtime_name=runtime_name,
             persistence_enabled=persistence_enabled,
             diagnostics_enabled=diagnostics_enabled,
             services=MappingProxyType(service_snapshots),
+            events=tuple(diagnostics),
             diagnostic_count=len(diagnostics),
             latest_diagnostic=diagnostics[-1] if diagnostics else None,
         )

@@ -44,6 +44,7 @@ class GuardianRuntime:
                 name="guardian.initialised",
                 state=self._state,
                 message="Guardian runtime foundation initialised.",
+                health=self._runtime_health(),
             )
         ]
 
@@ -98,16 +99,48 @@ class GuardianRuntime:
 
         return MappingProxyType(dict(self._services))
 
-    def diagnostics(self) -> tuple[GuardianDiagnosticEvent, ...]:
+    def diagnostics(
+        self,
+        *,
+        name: str | None = None,
+        limit: int | None = None,
+    ) -> tuple[GuardianDiagnosticEvent, ...]:
         """Return Guardian runtime diagnostic events."""
 
-        return tuple(self._diagnostics)
+        diagnostics: tuple[GuardianDiagnosticEvent, ...] = tuple(self._diagnostics)
+        if name is not None:
+            diagnostics = tuple(event for event in diagnostics if event.name == name)
+        if limit is not None:
+            if limit < 1:
+                msg = "Guardian diagnostic query limit must be greater than zero."
+                raise ValueError(msg)
+            diagnostics = diagnostics[-limit:]
+        return diagnostics
+
+    def events(self, *, limit: int | None = None) -> tuple[GuardianDiagnosticEvent, ...]:
+        """Return timestamped Guardian runtime events."""
+
+        return self.diagnostics(limit=limit)
+
+    def lifecycle_history(self) -> tuple[GuardianDiagnosticEvent, ...]:
+        """Return timestamped Guardian lifecycle events."""
+
+        lifecycle_events = {
+            "guardian.initialised",
+            "guardian.starting",
+            "guardian.running",
+            "guardian.stopped",
+        }
+        return tuple(
+            event for event in self._diagnostics if event.name in lifecycle_events
+        )
 
     def status_snapshot(self) -> GuardianRuntimeStatus:
         """Return a structured Guardian runtime status snapshot."""
 
         return GuardianRuntimeStatus.from_runtime(
             state=self._state,
+            runtime_health=self._runtime_health(),
             runtime_name=self._config.runtime_name,
             persistence_enabled=self._config.persistence_enabled,
             diagnostics_enabled=self._config.diagnostics_enabled,
@@ -116,6 +149,14 @@ class GuardianRuntime:
         )
 
     def _record(self, name: str, message: str) -> GuardianDiagnosticEvent:
-        event = GuardianDiagnosticEvent(name=name, state=self._state, message=message)
+        event = GuardianDiagnosticEvent(
+            name=name,
+            state=self._state,
+            message=message,
+            health=self._runtime_health(),
+        )
         self._diagnostics.append(event)
         return event
+
+    def _runtime_health(self) -> ServiceHealth:
+        return self._services["Guardian Runtime"].health

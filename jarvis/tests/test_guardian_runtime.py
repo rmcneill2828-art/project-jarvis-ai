@@ -11,6 +11,22 @@ from jarvis import (
 )
 
 
+def test_guardian_diagnostic_event_requires_timezone_aware_timestamp() -> None:
+    from datetime import datetime
+
+    try:
+        GuardianDiagnosticEvent(
+            name="guardian.test",
+            state=GuardianRuntimeState.STOPPED,
+            message="Test event.",
+            occurred_at=datetime(2026, 1, 1),
+        )
+    except ValueError as exc:
+        assert str(exc) == "Guardian diagnostic event timestamp must be timezone-aware."
+    else:
+        raise AssertionError("Expected naive Guardian event timestamp to be rejected.")
+
+
 def test_guardian_runtime_starts_and_stops_without_enabling_future_capabilities() -> None:
     runtime = GuardianRuntime()
 
@@ -68,6 +84,8 @@ def test_guardian_runtime_diagnostics_are_available_as_snapshots() -> None:
     assert all(isinstance(event, GuardianDiagnosticEvent) for event in diagnostics)
     assert diagnostics[0].name == "guardian.initialised"
     assert diagnostics[-1].state == GuardianRuntimeState.RUNNING
+    assert diagnostics[0].occurred_at.tzinfo is not None
+    assert diagnostics[-1].health == ServiceHealth.HEALTHY
 
 
 def test_guardian_runtime_status_snapshot_reports_initial_state() -> None:
@@ -77,10 +95,12 @@ def test_guardian_runtime_status_snapshot_reports_initial_state() -> None:
 
     assert isinstance(snapshot, GuardianRuntimeStatus)
     assert snapshot.state == GuardianRuntimeState.STOPPED
+    assert snapshot.runtime_health == ServiceHealth.UNKNOWN
     assert snapshot.runtime_name == "Guardian"
     assert snapshot.persistence_enabled is False
     assert snapshot.diagnostics_enabled is True
     assert snapshot.diagnostic_count == 1
+    assert len(snapshot.events) == 1
     assert snapshot.latest_diagnostic is not None
     assert snapshot.latest_diagnostic.name == "guardian.initialised"
     assert snapshot.services["Guardian Runtime"].status == ServiceStatus.OFFLINE
@@ -95,6 +115,7 @@ def test_guardian_runtime_status_snapshot_reports_running_state() -> None:
     snapshot = runtime.status_snapshot()
 
     assert snapshot.state == GuardianRuntimeState.RUNNING
+    assert snapshot.runtime_health == ServiceHealth.HEALTHY
     assert snapshot.services["Guardian Runtime"].status == ServiceStatus.ONLINE
     assert snapshot.services["Guardian Runtime"].health == ServiceHealth.HEALTHY
     assert snapshot.latest_diagnostic is not None
@@ -109,6 +130,7 @@ def test_guardian_runtime_status_snapshot_reports_stopped_state_after_stop() -> 
     snapshot = runtime.status_snapshot()
 
     assert snapshot.state == GuardianRuntimeState.STOPPED
+    assert snapshot.runtime_health == ServiceHealth.UNKNOWN
     assert snapshot.services["Guardian Runtime"].status == ServiceStatus.OFFLINE
     assert snapshot.latest_diagnostic is not None
     assert snapshot.latest_diagnostic.name == "guardian.stopped"
@@ -133,3 +155,60 @@ def test_guardian_runtime_status_snapshot_is_not_a_live_service_view() -> None:
     assert snapshot.state == GuardianRuntimeState.STOPPED
     assert snapshot.services["Guardian Runtime"].status == ServiceStatus.OFFLINE
     assert runtime.status_snapshot().services["Guardian Runtime"].status == ServiceStatus.ONLINE
+
+
+def test_guardian_runtime_events_are_queryable_by_limit() -> None:
+    runtime = GuardianRuntime()
+
+    runtime.start()
+    runtime.stop()
+    events = runtime.events(limit=2)
+
+    assert [event.name for event in events] == ["guardian.running", "guardian.stopped"]
+    assert all(event.occurred_at.tzinfo is not None for event in events)
+
+
+def test_guardian_runtime_diagnostics_are_queryable_by_name() -> None:
+    runtime = GuardianRuntime()
+
+    runtime.start()
+    running_events = runtime.diagnostics(name="guardian.running")
+
+    assert len(running_events) == 1
+    assert running_events[0].state == GuardianRuntimeState.RUNNING
+
+
+def test_guardian_runtime_rejects_invalid_event_query_limit() -> None:
+    runtime = GuardianRuntime()
+
+    try:
+        runtime.events(limit=0)
+    except ValueError as exc:
+        assert str(exc) == "Guardian diagnostic query limit must be greater than zero."
+    else:
+        raise AssertionError("Expected invalid Guardian event query limit to be rejected.")
+
+
+def test_guardian_runtime_lifecycle_history_is_queryable() -> None:
+    runtime = GuardianRuntime()
+
+    runtime.start()
+    runtime.stop()
+    lifecycle_history = runtime.lifecycle_history()
+
+    assert [event.name for event in lifecycle_history] == [
+        "guardian.initialised",
+        "guardian.starting",
+        "guardian.running",
+        "guardian.stopped",
+    ]
+
+
+def test_guardian_runtime_status_snapshot_contains_event_history() -> None:
+    runtime = GuardianRuntime()
+
+    runtime.start()
+    snapshot = runtime.status_snapshot()
+
+    assert snapshot.events == runtime.events()
+    assert snapshot.events[-1].name == "guardian.running"
