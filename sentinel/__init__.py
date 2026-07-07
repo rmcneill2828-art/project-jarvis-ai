@@ -8,6 +8,12 @@ from sentinel.core import (
     SentinelTrustGateway,
 )
 from sentinel.local_provider import LocalEchoProvider, create_local_provider_registry
+from sentinel.provider_config import (
+    CredentialReference,
+    ProviderConfiguration,
+    ProviderConfigurationRegistry,
+    RetryPolicy,
+)
 from sentinel.providers import (
     ExecutionProvider,
     ProviderRegistry,
@@ -17,11 +23,15 @@ from sentinel.providers import (
 )
 
 __all__ = [
+    "CredentialReference",
     "ExecutionProvider",
     "LocalEchoProvider",
+    "ProviderConfiguration",
+    "ProviderConfigurationRegistry",
     "ProviderRegistry",
     "ProviderRequest",
     "ProviderResponse",
+    "RetryPolicy",
     "SentinelDecision",
     "SentinelDecisionOutcome",
     "SentinelRequest",
