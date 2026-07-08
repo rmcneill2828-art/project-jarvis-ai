@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0015 |
 | Title | Engineering Session Report |
-| Version | 0.4 |
+| Version | 0.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -55,7 +55,7 @@ Establish the Sentinel execution pipeline so that Guardian interactions are audi
 | WP2 | `PolicyEngine` abstraction and `SimpleApprovalPolicy` | Complete (commit `cdf283e`) |
 | WP3a | Complete PEM-001 scoring against current provider information; Programme Sponsor approves primary provider, secondary provider, and first adapter to implement | Complete. Primary: OpenAI. Secondary: Google Gemini. Reasoning/coding comparison: Anthropic (retained). Gateway: OpenRouter (experimentation only). Local fallback: Ollama. First adapter: OpenAI direct. Scored independently by Claude and ChatGPT against PEM-001's 8 weighted criteria; both evaluators ranked OpenAI first despite each having a structural bias toward their own maker's provider. |
 | WP3b | Implement the approved provider adapter | Complete (commit `a9d89fa`) |
-| WP4 | Guardian to Sentinel integration | Not started |
+| WP4 | Guardian to Sentinel integration | Complete (commit `e70c420`) |
 | WP5 | End-to-end validation and first audited/policy-gated conversation | Not started |
 | WP6 | Session closure and engineering handover | Not started |
 
@@ -88,6 +88,7 @@ WP0B confirmed: session identifier ESR-0015, Programme Phase 2 (JARVIS Architect
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.5 | 8 July 2026 | Claude Engineering Implementer | WP4 complete: jarvis/interfaces/sentinel_conversation.py SentinelGatedConversationProvider routes conversation through SentinelTrustGateway and ProviderOrchestrator. Two Engineering Reviewer-required refinements applied (capability-only metadata, decision.reason never surfaced to user). First Light GUI wiring unchanged - deterministic-by-default preserved per PCB-0001. 132/132 tests passing. Commit e70c420. |
 | 0.4 | 8 July 2026 | Claude Engineering Implementer | WP3a complete: PEM-001 provider scoring approved (Primary: OpenAI, Secondary: Gemini, first adapter: OpenAI direct). WP3b complete: sentinel/openai_provider.py OpenAIProvider adapter, three Engineering Reviewer-required adjustments applied (configured timeout, required default_model, controlled error wrapping). PEM-001 updated to Approved status recording the decision outcome. 127/127 tests passing. Commit a9d89fa. |
 | 0.3 | 8 July 2026 | Claude Engineering Implementer | WP2 complete: sentinel/policy.py (PolicyDecision, PolicyEngine, SimpleApprovalPolicy) wired into SentinelTrustGateway, reproducing prior inline approval logic with zero behaviour change. Resolved an EIP-unanticipated circular import between core.py and policy.py via deferred import, verified empirically. 120/120 tests passing. Commit cdf283e. |
 | 0.2 | 8 July 2026 | Claude Engineering Implementer | WP1 complete: sentinel/audit.py (AuditEvent, AuditRecorder, MemoryAuditRecorder, JsonAuditRecorder) wired into SentinelTrustGateway and ProviderOrchestrator. Constructor pattern corrected during Engineering Reviewer EIP review (audit_recorder: AuditRecorder \| None = None) to avoid a shared mutable default recorder. 114/114 tests passing. Commit 5733e45. |
