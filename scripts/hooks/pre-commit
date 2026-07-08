@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Blocks a commit if the repository governance validator fails.
+# Installed via: git config core.hooksPath scripts/hooks
+set -euo pipefail
+
+python scripts/validate_repository.py
