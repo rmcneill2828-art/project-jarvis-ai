@@ -2,7 +2,7 @@
 
 > *"Trust is an architecture, not an afterthought."*
 
-**Version:** 0.1
+**Version:** 0.2
 
 ---
 
@@ -12,13 +12,19 @@
 |-------|-------|
 | Artefact ID | SAM-0001 |
 | Title | Sentinel Trust Architecture |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] |
 | Effective Date | 2 July 2026 |
 | Review Frequency | At architecture review or Sentinel implementation package selection |
+
+---
+
+# Subsequent Architectural Update
+
+[[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) repositioned Sentinel as the AI Execution and Security Platform for AIEMS, broadening the trust-gateway-only framing this artefact describes. Sentinel Core, provider abstraction, provider configuration and provider orchestration are now implemented under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot for Sentinel's scope. This note does not change SAM-0001's original content, decision or approval basis.
 
 ---
 
@@ -242,4 +248,5 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described here. Original content unchanged. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial Sentinel Trust Architecture created under EIP-ESR0009-004. |

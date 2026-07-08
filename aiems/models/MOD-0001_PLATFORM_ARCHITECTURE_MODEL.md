@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.3
+**Version:** 1.4
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | In Review |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -21,6 +21,12 @@
 | Classification | Internal |
 | Last Updated | 24 June 2026 |
 | Next Review | Phase 1 Architecture Review |
+
+---
+
+# Subsequent Architectural Update
+
+[[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) broadened Sentinel's role beyond the "trust gateway before Platform Services" framing described in this model's Sentinel sections (Platform Overview diagram, Canonical ESR-0008 Domain Interpretation table, and the Guardian/Sentinel/Trust Governance section). Sentinel is now the AI Execution and Security Platform, with implemented provider orchestration, execution governance and failover under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot for Sentinel's scope. This note does not change MOD-0001's other architectural content.
 
 ---
 
@@ -931,6 +937,7 @@ This relationship provides architectural traceability throughout the AI Engineer
 
 | Version | Date | Author | Summary |
 |---------|------------|-----------------------------------------|--------------------------------------------------------------------------|
+| 1.4 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described in this model's Sentinel sections. Original content unchanged. |
 | 0.1 | 23 June 2026 | Project Sponsor & Chief Architect | Initial JARVIS OS Foundation Specification. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Re-authored as the Platform Architecture Model following establishment of the AI Engineering Platform and AIEMS architecture. |
 | 1.1 | 2 July 2026 | Codex Engineering Implementer | Aligned platform architecture with ESR-0008 Sentinel, Guardian, UXP, Provider Architecture, Agent Framework and device independence outcomes. |

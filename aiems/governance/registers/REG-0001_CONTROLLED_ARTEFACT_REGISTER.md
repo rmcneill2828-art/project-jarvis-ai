@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.34
+**Version:** 3.35
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.34 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.35 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -129,8 +129,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0009 | Repository Baseline | ESR-0008 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0010 | Repository Baseline | ESR-0009 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
-| MOD-0001 | Model | Platform Architecture Model | 1.3 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
-| SAM-0001 | Model | Sentinel Trust Architecture | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
+| MOD-0001 | Model | Platform Architecture Model | 1.4 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
+| SAM-0001 | Model | Sentinel Trust Architecture | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.0 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
@@ -262,6 +262,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.35 | 8 July 2026 | Claude Engineering Implementer | Aligned SAM-0001 and MOD-0001 versions following addition of Subsequent Architectural Update notes pointing to ADR-0018 and CURRENT_ARCHITECTURE.md. |
 | 3.34 | 8 July 2026 | Claude Engineering Implementer | Aligned REG-0002, EBR-0001 and GDE-0001 versions following ADR-0018 registration in REG-0002, EBG-0030 reclassification in EBR-0001 and GDE-0001 Draft/1.0 versioning correction. |
 | 3.33 | 8 July 2026 | Claude Engineering Implementer | Registered PEM-001 AI Provider Evaluation Matrix, brought into STD-0001 structural compliance; aligned PST-0001 version following residual product-naming and Session Start Guidance completeness fixes. |
 | 3.32 | 8 July 2026 | Claude Engineering Implementer | Aligned COC-0001, PBK-0001 and TPL-0001 versions following role-definition generalisation (ChatGPT/Codex to Engineering Reviewer/Engineering Implementer). |
