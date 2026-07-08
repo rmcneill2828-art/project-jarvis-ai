@@ -117,7 +117,7 @@ def test_trust_tier_policy_routes_approval_request_to_review():
 
 
 @pytest.mark.parametrize(
-    ("request", "expected_category"),
+    ("sentinel_request", "expected_category"),
     [
         (
             SentinelRequest(
@@ -146,11 +146,11 @@ def test_trust_tier_policy_routes_approval_request_to_review():
     ],
 )
 def test_trust_tier_policy_denies_restricted_categories(
-    request: SentinelRequest, expected_category: TrustCategory
+    sentinel_request: SentinelRequest, expected_category: TrustCategory
 ):
     policy = TrustTierPolicy()
 
-    decision = policy.evaluate(request)
+    decision = policy.evaluate(sentinel_request)
 
     assert decision.outcome is SentinelDecisionOutcome.DENY
     assert decision.trust_tier is TrustTier.RESTRICTED
@@ -160,7 +160,7 @@ def test_trust_tier_policy_denies_restricted_categories(
 
 
 @pytest.mark.parametrize(
-    ("request", "expected_category"),
+    ("sentinel_request", "expected_category"),
     [
         (
             SentinelRequest(
@@ -192,13 +192,13 @@ def test_trust_tier_policy_denies_restricted_categories(
     ],
 )
 def test_trust_tier_policy_denies_restricted_categories_before_review_routing(
-    request: SentinelRequest, expected_category: TrustCategory
+    sentinel_request: SentinelRequest, expected_category: TrustCategory
 ):
     """Regression: requires_approval must not soften deny-category requests."""
 
     policy = TrustTierPolicy()
 
-    decision = policy.evaluate(request)
+    decision = policy.evaluate(sentinel_request)
 
     assert decision.outcome is SentinelDecisionOutcome.DENY
     assert decision.trust_tier is TrustTier.RESTRICTED
