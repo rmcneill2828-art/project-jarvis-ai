@@ -2,7 +2,7 @@
 
 > *"Bounded onboarding scales. Exhaustive onboarding does not."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | GDE-0001 |
 | Title | Project Knowledge Map |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -96,7 +96,24 @@ Current State and Architecture artefacts should carry breadcrumbs to specific HS
 
 ---
 
-# 7. Authority
+# 7. Role Terminology
+
+Project JARVIS AI uses more than one label for the same two engineering roles, depending on which document is being read. This table is a lookup, not a new system - it exists so the mapping is checked in one place rather than reconstructed from context each session.
+
+| COC-0001 (standing governance) | EE-0001 (trial term, ESR-0015-0018 only) | Historical (sessions before EE-0001) |
+|---|---|---|
+| Engineering Implementer | Engineering Lead | Codex or ChatGPT (vendor name used directly) |
+| Engineering Reviewer | Independent Reviewer | - |
+
+Notes:
+
+- **EE-0001's terms are deliberately kept separate from COC-0001's for the duration of the trial** (ESR-0015 through ESR-0018). This is not an oversight to be merged away - it isolates the trial's own vocabulary so its outcome isn't pre-judged by inherited assumptions from standing governance. Only the Programme Sponsor may decide, after the trial concludes, whether to formalise `Engineering Lead`/`Independent Reviewer` into `COC-0001`/`PBK-0001` in place of `Engineering Implementer`/`Engineering Reviewer`.
+- **Historical vendor-name references (Codex, ChatGPT) inside closed sessions are frozen** per [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] and are not to be retroactively rewritten with role terms. They are listed here only so a reader does not mistake them for a fourth active terminology system.
+- Which column applies depends on context, not on which AI is speaking: check whether an EE-0001 trial session is currently active (see [[PST-0001_PROGRAMME_STATUS|PST-0001]] Current State) before assuming the EE-0001 column applies.
+
+---
+
+# 8. Authority
 
 This Guide operationalises the authority ordering already established in [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] Section 4, which ranks historical conversations below controlled artefacts and Engineering Session Reports. It does not change that ordering, and it does not reduce the evidential status of HST or FCH artefacts - it changes only when they are read.
 
@@ -104,13 +121,14 @@ Where this Guide conflicts with [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] or
 
 ---
 
-# 8. Related Artefacts
+# 9. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Session initialisation and WP0A guidance amended to reference this tiering. |
-| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration context that defers to PBK-0001 for session initialisation detail. |
-| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the authority ordering this Guide operationalises. |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration context that defers to PBK-0001 for session initialisation detail; standing source of the Engineering Implementer/Reviewer terms mapped in Section 7. |
+| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Source of the trial-scoped Engineering Lead/Independent Reviewer terms mapped in Section 7. |
+| [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] | Defines the authority ordering this Guide operationalises; governs historical-record integrity referenced in Section 7. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current State tier source artefact. |
 | [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Defines the Guide (GDE) artefact category used by this artefact. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers this artefact as a controlled AIEMS Guide. |
@@ -118,9 +136,10 @@ Where this Guide conflicts with [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] or
 
 ---
 
-# 9. Version History
+# 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 8 July 2026 | Claude Engineering Implementer | Added Section 7, Role Terminology: a lookup table mapping COC-0001 (Engineering Implementer/Reviewer), EE-0001 (Engineering Lead/Independent Reviewer, trial-scoped) and historical vendor-name references (Codex/ChatGPT), so the mapping is checked rather than reconstructed each session. Renumbered subsequent sections. |
 | 1.1 | 8 July 2026 | Claude Engineering Implementer | Corrected Status from Draft to Approved to comply with STD-0001 section 13 versioning (Version 1.0 requires Approved status, not Draft). This artefact is already operationally binding - referenced and followed by PBK-0001, COC-0001 and PST-0001. |
 | 1.0 | 8 July 2026 | Claude Engineering Implementer | Initial Project Knowledge Map created as ESR-0014 post-closure work, bounding mandatory session initialisation reading and moving AIEMS History and Full Chat artefacts to search-on-demand access. |
