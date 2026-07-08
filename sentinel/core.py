@@ -10,6 +10,8 @@ from enum import Enum
 from types import MappingProxyType
 from typing import Mapping
 
+from sentinel.audit import AuditEvent, AuditRecorder, MemoryAuditRecorder
+
 
 class SentinelDecisionOutcome(Enum):
     """Supported Sentinel trust decision outcomes."""
@@ -89,8 +91,9 @@ class SentinelTrustGateway:
     engine, provider routing or Guardian cognition.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, audit_recorder: AuditRecorder | None = None) -> None:
         self._decisions: list[SentinelResponse] = []
+        self._audit_recorder = audit_recorder or MemoryAuditRecorder()
 
     def evaluate(self, request: SentinelRequest) -> SentinelResponse:
         """Evaluate a request at the Sentinel trust boundary."""
@@ -118,9 +121,26 @@ class SentinelTrustGateway:
             )
 
         self._decisions.append(response)
+        self._audit_recorder.record(
+            AuditEvent(
+                event_type="sentinel_decision",
+                outcome=decision.outcome.value,
+                summary=response.message,
+                metadata={
+                    "source": request.source,
+                    "intent": request.intent,
+                    "reason": decision.reason,
+                },
+            )
+        )
         return response
 
     def decisions(self) -> tuple[SentinelResponse, ...]:
         """Return immutable Sentinel decision history."""
 
         return tuple(self._decisions)
+
+    def audit_events(self) -> tuple[AuditEvent, ...]:
+        """Return recorded Sentinel audit events."""
+
+        return self._audit_recorder.events()

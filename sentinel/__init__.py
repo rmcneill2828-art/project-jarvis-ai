@@ -1,5 +1,11 @@
 """Sentinel package exports."""
 
+from sentinel.audit import (
+    AuditEvent,
+    AuditRecorder,
+    JsonAuditRecorder,
+    MemoryAuditRecorder,
+)
 from sentinel.core import (
     SentinelDecision,
     SentinelDecisionOutcome,
@@ -23,9 +29,13 @@ from sentinel.providers import (
 )
 
 __all__ = [
+    "AuditEvent",
+    "AuditRecorder",
     "CredentialReference",
     "ExecutionProvider",
+    "JsonAuditRecorder",
     "LocalEchoProvider",
+    "MemoryAuditRecorder",
     "ProviderConfiguration",
     "ProviderConfigurationRegistry",
     "ProviderRegistry",

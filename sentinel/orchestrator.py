@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
+from sentinel.audit import AuditEvent, AuditRecorder, MemoryAuditRecorder
 from sentinel.providers import (
     ExecutionProvider,
     ProviderRequest,
@@ -62,11 +63,12 @@ class OrchestratedProviderResponse:
 class ProviderOrchestrator:
     """Health-aware Sentinel provider orchestrator with failover."""
 
-    def __init__(self) -> None:
+    def __init__(self, audit_recorder: AuditRecorder | None = None) -> None:
         self._providers: dict[str, ExecutionProvider] = {}
         self._health: dict[str, ProviderHealth] = {}
         self._routes: dict[str, ProviderRoute] = {}
         self._history: list[ProviderExecutionRecord] = []
+        self._audit_recorder = audit_recorder or MemoryAuditRecorder()
 
     def register_provider(
         self,
@@ -170,6 +172,21 @@ class ProviderOrchestrator:
                 reason="Provider execution succeeded.",
             )
             self._history.append(record)
+            self._audit_recorder.record(
+                AuditEvent(
+                    event_type="provider_execution",
+                    outcome="succeeded",
+                    summary=(
+                        f"Provider {provider.name} executed capability "
+                        f"{request.capability}."
+                    ),
+                    metadata={
+                        "capability": request.capability,
+                        "selected_provider": provider.name,
+                        "attempted_providers": ",".join(attempted),
+                    },
+                )
+            )
             return OrchestratedProviderResponse(
                 provider_response=provider_response,
                 execution_record=record,
@@ -186,9 +203,25 @@ class ProviderOrchestrator:
             reason=reason,
         )
         self._history.append(record)
+        self._audit_recorder.record(
+            AuditEvent(
+                event_type="provider_execution",
+                outcome="failed",
+                summary=reason,
+                metadata={
+                    "capability": request.capability,
+                    "attempted_providers": ",".join(attempted),
+                },
+            )
+        )
         raise RuntimeError(reason)
 
     def history(self) -> tuple[ProviderExecutionRecord, ...]:
         """Return provider orchestration history."""
 
         return tuple(self._history)
+
+    def audit_events(self) -> tuple[AuditEvent, ...]:
+        """Return recorded Sentinel audit events."""
+
+        return self._audit_recorder.events()
