@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.16
+**Version:** 2.17
 
 ---
 
@@ -12,13 +12,13 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.16 |
+| Version | 2.17 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Review Frequency | At phase closure or engineering session transition |
-| Effective Date | 7 July 2026 |
+| Effective Date | 8 July 2026 |
 | Next Review | At next approved engineering session or next baseline review |
 
 ---
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] closure review prepared; Programme Sponsor closure decision pending. |
+| Current Mode | [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] closed; Sentinel AI Execution and Security Platform implemented. [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] closed; GDE-0001 knowledge tiering introduced. |
 | Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline pending any future controlled baseline creation. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] accepted as current operational JARVIS product baseline. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0013 Guardian Platform Foundation closure review prepared. |
+| Current Phase | ESR-0014 Sentinel AI Execution and Security Platform foundation complete; ESR-0014A knowledge tiering complete. |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. |
-| Current Engineering Objective | Await Programme Sponsor decision on ESR-0013 closure and any separate repository baseline acceptance; no future engineering objective is created by this status update. |
+| Current Engineering Objective | No future engineering objective is created by this status update. ESR-0015 entry recommendations recorded in [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] section 16 remain a Programme Sponsor decision. |
 
 ---
 
@@ -100,13 +100,13 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] closure review is prepared for Programme Sponsor decision.
+[[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] is closed. Sentinel Core, provider abstraction, local provider, provider configuration and provider orchestration (health-aware routing and automatic failover) are implemented under the `sentinel/` package, validated by 100 passing automated tests. [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] positions Sentinel as the AI Execution and Security Platform for AIEMS.
 
-[[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline pending any future controlled baseline creation.
+[[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] is closed. [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] introduces a tiered knowledge structure for Engineering Session initialisation, bounding mandatory session-start reading and moving AIEMS History and Full Chat artefacts to search-on-demand access.
 
-ESR-0013 established the Guardian Platform Foundation by creating the Guardian runtime boundary, integrating Guardian runtime ownership into the JARVIS lifecycle, exposing runtime status snapshots and adding bounded observability interfaces.
+[[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline; no new baseline was created by ESR-0014 or ESR-0014A.
 
-PST-0001 records the ESR-0013 closure-review state only. It does not create ESR-0014, create a repository baseline, approve future engineering objectives or approve implementation outside separately authorised engineering work.
+PST-0001 records the ESR-0014 and ESR-0014A closed state. It does not create ESR-0015 or approve implementation outside separately authorised engineering work.
 
 ---
 
@@ -119,7 +119,7 @@ PST-0001 records the ESR-0013 closure-review state only. It does not create ESR-
 | Engineering Standards | In Progress | High | Approved standards remain in place; RFEP, RFDP and Continuous Repository Synchronisation are working practices pending any future standards review. |
 | JARVIS Product Architecture | Complete | High | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] remains the product architecture authority. |
 | JARVIS Platform Architecture | Draft | High | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] validated JARVIS Platform, Sentinel, Platform Services, UXP, Provider Architecture, Agent Framework and GIA positioning for implementation readiness. |
-| Sentinel Trust Architecture | Draft | High | [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] records the Sentinel trust boundary; [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] validated Sentinel as the trust gateway before Platform Services. |
+| Sentinel AI Execution and Security Platform | Implemented | High | [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] positions Sentinel as the AI Execution and Security Platform; Sentinel Core, provider abstraction, local provider, provider configuration and health-aware provider orchestration with failover are implemented under `sentinel/` with 100 passing tests. |
 | Guardian Cognitive Architecture | Draft | High | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] records Guardian identity and cognitive architecture; ESR-0013 established a bounded runtime foundation without implementing full Guardian cognition. |
 | Guardian Experience Architecture | Approved Baseline | High | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] records Guardian Experience Architecture v1.0; [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] confirms Guardian Orb should consume real observable state. |
 | Engineering Ecosystem Architecture | Implementation Validated | High | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] records Obsidian/OSE and Engineering Ecosystem Synchronisation; ESR-0012 validated AIEMS operationally through implementation. |
@@ -189,6 +189,11 @@ PST-0001 records the ESR-0013 closure-review state only. It does not create ESR-
 | ESR-0013 Guardian Runtime integrated into JARVIS lifecycle | Complete |
 | ESR-0013 Guardian runtime status and observability established | Complete |
 | [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] closure review package prepared | Complete |
+| Sentinel Core, provider abstraction, local provider, provider configuration and provider orchestration implemented | Complete |
+| [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] Sentinel AI Execution and Security Platform approved | Complete |
+| [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] Engineering Session Report created | Complete |
+| [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] Project Knowledge Map created | Complete |
+| [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] Post-Closure Engineering Addendum created | Complete |
 
 ---
 
@@ -202,15 +207,15 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | ESR-0013 closure review prepared | Closure review recorded in [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]]; Programme Sponsor closure decision pending. |
+| Current Engineering Session | None active | [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] and [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] are closed; next session not yet created. |
 | Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Accepted repository baseline pending any future controlled baseline creation. |
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Accepted operational JARVIS product baseline. |
-| Current Review State | ESR-0013 closure review prepared | Guardian Platform Foundation outcomes recorded for Programme Sponsor closure review. |
-| Next Required Closure Activity | Programme Sponsor ESR-0013 decision | Closure and any baseline acceptance remain Sponsor authorities. |
+| Current Review State | ESR-0014 and ESR-0014A closed | Sentinel AI Execution and Security Platform implementation and GDE-0001 knowledge tiering both accepted. |
+| Next Required Closure Activity | None outstanding | ESR-0014 and ESR-0014A are both closed. |
 | Next Engineering Session | Not created by this status update | Future session creation requires separate approval and repository synchronisation. |
-| ESR-0013 Implementation Scope | Guardian Platform Foundation | Completed through WP1-WP6 implementation evidence and WP7 closure package preparation. |
+| ESR-0014 Implementation Scope | Sentinel AI Execution and Security Platform | Completed through Sentinel Core, provider abstraction, local provider, provider configuration and provider orchestration, validated by 100 passing tests. |
 | GIA-BOOT Proof of Concept | Complete | Accepted as Proof of Concept; further GIA implementation deferred. |
-| Deferred Work | Recorded | Guardian Memory, Provider Framework, Sentinel, Conversation Engine expansion, Guardian Developer Console, Guardian Orb, Automation, persistent storage, EAC and GDP-0001 implementation remain deferred. |
+| Deferred Work | Recorded | Guardian Memory, Conversation Engine expansion, Guardian Developer Console, Guardian Orb, Automation, persistent storage, EAC and GDP-0001 implementation remain deferred. Sentinel implementation is complete; Guardian Runtime is not yet connected through Sentinel. PEM-001 provider scoring remains pending. |
 | Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register. |
 | Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports remain archived under runtime evidence archive. |
 
@@ -225,7 +230,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Repository Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | ESR-0013 closure review package prepared |
+| Current Activity | ESR-0014 and ESR-0014A closed; CI workflow added for automated validation. |
 
 ---
 
@@ -234,18 +239,18 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 The following observations remain open for future engineering consideration:
 
 - [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains accepted as the current repository baseline pending any future controlled baseline creation.
-- [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] closure review package is prepared; Programme Sponsor closure decision remains pending.
-- ESR-0013 established the Guardian Platform Foundation through runtime boundary, lifecycle integration, status snapshot and observability work.
-- ESR-0013 closure preparation does not accept a new repository baseline.
-- ESR-0014 is not created by this status update.
+- [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] established the Guardian Platform Foundation through runtime boundary, lifecycle integration, status snapshot and observability work.
+- [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] is closed. Sentinel Core, provider abstraction, local provider, provider configuration and provider orchestration are implemented under `sentinel/` with 100 passing tests. [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] positions Sentinel as the AI Execution and Security Platform.
+- [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] is closed. [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] introduces knowledge tiering for Engineering Session initialisation.
+- Guardian Runtime is not yet connected through Sentinel.
+- PEM-001 provider scoring against current provider information remains pending, per ESR-0014 outstanding work.
+- ESR-0015 is not created by this status update.
 - GIA-BOOT is accepted as a Proof of Concept.
 - Further GIA implementation is deferred.
 - AIEMS Engineering Agent is adopted for ChatGPT engineering support.
 - Remaining Engineering Agent validation is deferred.
 - Future EAC implementation is deferred.
 - Guardian Memory remains deferred.
-- Provider Framework remains deferred.
-- Sentinel implementation remains deferred.
 - Conversation Engine expansion remains deferred.
 - Guardian Developer Console remains deferred.
 - Guardian Orb implementation remains deferred until real observable platform state is ready for presentation-layer consumption.
@@ -366,26 +371,53 @@ ESR-0008 success criteria have been met for local documentation implementation:
 
 ---
 
-# 18. Session Start Guidance
+# 18. ESR-0014 Outcomes
 
-At the start of the next separately approved engineering session or approved implementation activity:
-
-1. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
-2. Review [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]].
-3. Review [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]].
-4. Review [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]].
-4. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
-5. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
-6. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]].
-7. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]].
-8. Confirm Programme Sponsor closure decision before treating ESR-0013 as closed.
-9. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
-
-This guidance records the ESR-0013 closure-review state only. PST-0001 does not create ESR-0014, create a repository baseline or approve implementation outside separately authorised engineering work.
+1. Established Sentinel as a standalone top-level package.
+2. Implemented Sentinel Core trust boundary primitives.
+3. Implemented provider abstraction, provider registry and capability resolution.
+4. Implemented the local deterministic provider.
+5. Implemented provider configuration, credential references and retry policies.
+6. Implemented the provider orchestrator foundation with health states, health-aware capability routing, automatic failover and execution history.
+7. Added dedicated test suites for Sentinel Core, providers, provider configuration and provider orchestration, taking coverage from 58 to 100 passing tests.
+8. Created [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] to support evidence-based AI provider ecosystem selection.
+9. Approved [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]], positioning Sentinel as the AI Execution and Security Platform for AIEMS.
+10. Created [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] as the formal session closure report.
+11. Retained [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] as the current accepted repository baseline.
 
 ---
 
-# 19. Maintenance
+# 19. ESR-0014A Outcomes
+
+1. Identified, through an AI-followability review of AIEMS, that mandatory Engineering Session initialisation reading grows without bound as sessions accumulate.
+2. Created [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]], defining a tiered knowledge structure (Current State, Architecture, Active Standards, Current ESR, Historical Archive).
+3. Amended [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] Session Initialisation and WP0A guidance to reference GDE-0001 rather than enumerating the full AIEMS History and Full Chat archive.
+4. Amended [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and README.md for consistency with GDE-0001.
+5. Registered GDE-0001, ESR-0014A and ESR-0014 itself in [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
+6. Did not retire, delete or modify any AIEMS History or Full Chat artefact.
+7. Created [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] as a post-closure addendum, preserving [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] and [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] without reopening them.
+
+---
+
+# 20. Session Start Guidance
+
+At the start of the next separately approved engineering session or approved implementation activity, follow [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] knowledge tiering:
+
+1. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
+2. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current State tier).
+3. Review the Architecture tier as referenced by PST-0001.
+4. Review [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] and [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] (Current ESR tier).
+5. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
+6. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]].
+7. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]].
+8. Search the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required.
+9. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
+
+This guidance records the ESR-0014 and ESR-0014A closed state. PST-0001 does not create ESR-0015, create a repository baseline or approve implementation outside separately authorised engineering work.
+
+---
+
+# 21. Maintenance
 
 [[PST-0001_PROGRAMME_STATUS|PST-0001]] shall be reviewed and updated:
 
@@ -415,12 +447,15 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architectural decision context relevant to programme status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records backlog context that informs current and next engineering work. |
-| [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Engineering session report prepared for Guardian Platform Foundation closure review and Programme Sponsor closure decision. |
+| [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] | Closed engineering session report recording Sentinel AI Execution and Security Platform implementation. |
+| [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] | Closed post-closure addendum recording GDE-0001 knowledge tiering. |
+| [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Defines the knowledge tier structure this status update's Session Start Guidance now follows. |
+| [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Engineering session report recording the Guardian Platform Foundation. |
 | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] | Engineering session report recording ESR-0012 closure, GIA-BOOT Proof of Concept completion and AIEMS Engineering Agent validation. |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] | Engineering session report recording ESR-0011 closure, Architecture Validation and Implementation Readiness outcomes and ESR-0012 implementation handover. |
 | [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Engineering session report recording ESR-0010 closure and ESR-0011 handover state. |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Engineering session report recording ESR-0009 closure and ESR-0010 handover. |
-| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline retained through ESR-0013 closure review preparation. |
+| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline, retained through ESR-0014 and ESR-0014A closure. |
 | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Previous accepted repository baseline and ESR-0009 starting point. |
 | [[RBR-ESR0009-001_REPOSITORY_BASELINE_REVIEW|RBR-ESR0009-001]] | Repository baseline review that recommended RBL-0010 creation. |
 | [[TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE|TPL-0001]] | Engineering Execution Package Template established during ESR-0009. |
@@ -433,8 +468,11 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline retained through ESR-0013 closure review preparation. |
-| [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Engineering session report prepared for Guardian Platform Foundation closure review and Programme Sponsor closure decision. |
+| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline, retained through ESR-0014 and ESR-0014A closure. |
+| [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] | Closed engineering session report recording Sentinel AI Execution and Security Platform implementation. |
+| [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] | Closed post-closure addendum recording GDE-0001 knowledge tiering. |
+| [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Defines the knowledge tier structure this status update's Session Start Guidance now follows. |
+| [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Engineering session report recording the Guardian Platform Foundation. |
 | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] | Engineering session report recording ESR-0012 closure, GIA-BOOT Proof of Concept completion and AIEMS Engineering Agent validation. |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] | Engineering session report recording ESR-0011 closure, Architecture Validation and Implementation Readiness outcomes and ESR-0012 implementation handover. |
 | [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Engineering session report recording ESR-0010 closure, Engineering Ecosystem Modernisation outcomes and ESR-0011 handover state. |
@@ -465,6 +503,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.17 | 8 July 2026 | Claude Engineering Implementer | Recorded ESR-0014 closure (Sentinel AI Execution and Security Platform implemented, ADR-0018 approved) and ESR-0014A closure (GDE-0001 knowledge tiering); removed stale "Sentinel implementation remains deferred" observation; retained RBL-0010 baseline position. |
 | 2.16 | 7 July 2026 | Engineering Agent | Updated programme status for ESR-0013 Guardian Platform Foundation closure review, deferred capability status and retained RBL-0010 baseline position. |
 | 2.15 | 6 July 2026 | Codex Engineering Implementer | Recorded ESR-0012 closure, GIA-BOOT Proof of Concept completion, AIEMS Engineering Agent validation, deferred work and retained RBL-0010 as the current accepted repository baseline. |
 | 2.14 | 5 July 2026 | Codex Engineering Implementer | Recorded ESR-0011 closure, Architecture Validation and Implementation Readiness outcomes, ESR-0012 implementation handover and retained RBL-0010 as the current accepted repository baseline. |

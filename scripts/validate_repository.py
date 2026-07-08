@@ -143,6 +143,11 @@ def latest_numbered(prefix: str, directory: Path) -> str | None:
     return latest[1] if latest else None
 
 
+def extract_current_esr_reference(text: str) -> str | None:
+    match = re.search(r"\| Current Mode \| \[\[(ESR-\d{4})[A-Z]?_", text)
+    return match.group(1) if match else None
+
+
 def check_stale_status_references(result: ValidationResult) -> None:
     latest_rbl = latest_numbered("RBL", REPO_ROOT / "aiems/governance/baselines")
     latest_esr = latest_numbered("ESR", REPO_ROOT / "aiems/governance/sessions")
@@ -154,8 +159,13 @@ def check_stale_status_references(result: ValidationResult) -> None:
     text = status_path.read_text(encoding="utf-8", errors="replace")
     if latest_rbl and latest_rbl not in text:
         result.warn(f"PST-0001 does not reference latest repository baseline {latest_rbl}.")
-    if latest_esr and latest_esr not in text:
-        result.warn(f"PST-0001 does not reference latest engineering session {latest_esr}.")
+
+    current_esr = extract_current_esr_reference(text)
+    if latest_esr and current_esr != latest_esr:
+        result.error(
+            f"PST-0001 Current Mode references {current_esr or 'no ESR'}, "
+            f"latest closed session is {latest_esr}."
+        )
 
     current_baseline = re.search(r"\| Current Repository Baseline \| \[\[(RBL-\d{4})_", text)
     if latest_rbl and current_baseline and current_baseline.group(1) != latest_rbl:
