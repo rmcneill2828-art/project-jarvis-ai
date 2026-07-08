@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.45
+**Version:** 3.46
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.45 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.46 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -128,7 +128,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0008 | Repository Baseline | ESR-0007 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0009 | Repository Baseline | ESR-0008 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0010 | Repository Baseline | ESR-0009 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
-| RBL-0011 | Repository Baseline | ESR-0015 Repository Baseline | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/governance/baselines/` |
+| RBL-0011 | Repository Baseline | ESR-0015 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.4 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
@@ -153,7 +153,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.1 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.20 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.21 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -265,6 +265,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.46 | 8 July 2026 | Claude Engineering Implementer | RBL-0011 accepted by the Programme Sponsor (Draft/0.1 to Accepted/1.0), superseding RBL-0010 as the current repository baseline. Aligned PST-0001 version following the acceptance update. |
 | 3.45 | 8 July 2026 | Claude Engineering Implementer | ESR-0015 closed (status Open to Closed, version 1.0). Registered RBL-0011 (Draft, recommended pending Programme Sponsor acceptance). Aligned PST-0001 version following ESR-0015 closure update. |
 | 3.44 | 8 July 2026 | Claude Engineering Implementer | Aligned ESR-0015 version following WP5 completion record and evidence table. |
 | 3.43 | 8 July 2026 | Claude Engineering Implementer | Aligned ESR-0015 version following WP4 completion record. |

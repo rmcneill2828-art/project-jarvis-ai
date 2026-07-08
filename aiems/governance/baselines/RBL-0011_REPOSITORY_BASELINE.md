@@ -8,22 +8,23 @@
 |-------|-------|
 | Artefact ID | RBL-0011 |
 | Title | ESR-0015 Repository Baseline |
-| Version | 0.1 |
-| Status | Draft |
+| Version | 1.0 |
+| Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Engineering Session | [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] |
 | Previous Baseline | [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] |
 | Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] |
 | Classification | Internal |
 | Date | 8 July 2026 |
+| HEAD at baseline creation | `c51f95e5f04b0fed7d01687b5a894d4a3fc46d4b` |
 
 ---
 
 # 2. Purpose
 
-RBL-0011 is drafted and recommended, recording the repository baseline proposed at the conclusion of ESR-0015. It has **not** been accepted. Per [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]], only the Programme Sponsor may accept a Repository Baseline - this document records a recommendation and its supporting evidence, not an acceptance decision.
+RBL-0011 records the repository baseline accepted by the Programme Sponsor at the conclusion of ESR-0015. Per [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]], acceptance of a Repository Baseline is reserved to the Programme Sponsor; that acceptance was given on 8 July 2026.
 
-It would capture the accepted repository state after ESR-0015's Sentinel execution pipeline delivery: audit infrastructure, policy abstraction, first external provider adapter, Guardian integration, and a live, audited, policy-gated conversation demonstrated end to end against a real external AI provider.
+It captures the accepted repository state after ESR-0015's Sentinel execution pipeline delivery: audit infrastructure, policy abstraction, first external provider adapter, Guardian integration, and a live, audited, policy-gated conversation demonstrated end to end against a real external AI provider.
 
 ---
 
@@ -36,7 +37,7 @@ It would capture the accepted repository state after ESR-0015's Sentinel executi
 | Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] |
 | Programme Status Reference | [[PST-0001_PROGRAMME_STATUS|PST-0001]] |
 | Controlled Artefact Register Reference | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] |
-| Repository Readiness | Ready for ESR-0016, pending Programme Sponsor baseline acceptance decision |
+| Repository Readiness | Accepted; ready for ESR-0016 entry |
 
 ---
 
@@ -46,7 +47,7 @@ Recommended by Engineering Reviewer (ChatGPT), concurred by Engineering Implemen
 
 [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] (ESR-0009) has remained the accepted baseline across five subsequent sessions (ESR-0010 through ESR-0014), including ESR-0014 itself, which delivered the Sentinel package this session builds on and explicitly declined a new baseline. ESR-0015 is judged qualitatively different: prior sessions established architecture; ESR-0015 is the first to demonstrate that architecture working end to end against a real external system.
 
-Countervailing context recorded for completeness: [[PST-0001_PROGRAMME_STATUS|PST-0001]] already tracks current repository state on an ongoing, accurately-maintained basis, so the incremental informational value of a new formal snapshot is more about marking a milestone than filling a gap PST-0001 doesn't already cover. This does not change the recommendation, but is offered so the Programme Sponsor's acceptance decision is made with the full picture.
+Countervailing context recorded for completeness: [[PST-0001_PROGRAMME_STATUS|PST-0001]] already tracks current repository state on an ongoing, accurately-maintained basis, so the incremental informational value of a new formal snapshot is more about marking a milestone than filling a gap PST-0001 doesn't already cover. This did not change the recommendation, and was offered so the Programme Sponsor's acceptance decision was made with the full picture. The Programme Sponsor accepted RBL-0011 on 8 July 2026.
 
 ---
 
@@ -107,7 +108,7 @@ Repository validation performed during ESR-0015 WP6 closure confirmed:
 - `python scripts/validate_repository.py` passed with 0 errors, 0 warnings.
 - [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] was closed.
 - [[PST-0001_PROGRAMME_STATUS|PST-0001]] recorded ESR-0015 closure.
-- [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the current accepted baseline pending this recommendation's acceptance.
+- The Programme Sponsor accepted this baseline on 8 July 2026, superseding [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] as the current repository baseline.
 
 ---
 
@@ -117,7 +118,7 @@ ESR-0016 entry is recommended, not created, by this baseline. Per [[EE-0001_INDE
 
 Opening review should include:
 
-1. [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] and this document, RBL-0011 (accepted or not)
+1. This document, RBL-0011 (accepted), and [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] for prior context
 2. [[PST-0001_PROGRAMME_STATUS|PST-0001]]
 3. [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]
 4. [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]]
@@ -132,7 +133,7 @@ Opening review should include:
 | Artefact | Relationship |
 |----------|--------------|
 | [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] | Engineering session this baseline recommendation is drawn from. |
-| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Previous accepted repository baseline, retained pending this recommendation's acceptance. |
+| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Previous accepted repository baseline, superseded by this baseline's acceptance. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Accepted operational product capability baseline, unchanged by this recommendation. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status updated for ESR-0015 closure. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Register updated to include this baseline recommendation. |
@@ -147,3 +148,4 @@ Opening review should include:
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 0.1 | 8 July 2026 | Claude Engineering Implementer | Initial ESR-0015 repository baseline drafted and recommended by Engineering Reviewer (ChatGPT), concurred by Engineering Implementer (Claude). Not yet accepted - Programme Sponsor acceptance decision pending per STD-0004. |
+| 1.0 | 8 July 2026 | Programme Sponsor | Accepted as the current repository baseline, superseding RBL-0010. |
