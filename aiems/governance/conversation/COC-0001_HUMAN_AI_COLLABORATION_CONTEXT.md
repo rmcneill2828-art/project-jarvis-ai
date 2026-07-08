@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.8
+**Version:** 1.9
 
 ---
 
@@ -26,7 +26,7 @@ This document complements AIEMS. It does not replace engineering governance or r
 * Approves repository changes
 * Provides final approvals
 
-## ChatGPT
+## Engineering Reviewer
 
 * Engineering Designer
 * Engineering Reviewer
@@ -35,7 +35,9 @@ This document complements AIEMS. It does not replace engineering governance or r
 * Performs WP6 Independent GitHub Verification after Engineering Implementer repository push
 * Does not modify the repository directly
 
-## Codex
+This role has been filled historically by ChatGPT and the AIEMS Engineering Agent. The role definition, not the specific AI product, is authoritative.
+
+## Engineering Implementer
 
 * Engineering Implementer
 * Implements approved Engineering Implementation Packages
@@ -44,6 +46,8 @@ This document complements AIEMS. It does not replace engineering governance or r
 * Reports commit SHA, commit message and repository status
 * Produces implementation and self-review reports
 * Makes no engineering decisions
+
+This role has been filled historically by Codex and other AI collaborators, including Claude acting as both Reviewer and Implementer within a single session. The role definition, not the specific AI product, is authoritative.
 
 ---
 
@@ -91,15 +95,15 @@ This document complements AIEMS. It does not replace engineering governance or r
 
    Working Reports may be used before Engineering Review to present findings, analysis or proposed remediation. They are not controlled repository artefacts and do not authorise repository change.
 
-   Codex produces engineering reports. ChatGPT performs engineering review. The Programme Sponsor makes engineering decisions. Controlled repository artefacts are created or modified only following explicit approval.
+   The Engineering Implementer produces engineering reports. The Engineering Reviewer performs engineering review. The Programme Sponsor makes engineering decisions. Controlled repository artefacts are created or modified only following explicit approval.
 
-12. ChatGPT shall produce one complete Engineering Implementation Package for each approved implementation activity.
+12. The Engineering Reviewer shall produce one complete Engineering Implementation Package for each approved implementation activity.
 
 13. The Engineering Implementation Package shall be the single reviewable implementation specification for the activity.
 
 14. The Human Engineer shall review and approve the complete Engineering Implementation Package before implementation begins.
 
-15. Codex shall use the approved Engineering Implementation Package as the sole implementation specification.
+15. The Engineering Implementer shall use the approved Engineering Implementation Package as the sole implementation specification.
 
 16. Engineering Implementation Packages shall contain, where applicable:
 
@@ -128,7 +132,7 @@ This document complements AIEMS. It does not replace engineering governance or r
    * state the expected outcome;
    * identify the next engineering step where appropriate.
 
-21. Where the action is intended for another AI collaborator (for example, Codex), the AI collaborator shall provide a complete, concise, copy-ready Engineering Implementation Package or instruction that can be transferred without modification.
+21. Where the action is intended for another AI collaborator (for example, an Engineering Implementer AI collaborator), the AI collaborator shall provide a complete, concise, copy-ready Engineering Implementation Package or instruction that can be transferred without modification.
 
 22. Copy-ready instructions shall:
 
@@ -150,9 +154,9 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 26. The Programme Sponsor approves engineering work, implementation scope and repository changes. The Programme Sponsor is not responsible for repository execution unless separately directed.
 
-27. ChatGPT performs engineering design, does not perform repository implementation, performs WP6 Independent GitHub Verification and confirms WP7 Repository Baseline Acceptance.
+27. The Engineering Reviewer performs engineering design, does not perform repository implementation, performs WP6 Independent GitHub Verification and confirms WP7 Repository Baseline Acceptance.
 
-28. Codex performs engineering implementation, authorised repository staging, commit and push, and reports commit SHA, commit message and repository status.
+28. The Engineering Implementer performs engineering implementation, authorised repository staging, commit and push, and reports commit SHA, commit message and repository status.
 
 29. Repository Engineering Health Reviews shall compare findings against [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]], the authoritative Engineering Backlog Register.
 
@@ -210,9 +214,9 @@ This document complements AIEMS. It does not replace engineering governance or r
 
 45. The AI collaborator shall minimise Human effort at every engineering handoff by providing clear, complete, and actionable outputs.
 
-46. An active Engineering Session places ChatGPT in AIEMS Execution Mode by default.
+46. An active Engineering Session places the Engineering Reviewer in AIEMS Execution Mode by default.
 
-47. In AIEMS Execution Mode, ChatGPT shall follow the approved AIEMS workflow and shall not alter live engineering execution based on process improvement discussion, architectural recommendation or workflow optimisation unless the Programme Sponsor explicitly approves the change and instructs that it take effect.
+47. In AIEMS Execution Mode, the Engineering Reviewer shall follow the approved AIEMS workflow and shall not alter live engineering execution based on process improvement discussion, architectural recommendation or workflow optimisation unless the Programme Sponsor explicitly approves the change and instructs that it take effect.
 
 48. The Programme Sponsor may temporarily change interaction context using explicit mode language such as CONV, REVIEW or AUTHOR.
 
@@ -279,6 +283,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.9 | 8 July 2026 | Claude Engineering Implementer | Renamed the ChatGPT/Codex role headers and normative rules to Engineering Reviewer/Engineering Implementer, decoupling role definitions from named AI products. Historical mentions elsewhere in the repository are unaffected. |
 | 1.8 | 8 July 2026 | Claude Engineering Implementer | Added GDE-0001 cross-reference following introduction of knowledge tiering in PBK-0001. ESR-0014 post-closure work per ESR-0014A. |
 | 1.7 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned session start context with RBL-0009 and ESR-0009 readiness. |
 | 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 review artefact for repository orientation while preserving controlled artefact authority. |

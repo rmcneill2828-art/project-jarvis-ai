@@ -2,7 +2,7 @@
 
 > *"A repeatable execution package turns approved intent into governed delivery."*
 
-**Version:** 0.1
+**Version:** 0.2
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | TPL-0001 |
 | Title | Engineering Execution Package Template |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -26,9 +26,9 @@
 
 This artefact is a template, not an Engineering Execution Package.
 
-It shall be copied or instantiated for future Engineering Execution Packages. Placeholder fields shall be replaced during package generation before the package is issued for Codex execution.
+It shall be copied or instantiated for future Engineering Execution Packages. Placeholder fields shall be replaced during package generation before the package is issued for Engineering Implementer execution.
 
-This template defines the canonical reusable structure for Codex-ready Engineering Execution Packages under AIEMS.
+This template defines the canonical reusable structure for Engineering Execution Packages ready for Engineering Implementer execution under AIEMS.
 
 ---
 
@@ -103,9 +103,9 @@ The Programme Sponsor remains final approval authority.
 
 # 6. Delivery Authority
 
-Codex is the delivery mechanism for repository artefact creation or modification unless the package explicitly authorises another delivery mechanism.
+The Engineering Implementer is the delivery mechanism for repository artefact creation or modification unless the package explicitly authorises another delivery mechanism.
 
-ChatGPT performs independent GitHub verification after Codex execution.
+The Engineering Reviewer performs independent GitHub verification after Engineering Implementer execution.
 
 ---
 
@@ -162,7 +162,7 @@ The package shall identify:
 | Engineering Implementer scope | {{IMPLEMENTER_SCOPE}} |
 | Final approval authority | Programme Sponsor |
 | Source of truth | GitHub |
-| Independent verification role | ChatGPT |
+| Independent verification role | Engineering Reviewer |
 
 ---
 
@@ -239,7 +239,7 @@ Package-specific OSE requirements:
 {{IMPLEMENTATION_REQUIREMENTS}}
 ```
 
-Implementation requirements shall be specific enough for Codex execution without requiring reconstruction from chat history.
+Implementation requirements shall be specific enough for Engineering Implementer execution without requiring reconstruction from chat history.
 
 ---
 
@@ -342,7 +342,7 @@ Return the following handoff:
 
 # 22. Independent GitHub Verification Handoff
 
-ChatGPT shall perform independent GitHub verification after Codex execution, including:
+The Engineering Reviewer shall perform independent GitHub verification after Engineering Implementer execution, including:
 
 1. Repository state verification.
 2. Content review.
@@ -389,4 +389,5 @@ END OF ENGINEERING EXECUTION PACKAGE
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 8 July 2026 | Claude Engineering Implementer | Replaced ChatGPT/Codex role naming with Engineering Reviewer/Engineering Implementer throughout, decoupling this template from named AI products. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial Engineering Execution Package Template created under EIP-ESR0009-002. |

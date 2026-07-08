@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.14 |
+| Version | 1.15 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -342,9 +342,9 @@ Where conversation context conflicts with the repository baseline, the Engineeri
 
 # AIEMS Execution Mode
 
-An active Engineering Session places ChatGPT in AIEMS Execution Mode by default.
+An active Engineering Session places the Engineering Reviewer in AIEMS Execution Mode by default.
 
-In AIEMS Execution Mode, ChatGPT shall follow the approved AIEMS workflow and shall not alter live engineering execution based on process improvement discussion, architectural recommendation or workflow optimisation unless the Programme Sponsor explicitly approves the change and instructs that it take effect.
+In AIEMS Execution Mode, the Engineering Reviewer shall follow the approved AIEMS workflow and shall not alter live engineering execution based on process improvement discussion, architectural recommendation or workflow optimisation unless the Programme Sponsor explicitly approves the change and instructs that it take effect.
 
 The Programme Sponsor may temporarily change interaction context using explicit mode language such as CONV, REVIEW or AUTHOR. Temporary context changes do not amend AIEMS unless separately approved.
 
@@ -362,11 +362,11 @@ Working Reports are not controlled repository artefacts unless a separate approv
 
 The Working Report lifecycle is:
 
-1. Codex produces the engineering report.
-2. ChatGPT performs engineering review.
+1. The Engineering Implementer produces the engineering report.
+2. The Engineering Reviewer performs engineering review.
 3. The Programme Sponsor makes the engineering decision.
-4. ChatGPT prepares an Engineering Implementation Package where repository remediation is approved.
-5. Codex implements only the approved Engineering Implementation Package.
+4. The Engineering Reviewer prepares an Engineering Implementation Package where repository remediation is approved.
+5. The Engineering Implementer implements only the approved Engineering Implementation Package.
 
 Working Reports may inform Engineering Reviews and Engineering Implementation Packages, but they do not themselves authorise repository remediation.
 
@@ -536,6 +536,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.15 | 8 July 2026 | Claude Engineering Implementer | Replaced the remaining ChatGPT/Codex mentions (AIEMS Execution Mode, Working Report Lifecycle) with Engineering Reviewer/Engineering Implementer, matching the generic terminology already used throughout the rest of this document. |
 | 1.14 | 8 July 2026 | Claude Engineering Implementer | Replaced exhaustive AIEMS History and Full Chat WP0 review requirement with GDE-0001 knowledge tiering (bounded Current State/Architecture/Standards/Current ESR reading, Historical Archive searched on demand). ESR-0014 post-closure work per ESR-0014A. |
 | 1.13 | 7 July 2026 | Engineering Agent | Added ESR-0013 AIEMS History and Full Chat artefacts to WP0 session start review. |
 | 1.12 | 6 July 2026 | Codex Engineering Implementer | Added ESR-0012 AIEMS History and Full Chat artefacts to WP0 session start review. |
