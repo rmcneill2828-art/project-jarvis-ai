@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.9
+**Version:** 1.10
 
 ---
 
@@ -243,7 +243,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]].
+* Review [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]], the current accepted repository baseline.
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -259,7 +259,7 @@ Before beginning engineering activities:
 
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
-* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] records the current accepted repository baseline and ESR-0009 handover point.
+* [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] records the current accepted repository baseline, accepted by the Programme Sponsor on 8 July 2026, superseding [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
@@ -275,7 +275,7 @@ Before beginning engineering activities:
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing Engineering Implementer behaviour that complements COC-0001. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used for session reload and synchronisation. |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0009 readiness. |
+| [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current accepted repository baseline, accepted by the Programme Sponsor on 8 July 2026, superseding RBL-0010. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed session report that hands over to ESR-0009 validation readiness. |
 
 ---
@@ -283,6 +283,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.10 | 8 July 2026 | Claude Engineering Reviewer | Programme Sponsor-directed housekeeping fix ahead of ESR-0016: updated the stale RBL-0009 baseline reference (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0011, the current accepted repository baseline since ESR-0015 closure. Flagged as an observation during ESR-0016 pre-session review and fixed on explicit Sponsor instruction. |
 | 1.9 | 8 July 2026 | Claude Engineering Implementer | Renamed the ChatGPT/Codex role headers and normative rules to Engineering Reviewer/Engineering Implementer, decoupling role definitions from named AI products. Historical mentions elsewhere in the repository are unaffected. |
 | 1.8 | 8 July 2026 | Claude Engineering Implementer | Added GDE-0001 cross-reference following introduction of knowledge tiering in PBK-0001. ESR-0014 post-closure work per ESR-0014A. |
 | 1.7 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned session start context with RBL-0009 and ESR-0009 readiness. |

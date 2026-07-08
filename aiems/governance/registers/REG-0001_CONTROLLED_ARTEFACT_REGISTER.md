@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.48
+**Version:** 3.49
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.48 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.49 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -149,7 +149,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | PBK-0001 | Playbook | AI Engineering Playbook | 1.15 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
-| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.9 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
+| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.10 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
@@ -266,6 +266,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.49 | 8 July 2026 | Claude Engineering Reviewer | Aligned COC-0001 version (1.9 to 1.10) following a Programme Sponsor-directed housekeeping fix ahead of ESR-0016: corrected the stale RBL-0009 baseline reference to RBL-0011. Aligned self version row accordingly. |
 | 3.48 | 8 July 2026 | Claude Engineering Implementer | Registered FCH-0015 (ESR-0015 Full Chat History, Claude side), generated directly from the live session transcript at Programme Sponsor request. Aligned self version row accordingly. |
 | 3.47 | 8 July 2026 | Claude Engineering Implementer | GDE-0001 updated to 1.2 (added Section 7, Role Terminology mapping). Aligned GDE-0001 and self version rows accordingly. |
 | 3.46 | 8 July 2026 | Claude Engineering Implementer | RBL-0011 accepted by the Programme Sponsor (Draft/0.1 to Accepted/1.0), superseding RBL-0010 as the current repository baseline. Aligned PST-0001 version following the acceptance update. |
