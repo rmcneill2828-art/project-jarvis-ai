@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0015 |
 | Title | Engineering Session Report |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -51,7 +51,7 @@ Establish the Sentinel execution pipeline so that Guardian interactions are audi
 
 | Work Package | Description | Status |
 |---|---|---|
-| WP1 | `AuditRecorder` infrastructure (`MemoryAuditRecorder` + `JsonAuditRecorder`) | Not started |
+| WP1 | `AuditRecorder` infrastructure (`MemoryAuditRecorder` + `JsonAuditRecorder`) | Complete (commit `5733e45`) |
 | WP2 | `PolicyEngine` abstraction and `SimpleApprovalPolicy` | Not started |
 | WP3a | Complete PEM-001 scoring against current provider information; Programme Sponsor approves primary provider, secondary provider, and first adapter to implement | Not started |
 | WP3b | Implement the approved provider adapter | Not started |
@@ -88,4 +88,5 @@ WP0B confirmed: session identifier ESR-0015, Programme Phase 2 (JARVIS Architect
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 8 July 2026 | Claude Engineering Implementer | WP1 complete: sentinel/audit.py (AuditEvent, AuditRecorder, MemoryAuditRecorder, JsonAuditRecorder) wired into SentinelTrustGateway and ProviderOrchestrator. Constructor pattern corrected during Engineering Reviewer EIP review (audit_recorder: AuditRecorder \| None = None) to avoid a shared mutable default recorder. 114/114 tests passing. Commit 5733e45. |
 | 0.1 | 8 July 2026 | Claude Engineering Implementer | ESR-0015 opened following WP0A/WP0B completion and Programme Sponsor approval. |
