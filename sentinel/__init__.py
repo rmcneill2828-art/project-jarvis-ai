@@ -15,7 +15,14 @@ from sentinel.core import (
 )
 from sentinel.local_provider import LocalEchoProvider, create_local_provider_registry
 from sentinel.openai_provider import OpenAIProvider
-from sentinel.policy import PolicyDecision, PolicyEngine, SimpleApprovalPolicy
+from sentinel.policy import (
+    PolicyDecision,
+    PolicyEngine,
+    SimpleApprovalPolicy,
+    TrustCategory,
+    TrustTier,
+    TrustTierPolicy,
+)
 from sentinel.provider_config import (
     CredentialReference,
     ProviderConfiguration,
@@ -53,6 +60,9 @@ __all__ = [
     "SentinelResponse",
     "SentinelTrustGateway",
     "SimpleApprovalPolicy",
+    "TrustCategory",
+    "TrustTier",
+    "TrustTierPolicy",
     "create_local_provider_registry",
     "execute_with_sentinel_decision",
 ]
