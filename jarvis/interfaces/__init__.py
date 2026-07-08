@@ -14,6 +14,7 @@ from jarvis.interfaces.conversation import (
     ConversationService,
     DeterministicConversationProvider,
 )
+from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 
 __all__ = [
     "DEFAULT_RESPONSE",
@@ -28,4 +29,5 @@ __all__ = [
     "ConversationResponse",
     "ConversationService",
     "DeterministicConversationProvider",
+    "SentinelGatedConversationProvider",
 ]
