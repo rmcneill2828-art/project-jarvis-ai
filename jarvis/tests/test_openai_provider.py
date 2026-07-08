@@ -1,6 +1,7 @@
 """Tests for the OpenAI direct provider adapter."""
 
 import json
+import urllib.error
 
 import pytest
 
@@ -79,6 +80,24 @@ def test_execute_wraps_transport_error_without_leaking_message(monkeypatch):
 
     assert "sk-super-secret-key" not in str(excinfo.value)
     assert "RuntimeError" in str(excinfo.value)
+
+
+def test_execute_surfaces_http_status_code_without_leaking_body(monkeypatch):
+    monkeypatch.setenv("TEST_OPENAI_API_KEY", "sk-test-key")
+
+    def rate_limited_transport(url: str, body: bytes, headers: dict[str, str], timeout: float):
+        raise urllib.error.HTTPError(
+            url, 429, "insufficient_quota: sk-test-key exhausted", hdrs=None, fp=None
+        )
+
+    provider = OpenAIProvider(_configuration(), transport=rate_limited_transport)
+
+    with pytest.raises(RuntimeError) as excinfo:
+        provider.execute(ProviderRequest(prompt="hello"))
+
+    assert "status 429" in str(excinfo.value)
+    assert "sk-test-key" not in str(excinfo.value)
+    assert "insufficient_quota" not in str(excinfo.value)
 
 
 def test_execute_raises_on_malformed_response(monkeypatch):

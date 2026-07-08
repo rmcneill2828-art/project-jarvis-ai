@@ -2,6 +2,7 @@
 
 import json
 import os
+import urllib.error
 import urllib.request
 from typing import Callable
 
@@ -74,6 +75,17 @@ class OpenAIProvider:
                 headers,
                 self._configuration.timeout_seconds,
             )
+        except urllib.error.HTTPError as exc:
+            # HTTP status codes are plain protocol-level integers, not sensitive -
+            # safe to surface, and far more diagnostically useful than the
+            # exception type alone (429 means exhausted quota, 401 means a bad
+            # credential, 404 means a bad model name). Confirmed necessary in
+            # practice: an early WP5 live run failed with a bare "HTTPError" and
+            # required manually querying the OpenAI models endpoint to determine
+            # the cause (exhausted API credit, HTTP 429) was a billing issue and
+            # not a bad model identifier.
+            msg = f"OpenAI request failed: HTTPError (status {exc.code})."
+            raise RuntimeError(msg) from exc
         except Exception as exc:
             # Deliberately expose only the exception type, never str(exc) - a raw
             # transport error message is not guaranteed safe to surface, and this
