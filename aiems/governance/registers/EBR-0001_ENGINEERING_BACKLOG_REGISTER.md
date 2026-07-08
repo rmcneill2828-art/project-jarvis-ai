@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.10
+**Version:** 1.11
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.10 |
+| Version | 1.11 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -96,7 +96,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0027 | JRM-0001 JARVIS Product Roadmap | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Create a controlled product roadmap for JARVIS capability sequencing without expanding implementation scope. |
 | EBG-0028 | UXP Evolution Roadmap | ESR-0005 closure recommendation; ESR-0008 terminology alignment | Candidate Backlog | Medium | Programme Sponsor | Define staged User Experience Platform maturity from First Light through operational workspace and future product surfaces. GUI is preserved as the historical alias for earlier presentation-layer work. |
 | EBG-0029 | Product Growth Philosophy | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Record the principle that JARVIS grows by acquiring capabilities rather than accumulating features. |
-| EBG-0030 | Sentinel Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Sentinel responsibilities, boundaries and relationship to Guardian before Sentinel implementation. |
+| EBG-0030 | Sentinel Architecture Specification | ESR-0005 closure recommendation | Completed | High | Programme Sponsor | Define Sentinel responsibilities, boundaries and relationship to Guardian before Sentinel implementation. Satisfied by [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] and the Guardian/Sentinel boundary defined in ESR-0014 section 13. |
 | EBG-0031 | Guardian Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Guardian safety, permission, approval and protection boundaries before Guardian implementation. |
 | EBG-0032 | Historical Engineering Register | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Consider a controlled register for historically significant engineering baselines, tags and milestones. |
 | EBG-0033 | AIEMS Improvement Register / AIEMS Improvement Review | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Define a controlled mechanism for recording AIEMS process improvements without disrupting active engineering flow. |
@@ -230,6 +230,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.11 | 8 July 2026 | Claude Engineering Implementer | Marked EBG-0030 Sentinel Architecture Specification Completed, satisfied by ADR-0018 and the Guardian/Sentinel boundary defined in ESR-0014. EBG-0047 left as Candidate Backlog - trust tiers and platform-entry validation are not confidently satisfied by the current Sentinel Core implementation. |
 | 1.10 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing backlog governance. |
 | 1.9 | 2 July 2026 | Codex Engineering Implementer | Completed EBG-0039 by moving prototype JARVIS chat exports into logs/chats/ runtime evidence archive. |
 | 1.8 | 2 July 2026 | Codex Engineering Implementer | Added ESR-0008 closure candidate backlog items for UXP, Guardian identity, Agent Framework, Engineering Ecosystem Synchronisation, Obsidian/OSE, strategic value, device independence, Sentinel and Guardian governance. |

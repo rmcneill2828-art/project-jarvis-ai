@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.33
+**Version:** 3.34
 
 ---
 
@@ -113,11 +113,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.33 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0002 | Register | Architectural Decision Register | 2.6 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.34 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.10 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.11 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -149,7 +149,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | PBK-0001 | Playbook | AI Engineering Playbook | 1.15 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.9 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
-| GDE-0001 | Guide | Project Knowledge Map | 1.0 | Draft | Programme Sponsor | ESR-0014 | `aiems/guides/` |
+| GDE-0001 | Guide | Project Knowledge Map | 1.1 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
 | PST-0001 | Programme Status | Programme Status | 2.18 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
@@ -262,6 +262,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.34 | 8 July 2026 | Claude Engineering Implementer | Aligned REG-0002, EBR-0001 and GDE-0001 versions following ADR-0018 registration in REG-0002, EBG-0030 reclassification in EBR-0001 and GDE-0001 Draft/1.0 versioning correction. |
 | 3.33 | 8 July 2026 | Claude Engineering Implementer | Registered PEM-001 AI Provider Evaluation Matrix, brought into STD-0001 structural compliance; aligned PST-0001 version following residual product-naming and Session Start Guidance completeness fixes. |
 | 3.32 | 8 July 2026 | Claude Engineering Implementer | Aligned COC-0001, PBK-0001 and TPL-0001 versions following role-definition generalisation (ChatGPT/Codex to Engineering Reviewer/Engineering Implementer). |
 | 3.31 | 8 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version following ESR-0014/ESR-0014A closure content update and validate_repository.py staleness-check correction. |

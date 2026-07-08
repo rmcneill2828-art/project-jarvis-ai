@@ -2,7 +2,7 @@
 
 > *"Bounded onboarding scales. Exhaustive onboarding does not."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,8 +12,8 @@
 |------|------|
 | Artefact ID | GDE-0001 |
 | Title | Project Knowledge Map |
-| Version | 1.0 |
-| Status | Draft |
+| Version | 1.1 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
@@ -122,4 +122,5 @@ Where this Guide conflicts with [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] or
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 8 July 2026 | Claude Engineering Implementer | Corrected Status from Draft to Approved to comply with STD-0001 section 13 versioning (Version 1.0 requires Approved status, not Draft). This artefact is already operationally binding - referenced and followed by PBK-0001, COC-0001 and PST-0001. |
 | 1.0 | 8 July 2026 | Claude Engineering Implementer | Initial Project Knowledge Map created as ESR-0014 post-closure work, bounding mandatory session initialisation reading and moving AIEMS History and Full Chat artefacts to search-on-demand access. |
