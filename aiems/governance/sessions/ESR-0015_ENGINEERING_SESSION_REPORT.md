@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0015 |
 | Title | Engineering Session Report |
-| Version | 0.5 |
+| Version | 0.6 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -56,7 +56,7 @@ Establish the Sentinel execution pipeline so that Guardian interactions are audi
 | WP3a | Complete PEM-001 scoring against current provider information; Programme Sponsor approves primary provider, secondary provider, and first adapter to implement | Complete. Primary: OpenAI. Secondary: Google Gemini. Reasoning/coding comparison: Anthropic (retained). Gateway: OpenRouter (experimentation only). Local fallback: Ollama. First adapter: OpenAI direct. Scored independently by Claude and ChatGPT against PEM-001's 8 weighted criteria; both evaluators ranked OpenAI first despite each having a structural bias toward their own maker's provider. |
 | WP3b | Implement the approved provider adapter | Complete (commit `a9d89fa`) |
 | WP4 | Guardian to Sentinel integration | Complete (commit `e70c420`) |
-| WP5 | End-to-end validation and first audited/policy-gated conversation | Not started |
+| WP5 | End-to-end validation and first audited/policy-gated conversation | Complete (commits `057f40b`, `fcdec8a`) - see Section 8 Evidence Table |
 | WP6 | Session closure and engineering handover | Not started |
 
 This plan was reviewed and refined by the Engineering Reviewer (ChatGPT) during WP0B, which split the originally-proposed WP3 into WP3a/WP3b after identifying that provider selection is an unmet decision gate under [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]]'s own "Decision Required" section, not an implementation detail that should be decided unilaterally by the Implementer.
@@ -71,7 +71,28 @@ WP0B confirmed: session identifier ESR-0015, Programme Phase 2 (JARVIS Architect
 
 ---
 
-# 8. Related Artefacts
+# 8. WP5 Evidence Table
+
+First live, Sentinel-mediated Guardian conversation. Recorded per Engineering Reviewer (ChatGPT) recommendation, run via `scripts/wp5_first_conversation_demo.py` (not part of the automated test suite - requires a real API key and makes a real, billed call).
+
+| Stage | Result |
+|---|---|
+| Policy | ALLOW |
+| Audit | 4 events across 2 runs (decision+failed, then decision+succeeded) |
+| Provider | OpenAI |
+| Model | gpt-5.5 |
+| Conversation | Successful on second attempt; first attempt failed on exhausted API credit (HTTP 429) |
+| Response content | Received, but hallucinated - the model has no real knowledge of this private, unpublished project and produced a plausible but factually incorrect description |
+| Tests | 133/133 pass, unaffected (demo intentionally outside the automated suite) |
+| Repository validation | Pass |
+
+The first run's `HTTPError` gave no way to distinguish a billing issue from an auth issue or a bad model identifier without manually querying the OpenAI models endpoint. Commit `fcdec8a` (same session) fixed this: `sentinel/openai_provider.py` now surfaces the HTTP status code specifically (safe, non-sensitive protocol-level information) rather than only the exception type name.
+
+Audit log (`~/.jarvis/logs/wp5_demo.jsonl`, outside the repository per `logs/` not being gitignored) is not committed; its content is captured here as the durable record instead, consistent with the repository being the authoritative source of truth.
+
+---
+
+# 9. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
@@ -84,10 +105,11 @@ WP0B confirmed: session identifier ESR-0015, Programme Phase 2 (JARVIS Architect
 
 ---
 
-# 9. Version History
+# 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.6 | 8 July 2026 | Claude Engineering Implementer | WP5 complete: first live Sentinel-mediated Guardian conversation via scripts/wp5_first_conversation_demo.py, run by Programme Sponsor (not Claude - real billed external call). First attempt failed on exhausted API credit (HTTP 429); second succeeded. Evidence table recorded in new Section 8. Fixed sentinel/openai_provider.py to surface HTTP status codes (commit fcdec8a), motivated directly by this run's undiagnosable bare "HTTPError". 133/133 tests passing. Commits 057f40b, fcdec8a. |
 | 0.5 | 8 July 2026 | Claude Engineering Implementer | WP4 complete: jarvis/interfaces/sentinel_conversation.py SentinelGatedConversationProvider routes conversation through SentinelTrustGateway and ProviderOrchestrator. Two Engineering Reviewer-required refinements applied (capability-only metadata, decision.reason never surfaced to user). First Light GUI wiring unchanged - deterministic-by-default preserved per PCB-0001. 132/132 tests passing. Commit e70c420. |
 | 0.4 | 8 July 2026 | Claude Engineering Implementer | WP3a complete: PEM-001 provider scoring approved (Primary: OpenAI, Secondary: Gemini, first adapter: OpenAI direct). WP3b complete: sentinel/openai_provider.py OpenAIProvider adapter, three Engineering Reviewer-required adjustments applied (configured timeout, required default_model, controlled error wrapping). PEM-001 updated to Approved status recording the decision outcome. 127/127 tests passing. Commit a9d89fa. |
 | 0.3 | 8 July 2026 | Claude Engineering Implementer | WP2 complete: sentinel/policy.py (PolicyDecision, PolicyEngine, SimpleApprovalPolicy) wired into SentinelTrustGateway, reproducing prior inline approval logic with zero behaviour change. Resolved an EIP-unanticipated circular import between core.py and policy.py via deferred import, verified empirically. 120/120 tests passing. Commit cdf283e. |
