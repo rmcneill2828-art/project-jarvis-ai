@@ -140,17 +140,19 @@ The purpose of independent review is to reduce the Programme Sponsor's engineeri
 
 | Criterion | ESR-0015 | ESR-0016 | ESR-0017 | ESR-0018 |
 |---|---|---|---|---|
-| Findings raised / accepted / rejected / false positive | | | | |
-| Average defect discovery weight | | | | |
-| Repeat issue prevention | | | | |
-| Documentation-only handoff successful | | | ✓/✗ (verified) | |
-| Lead scope discipline | | | | |
-| Reviewer role discipline | | | | |
-| Evidence responsiveness | | | | |
-| Signal-to-noise (Observations excluded) | | | | |
-| Better converged solution achieved | | | | |
-| Repository impact (multi-tag A/C/G/P/D) | | | | |
-| Sponsor arbitration required | | | | |
+| Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | | | |
+| Average defect discovery weight | 3.0 * | | | |
+| Repeat issue prevention | Yes * | | | |
+| Documentation-only handoff successful | N/A (not the designated Cold Start session) * | | ✓/✗ (verified) | |
+| Lead scope discipline | Met * | | | |
+| Reviewer role discipline | Met * | | | |
+| Evidence responsiveness | Met * | | | |
+| Signal-to-noise (Observations excluded) | High * | | | |
+| Better converged solution achieved | Yes * | | | |
+| Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | | | |
+| Sponsor arbitration required | Low * | | | |
+
+\* ESR-0015 figures are the Engineering Implementer's (Claude's) **draft self-assessment only**, carried over from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. They are not yet independently confirmed by the Engineering Reviewer (ChatGPT) or accepted by the Programme Sponsor, and must not be treated as the authoritative ESR-0015 score until that confirmation happens.
 
 ---
 
@@ -179,6 +181,26 @@ Any of these three outcomes is a legitimate, evidence-based conclusion. None is 
 *(Populated as each session completes.)*
 
 ### ESR-0015
+
+Session complete; [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] is closed. Claude was Engineering Lead, ChatGPT was Independent Reviewer, per the frozen rotation (Section 3.1).
+
+**Draft self-assessment only** (Engineering Implementer / Lead), recorded here as an input to the trial record, not the final score:
+
+- 10 findings raised by the Reviewer across the session; all 10 accepted, 0 rejected, 0 false positives.
+- 12 total defects across the session: 1 Lead self-caught (WP2 circular import), 10 Reviewer-caught (WP1, WP3b x3, WP4 x2, WP5 script x4), 1 Sponsor-caught (WP5 live-run HTTPError ambiguity) - average discovery weight 3.0.
+- Repeat issue prevention observed: WP1's mutable-default-argument lesson was correctly applied unprompted in WP2's `PolicyEngine` constructor; WP3b's "never surface raw exception detail" lesson was proactively extended to `decision.reason` in WP4 before the Reviewer had to raise it again.
+- Documentation-only handoff: not applicable - ESR-0015 is not the designated Cold Start Validation Session (that is ESR-0017, Section 3.4).
+- Lead scope discipline: met - both deviations from the original plan (WP2's unanticipated circular import, WP5 execution being performed by the Programme Sponsor rather than Claude) were reported explicitly rather than absorbed silently.
+- Reviewer role discipline: met - the Reviewer required adjustments and refinements but did not draft or implement alternative code itself.
+- Evidence responsiveness: met - both Lead and Reviewer revised positions during the session on the evidence presented (e.g. the Anthropic provider-scoring discussion, WP4/WP3 sequencing correction, model-identifier uncertainty in WP5).
+- Signal-to-noise: high - all 10 Reviewer findings were substantive and accepted; none were Observation-level noise.
+- Better converged solution achieved: yes - WP3a's independent dual-scoring exercise, where Lead and Reviewer scored providers separately and converged on OpenAI despite differing structural biases, is the clearest example.
+- Repository impact: Architecture, Code, Governance, Documentation (multi-tag).
+- Sponsor arbitration required: low - a small number of direct scope decisions (the WP3a/WP3b split, WP5 execution-by-Sponsor), no extended mediation on any single point.
+
+This draft is carried over verbatim in substance from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. Independent Engineering Reviewer (ChatGPT) confirmation and Programme Sponsor acceptance of this session's score are still outstanding and must be recorded separately before this entry is treated as final.
+
+### ESR-0016
 
 *Not yet run.*
 
