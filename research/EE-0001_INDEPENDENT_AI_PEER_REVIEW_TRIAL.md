@@ -140,6 +140,7 @@ The purpose of independent review is to reduce the Programme Sponsor's engineeri
 
 | Criterion | ESR-0015 | ESR-0016 | ESR-0017 | ESR-0018 |
 |---|---|---|---|---|
+| **Scorecard status** | **Reviewer Confirmed, pending Sponsor acceptance** | Not yet run | Not yet run | Not yet run |
 | Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | | | |
 | Average defect discovery weight | 3.0 * | | | |
 | Repeat issue prevention | Yes * | | | |
@@ -152,7 +153,7 @@ The purpose of independent review is to reduce the Programme Sponsor's engineeri
 | Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | | | |
 | Sponsor arbitration required | Low * | | | |
 
-\* ESR-0015 figures are the Engineering Implementer's (Claude's) **draft self-assessment only**, carried over from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. They are not yet independently confirmed by the Engineering Reviewer (ChatGPT) or accepted by the Programme Sponsor, and must not be treated as the authoritative ESR-0015 score until that confirmation happens.
+\* ESR-0015 figures originated as the Engineering Implementer's (Claude's) draft self-assessment, carried over from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. The Engineering Reviewer (ChatGPT) has independently confirmed these figures as accurate. **Status: Reviewer Confirmed, pending Programme Sponsor acceptance** - not yet the final trial record until the Programme Sponsor accepts it.
 
 ---
 
@@ -184,7 +185,7 @@ Any of these three outcomes is a legitimate, evidence-based conclusion. None is 
 
 Session complete; [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] is closed. Claude was Engineering Lead, ChatGPT was Independent Reviewer, per the frozen rotation (Section 3.1).
 
-**Draft self-assessment only** (Engineering Implementer / Lead), recorded here as an input to the trial record, not the final score:
+**Status: Reviewer Confirmed, pending Programme Sponsor acceptance.** The figures below originated as the Engineering Lead's (Claude's) self-assessment. The Independent Reviewer (ChatGPT) has independently confirmed them as accurate:
 
 - 10 findings raised by the Reviewer across the session; all 10 accepted, 0 rejected, 0 false positives.
 - 12 total defects across the session: 1 Lead self-caught (WP2 circular import), 10 Reviewer-caught (WP1, WP3b x3, WP4 x2, WP5 script x4), 1 Sponsor-caught (WP5 live-run HTTPError ambiguity) - average discovery weight 3.0.
@@ -198,11 +199,7 @@ Session complete; [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] is closed. Cl
 - Repository impact: Architecture, Code, Governance, Documentation (multi-tag).
 - Sponsor arbitration required: low - a small number of direct scope decisions (the WP3a/WP3b split, WP5 execution-by-Sponsor), no extended mediation on any single point.
 
-This draft is carried over verbatim in substance from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. Independent Engineering Reviewer (ChatGPT) confirmation and Programme Sponsor acceptance of this session's score are still outstanding and must be recorded separately before this entry is treated as final.
-
-### ESR-0016
-
-*Not yet run.*
+These figures are carried over verbatim in substance from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. The Independent Reviewer's (ChatGPT's) confirmation was relayed by the Programme Sponsor on 8 July 2026. Programme Sponsor acceptance of this session's score is still outstanding and must be recorded separately before this entry is the final trial record for ESR-0015.
 
 ### ESR-0016
 
