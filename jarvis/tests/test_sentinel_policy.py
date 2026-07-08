@@ -3,7 +3,13 @@
 import pytest
 
 from sentinel.core import SentinelDecisionOutcome, SentinelRequest, SentinelTrustGateway
-from sentinel.policy import PolicyDecision, SimpleApprovalPolicy
+from sentinel.policy import (
+    PolicyDecision,
+    SimpleApprovalPolicy,
+    TrustCategory,
+    TrustTier,
+    TrustTierPolicy,
+)
 
 
 def test_policy_decision_requires_non_empty_reason():
@@ -78,3 +84,123 @@ def test_sentinel_trust_gateway_uses_injected_policy_engine():
 
     assert response.decision.outcome is SentinelDecisionOutcome.DENY
     assert response.message == "Sentinel denied the request."
+
+
+def test_trust_tier_policy_allows_routine_request():
+    policy = TrustTierPolicy()
+    request = SentinelRequest(source="guardian", intent="answer a routine question")
+
+    decision = policy.evaluate(request)
+
+    assert decision.outcome is SentinelDecisionOutcome.ALLOW
+    assert decision.trust_tier is TrustTier.ROUTINE
+    assert decision.category is TrustCategory.ROUTINE_INTERACTION
+    assert decision.requires_human_approval is False
+    assert "routine interaction" in decision.reason
+
+
+def test_trust_tier_policy_routes_approval_request_to_review():
+    policy = TrustTierPolicy()
+    request = SentinelRequest(
+        source="guardian",
+        intent="perform an action requiring approval",
+        requires_approval=True,
+    )
+
+    decision = policy.evaluate(request)
+
+    assert decision.outcome is SentinelDecisionOutcome.REVIEW
+    assert decision.trust_tier is TrustTier.SENSITIVE
+    assert decision.category is TrustCategory.HUMAN_APPROVAL_REQUIRED
+    assert decision.requires_human_approval is True
+    assert "human review" in decision.reason
+
+
+@pytest.mark.parametrize(
+    ("request", "expected_category"),
+    [
+        (
+            SentinelRequest(
+                source="guardian",
+                intent="unsupported risk",
+                metadata={"risk_category": "unsupported_high_risk"},
+            ),
+            TrustCategory.UNSUPPORTED_HIGH_RISK,
+        ),
+        (
+            SentinelRequest(
+                source="guardian",
+                intent="emergency control",
+                payload_type="emergency_control",
+            ),
+            TrustCategory.EMERGENCY_CONTROL,
+        ),
+        (
+            SentinelRequest(
+                source="guardian",
+                intent="local agent action",
+                payload_type="local_agent",
+            ),
+            TrustCategory.LOCAL_AGENT_ACTION,
+        ),
+    ],
+)
+def test_trust_tier_policy_denies_restricted_categories(
+    request: SentinelRequest, expected_category: TrustCategory
+):
+    policy = TrustTierPolicy()
+
+    decision = policy.evaluate(request)
+
+    assert decision.outcome is SentinelDecisionOutcome.DENY
+    assert decision.trust_tier is TrustTier.RESTRICTED
+    assert decision.category is expected_category
+    assert decision.requires_human_approval is False
+    assert expected_category.value in decision.reason
+
+
+@pytest.mark.parametrize(
+    ("request", "expected_category"),
+    [
+        (
+            SentinelRequest(
+                source="guardian",
+                intent="unsupported risk with approval flag",
+                requires_approval=True,
+                metadata={"risk_category": "unsupported_high_risk"},
+            ),
+            TrustCategory.UNSUPPORTED_HIGH_RISK,
+        ),
+        (
+            SentinelRequest(
+                source="guardian",
+                intent="emergency control with approval flag",
+                payload_type="emergency_control",
+                requires_approval=True,
+            ),
+            TrustCategory.EMERGENCY_CONTROL,
+        ),
+        (
+            SentinelRequest(
+                source="guardian",
+                intent="local agent action with approval flag",
+                payload_type="local_agent",
+                requires_approval=True,
+            ),
+            TrustCategory.LOCAL_AGENT_ACTION,
+        ),
+    ],
+)
+def test_trust_tier_policy_denies_restricted_categories_before_review_routing(
+    request: SentinelRequest, expected_category: TrustCategory
+):
+    """Regression: requires_approval must not soften deny-category requests."""
+
+    policy = TrustTierPolicy()
+
+    decision = policy.evaluate(request)
+
+    assert decision.outcome is SentinelDecisionOutcome.DENY
+    assert decision.trust_tier is TrustTier.RESTRICTED
+    assert decision.category is expected_category
+    assert decision.requires_human_approval is False
