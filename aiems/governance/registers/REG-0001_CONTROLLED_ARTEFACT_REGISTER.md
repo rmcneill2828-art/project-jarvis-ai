@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.47
+**Version:** 3.48
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.47 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.48 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -199,6 +199,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FCH-0011 | Full Chat Historical Evidence | ESR-0011 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0011 | `aiems/History/Full Chat/` |
 | FCH-0012 | Full Chat Historical Evidence | ESR-0012 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0012 | `aiems/History/Full Chat/` |
 | FCH-0013 | Full Chat Historical Evidence | ESR-0013 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0013 | `aiems/History/Full Chat/` |
+| FCH-0015 | Full Chat Historical Evidence | ESR-0015 Full Chat History (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/History/Full Chat/` |
 
 ---
 
@@ -265,6 +266,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.48 | 8 July 2026 | Claude Engineering Implementer | Registered FCH-0015 (ESR-0015 Full Chat History, Claude side), generated directly from the live session transcript at Programme Sponsor request. Aligned self version row accordingly. |
 | 3.47 | 8 July 2026 | Claude Engineering Implementer | GDE-0001 updated to 1.2 (added Section 7, Role Terminology mapping). Aligned GDE-0001 and self version rows accordingly. |
 | 3.46 | 8 July 2026 | Claude Engineering Implementer | RBL-0011 accepted by the Programme Sponsor (Draft/0.1 to Accepted/1.0), superseding RBL-0010 as the current repository baseline. Aligned PST-0001 version following the acceptance update. |
 | 3.45 | 8 July 2026 | Claude Engineering Implementer | ESR-0015 closed (status Open to Closed, version 1.0). Registered RBL-0011 (Draft, recommended pending Programme Sponsor acceptance). Aligned PST-0001 version following ESR-0015 closure update. |
