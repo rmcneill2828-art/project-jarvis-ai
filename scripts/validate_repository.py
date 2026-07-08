@@ -148,8 +148,37 @@ def extract_current_esr_reference(text: str) -> str | None:
     return match.group(1) if match else None
 
 
+def latest_accepted_baseline(directory: Path) -> str | None:
+    """Return the highest-numbered RBL file with Status: Accepted, or None.
+
+    Unlike latest_numbered(), this only counts baselines that have actually
+    been accepted. A Draft/recommended baseline file existing (e.g. one
+    proposed at session closure but not yet accepted by the Programme
+    Sponsor) does not make it the "current" baseline for this check -
+    otherwise drafting a baseline recommendation would itself break the
+    staleness check it's supposed to satisfy.
+    """
+    pattern = re.compile(r"^RBL-(\d{4})")
+    status_pattern = re.compile(r"(?m)^\|\s*Status\s*\|\s*([^|\r\n]+?)\s*\|$")
+    latest: tuple[int, str] | None = None
+    for path in directory.glob("RBL-*.md"):
+        match = pattern.match(path.name)
+        if not match:
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        status_match = status_pattern.search(text)
+        if not status_match or status_match.group(1).strip() != "Accepted":
+            continue
+        number = int(match.group(1))
+        artefact_id = f"RBL-{number:04d}"
+        if latest is None or number > latest[0]:
+            latest = (number, artefact_id)
+    return latest[1] if latest else None
+
+
 def check_stale_status_references(result: ValidationResult) -> None:
     latest_rbl = latest_numbered("RBL", REPO_ROOT / "aiems/governance/baselines")
+    latest_accepted_rbl = latest_accepted_baseline(REPO_ROOT / "aiems/governance/baselines")
     latest_esr = latest_numbered("ESR", REPO_ROOT / "aiems/governance/sessions")
     status_path = REPO_ROOT / "aiems/governance/status/PST-0001_PROGRAMME_STATUS.md"
     if not status_path.exists():
@@ -168,9 +197,10 @@ def check_stale_status_references(result: ValidationResult) -> None:
         )
 
     current_baseline = re.search(r"\| Current Repository Baseline \| \[\[(RBL-\d{4})_", text)
-    if latest_rbl and current_baseline and current_baseline.group(1) != latest_rbl:
+    if latest_accepted_rbl and current_baseline and current_baseline.group(1) != latest_accepted_rbl:
         result.error(
-            f"PST-0001 current repository baseline is {current_baseline.group(1)}, latest is {latest_rbl}."
+            f"PST-0001 current repository baseline is {current_baseline.group(1)}, "
+            f"latest accepted is {latest_accepted_rbl}."
         )
 
     for path in [REPO_ROOT / "README.md", status_path]:
