@@ -8,10 +8,10 @@
 |------|------|
 | Artefact ID | PEM-001 |
 | Title | AI Provider Evaluation Matrix |
-| Version | 0.1 |
-| Status | Draft |
+| Version | 1.0 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
-| Approved By | Pending Programme Sponsor Review |
+| Approved By | Programme Sponsor |
 | Classification | Internal |
 | Parent | [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] |
 | Review Frequency | Triggered by provider scoring decision |
@@ -173,21 +173,24 @@ The next implementation should not hard-code OpenAI as the only provider. Instea
 - How should provider scoring be represented in Sentinel configuration?
 - Should provider health be manual initially or derived from runtime telemetry?
 
-## Decision Required
+## Decision Outcome (ESR-0015 WP3a)
 
-Before implementing the first external provider adapter, approve the evaluation outcome for:
+Decided and approved by the Programme Sponsor on 8 July 2026, under [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] WP3a.
 
-1. Primary provider.
-2. Secondary provider.
-3. Gateway candidate.
-4. Local fallback path.
-5. First adapter to implement.
+Scored independently by both Engineering Lead (Claude) and Engineering Reviewer (ChatGPT) against the eight weighted criteria above, using current provider evidence (2026 pricing and capability data) rather than the qualitative assessment alone. Both evaluators ranked OpenAI first despite each having a plausible structural bias toward their own maker's provider (Claude toward Anthropic, ChatGPT toward OpenAI) - treated as a meaningful cross-validation signal rather than proof of neutrality.
 
-## Current Recommendation
+| Role | Decision |
+|---|---|
+| Primary provider | OpenAI |
+| Secondary provider | Google Gemini |
+| Reasoning/coding comparison | Anthropic (retained, not discarded) |
+| Gateway candidate | OpenRouter (experimentation only, not production-critical - current evidence shows no SLA and multiple documented outages) |
+| Local fallback path | Ollama |
+| First adapter to implement | OpenAI direct adapter (implemented [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] WP3b) |
 
-Proceed with evidence gathering and scoring against the PEM-001 matrix before coding a vendor-specific external provider adapter.
+Anthropic was not selected as first adapter for two independent, reinforcing reasons: it scored third in both evaluations, and Claude - the Engineering Implementer for this session - implementing and first-testing its own maker's adapter would have been a second layer of self-dealing beyond the scoring itself. Since Anthropic did not score first anyway, this reasoning did not need to override a merit-based ranking.
 
-PEM-001 keeps provider choice aligned with the Sentinel orchestration architecture and avoids binding Guardian to a single AI vendor.
+This decision is revisitable per Resilience Principle 6. `ProviderConfiguration`/`ProviderRegistry` were deliberately left extensible for Gemini and Anthropic adapters without requiring changes to `SentinelTrustGateway` or `ProviderOrchestrator`.
 
 ---
 
@@ -195,4 +198,5 @@ PEM-001 keeps provider choice aligned with the Sentinel orchestration architectu
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 8 July 2026 | Claude Engineering Implementer | Recorded the ESR-0015 WP3a Decision Outcome (Primary: OpenAI, Secondary: Gemini, first adapter: OpenAI), replacing the open Decision Required section. Status Draft to Approved per STD-0001 section 13 (Version 1.0 requires Approved status). |
 | 0.1 | 8 July 2026 | Claude Engineering Implementer | Brought PEM-001 into STD-0001 structural compliance (Document Control, Version History) and registered in REG-0001; no evaluation content changed. |
