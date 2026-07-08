@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.32
+**Version:** 3.33
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.32 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.33 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.6 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -152,7 +152,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.0 | Draft | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.17 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.18 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0003 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -261,6 +262,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.33 | 8 July 2026 | Claude Engineering Implementer | Registered PEM-001 AI Provider Evaluation Matrix, brought into STD-0001 structural compliance; aligned PST-0001 version following residual product-naming and Session Start Guidance completeness fixes. |
 | 3.32 | 8 July 2026 | Claude Engineering Implementer | Aligned COC-0001, PBK-0001 and TPL-0001 versions following role-definition generalisation (ChatGPT/Codex to Engineering Reviewer/Engineering Implementer). |
 | 3.31 | 8 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version following ESR-0014/ESR-0014A closure content update and validate_repository.py staleness-check correction. |
 | 3.30 | 8 July 2026 | Claude Engineering Implementer | Registered ESR-0014, ESR-0014A post-closure addendum and GDE-0001 Project Knowledge Map; aligned PBK-0001 and COC-0001 versions following knowledge tiering introduction. |

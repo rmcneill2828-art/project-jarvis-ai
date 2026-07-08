@@ -1,4 +1,22 @@
-# PEM-001 — AI Provider Evaluation Matrix
+# PEM-001 - AI Provider Evaluation Matrix
+
+---
+
+# Document Control
+
+| Field | Value |
+|------|------|
+| Artefact ID | PEM-001 |
+| Title | AI Provider Evaluation Matrix |
+| Version | 0.1 |
+| Status | Draft |
+| Owner | Programme Sponsor & Chief Engineering Advisor |
+| Approved By | Pending Programme Sponsor Review |
+| Classification | Internal |
+| Parent | [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] |
+| Review Frequency | Triggered by provider scoring decision |
+
+---
 
 ## Status
 
@@ -170,3 +188,11 @@ Before implementing the first external provider adapter, approve the evaluation 
 Proceed with evidence gathering and scoring against the PEM-001 matrix before coding a vendor-specific external provider adapter.
 
 PEM-001 keeps provider choice aligned with the Sentinel orchestration architecture and avoids binding Guardian to a single AI vendor.
+
+---
+
+## Version History
+
+| Version | Date | Author | Summary |
+|---------|------|--------|---------|
+| 0.1 | 8 July 2026 | Claude Engineering Implementer | Brought PEM-001 into STD-0001 structural compliance (Document Control, Version History) and registered in REG-0001; no evaluation content changed. |

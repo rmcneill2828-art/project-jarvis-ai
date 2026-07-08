@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.17
+**Version:** 2.18
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.17 |
+| Version | 2.18 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -247,7 +247,7 @@ The following observations remain open for future engineering consideration:
 - ESR-0015 is not created by this status update.
 - GIA-BOOT is accepted as a Proof of Concept.
 - Further GIA implementation is deferred.
-- AIEMS Engineering Agent is adopted for ChatGPT engineering support.
+- AIEMS Engineering Agent is adopted to support the Engineering Reviewer role.
 - Remaining Engineering Agent validation is deferred.
 - Future EAC implementation is deferred.
 - Guardian Memory remains deferred.
@@ -259,7 +259,7 @@ The following observations remain open for future engineering consideration:
 - GDP-0001 implementation remains deferred.
 - Repository First is reinforced by ESR-0012 operational evidence.
 - Look Inward Before Looking Outward is identified as an engineering principle derived from operational evidence, but is not introduced as a new AIEMS standard by this status update.
-- ChatGPT and Guardian operating environments remain separated.
+- The Engineering Reviewer and Guardian operating environments remain separated.
 - Guardian Orb implementation remains deferred until real observable platform state exists.
 - Resilience Before Disablement / local fallback remains accepted as an engineering direction pending implementation evidence.
 - External AI providers, persistent memory, voice, vision and internet-backed assistance remain outside the accepted operational product baseline.
@@ -403,15 +403,17 @@ ESR-0008 success criteria have been met for local documentation implementation:
 
 At the start of the next separately approved engineering session or approved implementation activity, follow [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] knowledge tiering:
 
-1. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
-2. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current State tier).
-3. Review the Architecture tier as referenced by PST-0001.
-4. Review [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] and [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] (Current ESR tier).
-5. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
-6. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]].
-7. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]].
-8. Search the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required.
-9. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
+1. Review README.md for repository orientation and platform context.
+2. Review [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]].
+3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current State tier).
+4. Review the Architecture tier as referenced by PST-0001.
+5. Review Active Standards (STD-0001 through STD-0004) where the session's work touches artefact creation or modification.
+6. Review [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] and [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] (Current ESR tier).
+7. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
+8. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]].
+9. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]].
+10. Search the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required.
+11. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
 
 This guidance records the ESR-0014 and ESR-0014A closed state. PST-0001 does not create ESR-0015, create a repository baseline or approve implementation outside separately authorised engineering work.
 
@@ -503,6 +505,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.18 | 8 July 2026 | Claude Engineering Implementer | Removed residual ChatGPT product-naming from Outstanding Observations (aligned with Engineering Reviewer/Engineering Implementer terminology); extended Session Start Guidance to explicitly cover README.md and Active Standards, fully mirroring GDE-0001's tier list. |
 | 2.17 | 8 July 2026 | Claude Engineering Implementer | Recorded ESR-0014 closure (Sentinel AI Execution and Security Platform implemented, ADR-0018 approved) and ESR-0014A closure (GDE-0001 knowledge tiering); removed stale "Sentinel implementation remains deferred" observation; retained RBL-0010 baseline position. |
 | 2.16 | 7 July 2026 | Engineering Agent | Updated programme status for ESR-0013 Guardian Platform Foundation closure review, deferred capability status and retained RBL-0010 baseline position. |
 | 2.15 | 6 July 2026 | Codex Engineering Implementer | Recorded ESR-0012 closure, GIA-BOOT Proof of Concept completion, AIEMS Engineering Agent validation, deferred work and retained RBL-0010 as the current accepted repository baseline. |
