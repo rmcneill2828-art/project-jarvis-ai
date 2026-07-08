@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.7
+**Version:** 1.8
 
 ---
 
@@ -259,6 +259,7 @@ Before beginning engineering activities:
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
+* [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] defines the knowledge tier structure that PBK-0001's session initialisation and WP0A guidance apply.
 
 ---
 
@@ -278,6 +279,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.8 | 8 July 2026 | Claude Engineering Implementer | Added GDE-0001 cross-reference following introduction of knowledge tiering in PBK-0001. ESR-0014 post-closure work per ESR-0014A. |
 | 1.7 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned session start context with RBL-0009 and ESR-0009 readiness. |
 | 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 review artefact for repository orientation while preserving controlled artefact authority. |
 | 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |

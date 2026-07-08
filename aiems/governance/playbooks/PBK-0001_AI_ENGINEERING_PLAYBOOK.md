@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.13 |
+| Version | 1.14 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -139,17 +139,16 @@ The Engineering Implementer shall:
 2. Review README.md for repository orientation and platform context.
 3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 4. Review the current Engineering Session Report.
-5. Review AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] during session start.
-6. Review AIEMS Full Chat artefacts [[FCH-0000_INITIAL_PROJECT_SESSION_FULL_CHAT_HISTORY|FCH-0000]] through [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] during session start as historic evidence of full chat sessions.
-7. Review PBK-0001.
-8. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
-9. Review the approved Engineering Implementation Package.
-10. Review repository artefacts referenced by the approved Engineering Implementation Package.
-11. Confirm engineering scope.
-12. Implement approved scope only.
-13. Perform engineering self-review.
-14. Produce an Engineering Completion Report.
-15. Perform repository operations only when explicitly authorised by the Programme Sponsor or approved Engineering Implementation Package.
+5. Follow [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] session initialisation guidance, reviewing the Current State, Architecture, Active Standards and Current ESR tiers, and searching the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required.
+6. Review PBK-0001.
+7. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
+8. Review the approved Engineering Implementation Package.
+9. Review repository artefacts referenced by the approved Engineering Implementation Package.
+10. Confirm engineering scope.
+11. Implement approved scope only.
+12. Perform engineering self-review.
+13. Produce an Engineering Completion Report.
+14. Perform repository operations only when explicitly authorised by the Programme Sponsor or approved Engineering Implementation Package.
 
 Implementation session startup shall be based upon repository evidence and the approved implementation package.
 
@@ -172,8 +171,7 @@ WP0A shall confirm:
 * README.md for repository orientation and platform context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 * The latest accepted Engineering Session Report.
-* AIEMS History artefacts [[HST-0001_ESR-0001_CHAT_HISTORY|HST-0001]] through [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] shall be reviewed during session start.
-* AIEMS Full Chat artefacts [[FCH-0000_INITIAL_PROJECT_SESSION_FULL_CHAT_HISTORY|FCH-0000]] through [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] shall be reviewed during session start as historic evidence of full chat sessions.
+* [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] Current State, Architecture, Active Standards and Current ESR tiers, searching the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required.
 * PBK-0001.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] where relevant.
 * Repository Engineering Health Review outcome.
@@ -515,6 +513,7 @@ This is a documentation architecture principle, not a software design principle.
 * [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] defines controlled artefact governance expectations.
 * [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] defines engineering documentation expectations.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations.
+* [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] defines the knowledge tier structure referenced by session initialisation and WP0A guidance.
 
 ---
 
@@ -528,14 +527,16 @@ This is a documentation architecture principle, not a software design principle.
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0009 readiness. |
-| [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] | Latest historical session record added to WP0 session start review. |
-| [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] | Latest full chat historical evidence record added to WP0 session start review. |
+| [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] | Latest historical session record; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] | Latest full chat historical evidence record; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Defines the knowledge tier structure that bounds WP0 session start review and moves AIEMS History and Full Chat artefacts to search-on-demand access. |
 
 ---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.14 | 8 July 2026 | Claude Engineering Implementer | Replaced exhaustive AIEMS History and Full Chat WP0 review requirement with GDE-0001 knowledge tiering (bounded Current State/Architecture/Standards/Current ESR reading, Historical Archive searched on demand). ESR-0014 post-closure work per ESR-0014A. |
 | 1.13 | 7 July 2026 | Engineering Agent | Added ESR-0013 AIEMS History and Full Chat artefacts to WP0 session start review. |
 | 1.12 | 6 July 2026 | Codex Engineering Implementer | Added ESR-0012 AIEMS History and Full Chat artefacts to WP0 session start review. |
 | 1.11 | 5 July 2026 | Codex Engineering Implementer | Added ESR-0011 AIEMS History and Full Chat artefacts to WP0 session start review. |
