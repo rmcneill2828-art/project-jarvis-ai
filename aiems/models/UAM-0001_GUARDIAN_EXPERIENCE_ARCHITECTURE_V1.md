@@ -2,7 +2,7 @@
 
 > *"Guardian is not where the interface points; Guardian is who the experience gathers around."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,13 +12,19 @@
 |-------|-------|
 | Artefact ID | UAM-0001 |
 | Title | Guardian Experience Architecture v1.0 |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved Baseline |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] |
 | Effective Date | 2 July 2026 |
 | Review Frequency | At Guardian experience review or UXP implementation package selection |
+
+---
+
+# Subsequent Architectural Update
+
+[[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) broadened Sentinel's role beyond the "trust posture" representation described in this artefact's Sentinel Trust Posture Representation section, and beyond [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] as originally written. Sentinel is now the AI Execution and Security Platform, with implemented provider orchestration, execution governance and failover under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot. This note does not change UAM-0001's Approved Baseline status or other content.
 
 ---
 
@@ -255,4 +261,5 @@ UAM-0001 does not:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-posture-only framing described here. Approved Baseline status and original content unchanged. |
 | 1.0 | 2 July 2026 | Codex Engineering Implementer | Initial approved Guardian Experience Architecture v1.0 created under EIP-ESR0009-004. |

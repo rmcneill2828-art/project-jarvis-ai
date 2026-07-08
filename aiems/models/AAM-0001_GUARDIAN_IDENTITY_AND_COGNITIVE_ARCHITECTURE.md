@@ -8,13 +8,19 @@
 |-------|-------|
 | Artefact ID | AAM-0001 |
 | Title | Guardian Identity and Cognitive Architecture |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Created During | ESR-0008 |
 | Review Frequency | Triggered |
+
+---
+
+# Subsequent Architectural Update
+
+[[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) broadened Sentinel's role beyond the "trust gateway protecting platform entry" framing described in this artefact's Sentinel references (Purpose, Domain Interpretation table, Sentinel Relationship section). Sentinel is now the AI Execution and Security Platform, with implemented provider orchestration, execution governance and failover under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot for Sentinel's scope. This note does not change AAM-0001's other architectural content.
 
 ---
 
@@ -165,4 +171,5 @@ Obsidian is the human-facing Engineering Knowledge Workspace for OSE. It sits in
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described here. Original content unchanged. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 closure to record Guardian identity and cognitive architecture. |
