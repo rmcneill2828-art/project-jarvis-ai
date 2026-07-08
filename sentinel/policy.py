@@ -128,12 +128,16 @@ class TrustTierPolicy:
         capability = request.metadata.get("capability", "").strip().lower()
         payload_type = request.payload_type.strip().lower()
 
-        if request.requires_approval:
-            return TrustCategory.HUMAN_APPROVAL_REQUIRED
+        # Precedence is intentionally conservative: explicit unsupported risk
+        # metadata is evaluated first, then payload/capability hard boundaries,
+        # then human-review routing, then routine allow. A caller cannot soften
+        # a deny-category request by also setting requires_approval=True.
         if risk_category == "unsupported_high_risk":
             return TrustCategory.UNSUPPORTED_HIGH_RISK
         if payload_type in self._EMERGENCY_PAYLOAD_TYPES or capability == "emergency_control":
             return TrustCategory.EMERGENCY_CONTROL
         if payload_type in self._LOCAL_AGENT_PAYLOAD_TYPES or capability == "local_agent":
             return TrustCategory.LOCAL_AGENT_ACTION
+        if request.requires_approval:
+            return TrustCategory.HUMAN_APPROVAL_REQUIRED
         return TrustCategory.ROUTINE_INTERACTION
