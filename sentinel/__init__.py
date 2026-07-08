@@ -14,6 +14,7 @@ from sentinel.core import (
     SentinelTrustGateway,
 )
 from sentinel.local_provider import LocalEchoProvider, create_local_provider_registry
+from sentinel.policy import PolicyDecision, PolicyEngine, SimpleApprovalPolicy
 from sentinel.provider_config import (
     CredentialReference,
     ProviderConfiguration,
@@ -36,6 +37,8 @@ __all__ = [
     "JsonAuditRecorder",
     "LocalEchoProvider",
     "MemoryAuditRecorder",
+    "PolicyDecision",
+    "PolicyEngine",
     "ProviderConfiguration",
     "ProviderConfigurationRegistry",
     "ProviderRegistry",
@@ -47,6 +50,7 @@ __all__ = [
     "SentinelRequest",
     "SentinelResponse",
     "SentinelTrustGateway",
+    "SimpleApprovalPolicy",
     "create_local_provider_registry",
     "execute_with_sentinel_decision",
 ]

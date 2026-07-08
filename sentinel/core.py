@@ -84,41 +84,50 @@ class SentinelResponse:
             raise ValueError(msg)
 
 
+# Imported here, after SentinelDecisionOutcome/SentinelRequest/SentinelDecision/
+# SentinelResponse are already defined, to avoid a circular import: sentinel.policy
+# imports SentinelDecisionOutcome from this module, so this module cannot import
+# sentinel.policy until that name already exists in this module's namespace.
+from sentinel.policy import PolicyEngine, SimpleApprovalPolicy  # noqa: E402
+
+_OUTCOME_MESSAGES = {
+    SentinelDecisionOutcome.ALLOW: "Sentinel allowed the request to proceed.",
+    SentinelDecisionOutcome.REVIEW: "Sentinel routed the request for review.",
+    SentinelDecisionOutcome.DENY: "Sentinel denied the request.",
+}
+
+
 class SentinelTrustGateway:
     """Minimum Sentinel trust gateway.
 
-    The gateway establishes the execution boundary without implementing a policy
-    engine, provider routing or Guardian cognition.
+    The gateway establishes the execution boundary. Trust decisions are
+    delegated to a PolicyEngine; the gateway itself does not implement
+    provider routing or Guardian cognition.
     """
 
-    def __init__(self, audit_recorder: AuditRecorder | None = None) -> None:
+    def __init__(
+        self,
+        audit_recorder: AuditRecorder | None = None,
+        policy_engine: PolicyEngine | None = None,
+    ) -> None:
         self._decisions: list[SentinelResponse] = []
         self._audit_recorder = audit_recorder or MemoryAuditRecorder()
+        self._policy_engine = policy_engine or SimpleApprovalPolicy()
 
     def evaluate(self, request: SentinelRequest) -> SentinelResponse:
         """Evaluate a request at the Sentinel trust boundary."""
 
-        if request.requires_approval:
-            decision = SentinelDecision(
-                outcome=SentinelDecisionOutcome.REVIEW,
-                reason="Request requires human approval before execution.",
-                requires_human_approval=True,
-            )
-            response = SentinelResponse(
-                request=request,
-                decision=decision,
-                message="Sentinel routed the request for review.",
-            )
-        else:
-            decision = SentinelDecision(
-                outcome=SentinelDecisionOutcome.ALLOW,
-                reason="Request accepted by Sentinel Core boundary.",
-            )
-            response = SentinelResponse(
-                request=request,
-                decision=decision,
-                message="Sentinel allowed the request to proceed.",
-            )
+        policy_decision = self._policy_engine.evaluate(request)
+        decision = SentinelDecision(
+            outcome=policy_decision.outcome,
+            reason=policy_decision.reason,
+            requires_human_approval=policy_decision.requires_human_approval,
+        )
+        response = SentinelResponse(
+            request=request,
+            decision=decision,
+            message=_OUTCOME_MESSAGES[decision.outcome],
+        )
 
         self._decisions.append(response)
         self._audit_recorder.record(
