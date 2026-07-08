@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.36
+**Version:** 3.37
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.36 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.37 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -159,6 +159,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0003 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0004 | Engineering Session Report | Engineering Session Report | 1.1 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0005 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0005-RELOAD | Session Reload Snapshot | Engineering Session Reload | 1.0 | Superseded | Programme Sponsor & Chief Engineering Advisor | ESR-0005 | `aiems/governance/status/` |
 | ESR-0006 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0007 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0008 | Engineering Session Report | Engineering Session Report | 1.1 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
@@ -262,6 +263,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.37 | 8 July 2026 | Claude Engineering Implementer | Registered ESR-0005-RELOAD (aiems/governance/status/ESR-0005_ENGINEERING_SESSION_RELOAD.md), a previously unregistered historical session-reload snapshot superseded by PST-0001. Note: its compound ID falls outside check_controlled_register's strict PREFIX-NNNN pattern, so it is not mechanically re-verified by that check - same characteristic as the pre-existing RBR-ESR0009-001 entry. |
 | 3.36 | 8 July 2026 | Claude Engineering Implementer | Aligned AAM-0001 and UAM-0001 versions following addition of Subsequent Architectural Update notes pointing to ADR-0018 and CURRENT_ARCHITECTURE.md. |
 | 3.35 | 8 July 2026 | Claude Engineering Implementer | Aligned SAM-0001 and MOD-0001 versions following addition of Subsequent Architectural Update notes pointing to ADR-0018 and CURRENT_ARCHITECTURE.md. |
 | 3.34 | 8 July 2026 | Claude Engineering Implementer | Aligned REG-0002, EBR-0001 and GDE-0001 versions following ADR-0018 registration in REG-0002, EBG-0030 reclassification in EBR-0001 and GDE-0001 Draft/1.0 versioning correction. |
