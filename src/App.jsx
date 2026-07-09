@@ -85,6 +85,35 @@ function derivePlatformSignals(platformState, platformError) {
   });
 }
 
+// Diagnostics must not contradict the live state shown elsewhere on screen
+// (UAM-0001 Section 10/11) - the "guardian", "sentinel" and "providers" rows
+// are derived from the same platform.status call as the sidebar and status
+// cards, rather than left as permanently stale static claims.
+function deriveDiagnostics(platformState, platformError) {
+  return diagnostics.map((item) => {
+    if (item.id === "guardian") {
+      if (platformError) return { ...item, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
+      if (!platformState) return { ...item, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
+      return {
+        ...item,
+        state: platformState.state === "Running" ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+        detail: `Runtime: ${platformState.state}`,
+      };
+    }
+    if (item.id === "sentinel" || item.id === "providers") {
+      if (platformError) return { ...item, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
+      if (!platformState) return { ...item, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
+      const connected = platformState.providerConnected === "Online";
+      return {
+        ...item,
+        state: connected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+        detail: connected ? "Provider connected" : "Not connected",
+      };
+    }
+    return item;
+  });
+}
+
 function deriveGuardianStatus(platformState, platformError) {
   if (platformError) {
     return {
@@ -273,7 +302,7 @@ function GuardianOrbit({ guardianStatus }) {
   );
 }
 
-function DiagnosticsPanel() {
+function DiagnosticsPanel({ diagnostics }) {
   return (
     <aside className="diagnostics-panel" aria-labelledby="diagnostics-heading">
       <h2 id="diagnostics-heading">Diagnostics</h2>
@@ -447,7 +476,7 @@ export function App() {
                 sendError={sendError}
               />
             </div>
-            <DiagnosticsPanel />
+            <DiagnosticsPanel diagnostics={deriveDiagnostics(platformState, platformError)} />
           </div>
           <AppFooter />
         </section>

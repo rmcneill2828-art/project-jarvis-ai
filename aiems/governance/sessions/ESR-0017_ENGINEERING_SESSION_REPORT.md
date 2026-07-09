@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.12 |
+| Version | 0.13 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -254,6 +254,20 @@ Recorded as a candidate backlog item for future expansion rather than built out 
 
 **Status: complete, verified, pushed.**
 
+## 15.3 UAM-0001 Design-Baseline Consultation and Compliance Check
+
+Prompted by the Programme Sponsor asking whether a "final look" design and Obsidian-interaction vision had already been discussed with ChatGPT - a fair challenge, since WP9's frontend work (15.1) had not consulted any prior design baseline before modifying `src/App.jsx`.
+
+**Finding: it had been discussed, and formally baselined, but not consulted.** [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] (Guardian Experience Architecture v1.0, Approved Baseline, `aiems/models/`) defines the canonical desktop layout, Guardian Orb meaning, conversation-first interaction, capability awareness, Sentinel trust-posture representation, and colour/animation/accessibility principles. Its origin traces to `aiems/History/Full Chat/FCH-0009_ESR-0009_FULL_CHAT_HISTORY.md` (a ChatGPT-generated mock-up image, agreed as "UXP Design Baseline v1.0") and `FCH-0011_ESR-0011_FULL_CHAT_HISTORY.md` (further description as a "JARVIS AI Orb / Obsidian Knowledge Graph Visualisation" concept). The generated mock-up image itself is not present in the repository as a file - only described in the chat transcript text - so it is not recoverable from here if the Programme Sponsor no longer has the original.
+
+**Obsidian-as-product-feature: already explicitly decided, and already correctly reflected in current architecture.** `FCH-0008_ESR-0008_FULL_CHAT_HISTORY.md` records an explicit decision that Guardian should not have an Obsidian connector: *"I don't think we actually need an Obsidian connector for Guardian. I think we need it for the Engineering Agent."* This is consistent with [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] ("Obsidian remains outside the JARVIS runtime platform") and `jarvis/architecture/JARVIS_PRODUCT_ARCHITECTURE.md` Section 6. No inconsistency found here - both older prior-art and current governance agree.
+
+**Compliance check of the current UXP (post-WP9) against UAM-0001 Sections 5-19: one real defect found and fixed.** `src/platformStatus.js`'s `diagnostics` array (rendered by `DiagnosticsPanel`) remained fully static after WP9 wired live data elsewhere, meaning the Diagnostics panel could show `Sentinel: Placeholder` / `Guardian: Operational` (hardcoded) at the same time the sidebar and status cards - fed by the same `platform.status` call - showed the real, potentially different, live state. Two panels on the same screen contradicting each other directly undermines UAM-0001 Section 10 ("Capability awareness exists to preserve trust") and Section 11 (diagnostics should show "what is available and what remains placeholder"). **Fixed**: `src/App.jsx` gained `deriveDiagnostics()`, deriving the `guardian`, `sentinel` and `providers` diagnostic rows from the same `platformState`/`platformError` already used for the sidebar and status cards; `boundary`, `shell`, `agents` and `first-light` remain legitimately static (still accurate). Verified by `npm run build` (clean) and confirmed live via Vite HMR against the already-running dev session from this conversation (`Guardian runtime foundation started` ... HMR updates picked up ... clean shutdown).
+
+**Also noted, not fixed (lower urgency, broader scope):** `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md` is stale - still dated to ESR-0009 readiness, predating WP2 (Guardian-Sentinel connection) and WP9 (UXP-backend bridge) actually being implemented. Refreshing it is a multi-session documentation exercise beyond this check's scope; not actioned now.
+
+**Status: complete. No further design-baseline inconsistencies found in this pass.**
+
 ---
 
 # 16. Related Artefacts
@@ -267,6 +281,7 @@ Recorded as a candidate backlog item for future expansion rather than built out 
 | [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] | Source of the WP3 Gemini (Secondary provider) decision. |
 | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current accepted repository baseline at session open. |
 | [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] | Current accepted repository baseline, accepted mid-session (WP7). |
+| [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Approved Guardian Experience Architecture baseline; consulted and checked for compliance in Section 15.3, one defect found and fixed. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Amended by WP8 (Feature-First Delivery Discipline). |
 
 ---
@@ -275,6 +290,7 @@ Recorded as a candidate backlog item for future expansion rather than built out 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.13 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.3: consulted UAM-0001 (Approved Guardian Experience Architecture baseline, previously not checked before WP9's frontend work) and its FCH-0009/FCH-0011 origin (a ChatGPT-generated mock-up, not preserved in-repo). Confirmed Obsidian-as-product-feature was already explicitly decided against (FCH-0008), consistent with current architecture. Compliance check against UAM-0001 Sections 5-19 found and fixed one real defect: DiagnosticsPanel's guardian/sentinel/providers rows were static and could contradict the live sidebar/status-card state from the same platform.status call; now derived consistently via a new deriveDiagnostics() in App.jsx. Verified by npm run build (clean) and live via Vite HMR against the running dev session. Noted JARVIS_CAPABILITY_READINESS_MATRIX.md is stale (pre-dates WP2/WP9) but did not action it - out of this check's scope. |
 | 0.12 | 9 July 2026 | Claude Engineering Lead | Recorded ChatGPT Engineering Reviewer's WP9 implementation review outcome (Section 15.1.1): Approved with 4 Minor findings. Fixed 2 (jsonrpc version validation in stdio_rpc.py with 2 new regression tests, 184/184 passing; Rust state cleared on malformed response too, cargo build clean); deliberately deferred 2 (handler exception detail leakage - noted on EBR-0001 EBG-0050 v1.20; compile-only verification boundary - already honestly disclosed, Reviewer confirmed acceptable for foundation scope). WP9 marked Complete and Reviewed per Reviewer recommendation. Corrected a stale Section 13 WP8 row that still read 'awaiting review' after WP8 was already completed. |
 | 0.11 | 9 July 2026 | Claude Engineering Lead | Recorded WP9-adjacent Dev-Environment Setup Automation (Section 15.2): setup.bat / scripts/setup-dev-environment.ps1, prompted by the Programme Sponsor's work-laptop move. Verified by direct execution (idempotent re-run, 182/182 tests). Added EBR-0001 EBG-0054 as the forward-looking backlog item for future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). Committed and pushed as b3806d5. |
 | 0.10 | 9 July 2026 | Claude Engineering Lead | Recorded WP9 Implementation Record (Section 15.1): all three parts (Python backend, Tauri Rust bridge, React frontend) implemented and self-reviewed against the approved design. Backend verified end-to-end by direct execution and 12 passing tests; Rust and React verified by clean build/compile only - verification boundary disclosed honestly (no windowed-app or click-through testing possible in this environment). Status: awaiting Engineering Reviewer verification before WP9 is marked complete. |

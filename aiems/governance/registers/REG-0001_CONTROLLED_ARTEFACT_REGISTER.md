@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.85
+**Version:** 3.86
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.85 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.86 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -176,7 +176,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0015 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
-| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.12 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.13 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -272,6 +272,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.86 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.12 to 0.13) following: Recorded Section 15.3: consulted UAM-0001 (Approved Guardian Experience Architecture baseline, previously not checked before WP9's frontend work) and its FCH-0009/FCH-0011 origin (a ChatGPT-generated mock-up, not preserved in-repo). Confirmed Obsidian-as-product-feature was already explicitly decided against (FCH-0008), consistent with current architecture. Compliance check against UAM-0001 Sections 5-19 found and fixed one real defect: DiagnosticsPanel's guardian/sentinel/providers rows were static and could contradict the live sidebar/status-card state from the same platform.status call; now derived consistently via a new deriveDiagnostics() in App.jsx. Verified by npm run build (clean) and live via Vite HMR against the running dev session. Noted JARVIS_CAPABILITY_READINESS_MATRIX.md is stale (pre-dates WP2/WP9) but did not action it - out of this check's scope. |
 | 3.85 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.11 to 0.12) following: Recorded ChatGPT Engineering Reviewer's WP9 implementation review outcome (Section 15.1.1): Approved with 4 Minor findings. Fixed 2 (jsonrpc version validation in stdio_rpc.py with 2 new regression tests, 184/184 passing; Rust state cleared on malformed response too, cargo build clean); deliberately deferred 2 (handler exception detail leakage - noted on EBR-0001 EBG-0050 v1.20; compile-only verification boundary - already honestly disclosed, Reviewer confirmed acceptable for foundation scope). WP9 marked Complete and Reviewed per Reviewer recommendation. Corrected a stale Section 13 WP8 row that still read 'awaiting review' after WP8 was already completed. |
 | 3.84 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.19 to 1.20) following: Added ChatGPT Engineering Reviewer's ESR-0017 WP9 implementation review Minor Finding 2 (handler exception messages should not surface verbatim once external/provider-backed paths exist) to EBG-0050's note. |
 | 3.83 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.10 to 0.11) following: Recorded WP9-adjacent Dev-Environment Setup Automation (Section 15.2): setup.bat / scripts/setup-dev-environment.ps1, prompted by the Programme Sponsor's work-laptop move. Verified by direct execution (idempotent re-run, 182/182 tests). Added EBR-0001 EBG-0054 as the forward-looking backlog item for future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). Committed and pushed as b3806d5. |
