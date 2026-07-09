@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.81
+**Version:** 3.83
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.81 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.83 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.18 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.19 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -176,7 +176,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0015 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
-| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.10 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.11 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -272,6 +272,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.83 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.10 to 0.11) following: Recorded WP9-adjacent Dev-Environment Setup Automation (Section 15.2): setup.bat / scripts/setup-dev-environment.ps1, prompted by the Programme Sponsor's work-laptop move. Verified by direct execution (idempotent re-run, 182/182 tests). Added EBR-0001 EBG-0054 as the forward-looking backlog item for future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). Committed and pushed as b3806d5. |
+| 3.82 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.18 to 1.19) following: Added EBG-0054 (Dev-Environment Setup Automation Expansion), recording ESR-0017's new setup.bat / scripts/setup-dev-environment.ps1 clone-bootstrap tooling and candidate future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). |
 | 3.81 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.9 to 0.10) following: Recorded WP9 Implementation Record (Section 15.1): all three parts (Python backend, Tauri Rust bridge, React frontend) implemented and self-reviewed against the approved design. Backend verified end-to-end by direct execution and 12 passing tests; Rust and React verified by clean build/compile only - verification boundary disclosed honestly (no windowed-app or click-through testing possible in this environment). Status: awaiting Engineering Reviewer verification before WP9 is marked complete. |
 | 3.80 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.8 to 0.9) following: Recorded ChatGPT Engineering Reviewer's WP9 design review outcome: approve with five refinements, all incorporated (JSON-RPC 2.0 envelope, LocalEchoProvider default confirmed, minimal child-process lifecycle handling with explicit no-mock-fallback rule, method set confirmed sufficient, explicit dev-mode-only Rust process note). Implementation now proceeding. |
 | 3.79 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.7 to 0.8) following: Recorded WP9 (First Interactive UXP - Bring JARVIS, Guardian and Sentinel to life) design plan: three-part foundation-scope implementation of ADR-0019's bridge (Python stdio JSON-RPC entry point, Tauri Rust sidecar process management, React live-data wiring), environment confirmed by direct execution, explicit scope exclusions stated. Design only, not yet implemented - awaiting Engineering Reviewer input per Programme Sponsor direction before coding begins. |

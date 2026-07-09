@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.18
+**Version:** 1.19
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.18 |
+| Version | 1.19 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -120,6 +120,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0051 | Gemini Provider Production Readiness | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] WP3 | Candidate Backlog | Medium | Programme Sponsor | Per ChatGPT Engineering Reviewer's ESR-0017 WP3 observations, before `GeminiProvider` (`sentinel/gemini_provider.py`) is wired into any production `ProviderOrchestrator` route: (1) richer response parsing - current implementation assumes `candidates[0]` contains usable text; must handle safety-blocked responses, empty `parts`, tool responses and structured output; (2) consider exposing additional response metadata beyond `{"model": ...}` - finish reason, token usage, safety ratings (applies to future provider adapters generally, not Gemini alone); (3) **required before Gemini is enabled as a production provider**: a single live smoke test against the real Gemini API, equivalent to the live OpenAI validation performed during ESR-0015 WP5. No implementation is authorised by this backlog entry. |
 | EBG-0052 | PBK-0001/EE-0001 "Execute After Approval" Principle | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]]; [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 9 ESR-0017 entry | Candidate Backlog | Medium | Programme Sponsor | Improvement finding from the EE-0001 trial, originally reported by the Programme Sponsor and independently confirmed and refined by the Engineering Reviewer (ChatGPT) in its own ESR-0017 review: following explicit Programme Sponsor approval, the Reviewer continued conversational confirmation rather than transitioning immediately into execution, and engineering outputs were produced only after further Sponsor prompting - a process-efficiency issue, not an engineering-quality issue, per the Reviewer's own characterisation. Consider formalising a standing "execute after approval, don't just acknowledge" rule in PBK-0001 (parallel to the ESR-0016A WP4 "Operational Verification Before Reporting" precedent) and/or clarifying it within EE-0001 Section 3.2's Independent Reviewer role definition. No implementation is authorised by this backlog entry. |
 | EBG-0053 | EE-0001 "Review Gate Compliance" Criterion | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]]; [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 9 ESR-0017 entry | Candidate Backlog | Medium | Programme Sponsor | Jointly recommended by the Engineering Lead (Claude) and Engineering Reviewer (ChatGPT) during ESR-0017's scorecard reconciliation: EE-0001 currently has no criterion measuring whether agreed Lead/Reviewer checkpoints occurred before subsequent implementation proceeded (ESR-0017 was the first session to actually violate this, mid-session, and self-correct once caught by the Programme Sponsor). The Reviewer specifically recommended this stay distinct from Section 5.5 Lead Scope Discipline, since scope and execution-cadence discipline measure different things. Candidate wording: "Review Gate Compliance - measures whether agreed Lead/Reviewer checkpoints occurred before subsequent implementation proceeded." This is a proposed new EE-0001 Section 5.x criterion, not yet adopted - per EE-0001 Section 4, any change to the scoring instrument requires a dated, justified, Programme-Sponsor-decided log entry in Section 8, same as the ESR-0016 findings-definition precedent. No implementation is authorised by this backlog entry. |
+| EBG-0054 | Dev-Environment Setup Automation Expansion | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] Section 15.2 | Candidate Backlog | Low | Programme Sponsor | `setup.bat` / `scripts/setup-dev-environment.ps1` were added in ESR-0017 (prompted by the Programme Sponsor moving between machines, including a work laptop) to automate a fresh clone's environment: `npm install`, `cargo build`, Python venv + editable install, pre-commit hook activation, validator and test suite as a smoke test. Verified working end-to-end and idempotent. Candidate future expansion, not yet authorised: a cross-platform (bash/zsh) equivalent for non-Windows machines; reusing the same script in CI for environment parity with local dev; an "environment doctor" mode that only diagnoses/reports without changing anything; and prerequisite-version checks (e.g. minimum Node/Rust/Python versions) rather than only presence-on-PATH checks. No implementation is authorised by this backlog entry. |
 
 ---
 
@@ -235,6 +236,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.19 | 9 July 2026 | Claude Engineering Lead | Added EBG-0054 (Dev-Environment Setup Automation Expansion), recording ESR-0017's new setup.bat / scripts/setup-dev-environment.ps1 clone-bootstrap tooling and candidate future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). |
 | 1.18 | 9 July 2026 | Claude Engineering Lead | Refined EBG-0052 wording with ChatGPT Engineering Reviewer's own confirmation/clarification of the execute-after-approval finding; added EBG-0053 (EE-0001 Review Gate Compliance Criterion), jointly recommended by Lead and Reviewer during ESR-0017 scorecard reconciliation. |
 | 1.17 | 9 July 2026 | Claude Engineering Lead | Added EBG-0052 (PBK-0001/EE-0001 Execute After Approval Principle) per Programme Sponsor-reported EE-0001 trial improvement finding for ESR-0017. |
 | 1.16 | 9 July 2026 | Claude Engineering Lead | Added EBG-0051 (Gemini Provider Production Readiness) per ChatGPT Engineering Reviewer's ESR-0017 WP3 observations: richer response parsing, extended metadata, and a required live smoke test before Gemini is enabled as a production provider. |

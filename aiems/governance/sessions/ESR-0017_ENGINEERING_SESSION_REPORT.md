@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.10 |
+| Version | 0.11 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -227,6 +227,20 @@ All three parts implemented at the agreed foundation scope, self-reviewed agains
 
 **Status: implemented and self-reviewed. Awaiting Engineering Reviewer verification before WP9 is marked complete.**
 
+## 15.2 Dev-Environment Setup Automation
+
+Raised by the Programme Sponsor after WP9's implementation was pushed: moving between machines (including a work laptop) previously meant manually re-deriving the setup sequence (`npm install`, `cargo build`, Python venv creation, `pip install -e ".[dev]"`, opting into the tracked pre-commit hook via `git config core.hooksPath scripts/hooks`) with no record of the correct order or a way to verify it worked.
+
+Added `setup.bat` (repo root, double-click entry point) and `scripts/setup-dev-environment.ps1` (the actual bootstrap logic): checks Node/npm/Cargo/Python are on PATH with clear errors if not, runs `npm install`, builds the Rust/Tauri backend, creates/updates `.venv` and installs the project editable with dev extras, activates the tracked pre-commit hook, then runs `validate_repository.py` and the full pytest suite as a smoke test. Documented in `scripts/README.md`.
+
+**Verified by direct execution**, not assumed: ran end-to-end in this environment (already-provisioned, so this also confirmed idempotency) - clean `npm install`, `cargo build` finished in 0.75s (cached), editable install succeeded, hook path set, validator passed 0 errors, and 182/182 tests passed.
+
+`node_modules/`, `src-tauri/target/`, and `.venv/` remain gitignored throughout - they are derived from `package-lock.json`, `Cargo.lock` and `pyproject.toml` respectively (both lockfiles are tracked), not carried between machines. `src-tauri/.gitignore` was added in the same push as WP9 after discovering `src-tauri/target/` (2.8GB of Rust build output) had no gitignore rule excluding it at all.
+
+Recorded as a candidate backlog item for future expansion rather than built out further now: [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0054 (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks).
+
+**Status: complete, verified, pushed.**
+
 ---
 
 # 16. Related Artefacts
@@ -236,7 +250,7 @@ All three parts implemented at the agreed foundation scope, self-reviewed agains
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Immediately preceding closed session; ESR-0017 candidate focuses originated in its Section 16. |
 | [[ESR-0016A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0016A]] | Post-closure governance/tooling addendum, closed before ESR-0017 opened. |
 | [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial; ESR-0017 is the designated Cold Start Validation Session. |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for WP1-WP4 scoping and the WP4 roadmap; now also holds EBG-0050, EBG-0051, EBG-0052. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for WP1-WP4 scoping and the WP4 roadmap; now also holds EBG-0050, EBG-0051, EBG-0052, EBG-0053, EBG-0054. |
 | [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] | Source of the WP3 Gemini (Secondary provider) decision. |
 | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current accepted repository baseline at session open. |
 | [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] | Current accepted repository baseline, accepted mid-session (WP7). |
@@ -248,6 +262,7 @@ All three parts implemented at the agreed foundation scope, self-reviewed agains
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.11 | 9 July 2026 | Claude Engineering Lead | Recorded WP9-adjacent Dev-Environment Setup Automation (Section 15.2): setup.bat / scripts/setup-dev-environment.ps1, prompted by the Programme Sponsor's work-laptop move. Verified by direct execution (idempotent re-run, 182/182 tests). Added EBR-0001 EBG-0054 as the forward-looking backlog item for future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). Committed and pushed as b3806d5. |
 | 0.10 | 9 July 2026 | Claude Engineering Lead | Recorded WP9 Implementation Record (Section 15.1): all three parts (Python backend, Tauri Rust bridge, React frontend) implemented and self-reviewed against the approved design. Backend verified end-to-end by direct execution and 12 passing tests; Rust and React verified by clean build/compile only - verification boundary disclosed honestly (no windowed-app or click-through testing possible in this environment). Status: awaiting Engineering Reviewer verification before WP9 is marked complete. |
 | 0.9 | 9 July 2026 | Claude Engineering Lead | Recorded ChatGPT Engineering Reviewer's WP9 design review outcome: approve with five refinements, all incorporated (JSON-RPC 2.0 envelope, LocalEchoProvider default confirmed, minimal child-process lifecycle handling with explicit no-mock-fallback rule, method set confirmed sufficient, explicit dev-mode-only Rust process note). Implementation now proceeding. |
 | 0.8 | 9 July 2026 | Claude Engineering Lead | Recorded WP9 (First Interactive UXP - Bring JARVIS, Guardian and Sentinel to life) design plan: three-part foundation-scope implementation of ADR-0019's bridge (Python stdio JSON-RPC entry point, Tauri Rust sidecar process management, React live-data wiring), environment confirmed by direct execution, explicit scope exclusions stated. Design only, not yet implemented - awaiting Engineering Reviewer input per Programme Sponsor direction before coding begins. |
