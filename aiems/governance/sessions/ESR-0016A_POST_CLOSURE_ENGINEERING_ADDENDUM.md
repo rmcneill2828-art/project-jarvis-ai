@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | ESR-0016A |
 | Title | Post-Closure Engineering Addendum - Governance and Tooling Improvements |
-| Version | 0.4 |
-| Status | In Progress |
+| Version | 1.0 |
+| Status | Complete |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Parent Session | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] |
 | Repository Baseline | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] |
@@ -36,7 +36,7 @@ Each work package below is executed against its own approved Engineering Impleme
 | WP2 | One-command version-bump tool to replace the three-touch REG-0001 mirror pattern | Complete (built and sanity-tested; real usage proof deferred to WP4/WP5) |
 | WP3 | Extend validator to check internal section-number cross-references | Complete (warning-only, 6 documented residual false positives accepted) |
 | WP4 | Standing PBK-0001 rule: no reporting a repository operation's outcome without invoking it and observing the result | Complete (also first real end-to-end use of the WP2 version-bump tool) |
-| WP5 | Formalise the report-authorship exception (Reviewer maintaining the session report under Lead tooling constraints) in COC-0001 | Not started |
+| WP5 | Formalise the report-authorship exception (Reviewer maintaining the session report under Lead tooling constraints) in COC-0001 | Complete (second real end-to-end use of the version-bump tool) |
 
 ---
 
@@ -106,24 +106,51 @@ Each work package below is executed against its own approved Engineering Impleme
 
 ---
 
-# 8. Related Artefacts
+# 8. WP5 - COC-0001 Report-Authorship Exception
+
+**Approved EIP:** document the exception once in COC-0001 - trigger condition (Implementer's environment cannot practically support incremental documentation), decision authority (explicit Programme Sponsor direction, each time, not a standing delegation), and boundary (documentation only; the Implementer remains accountable for engineering content).
+
+**Delivered:** a note under COC-0001's "Engineering Reviewer" role section, plus new Operating Rule 51 stating the full condition. Version bumped 1.10 to 1.11 using `scripts/bump_version.py` - its second genuine real usage.
+
+**Validation:** `bump_version.py` ran cleanly again, correctly updating COC-0001 and REG-0001 in one command; independently confirmed by inspecting both files. `pytest` 144/144; `validate_repository.py` 0 errors, 6 warnings (unchanged, all documented in Section 6).
+
+**Self-review:** exception framed explicitly as non-default and per-session; accountability boundary (documentation vs. engineering decisions) stated outright rather than implied; no other COC-0001 content disturbed.
+
+---
+
+# 9. Closing Statement
+
+ESR-0016A records five governance and tooling improvements, approved and executed following the Programme Sponsor's reflection on ESR-0016. All five are complete:
+
+- WP1 made the pre-commit hook's inactive state visible instead of silently missed.
+- WP2 built a version-bump tool that found and fixed a real bug before its first use, then worked cleanly both times it was used for real (WP4, WP5).
+- WP3 extended the validator with a genuinely useful but openly imperfect check - it found two real bugs in its own implementation, correctly abandoned one heuristic that made things worse, and ships with 6 documented residual false positives rather than a false claim of completeness.
+- WP4 turned a four-times-repeated ESR-0016 lesson into a standing, checkable PBK-0001 rule.
+- WP5 turned an ad hoc ESR-0016 negotiation into a documented, bounded COC-0001 exception.
+
+No AIEMS governance artefact was changed beyond what each work package's own approved EIP specified. [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] is preserved as the current repository baseline; this addendum does not reopen [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]].
+
+---
+
+# 10. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Parent closed engineering session; Section 16 raised the reflective question this addendum answers. |
 | [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] | Precedent for post-closure engineering addenda. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Amended by WP1 and WP4. |
-| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Target of planned WP5. |
+| [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Amended by WP5. |
 | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current repository baseline preserved by this addendum. |
-| `scripts/bump_version.py` | New tool created by WP2; first real end-to-end use in WP4; will be used again for WP5. |
+| `scripts/bump_version.py` | New tool created by WP2; used for real in WP4 and WP5, both times cleanly. |
 | `scripts/validate_repository.py` | Extended by WP1 and WP3. |
 
 ---
 
-# 9. Version History
+# 11. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 9 July 2026 | Claude Engineering Reviewer | ESR-0016A complete. Completed WP5 (COC-0001 report-authorship exception): Operating Rule 51 added, second genuine real usage of the version-bump tool. Added Section 9 Closing Statement; all five work packages complete. |
 | 0.4 | 9 July 2026 | Claude Engineering Reviewer | Completed WP4 (standing PBK-0001 rule): added "Operational Verification Before Reporting" section, cross-referencing Principles 2 and 4. First genuine end-to-end use of the WP2 version-bump tool (not a dry run) - ran cleanly, independently confirmed against both PBK-0001 and REG-0001 directly. |
 | 0.3 | 9 July 2026 | Claude Engineering Reviewer | Completed WP3 (section-reference cross-check): found and fixed two real bugs (wrong-match adjacency lookup, WikiLink-pipe table misparse); tried and reverted a table-row heuristic that fixed one case but broke five others; confirmed detection on an injected broken reference; Programme Sponsor accepted 6 residual false positives as a documented limitation rather than scoping down to same-document-only checking. |
 | 0.2 | 9 July 2026 | Claude Engineering Reviewer | Completed WP2 (version-bump tool): `scripts/bump_version.py` created, reusing existing validator parsing functions. Dry-run sanity check against real content (GDE-0001) found and fixed a blank-line-swallowing regex bug before any real usage. Error paths (unregistered artefact, no-op version) verified to refuse cleanly with no partial writes. Real end-to-end proof deferred to WP4/WP5. |
