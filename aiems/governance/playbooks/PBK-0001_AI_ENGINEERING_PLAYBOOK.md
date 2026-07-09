@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.17 |
+| Version | 1.19 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -399,6 +399,26 @@ This operationalises Principles 2 (Evidence Before Conclusion) and 4 (Validation
 
 ---
 
+# Feature-First Delivery Discipline
+
+Directed by the Programme Sponsor at ESR-0017 WP8, following an observation that engineering sessions had increasingly produced governance and reporting artefacts relative to delivered product capability - most visibly, that the approved UXP remained a disconnected static mock-up many sessions after the backend it should present was first built.
+
+## Minimise Controlled Artefact Creation
+
+A new controlled artefact shall be created only where not creating one would mean the repository or governance record no longer accurately reflects the implemented engineering state - for example, a genuinely new architectural decision with no existing home, or a new backlog item with no existing entry to extend. Where an existing controlled artefact can be updated to record the same information without losing traceability, it shall be updated instead of a new one being created.
+
+This does not prohibit Working Reports (per the Working Report Lifecycle) where a review genuinely needs a self-contained handoff document, but Engineering Implementers shall prefer recording review content within an existing session report or artefact where that remains clear and sufficient, rather than defaulting to a new file per Work Package.
+
+## Every Engineering Session Shall Deliver Product-Moving Engineering Work
+
+Every Engineering Session shall include engineering work that moves Project JARVIS AI forward - features added to JARVIS, Guardian or its subsystems - not governance or documentation work alone. Governance and documentation work remains necessary where it directly supports delivery (for example, an architecture decision that unblocks implementation), but shall not constitute an Engineering Session's entire content.
+
+## Every Engineering Session Shall Make Demonstrable Progress Toward the Live UXP
+
+Every Engineering Session shall make demonstrable progress toward delivering the live User Experience Platform, replacing the currently static mock-up (`src/`, `src-tauri/`) with a system reflecting real backend state rather than hardcoded placeholders. Progress may be achieved through direct UXP implementation or through delivery of backend capability required by that UXP (for example, Guardian memory, provider failover, or runtime diagnostics that a future UXP increment will depend on) - a session need not touch `src/` itself provided it demonstrably advances toward the live UXP. This requirement stands until that milestone is reached. It shall not be satisfied by cosmetic UI changes made only to formally comply with this rule.
+
+---
+
 # Implementation and Engineering Judgement
 
 The Engineering Implementer shall separate implementation from engineering judgement.
@@ -547,6 +567,8 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.19 | 9 July 2026 | Claude Engineering Lead | Incorporated ChatGPT Engineering Reviewer's WP8 refinements: Minimise Controlled Artefact Creation's threshold reworded to the objectively-testable 'repository or governance record no longer accurately reflects the implemented engineering state' (was 'drift'); UXP rule reworded to 'demonstrable progress toward the live UXP, achieved through direct UXP implementation or through delivery of backend capability required by that UXP' - explicitly permits backend-only sessions and rules out cosmetic compliance edits. Both accepted on their own merits, not deferred to Reviewer authority. |
+| 1.18 | 9 July 2026 | Claude Engineering Lead | Added Feature-First Delivery Discipline: minimise controlled artefact creation (update existing artefacts unless not doing so would cause repo/governance drift), every Engineering Session must deliver product-moving engineering work (not governance-only), every Engineering Session must improve the UXP until the mock-up becomes a live system. Directed by the Programme Sponsor, ESR-0017 WP8. |
 | 1.17 | 9 July 2026 | Claude Engineering Reviewer | Added Operational Verification Before Reporting: an AI collaborator shall not report a repository/tool operation's outcome without having actually invoked it and observed the result. Operationalises Principles 2 and 4 for tool operations specifically, per ESR-0016A WP4. |
 | 1.16 | 9 July 2026 | Claude Engineering Reviewer | Added confirming the pre-commit governance hook is active (`core.hooksPath` set to `scripts/hooks`) to the WP0A Repository Synchronisation checklist, per ESR-0016A WP1: `scripts/validate_repository.py` now warns when it is not. |
 | 1.15 | 8 July 2026 | Claude Engineering Implementer | Replaced the remaining ChatGPT/Codex mentions (AIEMS Execution Mode, Working Report Lifecycle) with Engineering Reviewer/Engineering Implementer, matching the generic terminology already used throughout the rest of this document. |

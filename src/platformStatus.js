@@ -5,16 +5,22 @@ export const STATUS = Object.freeze({
   NOT_IMPLEMENTED: "Not Implemented",
   OFFLINE: "Offline",
   UNKNOWN: "Unknown",
+  CONNECTING: "Connecting",
 });
 
+// Static defaults shown before the first real `platform.status` call resolves
+// (or if it fails). App.jsx overrides the Sentinel/Providers entries below
+// with live backend data once available - per ESR-0017 WP9's no-mock-
+// fallback rule, this "Connecting" state must never be silently left in
+// place as if it were a real, current status.
 export const guardianStatus = Object.freeze({
   title: "Guardian",
-  state: STATUS.AVAILABLE,
+  state: STATUS.CONNECTING,
   greeting: "Good evening, Richard.",
   role: "I am Guardian, your trusted AI companion.",
   platform: "The JARVIS Platform is operational.",
   assurance: "I am here to help, support and protect your world.",
-  boundary: "Conversation runtime is not yet implemented.",
+  boundary: "Connecting to the JARVIS backend...",
 });
 
 export const platformSignals = Object.freeze([

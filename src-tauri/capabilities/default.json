@@ -1,0 +1,9 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Default capability for the JARVIS Guardian desktop shell main window - grants access to the JARVIS backend bridge commands (ESR-0017 WP9).",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}

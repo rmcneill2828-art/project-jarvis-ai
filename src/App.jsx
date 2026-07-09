@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import {
   Activity,
   Bell,
@@ -23,7 +25,85 @@ import {
   Zap,
 } from "lucide-react";
 
-import { capabilityStatuses, diagnostics, guardianStatus, platformSignals, STATUS } from "./platformStatus.js";
+import {
+  capabilityStatuses as staticCapabilityStatuses,
+  diagnostics,
+  guardianStatus as staticGuardianStatus,
+  platformSignals as staticPlatformSignals,
+  STATUS,
+} from "./platformStatus.js";
+
+// Live overrides for platformStatus.js's static defaults, sourced from a real
+// `platform.status` JSON-RPC call through the Tauri sidecar bridge
+// (ADR-0019, ESR-0017 WP9). Per the WP9 design, a failed or not-yet-resolved
+// call must show an honest connecting/offline state - never a silently
+// retained mock "Operational" claim.
+function derivePlatformIndicator(platformState, platformError) {
+  if (platformError) return { label: "OFFLINE", status: STATUS.OFFLINE };
+  if (!platformState) return { label: "CONNECTING", status: STATUS.CONNECTING };
+  return platformState.state === "Running"
+    ? { label: "JARVIS PLATFORM", status: STATUS.OPERATIONAL }
+    : { label: platformState.state.toUpperCase(), status: STATUS.OFFLINE };
+}
+
+function deriveCapabilityStatuses(platformState, platformError) {
+  const connected = platformState?.providerConnected === "Online";
+
+  return staticCapabilityStatuses.map((capability) => {
+    if (capability.id !== "sentinel" && capability.id !== "providers") return capability;
+
+    if (platformError) {
+      return { ...capability, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
+    }
+    if (!platformState) {
+      return { ...capability, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
+    }
+    return {
+      ...capability,
+      state: connected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+      detail: connected ? "Sentinel-gated provider connected" : "No provider adapters connected",
+    };
+  });
+}
+
+function derivePlatformSignals(platformState, platformError) {
+  return staticPlatformSignals.map((signal) => {
+    if (signal.id !== "providers") return signal;
+
+    if (platformError) {
+      return { ...signal, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
+    }
+    if (!platformState) {
+      return { ...signal, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
+    }
+    const connected = platformState.providerConnected === "Online";
+    return {
+      ...signal,
+      state: connected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+      detail: connected ? "Sentinel-gated provider connected" : "No providers connected",
+    };
+  });
+}
+
+function deriveGuardianStatus(platformState, platformError) {
+  if (platformError) {
+    return {
+      ...staticGuardianStatus,
+      state: STATUS.OFFLINE,
+      boundary: `JARVIS backend is unavailable: ${platformError}`,
+    };
+  }
+  if (!platformState) return staticGuardianStatus;
+
+  const connected = platformState.providerConnected === "Online";
+  return {
+    ...staticGuardianStatus,
+    state: platformState.state === "Running" ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+    boundary: connected
+      ? "Conversation runtime is connected."
+      : "Conversation runtime is running without a connected provider.",
+  };
+}
 
 const stateClass = (state) => state.toLowerCase().replaceAll(" ", "-");
 
@@ -67,7 +147,7 @@ function IconTile({ icon: Icon, className = "" }) {
   );
 }
 
-function AppHeader() {
+function AppHeader({ platformIndicator }) {
   return (
     <header className="app-header" aria-label="JARVIS desktop shell header">
       <div className="brand-lockup" aria-label="JARVIS">
@@ -77,9 +157,9 @@ function AppHeader() {
         <span className="brand-name">JARVIS</span>
       </div>
       <div className="platform-indicator" aria-label="JARVIS platform status">
-        <StateDot state={STATUS.OPERATIONAL} />
-        <span>JARVIS PLATFORM</span>
-        <StatusBadge state={STATUS.OPERATIONAL} />
+        <StateDot state={platformIndicator.status} />
+        <span>{platformIndicator.label}</span>
+        <StatusBadge state={platformIndicator.status} />
       </div>
       <div className="window-actions" aria-label="Shell controls">
         <button type="button" aria-label="Notifications">
@@ -102,7 +182,7 @@ function AppHeader() {
   );
 }
 
-function CapabilitySidebar() {
+function CapabilitySidebar({ capabilityStatuses }) {
   return (
     <aside className="sidebar" aria-labelledby="sidebar-heading">
       <section className="sidebar-panel">
@@ -142,7 +222,7 @@ function CapabilitySidebar() {
   );
 }
 
-function StatusCards() {
+function StatusCards({ platformSignals }) {
   return (
     <section className="status-cards" aria-label="Platform service summary">
       {platformSignals.map((signal) => {
@@ -163,7 +243,7 @@ function StatusCards() {
   );
 }
 
-function GuardianOrbit() {
+function GuardianOrbit({ guardianStatus }) {
   return (
     <section className="guardian-stage" aria-labelledby="guardian-title">
       <div className="orbital-field" aria-hidden="true">
@@ -223,16 +303,42 @@ function DiagnosticsPanel() {
   );
 }
 
-function CommandPanel() {
+function CommandPanel({ messages, inputValue, onInputChange, onSubmit, sending, sendError }) {
   return (
     <section className="command-panel" aria-labelledby="command-heading">
       <h2 id="command-heading">How can I help you today?</h2>
-      <div className="input-shell" aria-label="Disabled Guardian conversation input">
-        <input disabled placeholder="Ask Guardian anything..." />
-        <button type="button" disabled aria-label="Send unavailable">
+      {messages.length > 0 && (
+        <div className="conversation-log" aria-live="polite" aria-label="Conversation with Guardian">
+          {messages.map((entry) => (
+            <p className={`conversation-message ${entry.role}`} key={entry.id}>
+              {entry.text}
+            </p>
+          ))}
+        </div>
+      )}
+      {sendError && (
+        <p className="conversation-error" role="alert">
+          {sendError}
+        </p>
+      )}
+      <form
+        className="input-shell"
+        aria-label="Guardian conversation input"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit();
+        }}
+      >
+        <input
+          value={inputValue}
+          onChange={(event) => onInputChange(event.target.value)}
+          placeholder="Ask Guardian anything..."
+          disabled={sending}
+        />
+        <button type="submit" disabled={sending || inputValue.trim().length === 0} aria-label="Send">
           <SendHorizontal size={24} />
         </button>
-      </div>
+      </form>
       <div className="quick-actions" aria-label="Static Guardian shortcuts">
         <button type="button">
           <Activity size={18} />
@@ -274,17 +380,72 @@ function AppFooter() {
 }
 
 export function App() {
+  const [platformState, setPlatformState] = useState(null);
+  const [platformError, setPlatformError] = useState(null);
+
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    invoke("platform_status")
+      .then((status) => {
+        if (!cancelled) setPlatformState(status);
+      })
+      .catch((error) => {
+        if (!cancelled) setPlatformError(String(error));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleSubmit = () => {
+    const message = inputValue.trim();
+    if (!message || sending) return;
+
+    setSending(true);
+    setSendError(null);
+    setMessages((current) => [...current, { id: `${Date.now()}-user`, role: "user", text: message }]);
+    setInputValue("");
+
+    invoke("send_message", { message })
+      .then((response) => {
+        setMessages((current) => [
+          ...current,
+          { id: `${Date.now()}-guardian`, role: "guardian", text: response.message },
+        ]);
+      })
+      .catch((error) => {
+        setSendError(`Guardian did not respond: ${error}`);
+      })
+      .finally(() => {
+        setSending(false);
+      });
+  };
+
   return (
     <main className="jarvis-shell">
-      <AppHeader />
+      <AppHeader platformIndicator={derivePlatformIndicator(platformState, platformError)} />
       <div className="shell-grid">
-        <CapabilitySidebar />
+        <CapabilitySidebar capabilityStatuses={deriveCapabilityStatuses(platformState, platformError)} />
         <section className="workspace" aria-label="Guardian desktop experience">
-          <StatusCards />
+          <StatusCards platformSignals={derivePlatformSignals(platformState, platformError)} />
           <div className="experience-grid">
             <div className="guardian-column">
-              <GuardianOrbit />
-              <CommandPanel />
+              <GuardianOrbit guardianStatus={deriveGuardianStatus(platformState, platformError)} />
+              <CommandPanel
+                messages={messages}
+                inputValue={inputValue}
+                onInputChange={setInputValue}
+                onSubmit={handleSubmit}
+                sending={sending}
+                sendError={sendError}
+              />
             </div>
             <DiagnosticsPanel />
           </div>

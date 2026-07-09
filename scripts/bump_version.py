@@ -118,6 +118,21 @@ def plan_bump(artefact_id: str, new_version: str, summary: str, author: str, dat
     if old_version == new_version:
         raise BumpVersionError(f"{artefact_id} is already at version {new_version}.")
 
+    if artefact_path == REGISTER_PATH:
+        # Self-referential case: REG-0001 is being bumped as its own tracked
+        # artefact. Must be a single coherent edit against one text buffer -
+        # the general two-buffer path below (one edit for the artefact, one
+        # for REG-0001's tracking of it) both target this same file when
+        # artefact_id == "REG-0001", and only the second write would survive,
+        # silently discarding the caller's literal new_version (found in
+        # ESR-0017: produced a Version History row describing a version
+        # transition that never actually happened).
+        text = _bump_version_fields(register_text, old_version, new_version, REGISTER_PATH)
+        text = _update_register_row(text, "REG-0001", new_version)
+        row_entry = f"| {new_version} | {date} | {author} | {summary} |"
+        text = _insert_version_history_row(text, row_entry, REGISTER_PATH)
+        return [PlannedEdit(path=REGISTER_PATH, text=text)]
+
     artefact_text = artefact_path.read_text(encoding="utf-8", errors="replace")
     artefact_text = _bump_version_fields(artefact_text, old_version, new_version, artefact_path)
     artefact_row = f"| {new_version} | {date} | {author} | {summary} |"
