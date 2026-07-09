@@ -13,6 +13,7 @@ from sentinel.core import (
     SentinelResponse,
     SentinelTrustGateway,
 )
+from sentinel.gemini_provider import GeminiProvider
 from sentinel.local_provider import LocalEchoProvider, create_local_provider_registry
 from sentinel.openai_provider import OpenAIProvider
 from sentinel.policy import (
@@ -42,6 +43,7 @@ __all__ = [
     "AuditRecorder",
     "CredentialReference",
     "ExecutionProvider",
+    "GeminiProvider",
     "JsonAuditRecorder",
     "LocalEchoProvider",
     "MemoryAuditRecorder",
