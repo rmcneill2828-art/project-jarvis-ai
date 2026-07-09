@@ -214,6 +214,31 @@ def check_stale_status_references(result: ValidationResult) -> None:
                 )
 
 
+def check_precommit_hook_installed(result: ValidationResult) -> None:
+    """Warn if the tracked pre-commit hook isn't active on this clone.
+
+    scripts/hooks/pre-commit runs this same validator and blocks a bad commit,
+    but git only uses tracked hooks once core.hooksPath is configured per
+    clone - there's no way to make that the default from inside the repo
+    itself, so a missed opt-in is otherwise silent until CI runs.
+    """
+
+    completed = subprocess.run(
+        ["git", "config", "core.hooksPath"],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    configured = completed.stdout.strip()
+    if configured != "scripts/hooks":
+        result.warn(
+            "Pre-commit governance hook is not active on this clone "
+            "(run: git config core.hooksPath scripts/hooks) - "
+            "commits will only be checked by CI, not before commit."
+        )
+
+
 def git_changed_files(staged: bool) -> list[str]:
     args = ["git", "diff", "--name-only"]
     if staged:
@@ -239,6 +264,7 @@ def run_validation(governance_only: bool) -> ValidationResult:
     check_wikilinks(result)
     check_controlled_register(result)
     check_stale_status_references(result)
+    check_precommit_hook_installed(result)
     if governance_only:
         check_governance_only_scope(result)
     return result

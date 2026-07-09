@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.15 |
+| Version | 1.16 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -178,6 +178,7 @@ WP0A shall confirm:
 * Previous Engineering Session status.
 * Repository baseline.
 * Repository suitability for engineering progression.
+* The pre-commit governance hook is active on this clone (`git config core.hooksPath` set to `scripts/hooks`); `scripts/validate_repository.py` warns if it is not.
 
 README.md introduces the repository and platform context. Controlled AIEMS artefacts remain authoritative for governance, status, execution and collaboration rules.
 
@@ -536,6 +537,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.16 | 9 July 2026 | Claude Engineering Reviewer | Added confirming the pre-commit governance hook is active (`core.hooksPath` set to `scripts/hooks`) to the WP0A Repository Synchronisation checklist, per ESR-0016A WP1: `scripts/validate_repository.py` now warns when it is not. |
 | 1.15 | 8 July 2026 | Claude Engineering Implementer | Replaced the remaining ChatGPT/Codex mentions (AIEMS Execution Mode, Working Report Lifecycle) with Engineering Reviewer/Engineering Implementer, matching the generic terminology already used throughout the rest of this document. |
 | 1.14 | 8 July 2026 | Claude Engineering Implementer | Replaced exhaustive AIEMS History and Full Chat WP0 review requirement with GDE-0001 knowledge tiering (bounded Current State/Architecture/Standards/Current ESR reading, Historical Archive searched on demand). ESR-0014 post-closure work per ESR-0014A. |
 | 1.13 | 7 July 2026 | Engineering Agent | Added ESR-0013 AIEMS History and Full Chat artefacts to WP0 session start review. |

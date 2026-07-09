@@ -21,7 +21,8 @@ The validation script checks:
 - repository WikiLinks resolve to Markdown artefacts;
 - REG-0001 registered artefacts exist and versions match where parseable;
 - programme status references the latest repository baseline and engineering session;
-- governance-only changes do not include Python source or test files.
+- governance-only changes do not include Python source or test files;
+- the pre-commit hook below is actually active on this clone (warning only, since it can't be enforced from inside the repository itself).
 
 ## Pre-commit Hook
 
