@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0016A |
 | Title | Post-Closure Engineering Addendum - Governance and Tooling Improvements |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | In Progress |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Parent Session | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] |
@@ -34,7 +34,7 @@ Each work package below is executed against its own approved Engineering Impleme
 |---|---|---|
 | WP1 | Pre-commit governance hook visibility - warn when `core.hooksPath` is not configured | Complete (this update) |
 | WP2 | One-command version-bump tool to replace the three-touch REG-0001 mirror pattern | Complete (built and sanity-tested; real usage proof deferred to WP4/WP5) |
-| WP3 | Extend validator to check internal section-number cross-references | Not started |
+| WP3 | Extend validator to check internal section-number cross-references | Complete (warning-only, 6 documented residual false positives accepted) |
 | WP4 | Standing PBK-0001 rule: no reporting a repository operation's outcome without invoking it and observing the result | Not started |
 | WP5 | Formalise the report-authorship exception (Reviewer maintaining the session report under Lead tooling constraints) in COC-0001 | Not started |
 
@@ -73,7 +73,28 @@ Each work package below is executed against its own approved Engineering Impleme
 
 ---
 
-# 6. Related Artefacts
+# 6. WP3 - Section-Reference Cross-Check
+
+**Approved EIP:** warn when a "Section N" reference doesn't resolve to a heading, in the current document or an immediately-adjacent linked one; heuristic, not exhaustive; run against the full repository and triage every hit rather than a synthetic test.
+
+**Delivered:** `check_section_references` in `scripts/validate_repository.py`. Excludes `aiems/History/` (HST/FCH) entirely - frozen chat transcripts reference "Section N" in conversational, not structural, ways and would otherwise dominate the output with noise.
+
+**Validation, run against the full repository as required:**
+
+- Two genuine bugs found and fixed before considering this done: (1) the adjacency check used `.search()` within a lookback window, returning the *first* WikiLink found rather than the one truly immediately adjacent, misattributing references on lines mentioning multiple artefacts; (2) a table-row fallback attempt split rows naively on the pipe character, which breaks because a double-bracket WikiLink's own display-text separator is also a literal pipe, silently misaligning cells.
+- One heuristic extension (fall back to a table row's first-cell link when nothing else is adjacent) was tried, found to fix one case while introducing five new false positives - because this repository's Related Artefacts tables predominantly describe *the current document's own* sections in relation to the linked artefact, not the linked artefact's sections - and was reverted rather than kept as a net-negative change.
+- Detection confirmed: a deliberately injected reference to a fake, non-existent section number was caught, then cleanly reverted via `git checkout --` with no residual test content (`git status` confirmed).
+- **6 residual false positives remain**, all sharing one root cause: an artefact mentioned in prose without being immediately adjacent to the "Section N" text (e.g. mentioned one clause earlier, or in an earlier table row of the same block). Listed in full in the Programme Sponsor decision below. Warning severity specifically absorbs this known limitation.
+- `pytest` 144/144 throughout (no product code touched); `validate_repository.py` reports 0 errors, 6 warnings (all the documented residual cases) in the current repository state.
+
+**Programme Sponsor decision:** accept the 6 residual false positives as a documented limitation rather than scope down to same-document-only checking (which would eliminate them but also stop catching genuine cross-document breaks like the EE-0001/ESR-0016 mutual-reference pattern this check is partly meant to protect). Residual false positives, all "artefact mentioned in prose without immediate adjacency to the Section reference":
+  - `REG-0001:276`, `ESR-0016:164` (x2), `ESR-0016:192`, `ESR-0016A:80`, `EE-0001:223`.
+
+**Self-review:** scope held to `validate_repository.py` only; the reverted heuristic left no dead code; every claim above independently re-verified by re-running the full validator, not assumed from the design discussion.
+
+---
+
+# 7. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
@@ -83,12 +104,14 @@ Each work package below is executed against its own approved Engineering Impleme
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Target of planned WP5. |
 | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current repository baseline preserved by this addendum. |
 | `scripts/bump_version.py` | New tool created by WP2; will be used for WP4/WP5's own version syncs. |
+| `scripts/validate_repository.py` | Extended by WP1 and WP3. |
 
 ---
 
-# 7. Version History
+# 8. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 9 July 2026 | Claude Engineering Reviewer | Completed WP3 (section-reference cross-check): found and fixed two real bugs (wrong-match adjacency lookup, WikiLink-pipe table misparse); tried and reverted a table-row heuristic that fixed one case but broke five others; confirmed detection on an injected broken reference; Programme Sponsor accepted 6 residual false positives as a documented limitation rather than scoping down to same-document-only checking. |
 | 0.2 | 9 July 2026 | Claude Engineering Reviewer | Completed WP2 (version-bump tool): `scripts/bump_version.py` created, reusing existing validator parsing functions. Dry-run sanity check against real content (GDE-0001) found and fixed a blank-line-swallowing regex bug before any real usage. Error paths (unregistered artefact, no-op version) verified to refuse cleanly with no partial writes. Real end-to-end proof deferred to WP4/WP5. |
 | 0.1 | 9 July 2026 | Claude Engineering Reviewer | Opened ESR-0016A. Completed WP1 (pre-commit hook visibility): validator now warns when the tracked hook is inactive; PBK-0001 WP0A checklist updated; verified in both states. |

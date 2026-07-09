@@ -214,6 +214,120 @@ def check_stale_status_references(result: ValidationResult) -> None:
                 )
 
 
+HEADING_NUMBER_PATTERN = re.compile(r"(?m)^#{1,6}\s+(\d+(?:\.\d+)*)\.?\s+\S")
+SECTION_REF_PATTERN = re.compile(r"\bSections?\s+(\d+(?:\.\d+)*)\b")
+WIKILINK_PATTERN = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
+ARTEFACT_ID_PATTERN = re.compile(r"^([A-Z]{2,6}-\d{3,4}[A-Z]?)")
+HISTORICAL_ARCHIVE_DIR = REPO_ROOT / "aiems" / "History"
+
+
+def _is_historical_archive(path: Path) -> bool:
+    """HST/FCH artefacts are frozen historical chat records (GDE-0001 tier),
+    not actively-maintained structured documents - "Section 5" in a chat
+    transcript doesn't mean a document heading, so they're excluded here
+    rather than producing structural noise."""
+
+    try:
+        path.relative_to(HISTORICAL_ARCHIVE_DIR)
+    except ValueError:
+        return False
+    return True
+
+
+def extract_heading_numbers(text: str) -> set[str]:
+    return set(HEADING_NUMBER_PATTERN.findall(text))
+
+
+def _build_artefact_id_index(files: list[Path]) -> dict[str, Path]:
+    index: dict[str, Path] = {}
+    for path in files:
+        match = ARTEFACT_ID_PATTERN.match(path.stem)
+        if match:
+            index[match.group(1)] = path
+    return index
+
+
+def _referenced_artefact(preceding: str, file_by_basename: dict[str, Path], id_index: dict[str, Path]) -> Path | None:
+    """Resolve what "Section N" actually refers to, from the text immediately
+    before it - not anywhere earlier in the sentence.
+
+    Real repository writing has two adjacent-reference patterns:
+    "[[EE-0001|EE-0001]] Section 5.6" (WikiLink immediately before) and bare
+    "EE-0001 Section 5.6" (no link at all). Both are checked only when the
+    referent is the *immediately* preceding token, stripped of a trailing
+    possessive - anything looser (a link or ID mentioned earlier in the same
+    sentence but not immediately adjacent) produced false positives in
+    practice and is deliberately not treated as a cross-reference signal.
+    """
+
+    trimmed = preceding.rstrip()
+    if trimmed.endswith("'s"):
+        trimmed = trimmed[: -len("'s")].rstrip()
+
+    if trimmed.endswith("]]"):
+        # The *last* link ending exactly here, not just any link somewhere
+        # in a lookback window - a line can legitimately mention several
+        # artefacts before the one actually adjacent to "Section N".
+        link_matches = list(WIKILINK_PATTERN.finditer(trimmed))
+        if link_matches and link_matches[-1].end() == len(trimmed):
+            target = link_matches[-1].group(1)
+            if target in file_by_basename:
+                return file_by_basename[target]
+            id_match = ARTEFACT_ID_PATTERN.match(target)
+            if id_match and id_match.group(1) in id_index:
+                return id_index[id_match.group(1)]
+        return None
+
+    bare_match = re.search(r"([A-Z]{2,6}-\d{3,4}[A-Z]?)$", trimmed)
+    if bare_match and bare_match.group(1) in id_index:
+        return id_index[bare_match.group(1)]
+
+    return None
+
+
+def check_section_references(result: ValidationResult) -> None:
+    """Warn (not error - see WP3 EIP) when a "Section N" reference doesn't
+    match any heading, in the current document or an immediately-adjacent
+    cross-referenced one. See _referenced_artefact for the adjacency rule
+    and why it's deliberately tight rather than scanning the whole sentence.
+    """
+
+    files = [p for p in iter_markdown_files() if not _is_historical_archive(p)]
+    file_by_basename = {path.stem: path for path in files}
+    id_index = _build_artefact_id_index(files)
+    heading_cache: dict[Path, set[str]] = {}
+
+    def headings_for(path: Path) -> set[str]:
+        if path not in heading_cache:
+            heading_cache[path] = extract_heading_numbers(
+                path.read_text(encoding="utf-8", errors="replace")
+            )
+        return heading_cache[path]
+
+    for path in files:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        own_headings = headings_for(path)
+        for line_num, line in enumerate(text.splitlines(), start=1):
+            if re.match(r"^#{1,6}\s", line):
+                continue
+            for match in SECTION_REF_PATTERN.finditer(line):
+                section_number = match.group(1)
+                preceding = line[: match.start()]
+                target_path = _referenced_artefact(preceding, file_by_basename, id_index)
+                if target_path is not None and target_path != path:
+                    target_headings = headings_for(target_path)
+                    target_desc = target_path.stem
+                else:
+                    target_headings = own_headings
+                    target_desc = "this document"
+                if section_number not in target_headings:
+                    rel = path.relative_to(REPO_ROOT)
+                    result.warn(
+                        f"{rel}:{line_num} references Section {section_number}, "
+                        f"not found as a heading in {target_desc}."
+                    )
+
+
 def check_precommit_hook_installed(result: ValidationResult) -> None:
     """Warn if the tracked pre-commit hook isn't active on this clone.
 
@@ -265,6 +379,7 @@ def run_validation(governance_only: bool) -> ValidationResult:
     check_controlled_register(result)
     check_stale_status_references(result)
     check_precommit_hook_installed(result)
+    check_section_references(result)
     if governance_only:
         check_governance_only_scope(result)
     return result
