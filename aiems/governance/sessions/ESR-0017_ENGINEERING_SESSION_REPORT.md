@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.16 |
+| Version | 0.17 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -298,6 +298,18 @@ Both new sections are explicitly framed as illustrative reference / design direc
 
 **Status: complete. Mock-up preserved as a real repository asset, referenced from UAM-0001, not just described.**
 
+## 15.6 WP4 Roadmap Revised - EBG-0055 Slotted into Freed Capacity
+
+The Programme Sponsor asked whether the Guardian Orb knowledge-graph work could be built "organically in line with planned WPs" rather than as a separate initiative. The Engineering Lead identified that it could, concretely: `EBG-0050` (the UXP-backend bridge) was originally planned as a two-session effort split across ESR-0018 (schema/Python) and ESR-0019 (Rust/frontend) per the WP4 roadmap - but WP9 delivered both phases in ESR-0017 itself, two sessions early, freeing real capacity in ESR-0018/ESR-0019 that did not exist when WP4 was reviewed.
+
+**Actioned, on Programme Sponsor confirmation ("yes please"):**
+- [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] v1.22: `EBG-0050` status corrected from Candidate Backlog to Completed (Foundation Scope) - it was stale, still showing as un-implemented after WP9 delivered it. New `EBG-0055` (Knowledge Graph Phase 1 - Static Live Graph) added: repository WikiLinks parsed into nodes/edges, exposed via a new JSON-RPC method over the existing bridge, first-pass 2D rendering (not the full 3D orb sphere - explicitly scoped as the achievable first slice, distinct from Phases 2-4).
+- `aiems/governance/reviews/ESR-0017_WP4_ENGINEERING_REVIEW_PACKAGE.md` (Working Report, not REG-0001-registered) updated in place: Sections 5/6 mark `EBG-0050`'s rows as completed early (struck through, historical reasoning retained rather than deleted); Section 6.1's Decision Gate updated to show 2 of 3 conditions already satisfied (bridge complete, Guardian interactive - both verified via the real windowed Tauri session earlier in ESR-0017); `EBG-0055` recommended for ESR-0018 or ESR-0019's freed capacity; new Section 16 addendum records why and flags one open question below.
+
+**Open question, not resolved by the Lead alone:** the WP4 roadmap was already reviewed and closed by ChatGPT Engineering Reviewer (Section 15, 0 Blocking/0 Major/4 Minor, all accepted). This revision was made by the Engineering Lead alone, after that review closed. Per this session's own per-Work-Package review discipline, the Programme Sponsor should decide whether striking through completed items and adding one new candidate (still separately gated on implementation authorisation) needs its own Reviewer pass, or whether it can stand without one - flagged in the addendum itself for that decision, not decided here.
+
+**Status: complete, pending Programme Sponsor decision on whether a Reviewer pass is needed for this revision.**
+
 ---
 
 # 16. Related Artefacts
@@ -321,6 +333,7 @@ Both new sections are explicitly framed as illustrative reference / design direc
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.17 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.6: revised the WP4 five-session roadmap after confirming with the Programme Sponsor that Knowledge Graph Phase 1 should build organically in line with planned WPs. EBG-0050 corrected from stale Candidate Backlog to Completed (Foundation Scope) in EBR-0001 v1.22; new EBG-0055 (Knowledge Graph Phase 1) added, slotted into ESR-0018/ESR-0019 capacity freed by EBG-0050's early completion. ESR-0017_WP4_ENGINEERING_REVIEW_PACKAGE.md updated in place (Sections 5/6/6.1 struck through and corrected, new Section 16 addendum). Flagged an open question for the Programme Sponsor: this revision was made by the Lead alone after the original WP4 Reviewer pass closed, and per this session's own per-WP review discipline it may warrant its own Reviewer check before being treated as accepted. |
 | 0.16 | 9 July 2026 | Claude Engineering Lead | Updated Section 15.5: Programme Sponsor saved the mock-up image directly into the repository (aiems/models/, renamed to UAM-0001_GUARDIAN_ORB_MOCKUP.jpg for convention). UAM-0001 (now v1.4) updated to reference the real file instead of describing it as outstanding. |
 | 0.15 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.5: Programme Sponsor located and provided the actual FCH-0010/FCH-0011 mock-up image, confirming it is materially richer than the text description already incorporated. Added UAM-0001 Sections 7.1 (Reference Dashboard Composition - System Health, Knowledge Metrics, Active Clusters, Real-Time Activity, AIEMS Principles panel, persistent conversation bar) and 8.3 (Orb Status Panel - Mode/Confidence/Autonomy/Permission, tied to ADR-0010 HITL governance), both explicit design-direction-only (UAM-0001 v1.3). Noted the image file itself cannot be persisted to the repository from this environment - no mechanism exists to extract pasted image bytes to disk - and remains outstanding pending the Programme Sponsor saving it directly. |
 | 0.14 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.4: Programme Sponsor located FCH-0010's Guardian Orb design conversation, believing it was already merged into governed architecture. Traced the chain - ESR-0010 Section 15 did approve and record a design direction correctly, but UAM-0001 (created earlier, under ESR-0009) was never updated afterward to reference it. Fixed per Programme Sponsor's full-incorporation decision: UAM-0001 v1.2 (Sections 8.1 Knowledge Graph Representation, 8.2 Orb Status Semantics, both explicit design-direction-only) and EBR-0001 v1.21 (EBG-0028 phased achievability roadmap). Noted the original mock-up image is not recoverable from the repository. |

@@ -49,34 +49,39 @@ One process observation worth carrying forward: WP1-3 were originally implemente
 
 # 5. ESR-0018 (ChatGPT leads, per frozen EE-0001 rotation - also the trial's decision-point session)
 
+**Revised after ESR-0017 WP9 (see Section 16 addendum): EBG-0050 (both phases) was delivered in ESR-0017 itself, ahead of this roadmap's original schedule. The row below is retained for the historical planning record; it is no longer open work.**
+
 | Item | Priority | Benefit | Effort | Dependencies | Recommended Session |
 |---|---|---|---|---|---|
-| **EBG-0050, Phase 1 only**: JSON-RPC message schema + new `python -m jarvis --ipc-stdio`-style headless entry point (no Rust/Tauri work) | High | Unblocks the whole UXP-visible milestone; schema-first is the highest-leverage, lowest-risk slice - settle the contract before writing Rust against it | Medium | ADR-0019 (done) | ESR-0018 |
+| ~~EBG-0050, Phase 1 only: JSON-RPC message schema + new `python -m jarvis --ipc-stdio`-style headless entry point (no Rust/Tauri work)~~ **Completed early, ESR-0017 WP9.** | High | Unblocks the whole UXP-visible milestone; schema-first is the highest-leverage, lowest-risk slice - settle the contract before writing Rust against it | Medium | ADR-0019 (done) | ~~ESR-0018~~ Delivered ESR-0017 |
 | EBG-0051: Gemini production readiness - richer response parsing (safety-blocked responses, empty `parts`, tool/structured output) + Sponsor-run live smoke test | Medium | Clears real, scoped technical debt before Gemini is ever routed to; smoke test is short and Sponsor-run, proportionate to pair alongside the schema work | Low-Medium (+ Sponsor time for the smoke test) | `GeminiProvider` (done, ESR-0017 WP3) | ESR-0018 |
 
-**Not recommended for ESR-0018:** EBG-0050 Phase 2 (the Rust sidecar and frontend wiring) - held back to ESR-0019 rather than combined with schema design in one session, and because ESR-0018 is already carrying extra load as the EE-0001 four-session trial's decision-point session (Section 7, adopt/reject/modify the Lead/Reviewer rotation) - loading it with the highest-risk, first-ever-Rust-work item on top of that seems likely to inflate Sponsor arbitration exactly where EE-0001's own Section 5.11 metric would penalise it.
+**Not recommended for ESR-0018:** ~~EBG-0050 Phase 2~~ (moot - delivered early alongside Phase 1 at ESR-0017 WP9). ESR-0018 remains appropriately light per the original reasoning below, now carrying only EBG-0051 alongside the EE-0001 decision point.
 
 ---
 
 # 6. ESR-0019
 
+**Revised after ESR-0017 WP9: with EBG-0050 already delivered, this session has open capacity for the next product-visible UXP increment - EBG-0055 (Knowledge Graph Phase 1) is recommended to fill it, per the Programme Sponsor's direction that this proceed organically in line with planned Work Packages rather than as a separate initiative.**
+
 | Item | Priority | Benefit | Effort | Dependencies | Recommended Session |
 |---|---|---|---|---|---|
-| EBG-0050, Phase 2: `src-tauri/src/lib.rs` sidecar command + message forwarding; replace `src/platformStatus.js`'s hardcoded state with live data | High | The single largest product-visible milestone in this window - delivers `CURRENT_ARCHITECTURE.md` roadmap item 7 ("Deliver Guardian's first interactive conversation") through the real, approved UXP for the first time. Closes the "backend built since ESR-0014, nobody can see it" pattern this whole trial started from. | High (first Rust/Tauri sidecar work in the project) | ESR-0018's schema + Python entry point must land first | ESR-0019 |
+| ~~EBG-0050, Phase 2: `src-tauri/src/lib.rs` sidecar command + message forwarding; replace `src/platformStatus.js`'s hardcoded state with live data~~ **Completed early, ESR-0017 WP9** (both phases delivered in one session rather than split across ESR-0018/ESR-0019) | High | The single largest product-visible milestone in this window - delivers `CURRENT_ARCHITECTURE.md` roadmap item 7 ("Deliver Guardian's first interactive conversation") through the real, approved UXP for the first time. Closes the "backend built since ESR-0014, nobody can see it" pattern this whole trial started from. | High (first Rust/Tauri sidecar work in the project) | ~~ESR-0018's schema + Python entry point must land first~~ | ~~ESR-0019~~ Delivered ESR-0017 |
+| EBG-0055: Knowledge Graph Phase 1 - static live graph (repository WikiLinks parsed into nodes/edges, new JSON-RPC method, first-pass 2D rendering) | High | Next demonstrable UXP-progress increment per PBK-0001's Feature-First Delivery Discipline, now that the bridge it depends on exists; recovers and begins building toward the Guardian Orb design direction (UAM-0001 Section 8.1) the Programme Sponsor confirmed at ESR-0017 | Medium (parsing/backend) + Medium-High (graph rendering is new frontend surface) | ADR-0019 bridge (done, ESR-0017 WP9) | ESR-0018 or ESR-0019 |
 
 ---
 
 # 6.1. Decision Gate - End of ESR-0019
 
-*(Added per ChatGPT Engineering Reviewer's WP4 Observation 1.)*
+*(Added per ChatGPT Engineering Reviewer's WP4 Observation 1. Updated per the Section 16 addendum: two of three conditions are already satisfied ahead of schedule.)*
 
-Before ESR-0020 begins Guardian governance work, the Programme Sponsor has a natural checkpoint to confirm all three of the following actually hold, not just that ESR-0019 closed:
+Before ESR-0020 begins Guardian governance work, the Programme Sponsor has a natural checkpoint to confirm all three of the following actually hold, not just that a session closed:
 
-1. The IPC bridge is complete (EBG-0050 Phase 2 delivered).
-2. Guardian is genuinely interactive through the real UXP (not just through tests - a Sponsor-observable conversation, the way ESR-0015 WP5 was for OpenAI).
-3. Gemini is validated (EBG-0051's live smoke test has actually run, not just been scheduled).
+1. ~~The IPC bridge is complete (EBG-0050 Phase 2 delivered).~~ **Satisfied - ESR-0017 WP9.**
+2. ~~Guardian is genuinely interactive through the real UXP (not just through tests - a Sponsor-observable conversation, the way ESR-0015 WP5 was for OpenAI).~~ **Satisfied - ESR-0017 WP9, verified via a real windowed Tauri session with a live Guardian round trip, not just tests.**
+3. Gemini is validated (EBG-0051's live smoke test has actually run, not just been scheduled). **Still outstanding.**
 
-**Contingency** *(per Observation 2)*: if EBG-0050 Phase 2 slips past ESR-0019, ESR-0020's Guardian governance work (EBG-0041, EBG-0031) should be deferred accordingly rather than started early - the entire rationale for sequencing them after the bridge is that Guardian being fully wired makes the spec work concrete rather than speculative (Section 7); starting that work before the bridge lands would undercut its own stated justification. This is offered as a worked example of the contingency-branch pattern the Reviewer recommended future roadmap analyses adopt more generally.
+**Contingency** *(per Observation 2)*: if EBG-0051's smoke test slips, ESR-0020's Guardian governance work (EBG-0041, EBG-0031) should be deferred accordingly rather than started early - the entire rationale for sequencing them after the bridge and validated providers is that Guardian being fully wired makes the spec work concrete rather than speculative (Section 7); starting that work before this gate is satisfied would undercut its own stated justification. This is offered as a worked example of the contingency-branch pattern the Reviewer recommended future roadmap analyses adopt more generally.
 
 ---
 
@@ -104,7 +109,7 @@ Before ESR-0020 begins Guardian governance work, the Programme Sponsor has a nat
 
 # 9. Backlog Acceleration Opportunities
 
-- **EBG-0050's two-phase split** (schema/Python in ESR-0018, Rust/frontend in ESR-0019) keeps both halves tightly sequenced back-to-back while avoiding one oversized, high-risk session.
+- ~~**EBG-0050's two-phase split** (schema/Python in ESR-0018, Rust/frontend in ESR-0019) keeps both halves tightly sequenced back-to-back while avoiding one oversized, high-risk session.~~ **Overtaken by events (see Section 16): both phases were delivered in a single session (ESR-0017 WP9) without the risk this reasoning anticipated.** Retained for the historical record of the original planning rationale.
 - **EBG-0031 -> EBG-0041 -> EBG-0048** form one continuous Guardian governance thread across ESR-0020/ESR-0021 - grouping them close together reduces re-context-loading cost between sessions, consistent with PBK-0001's Backlog Acceleration criterion.
 
 ---
@@ -154,8 +159,9 @@ Please assess, independently:
 | ESR-0017 | Parent session report; WP4 is its final Work Package. |
 | ESR-0017 WP1/WP2/WP3 Review Packages | Prior Work Packages this roadmap builds on (EBG-0050, EBG-0051 origins). |
 | EE-0001 | Lead/Reviewer trial; ESR-0018's rotation and decision-point status are fixed inputs to this roadmap, not recommendations. |
-| EBR-0001 | Authoritative backlog source for every item cited above. |
+| EBR-0001 | Authoritative backlog source for every item cited above, including EBG-0055 added by the Section 16 revision. |
 | PBK-0001 | Source of the Backlog Progression Analysis methodology this package follows. |
+| UAM-0001 | Source of the Guardian Orb design direction EBG-0055 (ESR-0019) begins building toward. |
 
 ---
 
@@ -171,3 +177,17 @@ ChatGPT Engineering Reviewer returned: **0 Blocking, 0 Major, 4 Minor Observatio
 | 4 | The aging governance backlog should stay visible - agreed it shouldn't interrupt current trajectory, but should be consciously deferred, not forgotten | **Accepted and strengthened.** Section 10 now has an explicit revisit trigger (ESR-0021 closure or the ESR-0018 EE-0001 decision point, whichever comes first) rather than sitting as an undated footnote. |
 
 WP4 is now considered reviewed and closed, pending Programme Sponsor acceptance of this disposition. This closes out all four Work Packages of ESR-0017.
+
+---
+
+# 16. Post-Review Addendum - Roadmap Revised After ESR-0017 WP9
+
+*(Added after WP4's review and closure above, once WP9 - not yet defined when WP4 was reviewed - was implemented later in the same session.)*
+
+WP9 delivered EBG-0050 (both Phase 1 and Phase 2) in ESR-0017 itself, two sessions ahead of the schedule this roadmap set. Sections 5, 6 and 6.1 above have been updated in place (strikethrough marking superseded content, historical reasoning retained rather than deleted) rather than left to silently contradict what actually happened.
+
+This freed real capacity in ESR-0018/ESR-0019 that did not exist when WP4 was reviewed. The Programme Sponsor asked whether the Guardian Orb knowledge-graph design direction (recovered from FCH-0010 and incorporated into UAM-0001 Sections 8.1/8.2/8.3 later in ESR-0017) could be built "organically in line with planned WPs" rather than as a separate initiative. Section 6 now recommends EBG-0055 (Knowledge Graph Phase 1 - Static Live Graph, newly added to EBR-0001) fill that freed capacity in ESR-0018 or ESR-0019, consistent with PBK-0001's Feature-First Delivery Discipline (every session makes demonstrable UXP progress) and the "UXP grows with the work, not ahead of it" principle UAM-0001 Section 7.1 traces back to ESR-0010.
+
+**This addendum is a Lead-side update, not independently re-reviewed by the Engineering Reviewer.** The original WP4 disposition (Section 15) reflects ChatGPT's actual review of the original roadmap; this addendum was added afterward by the Engineering Lead alone. Per the per-Work-Package review discipline this session has otherwise followed throughout, the Programme Sponsor should decide whether this revision needs its own Reviewer pass before EBG-0055 is treated as an accepted part of the roadmap, or whether Lead-side updates that only strike through already-completed items and add one new candidate item (still requiring separate Programme Sponsor authorisation before implementation, per Section 3's standing caveat) can stand without a further review cycle.
+
+No implementation is authorised by this addendum, consistent with Section 13's Explicit Non-Claims.
