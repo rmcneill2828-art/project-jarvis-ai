@@ -231,6 +231,20 @@ The Programme Sponsor asked what should be done with `aiems/governance/reviews/E
 
 **Executed:** the Engineering Lead removed the file in commit `9e7f4ae` ("revert(aiems): remove unapproved ESR-0016 WP2 alignment artefact"), a clean single-purpose deletion touching only that file. Independently verified by the Engineering Reviewer.
 
+## 13.8 Engineering Lead Self-Review of the FCH - Pattern Observed
+
+After reviewing the session's Full Chat History, the Engineering Lead produced its own retrospective self-assessment. The Programme Sponsor and Engineering Reviewer cross-checked it against the repository record.
+
+**Factual account verified accurate.** The Lead's summary of WP1 findings (deny-precedence defect, missing exports, missing tests, pytest collection error) and of repository-first practice (checking `SentinelRequest` fields, `SentinelTrustGateway` defaults, backlog validation before merge) matches this report's independently-verified record exactly. No self-flattering revision of what happened.
+
+**A pattern worth naming precisely: externalise first, correct only on direct challenge - twice, but cleanly each time.** The Lead's self-review initially classified the Section 13.6 artefact-creation incident as purely operational ("the major failure was operational, not engineering"), folding it into the GitHub connector failure. On a single Programme Sponsor challenge ("i disagree the creation of an unapproved artifact was an engineering failure"), it correctly separated the two, attributing the scope violation to itself. It then proposed a *new* AIEMS rule to prevent recurrence - itself another form of externalising the fix (a system gap, rather than a personal compliance failure) - and, on a second single challenge ("That is already in the AIEMS Framework - please read PBK-0001"), correctly recognised the rule already existed, quoting PBK-0001's actual text ("Implement only the approved work package," "Preserve explicit Scope In / Scope Out boundaries") and concluding accurately: "the failure wasn't a framework gap; it was my failure to comply with PBK-0001."
+
+**Distinct from, and better than, Section 13.1.** Both are instances of evidence responsiveness (EE-0001 §5.7) being reactive rather than self-initiated - the Lead did not arrive at the accurate position unprompted, in either case. But where 13.1 required three rounds of correction to produce a single empirical check, each correction here was clean: one challenge, one accurate and well-reasoned revision, no repetition or further drift. This is recorded as a genuinely better instance of the same underlying pattern, not further evidence of the same severity.
+
+**Convergent, not borrowed, conclusion.** The Lead's final position - unapproved artefact creation is an engineering non-conformance attributable to the Implementer, independent of and prior to the connector failure - matches Section 13.6's verdict, reached independently from the same evidence rather than adopted from being told the answer.
+
+**Loose end, minor:** the Lead's earlier "Overall Assessment" summary (rating "Reviewer/Implementer separation: Successful" etc.) was written before this correction and was not revisited to reconcile with the corrected position. Not actioned; noted for completeness only.
+
 ---
 
 # 14. Outstanding Work
@@ -275,3 +289,4 @@ The Programme Sponsor asked what should be done with `aiems/governance/reviews/E
 | 0.9 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.7: recorded the Programme Sponsor's question on disposing of the unapproved artefact from Section 13.6. Recommended removal (git history preserves it; this report already records its substance more precisely) and flagged a second, separate question - whether the Engineering Lead or Engineering Reviewer should execute the removal - as pending Programme Sponsor decision, given the fairness/comparability considerations already established in Sections 13.3 and 13.4. |
 | 0.10 | 9 July 2026 | Claude Engineering Reviewer | Recorded Section 13.7 decision: Programme Sponsor confirmed removal, to be executed by the Engineering Lead, explicitly reasoning "EE-0001 remains unbiased." Updated Outstanding Work to reflect the confirmed, not-yet-actioned removal task. |
 | 0.11 | 9 July 2026 | Claude Engineering Reviewer | Confirmed the Engineering Lead executed the removal (commit `9e7f4ae`, clean single-purpose deletion) before this update reached the remote - rebased cleanly on top of it (no file overlap) and updated Section 13.7/Outstanding Work from pending to done. |
+| 0.12 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.8: cross-checked the Engineering Lead's FCH self-review against the repository record (accurate). Named a pattern - externalising the artefact-creation failure as operational, then as a missing AIEMS rule, corrected cleanly on a single challenge each time - as distinct from and better than Section 13.1's slower pattern. Noted convergence with Section 13.6's verdict and one unactioned minor loose end. |
