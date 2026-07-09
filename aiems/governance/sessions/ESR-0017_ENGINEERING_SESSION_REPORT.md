@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.13 |
+| Version | 0.14 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -266,7 +266,23 @@ Prompted by the Programme Sponsor asking whether a "final look" design and Obsid
 
 **Also noted, not fixed (lower urgency, broader scope):** `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md` is stale - still dated to ESR-0009 readiness, predating WP2 (Guardian-Sentinel connection) and WP9 (UXP-backend bridge) actually being implemented. Refreshing it is a multi-session documentation exercise beyond this check's scope; not actioned now.
 
-**Status: complete. No further design-baseline inconsistencies found in this pass.**
+**Status: complete for the material available at the time - superseded by 15.4 below, which found a larger gap in the same area.**
+
+## 15.4 Guardian Orb Design Direction Recovered from FCH-0010
+
+The Programme Sponsor located a design conversation and mock-up in `aiems/History/Full Chat/FCH-0010_ESR-0010_FULL_CHAT_HISTORY.md`, believing it had already been merged into the governed architecture. It had only partially been - a real gap 15.3 did not catch because it checked the current UXP against UAM-0001 as written, not UAM-0001 against everything ever approved in chat.
+
+**What was found:** [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Section 15 ("Guardian UXP Design Outcome") did capture and formally approve a design direction from that conversation - the Guardian Orb as a live rendering of the repository's knowledge graph (nodes as artefacts, connections as relationships, cluster illumination, agents appearing as nodes), correctly scoped as "approved design direction, not yet an implementation package," with "Guardian Orb prototype" explicitly deferred (Section 21). That part of the chain worked as intended.
+
+**Where the chain broke:** [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] - the actual persistent Guardian Experience Architecture artefact - was created under ESR-0009, *before* the ESR-0010 conversation happened, and was never updated afterward to reference it. UAM-0001's only later revision (v1.1) addressed unrelated ADR-0018/Sentinel scope. The richest detail from the original conversation - the specific Orb status-colour semantics (calm pulse/gold highlight/green pulse etc.) and a four-phase achievability roadmap - existed only in the raw chat transcript, in neither ESR-0010's own summary nor UAM-0001.
+
+**Fixed, per Programme Sponsor direction (full incorporation):**
+- [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] v1.2: new Section 8.1 (Knowledge Graph Representation) and Section 8.2 (Orb Status Semantics), both explicitly marked as design direction only, not implementation, per UAM-0001's own Section 18. ESR-0010 added to OSE Relationships/Related Artefacts. A Subsequent Architectural Update note records the retroactive incorporation and why it happened late.
+- [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0028 (UXP Evolution Roadmap) v1.21: added the four-phase achievability sequencing (static graph -> cluster colours/chat UI -> agent traversal animation -> Guardian reasoning/telemetry connection) as candidate staging for when this backlog item is actioned.
+
+**Note for the Programme Sponsor:** the original ChatGPT-generated mock-up image itself is not present anywhere in the repository - only described in FCH-0010's transcript text. If the original image file still exists outside the repository, it is worth adding to `aiems/models/` as a real reference asset; it cannot be recovered from here.
+
+**Status: complete. UAM-0001 now traceable as the single source for the Guardian Orb's approved design direction, rather than requiring a chat-transcript search to find it.**
 
 ---
 
@@ -281,7 +297,8 @@ Prompted by the Programme Sponsor asking whether a "final look" design and Obsid
 | [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] | Source of the WP3 Gemini (Secondary provider) decision. |
 | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current accepted repository baseline at session open. |
 | [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] | Current accepted repository baseline, accepted mid-session (WP7). |
-| [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Approved Guardian Experience Architecture baseline; consulted and checked for compliance in Section 15.3, one defect found and fixed. |
+| [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Approved Guardian Experience Architecture baseline; consulted and checked for compliance in Section 15.3 (one defect found and fixed); Guardian Orb knowledge-graph design direction retroactively incorporated in Section 15.4 (v1.2). |
+| [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Source of the Guardian Orb knowledge-graph design direction recovered and re-traced in Section 15.4. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Amended by WP8 (Feature-First Delivery Discipline). |
 
 ---
@@ -290,6 +307,7 @@ Prompted by the Programme Sponsor asking whether a "final look" design and Obsid
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.14 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.4: Programme Sponsor located FCH-0010's Guardian Orb design conversation, believing it was already merged into governed architecture. Traced the chain - ESR-0010 Section 15 did approve and record a design direction correctly, but UAM-0001 (created earlier, under ESR-0009) was never updated afterward to reference it. Fixed per Programme Sponsor's full-incorporation decision: UAM-0001 v1.2 (Sections 8.1 Knowledge Graph Representation, 8.2 Orb Status Semantics, both explicit design-direction-only) and EBR-0001 v1.21 (EBG-0028 phased achievability roadmap). Noted the original mock-up image is not recoverable from the repository. |
 | 0.13 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.3: consulted UAM-0001 (Approved Guardian Experience Architecture baseline, previously not checked before WP9's frontend work) and its FCH-0009/FCH-0011 origin (a ChatGPT-generated mock-up, not preserved in-repo). Confirmed Obsidian-as-product-feature was already explicitly decided against (FCH-0008), consistent with current architecture. Compliance check against UAM-0001 Sections 5-19 found and fixed one real defect: DiagnosticsPanel's guardian/sentinel/providers rows were static and could contradict the live sidebar/status-card state from the same platform.status call; now derived consistently via a new deriveDiagnostics() in App.jsx. Verified by npm run build (clean) and live via Vite HMR against the running dev session. Noted JARVIS_CAPABILITY_READINESS_MATRIX.md is stale (pre-dates WP2/WP9) but did not action it - out of this check's scope. |
 | 0.12 | 9 July 2026 | Claude Engineering Lead | Recorded ChatGPT Engineering Reviewer's WP9 implementation review outcome (Section 15.1.1): Approved with 4 Minor findings. Fixed 2 (jsonrpc version validation in stdio_rpc.py with 2 new regression tests, 184/184 passing; Rust state cleared on malformed response too, cargo build clean); deliberately deferred 2 (handler exception detail leakage - noted on EBR-0001 EBG-0050 v1.20; compile-only verification boundary - already honestly disclosed, Reviewer confirmed acceptable for foundation scope). WP9 marked Complete and Reviewed per Reviewer recommendation. Corrected a stale Section 13 WP8 row that still read 'awaiting review' after WP8 was already completed. |
 | 0.11 | 9 July 2026 | Claude Engineering Lead | Recorded WP9-adjacent Dev-Environment Setup Automation (Section 15.2): setup.bat / scripts/setup-dev-environment.ps1, prompted by the Programme Sponsor's work-laptop move. Verified by direct execution (idempotent re-run, 182/182 tests). Added EBR-0001 EBG-0054 as the forward-looking backlog item for future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). Committed and pushed as b3806d5. |

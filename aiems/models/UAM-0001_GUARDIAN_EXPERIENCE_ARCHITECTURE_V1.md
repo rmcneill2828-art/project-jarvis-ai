@@ -2,7 +2,7 @@
 
 > *"Guardian is not where the interface points; Guardian is who the experience gathers around."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | UAM-0001 |
 | Title | Guardian Experience Architecture v1.0 |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved Baseline |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -25,6 +25,8 @@
 # Subsequent Architectural Update
 
 [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) broadened Sentinel's role beyond the "trust posture" representation described in this artefact's Sentinel Trust Posture Representation section, and beyond [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] as originally written. Sentinel is now the AI Execution and Security Platform, with implemented provider orchestration, execution governance and failover under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot. This note does not change UAM-0001's Approved Baseline status or other content.
+
+[[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Section 15 ("Guardian UXP Design Outcome") approved a specific Guardian Orb design direction - the Orb as a live rendering of the repository's engineering knowledge graph, with cluster illumination, agent-traversal visualisation and Orb-specific status semantics - originating from a design conversation recorded in `aiems/History/Full Chat/FCH-0010_ESR-0010_FULL_CHAT_HISTORY.md`. This was never merged into UAM-0001 at the time it was approved. Retroactively incorporated at ESR-0017 (Sections 8.1 and 8.2 below) after the Programme Sponsor identified the gap. This note does not change UAM-0001's Approved Baseline status or other content.
 
 ---
 
@@ -106,6 +108,33 @@ The Guardian Orb is Guardian's visual presence, not decoration.
 The Orb represents continuity, readiness and companion presence.
 
 It shall not be treated as an ornamental background element or generic status icon.
+
+## 8.1 Knowledge Graph Representation
+
+Approved as design direction under [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Section 15, retroactively incorporated here at ESR-0017 - see Subsequent Architectural Update above.
+
+The Orb's long-term form is a live rendering of the repository's own engineering knowledge graph, not an abstract animation:
+
+- Nodes represent real artefacts, capabilities, systems or agents.
+- Connections represent real engineering relationships between them.
+- Architectural clusters (for example AIEMS Governance, Engineering Sessions, Guardian Architecture, Execution Environment) illuminate as the systems they represent are accessed.
+- Newly active agents appear as distinct nodes and connect into the graph as they come online, adopting their designated cluster colour as trust and identity are established.
+- The Orb is driven by observed data, not by animation scripts - consistent with Section 8's presence principle, it shall visualise observable engineering or platform state rather than simulated intelligence.
+
+This remains a design direction, not an implementation package. Per Section 18's Capability Evolution Model, it shall be built only through approved engineering packages, in phases tracked at [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0028.
+
+## 8.2 Orb Status Semantics
+
+The Orb's own animation may communicate Guardian's activity state, distinct from the general capability-state colour language in Section 14:
+
+- Calm pulse - idle or observing.
+- Gentle colour flow - learning or traversing knowledge.
+- Bright traversal paths - active reasoning.
+- Multiple concurrent traversal paths - multi-agent collaboration.
+- Gold highlight - awaiting human approval.
+- Green pulse - approved action complete.
+
+These semantics apply only where the knowledge-graph Orb (8.1) is implemented. They do not retroactively apply to the current placeholder Orb animation, which remains governed only by Sections 13-15's general visual, colour and animation principles until superseded by an approved implementation package.
 
 ---
 
@@ -243,6 +272,7 @@ UAM-0001 does not:
 | [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]] | Architecture decision defining Guardian identity and HITL governance context. |
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Engineering ecosystem and OSE context for controlled architecture navigation. |
 | [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline context. |
+| [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Source of the Guardian Orb knowledge-graph design direction incorporated into Sections 8.1 and 8.2. |
 
 ---
 
@@ -261,5 +291,6 @@ UAM-0001 does not:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 9 July 2026 | Claude Engineering Lead | Retroactively incorporated ESR-0010 Section 15's approved Guardian Orb design direction (originally discussed in FCH-0010, never merged into this artefact at the time): new Section 8.1 Knowledge Graph Representation (Orb as live rendering of the repository's engineering knowledge graph - nodes/connections/cluster illumination/agent-as-nodes) and Section 8.2 Orb Status Semantics (idle/learning/reasoning/awaiting-approval/approved colour states, distinct from Section 14's general capability colour language). Both remain design direction only, not implementation, per Section 18. Added ESR-0010 to OSE Relationships/Related Artefacts. Gap identified when the Programme Sponsor asked whether a final UXP look had already been discussed with ChatGPT. |
 | 1.1 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-posture-only framing described here. Approved Baseline status and original content unchanged. |
 | 1.0 | 2 July 2026 | Codex Engineering Implementer | Initial approved Guardian Experience Architecture v1.0 created under EIP-ESR0009-004. |

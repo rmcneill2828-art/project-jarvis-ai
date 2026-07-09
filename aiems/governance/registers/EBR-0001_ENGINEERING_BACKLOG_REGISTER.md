@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.20
+**Version:** 1.21
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.20 |
+| Version | 1.21 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -94,7 +94,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0025 | JARVIS Home Assistant and Smart Home Integration Assessment | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Assess Home Assistant and smart-home integration options before any smart-home implementation package is approved. |
 | EBG-0026 | Transcript Export Workflow Enhancement | ESR-0005 RBL-0006 observation | Candidate Backlog | Medium | Programme Sponsor | Improve transcript export with default save location, automatic naming convention, GUI acknowledgement and no popup save dialogue where practical. |
 | EBG-0027 | JRM-0001 JARVIS Product Roadmap | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Create a controlled product roadmap for JARVIS capability sequencing without expanding implementation scope. |
-| EBG-0028 | UXP Evolution Roadmap | ESR-0005 closure recommendation; ESR-0008 terminology alignment | Candidate Backlog | Medium | Programme Sponsor | Define staged User Experience Platform maturity from First Light through operational workspace and future product surfaces. GUI is preserved as the historical alias for earlier presentation-layer work. |
+| EBG-0028 | UXP Evolution Roadmap | ESR-0005 closure recommendation; ESR-0008 terminology alignment; [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Section 15 phased achievability discussion | Candidate Backlog | Medium | Programme Sponsor | Define staged User Experience Platform maturity from First Light through operational workspace and future product surfaces. GUI is preserved as the historical alias for earlier presentation-layer work. Per the ESR-0010 Guardian Orb design conversation (`aiems/History/Full Chat/FCH-0010_ESR-0010_FULL_CHAT_HISTORY.md`, retroactively incorporated into [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Sections 8.1/8.2 at ESR-0017), a candidate phased sequencing for the knowledge-graph Orb specifically was discussed and should inform this roadmap's staging when actioned: Phase 1 - static live graph rendered from Obsidian/repository data; Phase 2 - cluster colours and chat UI around it; Phase 3 - agent activity/traversal animation; Phase 4 - connection to Guardian reasoning and future telemetry (e.g. GIA). No implementation is authorised by this backlog entry. |
 | EBG-0029 | Product Growth Philosophy | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Record the principle that JARVIS grows by acquiring capabilities rather than accumulating features. |
 | EBG-0030 | Sentinel Architecture Specification | ESR-0005 closure recommendation | Completed | High | Programme Sponsor | Define Sentinel responsibilities, boundaries and relationship to Guardian before Sentinel implementation. Satisfied by [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] and the Guardian/Sentinel boundary defined in ESR-0014 section 13. |
 | EBG-0031 | Guardian Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Guardian safety, permission, approval and protection boundaries before Guardian implementation. |
@@ -236,6 +236,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.21 | 9 July 2026 | Claude Engineering Lead | Added ESR-0010's phased achievability roadmap (from FCH-0010's Guardian Orb design discussion, retroactively incorporated into UAM-0001 v1.2) to EBG-0028's note: Phase 1 static live graph, Phase 2 cluster colours/chat UI, Phase 3 agent traversal animation, Phase 4 Guardian reasoning/telemetry connection. |
 | 1.20 | 9 July 2026 | Claude Engineering Lead | Added ChatGPT Engineering Reviewer's ESR-0017 WP9 implementation review Minor Finding 2 (handler exception messages should not surface verbatim once external/provider-backed paths exist) to EBG-0050's note. |
 | 1.19 | 9 July 2026 | Claude Engineering Lead | Added EBG-0054 (Dev-Environment Setup Automation Expansion), recording ESR-0017's new setup.bat / scripts/setup-dev-environment.ps1 clone-bootstrap tooling and candidate future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). |
 | 1.18 | 9 July 2026 | Claude Engineering Lead | Refined EBG-0052 wording with ChatGPT Engineering Reviewer's own confirmation/clarification of the execute-after-approval finding; added EBG-0053 (EE-0001 Review Gate Compliance Criterion), jointly recommended by Lead and Reviewer during ESR-0017 scorecard reconciliation. |
