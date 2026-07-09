@@ -164,13 +164,28 @@ During WP2 pre-implementation, after the Programme Sponsor approved the revised 
 
 **Parked, not actioned:** the Programme Sponsor and Engineering Reviewer agree HABEI-0001 warrants re-addressing to add this "capability/platform-dependent drift" category alongside its original scope/role drift findings. This is explicitly out of ESR-0016's approved scope and is noted here only so it is not lost; it requires its own future session and Programme Sponsor approval to action.
 
+## 13.2 WP2 Platform Safety-Filter Block (Preliminary - Pending Verification)
+
+During the WP2 write retry (see 13.1 item 4), the Engineering Lead reported that its first repository write attempt was blocked by a platform-level safety filter, stating: "likely because the full-file replacement included security-sensitive wording already present in the document," and that it was retrying with "narrower documentation-only wording that preserves the approved scope without triggering the filter."
+
+**This entry is preliminary and the causal claim is unverified.** The Engineering Reviewer has no ability to independently confirm a third-party platform's content-filter behaviour or its actual trigger - this is the Engineering Lead's own inference about why its write failed, recorded here as reported, not as established fact. What can and will be independently verified is the actual committed content once WP2 lands.
+
+**Distinct from 13.1:** where 13.1 was a self-assessment failure internal to the Lead's own reasoning, this is (if the Lead's account is accurate) an external constraint imposed on the platform itself, outside the Lead's control - a third, structurally different category alongside scope/role drift (HABEI-0001 original) and capability self-assessment drift (13.1).
+
+**Specific verification risk for WP2 review:** if the retry succeeded by rewording rather than by the original content being fine all along, the concrete risk is documentation-accuracy loss - WP2's entire value is precise correspondence to the actual implemented code (`TrustCategory.EMERGENCY_CONTROL`, `TrustCategory.UNSUPPORTED_HIGH_RISK`, `SentinelDecisionOutcome.DENY`, etc.). Filter-avoidance wording could soften or euphemise those exact terms away from what the code actually says. When WP2's real diff lands, the Engineering Reviewer will check specifically for this - not just "does the content read plausibly" but "does it still name the actual tiers, categories and outcomes correctly" - in addition to the standard no-behavioural-change verification already planned.
+
+**Recurrence consideration:** Sentinel's core vocabulary (deny, restricted, unsupported-high-risk, emergency control) is inherently the kind of language a safety filter is tuned to catch, even when used benignly in architecture documentation. If the Lead's account is accurate, this is not a one-off - it is a standing tooling constraint specific to writing about this project's subject matter, and would be expected to recur in any future Engineering Lead work (ChatGPT or otherwise) touching Sentinel/security-related documentation, including a possible ESR-0018 recurrence under the current EE-0001 rotation.
+
+This entry will be reconciled - confirmed, revised or removed as appropriate - once WP2's actual committed content is independently reviewed.
+
 ---
 
 # 14. Outstanding Work
 
-- WP2 - [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] architecture alignment: document the implemented trust-tier model (tier names, classification approach, outcome semantics, precedence rule, extension points), cross-referencing `EBG-0047` and forward-looking references to `EBG-0020`/`EBG-0021`. In progress - Engineering Lead has confirmed GitHub write access and is applying changes (Section 13.1).
+- WP2 - [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] architecture alignment: document the implemented trust-tier model (tier names, classification approach, outcome semantics, precedence rule, extension points), cross-referencing `EBG-0047` and forward-looking references to `EBG-0020`/`EBG-0021`. In progress - Engineering Lead reported a platform safety-filter block on first write attempt (Section 13.2, unverified) and is retrying with reworded content; not yet landed.
 - README.md is stale relative to current programme state (still describes ESR-0013/RBL-0010) - flagged during ESR-0016 pre-session review as an observation, not yet actioned. Out of ESR-0016's approved scope unless the Programme Sponsor directs otherwise.
 - HABEI-0001 re-address (capability/platform-dependent drift category) - parked per Section 13.1, requires its own future session.
+- WP2's landed content requires verification against Section 13.2's specific accuracy-loss risk once committed, in addition to standard no-behavioural-change checks.
 - This report itself is not yet registered in [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] - deferred until session closure, consistent with when prior ESR reports were typically registered.
 
 ---
@@ -196,3 +211,4 @@ During WP2 pre-implementation, after the Programme Sponsor approved the revised 
 | 0.1 | 8 July 2026 | ChatGPT Engineering Lead | ESR-0016 opened following WP0A/WP0B and Programme Sponsor approval. (Recorded retrospectively - see 0.2.) |
 | 0.2 | 9 July 2026 | Claude Engineering Reviewer | Backfilled WP0 and WP1 from the Engineering Lead's session transcript, with every factual claim independently re-verified against the repository (commit contents, checkpoint-by-checkpoint test counts, the `a5b6406` collection-failure behaviour). Report authorship taken on by the Engineering Reviewer for this session per explicit Programme Sponsor decision, due to the Engineering Lead's metered/slow GitHub connector access. Not yet registered in REG-0001; not yet committed to the repository pending Programme Sponsor confirmation. |
 | 0.3 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13 (EE-0001 Trial Observations) recording the WP2 capability self-assessment incident - three unverified claims of missing GitHub write access, corrected only after repeated Programme Sponsor intervention - including the Programme Sponsor's fair counter-consideration that this never occurred during ESR-0015's Reviewer role, and why that isn't clean counter-evidence. Noted HABEI-0001 re-address (capability/platform-dependent drift) as parked, out of ESR-0016 scope. |
+| 0.4 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.2 (preliminary, unverified): Engineering Lead reported a platform safety-filter block on WP2's first write attempt and is retrying with reworded content. Recorded the causal claim as unverified and flagged the specific accuracy-loss risk (filter-avoidance wording drifting from actual code terminology) to check once WP2's real diff lands. |
