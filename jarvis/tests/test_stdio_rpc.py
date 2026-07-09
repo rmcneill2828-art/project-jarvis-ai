@@ -69,6 +69,23 @@ def test_malformed_json_returns_parse_error():
     assert response["id"] is None
 
 
+def test_missing_jsonrpc_version_returns_invalid_request():
+    server = _server()
+
+    response = server.handle_line(json.dumps({"id": 4, "method": "platform.status", "params": {}}))
+
+    assert response["error"]["code"] == INVALID_REQUEST
+    assert response["id"] == 4
+
+
+def test_wrong_jsonrpc_version_returns_invalid_request():
+    server = _server()
+
+    response = server.handle_line(json.dumps({"jsonrpc": "1.0", "id": 5, "method": "platform.status", "params": {}}))
+
+    assert response["error"]["code"] == INVALID_REQUEST
+
+
 def test_non_object_request_returns_invalid_request():
     server = _server()
 

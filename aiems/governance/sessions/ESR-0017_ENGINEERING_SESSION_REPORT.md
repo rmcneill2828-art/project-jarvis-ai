@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.11 |
+| Version | 0.12 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -72,7 +72,7 @@ Decide the UXP-to-backend integration pattern (WP1); connect the existing Guardi
 | WP6 | Independent Repository Verification (Engineering Reviewer) | Complete - Pass, see Section 13 |
 | WP7 | Repository Baseline Acceptance (Programme Sponsor) | Complete - [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] accepted 9 July 2026, superseding RBL-0011 |
 | WP8 | Feature-First Delivery Discipline - new standing PBK-0001 principle (minimise controlled artefact creation; every Engineering Session delivers product-moving work; every Engineering Session makes demonstrable progress toward the live UXP) | Complete and Reviewed - PBK-0001 v1.19; ChatGPT Engineering Reviewer: 0 Blocking, 0 Major, 1 Minor (incorporated), 1 Observation (incorporated); see Section 14 |
-| WP9 | First Interactive UXP - implement ADR-0019's bridge at foundation scope (Python stdio JSON-RPC entry point, Tauri sidecar process management, React live-data wiring) | Implemented and self-reviewed; awaiting Engineering Reviewer verification; see Section 15 |
+| WP9 | First Interactive UXP - implement ADR-0019's bridge at foundation scope (Python stdio JSON-RPC entry point, Tauri sidecar process management, React live-data wiring) | Complete and Reviewed - ChatGPT Engineering Reviewer: Approved with 4 Minor findings (2 fixed, 2 deliberately deferred to EBG-0050); see Section 15.1.1 |
 
 ---
 
@@ -168,9 +168,9 @@ Full detail is recorded in [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] 
 | WP7 Repository Baseline Acceptance (Programme Sponsor) | **Complete.** [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] accepted 9 July 2026 (new baseline, not incremental retention), superseding RBL-0011. Stands independently of WP8/WP9. |
 | `bump_version.py` self-referential-target defect fix | Complete - fixed, tested (170/170 passing), regression tests added |
 | PST-0001 update to reflect RBL-0012 and in-progress state | **Complete.** ESR-0017 recorded as still Open (not closed) since WP8/WP9 remain pending - see PST-0001 Sections 3, 4A, 8, 9. |
-| **WP8** | **Drafted, awaiting Engineering Reviewer review.** Feature-First Delivery Discipline added to PBK-0001 - see Section 14. |
-| **WP9** | **Implemented and self-reviewed** (Python backend, Tauri Rust bridge, React frontend all wired to real calls). Awaiting Engineering Reviewer verification before it can be marked complete - see Section 15.1. |
-| Formal session closure (Status: Open to Closed, Date Closed) | Outstanding - blocked on WP8 review and WP9 |
+| **WP8** | **Complete and Reviewed.** Feature-First Delivery Discipline added to PBK-0001 v1.19 - see Section 14. |
+| **WP9** | **Complete and Reviewed.** ChatGPT Engineering Reviewer: Approved with 4 Minor findings (2 fixed, 2 deliberately deferred to EBG-0050) - see Section 15.1.1. |
+| Formal session closure (Status: Open to Closed, Date Closed) | Outstanding - Programme Sponsor has indicated further Work Packages may follow WP9; session remains Open pending explicit closure direction. |
 
 ---
 
@@ -227,6 +227,19 @@ All three parts implemented at the agreed foundation scope, self-reviewed agains
 
 **Status: implemented and self-reviewed. Awaiting Engineering Reviewer verification before WP9 is marked complete.**
 
+## 15.1.1 Engineering Reviewer's Implementation Review Outcome
+
+**Verdict: Approved with minor findings, not blocking.** ChatGPT Engineering Reviewer verified the implementation on `main` at commit `490997b`: Backend Pass (envelope, methods, `build_default_runtime()`, `--ipc-stdio` all aligned with the approved design); Tests Pass by inspection (12 stdio RPC tests covering the cases listed in 15.1); Tauri/Rust Pass with minor observations; Frontend Pass (live input/response/error handling, no silent mock substitution). The Reviewer explicitly agreed the compile-only Rust/React verification boundary disclosed in 15.1 is acceptable for foundation scope, while noting a real windowed click-through should be required before calling the UXP production-ready - consistent with, not a relaxation of, the disclosed boundary.
+
+Four Minor findings raised, all considered on their merits rather than accepted blindly:
+
+1. **`StdioRpcServer.handle_line()` did not validate `"jsonrpc": "2.0"`.** Confirmed real by inspection - the envelope's own version field was never checked. **Fixed**: `jarvis/interfaces/stdio_rpc.py` now returns `INVALID_REQUEST` if `jsonrpc` is missing or not `"2.0"`, matching the JSON-RPC 2.0 spec. Two regression tests added (`test_missing_jsonrpc_version_returns_invalid_request`, `test_wrong_jsonrpc_version_returns_invalid_request`); suite now 184/184.
+2. **Handler errors expose `type(exc).__name__` and `str(exc)`.** Reviewer explicitly characterised this as acceptable for the current deterministic local-only scope, with the concern applying once external/provider-backed paths are wired through this bridge. Agreed - not fixed now (fixing it now would remove useful diagnostic detail during exactly the phase where it is safe and useful). **Deferred**: added to [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0050's note (v1.20) rather than opening a new backlog item, since EBG-0050 already covers this bridge's production hardening.
+3. **Rust cleared backend state on write/EOF/read failure but not on a malformed JSON response.** Confirmed real by inspection - `serde_json::from_str` failure returned an error without clearing `BackendState`, an inconsistency with every other failure path. **Fixed**: `src-tauri/src/lib.rs`'s `call_backend()` now clears state on a malformed response too, so the next call restarts the backend rather than continuing to trust a process whose stdio framing could not be parsed. Verified by `cargo build` (clean, 24.37s).
+4. **Compile-only Rust/React verification boundary.** Already disclosed in 15.1; Reviewer confirmed this is acceptable for WP9 specifically because it was disclosed, not glossed over, with a real windowed click-through required before any production-ready claim. No change - already the honest position taken.
+
+**WP9 marked complete**, per the Reviewer's explicit recommendation: the first live UXP path (React &rarr; Tauri &rarr; Python &rarr; Guardian &rarr; Sentinel &rarr; Provider &rarr; UXP) exists at foundation scope, reviewed, with two of four findings fixed immediately and the remaining two deliberately deferred with reasoning recorded rather than silently dropped.
+
 ## 15.2 Dev-Environment Setup Automation
 
 Raised by the Programme Sponsor after WP9's implementation was pushed: moving between machines (including a work laptop) previously meant manually re-deriving the setup sequence (`npm install`, `cargo build`, Python venv creation, `pip install -e ".[dev]"`, opting into the tracked pre-commit hook via `git config core.hooksPath scripts/hooks`) with no record of the correct order or a way to verify it worked.
@@ -262,6 +275,7 @@ Recorded as a candidate backlog item for future expansion rather than built out 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.12 | 9 July 2026 | Claude Engineering Lead | Recorded ChatGPT Engineering Reviewer's WP9 implementation review outcome (Section 15.1.1): Approved with 4 Minor findings. Fixed 2 (jsonrpc version validation in stdio_rpc.py with 2 new regression tests, 184/184 passing; Rust state cleared on malformed response too, cargo build clean); deliberately deferred 2 (handler exception detail leakage - noted on EBR-0001 EBG-0050 v1.20; compile-only verification boundary - already honestly disclosed, Reviewer confirmed acceptable for foundation scope). WP9 marked Complete and Reviewed per Reviewer recommendation. Corrected a stale Section 13 WP8 row that still read 'awaiting review' after WP8 was already completed. |
 | 0.11 | 9 July 2026 | Claude Engineering Lead | Recorded WP9-adjacent Dev-Environment Setup Automation (Section 15.2): setup.bat / scripts/setup-dev-environment.ps1, prompted by the Programme Sponsor's work-laptop move. Verified by direct execution (idempotent re-run, 182/182 tests). Added EBR-0001 EBG-0054 as the forward-looking backlog item for future expansion (cross-platform equivalent, CI parity, environment-doctor mode, version-floor checks). Committed and pushed as b3806d5. |
 | 0.10 | 9 July 2026 | Claude Engineering Lead | Recorded WP9 Implementation Record (Section 15.1): all three parts (Python backend, Tauri Rust bridge, React frontend) implemented and self-reviewed against the approved design. Backend verified end-to-end by direct execution and 12 passing tests; Rust and React verified by clean build/compile only - verification boundary disclosed honestly (no windowed-app or click-through testing possible in this environment). Status: awaiting Engineering Reviewer verification before WP9 is marked complete. |
 | 0.9 | 9 July 2026 | Claude Engineering Lead | Recorded ChatGPT Engineering Reviewer's WP9 design review outcome: approve with five refinements, all incorporated (JSON-RPC 2.0 envelope, LocalEchoProvider default confirmed, minimal child-process lifecycle handling with explicit no-mock-fallback rule, method set confirmed sufficient, explicit dev-mode-only Rust process note). Implementation now proceeding. |

@@ -98,8 +98,16 @@ fn call_backend(state: &BackendState, method: &str, params: Value) -> Result<Val
         Ok(_) => {}
     }
 
-    let response: Value = serde_json::from_str(response_line.trim())
-        .map_err(|e| format!("Malformed response from JARVIS backend: {e}"))?;
+    let response: Value = match serde_json::from_str(response_line.trim()) {
+        Ok(value) => value,
+        Err(e) => {
+            // A malformed line means the stdio framing can no longer be trusted
+            // for this process - clear state so the next call restarts it,
+            // matching the write/EOF/read failure handling above.
+            *guard = None;
+            return Err(format!("Malformed response from JARVIS backend: {e}. The next request will attempt to restart it."));
+        }
+    };
 
     if let Some(error) = response.get("error") {
         let message = error

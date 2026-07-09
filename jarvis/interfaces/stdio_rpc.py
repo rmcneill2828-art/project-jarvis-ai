@@ -89,6 +89,10 @@ class StdioRpcServer:
             return self._error(None, INVALID_REQUEST, "Invalid request: expected a JSON object.")
 
         request_id = request.get("id")
+
+        if request.get("jsonrpc") != JSONRPC_VERSION:
+            return self._error(request_id, INVALID_REQUEST, 'Invalid request: jsonrpc must be "2.0".')
+
         method = request.get("method")
         params = request.get("params", {})
 
