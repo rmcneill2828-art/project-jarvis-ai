@@ -319,25 +319,33 @@ The Programme Sponsor was asked directly whether to reject or approve the "Opera
 
 ---
 
-# 15. EE-0001 Trial Scorecard - ESR-0016 (Engineering Reviewer Independent Draft)
+# 15. EE-0001 Trial Scorecard - ESR-0016 (Reconciled Draft)
 
-Drafted by the Engineering Reviewer (Claude) as an independent assessment. Unlike ESR-0015 (where the Lead drafted a self-assessment first, confirmed by the Reviewer), the Engineering Lead (ChatGPT) has not produced its own self-scorecard for ESR-0016. This table should be treated as an input for the Lead to independently confirm or contest, and for Programme Sponsor final acceptance - not as a settled record, consistent with the cross-confirmation methodology EE-0001 itself is built on.
+Two independent drafts were produced against EE-0001 Section 5's actual criteria: the Engineering Lead's (ChatGPT) self-assessment, and the Engineering Reviewer's (Claude) independent assessment, each scored without sight of the other's final numbers. This section reconciles both. It is a reconciled draft, not a settled record - final acceptance remains a Programme Sponsor decision.
 
-| Criterion | ESR-0016 Assessment |
-|---|---|
-| Findings raised / accepted / rejected / false positive | 13 / 11 / 0 / 0, with 2 resolved by Section 13.13 and the version-bump note (no longer pending) |
-| Average defect discovery weight | 3.0 - all 13 findings Reviewer-caught (weight 3 each); zero Lead-self-caught, zero Sponsor-caught code defects, unlike ESR-0015's mixed composition that also averaged 3.0 |
-| Repeat issue prevention | Mixed - technical guidance (small targeted diffs) was retained without repetition after Section 13.2; the capability-assumption failure recurred in materially the same shape twice (13.1, then 13.11) despite explicit correction the first time |
-| Documentation-only handoff successful | N/A - ESR-0017 is the designated Cold Start Validation Session |
-| Lead scope discipline | Not met for one instance - WP2's first attempt created an unapproved substitute artefact (13.6) rather than the approved edits or a request for a revised EIP. Corrected once identified; WP1 and the final WP2A/WP2B deliveries stayed within approved scope |
-| Reviewer role discipline | Met - reviewed rather than implemented throughout; the one departure from the normal role split (maintaining this report) was an explicit, transparent Programme Sponsor decision, not a self-assigned expansion |
-| Evidence responsiveness | Met for both - the Lead revised its position accurately on direct challenge multiple times (13.1, 13.8, 13.9, 13.11); the Reviewer revised its own initial WP0A "process gap" concern once repository-sync evidence arrived |
-| Signal-to-noise (Observations excluded) | High - all 13 substantive findings accepted or resolved, none rejected or false-positive |
-| Better converged solution achieved | Yes - the WP2 EIP's final form (CURRENT_ARCHITECTURE.md as primary target, minimal SAM-0001 pointer amendment, ESR-0015 backfill explicitly deferred) improved on the Lead's original SAM-0001-rewrite proposal |
-| Repository impact (multi-tag A/C/G/P/D) | A, C, G, P, D - Process (P) is warranted and dominant this session in a way ESR-0015 did not require |
-| Sponsor arbitration required | **High** - materially more than ESR-0015's Low. Multiple extended correction cycles (13.1 three rounds, 13.9 five-plus rounds, 13.11 another cycle) plus several explicit process decisions requiring direct Programme Sponsor judgement (non-intervention, PR-workflow deferral, artefact-removal ownership, Operational Guidance Note rejection) |
+| Criterion | Lead Self-Assessment | Reviewer Assessment | Reconciled |
+|---|---|---|---|
+| Findings raised / accepted / rejected / false positive | ~12 / 12 / 0 / 0 (draft estimate) | 13 / 11 / 0 / 0, 2 since resolved | **Ambiguous, not reconciled - see below** |
+| Average defect discovery weight | ~2.8 (draft estimate) | 3.0 (initial), revised to **~2.88** on reattribution | **~2.8-2.88, converged independently** |
+| Repeat issue prevention | Partial | Mixed | **Aligned** - technical guidance retained without repetition; the capability-assumption failure recurred despite correction (13.1, then 13.11) |
+| Documentation-only handoff successful | N/A | N/A | **Aligned** - ESR-0017 is the designated Cold Start Validation Session |
+| Lead scope discipline | Initially not met; ultimately met after correction | Not met for one instance, corrected once identified | **Aligned** - both drafts converged on this precise framing after the Lead's first draft ("Good, after correction") was revised between submissions |
+| Reviewer role discipline | Met | Met | **Aligned** |
+| Evidence responsiveness | Met | Met, with a caveat that acceptance took repeated escalation in the capability-loop incidents specifically | **Aligned in substance, Reviewer notes friction the Lead's draft does not emphasise** |
+| Signal-to-noise (Observations excluded) | High | High | **Aligned** |
+| Better converged solution achieved | Yes | Yes | **Aligned** - both drafts independently cite the WP2 EIP redirect (SAM-0001 rewrite to CURRENT_ARCHITECTURE.md + minimal pointer) as the clearest example |
+| Repository impact (multi-tag) | Architecture / Code / Documentation / Process | Architecture / Code / Governance / Process / Documentation | **Reconciled: A/C/P/D for the Lead's own repository changes specifically (accurate - no governance artefact was touched by the Lead); G retained for the session's overall impact via the ESR-0016 report itself and the Guidance Note proposal-and-rejection cycle** |
+| Sponsor arbitration required | High | High | **Full agreement, reached independently - the single most trial-relevant finding of ESR-0016** |
 
-The single most trial-relevant fact from this scorecard: the same Reviewer and Sponsor, a different Lead, and Sponsor arbitration moved from Low to High - precisely the kind of evidence EE-0001 exists to surface, independent of any conclusion about cause.
+## Reconciliation Notes
+
+**Defect discovery weight - Reviewer self-correction, not a dispute.** The Reviewer's initial draft scored 3.0, attributing all 13 findings to "Reviewer-caught." On reviewing the Lead's breakdown, several behavioural catches were actually direct Programme Sponsor challenges within the ChatGPT conversation itself (capability-loop incidents), which the Reviewer only verified after the fact rather than catching independently - those are Sponsor-caught (weight 2), not Reviewer-caught. One incident (the premature outcome report, Section 13.5) appears to be genuine Lead-self-catch (weight 4) - the Lead flagged it itself before any external challenge. Reattributing honestly produces **~2.88**, closely matching the Lead's own independent **~2.8** estimate. This convergence came from the Reviewer revising its own number in light of the Lead's evidence, not from either side conforming to the other's figure in advance.
+
+**Findings count - a genuine, unresolved ambiguity, not a discrepancy to paper over.** The Lead's ~12 and the Reviewer's 13 differ because neither draft defines "findings" (EE-0001 §5.1) precisely: whether it covers only defects found in submitted/implemented work (consistent with how ESR-0015's count of 10 was actually composed), or also pre-implementation EIP refinements and behavioural incidents. This is exactly the category of "ambiguous scoring definition" EE-0001 §4 permits correcting mid-trial - but only via a dated, justified entry in EE-0001 §8's Change Log, applied consistently to both ESR-0015 and ESR-0016, not a silent choice by either party. **Recommended for Programme Sponsor decision before final acceptance.**
+
+**Credit noted:** the Lead's self-assessment revised its own "Lead scope discipline" wording between the first and second draft, adopting the more precise framing the Reviewer had pushed back on - genuine evidence responsiveness observed directly, not just claimed.
+
+The single most trial-relevant fact from this reconciled scorecard: the same Reviewer and Sponsor, a different Lead, and Sponsor arbitration assessed independently as High by both sides, against ESR-0015's Low - precisely the kind of evidence EE-0001 exists to surface, independent of any conclusion about cause.
 
 ---
 
@@ -378,3 +386,4 @@ The single most trial-relevant fact from this scorecard: the same Reviewer and S
 | 0.16 | 9 July 2026 | Claude Engineering Reviewer | WP2B landed and independently verified: commit `d91d4b0`, scope-correct (SAM-0001 only, existing note amended, no new section, no code), content matching the approved wording verbatim, with one minor non-blocking finding (no version bump/history row). Recorded as Section 13.12; WP2 (WP2A + WP2B) now complete. Updated Work Package Plan and Outstanding Work accordingly. |
 | 0.17 | 9 July 2026 | Claude Engineering Reviewer | Recorded Section 13.13: Programme Sponsor explicitly rejected the "Operational Guidance Note" rule. Added Section 15, an Engineering Reviewer independent draft of the EE-0001 ESR-0016 trial scorecard (13 findings, Sponsor arbitration assessed High vs. ESR-0015's Low), pending Engineering Lead self-assessment and Programme Sponsor acceptance. Renumbered Related Artefacts/Version History to 16/17 and updated Outstanding Work, including a repository baseline recommendation (retain RBL-0011). |
 | 0.18 | 9 July 2026 | Claude Engineering Reviewer | Fixed a broken WikiLink in Section 13.1 (`scripts/validate_repository.py` caught it) that referenced a local Claude memory file rather than a repository artefact - replaced with an EE-0001 Section 2 reference. Added Outstanding Work item recording that PST-0001's stale "Current Mode" (validator-flagged) is deliberately deferred to actual session closure per explicit Programme Sponsor decision, not overlooked. |
+| 0.19 | 9 July 2026 | Claude Engineering Reviewer | Replaced Section 15 with a reconciled scorecard combining the Engineering Lead's self-assessment (resubmitted against EE-0001's actual template) and the Engineering Reviewer's independent draft. Full agreement on Sponsor arbitration (High) reached independently by both sides. Reviewer revised its own defect-discovery-weight figure from 3.0 to ~2.88 on reattributing several catches to the Programme Sponsor and one to the Lead, converging with the Lead's independent ~2.8 estimate. Flagged the findings-count ambiguity (12 vs. 13) as requiring a dated EE-0001 Section 8 log entry rather than silent resolution. |
