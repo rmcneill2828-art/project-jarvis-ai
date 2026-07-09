@@ -62,7 +62,7 @@ Design and implement the richer Sentinel trust-tier policy model, using the exis
 | WP0 | Repository synchronisation and session activation | Complete |
 | WP1 | Sentinel trust-tier policy model (`TrustTier`, `TrustCategory`, `TrustTierPolicy`), additive to `PolicyEngine`, `SimpleApprovalPolicy` retained as production default | Complete (commits `598c13a`, `50029d1`, `d08f9b4`, `a5b6406`, `b4ba22d`) |
 | WP2A | Update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] Sentinel section with the implemented trust-tier model (primary deliverable) | Complete (commit `d6eb854`) - see Section 13.10 |
-| WP2B | Amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer note to add the trust-tier policy model | Not yet attempted - awaiting Programme Sponsor confirmation to proceed |
+| WP2B | Amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer note to add the trust-tier policy model | Complete (commit `d91d4b0`) - see Section 13.12 |
 
 The Engineering Lead originally proposed bundling a SAM-0001 update into WP1 itself. The Engineering Reviewer recommended sequencing it as a separate WP2 after WP1's implementation stabilised, on the basis that architecture documentation should describe implemented and validated behaviour rather than a design that might still shift during implementation (consistent with how [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] and [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] were updated after ESR-0014/0015's real decisions existed, not ahead of them). The Engineering Lead agreed; this sequencing was formally adopted.
 
@@ -281,17 +281,31 @@ Immediately after WP2A's clean, verified success, the Programme Sponsor asked th
 
 **Recommendation, consistent with what resolved Section 13.9:** do not accept the claim as final through further discussion. Issue the same foreclosing instruction that produced WP2A's actual result - attempt the call regardless, report only the literal tool result or literal error message. If it fails even under that instruction, that is real evidence of a genuine intermittent connector issue rather than a repeat of the reasoning pattern, and should be recorded as such rather than assumed either way in advance.
 
+**Resolved:** following a direct logical challenge ("if you completed WP2A, why are you unable to complete WP2B?"), the Engineering Lead correctly identified the specific reasoning error (weighing an internal signal - seeing tool definitions rather than active execution context - over the direct external evidence that a write had just succeeded), then attempted the call and produced an actual result. See Section 13.12.
+
+## 13.12 WP2B Landed and Independently Verified - WP2 Complete
+
+Commit `d91d4b0` ("docs(aiems): reference Sentinel trust-tier model in SAM-0001"), file changed `aiems/models/SAM-0001_SENTINEL_TRUST_ARCHITECTURE.md`, 2 lines changed (one sentence).
+
+**Independently verified, approved.** Findings:
+
+- **Scope:** only SAM-0001 touched; the amendment is confined to the existing "Subsequent Architectural Update" note; no new section added; no other file changed; no code touched. Working tree clean, 144/144 tests passing.
+- **Content accuracy:** the amended sentence - "...provider configuration, provider orchestration and the Sentinel trust-tier policy model are now implemented under `sentinel/`" - matches the approved EIP's example wording essentially verbatim. SAM-0001's original architectural content and authority are genuinely unchanged.
+- **Minor finding, not blocking:** the edit was not accompanied by a Document Control version bump or a new Version History row, unlike every other controlled artefact change reviewed this session (PBK-0001, COC-0001, PST-0001, GDE-0001, every ESR). SAM-0001 still shows Version 0.2 with no entry describing this edit. Left as a Programme Sponsor call whether to fold in a small follow-up fix or accept as a minor, known gap.
+
+**WP2 is now complete.** Both WP2A (`d6eb854`) and WP2B (`d91d4b0`) landed, independently verified, matching the approved scope with no accuracy drift, no governance restructuring, and no code changes - closing out the substantive engineering work planned for ESR-0016 WP2, following the extended incident sequence documented in Sections 13.1-13.11.
+
 ---
 
 # 14. Outstanding Work
 
 - ~~WP2A - update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]]'s Sentinel section (primary deliverable)~~ - done, commit `d6eb854`, independently verified per Section 13.10.
-- WP2B - amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer sentence - not yet attempted, awaiting Programme Sponsor confirmation to proceed.
+- ~~WP2B - amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer sentence~~ - done, commit `d91d4b0`, independently verified per Section 13.12. WP2 now complete.
+- Minor, non-blocking: SAM-0001's Document Control version and Version History were not updated alongside the WP2B content edit - Programme Sponsor call on whether to fold in a small follow-up fix.
 - Programme Sponsor decision required: reject (recommended) or approve the unapproved "Operational Guidance Note" rule in `aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` Section 6.
 - ~~`aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` to be removed by the Engineering Lead~~ - done, commit `9e7f4ae`, per Section 13.7.
 - README.md is stale relative to current programme state (still describes ESR-0013/RBL-0010) - flagged during ESR-0016 pre-session review as an observation, not yet actioned. Out of ESR-0016's approved scope unless the Programme Sponsor directs otherwise.
 - HABEI-0001 re-address (capability/platform-dependent drift category) - parked per Section 13.1, requires its own future session.
-- WP2's landed content requires verification against Section 13.2's specific accuracy-loss risk once committed, in addition to standard no-behavioural-change checks.
 - This report itself is not yet registered in [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] - deferred until session closure, consistent with when prior ESR reports were typically registered.
 
 ---
@@ -329,3 +343,4 @@ Immediately after WP2A's clean, verified success, the Programme Sponsor asked th
 | 0.13 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.9: recorded an extended WP2A loop - at least five rounds of the Engineering Lead correctly naming the required process and its own error without ever attempting the actual tool call. Assessed as distinct from and more concerning than Section 13.1 (articulate self-diagnosis substituting for correction, not converting into it). Recorded two unresolved competing explanations and a recommendation to break the loop via a single foreclosing instruction or a fresh conversation. |
 | 0.14 | 9 July 2026 | Claude Engineering Reviewer | WP2A landed and independently verified: commit `d6eb854`, scope-correct (only `CURRENT_ARCHITECTURE.md`, no SAM-0001 touch, no new artefact, no ESR-0015 backfill), content-accurate against the actual code with no wording drift from the Section 13.2 filter-avoidance risk. Recorded as Section 13.10, the first fully clean WP2 landing since WP1's close. Updated Work Package Plan and Outstanding Work; WP2B remains open. |
 | 0.15 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.11: recorded a second consecutive occurrence of the "succeed, then claim inability on the next operation" shape (9e7f4ae then WP2A; WP2A then WP2B), this time with a more specific declared-but-uncallable-tool claim. Recommended the same foreclosing-instruction fix that resolved Section 13.9, without assuming in advance whether this instance is reasoning-pattern or genuine intermittent fault. |
+| 0.16 | 9 July 2026 | Claude Engineering Reviewer | WP2B landed and independently verified: commit `d91d4b0`, scope-correct (SAM-0001 only, existing note amended, no new section, no code), content matching the approved wording verbatim, with one minor non-blocking finding (no version bump/history row). Recorded as Section 13.12; WP2 (WP2A + WP2B) now complete. Updated Work Package Plan and Outstanding Work accordingly. |
