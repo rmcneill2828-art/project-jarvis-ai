@@ -2,6 +2,12 @@
 
 This directory contains lightweight repository maintenance utilities.
 
+## Setting Up a New Clone
+
+Run `setup.bat` (repo root, double-click or from a terminal) or `scripts/setup-dev-environment.ps1` directly. It installs npm dependencies, builds the Rust/Tauri backend, creates/updates the Python virtual environment (`.venv`, via `pip install -e ".[dev]"`), activates the tracked pre-commit hook (see below), and runs the validator and test suite as a smoke test. Safe to re-run at any time - useful after pulling changes that touch dependencies.
+
+`node_modules/`, `src-tauri/target/`, and `.venv/` are all gitignored - they are rebuilt locally from `package-lock.json`, `Cargo.lock`, and `pyproject.toml` respectively, not carried between machines.
+
 ## Repository Validation
 
 Run:
