@@ -9,6 +9,7 @@ from scripts.validate_repository import (
     check_stale_status_references,
     extract_current_esr_reference,
     latest_accepted_baseline,
+    latest_closed_numbered,
 )
 
 
@@ -38,8 +39,12 @@ def test_check_stale_status_references_flags_current_mode_pointing_at_old_sessio
 
     sessions_dir = tmp_path / "aiems/governance/sessions"
     sessions_dir.mkdir(parents=True)
-    (sessions_dir / "ESR-0013_ENGINEERING_SESSION_REPORT.md").write_text("ESR-0013", encoding="utf-8")
-    (sessions_dir / "ESR-0014_ENGINEERING_SESSION_REPORT.md").write_text("ESR-0014", encoding="utf-8")
+    (sessions_dir / "ESR-0013_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Closed |", encoding="utf-8"
+    )
+    (sessions_dir / "ESR-0014_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Closed |", encoding="utf-8"
+    )
 
     status_dir = tmp_path / "aiems/governance/status"
     status_dir.mkdir(parents=True)
@@ -130,14 +135,78 @@ def test_check_stale_status_references_passes_when_current_mode_matches_latest_s
 
     sessions_dir = tmp_path / "aiems/governance/sessions"
     sessions_dir.mkdir(parents=True)
-    (sessions_dir / "ESR-0013_ENGINEERING_SESSION_REPORT.md").write_text("ESR-0013", encoding="utf-8")
-    (sessions_dir / "ESR-0014_ENGINEERING_SESSION_REPORT.md").write_text("ESR-0014", encoding="utf-8")
+    (sessions_dir / "ESR-0013_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Closed |", encoding="utf-8"
+    )
+    (sessions_dir / "ESR-0014_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Closed |", encoding="utf-8"
+    )
 
     status_dir = tmp_path / "aiems/governance/status"
     status_dir.mkdir(parents=True)
     status_path = status_dir / "PST-0001_PROGRAMME_STATUS.md"
     status_path.write_text(
         "| Current Mode | [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] closed. |",
+        encoding="utf-8",
+    )
+
+    import scripts.validate_repository as validator
+
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+
+    result = ValidationResult(errors=[], warnings=[])
+    check_stale_status_references(result)
+
+    assert result.errors == []
+
+
+def test_latest_closed_numbered_ignores_open_status(tmp_path):
+    sessions_dir = tmp_path / "aiems/governance/sessions"
+    sessions_dir.mkdir(parents=True)
+    (sessions_dir / "ESR-0016_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Closed |", encoding="utf-8"
+    )
+    (sessions_dir / "ESR-0017_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Open |", encoding="utf-8"
+    )
+
+    assert latest_closed_numbered("ESR", sessions_dir) == "ESR-0016"
+
+
+def test_latest_closed_numbered_returns_none_when_nothing_closed(tmp_path):
+    sessions_dir = tmp_path / "aiems/governance/sessions"
+    sessions_dir.mkdir(parents=True)
+    (sessions_dir / "ESR-0017_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Open |", encoding="utf-8"
+    )
+
+    assert latest_closed_numbered("ESR", sessions_dir) is None
+
+
+def test_check_stale_status_references_does_not_flag_open_session_as_stale(tmp_path, monkeypatch):
+    """Regression test: an Engineering Session that has just opened (correctly
+    Status: Open, not yet Closed) must not itself trigger a staleness error
+    against PST-0001, which is required by PBK-0001 WP0B to keep pointing at
+    the latest *closed* session until the new one actually closes. Found via
+    ESR-0017: this check previously fired the moment the session file
+    existed, regardless of its Status."""
+
+    monkeypatch.chdir(tmp_path)
+
+    sessions_dir = tmp_path / "aiems/governance/sessions"
+    sessions_dir.mkdir(parents=True)
+    (sessions_dir / "ESR-0016_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Closed |", encoding="utf-8"
+    )
+    (sessions_dir / "ESR-0017_ENGINEERING_SESSION_REPORT.md").write_text(
+        "| Status | Open |", encoding="utf-8"
+    )
+
+    status_dir = tmp_path / "aiems/governance/status"
+    status_dir.mkdir(parents=True)
+    status_path = status_dir / "PST-0001_PROGRAMME_STATUS.md"
+    status_path.write_text(
+        "| Current Mode | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] closed. |",
         encoding="utf-8",
     )
 

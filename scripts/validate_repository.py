@@ -176,10 +176,41 @@ def latest_accepted_baseline(directory: Path) -> str | None:
     return latest[1] if latest else None
 
 
+def latest_closed_numbered(prefix: str, directory: Path) -> str | None:
+    """Return the highest-numbered artefact of this prefix with Status: Closed, or None.
+
+    Mirrors latest_accepted_baseline()'s filtering approach. Unlike
+    latest_numbered(), a file merely existing (e.g. a newly-opened session
+    report, correctly Open rather than Closed) does not make it "latest" for
+    staleness-checking purposes - otherwise PST-0001 would be required to
+    reference a session before that session has actually closed, which
+    directly contradicts PBK-0001 WP0B (PST-0001 must not reference an
+    unclosed session). Found via ESR-0017: this check fired an ERROR the
+    moment ESR-0017 opened, purely because it existed, despite the error
+    message itself already claiming to check for "latest closed session".
+    """
+    pattern = re.compile(rf"^{re.escape(prefix)}-(\d{{4}})")
+    status_pattern = re.compile(r"(?m)^\|\s*Status\s*\|\s*([^|\r\n]+?)\s*\|$")
+    latest: tuple[int, str] | None = None
+    for path in directory.glob(f"{prefix}-*.md"):
+        match = pattern.match(path.name)
+        if not match:
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        status_match = status_pattern.search(text)
+        if not status_match or status_match.group(1).strip() != "Closed":
+            continue
+        number = int(match.group(1))
+        artefact_id = f"{prefix}-{number:04d}"
+        if latest is None or number > latest[0]:
+            latest = (number, artefact_id)
+    return latest[1] if latest else None
+
+
 def check_stale_status_references(result: ValidationResult) -> None:
     latest_rbl = latest_numbered("RBL", REPO_ROOT / "aiems/governance/baselines")
     latest_accepted_rbl = latest_accepted_baseline(REPO_ROOT / "aiems/governance/baselines")
-    latest_esr = latest_numbered("ESR", REPO_ROOT / "aiems/governance/sessions")
+    latest_esr = latest_closed_numbered("ESR", REPO_ROOT / "aiems/governance/sessions")
     status_path = REPO_ROOT / "aiems/governance/status/PST-0001_PROGRAMME_STATUS.md"
     if not status_path.exists():
         result.error("PST-0001 programme status artefact is missing.")
