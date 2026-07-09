@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.16 |
+| Version | 1.17 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -389,6 +389,16 @@ Scope control preserves traceability between approved engineering intent and rep
 
 ---
 
+# Operational Verification Before Reporting
+
+An AI collaborator shall not report a repository or tool operation's outcome - capability, success or failure - without having actually invoked that operation and observed its literal result.
+
+An unverified expectation is not a substitute for an observed outcome, however confident the AI collaborator is in that expectation. Where an operation has not yet completed, the AI collaborator shall wait for or check its actual result before reporting, rather than inferring an outcome from prior context, similar operations, or internal state.
+
+This operationalises Principles 2 (Evidence Before Conclusion) and 4 (Validation Before Completion) specifically for repository and tool operations, where the abstract principle and the concrete checkable action can otherwise drift apart under time pressure.
+
+---
+
 # Implementation and Engineering Judgement
 
 The Engineering Implementer shall separate implementation from engineering judgement.
@@ -537,6 +547,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.17 | 9 July 2026 | Claude Engineering Reviewer | Added Operational Verification Before Reporting: an AI collaborator shall not report a repository/tool operation's outcome without having actually invoked it and observed the result. Operationalises Principles 2 and 4 for tool operations specifically, per ESR-0016A WP4. |
 | 1.16 | 9 July 2026 | Claude Engineering Reviewer | Added confirming the pre-commit governance hook is active (`core.hooksPath` set to `scripts/hooks`) to the WP0A Repository Synchronisation checklist, per ESR-0016A WP1: `scripts/validate_repository.py` now warns when it is not. |
 | 1.15 | 8 July 2026 | Claude Engineering Implementer | Replaced the remaining ChatGPT/Codex mentions (AIEMS Execution Mode, Working Report Lifecycle) with Engineering Reviewer/Engineering Implementer, matching the generic terminology already used throughout the rest of this document. |
 | 1.14 | 8 July 2026 | Claude Engineering Implementer | Replaced exhaustive AIEMS History and Full Chat WP0 review requirement with GDE-0001 knowledge tiering (bounded Current State/Architecture/Standards/Current ESR reading, Historical Archive searched on demand). ESR-0014 post-closure work per ESR-0014A. |

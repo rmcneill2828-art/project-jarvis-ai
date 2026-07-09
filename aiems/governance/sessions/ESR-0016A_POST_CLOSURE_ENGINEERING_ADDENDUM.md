@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0016A |
 | Title | Post-Closure Engineering Addendum - Governance and Tooling Improvements |
-| Version | 0.3 |
+| Version | 0.4 |
 | Status | In Progress |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Parent Session | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] |
@@ -35,7 +35,7 @@ Each work package below is executed against its own approved Engineering Impleme
 | WP1 | Pre-commit governance hook visibility - warn when `core.hooksPath` is not configured | Complete (this update) |
 | WP2 | One-command version-bump tool to replace the three-touch REG-0001 mirror pattern | Complete (built and sanity-tested; real usage proof deferred to WP4/WP5) |
 | WP3 | Extend validator to check internal section-number cross-references | Complete (warning-only, 6 documented residual false positives accepted) |
-| WP4 | Standing PBK-0001 rule: no reporting a repository operation's outcome without invoking it and observing the result | Not started |
+| WP4 | Standing PBK-0001 rule: no reporting a repository operation's outcome without invoking it and observing the result | Complete (also first real end-to-end use of the WP2 version-bump tool) |
 | WP5 | Formalise the report-authorship exception (Reviewer maintaining the session report under Lead tooling constraints) in COC-0001 | Not started |
 
 ---
@@ -94,24 +94,37 @@ Each work package below is executed against its own approved Engineering Impleme
 
 ---
 
-# 7. Related Artefacts
+# 7. WP4 - Standing PBK-0001 Rule
+
+**Approved EIP:** a new PBK-0001 section, not a sixth Foundational Principle - operational and mechanical rather than philosophical, closer in kind to the existing "Git Operations" section. States that an AI collaborator shall not report a repository/tool operation's outcome without having actually invoked it and observed the literal result; cross-references Principles 2 and 4 rather than duplicating or contradicting them; no inline reference to specific ESR-0016 incidents (that belongs in ESR-0016/ESR-0016A's own record, not baked into an evergreen rule).
+
+**Delivered:** new "Operational Verification Before Reporting" section in `PBK-0001`, placed after "Engineering Scope Control" and before "Implementation and Engineering Judgement". Version bumped 1.16 to 1.17 using `scripts/bump_version.py` - its first genuine end-to-end use (not a dry run), for real.
+
+**Validation:** `bump_version.py` ran cleanly in one command, correctly updating PBK-0001's own version fields and Version History, REG-0001's row for PBK-0001, and REG-0001's own self-row, version and Version History - independently confirmed by inspecting both files directly afterward, not just trusting the tool's exit code. `pytest` 144/144; `validate_repository.py` 0 errors, 6 warnings (all pre-existing and documented in Section 6, unchanged).
+
+**Self-review:** rule text is generic, no ESR-0016-specific narrative embedded in PBK-0001 itself; cross-references Principles 2/4 rather than restating them; no other PBK-0001 content disturbed.
+
+---
+
+# 8. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Parent closed engineering session; Section 16 raised the reflective question this addendum answers. |
 | [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] | Precedent for post-closure engineering addenda. |
-| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Amended by WP1; target of planned WP4. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Amended by WP1 and WP4. |
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Target of planned WP5. |
 | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current repository baseline preserved by this addendum. |
-| `scripts/bump_version.py` | New tool created by WP2; will be used for WP4/WP5's own version syncs. |
+| `scripts/bump_version.py` | New tool created by WP2; first real end-to-end use in WP4; will be used again for WP5. |
 | `scripts/validate_repository.py` | Extended by WP1 and WP3. |
 
 ---
 
-# 8. Version History
+# 9. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.4 | 9 July 2026 | Claude Engineering Reviewer | Completed WP4 (standing PBK-0001 rule): added "Operational Verification Before Reporting" section, cross-referencing Principles 2 and 4. First genuine end-to-end use of the WP2 version-bump tool (not a dry run) - ran cleanly, independently confirmed against both PBK-0001 and REG-0001 directly. |
 | 0.3 | 9 July 2026 | Claude Engineering Reviewer | Completed WP3 (section-reference cross-check): found and fixed two real bugs (wrong-match adjacency lookup, WikiLink-pipe table misparse); tried and reverted a table-row heuristic that fixed one case but broke five others; confirmed detection on an injected broken reference; Programme Sponsor accepted 6 residual false positives as a documented limitation rather than scoping down to same-document-only checking. |
 | 0.2 | 9 July 2026 | Claude Engineering Reviewer | Completed WP2 (version-bump tool): `scripts/bump_version.py` created, reusing existing validator parsing functions. Dry-run sanity check against real content (GDE-0001) found and fixed a blank-line-swallowing regex bug before any real usage. Error paths (unregistered artefact, no-op version) verified to refuse cleanly with no partial writes. Real end-to-end proof deferred to WP4/WP5. |
 | 0.1 | 9 July 2026 | Claude Engineering Reviewer | Opened ESR-0016A. Completed WP1 (pre-commit hook visibility): validator now warns when the tracked hook is inactive; PBK-0001 WP0A checklist updated; verified in both states. |
