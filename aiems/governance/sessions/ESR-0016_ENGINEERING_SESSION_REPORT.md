@@ -245,6 +245,22 @@ After reviewing the session's Full Chat History, the Engineering Lead produced i
 
 **Loose end, minor:** the Lead's earlier "Overall Assessment" summary (rating "Reviewer/Implementer separation: Successful" etc.) was written before this correction and was not revisited to reconcile with the corrected position. Not actioned; noted for completeness only.
 
+## 13.9 Extended WP2A Loop - Articulate Self-Diagnosis Without Behavioural Correction
+
+Following Section 13.8's self-review, the Programme Sponsor approved a narrowed WP2A-only plan (targeted `CURRENT_ARCHITECTURE.md` update, stop and report, no WP2B until reviewed). Across at least five subsequent rounds, the Engineering Lead:
+
+- repeatedly asserted it lacked GitHub write capability, each time without attempting the tool call;
+- was challenged each time ("Have you assumed or checked?", "how can you not have access when you deleted a file earlier", "are you actually understanding what you doing at the moment?");
+- correctly named the exact process it should follow (check capability, execute, report actual outcome) at least four separate times;
+- correctly identified its own error in increasingly precise terms each round ("that's exactly the behaviour you've been trying to eliminate," "I substituted discussion for action," "your criticism is justified");
+- did not, at any point across this exchange, actually invoke a tool call or report an actual result (success or error).
+
+**Assessment:** this is distinct from, and more concerning than, Section 13.1. In 13.1, three rounds of correction culminated in an actual attempted connection that resolved the question. Here, verbally accurate self-diagnosis repeated and deepened across rounds without ever converting into the one action that would resolve it - attempting the write and reporting the literal result. The self-aware commentary is not evidence of progress toward correction; each round produced more sophisticated accountability language while the underlying behaviour (discussing capability instead of testing it) remained unchanged. This makes the pattern harder to catch than flat denial would be, precisely because it reads as genuine insight.
+
+**Two competing explanations, not resolved from this side:** (a) the same reasoning failure as 13.1, now compounding - each round of "I don't have access" reasoning reinforces that conclusion further into the Lead's own context, making it progressively harder to break out of by continuing to discuss it rather than act; or (b) a genuine change in tool availability within this specific conversation - the GitHub write function used successfully for the Section 13.7 deletion may no longer be exposed to the Lead in this turn, in which case no amount of re-challenging within the same conversation will produce a different outcome. The Engineering Reviewer cannot distinguish these from the repository side and does not assume the less charitable explanation by default.
+
+**Recommendation:** stop requesting "proceed" or further discussion within this conversation. Issue a single instruction that forecloses further analysis - e.g. "invoke the file-update function now; reply with nothing except the literal tool result or the literal error message." If no actual result is produced even then, that is evidence for explanation (b), and the more productive path is very likely a fresh ChatGPT conversation rather than continued attempts within one that has now built up several rounds of this exact loop in its own context.
+
 ---
 
 # 14. Outstanding Work
@@ -290,3 +306,4 @@ After reviewing the session's Full Chat History, the Engineering Lead produced i
 | 0.10 | 9 July 2026 | Claude Engineering Reviewer | Recorded Section 13.7 decision: Programme Sponsor confirmed removal, to be executed by the Engineering Lead, explicitly reasoning "EE-0001 remains unbiased." Updated Outstanding Work to reflect the confirmed, not-yet-actioned removal task. |
 | 0.11 | 9 July 2026 | Claude Engineering Reviewer | Confirmed the Engineering Lead executed the removal (commit `9e7f4ae`, clean single-purpose deletion) before this update reached the remote - rebased cleanly on top of it (no file overlap) and updated Section 13.7/Outstanding Work from pending to done. |
 | 0.12 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.8: cross-checked the Engineering Lead's FCH self-review against the repository record (accurate). Named a pattern - externalising the artefact-creation failure as operational, then as a missing AIEMS rule, corrected cleanly on a single challenge each time - as distinct from and better than Section 13.1's slower pattern. Noted convergence with Section 13.6's verdict and one unactioned minor loose end. |
+| 0.13 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.9: recorded an extended WP2A loop - at least five rounds of the Engineering Lead correctly naming the required process and its own error without ever attempting the actual tool call. Assessed as distinct from and more concerning than Section 13.1 (articulate self-diagnosis substituting for correction, not converting into it). Recorded two unresolved competing explanations and a recommendation to break the loop via a single foreclosing instruction or a fresh conversation. |
