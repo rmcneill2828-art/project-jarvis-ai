@@ -81,6 +81,19 @@ Implemented by the close of ESR-0014:
 - Automatic failover.
 - Execution history.
 
+Implemented during ESR-0016 WP1:
+
+- Sentinel trust-tier policy model.
+- Trust tiers: `ROUTINE`, `SENSITIVE`, `RESTRICTED`.
+- Classification categories: `ROUTINE_INTERACTION`, `HUMAN_APPROVAL_REQUIRED`, `UNSUPPORTED_HIGH_RISK`, `EMERGENCY_CONTROL`, `LOCAL_AGENT_ACTION`.
+- Decision outcomes: `ALLOW` for routine interaction, `REVIEW` for human approval, and `DENY` for unsupported high-risk, emergency-control and local-agent-action categories.
+- Conservative classification precedence: unsupported high risk, then emergency control, then local-agent action, then human approval, then routine interaction.
+- Deny-category requests cannot be softened to `REVIEW` by also setting human approval.
+- `SimpleApprovalPolicy` remains the production default for `SentinelTrustGateway`.
+- `TrustTierPolicy` is additive and non-default unless explicitly injected.
+
+The trust-tier model provides extension points for EBG-0047 and future boundary work under EBG-0020 and EBG-0021. It does not implement Guardian family-safety behaviour, emergency control execution, local-agent action, automation, UI behaviour, provider execution expansion or Guardian Memory.
+
 ### Future Platform Capabilities
 
 Planned Sentinel workstreams:
