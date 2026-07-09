@@ -2,7 +2,7 @@
 
 > *"Guardian is not where the interface points; Guardian is who the experience gathers around."*
 
-**Version:** 1.2
+**Version:** 1.4
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | UAM-0001 |
 | Title | Guardian Experience Architecture v1.0 |
-| Version | 1.2 |
+| Version | 1.4 |
 | Status | Approved Baseline |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -99,6 +99,21 @@ The canonical desktop layout consists of:
 
 Guardian presence shall remain visually and structurally primary.
 
+## 7.1 Reference Dashboard Composition
+
+A mock-up image ("JARVIS AI ORB - Obsidian Knowledge Graph Visualisation"), preserved at `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg`, was provided by the Programme Sponsor at ESR-0017, recovering visual detail beyond the FCH-0010 text description incorporated in Section 8. It is treated here as an illustrative reference for how the five canonical layout elements above may be composed, not as a literal implementation specification - individual panels remain subject to normal engineering package approval and Section 18's Capability Evolution Model.
+
+The reference composition surrounds the central Guardian Orb (7 above; detailed in Section 8) with:
+
+- **System Health** - a status list of integrated systems (illustrated as AIEMS, GIA, Guardian, GitHub, Obsidian, ChatGPT, Codex), each with an individual state and rolled up to an overall status. An instance of the Platform and Capability Awareness surface (canonical element 3).
+- **Knowledge Metrics** - a quantified readout of the knowledge graph itself: node count, connection count, cluster count, density, orphaned-node count, last-updated timestamp. Supports the Diagnostics and Implementation Boundary surface (canonical element 5) by making the graph's own health inspectable.
+- **Active Clusters** - the named engineering domains (illustrated as AIEMS Governance, Engineering Sessions, Guardian Architecture, GIA Telemetry, Standards & Playbooks, Execution Environment, Integration Layer) each with a live node count, corresponding to the cluster illumination described in Section 8.1.
+- **Real-Time Activity** - a scrolling feed of actual engineering events (for example a session update, telemetry received, a graph sync, an agent recommendation, a repository check), timestamped. Distinct from Diagnostics (which shows structural/implementation state) - this shows recent observed activity.
+- **AIEMS Principles** - a small panel surfacing governing principles (illustrated as Transparency, Evidence-Based, Human Authority, Continuous Improvement, Engineering Excellence) directly in the experience, reinforcing that Guardian's behaviour is governed rather than autonomous. Any principles shown here shall match, not diverge from, the authoritative principles recorded in PBK-0001 and `JARVIS_PRODUCT_ARCHITECTURE.md` - this panel visualises existing governance, it does not define new governance.
+- **Persistent conversation bar** - beneath the Orb, per Section 9, supporting both text and voice input where Voice capability (per `JARVIS_PRODUCT_ARCHITECTURE.md`) is implemented; voice input affordance shall not be shown as available before it is.
+
+This composition is dense relative to the current foundation-scope UXP (`src/App.jsx`) and shall only be approached incrementally, each addition justified by real implemented capability behind it, per Section 18 and PBK-0001's Feature-First Delivery Discipline - never built ahead of the platform it represents.
+
 ---
 
 # 8. Guardian Orb
@@ -135,6 +150,17 @@ The Orb's own animation may communicate Guardian's activity state, distinct from
 - Green pulse - approved action complete.
 
 These semantics apply only where the knowledge-graph Orb (8.1) is implemented. They do not retroactively apply to the current placeholder Orb animation, which remains governed only by Sections 13-15's general visual, colour and animation principles until superseded by an approved implementation package.
+
+## 8.3 Orb Status Panel (Textual Readout)
+
+Recovered from the same reference mock-up as Section 7.1. Complementary to 8.2, not a replacement for it: 8.2 is the Orb's ambient/passive animation state; this is an explicit textual readout a user can read without interpreting animation. Illustrated fields:
+
+- **Mode** - Guardian's current operating posture (for example Observe).
+- **Confidence** - Guardian's stated confidence in its current assessment or recommendation.
+- **Autonomy** - the level of independent action currently in effect (for example Advisory).
+- **Permission** - whether an action is proceeding, blocked, or awaiting human approval.
+
+This directly represents Human-in-the-Loop governance ([[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]]) in the experience itself, and shall never show an autonomy or permission state more permissive than what is actually enforced by Guardian/Sentinel at that moment - this panel reports real governance state, it does not decorate around an assumed one.
 
 ---
 
@@ -291,6 +317,8 @@ UAM-0001 does not:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 9 July 2026 | Claude Engineering Lead | Referenced the now-persisted mock-up image at aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg from Section 7.1, replacing the earlier description-only reference. |
+| 1.3 | 9 July 2026 | Claude Engineering Lead | Incorporated the actual Guardian Orb mock-up image provided by the Programme Sponsor at ESR-0017 (richer than the FCH-0010 text description already in 8.1/8.2): new Section 7.1 Reference Dashboard Composition (System Health, Knowledge Metrics, Active Clusters, Real-Time Activity, AIEMS Principles panel, persistent conversation bar with voice affordance) and Section 8.3 Orb Status Panel (Mode/Confidence/Autonomy/Permission textual readout, distinct from 8.2's ambient animation semantics, tied explicitly to ADR-0010 HITL governance). Both explicitly illustrative/design-direction only, not implementation, per Section 18. |
 | 1.2 | 9 July 2026 | Claude Engineering Lead | Retroactively incorporated ESR-0010 Section 15's approved Guardian Orb design direction (originally discussed in FCH-0010, never merged into this artefact at the time): new Section 8.1 Knowledge Graph Representation (Orb as live rendering of the repository's engineering knowledge graph - nodes/connections/cluster illumination/agent-as-nodes) and Section 8.2 Orb Status Semantics (idle/learning/reasoning/awaiting-approval/approved colour states, distinct from Section 14's general capability colour language). Both remain design direction only, not implementation, per Section 18. Added ESR-0010 to OSE Relationships/Related Artefacts. Gap identified when the Programme Sponsor asked whether a final UXP look had already been discussed with ChatGPT. |
 | 1.1 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-posture-only framing described here. Approved Baseline status and original content unchanged. |
 | 1.0 | 2 July 2026 | Codex Engineering Implementer | Initial approved Guardian Experience Architecture v1.0 created under EIP-ESR0009-004. |

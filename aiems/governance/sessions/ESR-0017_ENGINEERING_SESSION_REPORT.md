@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.14 |
+| Version | 0.16 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -282,7 +282,21 @@ The Programme Sponsor located a design conversation and mock-up in `aiems/Histor
 
 **Note for the Programme Sponsor:** the original ChatGPT-generated mock-up image itself is not present anywhere in the repository - only described in FCH-0010's transcript text. If the original image file still exists outside the repository, it is worth adding to `aiems/models/` as a real reference asset; it cannot be recovered from here.
 
-**Status: complete. UAM-0001 now traceable as the single source for the Guardian Orb's approved design direction, rather than requiring a chat-transcript search to find it.**
+**Status: complete for the material recovered at the time.**
+
+## 15.5 Reference Mock-Up Image Incorporated
+
+The Programme Sponsor located and provided the actual mock-up image referenced in FCH-0010/FCH-0011 ("JARVIS AI ORB - Obsidian Knowledge Graph Visualisation"), confirming it is materially richer than the text description 15.4 had already incorporated into UAM-0001 8.1/8.2.
+
+**Incorporated into [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] v1.3:**
+- Section 7.1 Reference Dashboard Composition - System Health, Knowledge Metrics, Active Clusters (with the seven specific named domains), Real-Time Activity feed, an AIEMS Principles panel, and a persistent conversation bar with voice affordance - each mapped back to which of Section 7's five canonical layout elements it instantiates.
+- Section 8.3 Orb Status Panel - the Mode/Confidence/Autonomy/Permission textual readout, explicitly distinguished from 8.2's ambient animation semantics and tied directly to [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]] HITL governance, with an explicit rule that it must never show a more permissive state than what Guardian/Sentinel actually enforces.
+
+Both new sections are explicitly framed as illustrative reference / design direction only, per Section 18's Capability Evolution Model - not an implementation specification, and not authorisation to build any of it now.
+
+**The image file is now in the repository.** The Engineering Lead has no mechanism in this environment to extract and persist a pasted image's raw bytes to disk directly - only to view it and describe its content in text - so the Programme Sponsor saved it directly to `aiems/models/`. Renamed from `JARVIS mockup.jpg` to `UAM-0001_GUARDIAN_ORB_MOCKUP.jpg` to match repository artefact naming convention, and referenced from UAM-0001 Section 7.1.
+
+**Status: complete. Mock-up preserved as a real repository asset, referenced from UAM-0001, not just described.**
 
 ---
 
@@ -307,6 +321,8 @@ The Programme Sponsor located a design conversation and mock-up in `aiems/Histor
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.16 | 9 July 2026 | Claude Engineering Lead | Updated Section 15.5: Programme Sponsor saved the mock-up image directly into the repository (aiems/models/, renamed to UAM-0001_GUARDIAN_ORB_MOCKUP.jpg for convention). UAM-0001 (now v1.4) updated to reference the real file instead of describing it as outstanding. |
+| 0.15 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.5: Programme Sponsor located and provided the actual FCH-0010/FCH-0011 mock-up image, confirming it is materially richer than the text description already incorporated. Added UAM-0001 Sections 7.1 (Reference Dashboard Composition - System Health, Knowledge Metrics, Active Clusters, Real-Time Activity, AIEMS Principles panel, persistent conversation bar) and 8.3 (Orb Status Panel - Mode/Confidence/Autonomy/Permission, tied to ADR-0010 HITL governance), both explicit design-direction-only (UAM-0001 v1.3). Noted the image file itself cannot be persisted to the repository from this environment - no mechanism exists to extract pasted image bytes to disk - and remains outstanding pending the Programme Sponsor saving it directly. |
 | 0.14 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.4: Programme Sponsor located FCH-0010's Guardian Orb design conversation, believing it was already merged into governed architecture. Traced the chain - ESR-0010 Section 15 did approve and record a design direction correctly, but UAM-0001 (created earlier, under ESR-0009) was never updated afterward to reference it. Fixed per Programme Sponsor's full-incorporation decision: UAM-0001 v1.2 (Sections 8.1 Knowledge Graph Representation, 8.2 Orb Status Semantics, both explicit design-direction-only) and EBR-0001 v1.21 (EBG-0028 phased achievability roadmap). Noted the original mock-up image is not recoverable from the repository. |
 | 0.13 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.3: consulted UAM-0001 (Approved Guardian Experience Architecture baseline, previously not checked before WP9's frontend work) and its FCH-0009/FCH-0011 origin (a ChatGPT-generated mock-up, not preserved in-repo). Confirmed Obsidian-as-product-feature was already explicitly decided against (FCH-0008), consistent with current architecture. Compliance check against UAM-0001 Sections 5-19 found and fixed one real defect: DiagnosticsPanel's guardian/sentinel/providers rows were static and could contradict the live sidebar/status-card state from the same platform.status call; now derived consistently via a new deriveDiagnostics() in App.jsx. Verified by npm run build (clean) and live via Vite HMR against the running dev session. Noted JARVIS_CAPABILITY_READINESS_MATRIX.md is stale (pre-dates WP2/WP9) but did not action it - out of this check's scope. |
 | 0.12 | 9 July 2026 | Claude Engineering Lead | Recorded ChatGPT Engineering Reviewer's WP9 implementation review outcome (Section 15.1.1): Approved with 4 Minor findings. Fixed 2 (jsonrpc version validation in stdio_rpc.py with 2 new regression tests, 184/184 passing; Rust state cleared on malformed response too, cargo build clean); deliberately deferred 2 (handler exception detail leakage - noted on EBR-0001 EBG-0050 v1.20; compile-only verification boundary - already honestly disclosed, Reviewer confirmed acceptable for foundation scope). WP9 marked Complete and Reviewed per Reviewer recommendation. Corrected a stale Section 13 WP8 row that still read 'awaiting review' after WP8 was already completed. |
