@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.95
+**Version:** 3.98
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.95 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.98 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.22 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.23 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -135,7 +135,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | MOD-0001 | Model | Platform Architecture Model | 1.4 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
-| UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.4 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
+| UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -176,7 +176,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0015 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
-| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.17 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.18 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -272,6 +272,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.98 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.17 to 0.18) following: Recorded Section 15.7: Programme Sponsor's real Obsidian graph screenshot showed the mock-up's node count was exaggerated. Confirmed by direct count (~135 markdown artefacts, not thousands), corrected EBG-0055's difficulty assessment accordingly in UAM-0001 v1.5 and EBR-0001 v1.23 - removed the 2D-only performance caveat, since real scale is not a rendering-performance constraint. |
+| 3.97 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.22 to 1.23) following: Corrected EBG-0055's scale assumption: confirmed by direct count (~135 markdown artefacts) and the Programme Sponsor's real Obsidian graph screenshot that the mock-up's illustrated node/connection counts are aspirational, not current state. At real scale, rendering performance is not a significant Phase 1 constraint - removed the earlier 2D-only performance caveat; a modest 3D sphere is realistically achievable for Phase 1 too. |
+| 3.96 | 9 July 2026 | Claude Engineering Lead | Aligned UAM-0001 version (1.4 to 1.5) following: Corrected Section 7.1 Knowledge Metrics: the reference mock-up's specific node/connection figures (6,842/18,392) are illustrative of an aspirational future scale, not the actual repository state - confirmed by direct count (~135 markdown artefacts) and the Programme Sponsor's own current Obsidian graph screenshot at ESR-0017. Implementation should target real current scale, not the mock-up's illustrated numbers. |
 | 3.95 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.16 to 0.17) following: Recorded Section 15.6: revised the WP4 five-session roadmap after confirming with the Programme Sponsor that Knowledge Graph Phase 1 should build organically in line with planned WPs. EBG-0050 corrected from stale Candidate Backlog to Completed (Foundation Scope) in EBR-0001 v1.22; new EBG-0055 (Knowledge Graph Phase 1) added, slotted into ESR-0018/ESR-0019 capacity freed by EBG-0050's early completion. ESR-0017_WP4_ENGINEERING_REVIEW_PACKAGE.md updated in place (Sections 5/6/6.1 struck through and corrected, new Section 16 addendum). Flagged an open question for the Programme Sponsor: this revision was made by the Lead alone after the original WP4 Reviewer pass closed, and per this session's own per-WP review discipline it may warrant its own Reviewer check before being treated as accepted. |
 | 3.94 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.21 to 1.22) following: Updated EBG-0050 status from Candidate Backlog to Completed (Foundation Scope) - both phases delivered at ESR-0017 WP9, two sessions ahead of the WP4 roadmap's original schedule; remaining production-hardening scope kept open under the same item. Added EBG-0055 (Knowledge Graph Phase 1 - Static Live Graph), the concrete next slice of the Guardian Orb design direction (UAM-0001 8.1), recommended for the ESR-0018/ESR-0019 capacity EBG-0050's early completion freed up, per Programme Sponsor direction to build this organically in line with planned Work Packages. |
 | 3.93 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.15 to 0.16) following: Updated Section 15.5: Programme Sponsor saved the mock-up image directly into the repository (aiems/models/, renamed to UAM-0001_GUARDIAN_ORB_MOCKUP.jpg for convention). UAM-0001 (now v1.4) updated to reference the real file instead of describing it as outstanding. |

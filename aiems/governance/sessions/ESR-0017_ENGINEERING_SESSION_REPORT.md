@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.17 |
+| Version | 0.18 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -310,6 +310,14 @@ The Programme Sponsor asked whether the Guardian Orb knowledge-graph work could 
 
 **Status: complete, pending Programme Sponsor decision on whether a Reviewer pass is needed for this revision.**
 
+## 15.7 Mock-Up Scale Corrected Against the Real Obsidian Graph
+
+The Programme Sponsor shared a screenshot of the actual current Obsidian graph, noting the mock-up's node count appeared exaggerated by comparison. Confirmed by direct count rather than visual estimate: **~135 markdown artefacts repository-wide (125 within `aiems/`)**, consistent with the real screenshot's visible density and nowhere near the mock-up's stated "6,842 nodes, 18,392 connections" - those figures are illustrative of an aspirational future scale, not the current or near-term real state.
+
+**Corrected, since this materially changes EBG-0055's difficulty assessment:** [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] v1.5 Section 7.1 and [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] v1.23 EBG-0055 both now state the real ~135-node scale and remove the earlier "2D first, not the full 3D sphere, because performance at thousands of nodes" caveat - at real scale, rendering performance is not a significant Phase 1 constraint, and a modest 3D sphere is realistically achievable, not just a 2D fallback. Implementation should render live figures for the repository's actual current scale, re-assessing rendering approach only if the real node count grows by an order of magnitude later.
+
+**Status: complete.**
+
 ---
 
 # 16. Related Artefacts
@@ -333,6 +341,7 @@ The Programme Sponsor asked whether the Guardian Orb knowledge-graph work could 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.18 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.7: Programme Sponsor's real Obsidian graph screenshot showed the mock-up's node count was exaggerated. Confirmed by direct count (~135 markdown artefacts, not thousands), corrected EBG-0055's difficulty assessment accordingly in UAM-0001 v1.5 and EBR-0001 v1.23 - removed the 2D-only performance caveat, since real scale is not a rendering-performance constraint. |
 | 0.17 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.6: revised the WP4 five-session roadmap after confirming with the Programme Sponsor that Knowledge Graph Phase 1 should build organically in line with planned WPs. EBG-0050 corrected from stale Candidate Backlog to Completed (Foundation Scope) in EBR-0001 v1.22; new EBG-0055 (Knowledge Graph Phase 1) added, slotted into ESR-0018/ESR-0019 capacity freed by EBG-0050's early completion. ESR-0017_WP4_ENGINEERING_REVIEW_PACKAGE.md updated in place (Sections 5/6/6.1 struck through and corrected, new Section 16 addendum). Flagged an open question for the Programme Sponsor: this revision was made by the Lead alone after the original WP4 Reviewer pass closed, and per this session's own per-WP review discipline it may warrant its own Reviewer check before being treated as accepted. |
 | 0.16 | 9 July 2026 | Claude Engineering Lead | Updated Section 15.5: Programme Sponsor saved the mock-up image directly into the repository (aiems/models/, renamed to UAM-0001_GUARDIAN_ORB_MOCKUP.jpg for convention). UAM-0001 (now v1.4) updated to reference the real file instead of describing it as outstanding. |
 | 0.15 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.5: Programme Sponsor located and provided the actual FCH-0010/FCH-0011 mock-up image, confirming it is materially richer than the text description already incorporated. Added UAM-0001 Sections 7.1 (Reference Dashboard Composition - System Health, Knowledge Metrics, Active Clusters, Real-Time Activity, AIEMS Principles panel, persistent conversation bar) and 8.3 (Orb Status Panel - Mode/Confidence/Autonomy/Permission, tied to ADR-0010 HITL governance), both explicit design-direction-only (UAM-0001 v1.3). Noted the image file itself cannot be persisted to the repository from this environment - no mechanism exists to extract pasted image bytes to disk - and remains outstanding pending the Programme Sponsor saving it directly. |

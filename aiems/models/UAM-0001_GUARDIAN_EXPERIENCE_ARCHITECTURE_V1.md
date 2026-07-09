@@ -2,7 +2,7 @@
 
 > *"Guardian is not where the interface points; Guardian is who the experience gathers around."*
 
-**Version:** 1.4
+**Version:** 1.5
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | UAM-0001 |
 | Title | Guardian Experience Architecture v1.0 |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved Baseline |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -106,7 +106,7 @@ A mock-up image ("JARVIS AI ORB - Obsidian Knowledge Graph Visualisation"), pres
 The reference composition surrounds the central Guardian Orb (7 above; detailed in Section 8) with:
 
 - **System Health** - a status list of integrated systems (illustrated as AIEMS, GIA, Guardian, GitHub, Obsidian, ChatGPT, Codex), each with an individual state and rolled up to an overall status. An instance of the Platform and Capability Awareness surface (canonical element 3).
-- **Knowledge Metrics** - a quantified readout of the knowledge graph itself: node count, connection count, cluster count, density, orphaned-node count, last-updated timestamp. Supports the Diagnostics and Implementation Boundary surface (canonical element 5) by making the graph's own health inspectable.
+- **Knowledge Metrics** - a quantified readout of the knowledge graph itself: node count, connection count, cluster count, density, orphaned-node count, last-updated timestamp. Supports the Diagnostics and Implementation Boundary surface (canonical element 5) by making the graph's own health inspectable. **The reference mock-up's specific figures (6,842 nodes, 18,392 connections) are illustrative of an aspirational future scale, not the actual repository state** - confirmed by direct count at ESR-0017, ~135 markdown artefacts repository-wide, consistent with the Programme Sponsor's own current Obsidian graph. Implementation should render live figures for the repository's real current scale, not the mock-up's illustrated numbers.
 - **Active Clusters** - the named engineering domains (illustrated as AIEMS Governance, Engineering Sessions, Guardian Architecture, GIA Telemetry, Standards & Playbooks, Execution Environment, Integration Layer) each with a live node count, corresponding to the cluster illumination described in Section 8.1.
 - **Real-Time Activity** - a scrolling feed of actual engineering events (for example a session update, telemetry received, a graph sync, an agent recommendation, a repository check), timestamped. Distinct from Diagnostics (which shows structural/implementation state) - this shows recent observed activity.
 - **AIEMS Principles** - a small panel surfacing governing principles (illustrated as Transparency, Evidence-Based, Human Authority, Continuous Improvement, Engineering Excellence) directly in the experience, reinforcing that Guardian's behaviour is governed rather than autonomous. Any principles shown here shall match, not diverge from, the authoritative principles recorded in PBK-0001 and `JARVIS_PRODUCT_ARCHITECTURE.md` - this panel visualises existing governance, it does not define new governance.
@@ -317,6 +317,7 @@ UAM-0001 does not:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 9 July 2026 | Claude Engineering Lead | Corrected Section 7.1 Knowledge Metrics: the reference mock-up's specific node/connection figures (6,842/18,392) are illustrative of an aspirational future scale, not the actual repository state - confirmed by direct count (~135 markdown artefacts) and the Programme Sponsor's own current Obsidian graph screenshot at ESR-0017. Implementation should target real current scale, not the mock-up's illustrated numbers. |
 | 1.4 | 9 July 2026 | Claude Engineering Lead | Referenced the now-persisted mock-up image at aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg from Section 7.1, replacing the earlier description-only reference. |
 | 1.3 | 9 July 2026 | Claude Engineering Lead | Incorporated the actual Guardian Orb mock-up image provided by the Programme Sponsor at ESR-0017 (richer than the FCH-0010 text description already in 8.1/8.2): new Section 7.1 Reference Dashboard Composition (System Health, Knowledge Metrics, Active Clusters, Real-Time Activity, AIEMS Principles panel, persistent conversation bar with voice affordance) and Section 8.3 Orb Status Panel (Mode/Confidence/Autonomy/Permission textual readout, distinct from 8.2's ambient animation semantics, tied explicitly to ADR-0010 HITL governance). Both explicitly illustrative/design-direction only, not implementation, per Section 18. |
 | 1.2 | 9 July 2026 | Claude Engineering Lead | Retroactively incorporated ESR-0010 Section 15's approved Guardian Orb design direction (originally discussed in FCH-0010, never merged into this artefact at the time): new Section 8.1 Knowledge Graph Representation (Orb as live rendering of the repository's engineering knowledge graph - nodes/connections/cluster illumination/agent-as-nodes) and Section 8.2 Orb Status Semantics (idle/learning/reasoning/awaiting-approval/approved colour states, distinct from Section 14's general capability colour language). Both remain design direction only, not implementation, per Section 18. Added ESR-0010 to OSE Relationships/Related Artefacts. Gap identified when the Programme Sponsor asked whether a final UXP look had already been discussed with ChatGPT. |
