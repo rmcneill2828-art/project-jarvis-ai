@@ -2,7 +2,7 @@
 
 > *"Trust is an architecture, not an afterthought."*
 
-**Version:** 0.2
+**Version:** 0.3
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | SAM-0001 |
 | Title | Sentinel Trust Architecture |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -248,5 +248,6 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 9 July 2026 | Claude Engineering Reviewer | Version-metadata-only follow-up: bumped Version to reflect ESR-0016 WP2B's content edit (commit `d91d4b0`, ChatGPT Engineering Lead), which added the Sentinel trust-tier policy model to the Subsequent Architectural Update note's list of implemented items. No further content changed here; the WP2B edit itself was already independently verified in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 13.12. Fixed on explicit Programme Sponsor instruction. |
 | 0.2 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described here. Original content unchanged. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial Sentinel Trust Architecture created under EIP-ESR0009-004. |

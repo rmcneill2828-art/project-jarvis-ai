@@ -173,7 +173,7 @@ Any of these three outcomes is a legitimate, evidence-based conclusion. None is 
 
 | Date | Change | Justification | Sessions affected |
 |---|---|---|---|
-| - | - | - | - |
+| 9 July 2026 | Defined "findings" (Section 5.1/5.2) as limited to defects identified in submitted/implemented work (code or documentation actually committed for review), excluding pre-implementation EIP refinements and behavioural/process incidents. The latter remain scored under Section 5.5 (Lead scope discipline) and Section 5.11 (Sponsor arbitration) instead. | ESR-0016's Lead self-assessment (~12) and Reviewer draft (13) diverged on findings count because neither had defined the term's scope. Retroactively confirmed this definition matches how ESR-0015's count of 10 was already composed (WP1, WP3b x3, WP4 x2, WP5 script x4 - all submitted-work defects, no planning-stage refinements counted), so ESR-0015's figures require no correction. Decided by Programme Sponsor. | ESR-0016 (recomputed to 7 findings, average discovery weight 3.0); ESR-0015 unaffected |
 
 ---
 
@@ -203,7 +203,7 @@ These figures are carried over verbatim in substance from [[ESR-0015_ENGINEERING
 
 ### ESR-0016
 
-*Not yet run.*
+**In progress, not yet closed.** ChatGPT is Engineering Lead, Claude is Independent Reviewer, per the frozen rotation (Section 3.1). WP1 (Sentinel trust-tier policy model) and WP2 (CURRENT_ARCHITECTURE.md + SAM-0001 alignment) are both complete and independently verified. A reconciled draft scorecard exists in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 15, combining independently-produced Lead and Reviewer assessments (recomputed here under this session's Section 8 findings-count clarification: 7 findings, average discovery weight 3.0, all Reviewer-caught). Both sides independently assessed Sponsor arbitration as **High**, against ESR-0015's Low. Final acceptance is a Programme Sponsor decision pending at session closure, not yet given.
 
 ### ESR-0017
 
