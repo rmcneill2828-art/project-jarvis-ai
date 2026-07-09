@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.11
+**Version:** 1.12
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.11 |
+| Version | 1.12 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -111,10 +111,11 @@ Engineering backlog management shall follow these principles:
 | EBG-0042 | Agent Framework Architecture | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]]; [[ADR-0011_AGENT_FRAMEWORK|ADR-0011]] | Candidate Backlog | High | Programme Sponsor | Define specialist agent contracts, including Engineering Agent, while preserving Guardian as the singular user-facing identity. |
 | EBG-0043 | Engineering Ecosystem Synchronisation Workflow | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Candidate Backlog | High | Programme Sponsor | Define repeatable WP0 workflow covering GitHub, AIEMS, OSE, Obsidian, registers, controlled artefacts, previous ESRs and summaries. |
 | EBG-0044 | Obsidian / OSE Validation Workflow | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Candidate Backlog | Medium | Programme Sponsor | Define how Obsidian as the human-facing Engineering Knowledge Workspace validates and navigates repository Markdown without replacing GitHub as source of truth. |
-| EBG-0045 | Cost and Strategic Value Framework | [[ADR-0008_HYBRID_AI_RUNTIME_STRATEGY|ADR-0008]] | Candidate Backlog | High | Programme Sponsor | Define evaluation criteria for cloud providers, commercial options, cost, privacy, strategic value and product benefit. |
+| EBG-0045 | Cost and Strategic Value Framework | [[ADR-0008_HYBRID_AI_RUNTIME_STRATEGY|ADR-0008]] | Candidate Backlog | High | Programme Sponsor | Define evaluation criteria for cloud providers, commercial options, cost, privacy, strategic value and product benefit. See also EBG-0049 (Cost-Aware Provider Routing and PEM-001 Revisit) - overlapping scope, consider together when either is actioned. |
 | EBG-0046 | Device Independence and Restore Architecture | [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]] | Candidate Backlog | High | Programme Sponsor | Define bootstrap, progressive restore, portable memory, configuration and encrypted sync requirements. |
 | EBG-0047 | Sentinel Gate of Durin Architecture Specification | [[ADR-0009_SENTINEL_GATE_OF_DURIN_PATTERN|ADR-0009]] | Candidate Backlog | High | Programme Sponsor | Extend EBG-0030 with Sentinel trust gateway, trust tiers and platform-entry validation details. |
 | EBG-0048 | Guardian HITL Governance Specification | [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]] | Candidate Backlog | High | Programme Sponsor | Extend EBG-0031 with consent, policy, privacy, approval, memory retention and trusted mobile approve/deny governance. |
+| EBG-0049 | Cost-Aware Provider Routing and PEM-001 Revisit | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]]; overlaps EBG-0045 | Candidate Backlog | High | Programme Sponsor | Define a cost/performance balance policy for Sentinel provider routing (leveraging ESR-0016's trust-tier classification as a candidate mechanism for cost-aware routing decisions), and revisit [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]]'s provider scoring to confirm cost is weighted as an explicit first-class criterion rather than incidental. Should account for institutional cloud/education resources potentially available to the Programme Sponsor as a cost-reduction lever. Overlapping scope with EBG-0045 (Cost and Strategic Value Framework, still Candidate Backlog, not yet actioned) - not a duplicate, but closely related and should be considered together when either is actioned. |
 
 ---
 
@@ -230,6 +231,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.12 | 9 July 2026 | Claude Engineering Reviewer | Added EBG-0049 (Cost-Aware Provider Routing and PEM-001 Revisit) per Programme Sponsor request following post-ESR-0016A discussion on balancing JARVIS running cost against performance. Cross-referenced with EBG-0045 (overlapping scope, not a duplicate) in both directions. |
 | 1.11 | 8 July 2026 | Claude Engineering Implementer | Marked EBG-0030 Sentinel Architecture Specification Completed, satisfied by ADR-0018 and the Guardian/Sentinel boundary defined in ESR-0014. EBG-0047 left as Candidate Backlog - trust tiers and platform-entry validation are not confidently satisfied by the current Sentinel Core implementation. |
 | 1.10 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing backlog governance. |
 | 1.9 | 2 July 2026 | Codex Engineering Implementer | Completed EBG-0039 by moving prototype JARVIS chat exports into logs/chats/ runtime evidence archive. |
