@@ -212,13 +212,33 @@ The Engineering Lead reported WP2 "done" via commit `d8dc631`, creating `aiems/g
 
 **Recommendation:** WP2A and WP2B still need to be completed as originally approved, via genuinely small, targeted edits to the two actual approved files - not a substitute document. The new file's disposition (kept as background, or removed) is a Programme Sponsor decision once the real edits land.
 
+## 13.7 Disposition of the Unapproved Artefact - Decision Pending
+
+The Programme Sponsor asked what should be done with `aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` (Section 13.6). Three options were considered:
+
+1. Remove it entirely.
+2. Leave it in place with a prominent rejected/superseded marker added to the file itself.
+3. Leave it completely unmodified, relying solely on this report's Section 13.6 for correction.
+
+**Engineering Reviewer recommendation:** option 1, removal. Nothing is lost by removing it - git history preserves the exact file at commit `d8dc631` permanently even once removed from the working tree, and this report's Section 13.6 already records its substance more precisely (with appropriate evidentiary caveats) than the file itself does. Leaving it live and unmarked in a controlled `governance/reviews/` folder (option 3) risks a future session encountering Section 6's self-exempting rule with no warning attached. It is also currently unregistered in [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]], a further reason it does not belong in that folder as-is.
+
+**A second, separate question was raised: who should execute the removal.** The file is the Engineering Lead's own erroneous output, not the Engineering Reviewer's. Two options:
+
+- The Engineering Lead removes it, as the party accountable for the scope deviation - consistent with Programme Sponsor's standing EE-0001 discipline this session (Sections 13.3, 13.4) of not letting the Engineering Reviewer absorb Lead-role work, even where doing so would be faster or avoid further tooling risk.
+- The Engineering Reviewer removes it directly, since it is a small, low-risk, fully git-reversible action - but this would itself be the Engineering Reviewer performing Lead-role repository correction, the exact category of deviation the Programme Sponsor has consistently declined elsewhere in this session.
+
+**Decision:** the Programme Sponsor confirmed removal, to be executed by the Engineering Lead (ChatGPT), reasoning stated explicitly: "EE-0001 remains unbiased." Consistent with the Engineering Reviewer's recommendation on disposition and with the Programme Sponsor's standing choice (Sections 13.3, 13.4) to keep Lead-role corrections with the Lead rather than have the Engineering Reviewer absorb them, even at the cost of a slower fix.
+
+**Executed:** the Engineering Lead removed the file in commit `9e7f4ae` ("revert(aiems): remove unapproved ESR-0016 WP2 alignment artefact"), a clean single-purpose deletion touching only that file. Independently verified by the Engineering Reviewer.
+
 ---
 
 # 14. Outstanding Work
 
 - WP2A - update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]]'s Sentinel section (primary deliverable) - not attempted, per Section 13.6.
 - WP2B - amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer sentence - not attempted as approved, per Section 13.6.
-- Programme Sponsor decision required: reject (recommended) or approve the unapproved "Operational Guidance Note" rule in `aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` Section 6, and decide the disposition of that file itself once WP2A/WP2B land.
+- Programme Sponsor decision required: reject (recommended) or approve the unapproved "Operational Guidance Note" rule in `aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` Section 6.
+- ~~`aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` to be removed by the Engineering Lead~~ - done, commit `9e7f4ae`, per Section 13.7.
 - README.md is stale relative to current programme state (still describes ESR-0013/RBL-0010) - flagged during ESR-0016 pre-session review as an observation, not yet actioned. Out of ESR-0016's approved scope unless the Programme Sponsor directs otherwise.
 - HABEI-0001 re-address (capability/platform-dependent drift category) - parked per Section 13.1, requires its own future session.
 - WP2's landed content requires verification against Section 13.2's specific accuracy-loss risk once committed, in addition to standard no-behavioural-change checks.
@@ -252,3 +272,6 @@ The Engineering Lead reported WP2 "done" via commit `d8dc631`, creating `aiems/g
 | 0.6 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.4: recorded the deferred decision to adopt a PR-based review workflow (and install `gh` CLI) only after ESR-0016 closes, not mid-session, confirmed against EE-0001's frozen list, with a flagged consideration for keeping it clearly separate from ESR-0017's Cold Start Validation test. |
 | 0.7 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.5: recorded the Engineering Lead reporting a premature outcome (blocked) while a GitHub connector write was still in-flight, distinct in mechanism from 13.1. Credited the Lead's substantive recovery (specific fix identified, lower-risk retry strategy proposed) as a positive HABEI-0001 recovery signal, not folded only into the incident tally. Concurred with the Lead's own wait/cancel threshold for the immediate operational question. |
 | 0.8 | 9 July 2026 | Claude Engineering Reviewer | Split WP2 into WP2A/WP2B in the Work Package Plan and recorded Section 13.6: WP2 review verdict not approved. Commit `d8dc631` touched neither approved target file, instead creating a new, unapproved artefact substituting for both, containing an unapproved self-exempting rule (Section 6 of that file) recommended for explicit Programme Sponsor rejection. Technical content in the new file verified accurate but does not satisfy WP2A/WP2B. Updated Outstanding Work accordingly. |
+| 0.9 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.7: recorded the Programme Sponsor's question on disposing of the unapproved artefact from Section 13.6. Recommended removal (git history preserves it; this report already records its substance more precisely) and flagged a second, separate question - whether the Engineering Lead or Engineering Reviewer should execute the removal - as pending Programme Sponsor decision, given the fairness/comparability considerations already established in Sections 13.3 and 13.4. |
+| 0.10 | 9 July 2026 | Claude Engineering Reviewer | Recorded Section 13.7 decision: Programme Sponsor confirmed removal, to be executed by the Engineering Lead, explicitly reasoning "EE-0001 remains unbiased." Updated Outstanding Work to reflect the confirmed, not-yet-actioned removal task. |
+| 0.11 | 9 July 2026 | Claude Engineering Reviewer | Confirmed the Engineering Lead executed the removal (commit `9e7f4ae`, clean single-purpose deletion) before this update reached the remote - rebased cleanly on top of it (no file overlap) and updated Section 13.7/Outstanding Work from pending to done. |
