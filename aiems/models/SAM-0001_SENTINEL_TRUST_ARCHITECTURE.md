@@ -24,7 +24,7 @@
 
 # Subsequent Architectural Update
 
-[[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) repositioned Sentinel as the AI Execution and Security Platform for AIEMS, broadening the trust-gateway-only framing this artefact describes. Sentinel Core, provider abstraction, provider configuration and provider orchestration are now implemented under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot for Sentinel's scope. This note does not change SAM-0001's original content, decision or approval basis.
+[[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) repositioned Sentinel as the AI Execution and Security Platform for AIEMS, broadening the trust-gateway-only framing this artefact describes. Sentinel Core, provider abstraction, provider configuration, provider orchestration and the Sentinel trust-tier policy model are now implemented under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot for Sentinel's scope. This note does not change SAM-0001's original content, decision or approval basis.
 
 ---
 
