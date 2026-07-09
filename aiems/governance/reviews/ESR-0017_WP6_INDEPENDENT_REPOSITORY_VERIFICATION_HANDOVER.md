@@ -196,6 +196,15 @@ No force-pushes, branch changes, or history rewrites occurred - all nine are ord
 
 This is the last step before the Programme Sponsor performs a refreshed WP7 Repository Baseline Acceptance and ESR-0017 is formally closed.
 
-## 11.5 Reviewer Result (Pending)
+## 11.5 Reviewer Result (Complete)
 
-*Awaiting Engineering Reviewer response.*
+**ChatGPT Engineering Reviewer, WP6 Refresh: Accepted, with one non-blocking discrepancy.**
+
+1. **HEAD verification: one commit newer than expected.** GitHub's actual `main` was at `62c44b9` (this handover document's own Section 11 being added), one commit past the `142096c` this handover cited as expected `HEAD` - because the handover was written, then committed and pushed, in the same step. The nine commits `490997b`..`142096c` were confirmed present and in order regardless.
+2. **Scope/content verification: Pass.** The `3fabbca..142096c` diff matches the declared scope; no pre-existing Sentinel core/policy/orchestrator/provider implementation file appears in the changed-file set.
+3. **UAM-0001 spot-check (Section 11.4 item 6): Pass.** "Faithful and non-speculative in tone: they explicitly distinguish illustrative mock-up content from current implementation, preserve the mock-up as reference, and correctly qualify node counts as aspirational versus current repository scale."
+4. **Validation: not independently runtime-executed** - the Reviewer's connector-only environment cannot run `pytest`/`validate_repository.py`, consistent with the original WP6's same limitation. File-level evidence assessed as consistent with the claimed 184/184 and 0 errors; independently covered by the Engineering Lead's own runtime execution earlier in the session, same pattern as the original WP6.
+5. **Finding (Minor, non-blocking):** the handover's stated expected `HEAD` was stale by one commit (the handover-authoring commit itself, `62c44b9`) - not product or uncontrolled scope, explicitly not treated as a blocker. Should be included in the refreshed baseline.
+6. **Recommendation: accept current `main` (including `62c44b9`) as the refreshed ESR-0017 baseline candidate for WP7 / RBL-0013.**
+
+WP6 Refresh is closed. Next: Programme Sponsor WP7 Repository Baseline Acceptance (RBL-0013), reflecting `HEAD` at `62c44b9` (the actual final state, one commit past what this handover originally cited - the Reviewer's finding is folded into the baseline rather than requiring a second refresh cycle for a documentation-only commit).

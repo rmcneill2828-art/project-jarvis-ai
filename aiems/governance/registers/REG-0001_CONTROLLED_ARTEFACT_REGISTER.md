@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.99
+**Version:** 3.103
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.99 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.103 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.23 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.24 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -131,6 +131,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0010 | Repository Baseline | ESR-0009 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0011 | Repository Baseline | ESR-0015 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/governance/baselines/` |
 | RBL-0012 | Repository Baseline | ESR-0017 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
+| RBL-0013 | Repository Baseline | ESR-0017 Repository Baseline (Refresh - Post-WP9) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.4 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
@@ -155,7 +156,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.23 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.24 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -176,7 +177,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0015 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
-| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.19 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0017 | Engineering Session Report | Engineering Session Report | 1.0 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -272,6 +273,10 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.103 | 10 July 2026 | Claude Engineering Lead | Aligned PST-0001 version (2.23 to 2.24) following: ESR-0017 formally closed (10 July 2026). Updated Current Mode, Current Repository Baseline (RBL-0013, superseding RBL-0012), Current Product Capability Baseline (flagged stale, EBG-0056), Current Phase/Workflow/Objective, Section 4A narrative (full closure summary including WP8/WP9/post-WP9 work and the two Sponsor closure-scope decisions), UXP/Sentinel/JARVIS Development capability rows (UXP now live, not disconnected), Completed Milestones (9 new ESR-0017 rows), Active/Next Planned Work, Repository Health (184/184 tests), Outstanding Observations (Guardian-Sentinel connection delivered, Gemini implemented, three EE-0001 sessions closed, Guardian Orb unblocked in principle), Session Start Guidance and OSE Relationships (both retargeted from ESR-0016/RBL-0011 to ESR-0017/RBL-0013 as the current onboarding tier for ESR-0018). |
+| 3.102 | 10 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.19 to 1.0) following: ESR-0017 formally closed. Status: Open to Closed, Date Closed: 10 July 2026, Closure Status: Closed, Final Validation: Pass. WP6 refresh Accepted by ChatGPT Engineering Reviewer (one non-blocking discrepancy - handover HEAD one commit stale). WP7 refresh complete: RBL-0013 accepted, superseding RBL-0012, hands over to ESR-0018 (unlike RBL-0012). Flagged PCB-0001 as stale (new EBG-0056) rather than silently carrying it forward. All nine Work Packages (WP0-WP4, WP6-WP9) complete and reviewed. Session Objective, Executive Summary and Related Artefacts updated to reflect final closed state. |
+| 3.101 | 10 July 2026 | Claude Engineering Lead | Registered RBL-0013 (ESR-0017 Repository Baseline Refresh - Post-WP9), accepted by the Programme Sponsor 10 July 2026, superseding RBL-0012. |
+| 3.100 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.23 to 1.24) following: Added EBG-0056 (PCB-0001 Product Capability Baseline Refresh), flagged at RBL-0013: PCB-0001 is materially stale, still stating Guardian capability is not implemented after WP2/WP9 delivered and verified it live through the real UXP. |
 | 3.99 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.18 to 0.19) following: Programme Sponsor requested ESR-0017 closure. Two closure-scope decisions made: (1) refresh the repository baseline given RBL-0012's own stated WP8/WP9 trigger; (2) do not expand the EE-0001 trial scorecard beyond its existing WP1-WP4 scope. Prepared WP6 refresh handover (ESR-0017_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER.md Section 11) covering all nine commits since the original WP6 baseline (3fabbca..142096c); Lead self-verification clean (184/184 tests, 0 validator errors). Formal closure remains blocked on the Reviewer's WP6 refresh result and the resulting WP7 refresh (new baseline RBL-0013). |
 | 3.98 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.17 to 0.18) following: Recorded Section 15.7: Programme Sponsor's real Obsidian graph screenshot showed the mock-up's node count was exaggerated. Confirmed by direct count (~135 markdown artefacts, not thousands), corrected EBG-0055's difficulty assessment accordingly in UAM-0001 v1.5 and EBR-0001 v1.23 - removed the 2D-only performance caveat, since real scale is not a rendering-performance constraint. |
 | 3.97 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.22 to 1.23) following: Corrected EBG-0055's scale assumption: confirmed by direct count (~135 markdown artefacts) and the Programme Sponsor's real Obsidian graph screenshot that the mock-up's illustrated node/connection counts are aspirational, not current state. At real scale, rendering performance is not a significant Phase 1 constraint - removed the earlier 2D-only performance caveat; a modest 3D sphere is realistically achievable for Phase 1 too. |

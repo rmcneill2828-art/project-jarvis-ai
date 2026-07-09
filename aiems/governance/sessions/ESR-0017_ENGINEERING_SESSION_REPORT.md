@@ -8,16 +8,16 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.19 |
-| Status | Open |
+| Version | 1.0 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Session | ESR-0017 |
 | Date Opened | 9 July 2026 |
-| Date Closed | - |
-| Closure Status | Open |
-| Final Validation | Pending |
+| Date Closed | 10 July 2026 |
+| Closure Status | Closed |
+| Final Validation | Pass - 184/184 tests, 0 validator errors, RBL-0013 accepted |
 
 ---
 
@@ -56,7 +56,9 @@ GitHub and the repository remain the authoritative source of truth.
 
 Decide the UXP-to-backend integration pattern (WP1); connect the existing Guardian Runtime and Sentinel subsystems, which are implemented but currently unwired to each other (WP2); extend Sentinel's provider roster with the PEM-001-approved Secondary provider (WP3); and produce a five-session backlog progression roadmap so future session sequencing is evidence-led rather than ad hoc (WP4).
 
-**Outcome: in progress.**
+The session's scope grew beyond this original four-WP objective, per Programme Sponsor direction, to also cover repository baseline acceptance (WP6/WP7), a new Feature-First Delivery Discipline principle (WP8), and the first genuinely interactive UXP in the project's history (WP9) - see Section 6.
+
+**Outcome: Complete. All nine Work Packages (WP0-WP4, WP6-WP9) delivered and reviewed. Session closed 10 July 2026.**
 
 ---
 
@@ -170,10 +172,10 @@ Full detail is recorded in [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] 
 | PST-0001 update to reflect RBL-0012 and in-progress state | **Complete.** ESR-0017 recorded as still Open (not closed) since WP8/WP9 remain pending - see PST-0001 Sections 3, 4A, 8, 9. |
 | **WP8** | **Complete and Reviewed.** Feature-First Delivery Discipline added to PBK-0001 v1.19 - see Section 14. |
 | **WP9** | **Complete and Reviewed.** ChatGPT Engineering Reviewer: Approved with 4 Minor findings (2 fixed, 2 deliberately deferred to EBG-0050) - see Section 15.1.1. |
-| **WP6 refresh** (post-WP9 Independent Repository Verification) | **Handover prepared, awaiting Engineering Reviewer.** `ESR-0017_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER.md` Section 11, covering the nine commits since the original WP6's baseline (`3fabbca..142096c`). Lead self-verification clean (184/184 tests, 0 validator errors, `HEAD` matches `origin/main`). |
-| **WP7 refresh** (new repository baseline, RBL-0013) | Outstanding - blocked on WP6 refresh's Reviewer recommendation, per the same WP6-before-WP7 sequencing the original baseline followed. |
+| **WP6 refresh** (post-WP9 Independent Repository Verification) | **Complete - Accepted, with one non-blocking discrepancy.** ChatGPT Engineering Reviewer: `HEAD` was one commit stale in the handover (the handover-authoring commit itself, not product/uncontrolled scope); content, scope and OSE compliance all Pass; UAM-0001's recovered content independently spot-checked as faithful and non-speculative. See `ESR-0017_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER.md` Section 11.5. |
+| **WP7 refresh** (new repository baseline, RBL-0013) | **Complete.** [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] accepted 10 July 2026 (new baseline, not incremental retention), superseding RBL-0012. Hands over to ESR-0018 (unlike RBL-0012, which explicitly did not). Flags PCB-0001 as stale (new EBG-0056), not refreshed. |
 | Closure-scope decisions | **Made by the Programme Sponsor when closure was requested**: (1) refresh the repository baseline given RBL-0012's own stated WP8/WP9 trigger - actioned as the WP6/WP7 refresh above; (2) do **not** expand the EE-0001 trial scorecard to cover WP6-WP9 or post-WP4 Sponsor arbitration - the existing WP1-WP4-scoped entry (Section 9 of EE-0001) stands as the final ESR-0017 trial record. |
-| Formal session closure (Status: Open to Closed, Date Closed) | Outstanding - blocked on the WP7 refresh above. |
+| Formal session closure (Status: Open to Closed, Date Closed) | **Complete.** Status: Closed. Date Closed: 10 July 2026. See Section 1. |
 
 ---
 
@@ -330,10 +332,12 @@ The Programme Sponsor shared a screenshot of the actual current Obsidian graph, 
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Immediately preceding closed session; ESR-0017 candidate focuses originated in its Section 16. |
 | [[ESR-0016A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0016A]] | Post-closure governance/tooling addendum, closed before ESR-0017 opened. |
 | [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial; ESR-0017 is the designated Cold Start Validation Session. |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for WP1-WP4 scoping and the WP4 roadmap; now also holds EBG-0050, EBG-0051, EBG-0052, EBG-0053, EBG-0054. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for WP1-WP4 scoping and the WP4 roadmap; now also holds EBG-0050 through EBG-0056. |
 | [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] | Source of the WP3 Gemini (Secondary provider) decision. |
-| [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current accepted repository baseline at session open. |
-| [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] | Current accepted repository baseline, accepted mid-session (WP7). |
+| [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Repository baseline at session open, superseded mid-session. |
+| [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] | Repository baseline accepted mid-session (WP7), superseded at closure. |
+| [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] | Final accepted repository baseline (WP7 refresh), accepted 10 July 2026 at session closure; hands over to ESR-0018. |
+| [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Product Capability Baseline; flagged stale at RBL-0013 (EBG-0056), not refreshed by this session. |
 | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Approved Guardian Experience Architecture baseline; consulted and checked for compliance in Section 15.3 (one defect found and fixed); Guardian Orb knowledge-graph design direction retroactively incorporated in Section 15.4 (v1.2). |
 | [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] | Source of the Guardian Orb knowledge-graph design direction recovered and re-traced in Section 15.4. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Amended by WP8 (Feature-First Delivery Discipline). |
@@ -344,6 +348,7 @@ The Programme Sponsor shared a screenshot of the actual current Obsidian graph, 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 10 July 2026 | Claude Engineering Lead | ESR-0017 formally closed. Status: Open to Closed, Date Closed: 10 July 2026, Closure Status: Closed, Final Validation: Pass. WP6 refresh Accepted by ChatGPT Engineering Reviewer (one non-blocking discrepancy - handover HEAD one commit stale). WP7 refresh complete: RBL-0013 accepted, superseding RBL-0012, hands over to ESR-0018 (unlike RBL-0012). Flagged PCB-0001 as stale (new EBG-0056) rather than silently carrying it forward. All nine Work Packages (WP0-WP4, WP6-WP9) complete and reviewed. Session Objective, Executive Summary and Related Artefacts updated to reflect final closed state. |
 | 0.19 | 9 July 2026 | Claude Engineering Lead | Programme Sponsor requested ESR-0017 closure. Two closure-scope decisions made: (1) refresh the repository baseline given RBL-0012's own stated WP8/WP9 trigger; (2) do not expand the EE-0001 trial scorecard beyond its existing WP1-WP4 scope. Prepared WP6 refresh handover (ESR-0017_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER.md Section 11) covering all nine commits since the original WP6 baseline (3fabbca..142096c); Lead self-verification clean (184/184 tests, 0 validator errors). Formal closure remains blocked on the Reviewer's WP6 refresh result and the resulting WP7 refresh (new baseline RBL-0013). |
 | 0.18 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.7: Programme Sponsor's real Obsidian graph screenshot showed the mock-up's node count was exaggerated. Confirmed by direct count (~135 markdown artefacts, not thousands), corrected EBG-0055's difficulty assessment accordingly in UAM-0001 v1.5 and EBR-0001 v1.23 - removed the 2D-only performance caveat, since real scale is not a rendering-performance constraint. |
 | 0.17 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.6: revised the WP4 five-session roadmap after confirming with the Programme Sponsor that Knowledge Graph Phase 1 should build organically in line with planned WPs. EBG-0050 corrected from stale Candidate Backlog to Completed (Foundation Scope) in EBR-0001 v1.22; new EBG-0055 (Knowledge Graph Phase 1) added, slotted into ESR-0018/ESR-0019 capacity freed by EBG-0050's early completion. ESR-0017_WP4_ENGINEERING_REVIEW_PACKAGE.md updated in place (Sections 5/6/6.1 struck through and corrected, new Section 16 addendum). Flagged an open question for the Programme Sponsor: this revision was made by the Lead alone after the original WP4 Reviewer pass closed, and per this session's own per-WP review discipline it may warrant its own Reviewer check before being treated as accepted. |
