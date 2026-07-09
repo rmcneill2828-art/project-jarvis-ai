@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.56
+**Version:** 3.57
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.56 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.57 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -202,6 +202,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FCH-0012 | Full Chat Historical Evidence | ESR-0012 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0012 | `aiems/History/Full Chat/` |
 | FCH-0013 | Full Chat Historical Evidence | ESR-0013 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0013 | `aiems/History/Full Chat/` |
 | FCH-0015 | Full Chat Historical Evidence | ESR-0015 Full Chat History (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/History/Full Chat/` |
+| FCH-0016 | Full Chat Historical Evidence | ESR-0016 Full Chat History (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
 
 ---
 
@@ -268,6 +269,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.57 | 9 July 2026 | Claude Engineering Reviewer | Registered FCH-0016 (Claude Full Chat History), generated from the live Claude Code session transcript per the FCH-0015 methodology. HST-0016 (Claude Chat Summary) created alongside it but not registered, consistent with HST-0014/HST-0015 - the simpler chat-summary format has no parseable version field for this register to track. Aligned self version row accordingly. |
 | 3.56 | 9 July 2026 | Claude Engineering Reviewer | Registered ESR-0016A Post-Closure Engineering Addendum following completion of all five approved work packages. Aligned self version row accordingly. |
 | 3.55 | 9 July 2026 | Claude Engineering Reviewer | Aligned COC-0001 version (1.10 to 1.11) following: Added Operating Rule 51 and a note under Engineering Reviewer: the Programme Sponsor may direct the Engineering Reviewer to maintain the Engineering Session Report when the Implementer's environment cannot support incremental documentation - a per-session Sponsor decision, documentation only, not a change to accountability. Per ESR-0016A WP5. |
 | 3.54 | 9 July 2026 | Claude Engineering Reviewer | Aligned PBK-0001 version (1.16 to 1.17) following: Added Operational Verification Before Reporting: an AI collaborator shall not report a repository/tool operation's outcome without having actually invoked it and observed the result. Operationalises Principles 2 and 4 for tool operations specifically, per ESR-0016A WP4. |
