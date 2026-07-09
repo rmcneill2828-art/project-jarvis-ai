@@ -2,7 +2,7 @@
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.7
+**Version:** 2.8
 
 ---
 
@@ -48,6 +48,7 @@ This register includes Architecture Decision Records relating to:
 | [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE]] | Device Independence and Portable Restore | Architecture | Approved | 2 Jul 2026 | - | Established devices as execution environments with portable memory, configuration and restore requirements. |
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION]] | Engineering Ecosystem Synchronisation | Governance | Approved | 2 Jul 2026 | - | Established WP0 Engineering Ecosystem Synchronisation including GitHub, AIEMS, OSE, Obsidian and session evidence. |
 | [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM]] | Sentinel AI Execution and Security Platform | Architecture | Approved | 8 Jul 2026 | - | Positioned Sentinel as the AI Execution and Security Platform for AIEMS, expanding the earlier trust-gateway interpretation while preserving the Guardian/Sentinel separation. |
+| [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE]] | UXP-Backend Integration Architecture | Architecture | Approved | 9 Jul 2026 | - | Selected a Tauri sidecar-managed Python process communicating over duplex stdio JSON-RPC as the UXP-to-backend integration pattern, over local HTTP/WebSocket, PyO3 embedding and a Rust/Node rewrite. |
 
 ---
 
@@ -161,6 +162,7 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 
 | Version | Date | Author | Summary |
 |---------|------------|----------------------------|-------------------------------------------------------------|
+| 2.8 | 9 July 2026 | Claude Engineering Lead | Registered ADR-0019 UXP-Backend Integration Architecture, per ESR-0017 WP1. |
 | 2.7 | 8 July 2026 | Claude Engineering Implementer | Registered ADR-0018 Sentinel AI Execution and Security Platform, closing a gap where it was present in REG-0001 but missing from this ADR-specific register. |
 | 2.6 | 2 July 2026 | Codex Engineering Implementer | Added retrospective OSE relationships to improve semantic traceability without changing ADR governance. |
 | 2.5 | 2 July 2026 | Codex Engineering Implementer | Registered ESR-0008 architectural decisions ADR-0007 through ADR-0013. |

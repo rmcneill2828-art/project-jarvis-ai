@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.58
+**Version:** 3.70
 
 ---
 
@@ -113,11 +113,12 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.58 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.70 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.12 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.18 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -174,6 +175,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0015 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
+| ESR-0017 | Engineering Session Report | Engineering Session Report | 0.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -269,6 +271,18 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.70 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.2 to 0.3) following: Recorded EE-0001 scorecard reconciliation: Engineering Reviewer (ChatGPT) reviewed the Lead's ESR-0017 draft self-assessment, substantially agreed, and provided four refinements (signal-to-noise recorded as instrument gap, evidence responsiveness marked not meaningfully exercised, Reviewer behavioural finding reworded in its own words, new EBG-0053 Review Gate Compliance criterion jointly recommended). Not yet accepted by the Programme Sponsor. |
+| 3.69 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.17 to 1.18) following: Refined EBG-0052 wording with ChatGPT Engineering Reviewer's own confirmation/clarification of the execute-after-approval finding; added EBG-0053 (EE-0001 Review Gate Compliance Criterion), jointly recommended by Lead and Reviewer during ESR-0017 scorecard reconciliation. |
+| 3.68 | 9 July 2026 | Claude Engineering Lead | Aligned ESR-0017 version (0.1 to 0.2) following: Added consolidated Engineering Completion Report (Architectural Milestones, Executive Summary, Engineering Outcomes, Validation Summary, Repository Deliverables, EE-0001 Trial Observations, Outstanding Work) following WP1-WP4 completion and Reviewer disposition. Session remains Open pending Programme Sponsor authorisation for repository operations. |
+| 3.67 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.16 to 1.17) following: Added EBG-0052 (PBK-0001/EE-0001 Execute After Approval Principle) per Programme Sponsor-reported EE-0001 trial improvement finding for ESR-0017. |
+| 3.66 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.15 to 1.16) following: Added EBG-0051 (Gemini Provider Production Readiness) per ChatGPT Engineering Reviewer's ESR-0017 WP3 observations: richer response parsing, extended metadata, and a required live smoke test before Gemini is enabled as a production provider. |
+| 3.65 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.14 to 1.15) following: Added ChatGPT Engineering Reviewer's ESR-0017 WP2 Observation 2 (consider a streaming converse() interface at EBG-0050 implementation time) to EBG-0050's note. |
+| 3.64 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.13 to 1.14) following: Added explicit failure-mode implementation requirements (backend crash, restart policy, version negotiation, protocol compatibility, IPC timeout strategy) to EBG-0050, per ChatGPT Engineering Reviewer's ESR-0017 WP1 Recommendation 3. |
+| 3.63 | 9 July 2026 | Claude Engineering Lead | Aligned ADR-0019 version (1.0 to 1.1) following: Softened HTTP/WebSocket wording per ChatGPT Engineering Reviewer WP1 finding - reframed from implying loopback HTTP is inherently insecure to the actual reason (avoidable complexity for no current requirement). |
+| 3.62 | 9 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.12 to 1.13) following: Added EBG-0050 (UXP-Backend Bridge Implementation) per ADR-0019 / ESR-0017 WP1. |
+| 3.61 | 9 July 2026 | Claude Engineering Lead | Aligned REG-0001 version (3.60 to 3.61) following: Registered ADR-0019 (UXP-Backend Integration Architecture) directly in REG-0001's own artefact table, per ESR-0017 WP1. |
+| 3.60 | 9 July 2026 | Claude Engineering Lead | Aligned REG-0002 version (2.7 to 2.8) following: Registered ADR-0019 UXP-Backend Integration Architecture, per ESR-0017 WP1. |
+| 3.59 | 9 July 2026 | Claude Engineering Lead | Aligned REG-0001 version (3.58 to 3.59) following: Registered ESR-0017 (Open) - Cold Start Validation Session, third EE-0001 trial session. |
 | 3.58 | 9 July 2026 | Claude Engineering Reviewer | Aligned EBR-0001 version (1.11 to 1.12) following: Added EBG-0049 (Cost-Aware Provider Routing and PEM-001 Revisit) per Programme Sponsor request following post-ESR-0016A discussion on balancing JARVIS running cost against performance. Cross-referenced with EBG-0045 (overlapping scope, not a duplicate) in both directions. |
 | 3.57 | 9 July 2026 | Claude Engineering Reviewer | Registered FCH-0016 (Claude Full Chat History), generated from the live Claude Code session transcript per the FCH-0015 methodology. HST-0016 (Claude Chat Summary) created alongside it but not registered, consistent with HST-0014/HST-0015 - the simpler chat-summary format has no parseable version field for this register to track. Aligned self version row accordingly. |
 | 3.56 | 9 July 2026 | Claude Engineering Reviewer | Registered ESR-0016A Post-Closure Engineering Addendum following completion of all five approved work packages. Aligned self version row accordingly. |

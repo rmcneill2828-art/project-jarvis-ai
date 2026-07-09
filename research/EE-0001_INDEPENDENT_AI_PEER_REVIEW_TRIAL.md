@@ -140,22 +140,24 @@ The purpose of independent review is to reduce the Programme Sponsor's engineeri
 
 | Criterion | ESR-0015 | ESR-0016 | ESR-0017 | ESR-0018 |
 |---|---|---|---|---|
-| **Scorecard status** | **Accepted (Programme Sponsor, 8 July 2026)** | **Accepted (Programme Sponsor, 9 July 2026)** | Not yet run | Not yet run |
-| Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | 7 / 7 / 0 / 0 ** | | |
-| Average defect discovery weight | 3.0 * | 3.0 ** | | |
-| Repeat issue prevention | Yes * | Mixed ** | | |
-| Documentation-only handoff successful | N/A (not the designated Cold Start session) * | N/A (not the designated Cold Start session) ** | ✓/✗ (verified) | |
-| Lead scope discipline | Met * | Not met for one instance, corrected once identified ** | | |
-| Reviewer role discipline | Met * | Met ** | | |
-| Evidence responsiveness | Met * | Met ** | | |
-| Signal-to-noise (Observations excluded) | High * | High ** | | |
-| Better converged solution achieved | Yes * | Yes ** | | |
-| Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | A / C / G / P / D ** | | |
-| Sponsor arbitration required | Low * | **High** ** | | |
+| **Scorecard status** | **Accepted (Programme Sponsor, 8 July 2026)** | **Accepted (Programme Sponsor, 9 July 2026)** | Reconciled (Lead + Reviewer), pending Programme Sponsor acceptance *** | Not yet run |
+| Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | 7 / 7 / 0 / 0 ** | 10 / 10 / 0 / 0 - confirmed by Reviewer *** | |
+| Average defect discovery weight | 3.0 * | 3.0 ** | ~3.1 (11 total: 1 Lead self-caught, 10 Reviewer-caught) - confirmed by Reviewer *** | |
+| Repeat issue prevention | Yes * | Mixed ** | Yes for known categories; one new category emerged (see Section 9) *** | |
+| Documentation-only handoff successful | N/A (not the designated Cold Start session) * | N/A (not the designated Cold Start session) ** | **✓ (verified)** *** | |
+| Lead scope discipline | Met * | Not met for one instance, corrected once identified ** | Content scope met for all 4 WPs; one process-cadence deviation (see Section 9), corrected once identified *** | |
+| Reviewer role discipline | Met * | Met ** | Met *** | |
+| Evidence responsiveness | Met * | Met ** | Lead: met. Reviewer: confirmed not meaningfully exercised this session *** | |
+| Signal-to-noise (Observations excluded) | High * | High ** | Flagged jointly by Lead and Reviewer as an instrument gap - not scored numerically (see Section 9) *** | |
+| Better converged solution achieved | Yes * | Yes ** | Yes *** | |
+| Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | A / C / G / P / D ** | A / C / G / P / D *** | |
+| Sponsor arbitration required | Low * | **High** ** | Low-Medium - confirmed by Reviewer *** | |
 
 \* ESR-0015 figures originated as the Engineering Implementer's (Claude's) draft self-assessment, carried over from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. The Engineering Reviewer (ChatGPT) independently confirmed these figures as accurate, and the Programme Sponsor accepted the score on 8 July 2026. **This is now the final ESR-0015 trial record.**
 
 \*\* ESR-0016 figures are reconciled from two drafts produced independently, each without sight of the other's final numbers: the Engineering Lead's (ChatGPT's) self-assessment and the Engineering Reviewer's (Claude's) independent assessment, both scored against this Section's criteria. Full agreement was reached independently on Sponsor arbitration (High) and most other criteria; the findings count was resolved by a dated Programme Sponsor decision logged in Section 8. Reconciliation detail in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 15. The Programme Sponsor accepted this score on 9 July 2026. **This is now the final ESR-0016 trial record.**
+
+\*\*\* ESR-0017 figures originated as the Engineering Lead's (Claude's) draft self-assessment. The Engineering Reviewer (ChatGPT) reviewed the draft directly (ESR-0015-style, not blind-independent ESR-0016-style) and substantially agreed, confirming all headline figures and refining four items: signal-to-noise recorded as an instrument gap rather than scored; evidence responsiveness marked "not meaningfully exercised" for the Reviewer rather than left ambiguous; the Reviewer behavioural finding reworded in the Reviewer's own words; and a new joint recommendation for an EE-0001 "Review Gate Compliance" criterion (EBG-0053). Full detail in Section 9 below. **Not yet accepted by the Programme Sponsor.**
 
 ---
 
@@ -224,7 +226,36 @@ Full reconciliation detail, including the specific incidents underlying each cri
 
 ### ESR-0017
 
-*Not yet run. Cold Start Validation Session - see Section 3.4.*
+Content complete; [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] is Open, pending repository operations and formal closure. Claude was Engineering Lead, ChatGPT was Independent Reviewer, per the frozen rotation (Section 3.1). This is the designated Cold Start Validation Session (Section 3.4).
+
+**Status: Reconciled (Lead draft reviewed and refined by the Independent Reviewer). Not yet accepted by the Programme Sponsor.** The Engineering Reviewer (ChatGPT) reviewed the Lead's draft directly (ESR-0015-style review-of-draft, not ESR-0016-style blind-independent-then-reconcile) and stated: "I substantially agree with the Lead's self-assessment... I would not materially change the session conclusions." The figures below are as confirmed, with four Reviewer refinements incorporated (marked *Reviewer*):
+
+- **Documentation-only handoff: verified, ✓.** The Lead began in a fresh conversation with no prior chat history, using only README.md, PST-0001 and the Current ESR (ESR-0016) plus artefacts referenced from those, per Section 3.4/GDE-0001 tiering. This is the first empirical answer to this metric since the trial began (ESR-0015/0016 were both N/A - neither was the designated Cold Start session).
+- 10 findings raised by the Reviewer across WP1-WP4 (1 + 2 + 3 + 4 respectively); all 10 accepted, 0 rejected, 0 false positives. **Confirmed by the Reviewer**, who independently recounted the same per-WP breakdown from its own side: "No finding required withdrawal. No false positives emerged."
+- 11 total defects across the session: 10 Reviewer-caught (as above) plus 1 Lead self-caught (a WikiLink backslash-escaping error introduced while updating the session report, caught by the Lead's own `validate_repository.py` run before it reached the Reviewer) - average discovery weight ~3.1 ((1x4 + 10x3) / 11). **Confirmed by the Reviewer**, who added: the session demonstrated "the Lead's own validation caught implementation issues before review; the Reviewer primarily added engineering quality improvements rather than defect correction" - "the behaviour EE-0001 is intended to encourage."
+- Repeat issue prevention: yes for every previously-identified lesson category - the "never surface raw exception detail" rule (ESR-0015 WP3b) was correctly and unprompted extended from `OpenAIProvider` to `GeminiProvider` in WP3; the ESR-0016A WP4 "Operational Verification Before Reporting" rule was followed throughout; every version bump used `scripts/bump_version.py` with no manual registration mismatches. **One new category emerged this session, not a repeat of a prior one**: the Lead implemented WP1 and WP2 back-to-back, and began WP3, before any Reviewer had seen WP1 or WP2 - the Programme Sponsor caught this and corrected it mid-session ("We should have paused between each WP to chatGPT to review"). All three WPs were still reviewed individually once corrected, so no unreviewed work reached this roadmap, but the cadence deviation itself is new evidence, not a repeat.
+- Lead scope discipline: content scope was met for all four WPs (no unapproved WP was added beyond the four the Programme Sponsor approved at WP0B, no implementation exceeded what each WP's own scope defined). The process-cadence deviation is recorded separately below (*Reviewer*: see "Review Gate Compliance").
+- Reviewer role discipline: met - the Reviewer raised findings and recommendations throughout but did not draft or implement alternative code, ADR text, or roadmap content itself in any of the four review packages.
+- Evidence responsiveness: the Lead revised positions directly on Reviewer evidence multiple times (WP1's "attack surface" wording softened per Recommendation 1; all four of WP4's observations incorporated directly, including a worked contingency example). **Reviewer-confirmed refinement**: rather than the Lead's draft framing ("not clearly exercised in either direction"), the Reviewer explicitly stated this criterion should be marked **"Not meaningfully exercised"** for the Reviewer side, rather than attempting to infer a score - "there was therefore no opportunity for me to revise my position based on counter-evidence."
+- Signal-to-noise: all 10 findings were substantive and accepted (0 rejected, 0 false-positive) - but because every one of them was Observation-severity, and Section 5.8 excludes Observation-severity findings from the ratio entirely, the ratio as literally defined has no eligible numerator or denominator this session. **Reviewer-confirmed as a genuine instrument weakness**, not just a Lead-side observation: "The current wording effectively ignores Observation-severity findings... A review with ten valuable observations and zero false positives cannot score well because the observations are excluded. That does not reflect review quality." The Reviewer recommends EE-0001 distinguish *severity* (blocking/major/minor/observation) from *review value* as separate dimensions - recorded here as a joint instrument-gap finding, not resolved or numerically scored by this entry; any actual wording change requires a dated Programme Sponsor decision per Section 4/8.
+- Better converged solution achieved: yes - WP4's Section 6.1 Decision Gate is the clearest example: the Reviewer's Observation 1 (identify a checkpoint) and Observation 2 (identify contingency branches) were combined by the Lead into one worked mechanism (the three-condition gate plus a concrete contingency tied to the gate's own rationale) that neither party's initial text proposed alone.
+- Repository impact: Architecture (ADR-0019), Code (`GuardianRuntime`, `GeminiProvider`, both with tests), Governance (EBG-0050/0051/0052/0053, REG-0001/REG-0002/EBR-0001 updates), Process (the WP-pause correction), Documentation (WP4 roadmap, four review packages) - multi-tag A/C/G/P/D.
+- Sponsor arbitration required: **Low-Medium, confirmed by the Reviewer.** Distinct interventions this session: approving the 4-WP scope (including the Lead's own flag that it exceeded the original 2-WP proposal), the mid-session UXP question that became WP1, the WP-pause process correction, and a clarifying exchange on whether to pre-create future ESR files. The Reviewer characterised these as "largely workflow, sequencing, prioritisation... rather than technical mediation," explicitly distinguishing this from ESR-0016 "where arbitration was required to resolve substantive engineering disagreements."
+
+**Review Gate Compliance (new joint recommendation, not yet adopted):** the Reviewer agreed EE-0001 currently has no criterion for whether agreed Lead/Reviewer checkpoints occurred before subsequent implementation proceeded, and recommended this be a **distinct** criterion from Section 5.5 Lead Scope Discipline: "They measure different things." Candidate wording proposed by the Reviewer: *"Review Gate Compliance - measures whether agreed Lead/Reviewer checkpoints occurred before subsequent implementation proceeded."* Tracked as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0053. Not adopted by this entry - per Section 4, any scoring-instrument change requires a dated, Programme-Sponsor-decided Section 8 log entry.
+
+**Programme-Sponsor-directed findings, added at explicit Programme Sponsor request and not otherwise derivable from the criteria above:**
+
+- **Positive:** the independent Lead/Reviewer model worked as intended this session - reviewing completed Work Packages independently produced objective technical assessments (WP1-WP4's findings, all accepted, all substantive) without the Reviewer interfering with implementation at any point. **Independently corroborated by the Reviewer's own additional observation** (below).
+- **Improvement:** following explicit Programme Sponsor approval, the Reviewer continued conversational confirmation rather than transitioning immediately into execution. Engineering outputs were produced only after further Sponsor prompting. **This finding was originally reported by the Programme Sponsor from a separate interaction, and has now been independently confirmed and refined by the Reviewer itself**, who characterised it precisely: "The issue was not that I failed to review the work. The issue was: failure to transition promptly from approval to execution... That is fundamentally different from misunderstanding the task, refusing the task, producing an incorrect review. It is a behavioural characteristic of the interaction model... This represents a process-efficiency issue rather than an engineering-quality issue." Logged as a candidate for future incorporation into PBK-0001 (a standing "execute after approval" rule, parallel to the ESR-0016A WP4 "Operational Verification Before Reporting" precedent) and/or EE-0001 Section 3.2's Independent Reviewer role definition, tracked as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0052. No such rule is adopted by this entry - per this document's own framing, nothing here is self-adopting.
+
+**Reviewer-added finding, not present in the Lead's original draft:** "The Lead consistently presented work packages for review without attempting to defend them first. That allowed the review to remain genuinely independent... this improved the objectivity of the trial and reduced confirmation bias." Recorded as further evidence, alongside the Positive finding above, that the Lead/Reviewer separation functioned as intended this session.
+
+This entry reflects Lead draft + Reviewer review-and-refinement, per the ESR-0015 reconciliation pattern. It awaits Programme Sponsor acceptance before becoming the final ESR-0017 trial record.
+
+### ESR-0018
+
+*Not yet run.*
 
 ### ESR-0018
 
