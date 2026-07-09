@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0016A |
 | Title | Post-Closure Engineering Addendum - Governance and Tooling Improvements |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | In Progress |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Parent Session | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] |
@@ -33,7 +33,7 @@ Each work package below is executed against its own approved Engineering Impleme
 | Work Package | Description | Status |
 |---|---|---|
 | WP1 | Pre-commit governance hook visibility - warn when `core.hooksPath` is not configured | Complete (this update) |
-| WP2 | One-command version-bump tool to replace the three-touch REG-0001 mirror pattern | Not started |
+| WP2 | One-command version-bump tool to replace the three-touch REG-0001 mirror pattern | Complete (built and sanity-tested; real usage proof deferred to WP4/WP5) |
 | WP3 | Extend validator to check internal section-number cross-references | Not started |
 | WP4 | Standing PBK-0001 rule: no reporting a repository operation's outcome without invoking it and observing the result | Not started |
 | WP5 | Formalise the report-authorship exception (Reviewer maintaining the session report under Lead tooling constraints) in COC-0001 | Not started |
@@ -57,7 +57,23 @@ Each work package below is executed against its own approved Engineering Impleme
 
 ---
 
-# 5. Related Artefacts
+# 5. WP2 - Version-Bump Tool
+
+**Approved EIP:** one command to sync an artefact's own version fields, its REG-0001 row, and REG-0001's own self-row/version, given a required `--summary`; mechanical only, no auto-generated prose.
+
+**Delivered:** `scripts/bump_version.py`, reusing `validate_repository.py`'s existing parsing functions (`parse_register_rows`, `find_registered_file`, `extract_document_version`) rather than duplicating logic.
+
+**Validation:**
+- Dry-run sanity check (`plan_bump()` called directly, no `write_text`) against real content (GDE-0001, a genuine registered artefact) surfaced a real bug: the version-badge regex's `\s*$` was consuming the following blank line, silently collapsing spacing. Fixed to `[ \t]*$` (same-line trailing whitespace only); re-verified clean.
+- Error paths verified: an unregistered artefact ID and a no-op (already-current) version both refuse cleanly with exit code 1 and no file writes - confirmed via `git status` showing no changes.
+- `pytest` 144/144 (no product code touched); `scripts/validate_repository.py` clean throughout.
+- Real end-to-end proof (an actual controlled-artefact edit, not a dry run) deferred to WP4 and WP5 below, both of which edit registered artefacts (PBK-0001, COC-0001) and will use this tool for their own version sync - consistent with what the approved EIP anticipated, since WP2/WP3 alone don't touch a REG-0001-registered artefact.
+
+**Self-review:** scope held to the approved mechanical behaviour; no prose auto-generated; the one bug found was fixed before any real usage, not discovered later on live content.
+
+---
+
+# 6. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
@@ -66,11 +82,13 @@ Each work package below is executed against its own approved Engineering Impleme
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Amended by WP1; target of planned WP4. |
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Target of planned WP5. |
 | [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current repository baseline preserved by this addendum. |
+| `scripts/bump_version.py` | New tool created by WP2; will be used for WP4/WP5's own version syncs. |
 
 ---
 
-# 6. Version History
+# 7. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 9 July 2026 | Claude Engineering Reviewer | Completed WP2 (version-bump tool): `scripts/bump_version.py` created, reusing existing validator parsing functions. Dry-run sanity check against real content (GDE-0001) found and fixed a blank-line-swallowing regex bug before any real usage. Error paths (unregistered artefact, no-op version) verified to refuse cleanly with no partial writes. Real end-to-end proof deferred to WP4/WP5. |
 | 0.1 | 9 July 2026 | Claude Engineering Reviewer | Opened ESR-0016A. Completed WP1 (pre-commit hook visibility): validator now warns when the tracked hook is inactive; PBK-0001 WP0A checklist updated; verified in both states. |
