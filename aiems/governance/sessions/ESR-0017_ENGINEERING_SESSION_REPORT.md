@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0017 |
 | Title | Engineering Session Report |
-| Version | 0.18 |
+| Version | 0.19 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -170,7 +170,10 @@ Full detail is recorded in [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] 
 | PST-0001 update to reflect RBL-0012 and in-progress state | **Complete.** ESR-0017 recorded as still Open (not closed) since WP8/WP9 remain pending - see PST-0001 Sections 3, 4A, 8, 9. |
 | **WP8** | **Complete and Reviewed.** Feature-First Delivery Discipline added to PBK-0001 v1.19 - see Section 14. |
 | **WP9** | **Complete and Reviewed.** ChatGPT Engineering Reviewer: Approved with 4 Minor findings (2 fixed, 2 deliberately deferred to EBG-0050) - see Section 15.1.1. |
-| Formal session closure (Status: Open to Closed, Date Closed) | Outstanding - Programme Sponsor has indicated further Work Packages may follow WP9; session remains Open pending explicit closure direction. |
+| **WP6 refresh** (post-WP9 Independent Repository Verification) | **Handover prepared, awaiting Engineering Reviewer.** `ESR-0017_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER.md` Section 11, covering the nine commits since the original WP6's baseline (`3fabbca..142096c`). Lead self-verification clean (184/184 tests, 0 validator errors, `HEAD` matches `origin/main`). |
+| **WP7 refresh** (new repository baseline, RBL-0013) | Outstanding - blocked on WP6 refresh's Reviewer recommendation, per the same WP6-before-WP7 sequencing the original baseline followed. |
+| Closure-scope decisions | **Made by the Programme Sponsor when closure was requested**: (1) refresh the repository baseline given RBL-0012's own stated WP8/WP9 trigger - actioned as the WP6/WP7 refresh above; (2) do **not** expand the EE-0001 trial scorecard to cover WP6-WP9 or post-WP4 Sponsor arbitration - the existing WP1-WP4-scoped entry (Section 9 of EE-0001) stands as the final ESR-0017 trial record. |
+| Formal session closure (Status: Open to Closed, Date Closed) | Outstanding - blocked on the WP7 refresh above. |
 
 ---
 
@@ -341,6 +344,7 @@ The Programme Sponsor shared a screenshot of the actual current Obsidian graph, 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.19 | 9 July 2026 | Claude Engineering Lead | Programme Sponsor requested ESR-0017 closure. Two closure-scope decisions made: (1) refresh the repository baseline given RBL-0012's own stated WP8/WP9 trigger; (2) do not expand the EE-0001 trial scorecard beyond its existing WP1-WP4 scope. Prepared WP6 refresh handover (ESR-0017_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER.md Section 11) covering all nine commits since the original WP6 baseline (3fabbca..142096c); Lead self-verification clean (184/184 tests, 0 validator errors). Formal closure remains blocked on the Reviewer's WP6 refresh result and the resulting WP7 refresh (new baseline RBL-0013). |
 | 0.18 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.7: Programme Sponsor's real Obsidian graph screenshot showed the mock-up's node count was exaggerated. Confirmed by direct count (~135 markdown artefacts, not thousands), corrected EBG-0055's difficulty assessment accordingly in UAM-0001 v1.5 and EBR-0001 v1.23 - removed the 2D-only performance caveat, since real scale is not a rendering-performance constraint. |
 | 0.17 | 9 July 2026 | Claude Engineering Lead | Recorded Section 15.6: revised the WP4 five-session roadmap after confirming with the Programme Sponsor that Knowledge Graph Phase 1 should build organically in line with planned WPs. EBG-0050 corrected from stale Candidate Backlog to Completed (Foundation Scope) in EBR-0001 v1.22; new EBG-0055 (Knowledge Graph Phase 1) added, slotted into ESR-0018/ESR-0019 capacity freed by EBG-0050's early completion. ESR-0017_WP4_ENGINEERING_REVIEW_PACKAGE.md updated in place (Sections 5/6/6.1 struck through and corrected, new Section 16 addendum). Flagged an open question for the Programme Sponsor: this revision was made by the Lead alone after the original WP4 Reviewer pass closed, and per this session's own per-WP review discipline it may warrant its own Reviewer check before being treated as accepted. |
 | 0.16 | 9 July 2026 | Claude Engineering Lead | Updated Section 15.5: Programme Sponsor saved the mock-up image directly into the repository (aiems/models/, renamed to UAM-0001_GUARDIAN_ORB_MOCKUP.jpg for convention). UAM-0001 (now v1.4) updated to reference the real file instead of describing it as outstanding. |

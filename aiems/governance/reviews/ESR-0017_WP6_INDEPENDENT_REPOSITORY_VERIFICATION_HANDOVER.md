@@ -140,3 +140,62 @@ This is the last step before the Programme Sponsor performs WP7 Repository Basel
 5. **Recommendation: accept the repository state for WP7 baseline consideration.** Only finding is the disclosed, non-blocking `be873d1` deviation. Final baseline acceptance remains the Programme Sponsor's decision.
 
 WP6 is closed. Next: Programme Sponsor WP7 Repository Baseline Acceptance.
+
+---
+
+# 11. WP6 Refresh - Post-WP9 State Verification
+
+**Requested by the Programme Sponsor when closing ESR-0017**, since [[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] (accepted above, Section 10) explicitly flagged WP8/WP9 as its own trigger for reconsideration, and substantial work landed after WP9 too (Guardian Orb design-baseline recovery into UAM-0001, the WP4 roadmap revision, a mock-up scale correction). Same purpose as Section 1 above - confirming pushed evidence matches claims - covering everything since the original WP6's baseline (`3fabbca`), not re-litigating WP1-4's content again.
+
+## 11.1 Repository Access
+
+| Field | Value |
+|---|---|
+| Expected `HEAD` | `142096cc23d528734c2c91fb809ef827eeef2129` |
+| Confirmed | Local `HEAD` and `origin/main` both resolve to this SHA at time of writing |
+
+**First action: confirm this SHA is what GitHub actually shows for `main`.**
+
+## 11.2 The Nine Commits Since the Original WP6 Baseline (`3fabbca`, in push order)
+
+| # | SHA | One-line summary |
+|---|---|---|
+| 1 | `490997b` | ESR-0017 WP6-WP9 - repository baseline, delivery-discipline principle, first interactive UXP |
+| 2 | `b3806d5` | Add automated dev-environment setup script |
+| 3 | `4d405f1` | ESR-0017 Section 15.2 - record dev-environment setup automation, add EBG-0054 |
+| 4 | `6797172` | ESR-0017 WP9 - incorporate Engineering Reviewer's implementation review, mark complete |
+| 5 | `160303e` | ESR-0017 WP9 follow-up - consult UAM-0001, fix Diagnostics/live-state contradiction |
+| 6 | `aa0b690` | ESR-0017 - recover Guardian Orb knowledge-graph design direction from FCH-0010 into UAM-0001 |
+| 7 | `44add13` | ESR-0017 - incorporate the actual Guardian Orb mock-up image into UAM-0001 |
+| 8 | `f76027e` | ESR-0017 - revise WP4 roadmap: EBG-0050 complete early, slot in EBG-0055 (Knowledge Graph Phase 1) |
+| 9 | `142096c` | ESR-0017 - correct Guardian Orb mock-up scale against the real Obsidian graph |
+
+No force-pushes, branch changes, or history rewrites occurred - all nine are ordinary fast-forward commits.
+
+## 11.3 What Changed (full diff, `3fabbca..HEAD`)
+
+27 files changed, 1674 insertions(+), 91 deletions(-). By category:
+
+- **New governance artefacts**: `RBL-0012_REPOSITORY_BASELINE.md`; this handover document itself (Section 10, the original WP6).
+- **New/modified controlled artefacts**: `PBK-0001` (Feature-First Delivery Discipline, WP8), `UAM-0001` (Sections 7.1, 8.1, 8.2, 8.3 - Guardian Orb design recovery and mock-up incorporation), `EBR-0001` (EBG-0050 status correction, EBG-0054, EBG-0055), `REG-0001` (version bookkeeping for all of the above), `PST-0001` (RBL-0012/in-progress state, from the original WP7).
+- **New product code**: `jarvis/interfaces/stdio_rpc.py` + `jarvis/tests/test_stdio_rpc.py` (JSON-RPC 2.0 stdio bridge, 14 tests), `jarvis/app.py` (`--ipc-stdio` flag), `src-tauri/src/lib.rs` (Tauri sidecar process management), `src/App.jsx` + `src/platformStatus.js` + `src/styles.css` (live UXP wiring, no longer a static mock-up).
+- **New dev tooling**: `setup.bat`, `scripts/setup-dev-environment.ps1`, `src-tauri/.gitignore` (fixes a real gap - `target/` had no ignore rule before this), `scripts/bump_version.py` fix + `scripts/tests/test_bump_version.py` (4 tests, a self-referential versioning bug).
+- **New binary assets**: `src-tauri/icons/icon.ico` (required for `cargo build`), `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg` (the real design reference image, provided by the Programme Sponsor).
+- **`ESR-0017_WP4_ENGINEERING_REVIEW_PACKAGE.md`**: updated in place (not re-created) to strike through EBG-0050 rows now delivered early and add EBG-0055 to the freed capacity - see its own Section 16 addendum.
+- **`ESR-0017_ENGINEERING_SESSION_REPORT.md`**: grew from the WP6-covered v0.3 to v0.18, recording WP8, WP9 (implementation + Reviewer incorporation), and Sections 15.2 through 15.7 (setup automation, design-baseline recovery, mock-up incorporation, WP4 roadmap revision, scale correction).
+
+## 11.4 Verification Requested
+
+1. Confirm `main` on GitHub is at `142096c` (11.1).
+2. Confirm the nine commits (11.2) appear in this order with these SHAs.
+3. Test suite: run `pytest` if you have execution capability and confirm **184 passed**, 0 failed (up from 166 at the original WP6, +18: 14 from `test_stdio_rpc.py`, 4 from `test_bump_version.py`). If you can't execute, cross-check test function counts against what's claimed here and in Sections 15.1/15.1.1 of the session report.
+4. Validator: run `python scripts/validate_repository.py` if you have execution capability and confirm **0 errors** (63 warnings at time of writing, all the same documented adjacency-heuristic false-positive class as the original WP6 - none newly introduced by substantive content).
+5. Scope: confirm nothing outside `jarvis/`, `sentinel/` (unchanged this round), `src/`, `src-tauri/`, `scripts/`, `setup.bat`, and the governance artefacts listed in 11.3 was touched. In particular, confirm no pre-existing Sentinel implementation file (`core.py`, `policy.py`, `orchestrator.py`, `openai_provider.py`, `gemini_provider.py`) shows any diff in this range - none were touched after WP2/WP3 closed.
+6. Independent spot-check worth doing, not just accepting: `UAM-0001`'s new Sections 8.1-8.3 and Section 7.1 claim to recover content from `aiems/History/Full Chat/FCH-0010_ESR-0010_FULL_CHAT_HISTORY.md` and a Programme-Sponsor-provided mock-up image - confirm the UAM-0001 content is a faithful, non-speculative rendering of what's cited, not an invention presented as recovered history.
+7. **A recommendation**: accept this post-WP9 repository state as the refreshed ESR-0017 baseline (a new WP7, RBL-0013), or identify what needs rework first.
+
+This is the last step before the Programme Sponsor performs a refreshed WP7 Repository Baseline Acceptance and ESR-0017 is formally closed.
+
+## 11.5 Reviewer Result (Pending)
+
+*Awaiting Engineering Reviewer response.*
