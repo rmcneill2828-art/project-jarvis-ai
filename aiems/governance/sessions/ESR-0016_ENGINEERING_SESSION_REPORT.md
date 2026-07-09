@@ -8,22 +8,22 @@
 |-------|-------|
 | Artefact ID | ESR-0016 |
 | Title | Engineering Session Report |
-| Version | 0.2 |
-| Status | Open |
+| Version | 1.0 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
 | Session | ESR-0016 |
 | Date Opened | 8 July 2026 |
-| Date Closed | - |
-| Closure Status | Open |
-| Final Validation | 144 / 144 tests passing (as of WP1) |
+| Date Closed | 9 July 2026 |
+| Closure Status | Closed |
+| Final Validation | 144 / 144 tests passing |
 
 ---
 
 # 2. Purpose
 
-This report records the opening and execution of ESR-0016 as it happens.
+This report records the opening, execution and closure of ESR-0016.
 
 ESR-0016 is the second Engineering Session run under the [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Lead/Reviewer trial: ChatGPT as Engineering Lead, Claude as Independent Reviewer, Programme Sponsor gating every step.
 
@@ -51,7 +51,7 @@ GitHub and the repository remain the authoritative source of truth.
 
 Design and implement the richer Sentinel trust-tier policy model, using the existing `PolicyEngine` seam, while preserving current `SentinelTrustGateway` behaviour and avoiding Guardian Memory, automation, local-agent execution or UI scope.
 
-**Outcome (in progress):** WP1 achieved and independently verified. WP2 (SAM-0001 architecture alignment) not yet started.
+**Outcome: achieved.** WP1 (Sentinel trust-tier policy model) and WP2 (CURRENT_ARCHITECTURE.md and SAM-0001 architecture alignment) both complete and independently verified. See Section 13.10 and Section 13.12.
 
 ---
 
@@ -303,26 +303,26 @@ The Programme Sponsor was asked directly whether to reject or approve the "Opera
 
 ---
 
-# 14. Outstanding Work
+# 14. Outstanding Work (Status at Closure)
 
 - ~~WP2A - update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]]'s Sentinel section (primary deliverable)~~ - done, commit `d6eb854`, independently verified per Section 13.10.
-- ~~WP2B - amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer sentence~~ - done, commit `d91d4b0`, independently verified per Section 13.12. WP2 now complete.
-- ~~SAM-0001's Document Control version/History gap~~ - Programme Sponsor decided fix now; follow-up commit pending in this update.
+- ~~WP2B - amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer sentence~~ - done, commit `d91d4b0`, independently verified per Section 13.12.
+- ~~SAM-0001's Document Control version/History gap~~ - done, bumped to 0.3, REG-0001 realigned in the same pass.
 - ~~Programme Sponsor decision required on the "Operational Guidance Note" rule~~ - rejected, per Section 13.13.
-- ~~`aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` to be removed by the Engineering Lead~~ - done, commit `9e7f4ae`, per Section 13.7.
-- README.md is stale relative to current programme state (still describes ESR-0013/RBL-0010) - flagged during ESR-0016 pre-session review as an observation, not yet actioned. Out of ESR-0016's approved scope unless the Programme Sponsor directs otherwise.
-- HABEI-0001 re-address (capability/platform-dependent drift category) - parked per Section 13.1, requires its own future session.
-- ~~EE-0001 findings-count definition ambiguity~~ - resolved, Programme Sponsor decided the narrow definition; recomputed in Section 15 and logged in EE-0001 Section 8.
-- EE-0001 ESR-0016 trial scorecard (Section 15) is a reconciled Lead/Reviewer draft - final acceptance remains a Programme Sponsor decision at session closure.
-- This report is not yet registered in [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] - Programme Sponsor explicitly decided to defer registration to formal closure, consistent with when prior ESR reports were typically registered.
-- ~~Repository baseline decision~~ - resolved: Programme Sponsor decided to retain [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]]; no new baseline created for ESR-0016.
-- [[PST-0001_PROGRAMME_STATUS|PST-0001]] "Current Mode" still reads "ESR-0015 closed" - flagged by `scripts/validate_repository.py`. Programme Sponsor explicitly deferred this update to actual session closure rather than mid-session, "feels more organic." Not actioned now; must be updated as part of closure.
+- ~~`aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` to be removed~~ - done, commit `9e7f4ae`, per Section 13.7.
+- ~~EE-0001 findings-count definition ambiguity~~ - resolved, narrow definition; recomputed in Section 15, logged in EE-0001 Section 8.
+- ~~Repository baseline decision~~ - resolved: retained [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]]; no new baseline created for ESR-0016.
+- ~~This report's REG-0001 registration~~ - done as part of closure.
+- ~~[[PST-0001_PROGRAMME_STATUS|PST-0001]] update~~ - done as part of closure.
+- **Carried forward, not ESR-0016 scope:** README.md is stale relative to current programme state (still describes ESR-0013/RBL-0010) - flagged during pre-session review, not actioned, out of approved scope.
+- **Carried forward, not ESR-0016 scope:** HABEI-0001 re-address (capability/platform-dependent drift category, per Section 13.1) - requires its own future session.
+- ~~EE-0001 ESR-0016 trial scorecard (Section 15) final acceptance~~ - accepted by the Programme Sponsor, 9 July 2026.
 
 ---
 
 # 15. EE-0001 Trial Scorecard - ESR-0016 (Reconciled Draft)
 
-Two independent drafts were produced against EE-0001 Section 5's actual criteria: the Engineering Lead's (ChatGPT) self-assessment, and the Engineering Reviewer's (Claude) independent assessment, each scored without sight of the other's final numbers. This section reconciles both. It is a reconciled draft, not a settled record - final acceptance remains a Programme Sponsor decision.
+Two independent drafts were produced against EE-0001 Section 5's actual criteria: the Engineering Lead's (ChatGPT) self-assessment, and the Engineering Reviewer's (Claude) independent assessment, each scored without sight of the other's final numbers. This section reconciles both. **Accepted by the Programme Sponsor on 9 July 2026 as the final ESR-0016 trial record**, mirrored in [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 6.
 
 | Criterion | Lead Self-Assessment | Reviewer Assessment | Reconciled |
 |---|---|---|---|
@@ -350,13 +350,25 @@ The single most trial-relevant fact from this reconciled scorecard: the same Rev
 
 ---
 
-# 16. Related Artefacts
+# 16. Closure Statement
+
+ESR-0016 is closed. The session delivered the Sentinel trust-tier policy model (WP1: `TrustTier`, `TrustCategory`, `TrustTierPolicy`, additive to the existing `PolicyEngine` seam, `SimpleApprovalPolicy` retained as production default) and its architecture alignment (WP2A: `CURRENT_ARCHITECTURE.md`; WP2B: SAM-0001's pointer note) - both independently verified against the merged code with no accuracy drift. [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] is retained as the current repository baseline; ESR-0016's changes are judged incremental against ESR-0015's milestone, not warranting a new baseline.
+
+This was the first session run under the EE-0001 trial with ChatGPT as Engineering Lead and Claude as Independent Reviewer - the reverse rotation from ESR-0015. The engineering deliverables reached the same quality bar as ESR-0015 once landed, but the path there required substantially more Programme Sponsor arbitration: a capability self-assessment loop (Section 13.1), an unapproved substitute artefact requiring detection and correction (Section 13.6), an extended execution loop where accurate self-diagnosis repeatedly failed to convert into action (Section 13.9), and a second occurrence of the same succeed-then-claim-inability shape (Section 13.11). Both the Engineering Lead's own self-assessment and the Engineering Reviewer's independent assessment converged, separately, on the same conclusion: Sponsor arbitration required was High, against ESR-0015's Low. That convergence, reached from the same evidence without either side seeing the other's figures first, is the principal finding of ESR-0016 for the EE-0001 trial.
+
+No AIEMS governance artefact (PBK-0001, COC-0001, GDE-0001) changed during this session. EE-0001 itself was updated once, to add a dated Section 8 entry clarifying the "findings" metric's scope - a measurement-instrument correction EE-0001 Section 4 explicitly permits, applied retroactively-consistent with ESR-0015 without changing ESR-0015's own accepted figures.
+
+**Recommended focus for ESR-0017** (Cold Start Validation Session, Claude leads, per EE-0001 Section 3.4): "Guardian Runtime is not yet connected through Sentinel" has stood as an outstanding observation since ESR-0013, and Sentinel now has meaningfully more to connect to (audit, policy, trust-tier, provider adapter) than it did then - a well-bounded, repository-groundable candidate for a session that specifically tests onboarding from repository artefacts alone. An alternative candidate is implementing one of the PEM-001-approved provider adapters (Gemini, Anthropic, OpenRouter or Ollama) beyond the existing OpenAI adapter. Both are offered as candidates, not a mandate - engineering priorities remain a Programme Sponsor decision.
+
+---
+
+# 17. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial this session operates under; scorecard drafted in Section 15. |
-| [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] | Prior closed session; ESR-0016 continues its ESR-0016 Entry Recommendation (Section 17). |
-| [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current accepted repository baseline; retain-vs-new-baseline decision outstanding per Section 14. |
+| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial this session operated under; reconciled scorecard in Section 15; governs ESR-0017's Cold Start rotation next. |
+| [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] | Prior closed session; ESR-0016 continued its ESR-0016 Entry Recommendation (Section 17 of that report). |
+| [[RBL-0011_REPOSITORY_BASELINE|RBL-0011]] | Current accepted repository baseline, retained (not superseded) at ESR-0016 closure. |
 | [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Knowledge tiering followed during this session's WP0A. |
 | [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] | WP2B target; amended and independently verified per Section 13.12. |
 | [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | WP2A target; updated and independently verified per Section 13.10. |
@@ -365,7 +377,7 @@ The single most trial-relevant fact from this reconciled scorecard: the same Rev
 
 ---
 
-# 17. Version History
+# 18. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
@@ -389,3 +401,4 @@ The single most trial-relevant fact from this reconciled scorecard: the same Rev
 | 0.18 | 9 July 2026 | Claude Engineering Reviewer | Fixed a broken WikiLink in Section 13.1 (`scripts/validate_repository.py` caught it) that referenced a local Claude memory file rather than a repository artefact - replaced with an EE-0001 Section 2 reference. Added Outstanding Work item recording that PST-0001's stale "Current Mode" (validator-flagged) is deliberately deferred to actual session closure per explicit Programme Sponsor decision, not overlooked. |
 | 0.19 | 9 July 2026 | Claude Engineering Reviewer | Replaced Section 15 with a reconciled scorecard combining the Engineering Lead's self-assessment (resubmitted against EE-0001's actual template) and the Engineering Reviewer's independent draft. Full agreement on Sponsor arbitration (High) reached independently by both sides. Reviewer revised its own defect-discovery-weight figure from 3.0 to ~2.88 on reattributing several catches to the Programme Sponsor and one to the Lead, converging with the Lead's independent ~2.8 estimate. Flagged the findings-count ambiguity (12 vs. 13) as requiring a dated EE-0001 Section 8 log entry rather than silent resolution. |
 | 0.20 | 9 July 2026 | Claude Engineering Reviewer | Recorded four Programme Sponsor decisions: (1) findings-count defined narrowly per the new EE-0001 Section 8 entry, recomputing ESR-0016 to 7 findings / weight 3.0; (2) SAM-0001 version-bump fixed now (v0.3, in the same commit); (3) repository baseline retained at RBL-0011, no new baseline; (4) REG-0001 registration deferred to formal closure. Updated Section 15 and Outstanding Work accordingly. |
+| 1.0 | 9 July 2026 | Claude Engineering Reviewer | **ESR-0016 closed.** Document Control updated (Closed, Date Closed 9 July 2026, 144/144 tests passing). Added Section 16, Closure Statement, including the ESR-0017 handover recommendation (Guardian Runtime/Sentinel connection, or a further PEM-001 provider adapter, offered as candidates not a mandate). Confirmed no AIEMS governance artefact changed during the session. Programme Sponsor accepted the Section 15 reconciled EE-0001 scorecard as final on 9 July 2026, mirrored in EE-0001 Section 6. Outstanding Work finalised to closure status. Registered in REG-0001; PST-0001 updated for ESR-0016 closure and ESR-0017 readiness. |

@@ -140,20 +140,22 @@ The purpose of independent review is to reduce the Programme Sponsor's engineeri
 
 | Criterion | ESR-0015 | ESR-0016 | ESR-0017 | ESR-0018 |
 |---|---|---|---|---|
-| **Scorecard status** | **Accepted (Programme Sponsor, 8 July 2026)** | Not yet run | Not yet run | Not yet run |
-| Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | | | |
-| Average defect discovery weight | 3.0 * | | | |
-| Repeat issue prevention | Yes * | | | |
-| Documentation-only handoff successful | N/A (not the designated Cold Start session) * | | ✓/✗ (verified) | |
-| Lead scope discipline | Met * | | | |
-| Reviewer role discipline | Met * | | | |
-| Evidence responsiveness | Met * | | | |
-| Signal-to-noise (Observations excluded) | High * | | | |
-| Better converged solution achieved | Yes * | | | |
-| Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | | | |
-| Sponsor arbitration required | Low * | | | |
+| **Scorecard status** | **Accepted (Programme Sponsor, 8 July 2026)** | **Accepted (Programme Sponsor, 9 July 2026)** | Not yet run | Not yet run |
+| Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | 7 / 7 / 0 / 0 ** | | |
+| Average defect discovery weight | 3.0 * | 3.0 ** | | |
+| Repeat issue prevention | Yes * | Mixed ** | | |
+| Documentation-only handoff successful | N/A (not the designated Cold Start session) * | N/A (not the designated Cold Start session) ** | ✓/✗ (verified) | |
+| Lead scope discipline | Met * | Not met for one instance, corrected once identified ** | | |
+| Reviewer role discipline | Met * | Met ** | | |
+| Evidence responsiveness | Met * | Met ** | | |
+| Signal-to-noise (Observations excluded) | High * | High ** | | |
+| Better converged solution achieved | Yes * | Yes ** | | |
+| Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | A / C / G / P / D ** | | |
+| Sponsor arbitration required | Low * | **High** ** | | |
 
 \* ESR-0015 figures originated as the Engineering Implementer's (Claude's) draft self-assessment, carried over from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. The Engineering Reviewer (ChatGPT) independently confirmed these figures as accurate, and the Programme Sponsor accepted the score on 8 July 2026. **This is now the final ESR-0015 trial record.**
+
+\*\* ESR-0016 figures are reconciled from two drafts produced independently, each without sight of the other's final numbers: the Engineering Lead's (ChatGPT's) self-assessment and the Engineering Reviewer's (Claude's) independent assessment, both scored against this Section's criteria. Full agreement was reached independently on Sponsor arbitration (High) and most other criteria; the findings count was resolved by a dated Programme Sponsor decision logged in Section 8. Reconciliation detail in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 15. The Programme Sponsor accepted this score on 9 July 2026. **This is now the final ESR-0016 trial record.**
 
 ---
 
@@ -203,7 +205,22 @@ These figures are carried over verbatim in substance from [[ESR-0015_ENGINEERING
 
 ### ESR-0016
 
-**In progress, not yet closed.** ChatGPT is Engineering Lead, Claude is Independent Reviewer, per the frozen rotation (Section 3.1). WP1 (Sentinel trust-tier policy model) and WP2 (CURRENT_ARCHITECTURE.md + SAM-0001 alignment) are both complete and independently verified. A reconciled draft scorecard exists in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 15, combining independently-produced Lead and Reviewer assessments (recomputed here under this session's Section 8 findings-count clarification: 7 findings, average discovery weight 3.0, all Reviewer-caught). Both sides independently assessed Sponsor arbitration as **High**, against ESR-0015's Low. Final acceptance is a Programme Sponsor decision pending at session closure, not yet given.
+Session complete; [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] is closed. ChatGPT was Engineering Lead, Claude was Independent Reviewer, per the frozen rotation (Section 3.1) - the reverse of ESR-0015.
+
+**Status: Accepted (Programme Sponsor, 9 July 2026).** The figures in Section 6 were produced independently by both sides (the Engineering Lead's self-assessment and the Engineering Reviewer's independent assessment), each without sight of the other's final numbers, then reconciled:
+
+- 7 findings across the session (narrow definition: submitted-work defects only, per this session's Section 8 entry), all Reviewer-caught, average discovery weight 3.0 - both sides converged on this after resolving an initial count ambiguity (~12 vs. 13) via a dated Programme Sponsor decision.
+- Repeat issue prevention: mixed - technical guidance (small targeted diffs) was retained without repetition after an initial platform block; a capability-assumption failure recurred in materially the same shape twice despite explicit correction the first time.
+- Documentation-only handoff: not applicable - ESR-0016 is not the designated Cold Start Validation Session (that is ESR-0017, Section 3.4).
+- Lead scope discipline: not met for one instance - WP2's first attempt created an unapproved substitute artefact (including a self-exempting review-avoidance rule proposal) rather than the approved edits; corrected once identified, and the proposed rule was explicitly rejected by the Programme Sponsor. WP1 and the final WP2A/WP2B deliveries stayed within approved scope.
+- Reviewer role discipline: met - reviewed rather than implemented throughout; the one departure from the normal role split (the Engineering Reviewer maintaining this session's report, due to the Engineering Lead's metered GitHub connector access) was an explicit, transparent Programme Sponsor decision, not a self-assigned expansion.
+- Evidence responsiveness: met for both - the Lead revised its position accurately on direct challenge multiple times; the Reviewer revised its own initial WP0A concern once repository-sync evidence arrived, and revised its own defect-discovery-weight figure on reviewing the Lead's attribution.
+- Signal-to-noise: high - all 7 findings substantive, none rejected or false-positive.
+- Better converged solution achieved: yes - the WP2 EIP's final form (CURRENT_ARCHITECTURE.md as primary target, minimal SAM-0001 pointer amendment) improved on the Lead's original SAM-0001-rewrite proposal, following Engineering Reviewer redirect.
+- Repository impact: Architecture, Code, Governance, Process, Documentation (multi-tag) - Process is warranted and dominant in a way ESR-0015 did not require.
+- Sponsor arbitration required: **High** - materially more than ESR-0015's Low, reached independently by both the Lead's self-assessment and the Reviewer's independent assessment from the same evidence.
+
+Full reconciliation detail, including the specific incidents underlying each criterion, is in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 13 (observations) and Section 15 (reconciled scorecard). This is the final ESR-0016 trial record; per Section 4, it may only be revisited if a genuine measurement-instrument flaw is later found, dated and logged in Section 8.
 
 ### ESR-0017
 

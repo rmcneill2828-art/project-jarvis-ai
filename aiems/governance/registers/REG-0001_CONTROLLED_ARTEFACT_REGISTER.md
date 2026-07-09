@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.50
+**Version:** 3.52
 
 ---
 
@@ -113,7 +113,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0011 | Architecture Decision Record | Agent Framework | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.50 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.52 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.7 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -153,7 +153,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.21 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.22 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -172,6 +172,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0014 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0014A | Engineering Session Report | Post-Closure Engineering Addendum - Knowledge Tiering | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/governance/sessions/` |
 | ESR-0015 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0016 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -266,6 +267,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.52 | 9 July 2026 | Claude Engineering Reviewer | Aligned PST-0001 version (2.21 to 2.22) following ESR-0016 closure update. Aligned self version row accordingly. |
+| 3.51 | 9 July 2026 | Claude Engineering Reviewer | Registered ESR-0016 Engineering Session Report following ESR-0016 closure. Aligned self version row accordingly. |
 | 3.50 | 9 July 2026 | Claude Engineering Reviewer | Aligned SAM-0001 version (0.2 to 0.3) following ESR-0016 WP2B's trust-tier policy model reference, fixed on explicit Programme Sponsor instruction after `scripts/validate_repository.py` flagged the mismatch this introduced. Aligned self version row accordingly. |
 | 3.49 | 8 July 2026 | Claude Engineering Reviewer | Aligned COC-0001 version (1.9 to 1.10) following a Programme Sponsor-directed housekeeping fix ahead of ESR-0016: corrected the stale RBL-0009 baseline reference to RBL-0011. Aligned self version row accordingly. |
 | 3.48 | 8 July 2026 | Claude Engineering Implementer | Registered FCH-0015 (ESR-0015 Full Chat History, Claude side), generated directly from the live session transcript at Programme Sponsor request. Aligned self version row accordingly. |
