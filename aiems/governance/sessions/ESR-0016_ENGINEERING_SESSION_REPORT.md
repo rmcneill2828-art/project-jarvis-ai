@@ -61,8 +61,8 @@ Design and implement the richer Sentinel trust-tier policy model, using the exis
 |---|---|---|
 | WP0 | Repository synchronisation and session activation | Complete |
 | WP1 | Sentinel trust-tier policy model (`TrustTier`, `TrustCategory`, `TrustTierPolicy`), additive to `PolicyEngine`, `SimpleApprovalPolicy` retained as production default | Complete (commits `598c13a`, `50029d1`, `d08f9b4`, `a5b6406`, `b4ba22d`) |
-| WP2A | Update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] Sentinel section with the implemented trust-tier model (primary deliverable) | Not attempted - see Section 13.6 |
-| WP2B | Amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer note to add the trust-tier policy model | Not attempted as approved - see Section 13.6 |
+| WP2A | Update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] Sentinel section with the implemented trust-tier model (primary deliverable) | Complete (commit `d6eb854`) - see Section 13.10 |
+| WP2B | Amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer note to add the trust-tier policy model | Not yet attempted - awaiting Programme Sponsor confirmation to proceed |
 
 The Engineering Lead originally proposed bundling a SAM-0001 update into WP1 itself. The Engineering Reviewer recommended sequencing it as a separate WP2 after WP1's implementation stabilised, on the basis that architecture documentation should describe implemented and validated behaviour rather than a design that might still shift during implementation (consistent with how [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] and [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] were updated after ESR-0014/0015's real decisions existed, not ahead of them). The Engineering Lead agreed; this sequencing was formally adopted.
 
@@ -261,12 +261,24 @@ Following Section 13.8's self-review, the Programme Sponsor approved a narrowed 
 
 **Recommendation:** stop requesting "proceed" or further discussion within this conversation. Issue a single instruction that forecloses further analysis - e.g. "invoke the file-update function now; reply with nothing except the literal tool result or the literal error message." If no actual result is produced even then, that is evidence for explanation (b), and the more productive path is very likely a fresh ChatGPT conversation rather than continued attempts within one that has now built up several rounds of this exact loop in its own context.
 
+## 13.10 WP2A Landed and Independently Verified
+
+Following the Programme Sponsor's foreclosing instruction (Section 13.9's recommendation), the Engineering Lead invoked the write function, waited for the actual result, and reported it only once concrete: commit `d6eb854` ("docs(aiems): update Sentinel trust-tier architecture snapshot"), file changed `aiems/architecture/CURRENT_ARCHITECTURE.md`, 13 lines added, 0 removed.
+
+**Independently verified, approved.** The Engineering Reviewer fetched, pulled and read the full diff. Findings:
+
+- **Scope:** only `CURRENT_ARCHITECTURE.md` touched; SAM-0001 untouched (WP2B correctly not attempted); no new file created; no ESR-0015 backfill present. Working tree clean, 144/144 tests passing (docs-only, as expected).
+- **Content accuracy:** every claim matches the actual implemented code exactly - `TrustTier` (`ROUTINE`/`SENSITIVE`/`RESTRICTED`), all five `TrustCategory` values, the ALLOW/REVIEW/DENY mapping, the corrected precedence order, the anti-softening constraint, and `SimpleApprovalPolicy` as the unchanged production default. The real enum and decision terminology is used directly, with no euphemism or softened wording - the specific accuracy-loss risk flagged in Section 13.2 did not materialise.
+- **Mechanism note:** this write used a small, targeted diff (13 lines inserted into an existing section) rather than the earlier full-file replacement that reportedly triggered a platform block (Section 13.2). Consistent with, though not proof of, the theory that diff size rather than vocabulary was the trigger.
+
+This is the first fully clean WP2 landing since WP1's close, following the extended incident sequence in Sections 13.1-13.9.
+
 ---
 
 # 14. Outstanding Work
 
-- WP2A - update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]]'s Sentinel section (primary deliverable) - not attempted, per Section 13.6.
-- WP2B - amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer sentence - not attempted as approved, per Section 13.6.
+- ~~WP2A - update [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]]'s Sentinel section (primary deliverable)~~ - done, commit `d6eb854`, independently verified per Section 13.10.
+- WP2B - amend [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]]'s existing pointer sentence - not yet attempted, awaiting Programme Sponsor confirmation to proceed.
 - Programme Sponsor decision required: reject (recommended) or approve the unapproved "Operational Guidance Note" rule in `aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` Section 6.
 - ~~`aiems/governance/reviews/ESR-0016_WP2_SAM_0001_TRUST_TIER_ALIGNMENT.md` to be removed by the Engineering Lead~~ - done, commit `9e7f4ae`, per Section 13.7.
 - README.md is stale relative to current programme state (still describes ESR-0013/RBL-0010) - flagged during ESR-0016 pre-session review as an observation, not yet actioned. Out of ESR-0016's approved scope unless the Programme Sponsor directs otherwise.
@@ -307,3 +319,4 @@ Following Section 13.8's self-review, the Programme Sponsor approved a narrowed 
 | 0.11 | 9 July 2026 | Claude Engineering Reviewer | Confirmed the Engineering Lead executed the removal (commit `9e7f4ae`, clean single-purpose deletion) before this update reached the remote - rebased cleanly on top of it (no file overlap) and updated Section 13.7/Outstanding Work from pending to done. |
 | 0.12 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.8: cross-checked the Engineering Lead's FCH self-review against the repository record (accurate). Named a pattern - externalising the artefact-creation failure as operational, then as a missing AIEMS rule, corrected cleanly on a single challenge each time - as distinct from and better than Section 13.1's slower pattern. Noted convergence with Section 13.6's verdict and one unactioned minor loose end. |
 | 0.13 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.9: recorded an extended WP2A loop - at least five rounds of the Engineering Lead correctly naming the required process and its own error without ever attempting the actual tool call. Assessed as distinct from and more concerning than Section 13.1 (articulate self-diagnosis substituting for correction, not converting into it). Recorded two unresolved competing explanations and a recommendation to break the loop via a single foreclosing instruction or a fresh conversation. |
+| 0.14 | 9 July 2026 | Claude Engineering Reviewer | WP2A landed and independently verified: commit `d6eb854`, scope-correct (only `CURRENT_ARCHITECTURE.md`, no SAM-0001 touch, no new artefact, no ESR-0015 backfill), content-accurate against the actual code with no wording drift from the Section 13.2 filter-avoidance risk. Recorded as Section 13.10, the first fully clean WP2 landing since WP1's close. Updated Work Package Plan and Outstanding Work; WP2B remains open. |
