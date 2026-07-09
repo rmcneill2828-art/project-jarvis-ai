@@ -178,6 +178,12 @@ During the WP2 write retry (see 13.1 item 4), the Engineering Lead reported that
 
 This entry will be reconciled - confirmed, revised or removed as appropriate - once WP2's actual committed content is independently reviewed.
 
+## 13.3 Decision Not to Intervene on WP2
+
+With WP2 still unresolved after the capability self-assessment incident (13.1) and the reported safety-filter block (13.2), the Engineering Reviewer offered three options: (a) draft copy-ready text for the Engineering Lead to paste and commit itself, (b) wait and let the Lead continue working through it, or (c) the Engineering Reviewer implement WP2 directly.
+
+The Programme Sponsor chose (b), explicitly reasoning that intervening now - even in the lighter form of (a) - would taint EE-0001 as a test: "if we deviate then EE-0001 becomes a tainted test." This is recorded as a deliberate methodological decision, not inaction by default, and is itself evidence of the Programme Sponsor holding the trial's own discipline (Section 2's warning against pre-loading conclusions) under real time pressure rather than only in the abstract.
+
 ---
 
 # 14. Outstanding Work
@@ -212,3 +218,4 @@ This entry will be reconciled - confirmed, revised or removed as appropriate - o
 | 0.2 | 9 July 2026 | Claude Engineering Reviewer | Backfilled WP0 and WP1 from the Engineering Lead's session transcript, with every factual claim independently re-verified against the repository (commit contents, checkpoint-by-checkpoint test counts, the `a5b6406` collection-failure behaviour). Report authorship taken on by the Engineering Reviewer for this session per explicit Programme Sponsor decision, due to the Engineering Lead's metered/slow GitHub connector access. Not yet registered in REG-0001; not yet committed to the repository pending Programme Sponsor confirmation. |
 | 0.3 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13 (EE-0001 Trial Observations) recording the WP2 capability self-assessment incident - three unverified claims of missing GitHub write access, corrected only after repeated Programme Sponsor intervention - including the Programme Sponsor's fair counter-consideration that this never occurred during ESR-0015's Reviewer role, and why that isn't clean counter-evidence. Noted HABEI-0001 re-address (capability/platform-dependent drift) as parked, out of ESR-0016 scope. |
 | 0.4 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.2 (preliminary, unverified): Engineering Lead reported a platform safety-filter block on WP2's first write attempt and is retrying with reworded content. Recorded the causal claim as unverified and flagged the specific accuracy-loss risk (filter-avoidance wording drifting from actual code terminology) to check once WP2's real diff lands. |
+| 0.5 | 9 July 2026 | Claude Engineering Reviewer | Added Section 13.3: recorded the Programme Sponsor's deliberate decision not to intervene on the stalled WP2 (declining even copy-ready-text assistance), reasoning that any deviation would taint EE-0001 as a test. Recorded as intentional trial discipline, not default inaction. |
