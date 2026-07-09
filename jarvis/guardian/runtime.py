@@ -8,17 +8,35 @@ from jarvis.guardian.config import GuardianRuntimeConfig
 from jarvis.guardian.diagnostics import GuardianDiagnosticEvent
 from jarvis.guardian.state import GuardianRuntimeState
 from jarvis.guardian.status import GuardianRuntimeStatus
+from jarvis.interfaces.conversation import (
+    ConversationProvider,
+    ConversationRequest,
+    ConversationResponse,
+)
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
 
 logger = logging.getLogger(__name__)
+
+NOT_CONNECTED_RESPONSE = "Guardian has no conversation provider connected."
+NOT_RUNNING_RESPONSE = "Guardian runtime is not running."
 
 
 class GuardianRuntime:
     """Minimum executable runtime boundary for Guardian."""
 
-    def __init__(self, config: GuardianRuntimeConfig | None = None) -> None:
+    def __init__(
+        self,
+        config: GuardianRuntimeConfig | None = None,
+        conversation_provider: ConversationProvider | None = None,
+    ) -> None:
         self._config = config or GuardianRuntimeConfig()
+        self._conversation_provider = conversation_provider
         self._state = GuardianRuntimeState.STOPPED
+        provider_capabilities = (
+            ("guardian.conversation",)
+            if conversation_provider is not None
+            else ("future-provider-selection",)
+        )
         self._services: dict[str, JarvisService] = {
             "Guardian Runtime": JarvisService(
                 name="Guardian Runtime",
@@ -36,7 +54,7 @@ class GuardianRuntime:
                 name="Guardian Provider Boundary",
                 status=ServiceStatus.UNAVAILABLE,
                 health=ServiceHealth.UNKNOWN,
-                capabilities=("future-provider-selection",),
+                capabilities=provider_capabilities,
             ),
         }
         self._diagnostics: list[GuardianDiagnosticEvent] = [
@@ -62,6 +80,14 @@ class GuardianRuntime:
         runtime_service = self._services["Guardian Runtime"]
         runtime_service.status = ServiceStatus.ONLINE
         runtime_service.health = ServiceHealth.HEALTHY
+        if self._conversation_provider is not None:
+            provider_service = self._services["Guardian Provider Boundary"]
+            provider_service.status = ServiceStatus.ONLINE
+            provider_service.health = ServiceHealth.HEALTHY
+            self._record(
+                "guardian.provider_connected",
+                f"Guardian provider boundary connected: {self._conversation_provider.name}.",
+            )
         self._state = GuardianRuntimeState.RUNNING
         self._record("guardian.running", "Guardian runtime foundation running.")
         logger.info("Guardian runtime foundation started.")
@@ -71,6 +97,8 @@ class GuardianRuntime:
         """Stop the Guardian runtime foundation."""
 
         self._services["Guardian Runtime"].stop()
+        if self._conversation_provider is not None:
+            self._services["Guardian Provider Boundary"].stop()
         self._state = GuardianRuntimeState.STOPPED
         self._record("guardian.stopped", "Guardian runtime foundation stopped.")
         logger.info("Guardian runtime foundation stopped.")
@@ -80,6 +108,21 @@ class GuardianRuntime:
         """Return the current Guardian runtime state."""
 
         return self._state
+
+    def converse(self, message: str) -> ConversationResponse:
+        """Route a message through the connected conversation provider.
+
+        Returns a boundary response, rather than raising, when no provider is
+        connected or the runtime is not running - matching this codebase's
+        existing pattern of returning an honest message instead of a hidden
+        failure (see `SentinelGatedConversationProvider`).
+        """
+
+        if self._conversation_provider is None:
+            return ConversationResponse(message=NOT_CONNECTED_RESPONSE, provider="guardian-boundary")
+        if self._state is not GuardianRuntimeState.RUNNING:
+            return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
+        return self._conversation_provider.generate(ConversationRequest(message=message))
 
     def register_service(self, service: JarvisService) -> JarvisService:
         """Register or replace a Guardian runtime service."""
