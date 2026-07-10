@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.103
+**Version:** 3.105
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.103 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.105 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -206,8 +206,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FCH-0012 | Full Chat Historical Evidence | ESR-0012 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0012 | `aiems/History/Full Chat/` |
 | FCH-0013 | Full Chat Historical Evidence | ESR-0013 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0013 | `aiems/History/Full Chat/` |
 | FCH-0015 | Full Chat Historical Evidence | ESR-0015 Full Chat History (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/History/Full Chat/` |
-| FCH-0016 | Full Chat Historical Evidence | ESR-0016 Full Chat History (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
-| FCH-0017 | Full Chat Historical Evidence | ESR-0017 Full Chat History (Claude) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
+| FCH-0016 | Full Chat Historical Evidence | ESR-0016 Full Chat History (Claude) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
+| FCH-0016_GPT | Full Chat Historical Evidence | ESR-0016 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
+| FCH-0016a_GPT | Full Chat Historical Evidence | ESR-0016 Full Chat History (GPT, Incremental GitHub Edit) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
+| FCH-0017 | Full Chat Historical Evidence | ESR-0017 Full Chat History (Claude) | 1.2 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
+| FCH-0017a_GPT | Full Chat Historical Evidence | ESR-0017 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
 
 ---
 
@@ -273,7 +276,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 # Version History
 
 | Version | Date | Author | Summary |
-|---------|------------|-------------------------------|------------------------------------------------------------|
+|---------|------|--------|---------|
+| 3.105 | 10 July 2026 | Claude Independent Reviewer | Cross-linked the new GPT-side full chat transcripts into their parallel Claude-side records and GPT-side summaries: FCH-0016 (Claude, 1.0 to 1.1) now references FCH-0016 (GPT) and FCH-0016a (GPT); FCH-0017 (Claude, 1.1 to 1.2) now references FCH-0017a (GPT); HST-0016 (GPT), HST-0016a (GPT, 1.0 to 1.1) and HST-0017a (GPT, 1.0 to 1.1) now reference their respective full transcripts. Neither FCH nor HST files (of this template) carry an internal Version History section, so these bumps were applied manually rather than via the standard tool path, consistent with the FCH-0017/HST-0017a precedent. |
+| 3.104 | 10 July 2026 | Claude Independent Reviewer | Registered FCH-0016_GPT, FCH-0016a_GPT and FCH-0017a_GPT (ChatGPT Desktop Export Transcript full chat histories), converted from Programme Sponsor-supplied `.docx` exports and extracted via direct `word/document.xml` parsing (Python stdlib `zipfile`/`xml.etree.ElementTree`), with speaker turns attributed mechanically from paragraph style and bullet-numbering. Completes the GPT-side full chat record for ESR-0016 (primary and WP2 incremental-edit continuation) and ESR-0017 (Independent Reviewer side), alongside the existing Claude-side FCH-0016 and FCH-0017. |
 | 3.103 | 10 July 2026 | Claude Engineering Lead | Aligned FCH-0017 (1.0 to 1.1): cross-referenced HST-0017a (GPT Chat Summary, pushed directly by the Programme Sponsor while FCH-0017 was being created locally) as the parallel Independent Reviewer summary, matching the FCH-0015/FCH-0016 precedent. FCH-0017 has no internal Version History section (consistent with the FCH template), so this bump was applied manually rather than via the standard tool path. |
 | 3.102 | 10 July 2026 | Claude Engineering Lead | Registered FCH-0017 (Claude Full Chat History), generated from the live Claude Code session transcript per the FCH-0015/FCH-0016 methodology. HST-0017 (Claude Chat Summary) created alongside it but not registered, consistent with HST-0014/HST-0015/HST-0016 - the simpler chat-summary format has no parseable version field for this register to track. |
 | 3.103 | 10 July 2026 | Claude Engineering Lead | Aligned PST-0001 version (2.23 to 2.24) following: ESR-0017 formally closed (10 July 2026). Updated Current Mode, Current Repository Baseline (RBL-0013, superseding RBL-0012), Current Product Capability Baseline (flagged stale, EBG-0056), Current Phase/Workflow/Objective, Section 4A narrative (full closure summary including WP8/WP9/post-WP9 work and the two Sponsor closure-scope decisions), UXP/Sentinel/JARVIS Development capability rows (UXP now live, not disconnected), Completed Milestones (9 new ESR-0017 rows), Active/Next Planned Work, Repository Health (184/184 tests), Outstanding Observations (Guardian-Sentinel connection delivered, Gemini implemented, three EE-0001 sessions closed, Guardian Orb unblocked in principle), Session Start Guidance and OSE Relationships (both retargeted from ESR-0016/RBL-0011 to ESR-0017/RBL-0013 as the current onboarding tier for ESR-0018). |

@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | FCH-0017 |
 | Title | ESR-0017 Full Chat History (Claude) |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Archived |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -91,6 +91,7 @@ One additional Markdown-safety normalization was required, the same class FCH-00
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register; EBG-0050 through EBG-0056 added or updated during the period this record covers. |
 | [[HST-0017_CLAUDE_CHAT_SUMMARY|HST-0017 (Claude)]] | Summary history artefact this full transcript expands upon. |
 | [[HST-0017a_GPT_CHAT_SUMMARY|HST-0017a (GPT)]] | Parallel Independent Reviewer summary for the same session. |
+| [[FCH-0017a_GPT_FULL_CHAT_HISTORY|FCH-0017a (GPT)]] | Parallel Independent Reviewer full transcript for the same session. |
 | [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Knowledge tiering guide referenced during the period this record covers. |
 | [[README|README]] | Repository orientation and platform context. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook defining WP0 startup and Engineering Ecosystem Synchronisation practice; amended during this session (Feature-First Delivery Discipline, WP8). |
@@ -112,6 +113,7 @@ One additional Markdown-safety normalization was required, the same class FCH-00
 | [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial ESR-0017 operated under. |
 | [[HST-0017_CLAUDE_CHAT_SUMMARY|HST-0017 (Claude)]] | Summary history artefact this full transcript expands upon. |
 | [[HST-0017a_GPT_CHAT_SUMMARY|HST-0017a (GPT)]] | Parallel Independent Reviewer summary for the same session. |
+| [[FCH-0017a_GPT_FULL_CHAT_HISTORY|FCH-0017a (GPT)]] | Parallel Independent Reviewer full transcript for the same session. |
 
 ---
 

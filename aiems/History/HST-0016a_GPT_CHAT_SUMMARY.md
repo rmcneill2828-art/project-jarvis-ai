@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | HST-0016a |
 | Title | GPT Chat Summary |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Archived |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -204,6 +204,7 @@ ChatGPT should not repeat the unapproved artefact replacement attempt.
 | [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | Correct primary target for implemented Sentinel trust-tier architecture snapshot. |
 | [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] | Stable Sentinel architecture authority; only minimal pointer-note maintenance was approved. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Source of EBG-0020, EBG-0021 and EBG-0047 backlog context. |
+| [[FCH-0016a_GPT_FULL_CHAT_HISTORY|FCH-0016a (GPT)]] | Full chat transcript this summary condenses. |
 
 ---
 

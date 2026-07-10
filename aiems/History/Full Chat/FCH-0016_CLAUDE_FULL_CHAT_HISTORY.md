@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | FCH-0016 |
 | Title | ESR-0016 Full Chat History (Claude) |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Archived |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -88,6 +88,8 @@ One additional Markdown-safety normalization was required, matching the preceden
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status recording ESR-0016 closure. |
 | [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial ESR-0016 operated under, rotation reversed from ESR-0015; scorecard reconciliation and acceptance are recorded in this transcript. |
 | [[HST-0016_CLAUDE_CHAT_SUMMARY|HST-0016]] | Summary history artefact this full transcript expands upon. |
+| [[FCH-0016_GPT_FULL_CHAT_HISTORY|FCH-0016 (GPT)]] | Parallel Engineering Implementer full transcript for the same session. |
+| [[FCH-0016a_GPT_FULL_CHAT_HISTORY|FCH-0016a (GPT)]] | WP2 incremental-edit continuation of the parallel GPT-side transcript. |
 | [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Knowledge tiering guide this record is filed under (Historical Archive tier). |
 | [[README|README]] | Repository orientation and platform context. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook defining WP0 startup, Engineering Ecosystem Synchronisation practice, and the Operational Verification Before Reporting rule added during ESR-0016A. |
@@ -109,6 +111,7 @@ One additional Markdown-safety normalization was required, matching the preceden
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status recording ESR-0016 closure. |
 | [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial ESR-0016 operated under. |
 | [[HST-0016_CLAUDE_CHAT_SUMMARY|HST-0016]] | Summary history artefact this full transcript expands upon. |
+| [[FCH-0016_GPT_FULL_CHAT_HISTORY|FCH-0016 (GPT)]] | Parallel Engineering Implementer full transcript for the same session. |
 
 ---
 

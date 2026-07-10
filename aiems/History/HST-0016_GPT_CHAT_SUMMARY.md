@@ -22,3 +22,6 @@ Engineering Implementer summary for ESR-0016 under the EE-0001 Independent AI Pe
 
 ## Engineering Implementer Assessment
 Technical implementation completed successfully following independent review. The session highlighted opportunities to improve approval-to-execution discipline while demonstrating strong responsiveness to repository evidence and reviewer findings.
+
+## Related Artefacts
+- [[FCH-0016_GPT_FULL_CHAT_HISTORY|FCH-0016 (GPT)]] - full chat transcript this summary condenses.

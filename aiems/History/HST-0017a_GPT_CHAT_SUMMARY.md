@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | HST-0017a |
 | Title | GPT Chat Summary |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Archived |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -271,6 +271,7 @@ Future sessions should preserve the following ESR-0017 lessons:
 | [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE|ADR-0019]] | WP1 architecture decision reviewed and approved. |
 | [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | Architecture snapshot informing Guardian and UXP sequencing. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Source of backlog items referenced by WP4 and EE-0001 findings. |
+| [[FCH-0017a_GPT_FULL_CHAT_HISTORY|FCH-0017a (GPT)]] | Full chat transcript this summary condenses. |
 
 ---
 
