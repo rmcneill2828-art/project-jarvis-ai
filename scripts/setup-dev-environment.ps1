@@ -6,18 +6,11 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $repoRoot
 
-function Assert-Command($name, $hint) {
-    if (-not (Get-Command $name -ErrorAction SilentlyContinue)) {
-        Write-Error "'$name' was not found on PATH. $hint"
-        exit 1
-    }
+& "$PSScriptRoot\check-prerequisites.ps1"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "One or more prerequisites are missing. See scripts\PREREQUISITES.md, then re-run setup.bat." -ForegroundColor Red
+    exit 1
 }
-
-Write-Host "==> Checking prerequisites..." -ForegroundColor Cyan
-Assert-Command "node" "Install Node.js: https://nodejs.org/"
-Assert-Command "npm" "A Node.js install should include npm."
-Assert-Command "cargo" "Install Rust: https://rustup.rs/"
-Assert-Command "python" "Install Python 3.12+: https://www.python.org/"
 
 Write-Host "==> Installing npm dependencies (from package-lock.json)..." -ForegroundColor Cyan
 npm install
