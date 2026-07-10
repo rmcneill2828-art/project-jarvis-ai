@@ -25,6 +25,35 @@ def _default_transport(url: str, body: bytes, headers: dict[str, str], timeout_s
         return response.read()
 
 
+def _serialize_metadata(data: dict[str, object], candidate: dict[str, object], model: str) -> dict[str, str]:
+    """Map Gemini response metadata into ProviderResponse's string-only contract."""
+    metadata = {"model": model}
+
+    finish_reason = candidate.get("finishReason")
+    if finish_reason is not None:
+        metadata["finish_reason"] = str(finish_reason)
+
+    safety_ratings = candidate.get("safetyRatings")
+    if safety_ratings is not None:
+        metadata["safety_ratings"] = json.dumps(
+            safety_ratings,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+
+    usage_metadata = data.get("usageMetadata")
+    if isinstance(usage_metadata, dict):
+        for key, value in usage_metadata.items():
+            if value is not None:
+                metadata[f"usage_{key}"] = (
+                    str(value)
+                    if isinstance(value, (str, int, float, bool))
+                    else json.dumps(value, sort_keys=True, separators=(",", ":"))
+                )
+
+    return metadata
+
+
 class GeminiProvider:
     """Sentinel execution provider backed by the Google Gemini generateContent API.
 
@@ -99,14 +128,46 @@ class GeminiProvider:
 
         try:
             data = json.loads(raw_response)
-            content = data["candidates"][0]["content"]["parts"][0]["text"]
-        except (KeyError, IndexError, json.JSONDecodeError) as exc:
-            msg = "Unexpected Gemini response shape: missing candidates[0].content.parts[0].text."
+        except json.JSONDecodeError as exc:
+            msg = "Unexpected Gemini response shape: response was not valid JSON."
             raise RuntimeError(msg) from exc
+
+        prompt_feedback = data.get("promptFeedback")
+        if isinstance(prompt_feedback, dict) and prompt_feedback.get("blockReason"):
+            reason = prompt_feedback["blockReason"]
+            msg = f"Gemini response was safety-blocked ({reason})."
+            raise RuntimeError(msg)
+
+        try:
+            candidate = data["candidates"][0]
+            parts = candidate["content"]["parts"]
+        except (KeyError, IndexError, TypeError) as exc:
+            msg = "Unexpected Gemini response shape: missing candidates[0].content.parts."
+            raise RuntimeError(msg) from exc
+
+        if candidate.get("finishReason") == "SAFETY":
+            msg = "Gemini response was safety-blocked (SAFETY)."
+            raise RuntimeError(msg)
+
+        if not isinstance(parts, list) or not parts:
+            msg = "Unexpected Gemini response shape: candidates[0].content.parts was empty."
+            raise RuntimeError(msg)
+
+        if any(isinstance(part, dict) and "functionCall" in part for part in parts):
+            msg = "Gemini returned an unsupported tool/function-call response."
+            raise RuntimeError(msg)
+
+        text_parts = [part["text"] for part in parts if isinstance(part, dict) and isinstance(part.get("text"), str)]
+        if not text_parts:
+            msg = "Unexpected Gemini response shape: no usable text parts were present."
+            raise RuntimeError(msg)
+
+        content = "".join(text_parts)
+        metadata = _serialize_metadata(data, candidate, model)
 
         return ProviderResponse(
             provider_name=self.name,
             content=content,
             capability=request.capability,
-            metadata={"model": model},
+            metadata=metadata,
         )
