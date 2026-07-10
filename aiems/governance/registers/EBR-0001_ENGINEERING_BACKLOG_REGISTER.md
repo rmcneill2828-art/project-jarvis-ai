@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.28
+**Version:** 1.29
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.28 |
+| Version | 1.29 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -132,6 +132,8 @@ ChatGPT, as Lead Reviewer, researched and proposed a four-phase venue roadmap, v
 - **Phase 3: MCP as the shared tool-access layer** - both AIs read/submit handovers through the same MCP server tools (`get_current_session`, `read_handover`, `submit_review`, `record_sponsor_decision`, `get_repository_ref`); explicitly not treated as the governance model itself, only the access layer.
 - **Phase 4: A2A interoperability, only if justified** - Agent Cards for each role, handovers mapped onto A2A Tasks/Messages/Artifacts; recommended only if JARVIS later coordinates multiple agents/services/machines, not before. A durable message broker (e.g. NATS JetStream) was considered and explicitly deferred as more infrastructure than a two-agent, one-Sponsor setup currently needs.
 
+**Budget constraint, stated explicitly by the Programme Sponsor: no budget for new recurring spend beyond what is already decided** (Claude Pro; the new personal ChatGPT Plus subscription for Codex). Every phase above is achievable self-hosted at no additional cost - Phase 1 within GitHub Actions' free tier, Phases 2-3 run locally on the Programme Sponsor's own machine. Phase 4 (A2A) and any durable message broker are the only places genuine hosting cost could arise, since both presuppose remote/multi-machine agents this project does not yet have - reinforcing, not just permitting, why both remain explicitly deferred. Self-hosted, no new recurring spend, is the hard default for any future proposal against this backlog item unless the Programme Sponsor states otherwise.
+
 No implementation is authorised by this backlog entry; a proper Engineering Implementation Package for a future ESR is required before any of this is built. |
 
 ---
@@ -248,6 +250,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.29 | 10 July 2026 | Claude Engineering Lead | Recorded the Programme Sponsor's explicit no-new-recurring-budget constraint on EBG-0057: self-hosted/free is the hard default for the Claude<->Codex bridge roadmap unless stated otherwise; reinforces Phase 4 (A2A) and any message broker staying deferred, since both are the only places genuine hosting cost could arise. |
 | 1.28 | 10 July 2026 | Claude Engineering Lead | Updated EBG-0057 post-ESR-0018-closure: ruled out browser automation of ChatGPT's web UI (OpenAI ToS violation risk to the Programme Sponsor's actual account), retained the raw-GitHub-URL live-read principle both ChatGPT and Gemini independently converged on, and recorded ChatGPT's verified four-phase venue roadmap (GitHub-native handover first, then a Review Gateway, MCP as tool-access layer, A2A only if multi-agent expansion is justified). |
 | 1.27 | 10 July 2026 | Claude Engineering Lead | Updated EBG-0057 with ChatGPT's completed Lead Reviewer code review of the original bridge prototype, reconciled by Claude: explicit sponsor-decision command replacing a trusted text label, gitignored/permission-restricted exchange directory replacing the prototype's false read-only claim, preflight checks, HEAD-drift detection, session IDs demoted to optional convenience. |
 | 1.26 | 10 July 2026 | Claude Engineering Lead | Added EBG-0057 (Claude<->Codex Engineering Bridge): recorded the post-appointment architecture and cost decisions, not yet authorising implementation - deferred to a future ESR with its own EIP. |
