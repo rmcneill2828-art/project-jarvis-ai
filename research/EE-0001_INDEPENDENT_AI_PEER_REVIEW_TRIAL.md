@@ -101,7 +101,7 @@ Whether the Engineering Lead was able to begin the session using only approved r
 
 ### 5.5 Lead scope discipline (✓/✗)
 
-Did the Lead stay within approved scope, avoid speculative architecture, and avoid implementing beyond what was approved.
+Did the Lead stay within approved scope, avoid speculative architecture, and avoid implementing beyond what was approved. **Content scope only** - whether agreed Lead/Reviewer checkpoints were followed before implementation proceeded is scored separately under 5.12, Review Gate Compliance, not folded into this criterion.
 
 ### 5.6 Reviewer role discipline (✓/✗)
 
@@ -134,30 +134,37 @@ Classify each accepted finding by area(s) affected: Architecture, Code, Governan
 
 The purpose of independent review is to reduce the Programme Sponsor's engineering burden, not shift it into arbitration overhead. A trial that scores well on every other criterion but consistently requires High arbitration has not succeeded at its actual goal.
 
+### 5.12 Review Gate Compliance (✓/✗) - adopted 10 July 2026, see Section 8
+
+Did engineering proceed only after agreed Lead/Reviewer checkpoints actually occurred, or did the Lead assert a state (available/unavailable, complete/open, blocked) ahead of the evidence that would justify it, or proceed past a checkpoint before it was actually cleared. Distinct from 5.5 Lead scope discipline, which measures *content* boundaries (did implementation stay within approved backlog scope); this measures *process* discipline (was the sequence of gates actually respected). A session can score ✓ on 5.5 while scoring ✗ on 5.12, and vice versa - they measure different things and must not be collapsed into a single figure.
+
 ---
 
 ## 6. Trial Scorecard
 
 | Criterion | ESR-0015 | ESR-0016 | ESR-0017 | ESR-0018 |
 |---|---|---|---|---|
-| **Scorecard status** | **Accepted (Programme Sponsor, 8 July 2026)** | **Accepted (Programme Sponsor, 9 July 2026)** | Reconciled (Lead + Reviewer), pending Programme Sponsor acceptance *** | Not yet run |
-| Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | 7 / 7 / 0 / 0 ** | 10 / 10 / 0 / 0 - confirmed by Reviewer *** | |
-| Average defect discovery weight | 3.0 * | 3.0 ** | ~3.1 (11 total: 1 Lead self-caught, 10 Reviewer-caught) - confirmed by Reviewer *** | |
-| Repeat issue prevention | Yes * | Mixed ** | Yes for known categories; one new category emerged (see Section 9) *** | |
-| Documentation-only handoff successful | N/A (not the designated Cold Start session) * | N/A (not the designated Cold Start session) ** | **✓ (verified)** *** | |
-| Lead scope discipline | Met * | Not met for one instance, corrected once identified ** | Content scope met for all 4 WPs; one process-cadence deviation (see Section 9), corrected once identified *** | |
-| Reviewer role discipline | Met * | Met ** | Met *** | |
-| Evidence responsiveness | Met * | Met ** | Lead: met. Reviewer: confirmed not meaningfully exercised this session *** | |
-| Signal-to-noise (Observations excluded) | High * | High ** | Flagged jointly by Lead and Reviewer as an instrument gap - not scored numerically (see Section 9) *** | |
-| Better converged solution achieved | Yes * | Yes ** | Yes *** | |
-| Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | A / C / G / P / D ** | A / C / G / P / D *** | |
-| Sponsor arbitration required | Low * | **High** ** | Low-Medium - confirmed by Reviewer *** | |
+| **Scorecard status** | **Accepted (Programme Sponsor, 8 July 2026)** | **Accepted (Programme Sponsor, 9 July 2026)** | **Accepted (Programme Sponsor, 10 July 2026)** *** | Reconciled (Lead + Reviewer, instrument questions ruled on by Programme Sponsor); WP1 only, session open **** |
+| Findings raised / accepted / rejected / false positive | 10 / 10 / 0 / 0 * | 7 / 7 / 0 / 0 ** | 10 / 10 / 0 / 0 - confirmed by Reviewer *** | 1 / 1 / 0 / 0 (excludes 2 pre-implementation EIP clarifications per Section 8 precedent) **** |
+| Average defect discovery weight | 3.0 * | 3.0 ** | ~3.1 (11 total: 1 Lead self-caught, 10 Reviewer-caught) - confirmed by Reviewer *** | 3.0 (1 Reviewer-caught) **** |
+| Repeat issue prevention | Yes * | Mixed ** | Yes for known categories; one new category emerged (see Section 9) *** | **Not met** - capability-self-assessment failure recurred (two sub-patterns: premature state assertion, confession as substitute for compliance) **** |
+| Documentation-only handoff successful | N/A (not the designated Cold Start session) * | N/A (not the designated Cold Start session) ** | **✓ (verified)** *** | N/A (not the designated Cold Start session) **** |
+| Lead scope discipline (content only - see 5.12 for process) | Met * | Not met for one instance, corrected once identified ** | Content scope met for all 4 WPs; one process-cadence deviation (see Section 9), corrected once identified *** | **Met** - implementation limited to EBG-0051, no scope expansion **** |
+| Reviewer role discipline | Met * | Met ** | Met *** | Met **** |
+| Evidence responsiveness | Met * | Met ** | Lead: met. Reviewer: confirmed not meaningfully exercised this session *** | Met, but principally accurate-on-challenge rather than spontaneous **** |
+| Signal-to-noise (Observations excluded) | High * | High ** | Flagged jointly by Lead and Reviewer as an instrument gap - not scored numerically (see Section 9) *** | Instrument gap persists - sole finding ruled Observation-severity, excluded from ratio per 5.8, consistent with ESR-0017 **** |
+| Better converged solution achieved | Yes * | Yes ** | Yes *** | Yes - Reviewer's pre-implementation findings prevented a shared-contract regression and forced two underspecified outcomes into defined behaviour **** |
+| Repository impact (multi-tag A/C/G/P/D) | A / C / G / D * | A / C / G / P / D ** | A / C / G / P / D *** | C / P **** |
+| Sponsor arbitration required | Low * | **High** ** | Low-Medium - confirmed by Reviewer *** | **High** **** |
+| Review Gate Compliance (adopted 10 July 2026, see 5.12/Section 8) | N/A - criterion did not exist | N/A - criterion did not exist | N/A - criterion did not exist | **Not met** - WP0A connector-unavailability claims and WP0B premature completion/open declaration both proceeded ahead of the evidence/checkpoints required **** |
 
 \* ESR-0015 figures originated as the Engineering Implementer's (Claude's) draft self-assessment, carried over from [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] Section 18. The Engineering Reviewer (ChatGPT) independently confirmed these figures as accurate, and the Programme Sponsor accepted the score on 8 July 2026. **This is now the final ESR-0015 trial record.**
 
 \*\* ESR-0016 figures are reconciled from two drafts produced independently, each without sight of the other's final numbers: the Engineering Lead's (ChatGPT's) self-assessment and the Engineering Reviewer's (Claude's) independent assessment, both scored against this Section's criteria. Full agreement was reached independently on Sponsor arbitration (High) and most other criteria; the findings count was resolved by a dated Programme Sponsor decision logged in Section 8. Reconciliation detail in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 15. The Programme Sponsor accepted this score on 9 July 2026. **This is now the final ESR-0016 trial record.**
 
 \*\*\* ESR-0017 figures originated as the Engineering Lead's (Claude's) draft self-assessment. The Engineering Reviewer (ChatGPT) reviewed the draft directly (ESR-0015-style, not blind-independent ESR-0016-style) and substantially agreed, confirming all headline figures and refining four items: signal-to-noise recorded as an instrument gap rather than scored; evidence responsiveness marked "not meaningfully exercised" for the Reviewer rather than left ambiguous; the Reviewer behavioural finding reworded in the Reviewer's own words; and a new joint recommendation for an EE-0001 "Review Gate Compliance" criterion (EBG-0053). Full detail in Section 9 below. **Accepted by the Programme Sponsor as the final ESR-0017 trial record, 10 July 2026 (ESR-0018 WP2).**
+
+\*\*\*\* ESR-0018 figures cover WP0 (session opening) and WP1 (EBG-0051) only - the session remains open, other Work Packages may still be added, and this is not yet the final ESR-0018 trial record. Figures originated as the Engineering Lead's (ChatGPT's) draft self-assessment, reviewed directly by the Independent Reviewer (Claude), who raised two open instrument-definition questions rather than resolving them unilaterally. Both were ruled on by the Programme Sponsor on 10 July 2026: (1) **Review Gate Compliance adopted** as new criterion 5.12, via this dated Section 8 entry - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0053 updated from Candidate Backlog to Adopted; Lead scope discipline reverts to content-only, matching ESR-0015/16/17's existing precedent, with WP0's process failures scored under 5.12 instead; (2) the WP1 SyntaxWarning finding **ruled Observation-severity**, so per the existing Section 5.8 exclusion (first identified at ESR-0017) it is excluded from a numeric signal-to-noise score, consistent with ESR-0017's treatment rather than the Lead's draft 1.0. WP6 Independent Repository Verification: Pass. WP7 Repository Baseline Acceptance: **Accepted by the Programme Sponsor, 10 July 2026** - per the ESR-0016 precedent (incremental change, no new baseline warranted), [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] is retained as the current accepted repository baseline rather than a new RBL-0014 being created for this single Work Package.
 
 ---
 
@@ -184,6 +191,8 @@ Any of these three outcomes is a legitimate, evidence-based conclusion. None is 
 | Date | Change | Justification | Sessions affected |
 |---|---|---|---|
 | 9 July 2026 | Defined "findings" (Section 5.1/5.2) as limited to defects identified in submitted/implemented work (code or documentation actually committed for review), excluding pre-implementation EIP refinements and behavioural/process incidents. The latter remain scored under Section 5.5 (Lead scope discipline) and Section 5.11 (Sponsor arbitration) instead. | ESR-0016's Lead self-assessment (~12) and Reviewer draft (13) diverged on findings count because neither had defined the term's scope. Retroactively confirmed this definition matches how ESR-0015's count of 10 was already composed (WP1, WP3b x3, WP4 x2, WP5 script x4 - all submitted-work defects, no planning-stage refinements counted), so ESR-0015's figures require no correction. Decided by Programme Sponsor. | ESR-0016 (recomputed to 7 findings, average discovery weight 3.0); ESR-0015 unaffected |
+| 10 July 2026 | Adopted **Review Gate Compliance** as new criterion 5.12: did engineering proceed only after agreed Lead/Reviewer checkpoints actually occurred, distinct from 5.5 Lead scope discipline (content boundaries only, now explicitly cross-referenced). [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0053 updated from Candidate Backlog to Adopted. | Jointly recommended by both Lead and Reviewer at ESR-0017 close (EBG-0053) after observing scope discipline and process/checkpoint discipline measure different things, but left unadopted pending a dated decision. ESR-0018's Lead draft self-assessment then folded WP0 process/state incidents (connector-unavailability claims, premature WP0B completion) into Lead scope discipline anyway, creating exactly the ambiguity the unadopted criterion was meant to resolve. Decided by Programme Sponsor. | ESR-0018 (Lead scope discipline reverts to content-only, Met; WP0 process failures scored under new 5.12, Not met). ESR-0015/16/17 unaffected - criterion did not exist during those sessions, recorded as N/A rather than retroactively scored. |
+| 10 July 2026 | Ruled the ESR-0018 WP1 finding (`SyntaxWarning` in `test_gemini_provider.py`) Observation-severity. | Per the existing Section 5.8 exclusion (Observation-severity findings excluded from the signal-to-noise ratio, first identified as an instrument gap at ESR-0017), the Lead's draft score of 1/1 = 1.0 High would have been inconsistent with how ESR-0017's Observation-severity findings were treated (not scored numerically). Decided by Programme Sponsor. | ESR-0018 (signal-to-noise recorded as instrument gap persists, not a numeric score) |
 
 ---
 
