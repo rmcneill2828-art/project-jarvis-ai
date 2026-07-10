@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.107
+**Version:** 3.108
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.107 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.108 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.26 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.27 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -277,6 +277,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.108 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.26 to 1.27) following: Updated EBG-0057 with ChatGPT's completed Lead Reviewer code review of the original bridge prototype, reconciled by Claude: explicit sponsor-decision command replacing a trusted text label, gitignored/permission-restricted exchange directory replacing the prototype's false read-only claim, preflight checks, HEAD-drift detection, session IDs demoted to optional convenience. |
 | 3.107 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.25 to 1.26) following: Added EBG-0057 (Claude<->Codex Engineering Bridge): recorded the post-appointment architecture and cost decisions, not yet authorising implementation - deferred to a future ESR with its own EIP. |
 | 3.106 | 10 July 2026 | Claude Engineering Reviewer | Aligned EBR-0001 version (1.24 to 1.25) following: Marked EBG-0053 (EE-0001 Review Gate Compliance Criterion) Adopted, per the dated Section 8 EE-0001 entry from ESR-0018 WP2 - was Candidate Backlog since ESR-0017. |
 | 3.105 | 10 July 2026 | Claude Independent Reviewer | Cross-linked the new GPT-side full chat transcripts into their parallel Claude-side records and GPT-side summaries: FCH-0016 (Claude, 1.0 to 1.1) now references FCH-0016 (GPT) and FCH-0016a (GPT); FCH-0017 (Claude, 1.1 to 1.2) now references FCH-0017a (GPT); HST-0016 (GPT), HST-0016a (GPT, 1.0 to 1.1) and HST-0017a (GPT, 1.0 to 1.1) now reference their respective full transcripts. Neither FCH nor HST files (of this template) carry an internal Version History section, so these bumps were applied manually rather than via the standard tool path, consistent with the FCH-0017/HST-0017a precedent. |
