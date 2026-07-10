@@ -267,7 +267,7 @@ Future sessions should preserve the following ESR-0017 lessons:
 |----------|--------------|
 | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] | Formal engineering session report associated with this history summary. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Governing engineering playbook used for independent review. |
-| [[EE-0001_AI_ENGINEERING_LEAD_REVIEWER_TRIAL|EE-0001]] | Lead/Reviewer trial assessed during ESR-0017. |
+| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial assessed during ESR-0017. |
 | [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE|ADR-0019]] | WP1 architecture decision reviewed and approved. |
 | [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | Architecture snapshot informing Guardian and UXP sequencing. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Source of backlog items referenced by WP4 and EE-0001 findings. |
