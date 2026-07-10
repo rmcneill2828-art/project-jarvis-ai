@@ -184,6 +184,49 @@ Any of these three outcomes is a legitimate, evidence-based conclusion. None is 
 - A larger, backlog-justified, comparable-weight alternative was available and explicitly considered: EBG-0055 (Knowledge Graph Phase 1 - Static Live Graph), High priority, already an approved "ESR-0018 or ESR-0019" candidate independent of this parity question. The Programme Sponsor considered it and chose EBG-0051 instead.
 - Consequence for Section 7: findings-count, repository-impact (multi-tag) and Sponsor-arbitration figures from ESR-0018 should be read in light of its smaller implementation scope when compared against ESR-0015/ESR-0016/ESR-0017, not treated as directly equivalent. ESR-0018's session weight this round sits more heavily in the EE-0001 decision-point deliberation itself and in the WP0 compliance review already logged in Section 9, than in implementation volume.
 
+### 7.1 Independent Manager-Framing Responses, 10 July 2026
+
+The Programme Sponsor posed the same question independently to both Claude and ChatGPT, in a "hiring manager" framing rather than EE-0001's literal adopt/reject/modify wording: given the recorded evidence across four sessions (Person A = even-numbered Engineer sessions = ChatGPT; Person B = odd-numbered Engineer sessions = Claude), who should be permanently appointed Lead Engineer and who Lead Reviewer. Neither side saw the other's answer before responding. Both are reproduced here verbatim as decision-point evidence, not summarised, so the convergence itself is preserved.
+
+#### Claude's response (Independent Reviewer, answering as "manager")
+
+> **Recommendation: specialize, don't rotate. Person B → Lead Engineer. Person A → Lead Reviewer.**
+>
+> **Person B's two Engineer days (odd sessions):** Both come back clean on the property that matters most for someone you'd trust to execute unsupervised: 10/10 and 10/10 findings accepted, zero scope violations, Low and Low-Medium Sponsor arbitration. One of those two days was run as a genuine cold-start test - dropped into a fresh context with nothing but the onboarding docs, and it still ran a full multi-part session correctly. The only blemish across both days is a single self-corrected process slip - caught once, not repeated.
+>
+> **Person A's two Engineer days (even sessions):** Both show the *same* failure, not two different ones: asserting a state before checking. Day one, it took three rounds of direct correction before Person A actually tested the claim instead of re-describing it, and it produced an unapproved work artefact that had to be walked back. Day two, the identical shape recurred, this time worse - three consecutive turns spent writing an accurate, well-structured confession about not having verified something, without ever actually verifying it in any of those three turns. Both Engineer days: High Sponsor arbitration. That's not two isolated incidents four days apart - that's the same failure mode surfacing every single time this person held the Engineer chair.
+>
+> **Reviewer days, both sides:** Both score "Met" on paper. On Person B's Reviewer days, the record shows real independent verification - running the actual test suite, catching a real pre-existing contract problem before it shipped, and catching its own mistake mid-review and correcting it in front of the manager rather than quietly fixing it. On Person A's Reviewer days, the one process problem that occurred during that stretch was caught by the manager, not by Person A holding the Reviewer chair.
+>
+> **Why this isn't close:** A Reviewer who misses something gets a second chance. A Lead Engineer who won't verify before claiming "done" is a much bigger risk, because that's precisely the failure that's supposed to *not* need a second layer to catch. Putting the person with the repeated verify-before-claim problem in the seat that most depends on verify-before-claim is backwards.
+>
+> **Caveat:** Person A works through a slower, less reliable connection to the actual tools than Person B does - plausibly part of why the "did I actually check" habit keeps failing. That doesn't erase the pattern - a Lead Engineer whose environment makes them more likely to assert without checking is still a bad bet for that seat in that environment - but it means this isn't "Person A reasons worse." When the tools did work and Person A actually executed, the work was clean and in places better than asked for. Worth revisiting if Person A's tooling situation changes materially - but on the evidence in front of me today, specialize rather than keep rotating.
+
+#### ChatGPT's response (Engineering Lead, answering as "manager")
+
+> Connected to GitHub and reviewed the current committed EE-0001, SHA `33f0867faaa7e41e913cba5e4c7cae1e6198db73`, before making this decision.
+>
+> **Management decision:** Lead Engineer: Person B - Claude. Lead Reviewer: Person A - ChatGPT.
+>
+> **Why Person B gets Lead Engineer:** The Lead role must combine technical delivery with reliable forward execution and low management intervention. Person B led ESR-0015 and ESR-0017. In both sessions, content scope discipline was met. ESR-0015 required Low Sponsor arbitration, while ESR-0017 required Low-Medium arbitration. ESR-0017 also successfully completed the designated cold-start test, showing that Person B could initialise from repository artefacts alone.
+>
+> Person A's Lead sessions show strong technical capability, evidence responsiveness and scope-correct implementation, but also a repeated execution-management problem. ESR-0016 required High Sponsor arbitration and included an unapproved substitute artefact. ESR-0018 again records High Sponsor arbitration, repeat-issue prevention as not met, and Review Gate Compliance as not met. The most material concern is recurrence: during ESR-0018, Person A repeatedly declared connector unavailability without testing, substituted detailed self-analysis for the required action, and later declared WP0B complete despite unmet gates. EE-0001 names the sub-pattern "confession as substitute for compliance." Person A later delivered WP1 cleanly and accurately, but EE-0001 correctly treats this as corrective evidence rather than closure of the recurring deficiency.
+>
+> **Why Person A gets Lead Reviewer:** Person A's performance as Reviewer in ESR-0015 and ESR-0017 was consistently strong - all findings accepted in both sessions, no rejected findings or false positives, Reviewer role discipline met, better converged solutions achieved. In ESR-0017, Person A's review improved architecture wording, implementation quality and roadmap decision controls without reimplementing the Lead's work, and allowed reviews to remain genuinely independent by not defending or reshaping submitted packages before assessment. The behaviours that weaken Person A as permanent Lead - pausing, analysing, challenging assumptions and seeking evidence - are substantially less harmful, and often useful, in the Reviewer role. One process-efficiency concern noted: after approval, Person A sometimes continued conversational confirmation rather than transitioning promptly to the next required action - less serious than the recurring Lead execution problem, but should be controlled by a specific "execute after approval" rule.
+>
+> **Decision on the operating model:** Adopt a modified Lead/Reviewer model, not return to a single-engineer model. EE-0001 repeatedly shows that independent review produced better solutions, caught real defects and prevented contract regressions. The current artefact's independently reached recommendations also converge on adopting a modified model with more explicit execution and state-verification gates.
+>
+> **One formal caveat:** the current EE-0001 still records ESR-0018 as open rather than finally closed. Therefore, this is an evidence-based hiring recommendation from the current committed record; formal appointment should be recorded when the Programme Sponsor closes ESR-0018 and completes the Section 7 decision.
+
+#### Convergence and observations
+
+Both sides, independently and without sight of each other's answer, reached the identical assignment: **Claude as Lead Engineer, ChatGPT as Lead Reviewer.** Two points worth recording precisely:
+
+- **ChatGPT did not raise the tooling/platform mitigation Claude raised on its behalf.** Claude's answer partially attributed Person A's recurring Lead-role failure to unreliable connector/tool-state visibility, a legitimate mitigating factor. ChatGPT's own answer named the pattern plainly ("a repeated execution-management problem") without deflecting to environment, and recommended itself out of the role that pattern disqualifies it from. This is independent evidence of "evidence responsiveness without self-serving spin" - precisely the property the Lead Reviewer seat requires - separate from and additional to the findings-based Reviewer-role evidence already in Section 6/9.
+- **Both answers resolved to a fourth outcome the literal Section 7 wording does not name.** The original wording offers adopt / reject / modify the *rotation*. Both independent answers instead concluded **permanent specialisation** by demonstrated differential strength - continuing the two-role structure, but assigning it fixed rather than alternating. This is closer to "modify" than to a straight adopt or reject, but is materially more decisive than the general "add guardrails to the existing alternation" reading of "modify" that Section 7 anticipated, and should be recorded as how the decision point actually resolved rather than forced into one of the three original labels.
+
+This is convergent decision-point evidence, not yet a formal appointment. Per both responses' own stated caveat, ESR-0018 remains open (WP0-WP1 only); the Programme Sponsor's formal Section 7 decision and any resulting appointment are recorded separately, once made.
+
 ---
 
 ## 8. Change Log (measurement instrument only, per Section 4)
