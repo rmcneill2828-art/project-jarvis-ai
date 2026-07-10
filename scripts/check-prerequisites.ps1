@@ -14,6 +14,23 @@ function Refresh-Path {
     $env:Path = @($machine, $user) -join ";"
 }
 
+# Finds the fixed local drive (other than $ExcludeDriveLetter) with the most
+# free space, so a large install can be redirected off a tight system drive
+# instead of failing outright with an installer disk-space error.
+function Get-BestAlternateDrive {
+    param([string]$ExcludeDriveLetter)
+
+    Get-Volume -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.DriveLetter -and
+            $_.DriveLetter -ne $ExcludeDriveLetter -and
+            $_.DriveType -eq "Fixed" -and
+            $_.SizeRemaining
+        } |
+        Sort-Object SizeRemaining -Descending |
+        Select-Object -First 1
+}
+
 $tools = @(
     @{
         Name      = "Git"
@@ -68,6 +85,8 @@ $tools = @(
         }
         WingetId  = "Microsoft.VisualStudio.2022.BuildTools"
         WingetOverride = "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+        MinFreeSpaceGB = 8
+        InstallDirName = "VSBuildTools"
         ManualUrl = "https://visualstudio.microsoft.com/visual-cpp-build-tools/"
         Note      = "This install can take several minutes. If installing manually, select the 'Desktop development with C++' workload."
     },
@@ -128,10 +147,31 @@ foreach ($tool in $tools) {
         continue
     }
 
+    $override = $tool.WingetOverride
+    if ($tool.MinFreeSpaceGB) {
+        $systemDriveLetter = $env:SystemDrive.TrimEnd(":")
+        $systemVolume = Get-Volume -DriveLetter $systemDriveLetter -ErrorAction SilentlyContinue
+        $systemFreeGB = if ($systemVolume) { [math]::Round($systemVolume.SizeRemaining / 1GB, 1) } else { $null }
+
+        if ($null -ne $systemFreeGB -and $systemFreeGB -lt $tool.MinFreeSpaceGB) {
+            Write-Host "            $($env:SystemDrive) only has $systemFreeGB GB free (installer needs roughly $($tool.MinFreeSpaceGB) GB) - looking for another drive with more room..." -ForegroundColor Yellow
+            $altDrive = Get-BestAlternateDrive -ExcludeDriveLetter $systemDriveLetter
+
+            if ($altDrive -and $altDrive.SizeRemaining -gt $systemVolume.SizeRemaining) {
+                $altFreeGB = [math]::Round($altDrive.SizeRemaining / 1GB, 1)
+                $installPath = "$($altDrive.DriveLetter):\$($tool.InstallDirName)"
+                Write-Host "            Redirecting install to $installPath ($altFreeGB GB free on $($altDrive.DriveLetter):)." -ForegroundColor Cyan
+                $override = "$override --installPath $installPath"
+            } else {
+                Write-Host "            No drive with more free space was found - proceeding with the default install location; this may still fail if space is insufficient." -ForegroundColor Yellow
+            }
+        }
+    }
+
     Write-Host "            Installing via winget (id: $($tool.WingetId))..." -ForegroundColor Cyan
     $installArgs = @("install", "--id", $tool.WingetId, "-e", "--source", "winget", "--accept-package-agreements", "--accept-source-agreements")
-    if ($tool.WingetOverride) {
-        $installArgs += @("--override", $tool.WingetOverride)
+    if ($override) {
+        $installArgs += @("--override", $override)
     }
     & winget @installArgs
     $installExitCode = $LASTEXITCODE
