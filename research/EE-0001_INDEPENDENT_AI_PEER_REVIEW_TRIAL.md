@@ -243,6 +243,10 @@ This resolves the trial's decision point as **permanent specialisation** - the f
 
 None of the above is actioned by this entry. This entry records the decision itself only.
 
+### 7.3 Post-appointment note: first real exercise of the roles
+
+Not formal trial evidence - the scored trial closed at 7.2 - but worth recording as corroborating context. Immediately after appointment, the Programme Sponsor asked both AIs' opinion on an unrelated practical proposal (a Claude&harr;Codex communication bridge), giving each side its first real exercise of the newly-permanent role outside the trial's own scoring apparatus. ChatGPT's review, given as Lead Reviewer, independently proposed a file-based, command-driven, Sponsor-gated handover architecture in place of the original autonomous-loop design - a substantive, technically strong piece of work (structured handover metadata, role-locked permissions grounded directly in PBK-0001's actual separation-of-duties text, repository-state continuity over fragile CLI session-resume) that Claude, as Lead Engineer, endorsed with one refinement (the Sponsor-authorisation field must never be AI-settable, closing a file-shaped version of the same Rule 17 risk). This is consistent with, not a repeat test of, the appointment already made at 7.2. Full detail: [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057, which records the resulting architecture and cost decision (Claude Pro unchanged; a new personal ChatGPT Plus subscription for Codex, separate from the Programme Sponsor's ChatGPT Business workspace, which was confirmed to have no Codex seat available). No implementation is authorised here or at EBG-0057 - explicitly deferred to a future ESR with its own Engineering Implementation Package, not built within ESR-0018.
+
 ---
 
 ## 8. Change Log (measurement instrument only, per Section 4)
