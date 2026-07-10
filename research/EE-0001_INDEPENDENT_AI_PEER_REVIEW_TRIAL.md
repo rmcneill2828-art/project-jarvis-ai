@@ -157,7 +157,7 @@ The purpose of independent review is to reduce the Programme Sponsor's engineeri
 
 \*\* ESR-0016 figures are reconciled from two drafts produced independently, each without sight of the other's final numbers: the Engineering Lead's (ChatGPT's) self-assessment and the Engineering Reviewer's (Claude's) independent assessment, both scored against this Section's criteria. Full agreement was reached independently on Sponsor arbitration (High) and most other criteria; the findings count was resolved by a dated Programme Sponsor decision logged in Section 8. Reconciliation detail in [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] Section 15. The Programme Sponsor accepted this score on 9 July 2026. **This is now the final ESR-0016 trial record.**
 
-\*\*\* ESR-0017 figures originated as the Engineering Lead's (Claude's) draft self-assessment. The Engineering Reviewer (ChatGPT) reviewed the draft directly (ESR-0015-style, not blind-independent ESR-0016-style) and substantially agreed, confirming all headline figures and refining four items: signal-to-noise recorded as an instrument gap rather than scored; evidence responsiveness marked "not meaningfully exercised" for the Reviewer rather than left ambiguous; the Reviewer behavioural finding reworded in the Reviewer's own words; and a new joint recommendation for an EE-0001 "Review Gate Compliance" criterion (EBG-0053). Full detail in Section 9 below. **Not yet accepted by the Programme Sponsor.**
+\*\*\* ESR-0017 figures originated as the Engineering Lead's (Claude's) draft self-assessment. The Engineering Reviewer (ChatGPT) reviewed the draft directly (ESR-0015-style, not blind-independent ESR-0016-style) and substantially agreed, confirming all headline figures and refining four items: signal-to-noise recorded as an instrument gap rather than scored; evidence responsiveness marked "not meaningfully exercised" for the Reviewer rather than left ambiguous; the Reviewer behavioural finding reworded in the Reviewer's own words; and a new joint recommendation for an EE-0001 "Review Gate Compliance" criterion (EBG-0053). Full detail in Section 9 below. **Accepted by the Programme Sponsor as the final ESR-0017 trial record, 10 July 2026 (ESR-0018 WP2).**
 
 ---
 
@@ -232,9 +232,9 @@ Full reconciliation detail, including the specific incidents underlying each cri
 
 ### ESR-0017
 
-Content complete; [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] is Open, pending repository operations and formal closure. Claude was Engineering Lead, ChatGPT was Independent Reviewer, per the frozen rotation (Section 3.1). This is the designated Cold Start Validation Session (Section 3.4).
+[[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] is Closed. Claude was Engineering Lead, ChatGPT was Independent Reviewer, per the frozen rotation (Section 3.1). This is the designated Cold Start Validation Session (Section 3.4).
 
-**Status: Reconciled (Lead draft reviewed and refined by the Independent Reviewer). Not yet accepted by the Programme Sponsor.** The Engineering Reviewer (ChatGPT) reviewed the Lead's draft directly (ESR-0015-style review-of-draft, not ESR-0016-style blind-independent-then-reconcile) and stated: "I substantially agree with the Lead's self-assessment... I would not materially change the session conclusions." The figures below are as confirmed, with four Reviewer refinements incorporated (marked *Reviewer*):
+**Status: Accepted by the Programme Sponsor as the final ESR-0017 trial record, 10 July 2026 (ESR-0018 WP2).** The Engineering Reviewer (ChatGPT) reviewed the Lead's draft directly (ESR-0015-style review-of-draft, not ESR-0016-style blind-independent-then-reconcile) and stated: "I substantially agree with the Lead's self-assessment... I would not materially change the session conclusions." The figures below are as confirmed, with four Reviewer refinements incorporated (marked *Reviewer*):
 
 - **Documentation-only handoff: verified, ✓.** The Lead began in a fresh conversation with no prior chat history, using only README.md, PST-0001 and the Current ESR (ESR-0016) plus artefacts referenced from those, per Section 3.4/GDE-0001 tiering. This is the first empirical answer to this metric since the trial began (ESR-0015/0016 were both N/A - neither was the designated Cold Start session).
 - 10 findings raised by the Reviewer across WP1-WP4 (1 + 2 + 3 + 4 respectively); all 10 accepted, 0 rejected, 0 false positives. **Confirmed by the Reviewer**, who independently recounted the same per-WP breakdown from its own side: "No finding required withdrawal. No false positives emerged."
@@ -257,13 +257,15 @@ Content complete; [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] is Open, pend
 
 **Reviewer-added finding, not present in the Lead's original draft:** "The Lead consistently presented work packages for review without attempting to defend them first. That allowed the review to remain genuinely independent... this improved the objectivity of the trial and reduced confirmation bias." Recorded as further evidence, alongside the Positive finding above, that the Lead/Reviewer separation functioned as intended this session.
 
-This entry reflects Lead draft + Reviewer review-and-refinement, per the ESR-0015 reconciliation pattern. It awaits Programme Sponsor acceptance before becoming the final ESR-0017 trial record.
+This entry reflects Lead draft + Reviewer review-and-refinement, per the ESR-0015 reconciliation pattern, **accepted by the Programme Sponsor as the final ESR-0017 trial record on 10 July 2026 (ESR-0018 WP2)**. Per Section 4, it may only be revisited if a genuine measurement-instrument flaw is later found, dated and logged in Section 8.
 
 ### ESR-0018
 
 Session opening in progress. ChatGPT is Engineering Lead, Claude is Independent Reviewer, per the frozen rotation (Section 3.1) - this is also the trial's designated decision-point session (Section 7).
 
-**Status: In Progress.** This entry logs the WP0A session-opening segment only; it is not a complete ESR-0018 record and does not itself constitute the Section 7 decision evidence in isolation.
+**Status: In Progress.** This entry logs the session as it proceeds; it is not a complete ESR-0018 record and does not itself constitute the Section 7 decision evidence in isolation.
+
+**WP2 - EE-0001 Review.** Programme Sponsor decision, 10 July 2026: rather than making the Section 7 adopt/reject/modify call from the incident record alone, ESR-0017's outstanding scorecard acceptance (see Section 6/9 above, "Not yet accepted by the Programme Sponsor") is resolved first as its own item - **accepted as the final ESR-0017 trial record**. The Section 7 decision itself is explicitly deferred until ESR-0018 formally closes with its own completed self-assessment scorecard, matching the pattern every prior trial session followed, rather than being decided mid-session from the raw WP0/WP1 incident log alone.
 
 **Evidence provenance note:** this entry is derived from a full chat transcript (Programme Sponsor's ChatGPT session, pasted to the Independent Reviewer as a `.docx`), not from the Independent Reviewer's own direct observation of the Lead's session. Timestamps, exact tool output and anything outside the pasted transcript are not independently verifiable from this evidence alone; one factual claim within the transcript *was* independently checked against the repository (see below).
 
