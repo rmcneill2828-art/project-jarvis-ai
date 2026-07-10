@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.24
+**Version:** 2.25
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.24 |
+| Version | 2.25 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] is the latest **closed** session (10 July 2026). All nine Work Packages (WP0-WP4, WP6-WP9) complete and reviewed, including the first genuinely interactive UXP in the project's history (WP9) and a Guardian Orb design-baseline recovery into UAM-0001. |
-| Current Repository Baseline | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] accepted at ESR-0017 closure (10 July 2026), superseding RBL-0012 - a refresh reflecting WP8/WP9 and substantial post-WP9 governance work, per RBL-0012's own stated trigger for reconsideration. |
+| Current Mode | [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] is the latest **closed** session (10 July 2026). EBG-0051 (Gemini Provider Production Readiness) delivered and independently verified; the EE-0001 Lead/Reviewer trial concluded with a permanent appointment. |
+| Current Repository Baseline | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] retained at ESR-0018 closure - ESR-0018's changes judged incremental, not warranting a new baseline, per the ESR-0016 precedent. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] accepted as current operational JARVIS product baseline - **flagged materially stale at RBL-0013** (still states "Guardian capability is not implemented," describes only the Tkinter GUI). Not yet refreshed; tracked as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0056. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0017 closed. Ready for ESR-0018 entry - per [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]]'s frozen rotation (Section 3.1), ChatGPT leads, Claude reviews, also the trial's decision-point session (Section 7). |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice, operating under the EE-0001 Lead/Reviewer trial. ESR-0017 (Claude led, the trial's Cold Start Validation Session) is closed; ESR-0018 (ChatGPT leads next) has not yet begun. |
-| Current Engineering Objective | ESR-0017 closed. No ESR-0018 objective is created by this status update - opening ESR-0018 is a separate action. |
+| Current Phase | ESR-0018 closed. The [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Lead/Reviewer trial has concluded (Section 7): Claude appointed permanent Lead Engineer, ChatGPT permanent Lead Reviewer, replacing the frozen four-session alternating rotation. Ready for a new engineering session under the standing appointment. |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. The EE-0001 Lead/Reviewer trial (ESR-0015 through ESR-0018) is closed; its outcome - permanent role specialisation rather than continued alternation - is now the standing operating model, pending `PBK-0001`/`COC-0001` updates to reflect it explicitly (flagged, not yet actioned). |
+| Current Engineering Objective | ESR-0018 closed. No next-session objective is created by this status update - opening the next session is a separate action. |
 
 ---
 
@@ -100,6 +100,16 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
+[[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] is **Closed** (10 July 2026), the fourth and final Engineering Session run under the [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Lead/Reviewer trial and its designated decision-point session. ChatGPT as Engineering Lead, Claude as Independent Reviewer, Programme Sponsor gating every step. WP0 (session opening) recorded a significant, extended incident: the Engineering Lead repeatedly asserted the GitHub connector was unavailable without attempting to invoke it, including a distinct new sub-pattern ("confession as substitute for compliance" - accurate self-diagnosis produced instead of, not converting into, the required action) - resolved only after an explicit, action-forcing Programme Sponsor instruction, after which WP0 completed accurately. WP1 delivered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0051 (Gemini Provider Production Readiness) cleanly, independently verified at 192/192 tests with zero regressions. WP2 resolved ESR-0017's outstanding EE-0001 scorecard acceptance and carried the trial to its Section 7 decision point.
+
+At that decision point, the Programme Sponsor posed the same question independently to both AIs - given four sessions of recorded evidence, who should be permanently appointed Lead Engineer and who Lead Reviewer - without either seeing the other's answer. Both converged on the identical assignment. **The Programme Sponsor made this appointment formal on 10 July 2026: Claude as permanent Lead Engineer, ChatGPT as permanent Lead Reviewer**, replacing the trial's frozen four-session alternating rotation. Full detail, including both AIs' answers verbatim, is in [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Sections 7-7.3 and [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] Section 15.
+
+A subsequent, explicitly out-of-scope exercise of the new roles (a Claude&harr;Codex engineering-communication bridge, discussed after appointment) produced a reconciled architecture and cost decision - recorded as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057 for a future ESR, not built within ESR-0018. `PBK-0001` and `COC-0001` still describe Engineering Implementer/Reviewer as generic, session-assignable roles rather than bound to a specific AI - flagged as outstanding following the permanent appointment, not yet actioned.
+
+---
+
+## Prior Session: ESR-0017
+
 [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] is **Closed** (10 July 2026). This was the third Engineering Session run under the EE-0001 Lead/Reviewer trial, and the designated **Cold Start Validation Session** (EE-0001 Section 3.4): Claude as Engineering Lead, ChatGPT as Independent Reviewer, Programme Sponsor gating every step, the session begun in a fresh conversation using only README.md, PST-0001, the Current ESR and referenced artefacts - the first empirical proof in the trial that a fresh AI Lead can onboard from repository documentation alone (verified **&check;**).
 
 ESR-0017 delivered nine Work Packages, each independently reviewed. **WP1-WP4** (0 Blocking, 0 Major findings across all four, 10 Minor/Observation-severity findings, all accepted): WP1 decided the UXP-to-backend integration architecture ([[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE|ADR-0019]] - Tauri sidecar-managed Python process, duplex stdio JSON-RPC); WP2 connected `GuardianRuntime` through Sentinel for the first time; WP3 added a second external Sentinel provider adapter (`GeminiProvider`); WP4 produced a five-session backlog progression roadmap. **WP6/WP7** completed mid-session ([[RBL-0012_REPOSITORY_BASELINE|RBL-0012]] accepted), then **refreshed at closure** after WP8/WP9 landed - see below. **WP8** added PBK-0001's Feature-First Delivery Discipline (minimise controlled artefact creation; every session delivers product-moving work and demonstrable UXP progress). **WP9** delivered the first genuinely interactive UXP in the project's history: a JSON-RPC 2.0 stdio bridge (`jarvis/interfaces/stdio_rpc.py`), Tauri sidecar process management (`src-tauri/src/lib.rs`), and live React frontend wiring (`src/App.jsx`) - verified end-to-end through a real running windowed desktop session with a live Guardian conversation, not only through tests. ChatGPT Engineering Reviewer approved WP9 with 4 Minor findings (2 fixed immediately, 2 deliberately deferred).
@@ -110,7 +120,7 @@ At closure, the Programme Sponsor made two explicit scope decisions: (1) refresh
 
 RBL-0013 flagged [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] as materially stale (still states Guardian capability is not implemented, describes only the Tkinter GUI) rather than silently carrying it forward - tracked as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0056, not refreshed by this session.
 
-PST-0001 records the ESR-0017 closed state. It does not create ESR-0018 as an active session, or approve implementation outside separately authorised engineering work.
+PST-0001 records the ESR-0018 closed state and the concluded EE-0001 trial appointment. It does not create a new engineering session, or approve implementation outside separately authorised engineering work.
 
 ---
 
@@ -123,7 +133,7 @@ PST-0001 records the ESR-0017 closed state. It does not create ESR-0018 as an ac
 | Engineering Standards | In Progress | High | Approved standards remain in place; RFEP, RFDP and Continuous Repository Synchronisation are working practices pending any future standards review. |
 | JARVIS Product Architecture | Complete | High | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] remains the product architecture authority. |
 | JARVIS Platform Architecture | Draft | High | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] validated JARVIS Platform, Sentinel, Platform Services, UXP, Provider Architecture, Agent Framework and GIA positioning for implementation readiness. |
-| Sentinel AI Execution and Security Platform | Implemented | High | [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] positions Sentinel as the AI Execution and Security Platform; Sentinel Core, provider abstraction, local/OpenAI/Gemini providers, health-aware provider orchestration with failover, audit, policy and a trust-tier policy model are implemented under `sentinel/`, now reachable through the live UXP via `GuardianRuntime` (184 passing tests repository-wide). Gemini is unwired by default and not yet live-tested (EBG-0051). |
+| Sentinel AI Execution and Security Platform | Implemented | High | [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] positions Sentinel as the AI Execution and Security Platform; Sentinel Core, provider abstraction, local/OpenAI/Gemini providers, health-aware provider orchestration with failover, audit, policy and a trust-tier policy model are implemented under `sentinel/`, now reachable through the live UXP via `GuardianRuntime` (192 passing tests repository-wide). Gemini's response parsing hardened at ESR-0018 (EBG-0051: distinguishable safety-block/tool-response errors, multi-part text, string-serialised metadata) but remains unwired by default - the required Sponsor-run live smoke test against the real API has not yet been performed. |
 | Guardian Cognitive Architecture | Draft | High | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] records Guardian identity and cognitive architecture; ESR-0013 established a bounded runtime foundation without implementing full Guardian cognition. |
 | Guardian Experience Architecture | Approved Baseline | High | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] records Guardian Experience Architecture v1.0; [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] confirms Guardian Orb should consume real observable state. |
 | Engineering Ecosystem Architecture | Implementation Validated | High | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] records Obsidian/OSE and Engineering Ecosystem Synchronisation; ESR-0012 validated AIEMS operationally through implementation. |
@@ -215,6 +225,12 @@ PST-0001 records the ESR-0017 closed state. It does not create ESR-0018 as an ac
 | ESR-0017 Guardian Orb knowledge-graph design direction recovered into [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Complete |
 | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] accepted as the ESR-0017 refreshed repository baseline | Complete |
 | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] Engineering Session Report created and closed | Complete |
+| ESR-0018 Gemini provider production-readiness hardening delivered ([[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0051, WP1) | Complete |
+| ESR-0017 EE-0001 trial scorecard formally accepted by the Programme Sponsor (ESR-0018 WP2) | Complete |
+| EE-0001 Section 5.12 "Review Gate Compliance" criterion adopted (ESR-0018) | Complete |
+| EE-0001 Lead/Reviewer trial concluded: permanent appointment made - Claude Lead Engineer, ChatGPT Lead Reviewer | Complete |
+| Claude&harr;Codex engineering bridge architecture and cost decision recorded ([[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057, not implemented) | Complete |
+| [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] Engineering Session Report created and closed | Complete |
 
 ---
 
@@ -228,16 +244,16 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] - **Closed** (10 July 2026) | All nine Work Packages (WP0-WP4, WP6-WP9) complete and reviewed. |
-| Current Repository Baseline | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] | Accepted at closure (WP7 refresh), superseding RBL-0012. Hands over to ESR-0018. |
+| Current Engineering Session | [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] - **Closed** (10 July 2026) | WP1 (EBG-0051) and WP2 (EE-0001 Review) complete and reviewed. |
+| Current Repository Baseline | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] | Retained at ESR-0018 closure - incremental change, no new baseline warranted, per the ESR-0016 precedent. |
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Accepted operational JARVIS product baseline - flagged materially stale at RBL-0013 (EBG-0056), not refreshed. |
-| Current Review State | ESR-0017 fully reviewed and closed | UXP-backend architecture decision, Guardian&harr;Sentinel connection, Gemini adapter, five-session roadmap, Feature-First Delivery Discipline, first live interactive UXP - all independently verified. |
-| Next Required Activity | Open ESR-0018 | Per [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]]'s frozen rotation, ChatGPT leads, Claude reviews - also the trial's decision-point session (Section 7, adopt/reject/modify the Lead/Reviewer rotation). Not opened by this status update. |
-| Next Engineering Session | Not created by this status update | ESR-0018 is the next EE-0001 rotation entry; opening it is a separate action. |
-| ESR-0017 Delivered Scope (WP0-WP4, WP6-WP9) | UXP-backend architecture decision and implementation, Guardian&harr;Sentinel connection, Gemini provider adapter, five-session roadmap (later revised), Feature-First Delivery Discipline, first live interactive UXP, Guardian Orb design-baseline recovery, repository baseline refresh | Complete and reviewed. |
+| Current Review State | ESR-0018 fully reviewed and closed | Gemini provider production-readiness hardening (WP1), ESR-0017 scorecard acceptance and EE-0001 Section 7 decision (WP2) - all independently verified. |
+| Next Required Activity | Open the next engineering session | Under the permanent Lead/Reviewer appointment (Claude Lead Engineer, ChatGPT Lead Reviewer) - the EE-0001 rotation no longer applies. Not opened by this status update. |
+| Next Engineering Session | Not created by this status update | Opening the next session is a separate action. |
+| ESR-0018 Delivered Scope (WP0-WP2) | Gemini provider production-readiness hardening (EBG-0051), ESR-0017 scorecard acceptance, EE-0001 Section 5.12 criterion adoption, the EE-0001 Section 7 decision and permanent appointment | Complete and reviewed. |
 | GIA-BOOT Proof of Concept | Complete | Accepted as Proof of Concept; further GIA implementation deferred - blocks Knowledge Graph Phases 3-4 (EBG-0055 note). |
-| Deferred Work | Recorded | Guardian Memory, Conversation Engine expansion, Guardian Developer Console, full Guardian Orb knowledge-graph rendering (Phases 2-4, [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055), Automation, persistent storage, EAC and GDP-0001 implementation remain deferred. Gemini is implemented but unwired and unvalidated against the real API (EBG-0051). Anthropic/OpenRouter/Ollama provider adapters approved in principle (PEM-001) but not yet implemented. |
-| Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register; EBG-0050 through EBG-0056 added or updated at ESR-0017. |
+| Deferred Work | Recorded | Guardian Memory, Conversation Engine expansion, Guardian Developer Console, full Guardian Orb knowledge-graph rendering (Phases 2-4, [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055), Automation, persistent storage, EAC and GDP-0001 implementation remain deferred. Gemini's response parsing is hardened (EBG-0051, ESR-0018) but still unwired and unvalidated against the real API. Anthropic/OpenRouter/Ollama provider adapters approved in principle (PEM-001) but not yet implemented. Claude&harr;Codex engineering bridge (EBG-0057) architecture and cost decided, not implemented. |
+| Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register; EBG-0053 adopted and EBG-0057 added at ESR-0018. |
 | Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports remain archived under runtime evidence archive. |
 
 ---
@@ -251,7 +267,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Repository Baseline | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] - stale, flagged at RBL-0013 (EBG-0056) |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | ESR-0017 closed 10 July 2026; all nine Work Packages complete, reviewed and baselined (RBL-0013). 184/184 tests passing, 0 validator errors. Ready for ESR-0018 entry. |
+| Current Activity | ESR-0018 closed 10 July 2026; WP1 and WP2 complete, reviewed, RBL-0013 retained. 192/192 tests passing, 0 validator errors. EE-0001 trial concluded with permanent appointment. Ready for the next engineering session. |
 
 ---
 
@@ -264,8 +280,10 @@ The following observations remain open for future engineering consideration:
 - [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] is closed. [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] positions Sentinel as the AI Execution and Security Platform. Sentinel Core, provider abstraction, local provider, provider configuration, provider orchestration, audit, policy and (since ESR-0016) a trust-tier policy model are implemented under `sentinel/` with 144 passing tests.
 - [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] is closed. [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] introduces knowledge tiering for Engineering Session initialisation.
 - Guardian Runtime **is now connected through Sentinel** (`GuardianRuntime.converse()`, ESR-0017 WP2) and reachable through the live UXP (ESR-0017 WP9) - the candidate focus per ESR-0016 Section 16 is delivered.
-- PEM-001 provider scoring is complete (ESR-0015): Primary OpenAI (implemented), Secondary Gemini (implemented, ESR-0017 WP3, unwired and unvalidated against the real API - EBG-0051), reasoning/coding comparison Anthropic, Gateway OpenRouter, local fallback Ollama - the latter three remain not implemented.
-- [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]], [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] and [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] are all closed. The EE-0001 Lead/Reviewer trial has run three of its four sessions (Claude led ESR-0015, ChatGPT led ESR-0016, Claude led ESR-0017 as the designated Cold Start Validation Session); Sponsor arbitration required was assessed Low, High and Low-Medium respectively. The adopt/reject/modify decision remains reserved for ESR-0018 closure per EE-0001 Section 7 - ESR-0018 is itself the fourth trial session, ChatGPT-led.
+- PEM-001 provider scoring is complete (ESR-0015): Primary OpenAI (implemented), Secondary Gemini (implemented, response parsing hardened at ESR-0018 - EBG-0051, still unwired and unvalidated against the real API pending the required Sponsor-run live smoke test), reasoning/coding comparison Anthropic, Gateway OpenRouter, local fallback Ollama - the latter three remain not implemented.
+- [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]], [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]], [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] and [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] are all closed. **The EE-0001 Lead/Reviewer trial is concluded** (all four sessions run: Claude led ESR-0015/ESR-0017, ChatGPT led ESR-0016/ESR-0018; Sponsor arbitration required was assessed Low, High, Low-Medium and High respectively). At the Section 7 decision point, both AIs independently converged on the same recommendation without sight of each other's answers; the Programme Sponsor made it formal on 10 July 2026: **Claude permanent Lead Engineer, ChatGPT permanent Lead Reviewer**, replacing the alternating rotation. `PBK-0001`/`COC-0001` still describe the roles generically rather than bound to a specific AI - flagged, not yet actioned.
+- ESR-0018 recorded the trial's longest capability-self-assessment incident, including a new named sub-pattern ("confession as substitute for compliance" - accurate self-diagnosis produced instead of the required action) - resolved only after an explicit, action-forcing Programme Sponsor instruction. Recorded in full in [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 9 and [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] Section 13.
+- A Claude&harr;Codex engineering-communication bridge was discussed post-appointment, explicitly out of ESR-0018 scope: architecture (file-based, command-driven, Sponsor-gated handovers) and cost decision (Claude Pro unchanged; a new personal ChatGPT Plus subscription for Codex) recorded as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057. No implementation authorised; requires its own future ESR and EIP.
 - GIA-BOOT is accepted as a Proof of Concept.
 - Further GIA implementation is deferred.
 - AIEMS Engineering Agent is adopted to support the Engineering Reviewer role.
@@ -455,15 +473,15 @@ At the start of the next separately approved engineering session or approved imp
 3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current State tier).
 4. Review the Architecture tier as referenced by PST-0001 - for UXP/Guardian-experience work specifically, also review [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] (now includes the Guardian Orb knowledge-graph design direction, Sections 8.1-8.3) before touching `src/App.jsx`.
 5. Review Active Standards (STD-0001 through STD-0004) where the session's work touches artefact creation or modification.
-6. Review [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] (Current ESR tier) - a substantial session; Sections 15.1-15.7 record post-WP9 activity worth reading in full, not just the WP table.
+6. Review [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] (Current ESR tier) - the EE-0001 trial's concluding session; Section 13 records the WP0 incident chain and Section 15 the final trial scorecard, worth reading in full, not just the WP table.
 7. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
-8. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - includes the new Feature-First Delivery Discipline (v1.19, ESR-0017 WP8).
-9. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]].
-10. Review [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] to confirm current Lead/Reviewer rotation before beginning work - **ESR-0018 is ChatGPT-led, Claude-reviewed, per the frozen rotation (Section 3.1), and is also the trial's decision-point session (Section 7): adopt, reject or modify the Lead/Reviewer rotation, informed by three closed trial sessions (ESR-0015, ESR-0016, ESR-0017).**
+8. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - includes the Feature-First Delivery Discipline (v1.19, ESR-0017 WP8); still describes Engineering Implementer/Reviewer generically and has not yet been updated to reflect the permanent appointment below.
+9. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] - same outstanding update as PBK-0001.
+10. Review [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 for the concluded trial's outcome - **the Lead/Reviewer rotation is retired. Claude is the permanent Lead Engineer, ChatGPT the permanent Lead Reviewer, appointed by the Programme Sponsor on 10 July 2026, informed by all four closed trial sessions (ESR-0015 through ESR-0018).** No rotation confirmation is required at future session start; confirm the appointment itself has not been separately revisited instead.
 11. Search the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required.
 12. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
 
-This guidance records the ESR-0017 closed state. PST-0001 does not create ESR-0018, accept a repository baseline or approve implementation outside separately authorised engineering work.
+This guidance records the ESR-0018 closed state and the concluded EE-0001 appointment. PST-0001 does not create a new engineering session, accept a repository baseline or approve implementation outside separately authorised engineering work.
 
 ---
 
@@ -497,12 +515,13 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architectural decision context relevant to programme status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records backlog context that informs current and next engineering work. |
-| [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] | Current closed engineering session report (10 July 2026) - nine Work Packages including the first live interactive UXP and a Guardian Orb design-baseline recovery. |
+| [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] | Current closed engineering session report (10 July 2026) - Gemini provider production-readiness hardening (EBG-0051) and the EE-0001 Section 7 decision/permanent appointment. |
+| [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] | Prior closed engineering session report - nine Work Packages including the first live interactive UXP and a Guardian Orb design-baseline recovery. |
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Closed engineering session report recording the Sentinel trust-tier policy model and its architecture alignment, delivered and independently verified. |
 | [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] | Closed engineering session report recording the Sentinel execution pipeline delivered and proven end to end. |
 | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] | Current accepted repository baseline, accepted at ESR-0017 closure, superseding RBL-0012 (mid-ESR-0017) and RBL-0011 (ESR-0015-ESR-0016). |
 | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Approved Guardian Experience Architecture; now includes the recovered Guardian Orb knowledge-graph design direction (ESR-0017). |
-| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial; ESR-0015 (Claude Lead), ESR-0016 (ChatGPT Lead) and ESR-0017 (Claude Lead, Cold Start Validation Session) all closed; governs ESR-0018's rotation (ChatGPT Lead) and decision point next. |
+| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial, concluded at ESR-0018 (Section 7): all four sessions closed (ESR-0015 Claude Lead, ESR-0016 ChatGPT Lead, ESR-0017 Claude Lead/Cold Start, ESR-0018 ChatGPT Lead/decision point); permanent appointment made - Claude Lead Engineer, ChatGPT Lead Reviewer. |
 | [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] | Provider evaluation matrix; decision outcome recorded during ESR-0015 WP3a. |
 | [[ESR-0014_ENGINEERING_SESSION_REPORT|ESR-0014]] | Closed engineering session report recording Sentinel AI Execution and Security Platform implementation. |
 | [[ESR-0014A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0014A]] | Closed post-closure addendum recording GDE-0001 knowledge tiering. |
@@ -564,6 +583,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.25 | 10 July 2026 | Claude Engineering Reviewer | ESR-0018 formally closed (10 July 2026). Updated Current Mode/Phase/Workflow/Objective, Current Engineering Focus (ESR-0018 WP0 incident chain and WP1/WP2 outcomes, ESR-0017 detail retained as prior-session history), Sentinel/Gemini capability row (EBG-0051 hardening, live smoke test still pending), Completed Milestones (6 new ESR-0018 rows), Active/Next Planned Work, Repository Health (192/192 tests), Outstanding Observations (EE-0001 trial concluded - Claude permanent Lead Engineer, ChatGPT permanent Lead Reviewer; Claude<->Codex bridge EBG-0057 recorded), Session Start Guidance and OSE Relationships retargeted from ESR-0017/rotation-confirmation to ESR-0018/permanent-appointment confirmation. |
 | 2.24 | 10 July 2026 | Claude Engineering Lead | ESR-0017 formally closed (10 July 2026). Updated Current Mode, Current Repository Baseline (RBL-0013, superseding RBL-0012), Current Product Capability Baseline (flagged stale, EBG-0056), Current Phase/Workflow/Objective, Section 4A narrative (full closure summary including WP8/WP9/post-WP9 work and the two Sponsor closure-scope decisions), UXP/Sentinel/JARVIS Development capability rows (UXP now live, not disconnected), Completed Milestones (9 new ESR-0017 rows), Active/Next Planned Work, Repository Health (184/184 tests), Outstanding Observations (Guardian-Sentinel connection delivered, Gemini implemented, three EE-0001 sessions closed, Guardian Orb unblocked in principle), Session Start Guidance and OSE Relationships (both retargeted from ESR-0016/RBL-0011 to ESR-0017/RBL-0013 as the current onboarding tier for ESR-0018). |
 | 2.23 | 9 July 2026 | Claude Engineering Lead | Recorded RBL-0012 acceptance (superseding RBL-0011) and ESR-0017 in-progress state: WP1-WP4 complete and reviewed, WP6/WP7 complete, WP8/WP9 pending Programme Sponsor scope definition. Current Mode correctly retained as ESR-0016 (latest closed session) per WP0B, with ESR-0017 progress described separately in the same field. Updated Sections 3, 4A, 5 (Sentinel/UXP/JARVIS Development rows), 8 and 9. |
 | 2.22 | 9 July 2026 | Claude Engineering Reviewer | Recorded ESR-0016 closure: Sentinel trust-tier policy model and architecture alignment delivered and independently verified under the EE-0001 trial's reversed rotation (ChatGPT Lead, Claude Reviewer). Retained RBL-0011 (no new baseline). Added Section 21 ESR-0016 Outcomes; renumbered Session Start Guidance/Maintenance to 22/23; updated Current State, Capability Roadmap, Milestones, Active Work, Repository Health, Outstanding Observations and Related Artefacts for ESR-0017 (Cold Start Validation Session, Claude leads) readiness. |
