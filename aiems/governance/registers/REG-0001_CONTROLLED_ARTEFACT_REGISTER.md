@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.112
+**Version:** 3.113
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.112 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.113 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.29 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.30 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -278,6 +278,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.113 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.29 to 1.30) following: Added a concrete Plus-tier rate-limit expectation to EBG-0057 (third-party source, treated as approximate): ~50 soft / ~200 hard cap per 5-hour window, hard caps reachable within 1-2 hours of focused work - matches the Programme Sponsor's own prior Plus experience and confirms the wall to expect is a rate limit, not a bill. |
 | 3.112 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.28 to 1.29) following: Recorded the Programme Sponsor's explicit no-new-recurring-budget constraint on EBG-0057: self-hosted/free is the hard default for the Claude<->Codex bridge roadmap unless stated otherwise; reinforces Phase 4 (A2A) and any message broker staying deferred, since both are the only places genuine hosting cost could arise. |
 | 3.111 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.27 to 1.28) following: Updated EBG-0057 post-ESR-0018-closure: ruled out browser automation of ChatGPT's web UI (OpenAI ToS violation risk to the Programme Sponsor's actual account), retained the raw-GitHub-URL live-read principle both ChatGPT and Gemini independently converged on, and recorded ChatGPT's verified four-phase venue roadmap (GitHub-native handover first, then a Review Gateway, MCP as tool-access layer, A2A only if multi-agent expansion is justified). |
 | 3.110 | 10 July 2026 | Claude Engineering Reviewer | Aligned PST-0001 version (2.24 to 2.25) following: ESR-0018 formally closed (10 July 2026). Updated Current Mode/Phase/Workflow/Objective, Current Engineering Focus (ESR-0018 WP0 incident chain and WP1/WP2 outcomes, ESR-0017 detail retained as prior-session history), Sentinel/Gemini capability row (EBG-0051 hardening, live smoke test still pending), Completed Milestones (6 new ESR-0018 rows), Active/Next Planned Work, Repository Health (192/192 tests), Outstanding Observations (EE-0001 trial concluded - Claude permanent Lead Engineer, ChatGPT permanent Lead Reviewer; Claude<->Codex bridge EBG-0057 recorded), Session Start Guidance and OSE Relationships retargeted from ESR-0017/rotation-confirmation to ESR-0018/permanent-appointment confirmation. |

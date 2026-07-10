@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.29
+**Version:** 1.30
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.29 |
+| Version | 1.30 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -134,6 +134,8 @@ ChatGPT, as Lead Reviewer, researched and proposed a four-phase venue roadmap, v
 
 **Budget constraint, stated explicitly by the Programme Sponsor: no budget for new recurring spend beyond what is already decided** (Claude Pro; the new personal ChatGPT Plus subscription for Codex). Every phase above is achievable self-hosted at no additional cost - Phase 1 within GitHub Actions' free tier, Phases 2-3 run locally on the Programme Sponsor's own machine. Phase 4 (A2A) and any durable message broker are the only places genuine hosting cost could arise, since both presuppose remote/multi-machine agents this project does not yet have - reinforcing, not just permitting, why both remain explicitly deferred. Self-hosted, no new recurring spend, is the hard default for any future proposal against this backlog item unless the Programme Sponsor states otherwise.
 
+**Plus-tier rate-limit expectation, for calibrating real-world bridge usage.** Per a third-party pricing tracker (not an official OpenAI page - treat as approximate, not exact), ChatGPT Plus's Codex allowance is roughly a 50-message soft cap and ~200-message hard cap per rolling 5-hour window, with the same source noting "heavy users hit Plus hard caps within 1-2 hours of focused work." This matches the Programme Sponsor's own prior experience on Plus (previously hit the time window, not credits) and confirms the earlier finding that the wall to expect is a rate limit, not a bill. Worth designing the eventual bridge's `sponsor-decision`/review cadence with this in mind - space Work Package handovers out rather than pushing many through in one sitting, consistent with the guidance already recorded above.
+
 No implementation is authorised by this backlog entry; a proper Engineering Implementation Package for a future ESR is required before any of this is built. |
 
 ---
@@ -250,6 +252,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.30 | 10 July 2026 | Claude Engineering Lead | Added a concrete Plus-tier rate-limit expectation to EBG-0057 (third-party source, treated as approximate): ~50 soft / ~200 hard cap per 5-hour window, hard caps reachable within 1-2 hours of focused work - matches the Programme Sponsor's own prior Plus experience and confirms the wall to expect is a rate limit, not a bill. |
 | 1.29 | 10 July 2026 | Claude Engineering Lead | Recorded the Programme Sponsor's explicit no-new-recurring-budget constraint on EBG-0057: self-hosted/free is the hard default for the Claude<->Codex bridge roadmap unless stated otherwise; reinforces Phase 4 (A2A) and any message broker staying deferred, since both are the only places genuine hosting cost could arise. |
 | 1.28 | 10 July 2026 | Claude Engineering Lead | Updated EBG-0057 post-ESR-0018-closure: ruled out browser automation of ChatGPT's web UI (OpenAI ToS violation risk to the Programme Sponsor's actual account), retained the raw-GitHub-URL live-read principle both ChatGPT and Gemini independently converged on, and recorded ChatGPT's verified four-phase venue roadmap (GitHub-native handover first, then a Review Gateway, MCP as tool-access layer, A2A only if multi-agent expansion is justified). |
 | 1.27 | 10 July 2026 | Claude Engineering Lead | Updated EBG-0057 with ChatGPT's completed Lead Reviewer code review of the original bridge prototype, reconciled by Claude: explicit sponsor-decision command replacing a trusted text label, gitignored/permission-restricted exchange directory replacing the prototype's false read-only claim, preflight checks, HEAD-drift detection, session IDs demoted to optional convenience. |
