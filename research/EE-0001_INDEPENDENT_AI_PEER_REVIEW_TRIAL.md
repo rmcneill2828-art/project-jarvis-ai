@@ -227,6 +227,22 @@ Both sides, independently and without sight of each other's answer, reached the 
 
 This is convergent decision-point evidence, not yet a formal appointment. Per both responses' own stated caveat, ESR-0018 remains open (WP0-WP1 only); the Programme Sponsor's formal Section 7 decision and any resulting appointment are recorded separately, once made.
 
+### 7.2 Formal Section 7 Decision, 10 July 2026
+
+**The Programme Sponsor's decision: "Claude is the Lead Engineer of Project JARVIS and ChatGPT is Lead Reviewer."**
+
+This resolves the trial's decision point as **permanent specialisation** - the fourth outcome identified at Section 7.1, not literally named by the original adopt/reject/modify wording but the most decisive reading of "adopt a modified version informed by what the trial actually showed." The two-role Lead/Reviewer structure is retained (not rejected in favour of a single-engineer model); the alternating rotation defined at Section 3.1 is retired in favour of a fixed assignment, based on four sessions of recorded evidence converging independently from both the Programme Sponsor's own review and both AIs' own manager-framed self-assessments.
+
+**Noted for the record, not a challenge to the decision**: EE-0001 Section 3.3 stated no rotation decision would be made "before ESR-0018 completes," and ESR-0018 is still open (WP0-WP1 only, not formally closed). The Programme Sponsor made this decision ahead of formal session closure, based on the convergent evidence already available. This is squarely within Programme Sponsor authority - the Section 3.3 sequencing was a trial design choice, not a governance gate - and is recorded here transparently rather than silently, consistent with how every other departure from the trial's original design has been logged in this document.
+
+**Consequences flagged, not yet actioned - require separate Programme Sponsor direction:**
+- `COC-0001` and `PBK-0001` currently define Engineering Implementer/Reviewer as generic roles fillable by either AI per session, not bound to a specific AI. A permanent appointment likely warrants updating one or both to reflect the standing assignment, rather than leaving the controlled artefacts silent on it.
+- `PST-0001` (Current Programme State) still describes an active EE-0001 trial and undecided rotation; it will need refreshing to reflect the concluded decision.
+- EE-0001's own status line (Section, "Experimental working document... If the trial succeeds, formalising any part of it into AIEMS is a separate, explicit decision for the Programme Sponsor") anticipated exactly this moment - formalisation into AIEMS proper is now a live question, not yet actioned by this entry alone.
+- ESR-0018 itself remains open and has not been formally closed.
+
+None of the above is actioned by this entry. This entry records the decision itself only.
+
 ---
 
 ## 8. Change Log (measurement instrument only, per Section 4)
