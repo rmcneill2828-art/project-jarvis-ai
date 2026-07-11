@@ -15,9 +15,43 @@ const WIDTH = 900;
 const HEIGHT = 600;
 const PADDING = 16;
 
+// Node sizing and hub labelling, added per the Programme Sponsor's Obsidian
+// graph-view reference: well-connected artefacts should read as visually
+// larger, and only the most-connected "hub" nodes carry a visible label -
+// labelling all 148 would just reproduce Obsidian's own cluttered result,
+// not improve on it. Everything else remains reachable via the existing
+// hover tooltip.
+const HUB_LABEL_COUNT = 25;
+const MIN_RADIUS = 3;
+const MAX_RADIUS = 18;
+const RADIUS_SCALE = 1.3;
+
 function colorForCluster(cluster, clusterOrder) {
   const index = clusterOrder.indexOf(cluster);
   return CLUSTER_PALETTE[index % CLUSTER_PALETTE.length];
+}
+
+function computeDegree(nodes, edges) {
+  const degree = new Map(nodes.map((node) => [node.id, 0]));
+  for (const edge of edges) {
+    degree.set(edge.source, (degree.get(edge.source) ?? 0) + 1);
+    degree.set(edge.target, (degree.get(edge.target) ?? 0) + 1);
+  }
+  return degree;
+}
+
+function radiusForDegree(degree) {
+  return Math.min(MAX_RADIUS, MIN_RADIUS + Math.sqrt(degree) * RADIUS_SCALE);
+}
+
+function topHubIds(nodes, edges, count) {
+  const degree = computeDegree(nodes, edges);
+  return new Set(
+    [...degree.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, count)
+      .map(([id]) => id),
+  );
 }
 
 // Rescales converged simulation coordinates into the SVG viewBox. The
@@ -58,7 +92,8 @@ function normalizeToViewBox(nodes, width, height, padding) {
 // physics view. Phase 3 (agent-traversal animation) is a separate, later,
 // explicitly out-of-scope phase.
 function layoutGraph(nodes, edges) {
-  const simNodes = nodes.map((node) => ({ ...node }));
+  const degree = computeDegree(nodes, edges);
+  const simNodes = nodes.map((node) => ({ ...node, degree: degree.get(node.id) ?? 0 }));
   // forceLink mutates each link's source/target from a string id into a
   // node object reference as part of its own internal bookkeeping - copying
   // here keeps that mutation off the `edges` array from component state
@@ -75,7 +110,10 @@ function layoutGraph(nodes, edges) {
         .strength(0.05),
     )
     .force("center", forceCenter(WIDTH / 2, HEIGHT / 2))
-    .force("collide", forceCollide(12))
+    // Per-node collide radius (not a flat value): a well-connected node
+    // renders larger (radiusForDegree), so its collision boundary must scale
+    // the same way or big circles would overlap their smaller neighbours.
+    .force("collide", forceCollide((node) => radiusForDegree(node.degree) + 2))
     .stop();
 
   for (let i = 0; i < 600; i += 1) {
@@ -94,6 +132,11 @@ export function KnowledgeGraph({ graph, loading, error }) {
   const clusterOrder = useMemo(() => {
     if (!graph) return [];
     return [...new Set(graph.nodes.map((node) => node.cluster))].sort();
+  }, [graph]);
+
+  const hubIds = useMemo(() => {
+    if (!graph) return new Set();
+    return topHubIds(graph.nodes, graph.edges, HUB_LABEL_COUNT);
   }, [graph]);
 
   const positionedById = useMemo(() => {
@@ -144,10 +187,25 @@ export function KnowledgeGraph({ graph, loading, error }) {
         </g>
         <g className="knowledge-graph-nodes">
           {positioned.map((node) => (
-            <circle key={node.id} cx={node.x} cy={node.y} r={4} fill={colorForCluster(node.cluster, clusterOrder)}>
+            <circle
+              key={node.id}
+              cx={node.x}
+              cy={node.y}
+              r={radiusForDegree(node.degree)}
+              fill={colorForCluster(node.cluster, clusterOrder)}
+            >
               <title>{node.label}</title>
             </circle>
           ))}
+        </g>
+        <g className="knowledge-graph-labels">
+          {positioned
+            .filter((node) => hubIds.has(node.id))
+            .map((node) => (
+              <text key={node.id} x={node.x + radiusForDegree(node.degree) + 4} y={node.y + 4}>
+                {node.label}
+              </text>
+            ))}
         </g>
       </svg>
     </section>
