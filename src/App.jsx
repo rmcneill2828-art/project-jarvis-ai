@@ -32,6 +32,7 @@ import {
   platformSignals as staticPlatformSignals,
   STATUS,
 } from "./platformStatus.js";
+import { KnowledgeGraph } from "./KnowledgeGraph.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -412,6 +413,9 @@ export function App() {
   const [platformState, setPlatformState] = useState(null);
   const [platformError, setPlatformError] = useState(null);
 
+  const [knowledgeGraph, setKnowledgeGraph] = useState(null);
+  const [knowledgeGraphError, setKnowledgeGraphError] = useState(null);
+
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [sending, setSending] = useState(false);
@@ -426,6 +430,14 @@ export function App() {
       })
       .catch((error) => {
         if (!cancelled) setPlatformError(String(error));
+      });
+
+    invoke("knowledge_graph")
+      .then((graph) => {
+        if (!cancelled) setKnowledgeGraph(graph);
+      })
+      .catch((error) => {
+        if (!cancelled) setKnowledgeGraphError(String(error));
       });
 
     return () => {
@@ -474,6 +486,11 @@ export function App() {
                 onSubmit={handleSubmit}
                 sending={sending}
                 sendError={sendError}
+              />
+              <KnowledgeGraph
+                graph={knowledgeGraph}
+                loading={!knowledgeGraph && !knowledgeGraphError}
+                error={knowledgeGraphError}
               />
             </div>
             <DiagnosticsPanel diagnostics={deriveDiagnostics(platformState, platformError)} />

@@ -51,6 +51,23 @@ def test_platform_status_reflects_real_runtime_state():
     }
 
 
+def test_knowledge_graph_returns_real_repository_data():
+    """EBG-0055 Phase 1 (ESR-0019 WP2): dispatch-level check that the method
+    is wired and returns real data, not the full parser behaviour matrix
+    (already covered by jarvis/tests/test_knowledge_graph.py)."""
+
+    server = _server()
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 6, "method": "knowledge.graph", "params": {}})
+    )
+
+    assert "error" not in response
+    node_ids = {node["id"] for node in response["result"]["nodes"]}
+    assert "README.md" in node_ids
+    assert len(response["result"]["edges"]) > 0
+
+
 def test_missing_params_defaults_to_empty_object():
     server = _server()
 

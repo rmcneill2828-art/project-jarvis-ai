@@ -18,6 +18,7 @@ import sys
 from typing import Any, TextIO
 
 from jarvis.guardian.runtime import GuardianRuntime
+from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from sentinel.core import SentinelTrustGateway
 from sentinel.local_provider import LocalEchoProvider
@@ -58,6 +59,7 @@ class StdioRpcServer:
         self._methods = {
             "guardian.converse": self._guardian_converse,
             "platform.status": self._platform_status,
+            "knowledge.graph": self._knowledge_graph,
         }
 
     def _guardian_converse(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -76,6 +78,9 @@ class StdioRpcServer:
             "runtimeHealth": snapshot.runtime_health.value,
             "providerConnected": provider_boundary.status.value if provider_boundary else "Unknown",
         }
+
+    def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
+        return knowledge_graph.build_graph()
 
     def handle_line(self, line: str) -> dict[str, Any] | None:
         """Handle one JSON-RPC 2.0 request line, returning the response object."""

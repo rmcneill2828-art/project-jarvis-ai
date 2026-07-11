@@ -133,10 +133,15 @@ fn platform_status(state: State<BackendState>) -> Result<Value, String> {
     call_backend(&state, "platform.status", json!({}))
 }
 
+#[tauri::command]
+fn knowledge_graph(state: State<BackendState>) -> Result<Value, String> {
+    call_backend(&state, "knowledge.graph", json!({}))
+}
+
 pub fn run() {
     tauri::Builder::default()
         .manage(BackendState(Mutex::new(None)))
-        .invoke_handler(tauri::generate_handler![send_message, platform_status])
+        .invoke_handler(tauri::generate_handler![send_message, platform_status, knowledge_graph])
         .build(tauri::generate_context!())
         .expect("error while building JARVIS Guardian desktop shell")
         .run(|app_handle, event| {

@@ -162,7 +162,8 @@ button {
 .profile-card,
 .status-card,
 .diagnostics-panel,
-.command-panel {
+.command-panel,
+.knowledge-graph-panel {
   border: 1px solid rgba(0, 239, 255, 0.17);
   border-radius: 10px;
   background: linear-gradient(180deg, rgba(5, 21, 25, 0.94), rgba(4, 14, 17, 0.88));
@@ -620,6 +621,45 @@ button {
   min-height: 176px;
   margin: -2px auto 0;
   padding: 20px 26px 16px;
+}
+
+.knowledge-graph-panel {
+  width: min(870px, calc(100% - 32px));
+  margin: 18px auto 0;
+  padding: 20px 26px 16px;
+}
+
+.knowledge-graph-panel h2 {
+  margin: 0 0 8px;
+  color: #16f7ff;
+  font-size: 1.16rem;
+  letter-spacing: 0;
+}
+
+.knowledge-graph-status {
+  margin: 0 0 12px;
+  font-size: 0.86rem;
+  color: rgba(246, 251, 255, 0.65);
+}
+
+.knowledge-graph-error {
+  color: #ff8a8a;
+}
+
+.knowledge-graph-svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 640 / 420;
+}
+
+.knowledge-graph-edges line {
+  stroke: rgba(0, 239, 255, 0.14);
+  stroke-width: 1;
+}
+
+.knowledge-graph-nodes circle {
+  stroke: rgba(2, 7, 9, 0.6);
+  stroke-width: 0.6;
 }
 
 .command-panel h2 {
