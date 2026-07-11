@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.113
+**Version:** 3.115
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.113 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.115 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -151,8 +151,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.19 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
-| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.11 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.20 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.12 | Draft | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
@@ -278,6 +278,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.115 | 11 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.19 to 1.20) following: Bound the Engineering Implementer role to Claude as its current permanent holder, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
+| 3.114 | 11 July 2026 | Claude Engineering Implementer | Aligned COC-0001 version (1.11 to 1.12) following: Bound Engineering Reviewer to ChatGPT and Engineering Implementer to Claude as the current permanent role holders, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
 | 3.113 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.29 to 1.30) following: Added a concrete Plus-tier rate-limit expectation to EBG-0057 (third-party source, treated as approximate): ~50 soft / ~200 hard cap per 5-hour window, hard caps reachable within 1-2 hours of focused work - matches the Programme Sponsor's own prior Plus experience and confirms the wall to expect is a rate limit, not a bill. |
 | 3.112 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.28 to 1.29) following: Recorded the Programme Sponsor's explicit no-new-recurring-budget constraint on EBG-0057: self-hosted/free is the hard default for the Claude<->Codex bridge roadmap unless stated otherwise; reinforces Phase 4 (A2A) and any message broker staying deferred, since both are the only places genuine hosting cost could arise. |
 | 3.111 | 10 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.27 to 1.28) following: Updated EBG-0057 post-ESR-0018-closure: ruled out browser automation of ChatGPT's web UI (OpenAI ToS violation risk to the Programme Sponsor's actual account), retained the raw-GitHub-URL live-read principle both ChatGPT and Gemini independently converged on, and recorded ChatGPT's verified four-phase venue roadmap (GitHub-native handover first, then a Review Gateway, MCP as tool-access layer, A2A only if multi-agent expansion is justified). |

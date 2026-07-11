@@ -2,7 +2,7 @@
 
 **Status:** Draft
 
-**Version:** 1.11
+**Version:** 1.12
 
 ---
 
@@ -35,7 +35,7 @@ This document complements AIEMS. It does not replace engineering governance or r
 * Performs WP6 Independent GitHub Verification after Engineering Implementer repository push
 * Does not modify the repository directly
 
-This role has been filled historically by ChatGPT and the AIEMS Engineering Agent. The role definition, not the specific AI product, is authoritative.
+This role has been filled historically by ChatGPT and the AIEMS Engineering Agent. The role definition, not the specific AI product, is authoritative. **ChatGPT is currently the permanent holder of this role**, per the [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment made by the Programme Sponsor on 10 July 2026, replacing the trial's four-session alternating rotation.
 
 Where the Engineering Implementer's operating environment cannot practically support incremental repository documentation, the Programme Sponsor may direct the Engineering Reviewer to maintain the Engineering Session Report on the Implementer's behalf - see Operating Rule 51.
 
@@ -49,7 +49,7 @@ Where the Engineering Implementer's operating environment cannot practically sup
 * Produces implementation and self-review reports
 * Makes no engineering decisions
 
-This role has been filled historically by Codex and other AI collaborators, including Claude acting as both Reviewer and Implementer within a single session. The role definition, not the specific AI product, is authoritative.
+This role has been filled historically by Codex and other AI collaborators, including Claude acting as both Reviewer and Implementer within a single session. The role definition, not the specific AI product, is authoritative. **Claude is currently the permanent holder of this role**, per the [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment made by the Programme Sponsor on 10 July 2026, replacing the trial's four-session alternating rotation.
 
 ---
 
@@ -287,6 +287,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.12 | 11 July 2026 | Claude Engineering Implementer | Bound Engineering Reviewer to ChatGPT and Engineering Implementer to Claude as the current permanent role holders, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
 | 1.11 | 9 July 2026 | Claude Engineering Reviewer | Added Operating Rule 51 and a note under Engineering Reviewer: the Programme Sponsor may direct the Engineering Reviewer to maintain the Engineering Session Report when the Implementer's environment cannot support incremental documentation - a per-session Sponsor decision, documentation only, not a change to accountability. Per ESR-0016A WP5. |
 | 1.10 | 8 July 2026 | Claude Engineering Reviewer | Programme Sponsor-directed housekeeping fix ahead of ESR-0016: updated the stale RBL-0009 baseline reference (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0011, the current accepted repository baseline since ESR-0015 closure. Flagged as an observation during ESR-0016 pre-session review and fixed on explicit Sponsor instruction. |
 | 1.9 | 8 July 2026 | Claude Engineering Implementer | Renamed the ChatGPT/Codex role headers and normative rules to Engineering Reviewer/Engineering Implementer, decoupling role definitions from named AI products. Historical mentions elsewhere in the repository are unaffected. |

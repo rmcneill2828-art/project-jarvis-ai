@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.19 |
+| Version | 1.20 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -126,6 +126,8 @@ Engineering Implementer responsibilities include:
 * Avoiding unauthorised engineering decisions.
 
 The Engineering Implementer shall implement approved changes without expanding engineering scope or introducing unapproved governance.
+
+**Claude is currently the permanent holder of the Engineering Implementer role**, per the [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment made by the Programme Sponsor on 10 July 2026, replacing the trial's four-session alternating rotation. The role definition, not the specific AI product, is authoritative; this binding records the current appointment rather than a permanent renaming of the role.
 
 ---
 
@@ -567,6 +569,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.20 | 11 July 2026 | Claude Engineering Implementer | Bound the Engineering Implementer role to Claude as its current permanent holder, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
 | 1.19 | 9 July 2026 | Claude Engineering Lead | Incorporated ChatGPT Engineering Reviewer's WP8 refinements: Minimise Controlled Artefact Creation's threshold reworded to the objectively-testable 'repository or governance record no longer accurately reflects the implemented engineering state' (was 'drift'); UXP rule reworded to 'demonstrable progress toward the live UXP, achieved through direct UXP implementation or through delivery of backend capability required by that UXP' - explicitly permits backend-only sessions and rules out cosmetic compliance edits. Both accepted on their own merits, not deferred to Reviewer authority. |
 | 1.18 | 9 July 2026 | Claude Engineering Lead | Added Feature-First Delivery Discipline: minimise controlled artefact creation (update existing artefacts unless not doing so would cause repo/governance drift), every Engineering Session must deliver product-moving engineering work (not governance-only), every Engineering Session must improve the UXP until the mock-up becomes a live system. Directed by the Programme Sponsor, ESR-0017 WP8. |
 | 1.17 | 9 July 2026 | Claude Engineering Reviewer | Added Operational Verification Before Reporting: an AI collaborator shall not report a repository/tool operation's outcome without having actually invoked it and observed the result. Operationalises Principles 2 and 4 for tool operations specifically, per ESR-0016A WP4. |
