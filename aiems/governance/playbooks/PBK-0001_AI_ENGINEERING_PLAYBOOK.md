@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.20 |
+| Version | 1.21 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -419,6 +419,19 @@ Every Engineering Session shall include engineering work that moves Project JARV
 
 Every Engineering Session shall make demonstrable progress toward delivering the live User Experience Platform, replacing the currently static mock-up (`src/`, `src-tauri/`) with a system reflecting real backend state rather than hardcoded placeholders. Progress may be achieved through direct UXP implementation or through delivery of backend capability required by that UXP (for example, Guardian memory, provider failover, or runtime diagnostics that a future UXP increment will depend on) - a session need not touch `src/` itself provided it demonstrably advances toward the live UXP. This requirement stands until that milestone is reached. It shall not be satisfied by cosmetic UI changes made only to formally comply with this rule.
 
+## Incremental Visual Convergence Toward the Reference Mock-up
+
+Directed by the Programme Sponsor at ESR-0019 WP2 closure, following visible progress made integrating the Guardian Orb knowledge graph toward `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg`.
+
+Where an Engineering Session's work provides a natural opportunity to do so, it should include at least one small, incremental UXP change moving the live interface toward `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg` (the reference mock-up underlying [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1) - for example, adjusting background colour toward the mock-up in one session, then bringing a System Health element in line with it in a later session that happens to touch that capability.
+
+This applies differently depending on what kind of element is being moved toward the mock-up:
+
+- Cosmetic elements (background colour, typography, spacing, panel styling, colour language) may be adjusted toward the mock-up's presentation at any time, independent of what backend capability that session delivers.
+- Data-bearing elements (for example the mock-up's System Health panel, Knowledge Metrics, Active Clusters and Real-Time Activity feed) shall only be visually adjusted toward the mock-up once genuinely backed by real, observed data delivered by that session or an earlier one - never populated with the mock-up's illustrative figures or labels as decoration. This preserves UAM-0001 Section 10's capability-awareness principle and the no-mock-fallback rule established at ESR-0017 WP9: an interface element shall never imply a capability or status more complete than what is actually implemented and verified.
+
+This is an additive discipline alongside the UXP progress requirement above, not a replacement for it, and is subject to the same anti-gaming constraint: it shall not be satisfied by a token cosmetic change made only to formally comply.
+
 ---
 
 # Implementation and Engineering Judgement
@@ -569,6 +582,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.21 | 11 July 2026 | Claude Engineering Implementer | Added Incremental Visual Convergence Toward the Reference Mock-up under Feature-First Delivery Discipline: sessions should include a small UXP change moving toward aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg where natural opportunity exists - cosmetic elements freely, data-bearing elements only once backed by real observed data, preserving the no-mock-fallback rule. Directed by the Programme Sponsor at ESR-0019 WP2 closure. |
 | 1.20 | 11 July 2026 | Claude Engineering Implementer | Bound the Engineering Implementer role to Claude as its current permanent holder, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
 | 1.19 | 9 July 2026 | Claude Engineering Lead | Incorporated ChatGPT Engineering Reviewer's WP8 refinements: Minimise Controlled Artefact Creation's threshold reworded to the objectively-testable 'repository or governance record no longer accurately reflects the implemented engineering state' (was 'drift'); UXP rule reworded to 'demonstrable progress toward the live UXP, achieved through direct UXP implementation or through delivery of backend capability required by that UXP' - explicitly permits backend-only sessions and rules out cosmetic compliance edits. Both accepted on their own merits, not deferred to Reviewer authority. |
 | 1.18 | 9 July 2026 | Claude Engineering Lead | Added Feature-First Delivery Discipline: minimise controlled artefact creation (update existing artefacts unless not doing so would cause repo/governance drift), every Engineering Session must deliver product-moving engineering work (not governance-only), every Engineering Session must improve the UXP until the mock-up becomes a live system. Directed by the Programme Sponsor, ESR-0017 WP8. |
