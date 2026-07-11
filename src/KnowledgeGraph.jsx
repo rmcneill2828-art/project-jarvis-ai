@@ -11,38 +11,78 @@ import { forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation } 
 // here.
 const CLUSTER_PALETTE = ["#1ff5ff", "#7c5cff", "#ff8a5c", "#5cff9d", "#ffd95c", "#ff5c8a", "#5c9dff", "#c95cff"];
 
-const WIDTH = 640;
-const HEIGHT = 420;
+const WIDTH = 900;
+const HEIGHT = 600;
+const PADDING = 16;
 
 function colorForCluster(cluster, clusterOrder) {
   const index = clusterOrder.indexOf(cluster);
   return CLUSTER_PALETTE[index % CLUSTER_PALETTE.length];
 }
 
-// Runs a bounded, synchronous force simulation and returns positioned nodes.
-// Deliberately not an animated/running simulation - EBG-0055 Phase 1 is a
-// static graph snapshot, not a live physics view. Phase 3 (agent-traversal
-// animation) is a separate, later, explicitly out-of-scope phase.
+// Rescales converged simulation coordinates into the SVG viewBox. The
+// simulation is run in its own natural (unbounded) coordinate space - its
+// equilibrium spread is typically far larger than any fixed viewBox, so
+// nodes must be rescaled afterward rather than relying on the simulation to
+// land within [0, WIDTH] x [0, HEIGHT] on its own. Scaled independently per
+// axis (not preserving aspect ratio): the simulation's natural spread is
+// roughly square regardless of the target viewBox's aspect ratio, so a
+// uniform scale is bottlenecked by whichever axis is more constrained,
+// compressing the other axis and creating avoidable overlap.
+function normalizeToViewBox(nodes, width, height, padding) {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const node of nodes) {
+    minX = Math.min(minX, node.x);
+    maxX = Math.max(maxX, node.x);
+    minY = Math.min(minY, node.y);
+    maxY = Math.max(maxY, node.y);
+  }
+  const spanX = Math.max(maxX - minX, 1);
+  const spanY = Math.max(maxY - minY, 1);
+  const scaleX = (width - 2 * padding) / spanX;
+  const scaleY = (height - 2 * padding) / spanY;
+
+  return nodes.map((node) => ({
+    ...node,
+    x: padding + (node.x - minX) * scaleX,
+    y: padding + (node.y - minY) * scaleY,
+  }));
+}
+
+// Runs a bounded, synchronous force simulation and returns positioned nodes,
+// rescaled to fit the viewBox. Deliberately not an animated/running
+// simulation - EBG-0055 Phase 1 is a static graph snapshot, not a live
+// physics view. Phase 3 (agent-traversal animation) is a separate, later,
+// explicitly out-of-scope phase.
 function layoutGraph(nodes, edges) {
   const simNodes = nodes.map((node) => ({ ...node }));
+  // forceLink mutates each link's source/target from a string id into a
+  // node object reference as part of its own internal bookkeeping - copying
+  // here keeps that mutation off the `edges` array from component state
+  // (graph.edges), which the render below still looks up by string id.
+  const simEdges = edges.map((edge) => ({ ...edge }));
+
   const simulation = forceSimulation(simNodes)
-    .force("charge", forceManyBody().strength(-40))
+    .force("charge", forceManyBody().strength(-500))
     .force(
       "link",
-      forceLink(edges)
+      forceLink(simEdges)
         .id((node) => node.id)
-        .distance(28)
-        .strength(0.15),
+        .distance(70)
+        .strength(0.05),
     )
     .force("center", forceCenter(WIDTH / 2, HEIGHT / 2))
-    .force("collide", forceCollide(5))
+    .force("collide", forceCollide(12))
     .stop();
 
-  for (let i = 0; i < 300; i += 1) {
+  for (let i = 0; i < 600; i += 1) {
     simulation.tick();
   }
 
-  return simNodes;
+  return normalizeToViewBox(simNodes, WIDTH, HEIGHT, PADDING);
 }
 
 export function KnowledgeGraph({ graph, loading, error }) {

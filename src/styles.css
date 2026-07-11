@@ -649,7 +649,7 @@ button {
 .knowledge-graph-svg {
   width: 100%;
   height: auto;
-  aspect-ratio: 640 / 420;
+  aspect-ratio: 900 / 600;
 }
 
 .knowledge-graph-edges line {
