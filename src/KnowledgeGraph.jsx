@@ -15,13 +15,12 @@ const WIDTH = 900;
 const HEIGHT = 600;
 const PADDING = 16;
 
-// Node sizing and hub labelling, added per the Programme Sponsor's Obsidian
-// graph-view reference: well-connected artefacts should read as visually
-// larger, and only the most-connected "hub" nodes carry a visible label -
-// labelling all 148 would just reproduce Obsidian's own cluttered result,
-// not improve on it. Everything else remains reachable via the existing
-// hover tooltip.
-const HUB_LABEL_COUNT = 25;
+// Node sizing, added per the Programme Sponsor's Obsidian graph-view
+// reference: well-connected artefacts should read as visually larger.
+// Text labels were tried and rejected - the Programme Sponsor found the
+// cluster colour coding sufficient for identification, with Obsidian itself
+// available for closer inspection; every node's full label remains reachable
+// via the hover tooltip below.
 const MIN_RADIUS = 3;
 const MAX_RADIUS = 18;
 const RADIUS_SCALE = 1.3;
@@ -42,16 +41,6 @@ function computeDegree(nodes, edges) {
 
 function radiusForDegree(degree) {
   return Math.min(MAX_RADIUS, MIN_RADIUS + Math.sqrt(degree) * RADIUS_SCALE);
-}
-
-function topHubIds(nodes, edges, count) {
-  const degree = computeDegree(nodes, edges);
-  return new Set(
-    [...degree.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, count)
-      .map(([id]) => id),
-  );
 }
 
 // Rescales converged simulation coordinates into the SVG viewBox. The
@@ -144,11 +133,6 @@ export function KnowledgeGraph({ graph, loading, error }) {
     return [...new Set(graph.nodes.map((node) => node.cluster))].sort();
   }, [graph]);
 
-  const hubIds = useMemo(() => {
-    if (!graph) return new Set();
-    return topHubIds(graph.nodes, graph.edges, HUB_LABEL_COUNT);
-  }, [graph]);
-
   const positionedById = useMemo(() => {
     const map = new Map();
     positioned.forEach((node) => map.set(node.id, node));
@@ -207,15 +191,6 @@ export function KnowledgeGraph({ graph, loading, error }) {
               <title>{node.label}</title>
             </circle>
           ))}
-        </g>
-        <g className="knowledge-graph-labels">
-          {positioned
-            .filter((node) => hubIds.has(node.id))
-            .map((node) => (
-              <text key={node.id} x={node.x + radiusForDegree(node.degree) + 4} y={node.y + 4}>
-                {node.label}
-              </text>
-            ))}
         </g>
       </svg>
     </section>
