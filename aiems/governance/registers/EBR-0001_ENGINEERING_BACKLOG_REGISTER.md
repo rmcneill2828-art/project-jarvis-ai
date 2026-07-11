@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.31
+**Version:** 1.32
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.31 |
+| Version | 1.32 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -140,6 +140,8 @@ ChatGPT, as Lead Reviewer, researched and proposed a four-phase venue roadmap, v
 
 **Plus-tier rate-limit expectation, for calibrating real-world bridge usage.** Per a third-party pricing tracker (not an official OpenAI page - treat as approximate, not exact), ChatGPT Plus's Codex allowance is roughly a 50-message soft cap and ~200-message hard cap per rolling 5-hour window, with the same source noting "heavy users hit Plus hard caps within 1-2 hours of focused work." This matches the Programme Sponsor's own prior experience on Plus (previously hit the time window, not credits) and confirms the earlier finding that the wall to expect is a rate limit, not a bill. Worth designing the eventual bridge's `sponsor-decision`/review cadence with this in mind - space Work Package handovers out rather than pushing many through in one sitting, consistent with the guidance already recorded above.
 
+**Empirical update, ESR-0019 (post-ESR-0018 closure): the Business workspace can apparently run Codex without spending workspace credits, refining the earlier "no Codex capacity" finding.** The Programme Sponsor used Codex through the ChatGPT Business account (not the planned new personal Plus subscription) for ESR-0019 review work, and confirmed zero workspace credits were consumed - known directly, since none remained available. The only change made was selecting the `gpt5.4 mini` model at medium speed. This does not contradict the earlier Members-page check (no usage-based Codex *seat* type is offered on this workspace, confirmed directly and still accurate) - it indicates the bundled standard-seat allowance apparently supports running Codex on a lighter model without drawing on the credit-based seat mechanism at all, which was only speculated as a possibility, not confirmed, when the original cost decision was made. **Consequence: the new personal ChatGPT Plus subscription should be treated as not yet needed, pending confirmation this bundled-allowance path holds up over more than one session's use** (does not start drawing credits unexpectedly, does not hit some other undocumented limit) - do not action the new Plus subscription purchase on the strength of this one data point alone. If it continues to hold, this would mean the bridge's Codex side costs nothing beyond the existing Business plan, better serving the no-new-recurring-spend constraint than the originally decided path.
+
 No implementation is authorised by this backlog entry; a proper Engineering Implementation Package for a future ESR is required before any of this is built. |
 
 ---
@@ -256,6 +258,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.32 | 11 July 2026 | Claude Engineering Lead | Recorded ESR-0019 empirical finding on EBG-0057: Codex ran through the ChatGPT Business account (gpt5.4 mini, medium speed) without consuming workspace credits, refining the earlier no-Codex-capacity conclusion - the bundled standard-seat allowance apparently supports it. New personal Plus subscription now marked not-yet-needed pending confirmation this holds up beyond one session. |
 | 1.31 | 11 July 2026 | Claude Engineering Implementer | Marked EBG-0055 Completed (Phase 1, ESR-0019): recorded the backend graph builder, JSON-RPC method, and the Guardian Orb integration (replacing the placeholder glow/ring/label animation with the live knowledge graph itself, per Programme Sponsor direction and the UAM-0001_GUARDIAN_ORB_MOCKUP.jpg reference). Flagged true 3D rendering and live animation as explicitly deferred next candidates. |
 | 1.30 | 10 July 2026 | Claude Engineering Lead | Added a concrete Plus-tier rate-limit expectation to EBG-0057 (third-party source, treated as approximate): ~50 soft / ~200 hard cap per 5-hour window, hard caps reachable within 1-2 hours of focused work - matches the Programme Sponsor's own prior Plus experience and confirms the wall to expect is a rate limit, not a bill. |
 | 1.29 | 10 July 2026 | Claude Engineering Lead | Recorded the Programme Sponsor's explicit no-new-recurring-budget constraint on EBG-0057: self-hosted/free is the hard default for the Claude<->Codex bridge roadmap unless stated otherwise; reinforces Phase 4 (A2A) and any message broker staying deferred, since both are the only places genuine hosting cost could arise. |

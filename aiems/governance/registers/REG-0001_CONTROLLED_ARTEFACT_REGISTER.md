@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.120
+**Version:** 3.121
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.120 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.121 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.31 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.32 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -280,6 +280,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.121 | 11 July 2026 | Claude Engineering Lead | Aligned EBR-0001 version (1.31 to 1.32) following: Recorded ESR-0019 empirical finding on EBG-0057: Codex ran through the ChatGPT Business account (gpt5.4 mini, medium speed) without consuming workspace credits, refining the earlier no-Codex-capacity conclusion - the bundled standard-seat allowance apparently supports it. New personal Plus subscription now marked not-yet-needed pending confirmation this holds up beyond one session. |
 | 3.120 | 11 July 2026 | Claude Engineering Implementer | Registered ESR-0019 (Engineering Session Report), closed 11 July 2026. |
 | 3.119 | 11 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.25 to 2.26) following ESR-0019 closure refresh: Current State, Engineering Focus, capability roadmap, milestones, active work, repository health, outstanding observations, Session Start Guidance and OSE Relationships all retargeted from ESR-0018/RBL-0013 to ESR-0019/RBL-0014. |
 | 3.118 | 11 July 2026 | Claude Engineering Implementer | Registered RBL-0014 (ESR-0019 Repository Baseline - Guardian Orb Knowledge Graph), accepted by the Programme Sponsor 11 July 2026, superseding RBL-0013. |
