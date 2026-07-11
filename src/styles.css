@@ -512,31 +512,10 @@ button {
   border: 1px solid rgba(0, 239, 255, 0.18);
 }
 
-.orb-label {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-}
-
-.orb-label h1,
-.orb-label p,
 .guardian-copy h2,
 .guardian-copy p {
   margin: 0;
   letter-spacing: 0;
-}
-
-.orb-label h1 {
-  color: #14f4ff;
-  font-size: 2.1rem;
-  line-height: 1;
-  text-shadow: 0 0 22px rgba(0, 239, 255, 0.44);
-}
-
-.orb-label p {
-  margin-top: 12px;
-  color: #14f4ff;
-  font-size: 1.26rem;
 }
 
 .guardian-copy {
@@ -863,10 +842,6 @@ button {
 
   .guardian-orb {
     width: min(280px, 78vw);
-  }
-
-  .orb-label h1 {
-    font-size: 1.8rem;
   }
 
   .guardian-copy {

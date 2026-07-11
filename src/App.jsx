@@ -275,7 +275,7 @@ function StatusCards({ platformSignals }) {
 
 function GuardianOrbit({ guardianStatus, knowledgeGraph, knowledgeGraphError }) {
   return (
-    <section className="guardian-stage" aria-labelledby="guardian-title">
+    <section className="guardian-stage" aria-label="Guardian">
       <div className="orbital-field" aria-hidden="true">
         {Array.from({ length: 9 }, (_, index) => (
           <span className={`orbit-line orbit-line-${index + 1}`} key={index} />
@@ -293,10 +293,6 @@ function GuardianOrbit({ guardianStatus, knowledgeGraph, knowledgeGraphError }) 
         />
         <span className="orb-ring outer" />
         <span className="orb-ring inner" />
-        <div className="orb-label">
-          <h1 id="guardian-title">{guardianStatus.title}</h1>
-          <p>AI Companion</p>
-        </div>
       </div>
       <div className="guardian-copy">
         <h2>{guardianStatus.greeting}</h2>

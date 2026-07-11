@@ -14,7 +14,6 @@ export const STATUS = Object.freeze({
 // fallback rule, this "Connecting" state must never be silently left in
 // place as if it were a real, current status.
 export const guardianStatus = Object.freeze({
-  title: "Guardian",
   state: STATUS.CONNECTING,
   greeting: "Good evening, Robert.",
   role: "I am Guardian, your trusted AI companion.",
