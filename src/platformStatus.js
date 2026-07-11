@@ -16,7 +16,7 @@ export const STATUS = Object.freeze({
 export const guardianStatus = Object.freeze({
   title: "Guardian",
   state: STATUS.CONNECTING,
-  greeting: "Good evening, Richard.",
+  greeting: "Good evening, Robert.",
   role: "I am Guardian, your trusted AI companion.",
   platform: "The JARVIS Platform is operational.",
   assurance: "I am here to help, support and protect your world.",

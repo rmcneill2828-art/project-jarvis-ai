@@ -32,7 +32,7 @@ import {
   platformSignals as staticPlatformSignals,
   STATUS,
 } from "./platformStatus.js";
-import { KnowledgeGraph } from "./KnowledgeGraph.jsx";
+import { GuardianOrbGraph } from "./GuardianOrbGraph.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -243,7 +243,7 @@ function CapabilitySidebar({ capabilityStatuses }) {
           <CircleUserRound size={34} />
         </span>
         <div>
-          <strong>Richard</strong>
+          <strong>Robert</strong>
           <span>Signed in locally</span>
         </div>
         <ChevronDown size={18} aria-hidden="true" />
@@ -273,7 +273,7 @@ function StatusCards({ platformSignals }) {
   );
 }
 
-function GuardianOrbit({ guardianStatus }) {
+function GuardianOrbit({ guardianStatus, knowledgeGraph, knowledgeGraphError }) {
   return (
     <section className="guardian-stage" aria-labelledby="guardian-title">
       <div className="orbital-field" aria-hidden="true">
@@ -284,8 +284,13 @@ function GuardianOrbit({ guardianStatus }) {
         <span className="orbit-spark spark-two" />
         <span className="orbit-spark spark-three" />
       </div>
-      <div className="guardian-orb" role="img" aria-label="Guardian visual presence">
+      <div className="guardian-orb" role="img" aria-label="Guardian visual presence: live repository knowledge graph">
         <span className="orb-glow" />
+        <GuardianOrbGraph
+          graph={knowledgeGraph}
+          loading={!knowledgeGraph && !knowledgeGraphError}
+          error={knowledgeGraphError}
+        />
         <span className="orb-ring outer" />
         <span className="orb-ring inner" />
         <div className="orb-label">
@@ -478,7 +483,11 @@ export function App() {
           <StatusCards platformSignals={derivePlatformSignals(platformState, platformError)} />
           <div className="experience-grid">
             <div className="guardian-column">
-              <GuardianOrbit guardianStatus={deriveGuardianStatus(platformState, platformError)} />
+              <GuardianOrbit
+                guardianStatus={deriveGuardianStatus(platformState, platformError)}
+                knowledgeGraph={knowledgeGraph}
+                knowledgeGraphError={knowledgeGraphError}
+              />
               <CommandPanel
                 messages={messages}
                 inputValue={inputValue}
@@ -486,11 +495,6 @@ export function App() {
                 onSubmit={handleSubmit}
                 sending={sending}
                 sendError={sendError}
-              />
-              <KnowledgeGraph
-                graph={knowledgeGraph}
-                loading={!knowledgeGraph && !knowledgeGraphError}
-                error={knowledgeGraphError}
               />
             </div>
             <DiagnosticsPanel diagnostics={deriveDiagnostics(platformState, platformError)} />
