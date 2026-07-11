@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.32
+**Version:** 1.33
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.32 |
+| Version | 1.33 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -142,6 +142,8 @@ ChatGPT, as Lead Reviewer, researched and proposed a four-phase venue roadmap, v
 
 **Empirical update, ESR-0019 (post-ESR-0018 closure): the Business workspace can apparently run Codex without spending workspace credits, refining the earlier "no Codex capacity" finding.** The Programme Sponsor used Codex through the ChatGPT Business account (not the planned new personal Plus subscription) for ESR-0019 review work, and confirmed zero workspace credits were consumed - known directly, since none remained available. The only change made was selecting the `gpt5.4 mini` model at medium speed. This does not contradict the earlier Members-page check (no usage-based Codex *seat* type is offered on this workspace, confirmed directly and still accurate) - it indicates the bundled standard-seat allowance apparently supports running Codex on a lighter model without drawing on the credit-based seat mechanism at all, which was only speculated as a possibility, not confirmed, when the original cost decision was made. **Consequence: the new personal ChatGPT Plus subscription should be treated as not yet needed, pending confirmation this bundled-allowance path holds up over more than one session's use** (does not start drawing credits unexpectedly, does not hit some other undocumented limit) - do not action the new Plus subscription purchase on the strength of this one data point alone. If it continues to hold, this would mean the bridge's Codex side costs nothing beyond the existing Business plan, better serving the no-new-recurring-spend constraint than the originally decided path.
 
+**Corroborated with direct usage-meter evidence, same day.** ChatGPT's own Settings -> Usage panel confirms the mechanic: a **monthly** usage limit ("resets 11 Aug 2026"), shared across Codex, Work, Workspace Agents and ChatGPT for Excel, explicitly excluding Chat conversations - a materially different mechanic from the 5-hour rolling window documented above for the Plus tier specifically; the two should not be conflated. After an afternoon of real ESR-0019 review work (usage was at 100% that afternoon), the meter showed **99% remaining**. This is stronger evidence than the zero-workspace-credits observation alone - a near-untouched monthly allowance after a genuine review session. Still one observation period, not a full monthly cycle - worth checking the meter again as 11 Aug 2026 approaches before treating the bundled-allowance path as fully proven, but this now clearly outweighs the case for the new Plus subscription rather than merely offsetting it.
+
 No implementation is authorised by this backlog entry; a proper Engineering Implementation Package for a future ESR is required before any of this is built. |
 
 ---
@@ -258,6 +260,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.33 | 11 July 2026 | Claude Engineering Lead | Corroborated the ESR-0019 Codex/Business finding on EBG-0057 with direct usage-meter evidence: a monthly limit (resets 11 Aug 2026), shared across Codex/Work/Workspace Agents/ChatGPT for Excel, excluding Chat - 99% remaining after an afternoon of real review work that had it at 100%. Different mechanic from the Plus-tier 5-hour window already documented; strengthens the case against the new Plus subscription being needed. |
 | 1.32 | 11 July 2026 | Claude Engineering Lead | Recorded ESR-0019 empirical finding on EBG-0057: Codex ran through the ChatGPT Business account (gpt5.4 mini, medium speed) without consuming workspace credits, refining the earlier no-Codex-capacity conclusion - the bundled standard-seat allowance apparently supports it. New personal Plus subscription now marked not-yet-needed pending confirmation this holds up beyond one session. |
 | 1.31 | 11 July 2026 | Claude Engineering Implementer | Marked EBG-0055 Completed (Phase 1, ESR-0019): recorded the backend graph builder, JSON-RPC method, and the Guardian Orb integration (replacing the placeholder glow/ring/label animation with the live knowledge graph itself, per Programme Sponsor direction and the UAM-0001_GUARDIAN_ORB_MOCKUP.jpg reference). Flagged true 3D rendering and live animation as explicitly deferred next candidates. |
 | 1.30 | 10 July 2026 | Claude Engineering Lead | Added a concrete Plus-tier rate-limit expectation to EBG-0057 (third-party source, treated as approximate): ~50 soft / ~200 hard cap per 5-hour window, hard caps reachable within 1-2 hours of focused work - matches the Programme Sponsor's own prior Plus experience and confirms the wall to expect is a rate limit, not a bill. |
