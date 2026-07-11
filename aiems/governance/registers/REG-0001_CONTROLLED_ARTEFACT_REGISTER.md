@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.117
+**Version:** 3.120
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.117 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.120 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -132,6 +132,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0011 | Repository Baseline | ESR-0015 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/governance/baselines/` |
 | RBL-0012 | Repository Baseline | ESR-0017 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
 | RBL-0013 | Repository Baseline | ESR-0017 Repository Baseline (Refresh - Post-WP9) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
+| RBL-0014 | Repository Baseline | ESR-0019 Repository Baseline (Guardian Orb Knowledge Graph) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0019 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.4 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
@@ -156,7 +157,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.25 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.26 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -179,6 +180,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
 | ESR-0017 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0018 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0019 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -278,6 +280,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.120 | 11 July 2026 | Claude Engineering Implementer | Registered ESR-0019 (Engineering Session Report), closed 11 July 2026. |
+| 3.119 | 11 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.25 to 2.26) following ESR-0019 closure refresh: Current State, Engineering Focus, capability roadmap, milestones, active work, repository health, outstanding observations, Session Start Guidance and OSE Relationships all retargeted from ESR-0018/RBL-0013 to ESR-0019/RBL-0014. |
+| 3.118 | 11 July 2026 | Claude Engineering Implementer | Registered RBL-0014 (ESR-0019 Repository Baseline - Guardian Orb Knowledge Graph), accepted by the Programme Sponsor 11 July 2026, superseding RBL-0013. |
 | 3.117 | 11 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.20 to 1.21) following: Added Incremental Visual Convergence Toward the Reference Mock-up under Feature-First Delivery Discipline: sessions should include a small UXP change moving toward aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg where natural opportunity exists - cosmetic elements freely, data-bearing elements only once backed by real observed data, preserving the no-mock-fallback rule. Directed by the Programme Sponsor at ESR-0019 WP2 closure. |
 | 3.116 | 11 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.30 to 1.31) following: Marked EBG-0055 Completed (Phase 1, ESR-0019): recorded the backend graph builder, JSON-RPC method, and the Guardian Orb integration (replacing the placeholder glow/ring/label animation with the live knowledge graph itself, per Programme Sponsor direction and the UAM-0001_GUARDIAN_ORB_MOCKUP.jpg reference). Flagged true 3D rendering and live animation as explicitly deferred next candidates. |
 | 3.115 | 11 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.19 to 1.20) following: Bound the Engineering Implementer role to Claude as its current permanent holder, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
