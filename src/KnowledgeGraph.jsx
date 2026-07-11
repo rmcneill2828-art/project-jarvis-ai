@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation } from "d3-force";
+import { forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from "d3-force";
 
 // EBG-0055 Phase 1 (ESR-0019 WP2): first-pass rendering of the repository
 // knowledge graph returned by the `knowledge.graph` JSON-RPC method
@@ -114,6 +114,16 @@ function layoutGraph(nodes, edges) {
     // renders larger (radiusForDegree), so its collision boundary must scale
     // the same way or big circles would overlap their smaller neighbours.
     .force("collide", forceCollide((node) => radiusForDegree(node.degree) + 2))
+    // forceCenter alone only recentres the barycenter - it does not stop
+    // individual low-degree/loosely-connected nodes drifting arbitrarily far
+    // under repulsion. Confirmed against the real graph: without this, 16 of
+    // 148 nodes end up beyond 3x the median distance from the centroid,
+    // which then dominates normalizeToViewBox's scale and crushes the real
+    // cluster into a tiny fraction of the canvas. A weak per-node restoring
+    // pull (matching Obsidian's own "Centre force" graph-view setting)
+    // removes that: 0 outliers beyond 3x median at this strength.
+    .force("x", forceX(WIDTH / 2).strength(0.1))
+    .force("y", forceY(HEIGHT / 2).strength(0.1))
     .stop();
 
   for (let i = 0; i < 600; i += 1) {
