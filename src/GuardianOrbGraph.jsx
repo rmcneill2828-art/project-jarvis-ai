@@ -92,13 +92,15 @@ function layoutSphere(nodes, edges) {
         .strength(0.2),
     )
     .force("collide", forceCollide((node) => node.r + 1))
-    // Weak centering pull, same fix as the standalone panel's outlier-drift
-    // bug: without it, most nodes push out to the boundary shell, leaving
-    // the core empty - verified against the real graph, this brings the
-    // radial fill from ~3% of nodes in the inner quarter to a genuinely
-    // filled sphere.
-    .force("x", forceX(CENTER).strength(0.1))
-    .force("y", forceY(CENTER).strength(0.1))
+    // Centering pull, same fix pattern as the earlier standalone panel's
+    // outlier-drift bug, but needed much stronger here: at 0.1 (the panel's
+    // value), the tightly-interlinked hub cluster still settles as a rigid
+    // clump well off-centre (confirmed against the real graph: centroid
+    // 44px off-centre out of a 140px radius, clearly visible as a lopsided
+    // sphere). 0.5 brings the centroid to within 5px of true centre with a
+    // balanced angular spread and better radial fill.
+    .force("x", forceX(CENTER).strength(0.5))
+    .force("y", forceY(CENTER).strength(0.5))
     .force("contain", forceContainCircle(RADIUS, CENTER, CENTER))
     .stop();
 
