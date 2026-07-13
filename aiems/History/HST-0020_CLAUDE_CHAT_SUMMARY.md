@@ -26,7 +26,7 @@
 
 This artefact preserves the Claude-side chat summary for Engineering Session ESR-0020 as a repository-controlled AIEMS history record.
 
-It records Claude's work as Engineering Implementer across the whole of ESR-0020 - PBK-0001 review and correction, EBG-0051 live provider validation, PCB-0001 refresh and acceptance, a UXP cosmetic step, transcript export UX, session-wide WP6/WP7, and a post-closure reflective discussion that produced a new backlog item. It pairs with [[HST-0020_GPT_CHAT_SUMMARY|HST-0020 (GPT)]], the Engineering Reviewer's own summary of the same session - numbered 18 rather than 20 on that side; both document ESR-0020, the numbering mismatch between the two sides being a known, not-yet-corrected drift (see Section 5's closing note).
+It records Claude's work as Engineering Implementer across the whole of ESR-0020 - PBK-0001 review and correction, EBG-0051 live provider validation, PCB-0001 refresh and acceptance, a UXP cosmetic step, transcript export UX, session-wide WP6/WP7, and a post-closure reflective discussion that produced a new backlog item. It pairs with [[HST-0020_GPT_CHAT_SUMMARY|HST-0020 (GPT)]], the Engineering Reviewer's own summary of the same session - both sides originally numbered 18, both independently corrected to 20 after the Programme Sponsor identified the drift (see Section 5's closing note).
 
 This record supports future WP0 continuity review. It does not replace the Engineering Session Report, full chat history, repository evidence, validation evidence, controlled registers, accepted baselines, or Programme Sponsor decisions.
 
@@ -87,7 +87,7 @@ When asked whether a new PBK-0001 clause should be added to prevent recurrence, 
 
 ## History/Full Chat Naming Drift, Found and Corrected
 
-After Claude produced this artefact and its full-chat counterpart (both originally numbered 18, matching the Engineering Reviewer's already-existing `HST-0018_GPT_CHAT_SUMMARY.md`/`FCH-0018_GPT_FULL_CHAT_HISTORY.md`), the Programme Sponsor asked Claude to look at what it had just named and notice something. The pre-0014 HST/FCH convention (`HST-0009_ESR-0009_CHAT_HISTORY.md`) encoded the actual ESR number directly in the filename; the newer AI-suffixed convention (`HST-0015_CLAUDE_...`, `HST-0016_CLAUDE_...`) had quietly decoupled the HST/FCH counter from the ESR number once ESR-0014, ESR-0018 and ESR-0019 were skipped in that series - so "18" ended up meaning ESR-0020, not ESR-0018, on both the Claude and the (independently-created) Engineering Reviewer side. Claude had copied the Reviewer's number across without checking it against the actual session. Corrected on the Claude side only, at the Programme Sponsor's instruction: this artefact and its full-chat counterpart renamed from `18` to `20`, matching the actual ESR-0020 session number. The Engineering Reviewer's own `18`-numbered files were left untouched, as that side's correction is not this artefact's authority to make.
+After Claude produced this artefact and its full-chat counterpart (both originally numbered 18, matching the Engineering Reviewer's already-existing `HST-0018_GPT_CHAT_SUMMARY.md`/`FCH-0018_GPT_FULL_CHAT_HISTORY.md`), the Programme Sponsor asked Claude to look at what it had just named and notice something. The pre-0014 HST/FCH convention (`HST-0009_ESR-0009_CHAT_HISTORY.md`) encoded the actual ESR number directly in the filename; the newer AI-suffixed convention (`HST-0015_CLAUDE_...`, `HST-0016_CLAUDE_...`) had quietly decoupled the HST/FCH counter from the ESR number once ESR-0014, ESR-0018 and ESR-0019 were skipped in that series - so "18" ended up meaning ESR-0020, not ESR-0018, on both the Claude and the (independently-created) Engineering Reviewer side. Claude had copied the Reviewer's number across without checking it against the actual session. Corrected at the Programme Sponsor's instruction: this artefact and its full-chat counterpart renamed from `18` to `20`, matching the actual ESR-0020 session number. The Engineering Reviewer independently made the equivalent correction to its own files around the same time, without either side directing the other to do so.
 
 ---
 
@@ -134,7 +134,7 @@ Future sessions should preserve the following ESR-0020 lessons:
 | Artefact | Relationship |
 |----------|--------------|
 | [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] | Formal engineering session report associated with this history summary. |
-| [[HST-0020_GPT_CHAT_SUMMARY|HST-0020 (GPT)]] | Parallel Engineering Reviewer chat summary for the same session - retains its original "18" numbering; see Section 5's naming-drift note. |
+| [[HST-0020_GPT_CHAT_SUMMARY|HST-0020 (GPT)]] | Parallel Engineering Reviewer chat summary for the same session - both sides corrected from 18 to 20; see Section 5's naming-drift note. |
 | [[EIP-ESR0020-001_PBK-0001_PLAYBOOK_ALIGNMENT_AND_BASELINE_REFERENCE_CORRECTION|EIP-ESR0020-001]] | Approved Engineering Implementation Package for WP1/WP2. |
 | [[ESR-0020_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0020 WP6 Handover]] | Independent verification record underlying the session's WP7 decision. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0051, EBG-0026 and EBG-0056 closed; EBG-0004 resolved; EBG-0058 added post-closure. |
