@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 2.0 |
-| Status | In Review |
+| Version | 2.1 |
+| Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | [[JARVIS_PRODUCT_ARCHITECTURE]] |
@@ -104,7 +104,7 @@ PCB-0001 does not select, approve or reprioritise backlog items. Future product 
 
 PCB-0001 v1.0 was accepted by the Programme Sponsor as the operational product baseline for JARVIS following ESR-0007 repository product capability assessment.
 
-This v2.0 refresh (drafted by the Engineering Implementer at ESR-0020 WP4, addressing [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0056) is submitted for Programme Sponsor acceptance per this artefact's own Section 7/8 authority (refreshing PCB-0001 is Programme Sponsor-owned acceptance authority). Status is recorded as **In Review** until that acceptance is given; on acceptance, Status shall be updated to Accepted and this note superseded.
+**PCB-0001 v2.0 was accepted by the Programme Sponsor on 13 July 2026**, at [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] WP4 closure, following the Engineering Implementer's refresh (addressing [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0056) and the Engineering Reviewer's review (no material overstatement found, judged conservative if anything).
 
 Acceptance records the current operational foundation and its known constraints. It does not approve expansion beyond the accepted baseline.
 
@@ -127,5 +127,6 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.1 | 13 July 2026 | Claude Engineering Implementer | Status In Review to Accepted - the Programme Sponsor accepted the v2.0 refresh at ESR-0020 WP4 closure, following Engineering Reviewer review (no material overstatement, judged conservative). |
 | 2.0 | 13 July 2026 | Claude Engineering Implementer | Refreshed to reflect current repository evidence (ESR-0013 through ESR-0020), addressing EBG-0056 (flagged materially stale at RBL-0013): Sentinel/Guardian foundation, live Tauri+React UXP with real backend bridge and knowledge-graph Orb, two live-validated external provider adapters (neither wired into the default runtime path), refreshed constraints. Status set to In Review pending Programme Sponsor acceptance. |
 | 1.0 | 1 July 2026 | Codex Engineering Implementer | Initial Product Capability Baseline created following RPCA-0001 repository product capability assessment. |
