@@ -1,7 +1,9 @@
 """Tkinter GUI shell for JARVIS OS First Light."""
 
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from datetime import datetime
+from pathlib import Path
+from tkinter import messagebox, ttk
 
 from jarvis.config import APP_CONFIG
 from jarvis.core import Jarvis
@@ -216,21 +218,12 @@ class JarvisApp:
 
     def _export_transcript(self, export_format: str) -> None:
         extension = ".md" if export_format == TRANSCRIPT_FORMAT_MARKDOWN else ".txt"
-        file_path = filedialog.asksaveasfilename(
-            title="Export conversation transcript",
-            defaultextension=extension,
-            filetypes=(
-                ("Markdown files", "*.md"),
-                ("Text files", "*.txt"),
-                ("All files", "*.*"),
-            ),
-        )
-
-        if not file_path:
-            self._conversation_status.configure(text="Export cancelled")
-            return
+        export_dir = Path.home() / ".jarvis" / "transcripts"
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_path = export_dir / f"jarvis_transcript_{timestamp}{extension}"
 
         try:
+            export_dir.mkdir(parents=True, exist_ok=True)
             transcript = self._conversation.export_transcript(export_format)
             with open(file_path, "w", encoding="utf-8") as transcript_file:
                 transcript_file.write(transcript)

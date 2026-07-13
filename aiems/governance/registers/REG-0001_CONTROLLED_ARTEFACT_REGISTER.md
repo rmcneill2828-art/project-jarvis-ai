@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.125
+**Version:** 3.127
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.125 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.127 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.34 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.35 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -133,7 +133,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0012 | Repository Baseline | ESR-0017 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
 | RBL-0013 | Repository Baseline | ESR-0017 Repository Baseline (Refresh - Post-WP9) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
 | RBL-0014 | Repository Baseline | ESR-0019 Repository Baseline (Guardian Orb Knowledge Graph) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0019 | `aiems/governance/baselines/` |
-| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 1.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.0 | In Review | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.4 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
@@ -281,6 +281,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.127 | 13 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.34 to 1.35) following ESR-0020 WP4-WP6 Engineering Reviewer review (no blocking issues): EBG-0026 marked Complete, EBG-0056 marked Drafted/In Review. |
+| 3.126 | 13 July 2026 | Claude Engineering Implementer | Aligned PCB-0001 version (1.0 to 2.0, Accepted to In Review) following the ESR-0020 WP4 refresh addressing EBG-0056 - draft submitted for Programme Sponsor acceptance, not yet accepted. |
 | 3.125 | 13 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.33 to 1.34) following EBG-0051 (Gemini Provider Production Readiness) being marked Complete at ESR-0020 WP3, the live Gemini smoke test having succeeded. |
 | 3.124 | 13 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0020-001 (Approved 0.2) and the Programme Sponsor's directed extension: PBK-0001 1.21 to 1.22 and COC-0001 1.12 to 1.13, both Draft to Approved (EBG-0004 resolution); EIP-ESR0020-001 0.1 to 0.2, Draft to Approved. ESR-0020 WP2. |
 | 3.123 | 13 July 2026 | ChatGPT Engineering Reviewer | Registered EIP-ESR0020-001 (PBK-0001 Playbook Alignment and Baseline Reference Correction) as a draft controlled artefact in `aiems/governance/reviews/`. Author attribution corrected from "Claude Engineering Reviewer" (Claude holds the permanent Engineering Implementer role, not Reviewer) at ESR-0020 WP2. |
