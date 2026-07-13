@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.130
+**Version:** 3.131
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.130 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.131 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -215,6 +215,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FCH-0016_GPT | Full Chat Historical Evidence | ESR-0016 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
 | FCH-0016a_GPT | Full Chat Historical Evidence | ESR-0016 Full Chat History (GPT, Incremental GitHub Edit) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
 | FCH-0017 | Full Chat Historical Evidence | ESR-0017 Full Chat History (Claude) | 1.2 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
+| FCH-0020 | Full Chat Historical Evidence | ESR-0020 Full Chat History (Claude) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0020 | `aiems/History/Full Chat/` |
 | FCH-0017a_GPT | Full Chat Historical Evidence | ESR-0017 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
 
 ---
@@ -282,6 +283,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.131 | 13 July 2026 | Claude Engineering Implementer | Registered FCH-0020 (renamed from FCH-0018, Claude Full Chat History for ESR-0020), correcting a naming drift the Programme Sponsor identified: the newer HST/FCH counter (15, 16, 17, 18...) had decoupled from the actual ESR number it documents once ESR-0014/0018/0019 were skipped in that series, so "18" had come to mean ESR-0020 on both the Claude and (independently) the Engineering Reviewer side. Corrected on the Claude side only (HST-0018 to HST-0020, FCH-0018 to FCH-0020); the Engineering Reviewer's own 18-numbered files were left untouched. |
 | 3.130 | 13 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.36 to 1.37) following EBG-0058 (PBK-0001 Clause Consolidation) being added, post-ESR-0020-closure. |
 | 3.129 | 13 July 2026 | Claude Engineering Implementer | Registered ESR-0020 (Engineering Session Report), closed 13 July 2026; aligned PST-0001 version (2.26 to 2.27) following ESR-0020 closure synchronisation. |
 | 3.128 | 13 July 2026 | Claude Engineering Implementer | Aligned PCB-0001 version (2.0 to 2.1, In Review to Accepted) following the Programme Sponsor's acceptance of the ESR-0020 WP4 refresh. |
