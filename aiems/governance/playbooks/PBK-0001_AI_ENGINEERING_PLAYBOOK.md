@@ -8,8 +8,8 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.21 |
-| Status | Draft |
+| Version | 1.22 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | CHR-0002 |
@@ -204,7 +204,7 @@ Previous Engineering Sessions shall hand over to the next planned Engineering Se
 
 Programme Phases are long-running strategic milestones. Engineering Sessions are bounded operational engineering periods within a Programme Phase.
 
-Before closing an Engineering Session, the Engineering Architect shall check whether AIEMS itself changed during the session. If the engineering process changed, the authoritative artefacts shall be updated and baselined before closure.
+Before closing an Engineering Session, the Programme Sponsor shall check whether AIEMS itself changed during the session. If the engineering process changed, the authoritative artefacts shall be updated and baselined before closure.
 
 ---
 
@@ -553,7 +553,7 @@ This is a documentation architecture principle, not a software design principle.
 
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current programme status used during implementation session initialisation.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines the lightweight collaboration context that complements this playbook.
-* [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] records the current accepted repository baseline and ESR-0009 handover point.
+* [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] records the current accepted repository baseline. [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
 * [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] defines controlled artefact governance expectations.
@@ -572,7 +572,7 @@ This is a documentation architecture principle, not a software design principle.
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used during engineering synchronisation and session reload. |
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0009 readiness. |
+| [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Current accepted repository baseline. |
 | [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] | Latest historical session record; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] | Latest full chat historical evidence record; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Defines the knowledge tier structure that bounds WP0 session start review and moves AIEMS History and Full Chat artefacts to search-on-demand access. |
@@ -582,6 +582,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.22 | 13 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0020-001 (Programme Sponsor-approved, ChatGPT Engineering Reviewer-drafted) plus Programme Sponsor-directed extension: promoted status Draft to Approved (resolving EBG-0004, the PBK-0001 lifecycle-status question open since ESR-0001); corrected stale RBL-0009 "current accepted repository baseline" references (Related Artefacts, OSE Relationships) to RBL-0014, retaining RBL-0009 as historical lineage; replaced the retired `Engineering Architect` term in the WP0B closure-check sentence with Programme Sponsor; corrected the Version History table's out-of-order v1.7/v1.8 rows. ESR-0020 WP1/WP2. |
 | 1.21 | 11 July 2026 | Claude Engineering Implementer | Added Incremental Visual Convergence Toward the Reference Mock-up under Feature-First Delivery Discipline: sessions should include a small UXP change moving toward aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg where natural opportunity exists - cosmetic elements freely, data-bearing elements only once backed by real observed data, preserving the no-mock-fallback rule. Directed by the Programme Sponsor at ESR-0019 WP2 closure. |
 | 1.20 | 11 July 2026 | Claude Engineering Implementer | Bound the Engineering Implementer role to Claude as its current permanent holder, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
 | 1.19 | 9 July 2026 | Claude Engineering Lead | Incorporated ChatGPT Engineering Reviewer's WP8 refinements: Minimise Controlled Artefact Creation's threshold reworded to the objectively-testable 'repository or governance record no longer accurately reflects the implemented engineering state' (was 'drift'); UXP rule reworded to 'demonstrable progress toward the live UXP, achieved through direct UXP implementation or through delivery of backend capability required by that UXP' - explicitly permits backend-only sessions and rules out cosmetic compliance edits. Both accepted on their own merits, not deferred to Reviewer authority. |
@@ -602,5 +603,5 @@ This is a documentation architecture principle, not a software design principle.
 | 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |
 | 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
 | 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 Engineering Synchronisation review artefact while preserving controlled artefact authority. |
-| 1.8 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned related artefact context with ESR-0009 readiness. |
 | 1.7 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |
+| 1.8 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned related artefact context with ESR-0009 readiness. |

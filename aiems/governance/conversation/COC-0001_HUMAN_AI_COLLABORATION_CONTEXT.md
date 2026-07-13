@@ -1,8 +1,8 @@
 # COC-0001 - Human-AI Collaboration Context
 
-**Status:** Draft
+**Status:** Approved
 
-**Version:** 1.12
+**Version:** 1.13
 
 ---
 
@@ -287,6 +287,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.13 | 13 July 2026 | Claude Engineering Implementer | Promoted status Draft to Approved, per Programme Sponsor decision resolving EBG-0004 (the PBK-0001/COC-0001 lifecycle-status question open since ESR-0001) alongside the equivalent PBK-0001 promotion. ESR-0020 WP1/WP2. |
 | 1.12 | 11 July 2026 | Claude Engineering Implementer | Bound Engineering Reviewer to ChatGPT and Engineering Implementer to Claude as the current permanent role holders, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
 | 1.11 | 9 July 2026 | Claude Engineering Reviewer | Added Operating Rule 51 and a note under Engineering Reviewer: the Programme Sponsor may direct the Engineering Reviewer to maintain the Engineering Session Report when the Implementer's environment cannot support incremental documentation - a per-session Sponsor decision, documentation only, not a change to accountability. Per ESR-0016A WP5. |
 | 1.10 | 8 July 2026 | Claude Engineering Reviewer | Programme Sponsor-directed housekeeping fix ahead of ESR-0016: updated the stale RBL-0009 baseline reference (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0011, the current accepted repository baseline since ESR-0015 closure. Flagged as an observation during ESR-0016 pre-session review and fixed on explicit Sponsor instruction. |
