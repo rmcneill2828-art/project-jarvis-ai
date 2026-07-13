@@ -1,4 +1,4 @@
-# FCH-0018 - ESR-0020 Full Chat History (GPT)
+# FCH-0020 - ESR-0020 Full Chat History (GPT)
 
 ---
 
@@ -6,7 +6,7 @@
 
 | Field | Value |
 |-------|-------|
-| Artefact ID | FCH-0018_GPT |
+| Artefact ID | FCH-0020_GPT |
 | Title | ESR-0020 Full Chat History (GPT) |
 | Version | 1.0 |
 | Status | Archived |
@@ -16,7 +16,7 @@
 | Source Session | ESR-0020 |
 | Source Type | Live workspace conversation reconstruction (ChatGPT side) |
 | Source Document | Current ESR-0020 review conversation in the active workspace |
-| Repository Location | `aiems/History/Full Chat/FCH-0018_GPT_FULL_CHAT_HISTORY.md` |
+| Repository Location | `aiems/History/Full Chat/FCH-0020_GPT_FULL_CHAT_HISTORY.md` |
 | Review Frequency | During WP0 session start and when historical continuity is required |
 | Date Added | 13 July 2026 |
 
@@ -42,7 +42,7 @@ It includes:
 - direct repository checks against the committed state;
 - validation reruns and the temporary Windows pytest workaround;
 - confirmation that ESR-0020 was closed;
-- creation of the `HST-0018` chat summary artefact;
+- creation of the `HST-0020` chat summary artefact;
 - the request to generate this full chat history record.
 
 It does not claim to be an imported desktop-export transcript. It is a live-session reconstruction of the visible conversation in this workspace.
@@ -107,7 +107,7 @@ ChatGPT stated that ESR-0020 was closed, that WP0 through WP7 were complete, and
 The Programme Sponsor then asked for a chat summary file in `AIEMS\History`, and ChatGPT:
 
 - inspected the existing history naming patterns;
-- created `HST-0018_GPT_CHAT_SUMMARY.md`;
+- created `HST-0020_GPT_CHAT_SUMMARY.md`;
 - verified that the file existed in the repository;
 - reported back that the chat summary had been saved.
 
@@ -118,9 +118,9 @@ Finally, the Programme Sponsor asked whether ChatGPT could produce a full chat o
 ChatGPT:
 
 - inspected the `Full Chat` folder naming patterns;
-- confirmed that `FCH-0018` was not already present;
+- confirmed that `FCH-0020` was not already present;
 - explained that the available source was the live workspace conversation rather than an imported export;
-- created this `FCH-0018_GPT_FULL_CHAT_HISTORY.md` artefact as a live-session reconstruction of the visible conversation.
+- created this `FCH-0020_GPT_FULL_CHAT_HISTORY.md` artefact as a live-session reconstruction of the visible conversation.
 
 ---
 
@@ -147,7 +147,7 @@ ChatGPT:
 | GeminiProvider production wiring boundary | Confirmed unchanged |
 | Fresh validation | Passed after workspace-local temp override |
 | ESR-0020 status | Closed |
-| HST-0018 summary artefact | Created and saved |
+| HST-0020 summary artefact | Created and saved |
 | Full chat history artefact | Created and saved |
 
 ---
@@ -171,7 +171,7 @@ Future sessions should preserve the following ESR-0020 lessons:
 |----------|--------------|
 | [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] | Formal engineering session report associated with this history summary. |
 | [[ESR-0020_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0020 WP6 Handover]] | Handover reviewed during the WP6 verification pass. |
-| [[HST-0018_GPT_CHAT_SUMMARY|HST-0018]] | Companion chat summary for the same ESR-0020 conversation. |
+| [[HST-0020_GPT_CHAT_SUMMARY|HST-0020]] | Companion chat summary for the same ESR-0020 conversation. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Governing engineering playbook used during review. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register containing the session's closed items. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Product capability baseline refreshed and accepted during the session. |

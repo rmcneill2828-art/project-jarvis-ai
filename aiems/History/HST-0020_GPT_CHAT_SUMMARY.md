@@ -1,4 +1,4 @@
-# HST-0018 - GPT Chat Summary
+# HST-0020 - GPT Chat Summary
 
 ---
 
@@ -6,7 +6,7 @@
 
 | Field | Value |
 |-------|-------|
-| Artefact ID | HST-0018 |
+| Artefact ID | HST-0020 |
 | Title | GPT Chat Summary |
 | Version | 1.0 |
 | Status | Archived |
@@ -16,7 +16,7 @@
 | Source Session | ESR-0020 |
 | Source Type | GPT Chat Summary |
 | Source Document | ESR-0020 WP6 Independent Repository Verification handover and reviewer exchange |
-| Repository Location | `aiems/History/HST-0018_GPT_CHAT_SUMMARY.md` |
+| Repository Location | `aiems/History/HST-0020_GPT_CHAT_SUMMARY.md` |
 | Review Frequency | During WP0 session start and when historical continuity is required |
 | Date Added | 13 July 2026 |
 
