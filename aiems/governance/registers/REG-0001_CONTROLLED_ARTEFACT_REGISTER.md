@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.135
+**Version:** 3.137
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.135 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.137 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.39 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.40 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -139,6 +139,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -285,6 +286,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.137 | 15 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.39 to 1.40) following EBG-0012/EBG-0027/EBG-0028 closure. ESR-0021 WP5. |
+| 3.136 | 15 July 2026 | Claude Engineering Implementer | Registered JRM-0001 (Project Roadmap, Approved 1.0) as a new controlled artefact under `aiems/governance/roadmap/`. Programme Sponsor-approved 15 July 2026, closing EBG-0012, EBG-0027 and EBG-0028 in EBR-0001. ESR-0021 WP5. |
 | 3.135 | 15 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.38 to 1.39) following the ESR-0021 WP6 historical audit: 11 new Candidate Backlog items (EBG-0059 through EBG-0069) added from a full HST/FCH review of all ~20 sessions of chat history, per Programme Sponsor decision to add Tier 1 findings only. ESR-0021 WP6. |
 | 3.134 | 15 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.37 to 1.38) following its EBG-0055 note update recording ESR-0021 WP4 delivery: Knowledge Metrics and Active Clusters panels added to the live UXP. ESR-0021 WP4. |
 | 3.133 | 15 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0021-002 (PBK-0001 Historical Archive Breadcrumb Alignment, Approved 0.2) and aligned PBK-0001 version (1.23 to 1.24) following its implementation: OSE Relationships breadcrumb repointed from HST-0013/FCH-0013 to HST-0020/FCH-0020 (Claude) as the "latest" historical archive entries; HST-0013/FCH-0013 retained, reworded as lineage-only. ESR-0021 WP3. |
