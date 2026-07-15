@@ -9,8 +9,8 @@
 | Package ID | EIP-ESR0021-003 |
 | Artefact ID | EIP-ESR0021-003 |
 | Title | PBK-0001 JRM-0001 Cross-Reference Addition |
-| Version | 0.2 |
-| Status | Draft |
+| Version | 0.3 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | PBK-0001 |
@@ -151,9 +151,7 @@ Validation should confirm:
 1. **Medium** - the horizon-placement sentence originally enumerated only three of JRM-0001's four horizons (Near-term/Mid-term/Longer-term), omitting Not Yet Justified, which would have silently excluded items in that bucket from the new guidance. Fixed: Section 7 item 1 no longer enumerates specific horizon names, referring generically to "horizon placement" instead.
 2. **Low** - the package's original framing ("a cross-reference only... does not add a new procedural rule") understated the Backlog Progression Analysis sentence, which is a small behavioural addition, not merely a link. Per Programme Sponsor decision, resolved by keeping the addition in this one package rather than splitting it into two, but reframing Section 2 and Section 9 to describe it honestly as guidance shaping an existing analysis step, rather than claiming it is purely a documentation pointer.
 
-This package is now ready for Programme Sponsor decision.
-
-If approved, the Engineering Implementer may apply the narrow PBK-0001 cross-reference and guidance addition, and the corresponding REG-0001 traceability update, in the next authorised implementation step.
+**Approved by the Programme Sponsor, 15 July 2026.** Implemented as scoped: PBK-0001 1.24 to 1.25, adding the JRM-0001 cross-reference to Related Artefacts and OSE Relationships, and the horizon-placement sentence to Backlog Progression Analysis. REG-0001 updated to match.
 
 ---
 
@@ -172,5 +170,6 @@ If approved, the Engineering Implementer may apply the narrow PBK-0001 cross-ref
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 15 July 2026 | Claude Engineering Implementer | Recorded Programme Sponsor approval (Section 12); implemented the approved package - PBK-0001 Related Artefacts, OSE Relationships and Backlog Progression Analysis updated, Document Control 1.24 to 1.25, REG-0001 aligned. ESR-0021. |
 | 0.2 | 15 July 2026 | Claude Engineering Implementer | Revised following Engineering Reviewer findings (both accepted): fixed the horizon-placement sentence to stop enumerating three of JRM-0001's four horizons (Medium); reframed Section 2/Section 9 to honestly describe the Backlog Progression Analysis addition as a small behavioural change, not merely a cross-reference (Low), per Programme Sponsor decision to keep it in one package with corrected framing rather than splitting into two. Ready for Programme Sponsor decision. |
 | 0.1 | 15 July 2026 | Claude Engineering Implementer | Drafted EIP-ESR0021-003 at the Programme Sponsor's direct request, for Engineering Reviewer review: adds a narrow JRM-0001 cross-reference to PBK-0001's Backlog Progression Analysis guidance, Related Artefacts and OSE Relationships - no new procedural rule, no other content change. |

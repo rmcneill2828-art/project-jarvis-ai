@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.139
+**Version:** 3.140
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.139 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.140 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -146,7 +146,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0020-001 | Engineering Implementation Package | PBK-0001 Playbook Alignment and Baseline Reference Correction | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0021-001 | Engineering Implementation Package | PBK-0001 Version History Sort Order Correction | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0021-002 | Engineering Implementation Package | PBK-0001 Historical Archive Breadcrumb Alignment | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0021-003 | Engineering Implementation Package | PBK-0001 JRM-0001 Cross-Reference Addition | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0021-003 | Engineering Implementation Package | PBK-0001 JRM-0001 Cross-Reference Addition | 0.3 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -157,7 +157,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.24 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.25 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.13 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -287,6 +287,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.140 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-003 (Approved 0.3): PBK-0001 1.24 to 1.25, adding JRM-0001 cross-references (Related Artefacts, OSE Relationships) and the Backlog Progression Analysis horizon-placement sentence. ESR-0021. |
 | 3.139 | 15 July 2026 | Claude Engineering Implementer | Aligned EIP-ESR0021-003 version (0.1 to 0.2) following Engineering Reviewer findings, both accepted and addressed (horizon-enumeration fix; honest reframing of the Backlog Progression Analysis addition as a small behavioural change rather than a pure cross-reference). Ready for Programme Sponsor decision. ESR-0021. |
 | 3.138 | 15 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0021-003 (PBK-0001 JRM-0001 Cross-Reference Addition, Draft 0.1) as a draft controlled artefact in `aiems/governance/reviews/`, drafted at the Programme Sponsor's direct request for Engineering Reviewer review before implementation. ESR-0021. |
 | 3.137 | 15 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.39 to 1.40) following EBG-0012/EBG-0027/EBG-0028 closure. ESR-0021 WP5. |

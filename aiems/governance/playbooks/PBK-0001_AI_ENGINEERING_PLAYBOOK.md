@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.24 |
+| Version | 1.25 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -253,6 +253,8 @@ Engineering Handover to Next Session shall include:
 Final Repository Engineering Health Reviews shall include Backlog Progression Analysis.
 
 Backlog Progression Analysis shall examine [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] and recommend activities that best progress Project JARVIS AI during the next Engineering Session.
+
+Where a backlog item already has a horizon placement in [[JRM-0001_PROJECT_ROADMAP|JRM-0001]], that placement shall inform the recommendation rather than being independently re-derived.
 
 Backlog Progression Analysis shall consider:
 
@@ -556,6 +558,7 @@ This is a documentation architecture principle, not a software design principle.
 * [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] records the current accepted repository baseline. [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
+* [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] is the forward-looking sequencing artefact referenced by Backlog Progression Analysis.
 * [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] defines controlled artefact governance expectations.
 * [[STD-0002_ENGINEERING_DOCUMENTATION_STANDARD|STD-0002]] defines engineering documentation expectations.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations.
@@ -572,6 +575,7 @@ This is a documentation architecture principle, not a software design principle.
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used during engineering synchronisation and session reload. |
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact; its horizon placements inform Backlog Progression Analysis recommendations. |
 | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Current accepted repository baseline. |
 | [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Latest historical session record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[FCH-0020_CLAUDE_FULL_CHAT_HISTORY|FCH-0020]] | Latest full chat historical evidence record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
@@ -584,6 +588,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.25 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-003 (Programme Sponsor-approved, Engineering Reviewer-reviewed with two findings addressed): added JRM-0001 as a cross-reference in Related Artefacts and OSE Relationships, and one sentence to Backlog Progression Analysis directing that an item's existing JRM-0001 horizon placement inform the recommendation rather than being re-derived independently. ESR-0021. |
 | 1.24 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-002 (Programme Sponsor-approved, Engineering Reviewer-drafted): corrected the OSE Relationships historical-archive breadcrumb, which still named the ESR-0013 artefacts (HST-0013, FCH-0013) as "latest" despite HST-0020/FCH-0020 (Claude) existing. HST-0020/FCH-0020 now carry the "latest" breadcrumb; HST-0013/FCH-0013 retained, reworded as lineage-only. ESR-0021 WP3. |
 | 1.23 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-001 (Programme Sponsor-approved, Engineering Reviewer-drafted): corrected the Version History table's residual sort-order inconsistency - the v1.0-v1.8 block remained in ascending order after v1.9, despite the v1.22 changelog entry claiming the table's ordering was corrected. Reordered v1.0-v1.8 into descending order consistent with the rest of the table; no row text altered. ESR-0021 WP2. |
 | 1.22 | 13 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0020-001 (Programme Sponsor-approved, ChatGPT Engineering Reviewer-drafted) plus Programme Sponsor-directed extension: promoted status Draft to Approved (resolving EBG-0004, the PBK-0001 lifecycle-status question open since ESR-0001); corrected stale RBL-0009 "current accepted repository baseline" references (Related Artefacts, OSE Relationships) to RBL-0014, retaining RBL-0009 as historical lineage; replaced the retired `Engineering Architect` term in the WP0B closure-check sentence with Programme Sponsor; corrected the Version History table's out-of-order v1.7/v1.8 rows. ESR-0020 WP1/WP2. |
