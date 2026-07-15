@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0021-WP6-WP7 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -58,7 +58,7 @@ Commits after the prior accepted baseline, in push order (cross-checked directly
 
 1. `JARVIS_CAPABILITY_READINESS_MATRIX.md` has no `REG-0001` artefact entry, unlike `PCB-0001`. This was explicitly flagged in the repository as a non-blocking observation and left for a separate Programme Sponsor decision.
 2. WP7 was selected using `JRM-0001` horizon placement directly, which is the first backlog decision in this session made via the roadmap guidance rather than re-derived from scratch.
-3. **Corrected in this revision**: the working tree's `.claude/` folder is not an untracked artefact sitting loose in the repo. It is specifically ignored via a machine-level git ignore rule (`git check-ignore -v` resolves it to `C:\Users\MrMcNeill/.config/git/ignore:1: **/.claude/settings.local.json`), not the project's own `.gitignore`. `git status --ignored --short` shows it as `!!` (ignored), not `??` (untracked) - plain `git status --short` shows nothing at all, since git does not list ignored paths by default.
+3. **Corrected again in this revision, following an Engineering Reviewer finding**: `.claude/`'s git status is environment-dependent, not a fixed repository fact - the previous revision (0.2) overclaimed it as universal. The project's own `.gitignore` does not reference `.claude/` at all (confirmed directly: no match for "claude"). On the Engineering Implementer's local machine, a personal global git ignore rule (`~/.config/git/ignore: **/.claude/settings.local.json`) makes it show as ignored (`!!`, not `??`). On the Engineering Reviewer's environment, which does not have that personal rule, `.claude/settings.local.json` correctly shows as untracked (`?? .claude/`) - confirmed independently by the Reviewer via `git ls-files --others --exclude-standard -- .claude`. Both observations are accurate for their own environment; neither is a repository defect, and neither environment's local git configuration is itself part of the controlled repository state. **Recommendation, not actioned by this handover**: add `.claude/` to the project's own `.gitignore` so its status stops depending on individual contributors' personal git configuration - a Programme Sponsor decision, since it is a repository-wide change outside this handover's narrow scope.
 
 ---
 
@@ -72,8 +72,8 @@ Validation re-run immediately before this handover:
 | `git diff --check` | Clean |
 | `git rev-parse --short HEAD` | `b38d065` |
 | `git rev-parse --short origin/main` | `b38d065` |
-| `git status --short` | Empty - nothing to commit, working tree clean |
-| `git status --ignored --short` | `!! .claude/` (machine-level ignore rule, not project scope) |
+| `git status --short` | Empty on the Engineering Implementer's environment; the Engineering Reviewer's independent check on its own environment shows `?? .claude/` - see Section 5, item 3, both accurate for their respective environment |
+| `git status --ignored --short` | `!! .claude/` on the Engineering Implementer's environment only, via a personal `~/.config/git/ignore` rule not present in the project's own `.gitignore` |
 
 The validator warnings are non-blocking and consistent with the repository's existing broad section-reference warning set.
 
@@ -128,5 +128,6 @@ WP6 should produce:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 15 July 2026 | Claude Engineering Implementer | Revised following an Engineering Reviewer finding (Medium, accepted): revision 0.2's ".claude/ is ignored, not untracked" claim was itself an overclaim - it was accurate only for the Engineering Implementer's own environment (a personal `~/.config/git/ignore` rule), not universally. The Engineering Reviewer's own environment correctly shows `.claude/` as untracked, since the project's `.gitignore` does not reference it at all. Reframed Section 5 item 3 and the Section 6 table to state this as environment-dependent rather than a fixed repository fact, and recorded the reconciled recommendation to add `.claude/` to the project's own `.gitignore` (not actioned, pending Programme Sponsor decision). |
 | 0.2 | 15 July 2026 | Claude Engineering Implementer | Verified every factual claim in this handover directly against the live repository before persisting it (git HEAD/origin, commit list against `git log`, validator re-run, REG-0001 gap). Found and corrected one inaccuracy: `.claude/` is not an untracked folder in scope - it is machine-level git-ignored (`~/.config/git/ignore`), and `git status --short` shows a fully clean tree, not `?? .claude/`. |
 | 0.1 | 15 July 2026 | Claude Engineering Implementer | Drafted WP6/WP7 Independent Repository Verification handover for ESR-0021: records the final commit chain, validation evidence, non-blocking observations, and baseline recommendation. |
