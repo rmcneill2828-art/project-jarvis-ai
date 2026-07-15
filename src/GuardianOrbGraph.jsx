@@ -20,7 +20,7 @@ import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY
 // (agent-traversal animation) and Phase 4 (Guardian reasoning connection)
 // remain separate, later, explicitly out-of-scope phases - this is still a
 // static snapshot, not a rotating or live-updating view.
-const CLUSTER_PALETTE = ["#1ff5ff", "#7c5cff", "#ff8a5c", "#5cff9d", "#ffd95c", "#ff5c8a", "#5c9dff", "#c95cff"];
+export const CLUSTER_PALETTE = ["#1ff5ff", "#7c5cff", "#ff8a5c", "#5cff9d", "#ffd95c", "#ff5c8a", "#5c9dff", "#c95cff"];
 
 const SIZE = 300;
 const CENTER = SIZE / 2;
@@ -29,12 +29,20 @@ const MIN_RADIUS = 1.5;
 const MAX_RADIUS = 9;
 const RADIUS_SCALE = 0.65;
 
-function colorForCluster(cluster, clusterOrder) {
+// Shared with KnowledgeGraphPanels.jsx so the Knowledge Metrics/Active
+// Clusters panels use the identical cluster order and colour assignment as
+// the Orb itself, rather than a second implementation that could drift.
+export function computeClusterOrder(graph) {
+  if (!graph) return [];
+  return [...new Set(graph.nodes.map((node) => node.cluster))].sort();
+}
+
+export function colorForCluster(cluster, clusterOrder) {
   const index = clusterOrder.indexOf(cluster);
   return CLUSTER_PALETTE[index % CLUSTER_PALETTE.length];
 }
 
-function computeDegree(nodes, edges) {
+export function computeDegree(nodes, edges) {
   const degree = new Map(nodes.map((node) => [node.id, 0]));
   for (const edge of edges) {
     degree.set(edge.source, (degree.get(edge.source) ?? 0) + 1);
@@ -126,10 +134,7 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     return layoutSphere(graph.nodes, graph.edges);
   }, [graph]);
 
-  const clusterOrder = useMemo(() => {
-    if (!graph) return [];
-    return [...new Set(graph.nodes.map((node) => node.cluster))].sort();
-  }, [graph]);
+  const clusterOrder = useMemo(() => computeClusterOrder(graph), [graph]);
 
   const positionedById = useMemo(() => {
     const map = new Map();

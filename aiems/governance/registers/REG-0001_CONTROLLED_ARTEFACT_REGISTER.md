@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.133
+**Version:** 3.134
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.133 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.134 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.37 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.38 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -285,6 +285,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.134 | 15 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.37 to 1.38) following its EBG-0055 note update recording ESR-0021 WP4 delivery: Knowledge Metrics and Active Clusters panels added to the live UXP. ESR-0021 WP4. |
 | 3.133 | 15 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0021-002 (PBK-0001 Historical Archive Breadcrumb Alignment, Approved 0.2) and aligned PBK-0001 version (1.23 to 1.24) following its implementation: OSE Relationships breadcrumb repointed from HST-0013/FCH-0013 to HST-0020/FCH-0020 (Claude) as the "latest" historical archive entries; HST-0013/FCH-0013 retained, reworded as lineage-only. ESR-0021 WP3. |
 | 3.132 | 15 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0021-001 (PBK-0001 Version History Sort Order Correction, Approved 0.2) and aligned PBK-0001 version (1.22 to 1.23) following its implementation: the Version History table's v1.0-v1.8 block, previously ascending, reordered to descending, consistent with the rest of the table. ESR-0021 WP2. |
 | 3.131 | 13 July 2026 | Claude Engineering Implementer | Registered FCH-0020 (renamed from FCH-0018, Claude Full Chat History for ESR-0020), correcting a naming drift the Programme Sponsor identified: the newer HST/FCH counter (15, 16, 17, 18...) had decoupled from the actual ESR number it documents once ESR-0014/0018/0019 were skipped in that series, so "18" had come to mean ESR-0020 on both the Claude and (independently) the Engineering Reviewer side. Corrected on the Claude side (HST-0018 to HST-0020, FCH-0018 to FCH-0020); the Engineering Reviewer independently made the equivalent correction to its own 18-numbered files around the same time. |

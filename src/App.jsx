@@ -33,6 +33,7 @@ import {
   STATUS,
 } from "./platformStatus.js";
 import { GuardianOrbGraph } from "./GuardianOrbGraph.jsx";
+import { ActiveClustersPanel, KnowledgeMetricsPanel } from "./KnowledgeGraphPanels.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -493,7 +494,11 @@ export function App() {
                 sendError={sendError}
               />
             </div>
-            <DiagnosticsPanel diagnostics={deriveDiagnostics(platformState, platformError)} />
+            <div className="side-column">
+              <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
+              <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} />
+              <DiagnosticsPanel diagnostics={deriveDiagnostics(platformState, platformError)} />
+            </div>
           </div>
           <AppFooter />
         </section>
