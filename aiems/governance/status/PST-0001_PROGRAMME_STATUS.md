@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.28
+**Version:** 2.29
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.28 |
+| Version | 2.29 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] is the latest **closed** session (13 July 2026). PBK-0001/COC-0001 promoted Draft to Approved (resolving EBG-0004, open since ESR-0001); EBG-0051 (Gemini Provider Production Readiness) closed via live API validation; PCB-0001 refreshed and accepted (v2.1, closing EBG-0056); a small UXP visual convergence step; EBG-0026 (transcript export UX) closed. Session-wide WP6 Independent Repository Verification: Pass. |
-| Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained at ESR-0020 closure - the Programme Sponsor judged this session's delivery incremental relative to RBL-0014's establishing session (ESR-0019's knowledge-graph/Guardian Orb capability), consistent with the ESR-0016/ESR-0018 precedent. |
-| Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1, **refreshed and accepted at ESR-0020 WP4** (closing EBG-0056) - no longer stale. Now accurately reflects Sentinel/Guardian foundation, the live Tauri+React UXP with a real backend bridge, the Guardian Orb knowledge graph, and both external provider adapters (OpenAI, Gemini) live-validated but not wired into the default runtime path. |
+| Current Mode | [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] is the latest **closed** session (15 July 2026). PBK-0001 corrected (Version History order, historical-archive breadcrumb); Knowledge Metrics/Active Clusters panels added to the live UXP; [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Project Roadmap) created and approved, closing EBG-0012/0027/0028; a full historical HST/FCH audit added 11 Tier 1 backlog items (EBG-0059-0069); JARVIS_CAPABILITY_READINESS_MATRIX.md refreshed to v2.0 (closing EBG-0069), selected via JRM-0001's own horizon guidance. Session-wide WP6 Independent Repository Verification: complete. |
+| Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained at ESR-0021 closure - the Programme Sponsor judged this session's delivery incremental relative to RBL-0014's establishing session (ESR-0019's knowledge-graph/Guardian Orb capability), consistent with the ESR-0016/ESR-0018/ESR-0020 precedent. |
+| Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1, refreshed and accepted at ESR-0020 WP4 - no longer stale. Its sibling document, [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]], was similarly refreshed to v2.0 at ESR-0021 WP7 after 13 sessions of staleness. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0020 closed. Continuing under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Lead Engineer, ChatGPT Lead Reviewer). Ready for a new engineering session under the standing appointment. |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. PBK-0001/COC-0001 are now both **Approved** status (ESR-0020, resolving EBG-0004) rather than Draft despite being the sole authoritative playbooks since ESR-0001. |
-| Current Engineering Objective | ESR-0020 closed. No next-session objective is created by this status update - opening the next session (ESR-0021) is a separate action. |
+| Current Phase | ESR-0021 closed. Continuing under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT Engineering Reviewer). Ready for a new engineering session under the standing appointment. |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. PBK-0001 now cross-references [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] directly from its Backlog Progression Analysis guidance (ESR-0021 WP5), so future sessions can consult roadmap horizon placement rather than re-deriving sequencing priority from scratch. |
+| Current Engineering Objective | ESR-0021 closed. No next-session objective is created by this status update - opening the next session (ESR-0022) is a separate action. [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s Near-term horizon lists several ready candidates for whenever that session opens. |
 
 ---
 
@@ -100,29 +100,27 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] is **Closed** (13 July 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer (Lead Engineer), ChatGPT as Engineering Reviewer (Lead Reviewer), Programme Sponsor gating every step.
+[[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] is **Closed** (15 July 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, ChatGPT (via the VS Code Codex extension - a venue choice, not a role-holder change) as Engineering Reviewer, Programme Sponsor gating every step. Full detail in [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]].
 
-**WP1/WP2** reviewed [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] directly (the review itself instructed by the Programme Sponsor), surfacing that it and [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] had sat in Draft status since ESR-0001 despite being the sole authoritative playbooks governing every session since - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0004's unactioned lifecycle-status question, now resolved: both promoted to **Approved** (PBK-0001 v1.22, COC-0001 v1.13). Also corrected a five-baseline-stale `RBL-0009` reference and a retired `Engineering Architect` role term in PBK-0001, per Engineering Reviewer-drafted [[EIP-ESR0020-001_PBK-0001_PLAYBOOK_ALIGNMENT_AND_BASELINE_REFERENCE_CORRECTION|EIP-ESR0020-001]].
+**WP1-WP3** reviewed [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] directly, surfacing two residual defects both resolved within the session: a Version History sort-order issue the v1.22 changelog had claimed was already fixed (WP2, [[EIP-ESR0021-001_PBK-0001_VERSION_HISTORY_SORT_ORDER_CORRECTION|EIP-ESR0021-001]]), and a historical-archive breadcrumb still naming ESR-0013 artefacts as "latest" (WP3, [[EIP-ESR0021-002_PBK-0001_HISTORICAL_ARCHIVE_BREADCRUMB_ALIGNMENT|EIP-ESR0021-002]]).
 
-**WP3** closed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0051 (Gemini Provider Production Readiness): a live smoke test against the real Gemini API (`scripts/gemini_provider_smoke_test.py`, Programme Sponsor-run, mirroring the ESR-0015 WP5 OpenAI precedent) - real generated response received, Policy decision Allow. JARVIS's first proven second AI provider; not wired into any production route.
+**WP4** added Knowledge Metrics and Active Clusters panels to the live UXP (`src/KnowledgeGraphPanels.jsx`), surfacing the Guardian Orb's existing cluster-colour data as its own panels for the first time - satisfying this session's product-moving/UXP-progress requirement.
 
-**WP4** refreshed and accepted [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (v1.0, unchanged since 1 July 2026, to v2.1), closing EBG-0056 - corrected a baseline that had materially understated capability (falsely stating "Guardian capability is not implemented") across three sessions since being flagged at RBL-0013.
+**WP5** created and Programme Sponsor-approved [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Project Roadmap) - the programme's first forward-looking sequencing artefact, consolidating [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0012 (open since ESR-0002), EBG-0027 and EBG-0028 (open since ESR-0005) into one document with AIEMS Process, JARVIS Product and UXP Evolution tracks. PBK-0001 was cross-referenced to it ([[EIP-ESR0021-003_PBK-0001_JRM-0001_CROSS_REFERENCE_ADDITION|EIP-ESR0021-003]]), so future Backlog Progression Analysis consults JRM-0001's horizon placement directly.
 
-**WP5** made a small Incremental Visual Convergence step (UXP background colour toward the Guardian Orb mock-up tone), visually confirmed by the Programme Sponsor.
+**WP6** conducted a full historical audit of all repository chat history (338,393 lines across 44 files) to find discussion items agreed but never backlogged, adding 11 Tier 1 findings (EBG-0059 through EBG-0069) - most notably EBG-0059, a complete but never-implemented "Engineering Assurance Capability" architecture spec from ESR-0012.
 
-**WP6** closed EBG-0026 (transcript export UX - default location, timestamped filenames, no popup dialog).
+**WP7** refreshed [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] (v2.0, closing EBG-0069) after 13 sessions of staleness - selected using JRM-0001's Track B Near-term horizon directly, the roadmap's first real use in a backlog decision.
 
-**Session-wide WP6/WP7**: Independent Repository Verification Pass (per [[ESR-0020_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|the WP6 handover]]); [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] **retained** - judged incremental relative to RBL-0014's establishing session (ESR-0019).
-
-**Process note, recorded plainly rather than minimised**: two process deviations were self-disclosed during this session (implementation preceding Engineering Reviewer review - first for WP3 alone, then recurring across WP4-WP6 despite explicit prior correction). Neither reached the repository baseline before review, and both were corrected once identified, but the repeated pattern is on record in [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] Sections 9A/9B.
+**Session-wide WP6/WP7**: Independent Repository Verification complete (per [[ESR-0021_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|the WP6/WP7 handover]], revised twice to correctly describe an environment-dependent `.claude/` git-status observation rather than a universal one); [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] **retained** - judged incremental relative to RBL-0014's establishing session (ESR-0019).
 
 ---
 
-## Prior Session: ESR-0019
+## Prior Session: ESR-0020
 
-[[ESR-0019_ENGINEERING_SESSION_REPORT|ESR-0019]] is **Closed** (11 July 2026), the first full Engineering Session run under the permanent Lead/Reviewer appointment. WP1 bound the appointment into PBK-0001/COC-0001 (later promoted from Draft to Approved at ESR-0020). WP2 delivered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055 Phase 1: a repository knowledge-graph backend and JSON-RPC method that grew into the Guardian Orb itself rendering the live knowledge graph, per [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1. [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] was accepted at closure, superseding RBL-0013. Full detail in [[ESR-0019_ENGINEERING_SESSION_REPORT|ESR-0019]].
+[[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] is **Closed** (13 July 2026). WP1/WP2 resolved EBG-0004 (PBK-0001/COC-0001 promoted Draft to Approved) and corrected a stale `RBL-0009` reference. WP3 closed EBG-0051 (Gemini Provider Production Readiness) via a live API smoke test. WP4 refreshed and accepted PCB-0001 (v2.1, closing EBG-0056). WP5 made a small UXP visual convergence step. WP6 closed EBG-0026 (transcript export UX). Two process deviations were self-disclosed and corrected before reaching the baseline (Sections 9A/9B). RBL-0014 retained at closure. Full detail in [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]].
 
-PST-0001 records the ESR-0020 closed state. It does not create a new engineering session, or approve implementation outside separately authorised engineering work.
+PST-0001 records the ESR-0021 closed state. It does not create a new engineering session, or approve implementation outside separately authorised engineering work.
 
 ---
 
@@ -247,6 +245,14 @@ PST-0001 records the ESR-0020 closed state. It does not create a new engineering
 | ESR-0020 EBG-0026 (transcript export UX) closed | Complete |
 | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained at ESR-0020 closure (incremental relative to its establishing session) | Complete |
 | [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] Engineering Session Report created and closed | Complete |
+| ESR-0021 PBK-0001 corrected: Version History sort order ([[EIP-ESR0021-001_PBK-0001_VERSION_HISTORY_SORT_ORDER_CORRECTION|EIP-ESR0021-001]]) and historical-archive breadcrumb ([[EIP-ESR0021-002_PBK-0001_HISTORICAL_ARCHIVE_BREADCRUMB_ALIGNMENT|EIP-ESR0021-002]]) | Complete |
+| ESR-0021 Knowledge Metrics and Active Clusters panels added to the live UXP | Complete |
+| ESR-0021 [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Project Roadmap created and Programme Sponsor-approved, closing EBG-0012/0027/0028 (open since ESR-0002/ESR-0005) | Complete |
+| ESR-0021 PBK-0001 cross-referenced to JRM-0001 ([[EIP-ESR0021-003_PBK-0001_JRM-0001_CROSS_REFERENCE_ADDITION|EIP-ESR0021-003]]) | Complete |
+| ESR-0021 full historical HST/FCH audit completed; 11 Tier 1 backlog items added (EBG-0059-0069) | Complete |
+| ESR-0021 [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] refreshed to v2.0, closing EBG-0069 - first backlog item selected via JRM-0001 horizon guidance | Complete |
+| [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained at ESR-0021 closure (incremental relative to its establishing session) | Complete |
+| [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] Engineering Session Report created and closed | Complete |
 
 ---
 
@@ -260,16 +266,17 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] - **Closed** (13 July 2026) | WP1-WP6 complete; session-wide WP6 Independent Repository Verification Pass, WP7 RBL-0014 retained. |
-| Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Retained at ESR-0020 closure - this session's delivery judged incremental relative to RBL-0014's establishing session (ESR-0019). |
-| Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | v2.1 - refreshed and accepted at ESR-0020 WP4, closing EBG-0056. No longer stale. |
-| Current Review State | ESR-0020 fully reviewed and closed | All Work Packages independently verified via the session-wide WP6. |
-| Next Required Activity | Open the next engineering session | Under the permanent Lead/Reviewer appointment (Claude Lead Engineer, ChatGPT Lead Reviewer). Not opened by this status update. |
-| Next Engineering Session | Not created by this status update | Opening ESR-0021 is a separate action. |
-| ESR-0020 Delivered Scope (WP0-WP6) | PBK-0001/COC-0001 promoted to Approved (EBG-0004); PBK-0001 baseline-reference/terminology correction (EIP-ESR0020-001); EBG-0051 Gemini live validation; PCB-0001 v2.1 refresh and acceptance (EBG-0056); UXP background convergence; EBG-0026 transcript export UX | Complete and reviewed. |
+| Current Engineering Session | [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] - **Closed** (15 July 2026) | WP1-WP7 complete; session-wide WP6 Independent Repository Verification complete, WP7 RBL-0014 retained. |
+| Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Retained at ESR-0021 closure - this session's delivery judged incremental relative to RBL-0014's establishing session (ESR-0019). |
+| Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | v2.1 - refreshed and accepted at ESR-0020 WP4, closing EBG-0056. No longer stale. Sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] refreshed to v2.0 at ESR-0021 WP7. |
+| Current Roadmap | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | v1.0, Approved at ESR-0021 WP5 - the programme's first forward-looking sequencing artefact, cross-referenced from PBK-0001's Backlog Progression Analysis. |
+| Current Review State | ESR-0021 fully reviewed and closed | All Work Packages independently verified via the session-wide WP6. |
+| Next Required Activity | Open the next engineering session | Under the permanent Lead/Reviewer appointment. Not opened by this status update. |
+| Next Engineering Session | Not created by this status update | Opening ESR-0022 is a separate action. [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s Near-term horizon is now available to inform that session's Work Package selection directly. |
+| ESR-0021 Delivered Scope (WP0-WP7) | PBK-0001 corrected (Version History order, historical-archive breadcrumb, JRM-0001 cross-reference); Knowledge Metrics/Active Clusters UXP panels; JRM-0001 created and approved, closing EBG-0012/0027/0028; full historical audit adding 11 Tier 1 backlog items (EBG-0059-0069); JARVIS_CAPABILITY_READINESS_MATRIX.md refreshed, closing EBG-0069 | Complete and reviewed. |
 | GIA-BOOT Proof of Concept | Complete | Accepted as Proof of Concept; further GIA implementation deferred - blocks Knowledge Graph Phases 3-4 (EBG-0055 note). |
-| Deferred Work | Recorded | Guardian Memory, Conversation Engine expansion, Guardian Developer Console, Guardian Orb knowledge-graph Phases 2-4 ([[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055 - Phase 1 complete), true 3D rendering and live animation of the Orb (explicitly deferred), Automation, persistent storage, EAC and GDP-0001 implementation remain deferred. Both OpenAI and Gemini are now live-validated but neither is wired into a production route - a candidate future backlog item, not yet raised as its own EBG entry. Anthropic/OpenRouter/Ollama provider adapters approved in principle (PEM-001) but not yet implemented. Claude&harr;Codex engineering bridge (EBG-0057) architecture and cost decided, not implemented. |
-| Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register; EBG-0051, EBG-0026 and EBG-0056 marked Complete at ESR-0020. |
+| Deferred Work | Recorded | Guardian Memory, Conversation Engine expansion, Guardian Developer Console, Guardian Orb knowledge-graph Phases 2-4 ([[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055 - Phase 1-2 delivered), true 3D rendering and live animation of the Orb (explicitly deferred), Automation and persistent storage remain deferred. **EAC and GDP-0001**, previously mentioned here only in passing, now have dedicated backlog tracking following the ESR-0021 WP6 historical audit: EAC is EBG-0059 (Engineering Assurance Capability - a complete, never-implemented architecture spec from ESR-0012); GDP-0001 remains an unimplemented roadmap-artefact idea from ESR-0012/0013, now substantially superseded in intent by JRM-0001 itself. Both OpenAI and Gemini are now live-validated but neither is wired into a production route - sequenced as a Near-term JRM-0001 Track B candidate (recommended future EBG-0070). Anthropic/OpenRouter/Ollama provider adapters approved in principle (PEM-001) but not yet implemented. Claude&harr;Codex engineering bridge (EBG-0057) architecture and cost decided, not implemented - JRM-0001 flags a conceptual overlap with the newly-discovered EBG-0060 (DCE/Repository Execution Agent) worth a combined future judgement. |
+| Authoritative Backlog Source | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Future engineering priorities remain governed by the backlog register, now sequenced via [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]; EBG-0012, EBG-0027, EBG-0028 and EBG-0069 marked Complete at ESR-0021; EBG-0059-0068 added as Candidate Backlog. |
 | Runtime Evidence Archive | `logs/chats/` | Prototype JARVIS chat exports remain archived under runtime evidence archive. |
 
 ---
@@ -281,9 +288,9 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Repository Health | Good |
 | Repository Acceptance | Accepted through [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] |
 | Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] |
-| Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1 - refreshed and accepted at ESR-0020, closing EBG-0056 |
+| Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1 (ESR-0020); sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.0 (ESR-0021 WP7, closing EBG-0069) |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | ESR-0020 closed 13 July 2026; WP0-WP6 complete, reviewed, [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained. 204/204 tests passing, 0 validator errors. Ready for the next engineering session. |
+| Current Activity | ESR-0021 closed 15 July 2026; WP0-WP7 complete, reviewed, [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained. `python scripts/validate_repository.py --governance-only`: 0 errors, 85 pre-existing warnings throughout. Ready for the next engineering session. |
 
 ---
 
@@ -299,19 +306,22 @@ The following observations remain open for future engineering consideration:
 - PEM-001 provider scoring is complete (ESR-0015): Primary OpenAI (implemented, live-validated), Secondary Gemini (implemented, hardened at ESR-0018, **live-validated at ESR-0020 WP3** - EBG-0051 Complete), reasoning/coding comparison Anthropic, Gateway OpenRouter, local fallback Ollama - the latter three remain not implemented. Neither OpenAI nor Gemini is wired into a default/production runtime route - both remain opt-in manual-script validation only.
 - [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] through [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] are all closed. **The EE-0001 Lead/Reviewer trial is concluded** (all four trial sessions run: Claude led ESR-0015/ESR-0017, ChatGPT led ESR-0016/ESR-0018; Sponsor arbitration required was assessed Low, High, Low-Medium and High respectively). At the Section 7 decision point, both AIs independently converged on the same recommendation without sight of each other's answers; the Programme Sponsor made it formal on 10 July 2026: **Claude permanent Lead Engineer, ChatGPT permanent Lead Reviewer**, replacing the alternating rotation. `PBK-0001`/`COC-0001` were formally bound to this appointment at ESR-0019 WP1, then **promoted from Draft to Approved status at ESR-0020** (resolving EBG-0004, open since ESR-0001) - no longer an unactioned flag or a Draft-status artefact governing every session.
 - ESR-0018 recorded the trial's longest capability-self-assessment incident, including a new named sub-pattern ("confession as substitute for compliance" - accurate self-diagnosis produced instead of the required action) - resolved only after an explicit, action-forcing Programme Sponsor instruction. Recorded in full in [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 9 and [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] Section 13.
-- A Claude&harr;Codex engineering-communication bridge was discussed post-appointment, explicitly out of ESR-0018 scope: architecture (file-based, command-driven, Sponsor-gated handovers) and cost decision (Claude Pro unchanged; a new personal ChatGPT Plus subscription for Codex) recorded as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057. No implementation authorised; requires its own future ESR and EIP.
+- A Claude&harr;Codex engineering-communication bridge was discussed post-appointment, explicitly out of ESR-0018 scope: architecture (file-based, command-driven, Sponsor-gated handovers) and cost decision (Claude Pro unchanged; a new personal ChatGPT Plus subscription for Codex) recorded as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057. No implementation authorised; requires its own future ESR and EIP. **ESR-0021's historical audit surfaced a conceptually overlapping item, EBG-0060** (Direct ChatGPT Execution / Repository Execution Agent, from ESR-0010/0011) - [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] recommends a combined judgement on whether EBG-0057's architecture already supersedes it when either is next actioned.
 - GIA-BOOT is accepted as a Proof of Concept.
 - Further GIA implementation is deferred.
 - AIEMS Engineering Agent is adopted to support the Engineering Reviewer role.
 - Remaining Engineering Agent validation is deferred.
-- Future EAC implementation is deferred.
+- Future EAC (Engineering Assurance Capability) implementation is deferred, now tracked as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0059 following ESR-0021 WP6's historical audit, which recovered the full ESR-0012 architecture spec (EAC/EAA/EAR) that had never been captured as a backlog item.
 - Guardian Memory remains deferred.
 - Conversation Engine expansion remains deferred.
 - Guardian Developer Console remains deferred.
 - Real observable platform state (ESR-0017 WP9's `platform.status`) unblocked Guardian Orb implementation in principle, and **ESR-0019 delivered it**: the Orb now renders the live repository knowledge graph ([[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1, [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055 Phase 1, completed). Phases 2-4 (cluster illumination, agent-traversal animation, Guardian reasoning connection), true 3D rendering and live animation remain not started - the latter two explicitly deferred by Programme Sponsor decision, not attempted in one pass.
 - Automation remains deferred.
 - Persistent storage remains deferred.
-- GDP-0001 implementation remains deferred.
+- GDP-0001 implementation remains deferred - the idea itself (a roadmap-type controlled artefact, floated at ESR-0012/0013 and never created or backlogged, recovered at ESR-0021 WP6) is now substantially superseded in intent by [[JRM-0001_PROJECT_ROADMAP|JRM-0001]], created and approved at ESR-0021 WP5.
+- [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Project Roadmap) was created and approved at ESR-0021 WP5, the programme's first forward-looking sequencing artefact - closes EBG-0012 (open since ESR-0002), EBG-0027 and EBG-0028 (open since ESR-0005). PBK-0001's Backlog Progression Analysis now cross-references it directly (ESR-0021 WP5, EIP-ESR0021-003).
+- ESR-0021 WP6 conducted a full historical audit of all HST/FCH chat history (338,393 lines, 44 files) and added 11 Tier 1 backlog items (EBG-0059 through EBG-0069); Tier 2 (15 items) and Tier 3 findings remain recorded only in that session's conversational record, not in EBR-0001.
+- [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.0 at ESR-0021 WP7 (closing EBG-0069) after 13 sessions of staleness - no longer stale, but still not registered in REG-0001 as a controlled artefact, unlike its sibling PCB-0001 (flagged, not actioned).
 - Repository First is reinforced by ESR-0012 operational evidence.
 - Look Inward Before Looking Outward is identified as an engineering principle derived from operational evidence, but is not introduced as a new AIEMS standard by this status update.
 - The Engineering Reviewer and Guardian operating environments remain separated.
@@ -488,18 +498,18 @@ At the start of the next separately approved engineering session or approved imp
 1. Review README.md for repository orientation and platform context.
 2. Review [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]], the repository baseline the Programme Sponsor has accepted as current.
 3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current State tier).
-4. Review the Architecture tier as referenced by PST-0001 - for UXP/Guardian-experience work specifically, also review [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1 (Phase 1 now implemented - the Guardian Orb renders the live knowledge graph) before touching `src/GuardianOrbGraph.jsx` or `src/App.jsx`.
-5. Review Active Standards (STD-0001 through STD-0004) where the session's work touches artefact creation or modification.
-6. Review [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] (Current ESR tier) - Sections 9A/9B record two self-disclosed process deviations (implementation preceding Engineering Reviewer review) worth reading before starting implementation work in the next session.
-7. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
-8. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (v1.22, now **Approved** status, no longer Draft) - includes Feature-First Delivery Discipline and the Incremental Visual Convergence Toward the Reference Mock-up clause; Engineering Implementer/Reviewer explicitly bound to Claude/ChatGPT.
-9. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (v1.13, now **Approved** status) - same role-binding as PBK-0001.
-10. Confirm the permanent Lead/Reviewer appointment (Claude Lead Engineer, ChatGPT Lead Reviewer, EE-0001 Section 7) has not been separately revisited - no rotation confirmation is required.
-11. Search the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required.
-12. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
-13. Implementation should follow, not precede, Engineering Reviewer review for any new Work Package - a repeated process deviation this session (Sections 9A/9B) makes this worth stating explicitly rather than assuming it's understood.
+4. Review [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Project Roadmap, new at ESR-0021) for horizon-placement guidance before selecting the next Work Package - per PBK-0001's Backlog Progression Analysis, an item's existing JRM-0001 placement should inform the recommendation rather than being re-derived from scratch.
+5. Review the Architecture tier as referenced by PST-0001 - for UXP/Guardian-experience work specifically, also review [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1 (Phase 1-2 now implemented - the Guardian Orb renders the live knowledge graph, with Knowledge Metrics/Active Clusters panels since ESR-0021 WP4) before touching `src/GuardianOrbGraph.jsx`, `src/KnowledgeGraphPanels.jsx` or `src/App.jsx`.
+6. Review Active Standards (STD-0001 through STD-0004) where the session's work touches artefact creation or modification.
+7. Review [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] (Current ESR tier).
+8. Review [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
+9. Review [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (v1.25, **Approved** status) - now cross-references JRM-0001 directly from Backlog Progression Analysis (ESR-0021 WP5).
+10. Review [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (v1.13, **Approved** status) - same role-binding as PBK-0001; note "Codex" access via the VS Code extension is a venue choice for the same ChatGPT-held Engineering Reviewer role, not a role-holder change (ESR-0021 WP0).
+11. Confirm the permanent Lead/Reviewer appointment (Claude Engineering Implementer, ChatGPT Engineering Reviewer, EE-0001 Section 7) has not been separately revisited - no rotation confirmation is required.
+12. Search the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required - ESR-0021 WP6 already conducted a full audit of this archive; check [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0059 through EBG-0069 (and that session's Tier 2/3 conversational record) before re-deriving the same findings.
+13. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
 
-This guidance records the ESR-0020 closed state and RBL-0014 retention. PST-0001 does not create a new engineering session, accept a repository baseline or approve implementation outside separately authorised engineering work.
+This guidance records the ESR-0021 closed state and RBL-0014 retention. PST-0001 does not create a new engineering session, accept a repository baseline or approve implementation outside separately authorised engineering work.
 
 ---
 
@@ -533,7 +543,9 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Records authoritative artefact identity, ownership, status and current version. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architectural decision context relevant to programme status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records backlog context that informs current and next engineering work. |
-| [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] | Current closed engineering session report (13 July 2026) - PBK-0001/COC-0001 promoted to Approved (EBG-0004), EBG-0051 Gemini live validation, PCB-0001 v2.1 refresh/acceptance (EBG-0056), UXP convergence, EBG-0026 transcript export. |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact, created and approved at ESR-0021 WP5 - closes EBG-0012/0027/0028; now cross-referenced directly from PBK-0001's Backlog Progression Analysis. |
+| [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] | Current closed engineering session report (15 July 2026) - PBK-0001 corrections (WP2/WP3), Knowledge Metrics/Active Clusters UXP panels (WP4), JRM-0001 creation and approval (WP5), full historical HST/FCH audit adding 11 backlog items (WP6), Capability Readiness Matrix refresh (WP7). |
+| [[ESR-0020_ENGINEERING_SESSION_REPORT|ESR-0020]] | Prior closed engineering session report (13 July 2026) - PBK-0001/COC-0001 promoted to Approved (EBG-0004), EBG-0051 Gemini live validation, PCB-0001 v2.1 refresh/acceptance (EBG-0056), UXP convergence, EBG-0026 transcript export. |
 | [[ESR-0019_ENGINEERING_SESSION_REPORT|ESR-0019]] | Prior closed engineering session report (11 July 2026) - PBK-0001/COC-0001 role-binding (WP1) and the Guardian Orb knowledge-graph delivery (WP2, EBG-0055 Phase 1). |
 | [[ESR-0018_ENGINEERING_SESSION_REPORT|ESR-0018]] | Prior closed engineering session report (10 July 2026) - Gemini provider production-readiness hardening (EBG-0051) and the EE-0001 Section 7 decision/permanent appointment. |
 | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] | Closed engineering session report - nine Work Packages including the first live interactive UXP and a Guardian Orb design-baseline recovery. |
@@ -604,6 +616,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.29 | 15 July 2026 | Claude Engineering Implementer | ESR-0021 formally closed (15 July 2026). Updated Current Mode/Baseline/Roadmap/Phase/Workflow/Objective (RBL-0014 retained, JRM-0001 v1.0 approved), Current Engineering Focus (WP1-WP7 summary, ESR-0020 demoted to Prior Session), Completed Milestones (7 new ESR-0021 rows), Active/Next Planned Work (EAC/GDP-0001/EBG-0057 observations updated to reflect the WP6 historical audit's EBG-0059/EBG-0060 discoveries), Repository Health, Outstanding Observations (JRM-0001, historical audit, Capability Readiness Matrix refresh), Session Start Guidance (retargeted to ESR-0021/JRM-0001, Codex-venue clarification) and OSE Relationships retargeted from ESR-0020/RBL-0014 to ESR-0021/RBL-0014-retained. |
 | 2.28 | 15 July 2026 | Claude Engineering Implementer | Updated the JARVIS Capability Maturity row (Section 5) following ESR-0021 WP7's refresh of JARVIS_CAPABILITY_READINESS_MATRIX.md (v2.0, closing EBG-0069): no longer stale, Guardian/Sentinel/Platform Services/UXP/Knowledge/Provider Architecture correctly shown as Implemented (Foundation). ESR-0021 WP7. |
 | 2.27 | 13 July 2026 | Claude Engineering Implementer | ESR-0020 formally closed (13 July 2026). Updated Current Mode/Baseline/Product Baseline/Phase/Workflow/Objective (RBL-0014 retained, PCB-0001 v2.1 accepted), Current Engineering Focus (WP1-WP6 summary, ESR-0019 demoted to Prior Session), Sentinel/JARVIS Product Capability Baseline capability rows (Gemini live-validated, PCB-0001 no longer stale), Completed Milestones (8 new ESR-0020 rows), Active/Next Planned Work, Repository Health (204/204 tests), Outstanding Observations (PBK-0001/COC-0001 Draft to Approved, Gemini live-validated), Session Start Guidance (added explicit implementation-follows-review note per Sections 9A/9B) and OSE Relationships retargeted from ESR-0019/RBL-0014-accepted to ESR-0020/RBL-0014-retained. |
 | 2.26 | 11 July 2026 | Claude Engineering Implementer | ESR-0019 formally closed (11 July 2026), the first full session under the permanent Lead/Reviewer appointment. Updated Current Mode/Baseline/Phase/Workflow/Objective (RBL-0014 accepted, superseding RBL-0013), Current Engineering Focus (WP1 role-binding, WP2 Guardian Orb knowledge-graph delivery, ESR-0018 demoted to Prior Session), Guardian Experience/UXP/JARVIS Development capability rows (Guardian Orb Phase 1 delivered), Completed Milestones (6 new ESR-0019 rows), Active/Next Planned Work, Repository Health (204/204 tests), Outstanding Observations (PBK-0001/COC-0001 role-binding actioned not flagged, Guardian Orb Phase 1 delivered, new Incremental Visual Convergence practice, Vite/Tauri scaffolding fix), Session Start Guidance and OSE Relationships retargeted from ESR-0018/RBL-0013 to ESR-0019/RBL-0014. |
