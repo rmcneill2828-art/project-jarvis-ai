@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.22 |
+| Version | 1.24 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -573,8 +573,10 @@ This is a documentation architecture principle, not a software design principle.
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Current accepted repository baseline. |
-| [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] | Latest historical session record; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
-| [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] | Latest full chat historical evidence record; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Latest historical session record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[FCH-0020_CLAUDE_FULL_CHAT_HISTORY|FCH-0020]] | Latest full chat historical evidence record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] | Historical session record retained for lineage; no longer the latest archive entry. |
+| [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] | Full chat historical evidence record retained for lineage; no longer the latest archive entry. |
 | [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Defines the knowledge tier structure that bounds WP0 session start review and moves AIEMS History and Full Chat artefacts to search-on-demand access. |
 
 ---
@@ -582,6 +584,8 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.24 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-002 (Programme Sponsor-approved, Engineering Reviewer-drafted): corrected the OSE Relationships historical-archive breadcrumb, which still named the ESR-0013 artefacts (HST-0013, FCH-0013) as "latest" despite HST-0020/FCH-0020 (Claude) existing. HST-0020/FCH-0020 now carry the "latest" breadcrumb; HST-0013/FCH-0013 retained, reworded as lineage-only. ESR-0021 WP3. |
+| 1.23 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-001 (Programme Sponsor-approved, Engineering Reviewer-drafted): corrected the Version History table's residual sort-order inconsistency - the v1.0-v1.8 block remained in ascending order after v1.9, despite the v1.22 changelog entry claiming the table's ordering was corrected. Reordered v1.0-v1.8 into descending order consistent with the rest of the table; no row text altered. ESR-0021 WP2. |
 | 1.22 | 13 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0020-001 (Programme Sponsor-approved, ChatGPT Engineering Reviewer-drafted) plus Programme Sponsor-directed extension: promoted status Draft to Approved (resolving EBG-0004, the PBK-0001 lifecycle-status question open since ESR-0001); corrected stale RBL-0009 "current accepted repository baseline" references (Related Artefacts, OSE Relationships) to RBL-0014, retaining RBL-0009 as historical lineage; replaced the retired `Engineering Architect` term in the WP0B closure-check sentence with Programme Sponsor; corrected the Version History table's out-of-order v1.7/v1.8 rows. ESR-0020 WP1/WP2. |
 | 1.21 | 11 July 2026 | Claude Engineering Implementer | Added Incremental Visual Convergence Toward the Reference Mock-up under Feature-First Delivery Discipline: sessions should include a small UXP change moving toward aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg where natural opportunity exists - cosmetic elements freely, data-bearing elements only once backed by real observed data, preserving the no-mock-fallback rule. Directed by the Programme Sponsor at ESR-0019 WP2 closure. |
 | 1.20 | 11 July 2026 | Claude Engineering Implementer | Bound the Engineering Implementer role to Claude as its current permanent holder, per the EE-0001 Section 7 appointment (10 July 2026), while preserving the role-definition-not-vendor principle as the standing default. ESR-0019 WP1. |
@@ -596,12 +600,12 @@ This is a documentation architecture principle, not a software design principle.
 | 1.11 | 5 July 2026 | Codex Engineering Implementer | Added ESR-0011 AIEMS History and Full Chat artefacts to WP0 session start review. |
 | 1.10 | 4 July 2026 | Codex Engineering Implementer | Added AIEMS Full Chat artefacts to WP0 session start review as historic evidence. |
 | 1.9 | 4 July 2026 | Codex Engineering Implementer | Added AIEMS History artefacts to WP0 session start review. |
-| 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial controlled artefact structure established for the AI Engineering Playbook. |
-| 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Implementer role, session initialisation, scope control, self-review, completion reporting and repository documentation guidance. |
-| 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Session lifecycle guidance covering WP0A, WP0B, session creation, handover and closure checks. |
-| 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
-| 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |
-| 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
-| 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 Engineering Synchronisation review artefact while preserving controlled artefact authority. |
-| 1.7 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |
 | 1.8 | 2 July 2026 | Codex Engineering Implementer | Added OSE relationships and aligned related artefact context with ESR-0009 readiness. |
+| 1.7 | 30 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified distinction between engineering approval, validation, independent verification and Programme Sponsor baseline acceptance. |
+| 1.6 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added README.md as the first WP0 Engineering Synchronisation review artefact while preserving controlled artefact authority. |
+| 1.5 | 28 June 2026 | Programme Sponsor & Chief Engineering Advisor | Repository lifecycle aligned with validated Engineering Implementer workflow following ESR-0003. |
+| 1.4 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Clarified Working Report lifecycle, review and approval gates, and repository implementation authority. |
+| 1.3 | 27 June 2026 | Programme Sponsor & Chief Engineering Advisor | Recorded AIEMS Execution Mode default behaviour, temporary context switching and live workflow change control. |
+| 1.2 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Session lifecycle guidance covering WP0A, WP0B, session creation, handover and closure checks. |
+| 1.1 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Added Engineering Implementer role, session initialisation, scope control, self-review, completion reporting and repository documentation guidance. |
+| 1.0 | 25 June 2026 | Programme Sponsor & Chief Engineering Advisor | Initial controlled artefact structure established for the AI Engineering Playbook. |

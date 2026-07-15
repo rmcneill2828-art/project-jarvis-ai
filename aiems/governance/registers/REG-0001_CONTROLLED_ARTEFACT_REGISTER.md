@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.131
+**Version:** 3.133
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.131 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.133 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -143,6 +143,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIP-ESR0020-001 | Engineering Implementation Package | PBK-0001 Playbook Alignment and Baseline Reference Correction | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0021-001 | Engineering Implementation Package | PBK-0001 Version History Sort Order Correction | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0021-002 | Engineering Implementation Package | PBK-0001 Historical Archive Breadcrumb Alignment | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -153,7 +155,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.22 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.24 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.13 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -283,6 +285,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.133 | 15 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0021-002 (PBK-0001 Historical Archive Breadcrumb Alignment, Approved 0.2) and aligned PBK-0001 version (1.23 to 1.24) following its implementation: OSE Relationships breadcrumb repointed from HST-0013/FCH-0013 to HST-0020/FCH-0020 (Claude) as the "latest" historical archive entries; HST-0013/FCH-0013 retained, reworded as lineage-only. ESR-0021 WP3. |
+| 3.132 | 15 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0021-001 (PBK-0001 Version History Sort Order Correction, Approved 0.2) and aligned PBK-0001 version (1.22 to 1.23) following its implementation: the Version History table's v1.0-v1.8 block, previously ascending, reordered to descending, consistent with the rest of the table. ESR-0021 WP2. |
 | 3.131 | 13 July 2026 | Claude Engineering Implementer | Registered FCH-0020 (renamed from FCH-0018, Claude Full Chat History for ESR-0020), correcting a naming drift the Programme Sponsor identified: the newer HST/FCH counter (15, 16, 17, 18...) had decoupled from the actual ESR number it documents once ESR-0014/0018/0019 were skipped in that series, so "18" had come to mean ESR-0020 on both the Claude and (independently) the Engineering Reviewer side. Corrected on the Claude side (HST-0018 to HST-0020, FCH-0018 to FCH-0020); the Engineering Reviewer independently made the equivalent correction to its own 18-numbered files around the same time. |
 | 3.130 | 13 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.36 to 1.37) following EBG-0058 (PBK-0001 Clause Consolidation) being added, post-ESR-0020-closure. |
 | 3.129 | 13 July 2026 | Claude Engineering Implementer | Registered ESR-0020 (Engineering Session Report), closed 13 July 2026; aligned PST-0001 version (2.26 to 2.27) following ESR-0020 closure synchronisation. |
