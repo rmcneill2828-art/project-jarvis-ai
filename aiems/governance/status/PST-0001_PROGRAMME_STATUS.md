@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.27
+**Version:** 2.28
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.27 |
+| Version | 2.28 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -142,7 +142,7 @@ PST-0001 records the ESR-0020 closed state. It does not create a new engineering
 | Guardian Instrumentation Agent | Proof of Concept Complete | Early | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] completed GIA-BOOT as a Proof of Concept; further GIA implementation is deferred. |
 | User Experience Platform | Live, Foundation Scope | Foundation | [[ADR-0007_USER_EXPERIENCE_PLATFORM_SELECTION|ADR-0007]] records Tauri + React as the UXP direction; [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE|ADR-0019]] decided the backend bridge pattern; ESR-0017 WP9 implemented and verified it live - the UXP is no longer a disconnected static shell. The chat input is enabled and calls the real backend; capability/diagnostics panels derive from live `platform.status` data. **ESR-0019 delivered the Guardian Orb knowledge-graph vision's Phase 1** ([[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] 8.1) - the Orb now renders the live `knowledge.graph` data as a sphere, replacing the placeholder glow/ring/label animation. Streaming notifications, production sidecar packaging, true 3D/rotation and Phases 2-4 of the knowledge-graph vision remain not yet implemented (EBG-0050 remaining scope, EBG-0055 continuation). |
 | JARVIS Product Capability Baseline | Accepted, Current | Foundation | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1 - refreshed and accepted at ESR-0020 WP4, closing EBG-0056. No longer stale. |
-| JARVIS Capability Maturity | Maintained, Stale | Early | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] remains the nominal authoritative maturity model but pre-dates WP2/WP9 (noted at ESR-0017 Section 15.3, not yet refreshed). |
+| JARVIS Capability Maturity | Maintained, Current | Foundation | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] refreshed to v2.0 at ESR-0021 WP7 (closing EBG-0069) - no longer stale. Guardian, Sentinel, Platform Services, UXP, Knowledge and Provider Architecture now correctly shown as Implemented (Foundation); Memory, Voice, Vision, Home Automation, Productivity, Multi-device and a JARVIS-internal Engineering Agent remain correctly Not Started. |
 | JARVIS Development | In Progress | Early | Guardian Desktop Platform Shell, Guardian Experience v1.0, GIA-BOOT Proof of Concept, Guardian Runtime Foundation, Guardian&harr;Sentinel connection (ESR-0017 WP2), the UXP-backend bridge (ESR-0017 WP9) and the Guardian Orb knowledge-graph rendering (ESR-0019 WP2, EBG-0055 Phase 1) exist. **Guardian is now reachable through the running UXP, and its own visual presence reflects live repository state** - both verified via real running sessions - though this remains outside PCB-0001's still-unrefreshed accepted operational baseline (EBG-0056). |
 | Runtime Chat Archive | Complete | Foundation | Prototype chat exports are archived under `logs/chats/`; EBG-0039 is completed in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]. |
 
@@ -604,6 +604,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.28 | 15 July 2026 | Claude Engineering Implementer | Updated the JARVIS Capability Maturity row (Section 5) following ESR-0021 WP7's refresh of JARVIS_CAPABILITY_READINESS_MATRIX.md (v2.0, closing EBG-0069): no longer stale, Guardian/Sentinel/Platform Services/UXP/Knowledge/Provider Architecture correctly shown as Implemented (Foundation). ESR-0021 WP7. |
 | 2.27 | 13 July 2026 | Claude Engineering Implementer | ESR-0020 formally closed (13 July 2026). Updated Current Mode/Baseline/Product Baseline/Phase/Workflow/Objective (RBL-0014 retained, PCB-0001 v2.1 accepted), Current Engineering Focus (WP1-WP6 summary, ESR-0019 demoted to Prior Session), Sentinel/JARVIS Product Capability Baseline capability rows (Gemini live-validated, PCB-0001 no longer stale), Completed Milestones (8 new ESR-0020 rows), Active/Next Planned Work, Repository Health (204/204 tests), Outstanding Observations (PBK-0001/COC-0001 Draft to Approved, Gemini live-validated), Session Start Guidance (added explicit implementation-follows-review note per Sections 9A/9B) and OSE Relationships retargeted from ESR-0019/RBL-0014-accepted to ESR-0020/RBL-0014-retained. |
 | 2.26 | 11 July 2026 | Claude Engineering Implementer | ESR-0019 formally closed (11 July 2026), the first full session under the permanent Lead/Reviewer appointment. Updated Current Mode/Baseline/Phase/Workflow/Objective (RBL-0014 accepted, superseding RBL-0013), Current Engineering Focus (WP1 role-binding, WP2 Guardian Orb knowledge-graph delivery, ESR-0018 demoted to Prior Session), Guardian Experience/UXP/JARVIS Development capability rows (Guardian Orb Phase 1 delivered), Completed Milestones (6 new ESR-0019 rows), Active/Next Planned Work, Repository Health (204/204 tests), Outstanding Observations (PBK-0001/COC-0001 role-binding actioned not flagged, Guardian Orb Phase 1 delivered, new Incremental Visual Convergence practice, Vite/Tauri scaffolding fix), Session Start Guidance and OSE Relationships retargeted from ESR-0018/RBL-0013 to ESR-0019/RBL-0014. |
 | 2.25 | 10 July 2026 | Claude Engineering Reviewer | ESR-0018 formally closed (10 July 2026). Updated Current Mode/Phase/Workflow/Objective, Current Engineering Focus (ESR-0018 WP0 incident chain and WP1/WP2 outcomes, ESR-0017 detail retained as prior-session history), Sentinel/Gemini capability row (EBG-0051 hardening, live smoke test still pending), Completed Milestones (6 new ESR-0018 rows), Active/Next Planned Work, Repository Health (192/192 tests), Outstanding Observations (EE-0001 trial concluded - Claude permanent Lead Engineer, ChatGPT permanent Lead Reviewer; Claude<->Codex bridge EBG-0057 recorded), Session Start Guidance and OSE Relationships retargeted from ESR-0017/rotation-confirmation to ESR-0018/permanent-appointment confirmation. |
