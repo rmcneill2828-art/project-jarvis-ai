@@ -9,7 +9,7 @@
 | Package ID | EIP-ESR0021-003 |
 | Artefact ID | EIP-ESR0021-003 |
 | Title | PBK-0001 JRM-0001 Cross-Reference Addition |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -25,7 +25,7 @@ This Engineering Implementation Package prepares a narrow addition to [[PBK-0001
 
 [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Project Roadmap) was created and Programme Sponsor-approved at ESR-0021 WP5, closing EBG-0012, EBG-0027 and EBG-0028. It is the first forward-looking sequencing artefact this programme has had - but PBK-0001's Backlog Progression Analysis guidance, and its Related Artefacts / OSE Relationships sections, were all last touched before JRM-0001 existed and make no reference to it. Without a pointer, a future session doing backlog sequencing work has no reason to consult it, and JRM-0001's own Section 4 Principle 5 already anticipates exactly this risk - a roadmap nobody actually checks.
 
-This package adds a cross-reference only. It does not add a new procedural rule, and does not restate anything JRM-0001 or EBR-0001 already say - both PBK-0001 itself (Repository Documentation Principle) and the still-open EBG-0058 (PBK-0001 Clause Consolidation) caution against exactly that kind of accretion.
+This package is mostly a cross-reference: two of its three additions (Related Artefacts, OSE Relationships) are pure discoverability, adding a link and nothing else. The third addition (the Backlog Progression Analysis sentence) is honestly a small behavioural addition, not merely a link - it changes what Backlog Progression Analysis considers, by directing that an item's existing JRM-0001 horizon placement inform the recommendation rather than being re-derived from nothing. **Revised per Engineering Reviewer finding**: the original draft understated this by calling the whole package "a cross-reference only," which was not accurate for this one sentence. The behavioural addition is kept in this same package rather than split into a separate EIP - it is one sentence, proportionate to review alongside the cross-references rather than as its own cycle - but it is named honestly here as guidance, not merely a pointer. None of the three additions restates anything JRM-0001 or EBR-0001 already say, and none introduces a new mandatory rule with its own compliance criteria - both PBK-0001 itself (Repository Documentation Principle) and the still-open EBG-0058 (PBK-0001 Clause Consolidation) caution against that kind of accretion.
 
 ---
 
@@ -79,7 +79,7 @@ No other files are authorised unless a dependency is discovered during validatio
 
 The implementation shall:
 
-1. Insert one sentence immediately after the existing line "Backlog Progression Analysis shall examine EBR-0001 and recommend activities that best progress Project JARVIS AI during the next Engineering Session" - to the effect that where JRM-0001 already places the item in a horizon (Near-term/Mid-term/Longer-term), that placement shall inform the recommendation rather than being independently re-derived.
+1. Insert one sentence immediately after the existing line "Backlog Progression Analysis shall examine EBR-0001 and recommend activities that best progress Project JARVIS AI during the next Engineering Session" - to the effect that where JRM-0001 already places the item in a horizon, that placement shall inform the recommendation rather than being independently re-derived. The sentence shall not enumerate JRM-0001's specific horizon names (Near-term, Mid-term, Longer-term, Not Yet Justified) - referring generically to "horizon placement" avoids the wording going stale if JRM-0001's own horizon labels change, and avoids silently excluding whichever horizon isn't named (caught by Engineering Reviewer finding: the original draft named only three of JRM-0001's four horizons, which would have left "Not Yet Justified" items outside this guidance).
 2. Add a single new bullet to Related Artefacts: JRM-0001 as the forward-looking sequencing artefact referenced by Backlog Progression Analysis.
 3. Add a single new row to the OSE Relationships table for JRM-0001, matching the existing table's style.
 4. Increment PBK-0001 Document Control version and add one Version History row describing this change.
@@ -103,7 +103,7 @@ This package does not authorise:
 # 9. Constraints
 
 1. Keep the implementation to exactly the additions listed in Section 7 - no more.
-2. The new Backlog Progression Analysis sentence must not read as a new mandatory rule with its own compliance criteria - it should read as guidance pointing to an existing resource, consistent with how GDE-0001 is already referenced elsewhere in PBK-0001.
+2. The new Backlog Progression Analysis sentence is guidance shaping how an existing analysis step is performed, not a new mandatory rule with its own compliance criteria (no new pass/fail check, no new reporting obligation) - consistent in weight with the other bullet points Backlog Progression Analysis already directs Health Reviews to consider (dependencies, sequencing, risk, benefit, effort, and so on).
 3. Preserve PBK-0001's existing structure, tone and section ordering.
 4. Do not touch any other Repository Engineering Health Review Guidance content.
 
@@ -146,9 +146,14 @@ Validation should confirm:
 
 # 12. Approval Request
 
-This package is ready for Engineering Reviewer review, then Programme Sponsor decision.
+**Engineering Reviewer review completed.** Two findings raised, both accepted and addressed in this revision (0.2):
 
-If approved, the Engineering Implementer may apply the narrow PBK-0001 cross-reference addition and the corresponding REG-0001 traceability update in the next authorised implementation step.
+1. **Medium** - the horizon-placement sentence originally enumerated only three of JRM-0001's four horizons (Near-term/Mid-term/Longer-term), omitting Not Yet Justified, which would have silently excluded items in that bucket from the new guidance. Fixed: Section 7 item 1 no longer enumerates specific horizon names, referring generically to "horizon placement" instead.
+2. **Low** - the package's original framing ("a cross-reference only... does not add a new procedural rule") understated the Backlog Progression Analysis sentence, which is a small behavioural addition, not merely a link. Per Programme Sponsor decision, resolved by keeping the addition in this one package rather than splitting it into two, but reframing Section 2 and Section 9 to describe it honestly as guidance shaping an existing analysis step, rather than claiming it is purely a documentation pointer.
+
+This package is now ready for Programme Sponsor decision.
+
+If approved, the Engineering Implementer may apply the narrow PBK-0001 cross-reference and guidance addition, and the corresponding REG-0001 traceability update, in the next authorised implementation step.
 
 ---
 
@@ -167,4 +172,5 @@ If approved, the Engineering Implementer may apply the narrow PBK-0001 cross-ref
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 15 July 2026 | Claude Engineering Implementer | Revised following Engineering Reviewer findings (both accepted): fixed the horizon-placement sentence to stop enumerating three of JRM-0001's four horizons (Medium); reframed Section 2/Section 9 to honestly describe the Backlog Progression Analysis addition as a small behavioural change, not merely a cross-reference (Low), per Programme Sponsor decision to keep it in one package with corrected framing rather than splitting into two. Ready for Programme Sponsor decision. |
 | 0.1 | 15 July 2026 | Claude Engineering Implementer | Drafted EIP-ESR0021-003 at the Programme Sponsor's direct request, for Engineering Reviewer review: adds a narrow JRM-0001 cross-reference to PBK-0001's Backlog Progression Analysis guidance, Related Artefacts and OSE Relationships - no new procedural rule, no other content change. |
