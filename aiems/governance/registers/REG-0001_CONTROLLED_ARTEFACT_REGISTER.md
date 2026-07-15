@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.137
+**Version:** 3.138
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.137 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.138 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -146,6 +146,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0020-001 | Engineering Implementation Package | PBK-0001 Playbook Alignment and Baseline Reference Correction | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0021-001 | Engineering Implementation Package | PBK-0001 Version History Sort Order Correction | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0021-002 | Engineering Implementation Package | PBK-0001 Historical Archive Breadcrumb Alignment | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0021-003 | Engineering Implementation Package | PBK-0001 JRM-0001 Cross-Reference Addition | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -286,6 +287,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.138 | 15 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0021-003 (PBK-0001 JRM-0001 Cross-Reference Addition, Draft 0.1) as a draft controlled artefact in `aiems/governance/reviews/`, drafted at the Programme Sponsor's direct request for Engineering Reviewer review before implementation. ESR-0021. |
 | 3.137 | 15 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.39 to 1.40) following EBG-0012/EBG-0027/EBG-0028 closure. ESR-0021 WP5. |
 | 3.136 | 15 July 2026 | Claude Engineering Implementer | Registered JRM-0001 (Project Roadmap, Approved 1.0) as a new controlled artefact under `aiems/governance/roadmap/`. Programme Sponsor-approved 15 July 2026, closing EBG-0012, EBG-0027 and EBG-0028 in EBR-0001. ESR-0021 WP5. |
 | 3.135 | 15 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.38 to 1.39) following the ESR-0021 WP6 historical audit: 11 new Candidate Backlog items (EBG-0059 through EBG-0069) added from a full HST/FCH review of all ~20 sessions of chat history, per Programme Sponsor decision to add Tier 1 findings only. ESR-0021 WP6. |
