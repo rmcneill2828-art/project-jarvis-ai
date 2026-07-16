@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.32
+**Version:** 2.33
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.32 |
+| Version | 2.33 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -61,7 +61,7 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
 | Current Mode | [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] is the latest **closed** session (15 July 2026). ESR-0022 is now **in progress** (16 July 2026, not yet closed - no session report artefact exists until closure, per this project's established practice): WP1 delivered production provider wiring (EBG-0070) and the System Health panel (EBG-0072) per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0 (Engineering Reviewer and Programme Sponsor approved). An earlier revision (0.1) had described implementation already drafted and tested before the package existed - the Engineering Reviewer correctly declined to approve that retroactively, the implementation was fully reverted, and v0.2 was reviewed and approved as a genuine prospective package before this WP's real implementation began. Session-wide WP6 Independent Repository Verification: not yet performed. |
-| Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained at ESR-0021 closure - not yet re-assessed for ESR-0022, pending that session's own WP6/WP7. |
+| Current Repository Baseline | [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] accepted at ESR-0022 WP7, superseding RBL-0014 - the Programme Sponsor's determination: production provider wiring changes Guardian's default runtime behaviour, a materially new operational capability, not an incremental UI refresh. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1, refreshed and accepted at ESR-0020 WP4 - no longer stale. Its sibling document, [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]], was similarly refreshed to v2.0 at ESR-0021 WP7 after 13 sessions of staleness. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
 | Current Phase | ESR-0022 in progress. Continuing under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT Engineering Reviewer). |
@@ -254,6 +254,9 @@ PST-0001 records the ESR-0022 in-progress state. It does not itself approve impl
 | ESR-0021 [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] refreshed to v2.0, closing EBG-0069 - first backlog item selected via JRM-0001 horizon guidance | Complete |
 | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] retained at ESR-0021 closure (incremental relative to its establishing session) | Complete |
 | [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] Engineering Session Report created and closed | Complete |
+| ESR-0022 WP1 delivered: production provider wiring (EBG-0070) and System Health panel (EBG-0072) per EIP-ESR0022-001 v1.0 | Complete |
+| ESR-0022 WP6 Independent Repository Verification: Pass | Complete |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] accepted at ESR-0022 WP7, superseding RBL-0014 (production provider wiring judged a materially new operational capability, not an incremental UI refresh) | Complete |
 
 ---
 
@@ -267,8 +270,8 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Current Engineering Session | [[ESR-0021_ENGINEERING_SESSION_REPORT|ESR-0021]] - **Closed** (15 July 2026) | WP1-WP7 complete; session-wide WP6 Independent Repository Verification complete, WP7 RBL-0014 retained. |
-| Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Retained at ESR-0021 closure - this session's delivery judged incremental relative to RBL-0014's establishing session (ESR-0019). |
+| Current Engineering Session | ESR-0022 - **in progress** (16 July 2026, no session report artefact yet) | WP1 complete (EBG-0070, EBG-0072); WP6 Independent Repository Verification complete (Pass); WP7 new baseline (RBL-0015) accepted. |
+| Current Repository Baseline | [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Accepted at ESR-0022 WP7, superseding RBL-0014 - production provider wiring judged a materially new operational capability, not an incremental UI refresh. |
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | v2.1 - refreshed and accepted at ESR-0020 WP4, closing EBG-0056. No longer stale. Sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] refreshed to v2.0 at ESR-0021 WP7. |
 | Current Roadmap | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | v1.0, Approved at ESR-0021 WP5 - the programme's first forward-looking sequencing artefact, cross-referenced from PBK-0001's Backlog Progression Analysis. |
 | Current Review State | ESR-0021 fully reviewed and closed | All Work Packages independently verified via the session-wide WP6. |
@@ -287,11 +290,11 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Item | Status |
 |------|--------|
 | Repository Health | Good |
-| Repository Acceptance | Accepted through [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] |
-| Current Repository Baseline | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] |
+| Repository Acceptance | Accepted through [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] |
+| Current Repository Baseline | [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1 (ESR-0020); sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.0 (ESR-0021 WP7, closing EBG-0069) |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | ESR-0022 in progress (16 July 2026); WP1 complete (EBG-0070, EBG-0072, per EIP-ESR0022-001 v1.0). `python scripts/validate_repository.py` (full mode): 0 errors, 85 pre-existing warnings. `python -m pytest`: 209/209 passing. |
+| Current Activity | ESR-0022 in progress (16 July 2026); WP1 complete (EBG-0070, EBG-0072, per EIP-ESR0022-001 v1.0); WP6 Independent Repository Verification complete (Pass); WP7 new baseline [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] accepted, superseding RBL-0014. `python scripts/validate_repository.py` (full mode): 0 errors, 85 pre-existing warnings. `python -m pytest`: 209/209 passing. |
 
 ---
 
@@ -497,7 +500,7 @@ ESR-0008 success criteria have been met for local documentation implementation:
 At the start of the next separately approved engineering session or approved implementation activity, follow [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] knowledge tiering:
 
 1. Review README.md for repository orientation and platform context.
-2. Review [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]], the repository baseline the Programme Sponsor has accepted as current.
+2. Review [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]], the repository baseline the Programme Sponsor has accepted as current.
 3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current State tier).
 4. Review [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Project Roadmap, new at ESR-0021) for horizon-placement guidance before selecting the next Work Package - per PBK-0001's Backlog Progression Analysis, an item's existing JRM-0001 placement should inform the recommendation rather than being re-derived from scratch.
 5. Review the Architecture tier as referenced by PST-0001 - for UXP/Guardian-experience work specifically, also review [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1 (Phase 1-2 now implemented - the Guardian Orb renders the live knowledge graph, with Knowledge Metrics/Active Clusters panels since ESR-0021 WP4) before touching `src/GuardianOrbGraph.jsx`, `src/KnowledgeGraphPanels.jsx` or `src/App.jsx`.
@@ -510,7 +513,7 @@ At the start of the next separately approved engineering session or approved imp
 12. Search the Historical Archive (AIEMS History and Full Chat artefacts) only where deeper context is required - ESR-0021 WP6 already conducted a full audit of this archive; check [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0059 through EBG-0069 (and that session's Tier 2/3 conversational record) before re-deriving the same findings.
 13. Confirm Programme Sponsor approval before creating any future Engineering Session Report, future repository baseline or future engineering objective.
 
-This guidance records the ESR-0021 closed state and RBL-0014 retention. PST-0001 does not create a new engineering session, accept a repository baseline or approve implementation outside separately authorised engineering work.
+This guidance still records the ESR-0021 closed state's onboarding detail (items 5-10 below) - not yet retargeted to ESR-0022, since that session remains open and this section is conventionally refreshed at session closure. The repository baseline reference above (item 2) is current: [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]], accepted at ESR-0022 WP7, superseding RBL-0014. PST-0001 does not create a new engineering session or approve implementation outside separately authorised engineering work.
 
 ---
 
@@ -552,8 +555,9 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] | Closed engineering session report - nine Work Packages including the first live interactive UXP and a Guardian Orb design-baseline recovery. |
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Closed engineering session report recording the Sentinel trust-tier policy model and its architecture alignment, delivered and independently verified. |
 | [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] | Closed engineering session report recording the Sentinel execution pipeline delivered and proven end to end. |
-| [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Current accepted repository baseline, accepted at ESR-0019 closure, superseding RBL-0013. |
-| [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] | Previous accepted repository baseline, accepted at ESR-0017 closure (retained through ESR-0018), superseding RBL-0012 (mid-ESR-0017) and RBL-0011 (ESR-0015-ESR-0016). |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline, accepted at ESR-0022 WP7, superseding RBL-0014. |
+| [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Previous accepted repository baseline, accepted at ESR-0019 closure (retained through ESR-0020 and ESR-0021), superseding RBL-0013. |
+| [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] | Prior accepted repository baseline, accepted at ESR-0017 closure (retained through ESR-0018), superseding RBL-0012 (mid-ESR-0017) and RBL-0011 (ESR-0015-ESR-0016). |
 | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Approved Guardian Experience Architecture; Section 8.1's Guardian Orb knowledge-graph design direction (recovered at ESR-0017) had its Phase 1 implemented at ESR-0019. |
 | [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Lead/Reviewer trial, concluded at ESR-0018 (Section 7): all four sessions closed (ESR-0015 Claude Lead, ESR-0016 ChatGPT Lead, ESR-0017 Claude Lead/Cold Start, ESR-0018 ChatGPT Lead/decision point); permanent appointment made - Claude Lead Engineer, ChatGPT Lead Reviewer, formally bound into PBK-0001/COC-0001 at ESR-0019 WP1. |
 | [[PEM-001_AI_PROVIDER_EVALUATION_MATRIX|PEM-001]] | Provider evaluation matrix; decision outcome recorded during ESR-0015 WP3a. |
@@ -617,6 +621,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.33 | 16 July 2026 | Claude Engineering Implementer | ESR-0022 WP6/WP7: Engineering Reviewer WP6 Pass; Programme Sponsor WP7 determination to establish a new baseline (RBL-0015) rather than retain RBL-0014, judging production provider wiring a materially new operational capability. Updated Current Mode/Baseline, Section 8 Active/Next Planned Work, Section 9 Repository Health, Completed Milestones (3 new rows), Session Start Guidance item 2, and OSE Relationships to reference RBL-0015. Session Start Guidance items 5-10 remain targeted at ESR-0021, not yet retargeted since ESR-0022 has not closed. ESR-0022 WP6/WP7. |
 | 2.32 | 16 July 2026 | Claude Engineering Implementer | ESR-0022 WP1 implemented and delivered following Engineering Reviewer and Programme Sponsor approval of EIP-ESR0022-001 v1.0: EBG-0070 (production provider wiring) and EBG-0072 (System Health panel) marked Complete. Updated Current Mode, Current Engineering Focus, Section 5 Sentinel/UXP rows, Section 8 and Section 9 Repository Health (209/209 tests, full validator 0 errors/85 warnings). ESR-0022 WP1. |
 | 2.31 | 16 July 2026 | Claude Engineering Implementer | Following an Engineering Reviewer High finding on EIP-ESR0022-001 v0.1 (a retroactive package cannot be genuinely approved), fully reverted the premature implementation (nothing was ever committed) and reworded Current Mode, Current Engineering Focus, Section 5 Sentinel/UXP rows and Section 8 throughout: EBG-0070/EBG-0072 now `Approved Backlog` (not `In Progress`), described as a genuine prospective proposal via EIP-ESR0022-001 v0.2 with no code written, incorporating the Reviewer's Medium finding (blank model env var handling) directly into the design. ESR-0022 WP1. |
 | 2.30 | 16 July 2026 | Claude Engineering Implementer | ESR-0022 opened, WP1 proposed (EBG-0070 production provider wiring, EBG-0072 System Health panel, selected via JRM-0001 horizon guidance). **Self-disclosed process deviation, corrected same-day**: both were drafted and locally tested before an Engineering Implementation Package existed - reworded throughout (Current Mode, Current Engineering Focus, Section 5 Sentinel/UXP rows, Section 8) from "delivered/Complete" to "proposed/In Progress, pending Engineering Reviewer review" of [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]], drafted retroactively for that review. Nothing committed or pushed. ESR-0022 WP1. |

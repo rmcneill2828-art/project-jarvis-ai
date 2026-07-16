@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.147
+**Version:** 3.149
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.147 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.149 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -133,6 +133,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0012 | Repository Baseline | ESR-0017 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
 | RBL-0013 | Repository Baseline | ESR-0017 Repository Baseline (Refresh - Post-WP9) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/baselines/` |
 | RBL-0014 | Repository Baseline | ESR-0019 Repository Baseline (Guardian Orb Knowledge Graph) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0019 | `aiems/governance/baselines/` |
+| RBL-0015 | Repository Baseline | ESR-0022 Repository Baseline (Production Provider Wiring) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0022 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.4 | In Review | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
@@ -163,7 +164,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.32 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.33 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -289,6 +290,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.149 | 16 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.32 to 2.33) following ESR-0022 WP6/WP7 synchronisation - Current Mode/Baseline, Active/Next Planned Work, Repository Health, Completed Milestones, Session Start Guidance and OSE Relationships updated for RBL-0015's acceptance. Corrects a version-mismatch error caught by the validator immediately after the previous entry. ESR-0022 WP6/WP7. |
+| 3.148 | 16 July 2026 | Claude Engineering Implementer | Registered RBL-0015 (ESR-0022 Repository Baseline - Production Provider Wiring), accepted by the Programme Sponsor 16 July 2026, superseding RBL-0014, following the Engineering Reviewer's WP6 Pass and the Programme Sponsor's explicit determination to cut a new baseline rather than retain RBL-0014. ESR-0022 WP7. |
 | 3.147 | 16 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.44 to 1.45) and JRM-0001 (1.3 to 1.4) versions: added EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up), discovered by the Programme Sponsor during the live visual check of EBG-0072's System Health panel. No implementation authorised. ESR-0022 WP1. |
 | 3.146 | 16 July 2026 | Claude Engineering Implementer | EIP-ESR0022-001 approved (Engineering Reviewer and Programme Sponsor), version 0.2 to 1.0, status Draft to Approved. Implemented as scoped: EBR-0001 (1.43 to 1.44), JRM-0001 (1.2 to 1.3) and PST-0001 (2.31 to 2.32) aligned - EBG-0070/EBG-0072 marked Complete. 209 tests pass, validator clean. ESR-0022 WP1. |
 | 3.145 | 16 July 2026 | Claude Engineering Implementer | Following an Engineering Reviewer High finding on EIP-ESR0022-001 (a retroactive package cannot be genuinely approved - see EBR-0001/JRM-0001/PST-0001 for the full correction), aligned EIP-ESR0022-001 (0.1 to 0.2, rewritten as a genuine prospective package with the Reviewer's Medium finding on blank model env vars incorporated), EBR-0001 (1.42 to 1.43), JRM-0001 (1.1 to 1.2) and PST-0001 (2.30 to 2.31) versions. The premature implementation was fully reverted; nothing was ever committed. ESR-0022 WP1. |
