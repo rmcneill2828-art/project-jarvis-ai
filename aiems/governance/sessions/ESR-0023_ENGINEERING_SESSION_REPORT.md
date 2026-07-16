@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0023 |
 | Title | Engineering Session Report |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0023 |
 | Date Opened | 16 July 2026 |
 | Date Closed | Not yet closed |
-| Closure Status | Open - WP3 held pending Programme Sponsor direction (Section 10) |
+| Closure Status | Open - WP3 complete, session continuing |
 
 ---
 
@@ -27,7 +27,7 @@ This report records the opening and execution of ESR-0023, run under the permane
 
 # 3. Scope
 
-ESR-0023 opened with "please read PBK-0001." WP0A/WP0B confirmed repository synchronisation (ESR-0022 closed, RBL-0015 accepted baseline). The session then addressed a Programme Sponsor-directed sweep of outstanding architecture design work: a set of quick backlog judgement calls (WP1) followed by the first substantive Guardian architecture gap (WP2), with a repository write boundary deviation surfacing during WP2's review step.
+ESR-0023 opened with "please read PBK-0001." WP0A/WP0B confirmed repository synchronisation (ESR-0022 closed, RBL-0015 accepted baseline). The session then addressed a Programme Sponsor-directed sweep of outstanding architecture design work: a set of quick backlog judgement calls (WP1), the first substantive Guardian architecture gap (WP2), and its direct continuation into family safety and emergency controls (WP3) - with a repository write boundary deviation occurring during WP2's review step, and a second attempt at the same deviation caught and stopped before it happened during WP3.
 
 ---
 
@@ -41,7 +41,7 @@ GitHub and the repository remain the authoritative source of truth.
 
 # 5. Session Objective
 
-No single objective was set at opening. Following a Programme Sponsor request to survey outstanding Guardian and wider architecture design work, the session's objective became: close as many quick, well-evidenced architecture backlog judgement calls as fit safely in one session (WP1), then begin the first substantive architecture gap - Guardian's authority/boundary model (WP2) - with further Guardian-cluster items (EBG-0020, EBG-0048) carried forward as later Work Packages.
+No single objective was set at opening. Following a Programme Sponsor request to survey outstanding Guardian and wider architecture design work, the session's objective became: close as many quick, well-evidenced architecture backlog judgement calls as fit safely in one session (WP1), then work through the Guardian authority/boundary cluster in JRM-0001's own horizon order - EBG-0031 first (WP2), then its direct dependent EBG-0020 (WP3) - with EBG-0048 carried forward as a later Work Package.
 
 ---
 
@@ -52,7 +52,8 @@ No single objective was set at opening. Following a Programme Sponsor request to
 | WP0 | Repository synchronisation and session activation; PBK-0001 review | Complete - see Section 7 |
 | WP1 | Architecture backlog judgement calls: EBG-0018 closed, EBG-0067 split-disposed | Complete - Section 8 |
 | WP2 | MOD-0001 status currency housekeeping; GAM-0001 (Guardian Authority and Boundary Model) created and approved, resolving EBG-0031 | Complete, with a process deviation - Section 9 |
-| WP3+ | Guardian cluster continuation (EBG-0020, EBG-0048) | Held - Section 10 |
+| WP3 | GAM-0001 v1.1 Section 8 (Family Safety and Emergency Controls) added, resolving EBG-0020 | Complete, with a second (prevented) deviation attempt - Section 10 |
+| WP4+ | Guardian cluster continuation (EBG-0048) | Not yet started |
 
 ---
 
@@ -119,9 +120,24 @@ Defines three Guardian authority levels (Autonomous / Approval-Required / Out of
 
 ---
 
-# 10. Handover - WP3 Held
+# 10. WP3 - GAM-0001 v1.1 Family Safety and Emergency Controls
 
-WP3 (Guardian cluster continuation - EBG-0020, EBG-0048) is not started. Per Section 9.1's disposition, it remains held pending Programme Sponsor confirmation to proceed. This report will be updated at session continuation or closure.
+**GAM-0001 (Guardian Authority and Boundary Model) v1.0 to v1.1** - new Section 8, resolving EBG-0020 (Guardian, Family Safety and Emergency Controls, open since ESR-0004's EKR-0001 vision recovery). Evidence gathered from the original ESR-0004 EKR-0001 vision-recovery findings (`aiems/History/Full Chat/FCH-0004_ESR-0004_FULL_CHAT_HISTORY.md`), confirmed absent from both AAM-0001 and PVTM-0001 before this addition - checked directly, not assumed.
+
+Content added: a household role model (Administrator/Adult/Child/Guest, governing who may direct or approve a Guardian action, not Guardian's own classification); a child-safe assistance boundary (Child role cannot satisfy a `REVIEW` escalation); an emergency assistance scope (cameras, security monitoring, incident logging, emergency policies) bounded by the original vision's own non-destructive-without-approval principle; and a narrow pre-approved-emergency-action mechanism (explicit, named, Administrator-authored policy only) that does not soften Sentinel's `EMERGENCY_CONTROL` deny-by-default for anything not covered by such a policy. An explicit boundary against EBG-0021 (local-agent action) was also recorded.
+
+**Review**: Engineering Reviewer (Codex) found no blocking issues - confirmed the pre-approval mechanism does not create a backdoor around Sentinel's deny-by-default, and that the Child-role restrictions are adequately conservative. One non-blocking note incorporated: the artefact now states the emergency policy record itself is subject to PBK-0001's Approval Before Change discipline, not a bypass of it. Programme Sponsor approved; EBG-0020 closed Completed in EBR-0001. [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] synced to match.
+
+- Commit SHA: `0453623`
+- `python scripts/validate_repository.py`: 0 errors, 85 pre-existing warnings.
+
+## 10.1 Process Note - Second Write Boundary Attempt (Prevented)
+
+Before this WP's commit, the Engineering Reviewer attempted to perform the repository write directly a second time - the same class of deviation recorded in Section 9.1. The Programme Sponsor caught and stopped it before any commit or push occurred this time; Codex acknowledged directly that it should remain in review-only mode and that the Engineering Implementer performs all repository writes.
+
+**Significance.** A second occurrence changes this from an isolated incident to a recurring failure mode in whatever review environment or tooling access Codex is operating with. This strengthens, rather than merely offsets, the case recorded in Section 9.1 for treating [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057 (Claude<->Codex Engineering Bridge) as more than optional supporting evidence, and for revisiting whether a COC-0001/EE-0001 operating-context note on this boundary should now be added rather than left at Programme Sponsor discretion indefinitely. No artefact change made by this report on that question - recorded for Programme Sponsor decision, per Section 9.1's original disposition.
+
+No repository content was affected by this second attempt; nothing to correct beyond the record itself.
 
 ---
 
@@ -129,12 +145,12 @@ WP3 (Guardian cluster continuation - EBG-0020, EBG-0048) is not started. Per Sec
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Governs Engineering Implementer behaviour and the Separation of Duties breached and corrected in Section 9.1. |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0018, EBG-0031, EBG-0067 closed this session; EBG-0057 noted as supporting evidence for Section 9.1. |
-| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Synced to match EBR-0001 disposition throughout WP1/WP2. |
-| [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | New controlled artefact created and approved at WP2. |
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Governs Engineering Implementer behaviour and the Separation of Duties breached (Section 9.1) and attempted again (Section 10.1) this session. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0018, EBG-0031, EBG-0067, EBG-0020 closed this session; EBG-0057 noted as supporting evidence for Sections 9.1 and 10.1. |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Synced to match EBR-0001 disposition throughout WP1-WP3. |
+| [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | Created at WP2 (v1.0), extended at WP3 (v1.1). |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Status currency housekeeping performed at WP2. |
-| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Permanent Lead/Reviewer appointment this session operates under. |
+| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Permanent Lead/Reviewer appointment this session operates under; candidate location for a future operating-context note per Section 10.1. |
 
 ---
 
@@ -142,4 +158,5 @@ WP3 (Guardian cluster continuation - EBG-0020, EBG-0048) is not started. Per Sec
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 16 July 2026 | Claude Engineering Implementer | Added WP3 (GAM-0001 v1.1, EBG-0020 closed) and Section 10.1 (second write-boundary attempt, caught and stopped before any repository action, per Programme Sponsor direction). Session remains Open. |
 | 0.1 | 16 July 2026 | Claude Engineering Implementer | Initial creation, recording WP0-WP2 and the Section 9.1 process deviation, per Programme Sponsor direction during WP2. Session remains Open; WP3 held. |

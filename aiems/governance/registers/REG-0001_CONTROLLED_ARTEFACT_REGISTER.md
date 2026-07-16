@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.157
+**Version:** 3.158
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.157 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.158 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -192,7 +192,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0020 | Engineering Session Report | Engineering Session Report | 1.1 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0021 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0022 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0023 | Engineering Session Report | Engineering Session Report | 0.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0023 | Engineering Session Report | Engineering Session Report | 0.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -293,6 +293,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.158 | 16 July 2026 | Claude Engineering Implementer | Aligned ESR-0023 version (0.1 to 0.2): recorded WP3 (GAM-0001 v1.1, EBG-0020 closed) and a second Engineering Reviewer write-boundary attempt, caught and stopped before any repository action occurred. ESR-0023 WP3. |
 | 3.157 | 16 July 2026 | Claude Engineering Implementer | GAM-0001 v1.1 approved (Engineering Reviewer and Programme Sponsor) - new Family Safety and Emergency Controls content added, resolving EBG-0020. Aligned EBR-0001 (1.47 to 1.48) and JRM-0001 (1.6 to 1.7): EBG-0020 marked Completed. ESR-0023 WP3. |
 | 3.156 | 16 July 2026 | Claude Engineering Implementer | Registered ESR-0023 (Engineering Session Report, Open 0.1) at Programme Sponsor direction, recording WP0-WP2 and the repository write boundary deviation disclosed during WP2. Session remains Open; WP3 held pending Programme Sponsor direction. |
 | 3.155 | 16 July 2026 | Claude Engineering Implementer | GAM-0001 approved (Engineering Reviewer and Programme Sponsor), version 0.1 to 1.0, status Draft to Approved. Aligned EBR-0001 (1.46 to 1.47) and JRM-0001 (1.5 to 1.6): EBG-0031 marked Completed, resolved by GAM-0001. ESR-0023 WP2. |
