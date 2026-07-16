@@ -1,0 +1,206 @@
+# GAM-0001 - Guardian Authority and Boundary Model
+
+> *"Guardian's trust comes from what it will not do without being asked."*
+
+**Version:** 1.0
+
+---
+
+# 1. Document Control
+
+| Field | Value |
+|-------|-------|
+| Artefact ID | GAM-0001 |
+| Title | Guardian Authority and Boundary Model |
+| Version | 1.0 |
+| Status | Approved |
+| Owner | Programme Sponsor & Chief Engineering Advisor |
+| Classification | Internal |
+| Parent | [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] |
+| Effective Date | 16 July 2026 |
+| Review Frequency | At architecture review or Guardian implementation package selection |
+
+---
+
+# 2. Purpose
+
+GAM-0001 defines Guardian's safety, permission, approval and protection boundaries: what Guardian may act on autonomously, what requires human approval, and what remains explicitly out of scope until separately authorised.
+
+It resolves [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0031 (Guardian Architecture Specification, open since ESR-0005), and provides the policy content that the Sentinel trust-tier mechanism implemented at ESR-0016 was explicitly left with extension points to receive (`aiems/architecture/CURRENT_ARCHITECTURE.md`: "The trust-tier model provides extension points for EBG-0047 and future boundary work under EBG-0020 and EBG-0021").
+
+This artefact provides architectural authority only. It does not implement enforcement, policy execution or runtime protection behaviour.
+
+---
+
+# 3. Scope
+
+GAM-0001 covers:
+
+- the boundary between Guardian actions that require no human approval and those that do;
+- how Guardian-level authority concerns map onto Sentinel's already-implemented trust-tier model;
+- general protection principles governing Guardian's judgement;
+- the general shape of the approval/escalation path;
+- explicit non-goals for current and future implementation packages.
+
+GAM-0001 does not cover:
+
+- Guardian identity or cognitive faculties - defined in [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]];
+- Sentinel's trust-boundary architecture or execution mechanics - defined in [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] and implemented under `sentinel/` per `CURRENT_ARCHITECTURE.md`;
+- family safety and emergency control specifics - reserved for EBG-0020, referenced here, not restated;
+- consent, privacy, memory-retention and trusted-mobile approve/deny mechanics - reserved for EBG-0048, referenced here, not restated;
+- Sentinel Gate of Durin trust-tier/platform-entry implementation detail - reserved for EBG-0047;
+- React components, Tauri behaviour, Python implementation details or executable policy logic.
+
+---
+
+# 4. Architectural Position
+
+GAM-0001 sits beneath Sentinel's trust-boundary architecture and beside Guardian's identity architecture - it governs what the identified, trusted Guardian is authorised to do, not who Guardian is or how input reaches Guardian.
+
+```text
+MOD-0001
+  |
+  v
+SAM-0001  (Sentinel: can this be trusted?)
+  |
+  v
+AAM-0001  (Guardian: who is acting?)
+  |
+  v
+GAM-0001  (Guardian: is this action authorised?)
+  |
+  v
+UAM-0001  (how is this experienced by the user?)
+  |
+  v
+Engineering Implementation Packages
+```
+
+GAM-0001 does not redefine Sentinel's trust boundary or Guardian's identity. It defines the authority Guardian exercises once both have already been established for a given interaction.
+
+---
+
+# 5. Relationship to Sentinel's Trust-Tier Model
+
+Sentinel's trust-tier policy model, implemented at ESR-0016 WP1, already provides the enforcement mechanism this artefact's policy content is designed to be classified against:
+
+| Sentinel Element | Already Implemented |
+|---|---|
+| Trust tiers | `ROUTINE`, `SENSITIVE`, `RESTRICTED` |
+| Classification categories | `ROUTINE_INTERACTION`, `HUMAN_APPROVAL_REQUIRED`, `UNSUPPORTED_HIGH_RISK`, `EMERGENCY_CONTROL`, `LOCAL_AGENT_ACTION` |
+| Decision outcomes | `ALLOW` (routine interaction), `REVIEW` (human approval), `DENY` (unsupported high-risk, emergency-control, local-agent-action) |
+| Classification precedence | Conservative: unsupported high risk, then emergency control, then local-agent action, then human approval, then routine interaction |
+| Softening rule | Deny-category requests cannot be softened to `REVIEW` by also setting human approval |
+
+GAM-0001 does not alter this mechanism. It defines, at a policy level, what kinds of Guardian action belong in each category - the content Sentinel's classifier needs in order to route a given Guardian action correctly, per Section 6.
+
+---
+
+# 6. Permission Boundary Model
+
+Guardian action falls into one of three general authority levels. This section defines the level; it does not define the enforcement code that reads it.
+
+## 6.1 Autonomous (maps to `ROUTINE_INTERACTION` / `ALLOW`)
+
+Conversational, informational and read-only actions that carry no risk of altering system state, family safety or irreversible outcomes: answering questions, holding conversation, presenting already-governed status/diagnostic information the user is entitled to see (for example the System Health panel's real `platform.status` fields).
+
+## 6.2 Approval-Required (maps to `HUMAN_APPROVAL_REQUIRED` / `REVIEW`)
+
+Any Guardian action that changes state, commits resources, or acts on the user's behalf outside pure conversation - falls here by default unless explicitly reclassified as autonomous through a separately approved engineering package. The default is approval-required, not autonomous: Guardian gains autonomous authority only where a specific action has been explicitly reviewed and placed in Section 6.1, mirroring Sentinel's own conservative classification precedence (Section 5).
+
+## 6.3 Out of Scope (maps to `UNSUPPORTED_HIGH_RISK` / `EMERGENCY_CONTROL` / `LOCAL_AGENT_ACTION` / `DENY`)
+
+Categories that are not merely approval-gated but currently unsupported entirely, regardless of approval: local-agent action (EBG-0021 not yet defined), emergency control execution (EBG-0020 not yet defined), automation, and any high-risk action with no current governance basis. These `DENY` outright under Sentinel's existing precedence rules - GAM-0001 does not open them; it records that they remain closed until EBG-0020/EBG-0021 define the boundaries under which they could ever move to Section 6.2.
+
+---
+
+# 7. Protection Boundaries - General Principles
+
+These are the principles Guardian's judgement shall follow. Concrete family-safety and emergency-control content is reserved for EBG-0020, not restated here.
+
+- **Deny-by-default for the unclassified.** An action with no existing classification is treated as Section 6.3 (out of scope), never assumed autonomous. This matches Sentinel's existing conservative precedence rather than introducing a second, competing default.
+- **No silent capability expansion.** Guardian's autonomous authority (Section 6.1) may only grow through a separately approved engineering package that explicitly reclassifies a named action - never through inference, configuration, or accumulated precedent.
+- **Human authority remains explicit for high-risk decisions**, per [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]]'s existing decision - GAM-0001 operationalises that decision's boundary, it does not revisit it.
+- **Family safety and child protection are a distinct, higher-scrutiny concern**, not a subset of general approval-gating - reserved in full for EBG-0020 rather than being defined here as a special case of Section 6.2.
+
+---
+
+# 8. Approval and Escalation Path - General Shape
+
+This section describes the shape of the path only. Consent, notification, retention and trusted-mobile approve/deny mechanics are reserved for EBG-0048.
+
+```text
+Guardian proposes an action
+  |
+  v
+Sentinel classifies (Section 5 categories)
+  |
+  +-- ROUTINE_INTERACTION --> ALLOW --> Guardian proceeds
+  |
+  +-- HUMAN_APPROVAL_REQUIRED --> REVIEW --> escalate to human approval (mechanics: EBG-0048)
+  |
+  +-- UNSUPPORTED_HIGH_RISK / EMERGENCY_CONTROL / LOCAL_AGENT_ACTION --> DENY --> Guardian does not proceed
+```
+
+Remote approve/deny from trusted mobile endpoints is confirmed by ADR-0010 as a future Guardian capability, not a current one - GAM-0001 does not bring it forward; it records where it plugs in once EBG-0048 defines it.
+
+---
+
+# 9. Explicit Non-Goals
+
+GAM-0001 does not:
+
+- implement Sentinel enforcement or the trust-tier classifier itself;
+- implement Guardian runtime behaviour;
+- implement approval workflows, notification channels or trusted-mobile approve/deny;
+- define family safety, child protection or emergency-control specifics (EBG-0020);
+- define consent, privacy or memory-retention mechanics (EBG-0048);
+- define Sentinel Gate of Durin trust-tier/platform-entry detail (EBG-0047);
+- create a new AI identity or modify Guardian identity as defined in AAM-0001;
+- create product source code.
+
+---
+
+# 10. Future Evolution
+
+Future implementation packages may use GAM-0001 to guide Guardian authority and boundary development. Anticipated follow-on work, already sequenced in [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]:
+
+- EBG-0020 - Guardian, Family Safety and Emergency Controls (extends Section 7's protection principles with concrete family-safety/emergency-control content);
+- EBG-0048 - Guardian HITL Governance Specification (extends Section 8's approval path with consent, privacy, memory-retention and trusted-mobile mechanics);
+- EBG-0021 - Local Agent Permission Boundary (defines the boundary Section 6.3 currently leaves closed, once a local agent implementation is planned).
+
+Any such evolution shall require separately approved engineering packages.
+
+---
+
+# 11. OSE Relationships
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture authority this model operates beneath. |
+| [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] | Sentinel trust-boundary architecture; parent artefact - GAM-0001 governs authority within the boundary Sentinel establishes. |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and Judgement faculty this model operationalises into concrete authority boundaries. |
+| [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]] | Decision that Guardian is the HITL governance point; GAM-0001 defines the boundary that decision governs. |
+| [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] | Decision establishing Sentinel's implemented trust-tier policy model, which GAM-0001's policy content is classified against. |
+| [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | Authoritative snapshot of the implemented Sentinel trust-tier mechanism referenced throughout Sections 5-6. |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+
+---
+
+# 12. Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0031 (resolved by this artefact), EBG-0020, EBG-0048, EBG-0021, EBG-0047 (sequenced follow-on work referenced in Section 10). |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031 and its dependent follow-on items. |
+| [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Guardian experience architecture that presents Guardian's authority boundary to the user where appropriate. |
+| [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers GAM-0001 as a controlled architecture model. |
+
+---
+
+# 13. Version History
+
+| Version | Date | Author | Summary |
+|---------|------|--------|---------|
+| 1.0 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation of the authority-level split (Section 6) and protection principles (Section 7), and confirmation that the EBG-0020/EBG-0048/EBG-0021 deferrals do not pre-empt those items' own future scope. Status Draft to Approved; version 0.1 to 1.0 marking baseline acceptance. Resolving EBG-0031 in EBR-0001 as the same action. ESR-0023 WP2. |
+| 0.1 | 16 July 2026 | Claude Engineering Implementer | Initial draft created for ESR-0023 WP2, resolving EBG-0031. Defines Guardian's permission boundary model (autonomous / approval-required / out-of-scope) mapped onto Sentinel's existing trust-tier classification categories, general protection principles, and the general shape of the approval/escalation path - with family-safety specifics (EBG-0020), HITL/consent mechanics (EBG-0048) and local-agent boundary detail (EBG-0021) explicitly deferred rather than restated. Not yet Engineering Reviewer or Programme Sponsor reviewed. |

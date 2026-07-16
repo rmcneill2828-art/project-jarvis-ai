@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -120,7 +120,7 @@ Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 S
 
 | Item | Rationale |
 |------|-----------|
-| EBG-0031 - Guardian Architecture Specification | High priority since ESR-0005, blocks meaningful Guardian safety/permission work; Guardian is already user-facing (the live Orb/chat) without this specification formally existing. |
+| EBG-0031 - Guardian Architecture Specification | High priority since ESR-0005, blocks meaningful Guardian safety/permission work; Guardian is already user-facing (the live Orb/chat) without this specification formally existing. **Resolved at ESR-0023 WP2**: [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] created and approved (v1.0), closed Completed in EBR-0001. Unblocks EBG-0020 and EBG-0048 below. |
 | EBG-0041 - Guardian Identity Architecture Validation | AAM-0001 exists but has never been validated against implementation sequencing, per this item's own text. |
 | EBG-0069 - JARVIS_CAPABILITY_READINESS_MATRIX.md Refresh | Discovered at ESR-0021 WP6. Direct precedent already exists and succeeded: EBG-0056 refreshed the sibling PCB-0001 document the same way. Low-risk, well-understood pattern - should not need its own design work, just execution. **Delivered at ESR-0021 WP7**; EBR-0001 remains authoritative for its Complete status. |
 | EBG-0070 - Wire a Live Provider into a Production `ProviderOrchestrator` Route | Both providers are live-validated (EBG-0051, and OpenAI since ESR-0015) but neither was wired into default JARVIS/Guardian runtime use - flagged as a candidate in PST-0001 across at least three sessions before this section recommended registering it. **Delivered at ESR-0022 WP1** per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0 (Engineering Reviewer and Programme Sponsor approved): `build_default_runtime()` registers a real OpenAI/Gemini provider (configurable via `JARVIS_PRIMARY_PROVIDER`, default `openai` per PEM-001) when its credential is present and non-blank, with `LocalEchoProvider` retained as failover; registered as EBG-0070 in EBR-0001, Complete. |
@@ -228,6 +228,7 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0031 entry as resolved - GAM-0001 (Guardian Authority and Boundary Model) created and approved v1.0, closing EBG-0031 Completed in EBR-0001 and unblocking EBG-0020/EBG-0048. |
 | 1.5 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated EBG-0018's closure judgement and EBG-0067's Longer-term entry as resolved, matching EBR-0001 v1.46's disposition - EBG-0018 closed Completed; EBG-0067 split, UI Architecture Strategy sub-topic Superseded, Knowledge Architecture/relationship-vocabulary sub-topic promoted to Approved Backlog. |
 | 1.4 | 16 July 2026 | Claude Engineering Implementer | Added EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up) to Track C Near-term, discovered by the Programme Sponsor during the live visual check of EBG-0072. |
 | 1.3 | 16 July 2026 | Claude Engineering Implementer | Marked Track B's production-provider-wiring item and Track C's System Health panel item Delivered/Complete: implemented per EIP-ESR0022-001 v1.0 (Engineering Reviewer and Programme Sponsor approved), registered EBG-0070/EBG-0072 Complete in EBR-0001. Section 9's first unnumbered item struck through as resolved. ESR-0022 WP1. |
