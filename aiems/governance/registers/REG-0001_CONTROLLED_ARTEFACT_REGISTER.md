@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.162
+**Version:** 3.163
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.162 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.163 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.50 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.51 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -141,7 +141,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GAM-0001 | Model | Guardian Authority and Boundary Model | 1.2 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
-| JRM-0001 | Roadmap | Project Roadmap | 1.9 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.10 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -293,6 +293,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.163 | 16 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.50 to 1.51) and JRM-0001 (1.9 to 1.10): EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up) marked Completed - Guardian/Sentinel/Providers duplication removed from DiagnosticsPanel. ESR-0023 WP6, this session's first product-code change. |
 | 3.162 | 16 July 2026 | Claude Engineering Implementer | AAM-0001 approved (Engineering Reviewer and Programme Sponsor), version 0.2 to 0.3, status Draft to Approved - GAM-0001 cross-reference added, resolving EBG-0041. Aligned EBR-0001 (1.49 to 1.50) and JRM-0001 (1.8 to 1.9): EBG-0041 marked Completed; new EBG-0074 registered (Approved Backlog, High priority) for the operational gap the validation surfaced. ESR-0023 WP5. |
 | 3.161 | 16 July 2026 | Claude Engineering Implementer | GAM-0001 v1.2 approved (Engineering Reviewer and Programme Sponsor) - approval path extended with consent, memory-retention-consent, and trusted-mobile approve/deny content, resolving EBG-0048. Aligned EBR-0001 (1.48 to 1.49) and JRM-0001 (1.7 to 1.8): EBG-0048 marked Completed. ESR-0023 WP4. |
 | 3.160 | 16 July 2026 | Claude Engineering Implementer | Aligned ESR-0023 version (0.3 to 0.4): recorded a significant change - root cause of the repository write-boundary incidents found and fixed (Codex's `trust_level = "trusted"` project override removed from local config.toml, after GitHub branch protection was investigated and ruled out). |

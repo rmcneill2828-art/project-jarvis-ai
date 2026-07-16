@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.9 |
+| Version | 1.10 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -170,7 +170,7 @@ EBG-0028 already carries substantial phased content for the Guardian Orb specifi
 |------|-----------|
 | System Health panel (using only real fields: Guardian, Sentinel, Providers from `platform.status`) | Directly identified during ESR-0021 WP4 scoping as buildable now without violating the no-mock-fallback rule, deliberately deferred to a future WP rather than bundled into WP4's minor scope. **Delivered at ESR-0022 WP1** per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0, paired with EBG-0070 (Track B) in the same package; registered as EBG-0072 in EBR-0001, Complete. |
 | EBG-0050 remaining scope: streaming notifications | Explicitly kept open under EBG-0050 rather than closed outright; natural next increment now that a production provider is wired in (EBG-0070, delivered ESR-0022 WP1), since streaming matters most once real conversational latency exists. |
-| EBG-0073 - UXP Duplicate Monitoring Elements Tidy-up | Discovered directly by the Programme Sponsor viewing the live app after EBG-0072 shipped: `SystemHealthPanel` and `DiagnosticsPanel` now visibly duplicate Guardian/Sentinel/Providers rows. Low-risk consolidation, no new backend work needed - a natural quick follow-on to EBG-0072 rather than a standalone design effort. |
+| EBG-0073 - UXP Duplicate Monitoring Elements Tidy-up | Discovered directly by the Programme Sponsor viewing the live app after EBG-0072 shipped: `SystemHealthPanel` and `DiagnosticsPanel` now visibly duplicate Guardian/Sentinel/Providers rows. Low-risk consolidation, no new backend work needed - a natural quick follow-on to EBG-0072 rather than a standalone design effort. **Resolved at ESR-0023 WP6**: duplication removed, closed Completed in EBR-0001. |
 
 ## 8.3 Mid-term
 
@@ -229,6 +229,7 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.10 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP6 (Engineering Reviewer/Codex reviewed, Programme Sponsor visually confirmed): annotated Track C's EBG-0073 entry as resolved - Guardian/Sentinel/Providers duplication removed, closed Completed in EBR-0001. |
 | 1.9 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP5 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0041 entry as resolved (AAM-0001 approved v0.3, closed Completed in EBR-0001); added EBG-0074 (Wire TrustTierPolicy as Production Default) to Track B Near-term, sequenced ahead of Memory/Voice/Vision/Action per the Engineering Reviewer's explicit recommendation; updated EBG-0019's rationale to reflect it as the next faculty after EBG-0074. |
 | 1.8 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP4 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0048 entry as resolved - GAM-0001 v1.2 Section 9 extended, closing EBG-0048 Completed in EBR-0001. |
 | 1.7 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP3 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0020 entry as resolved - GAM-0001 v1.1 Section 8 added, closing EBG-0020 Completed in EBR-0001. |

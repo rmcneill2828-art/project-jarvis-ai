@@ -76,6 +76,9 @@ export const capabilityStatuses = Object.freeze([
   },
 ]);
 
+// Guardian/Sentinel/Providers were removed from this list at ESR-0023 WP6
+// (EBG-0073): SystemHealthPanel is now their sole owner, sourced from live
+// platform.status data. The rows below remain permanently-static placeholders.
 export const diagnostics = Object.freeze([
   {
     id: "boundary",
@@ -88,24 +91,6 @@ export const diagnostics = Object.freeze([
     label: "Shell Status",
     state: STATUS.UNKNOWN,
     detail: "Interface shell only",
-  },
-  {
-    id: "guardian",
-    label: "Guardian",
-    state: STATUS.OPERATIONAL,
-    detail: "Interface active",
-  },
-  {
-    id: "sentinel",
-    label: "Sentinel",
-    state: STATUS.PLACEHOLDER,
-    detail: "Trust gateway placeholder",
-  },
-  {
-    id: "providers",
-    label: "Providers",
-    state: STATUS.OFFLINE,
-    detail: "Not connected",
   },
   {
     id: "agents",

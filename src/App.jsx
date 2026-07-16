@@ -87,39 +87,11 @@ function derivePlatformSignals(platformState, platformError) {
   });
 }
 
-// Diagnostics must not contradict the live state shown elsewhere on screen
-// (UAM-0001 Section 10/11) - the "guardian", "sentinel" and "providers" rows
-// are derived from the same platform.status call as the sidebar and status
-// cards, rather than left as permanently stale static claims.
-function deriveDiagnostics(platformState, platformError) {
-  return diagnostics.map((item) => {
-    if (item.id === "guardian") {
-      if (platformError) return { ...item, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
-      if (!platformState) return { ...item, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
-      return {
-        ...item,
-        state: platformState.state === "Running" ? STATUS.OPERATIONAL : STATUS.OFFLINE,
-        detail: `Runtime: ${platformState.state}`,
-      };
-    }
-    if (item.id === "sentinel" || item.id === "providers") {
-      if (platformError) return { ...item, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
-      if (!platformState) return { ...item, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
-      const connected = platformState.providerConnected === "Online";
-      return {
-        ...item,
-        state: connected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
-        detail: connected ? "Provider connected" : "Not connected",
-      };
-    }
-    return item;
-  });
-}
-
 // System Health panel rows (JRM-0001 Track C Near-term): Guardian, Sentinel
-// and Providers, sourced only from real `platform.status` fields - distinct
-// from DiagnosticsPanel below, which mixes these same real-derived rows with
-// permanently-static placeholder rows (boundary, shell, agents, first-light).
+// and Providers, sourced only from real `platform.status` fields. As of
+// ESR-0023 WP6 (EBG-0073), SystemHealthPanel is these rows' sole owner -
+// DiagnosticsPanel below no longer duplicates them; its remaining rows
+// (boundary, shell, agents, first-light) are permanently-static placeholders.
 const SYSTEM_HEALTH_LABELS = { guardian: "Guardian", sentinel: "Sentinel", providers: "Providers" };
 
 function deriveSystemHealth(platformState, platformError) {
@@ -225,9 +197,6 @@ const signalIcons = {
 const diagnosticIcons = {
   boundary: Code2,
   shell: Monitor,
-  guardian: Activity,
-  sentinel: Shield,
-  providers: Cloud,
   agents: UsersRound,
   "first-light": Zap,
 };
@@ -568,7 +537,7 @@ export function App() {
               <SystemHealthPanel platformState={platformState} platformError={platformError} />
               <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
               <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} />
-              <DiagnosticsPanel diagnostics={deriveDiagnostics(platformState, platformError)} />
+              <DiagnosticsPanel diagnostics={diagnostics} />
             </div>
           </div>
           <AppFooter />
