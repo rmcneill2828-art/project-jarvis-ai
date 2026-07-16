@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.46
+**Version:** 1.47
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.46 |
+| Version | 1.47 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -97,7 +97,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0028 | UXP Evolution Roadmap | ESR-0005 closure recommendation; ESR-0008 terminology alignment; [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Section 15 phased achievability discussion | Completed | Medium | Programme Sponsor | Define staged User Experience Platform maturity from First Light through operational workspace and future product surfaces. GUI is preserved as the historical alias for earlier presentation-layer work. Per the ESR-0010 Guardian Orb design conversation (`aiems/History/Full Chat/FCH-0010_ESR-0010_FULL_CHAT_HISTORY.md`, retroactively incorporated into [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Sections 8.1/8.2 at ESR-0017), a candidate phased sequencing for the knowledge-graph Orb specifically was discussed and should inform this roadmap's staging when actioned: Phase 1 - static live graph rendered from Obsidian/repository data; Phase 2 - cluster colours and chat UI around it; Phase 3 - agent activity/traversal animation; Phase 4 - connection to Guardian reasoning and future telemetry (e.g. GIA). **Resolved at ESR-0021 WP5**: [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] created and Programme Sponsor-approved (v1.0), with this item's phase content preserved and directly referenced (not restated) as the source for JRM-0001 Track C's Guardian Orb sequencing, per JRM-0001's own no-duplication principle. This entry's phase detail remains the authoritative source for that content going forward. |
 | EBG-0029 | Product Growth Philosophy | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Record the principle that JARVIS grows by acquiring capabilities rather than accumulating features. |
 | EBG-0030 | Sentinel Architecture Specification | ESR-0005 closure recommendation | Completed | High | Programme Sponsor | Define Sentinel responsibilities, boundaries and relationship to Guardian before Sentinel implementation. Satisfied by [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] and the Guardian/Sentinel boundary defined in ESR-0014 section 13. |
-| EBG-0031 | Guardian Architecture Specification | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define Guardian safety, permission, approval and protection boundaries before Guardian implementation. |
+| EBG-0031 | Guardian Architecture Specification | ESR-0005 closure recommendation | Completed | High | Programme Sponsor | Define Guardian safety, permission, approval and protection boundaries before Guardian implementation. **Resolved at ESR-0023 WP2**: [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] (Guardian Authority and Boundary Model) created and Programme Sponsor-approved (v1.0), Engineering Reviewer confirmed. Maps Guardian authority onto Sentinel's existing trust-tier categories, defines three authority levels (Autonomous / Approval-Required / Out of Scope), and states general protection principles - with family-safety content (EBG-0020) and HITL/consent mechanics (EBG-0048) explicitly deferred rather than restated. |
 | EBG-0032 | Historical Engineering Register | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Consider a controlled register for historically significant engineering baselines, tags and milestones. |
 | EBG-0033 | AIEMS Improvement Register / AIEMS Improvement Review | ESR-0005 closure recommendation | Candidate Backlog | Medium | Programme Sponsor | Define a controlled mechanism for recording AIEMS process improvements without disrupting active engineering flow. |
 | EBG-0034 | Engineering Authority by Work Package | ESR-0005 closure recommendation | Candidate Backlog | High | Programme Sponsor | Define authority boundaries by work package type so implementation, assessment, correction and verification packages remain distinct. |
@@ -277,6 +277,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.47 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): closed EBG-0031 (Guardian Architecture Specification) as Completed, resolved by the new GAM-0001 (Guardian Authority and Boundary Model, v1.0). |
 | 1.46 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): closed EBG-0018 (Provider Abstraction Architecture) as Completed, satisfied by the existing Sentinel provider abstraction (CURRENT_ARCHITECTURE.md, ADR-0018); promoted EBG-0067 (Dropped ADR-0007 Topics) from Candidate to Approved Backlog with a split disposition - UI Architecture Strategy sub-topic judged Superseded, AIEMS Knowledge Architecture/relationship-vocabulary sub-topic confirmed as a genuine live gap and retained as the item's remaining scope. |
 | 1.45 | 16 July 2026 | Claude Engineering Implementer | Added EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up): Programme Sponsor observed, during the live visual check of EBG-0072's System Health panel, that it duplicates part of the existing DiagnosticsPanel (both show Guardian/Sentinel/Providers from the same platform.status data). No implementation authorised by this entry. |
 | 1.44 | 16 July 2026 | Claude Engineering Implementer | Marked EBG-0070 and EBG-0072 Complete: implemented per EIP-ESR0022-001 v1.0 (Engineering Reviewer approved, Programme Sponsor approved) - production provider wiring and the System Health panel, with the Reviewer's Medium finding (blank model env var handling) incorporated directly. 209 tests pass, validator clean. ESR-0022 WP1. |

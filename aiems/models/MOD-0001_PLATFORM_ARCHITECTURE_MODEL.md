@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.4
+**Version:** 1.5
 
 ---
 
@@ -12,15 +12,15 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.4 |
-| Status | In Review |
+| Version | 1.5 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Platform | AI Engineering Platform (AEP) |
 | Engineering Framework | AI Engineering Management System (AIEMS) |
 | Classification | Internal |
-| Last Updated | 24 June 2026 |
-| Next Review | Phase 1 Architecture Review |
+| Last Updated | 16 July 2026 |
+| Next Review | Triggered |
 
 ---
 
@@ -912,8 +912,9 @@ This relationship provides architectural traceability throughout the AI Engineer
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers MOD-0001 and other controlled AIEMS artefacts. |
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architecture decisions that support platform evolution. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Records current programme status and architecture-related observations. |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline for ESR-0008. |
-| [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Previous accepted repository baseline for ESR-0007. |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Historical baseline lineage - accepted repository baseline for ESR-0008. |
+| [[RBL-0008_REPOSITORY_BASELINE|RBL-0008]] | Historical baseline lineage - accepted repository baseline for ESR-0007. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability readiness view supporting JARVIS product engineering. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned with the platform model during ESR-0008. |
@@ -930,13 +931,14 @@ This relationship provides architectural traceability throughout the AI Engineer
 | [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Traceability model that references MOD-0001 as the platform and architectural domain authority. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned with MOD-0001 during ESR-0008. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
-| [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] | Current accepted repository baseline and ESR-0009 handover point. |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
 
 ---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|-----------------------------------------|--------------------------------------------------------------------------|
+| 1.5 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 housekeeping (informational, Programme Sponsor confirmed): promoted Status from In Review to Approved, reflecting ESR-0011's validation of this model for implementation readiness, which had never been written back into the document itself; corrected two stale RBL-0009 "current accepted repository baseline" references (Related Artefacts, OSE Relationships) to RBL-0015, retaining RBL-0009/RBL-0008 as historical lineage. Content unchanged - reviewed in full, found still architecturally accurate, no rewrite needed. |
 | 1.4 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described in this model's Sentinel sections. Original content unchanged. |
 | 0.1 | 23 June 2026 | Project Sponsor & Chief Architect | Initial JARVIS OS Foundation Specification. |
 | 1.0 | 24 June 2026 | Programme Sponsor & Chief Engineering Advisor | Re-authored as the Platform Architecture Model following establishment of the AI Engineering Platform and AIEMS architecture. |
