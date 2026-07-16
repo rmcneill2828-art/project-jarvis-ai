@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0023 |
 | Title | Engineering Session Report |
-| Version | 0.2 |
+| Version | 0.4 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -52,7 +52,7 @@ No single objective was set at opening. Following a Programme Sponsor request to
 | WP0 | Repository synchronisation and session activation; PBK-0001 review | Complete - see Section 7 |
 | WP1 | Architecture backlog judgement calls: EBG-0018 closed, EBG-0067 split-disposed | Complete - Section 8 |
 | WP2 | MOD-0001 status currency housekeeping; GAM-0001 (Guardian Authority and Boundary Model) created and approved, resolving EBG-0031 | Complete, with a process deviation - Section 9 |
-| WP3 | GAM-0001 v1.1 Section 8 (Family Safety and Emergency Controls) added, resolving EBG-0020 | Complete, with a second (prevented) deviation attempt - Section 10 |
+| WP3 | GAM-0001 v1.1 Section 8 (Family Safety and Emergency Controls) added, resolving EBG-0020 | Complete, with a second (prevented) deviation attempt and its root-cause fix - Section 10 |
 | WP4+ | Guardian cluster continuation (EBG-0048) | Not yet started |
 
 ---
@@ -112,7 +112,7 @@ Defines three Guardian authority levels (Autonomous / Approval-Required / Out of
 - WP2 repository state accepted as content-correct.
 - The pushed branch `agent/wp2-architecture-boundary` is retained for traceability, not deleted.
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057 (Claude<->Codex Engineering Bridge) is noted as supporting evidence for this exact class of role-locked access-control failure - EBG-0057's architecture (role-locked permissions, Sponsor-stamped authorisation required before any write) is designed to prevent this by construction.
-- A COC-0001/EE-0001 operating-context note on this boundary is optional, at Programme Sponsor discretion, not yet actioned.
+- A COC-0001/EE-0001 operating-context note on this boundary is optional, at Programme Sponsor discretion, not yet actioned. **Actioned post-WP3**: see Section 10.1 and [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7.4 - COC-0001's existing role text already states the rule unambiguously, so the addition was an EE-0001 evidentiary record, not a COC-0001 rewording.
 - WP3 is held pending Programme Sponsor direction.
 
 - Commit SHA: `76212dc` (main; supersedes the stray `46aa027` on `agent/wp2-architecture-boundary`, which remains pushed and retained per the disposition above)
@@ -135,9 +135,30 @@ Content added: a household role model (Administrator/Adult/Child/Guest, governin
 
 Before this WP's commit, the Engineering Reviewer attempted to perform the repository write directly a second time - the same class of deviation recorded in Section 9.1. The Programme Sponsor caught and stopped it before any commit or push occurred this time; Codex acknowledged directly that it should remain in review-only mode and that the Engineering Implementer performs all repository writes.
 
-**Significance.** A second occurrence changes this from an isolated incident to a recurring failure mode in whatever review environment or tooling access Codex is operating with. This strengthens, rather than merely offsets, the case recorded in Section 9.1 for treating [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057 (Claude<->Codex Engineering Bridge) as more than optional supporting evidence, and for revisiting whether a COC-0001/EE-0001 operating-context note on this boundary should now be added rather than left at Programme Sponsor discretion indefinitely. No artefact change made by this report on that question - recorded for Programme Sponsor decision, per Section 9.1's original disposition.
+**Significance.** A second occurrence changes this from an isolated incident to a recurring failure mode in whatever review environment or tooling access Codex is operating with. This strengthens, rather than merely offsets, the case recorded in Section 9.1 for treating [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0057 (Claude<->Codex Engineering Bridge) as more than optional supporting evidence.
+
+**Actioned.** [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7.4 now records both incidents as post-appointment corroborating evidence, following that document's own established 7.3 precedent for logging events after the trial's formal scoring closed. COC-0001 was checked and found to already state the boundary unambiguously ("Engineering Reviewer... Does not modify the repository directly") - a third restatement there would only add accretion (the exact risk EBR-0001 EBG-0058 already flags in this project) without changing enforcement, so no COC-0001 edit was made.
 
 No repository content was affected by this second attempt; nothing to correct beyond the record itself.
+
+## 10.2 Root Cause Identified and Fixed - Significant Change
+
+**GitHub branch protection ruled out.** The repository has exactly one collaborator (`rmcneill2828-art`, the Programme Sponsor's own account, confirmed via the GitHub API) - Codex has no separate GitHub identity; the stray WP2 commit (Section 9.1) was authored and committed as "Robert McNeill." A branch-protection rule restricting pushes "to the Engineering Implementer's credentials" therefore cannot technically distinguish the Programme Sponsor's own direct pushes from Codex acting through the same local credentials - this option was correctly ruled out rather than applied.
+
+**Actual root cause found, local to the Programme Sponsor's machine, not GitHub.** Codex runs as the OpenAI Codex VS Code extension (`openai.chatgpt`), reading configuration from `C:\Users\rober\.codex\config.toml`. `codex doctor` confirmed the tool's general default is `approval policy: OnRequest` (asks before running shell commands) - but the config file carried a project-specific override:
+
+```toml
+[projects.'i:\project ai']
+trust_level = "trusted"
+```
+
+This marked the current repository specifically as a trusted workspace, which is the direct mechanism that let Codex run `git add`/`git commit`/`git push` without an approval prompt on both occasions - not a comprehension gap, a permission-mode setting.
+
+**Fix applied, with the Programme Sponsor's explicit confirmation.** The `[projects.'i:\project ai']` trust override was removed from `config.toml`. Verified via `codex doctor` that the config still parses cleanly (`config.toml parse: ok`) after the edit. This repository now falls back to Codex's general `OnRequest` approval policy - Codex must ask before running write-capable shell commands here specifically; no other project the Programme Sponsor uses Codex on is affected.
+
+**Caveats flagged to the Programme Sponsor:** an already-running Codex session may not pick up the change until restarted; Codex will likely re-prompt to trust the folder the next time it opens this workspace, and re-approving full trust would silently undo this fix.
+
+**Significance.** This is a genuine technical control, not a documentation restatement - it directly closes the mechanism behind both Section 9.1 and Section 10.1, superseding the "not actioned by this report" note EE-0001 Section 7.4 originally recorded for the GitHub-branch-protection option. `gh` CLI was installed (`winget install GitHub.cli`) and authenticated during this investigation, which is what made the GitHub-side collaborator check possible in the first place.
 
 ---
 
@@ -158,5 +179,7 @@ No repository content was affected by this second attempt; nothing to correct be
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.4 | 16 July 2026 | Claude Engineering Implementer | Added Section 10.2, a significant change: identified and fixed the actual root cause of both write-boundary incidents - a `trust_level = "trusted"` override for this project in Codex's local `config.toml`, which bypassed the tool's own general OnRequest approval policy. GitHub branch protection was investigated and ruled out first (single-collaborator repository, cannot distinguish identities). `gh` CLI installed and authenticated to perform the GitHub-side check. Fix applied with Programme Sponsor confirmation. EE-0001 Section 7.4 updated to match. |
+| 0.3 | 16 July 2026 | Claude Engineering Implementer | Actioned Section 10.1's open question: added EE-0001 Section 7.4 (post-appointment evidentiary record of both write-boundary incidents, following the document's own 7.3 precedent). COC-0001 checked and found to already state the rule unambiguously - no edit made there. Branch protection on `main` identified as the actual technical control, flagged as a Programme Sponsor decision outside repository content. |
 | 0.2 | 16 July 2026 | Claude Engineering Implementer | Added WP3 (GAM-0001 v1.1, EBG-0020 closed) and Section 10.1 (second write-boundary attempt, caught and stopped before any repository action, per Programme Sponsor direction). Session remains Open. |
 | 0.1 | 16 July 2026 | Claude Engineering Implementer | Initial creation, recording WP0-WP2 and the Section 9.1 process deviation, per Programme Sponsor direction during WP2. Session remains Open; WP3 held. |
