@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.163
+**Version:** 3.164
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.163 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.164 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -165,7 +165,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.34 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.35 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -192,7 +192,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0020 | Engineering Session Report | Engineering Session Report | 1.1 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0021 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0022 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0023 | Engineering Session Report | Engineering Session Report | 0.4 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0023 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -293,6 +293,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.164 | 17 July 2026 | Claude Engineering Implementer | ESR-0023 session closure: registered ESR-0023-WP6 Independent Repository Verification handover; ESR-0023 (0.4 to 1.0, Open to Closed) finalised with WP4/WP5/WP6 and session-wide WP6/WP7 sections; Engineering Reviewer WP6 Pass, Programme Sponsor WP7 accepted retaining RBL-0015; aligned PST-0001 (2.34 to 2.35) - Current Mode/Baseline/Focus, Completed Milestones, Active/Next Planned Work, Repository Health, Outstanding Observations and Session Start Guidance all updated for the ESR-0023 closed state. |
 | 3.163 | 16 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.50 to 1.51) and JRM-0001 (1.9 to 1.10): EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up) marked Completed - Guardian/Sentinel/Providers duplication removed from DiagnosticsPanel. ESR-0023 WP6, this session's first product-code change. |
 | 3.162 | 16 July 2026 | Claude Engineering Implementer | AAM-0001 approved (Engineering Reviewer and Programme Sponsor), version 0.2 to 0.3, status Draft to Approved - GAM-0001 cross-reference added, resolving EBG-0041. Aligned EBR-0001 (1.49 to 1.50) and JRM-0001 (1.8 to 1.9): EBG-0041 marked Completed; new EBG-0074 registered (Approved Backlog, High priority) for the operational gap the validation surfaced. ESR-0023 WP5. |
 | 3.161 | 16 July 2026 | Claude Engineering Implementer | GAM-0001 v1.2 approved (Engineering Reviewer and Programme Sponsor) - approval path extended with consent, memory-retention-consent, and trusted-mobile approve/deny content, resolving EBG-0048. Aligned EBR-0001 (1.48 to 1.49) and JRM-0001 (1.7 to 1.8): EBG-0048 marked Completed. ESR-0023 WP4. |

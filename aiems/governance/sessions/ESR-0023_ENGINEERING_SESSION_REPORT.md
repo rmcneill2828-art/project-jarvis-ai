@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0023 |
 | Title | Engineering Session Report |
-| Version | 0.4 |
-| Status | Open |
+| Version | 1.0 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0023 |
 | Date Opened | 16 July 2026 |
-| Date Closed | Not yet closed |
-| Closure Status | Open - WP3 complete, session continuing |
+| Date Closed | 17 July 2026 |
+| Closure Status | Closed - WP1-WP6 complete, session-wide WP6 Pass, WP7 RBL-0015 retained |
 
 ---
 
@@ -27,7 +27,7 @@ This report records the opening and execution of ESR-0023, run under the permane
 
 # 3. Scope
 
-ESR-0023 opened with "please read PBK-0001." WP0A/WP0B confirmed repository synchronisation (ESR-0022 closed, RBL-0015 accepted baseline). The session then addressed a Programme Sponsor-directed sweep of outstanding architecture design work: a set of quick backlog judgement calls (WP1), the first substantive Guardian architecture gap (WP2), and its direct continuation into family safety and emergency controls (WP3) - with a repository write boundary deviation occurring during WP2's review step, and a second attempt at the same deviation caught and stopped before it happened during WP3.
+ESR-0023 opened with "please read PBK-0001." WP0A/WP0B confirmed repository synchronisation (ESR-0022 closed, RBL-0015 accepted baseline). The session then addressed a Programme Sponsor-directed sweep of outstanding architecture design work: a set of quick backlog judgement calls (WP1); the entire Guardian authority/boundary cluster in JRM-0001's own horizon order - EBG-0031 (WP2), EBG-0020 (WP3), EBG-0048 (WP4); AAM-0001 identity validation, which surfaced a significant operational gap and new backlog item EBG-0074 (WP5); and a UXP diagnostics deduplication satisfying Feature-First Delivery Discipline (WP6). A repository write boundary deviation occurred during WP2's review step, a second attempt was caught and stopped during WP3, and its root cause was found and fixed the same session. Closed with session-wide WP6 Independent Repository Verification (Pass) and WP7 Repository Baseline Acceptance (RBL-0015 retained).
 
 ---
 
@@ -41,7 +41,7 @@ GitHub and the repository remain the authoritative source of truth.
 
 # 5. Session Objective
 
-No single objective was set at opening. Following a Programme Sponsor request to survey outstanding Guardian and wider architecture design work, the session's objective became: close as many quick, well-evidenced architecture backlog judgement calls as fit safely in one session (WP1), then work through the Guardian authority/boundary cluster in JRM-0001's own horizon order - EBG-0031 first (WP2), then its direct dependent EBG-0020 (WP3) - with EBG-0048 carried forward as a later Work Package.
+No single objective was set at opening. Following a Programme Sponsor request to survey outstanding Guardian and wider architecture design work, the session's objective became: close as many quick, well-evidenced architecture backlog judgement calls as fit safely in one session (WP1), then work through the entire Guardian authority/boundary cluster in JRM-0001's own horizon order - EBG-0031 (WP2), EBG-0020 (WP3), EBG-0048 (WP4) - followed by identity validation (WP5) and, at the Programme Sponsor's request, a UXP improvement to close the session with (WP6). All objectives were met by closure.
 
 ---
 
@@ -53,7 +53,10 @@ No single objective was set at opening. Following a Programme Sponsor request to
 | WP1 | Architecture backlog judgement calls: EBG-0018 closed, EBG-0067 split-disposed | Complete - Section 8 |
 | WP2 | MOD-0001 status currency housekeeping; GAM-0001 (Guardian Authority and Boundary Model) created and approved, resolving EBG-0031 | Complete, with a process deviation - Section 9 |
 | WP3 | GAM-0001 v1.1 Section 8 (Family Safety and Emergency Controls) added, resolving EBG-0020 | Complete, with a second (prevented) deviation attempt and its root-cause fix - Section 10 |
-| WP4+ | Guardian cluster continuation (EBG-0048) | Not yet started |
+| WP4 | GAM-0001 v1.2 Section 9 extended (consent, memory-retention consent boundary, trusted mobile approve/deny), resolving EBG-0048 | Complete - Section 11 |
+| WP5 | AAM-0001 identity architecture validation and Draft to Approved promotion, resolving EBG-0041; new EBG-0074 surfaced | Complete - Section 12 |
+| WP6 | UXP Diagnostics/System Health duplication removed, resolving EBG-0073 | Complete - Section 13 |
+| Session-wide WP6/WP7 | Independent Repository Verification; Repository Baseline Acceptance | Complete - Pass, RBL-0015 retained - Section 14 |
 
 ---
 
@@ -162,23 +165,99 @@ This marked the current repository specifically as a trusted workspace, which is
 
 ---
 
-# 11. Related Artefacts
+# 11. WP4 - GAM-0001 v1.2 Consent, Approval Mechanics and Trusted Mobile Governance
 
-| Artefact | Relationship |
-|----------|--------------|
-| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Governs Engineering Implementer behaviour and the Separation of Duties breached (Section 9.1) and attempted again (Section 10.1) this session. |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0018, EBG-0031, EBG-0067, EBG-0020 closed this session; EBG-0057 noted as supporting evidence for Sections 9.1 and 10.1. |
-| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Synced to match EBR-0001 disposition throughout WP1-WP3. |
-| [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | Created at WP2 (v1.0), extended at WP3 (v1.1). |
-| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Status currency housekeeping performed at WP2. |
-| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Permanent Lead/Reviewer appointment this session operates under; candidate location for a future operating-context note per Section 10.1. |
+**GAM-0001 v1.1 to v1.2** - Section 9 (Approval and Escalation Path) extended with four subsections, resolving EBG-0048 (Guardian HITL Governance Specification, open since ESR-0004), per ADR-0010. Evidence checked directly: `sentinel/policy.py`'s `REVIEW` outcome is a static-message enum value only, no approval workflow implemented, confirming this remained genuinely architecture-only work.
+
+- **9.1 Consent mechanics** - scoped to the specific action, not a standing grant; mirrors Section 7's "no silent capability expansion" principle.
+- **9.2 Memory-retention consent boundary** - the section given the hardest review scrutiny: an explicit scope line against EBG-0019 (Memory and Data Storage Architecture, still open) - GAM-0001 governs whether/who-consented to retention, not storage technology, encryption, or technical retention duration.
+- **9.3 Trusted mobile approve/deny** - architecture only, confirmed by ADR-0010 as a future capability; a trusted endpoint can only exercise the authority Section 8.1's household role model already grants, never more; endpoint trust itself stays Sentinel's concern.
+- **9.4 Privacy boundary reinforcement** - makes Section 8.2's personal/shared-family memory distinction an explicit `HUMAN_APPROVAL_REQUIRED` gate rather than an assumed default.
+
+**Review**: Engineering Reviewer (Codex) found no blocking issues - confirmed the Section 9.2 EBG-0019 boundary is drawn in the right place (policy/consent layer only, no pre-emption, no gap) and that Section 9.3's endpoint-trust framing is consistent with SAM-0001 and ADR-0010. Programme Sponsor approved; EBG-0048 closed Completed in EBR-0001. [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] synced to match.
+
+- Commit SHA: `36da22d`
+- `python scripts/validate_repository.py`: 0 errors, 85 pre-existing warnings.
+
+This closed the entire Guardian authority/boundary cluster GAM-0001 was created for: EBG-0031, EBG-0020 and EBG-0048 all resolved.
 
 ---
 
-# 12. Version History
+# 12. WP5 - AAM-0001 Identity Architecture Validation
+
+Resolves EBG-0041 (Guardian Identity Architecture Validation, open since ESR-0008). AAM-0001 re-checked in full against everything implemented since - no contradictions found, no rewrite needed.
+
+**AAM-0001 v0.2 to v0.3** - added a second Subsequent Architectural Update note (matching the existing Sentinel/ADR-0018 pattern) pointing to GAM-0001, which operationalises AAM-0001's Judgement faculty and Guardian Relationship section. Status promoted Draft to Approved, mirroring MOD-0001's WP2 fix.
+
+**Significant finding, not previously tracked.** Checked `sentinel/core.py` directly: `SentinelCore` defaults to `SimpleApprovalPolicy()`, not `TrustTierPolicy` - the mechanism carrying the classification categories GAM-0001's Sections 5-9 are built on. GAM-0001's policy content is architecturally complete but not operationally connected to the live Guardian runtime. Recorded as new **EBG-0074** (Wire TrustTierPolicy as SentinelCore's Production Default), Approved Backlog, High priority.
+
+**Implementation-sequencing judgement for the seven Guardian faculties**, cross-checked against `JARVIS_CAPABILITY_READINESS_MATRIX`:
+
+| Faculty | State |
+|---|---|
+| Trust | Implemented, not wired as default |
+| Judgement | Architecturally defined (GAM-0001), not operationally connected |
+| Reasoning | Basic/live (EBG-0070) |
+| Action | Not implemented |
+| Memory | Not Started |
+| Voice | Not Started |
+| Vision | Not Started |
+
+Recommended order: EBG-0074 (wiring) first, then Memory (EBG-0019), then Voice/Vision, then Action (gated behind EBG-0021).
+
+**Review**: Engineering Reviewer (Codex) confirmed Finding 2 (the wiring gap) as the most important, elevated it to High/Near-term, and adjusted the sequencing to place it explicitly ahead of Memory/Voice/Vision/Action. Programme Sponsor approved; EBG-0041 closed Completed in EBR-0001. [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] synced to match, including EBG-0074's Near-term placement.
+
+- Commit SHA: `9e14a87`
+- `python scripts/validate_repository.py`: 0 errors, 85 pre-existing warnings.
+
+---
+
+# 13. WP6 - UXP Diagnostics/System Health Duplication Removed
+
+Resolves EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up, flagged at ESR-0022 WP1). Also the session's only product-code change, satisfying PBK-0001's Feature-First Delivery Discipline for a session otherwise entirely governance/architecture work.
+
+**Implementation** (option (a) of EBG-0073's three listed options): `src/platformStatus.js`'s static `diagnostics` export had its `guardian`/`sentinel`/`providers` entries removed; `src/App.jsx`'s `deriveDiagnostics()` (which existed only to re-inject live data into those rows) removed entirely; `diagnosticIcons` trimmed to match; the call site simplified to pass the static `diagnostics` list directly. `SystemHealthPanel` is now the sole owner of live Guardian/Sentinel/Providers status; `DiagnosticsPanel` shows only its four permanently-static placeholder rows (boundary, shell, agents, first-light).
+
+**Verification, not just build-checked**: `npm run build` clean; live check via a Playwright-driven headless Chromium screenshot against the real Vite dev server confirmed `DiagnosticsPanel` renders exactly 4 rows and `SystemHealthPanel` is unaffected, zero console errors. Independently confirmed by the Programme Sponsor viewing the running dev server directly ("look much cleaner excellent"). No frontend test/snapshot files exist in this repository to check for row-count regressions (confirmed directly).
+
+**Review**: Engineering Reviewer (Codex) found no blocking findings on the final diff. Programme Sponsor visually confirmed. EBG-0073 closed Completed in EBR-0001. [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] synced to match.
+
+- Commit SHA: `656a573`
+- `python -m pytest`: 209 passed. `python scripts/validate_repository.py`: 0 errors, 85 pre-existing warnings.
+
+---
+
+# 14. Session-Wide WP6/WP7 - Independent Repository Verification and Baseline Acceptance
+
+**Handover preparation**: the Engineering Implementer prepared an [[ESR-0023_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0023 WP6 Independent Repository Verification handover]], covering all nine session commits, both write-boundary deviations and the root-cause fix, and all seven backlog closures plus EBG-0074 - deliberately leaving the retain-vs-new-baseline question open rather than presuming an answer.
+
+**Session-wide WP6 (Independent Repository Verification)**: the Engineering Reviewer confirmed repository state on `main` (`656a573`) matches all nine commits' claims, confirmed both write-boundary disclosures (Sections 9.1, 10.1) are accurately characterised and cross-corroborated against EE-0001 Section 7.4, and confirmed validation evidence is coherent (209 passed, 0 errors, 85 warnings). **Pass.**
+
+**Session-wide WP7 (Repository Baseline Acceptance): [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] retained, no new baseline.** Engineering Reviewer's independent view: no repository-baseline justification for a new baseline - WP6's diagnostics deduplication removes duplication rather than changing runtime behaviour, and EBG-0074 remains backlog-only (`SimpleApprovalPolicy` confirmed still the production default). Programme Sponsor's own determination: accept, agreeing with the Reviewer - this session's changes are governance/architecture-maturity work (the Guardian authority/boundary cluster closed, AAM-0001/MOD-0001 promoted) plus one non-behavioural UXP deduplication, materially different in kind from ESR-0022's default-provider-wiring milestone that warranted RBL-0015 itself.
+
+---
+
+# 15. Related Artefacts
+
+| Artefact | Relationship |
+|----------|--------------|
+| [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Governs Engineering Implementer behaviour and the Separation of Duties breached (Section 9.1) and attempted again (Section 10.1) this session; Feature-First Delivery Discipline satisfied at WP6. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0018, EBG-0031, EBG-0067, EBG-0020, EBG-0048, EBG-0041, EBG-0073 closed this session; EBG-0074 added; EBG-0057 noted as supporting evidence for Sections 9.1 and 10.1. |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Synced to match EBR-0001 disposition throughout WP1-WP6. |
+| [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | Created at WP2 (v1.0), extended at WP3 (v1.1) and WP4 (v1.2). |
+| [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Validated and promoted to Approved (v0.3) at WP5. |
+| [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Status currency housekeeping performed at WP2. |
+| [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] | Permanent Lead/Reviewer appointment this session operates under; Section 7.4 records both write-boundary incidents and the root-cause fix. |
+| [[ESR-0023_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0023-WP6]] | Session-wide Independent Repository Verification handover, Section 14. |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Retained as the current accepted repository baseline at Section 14. |
+
+---
+
+# 16. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 17 July 2026 | Claude Engineering Implementer | **Session closed.** Added WP4 (Section 11), WP5 (Section 12), WP6 (Section 13) and Session-Wide WP6/WP7 (Section 14), which had only been recorded in commit messages until now. Session-wide WP6 Independent Repository Verification: Pass (Engineering Reviewer, no blocking findings). Session-wide WP7 Repository Baseline Acceptance: [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] retained, no new baseline (Programme Sponsor accepted the Engineering Reviewer's independent recommendation). Scope and Session Objective sections updated to reflect the full session. Status Open to Closed. |
 | 0.4 | 16 July 2026 | Claude Engineering Implementer | Added Section 10.2, a significant change: identified and fixed the actual root cause of both write-boundary incidents - a `trust_level = "trusted"` override for this project in Codex's local `config.toml`, which bypassed the tool's own general OnRequest approval policy. GitHub branch protection was investigated and ruled out first (single-collaborator repository, cannot distinguish identities). `gh` CLI installed and authenticated to perform the GitHub-side check. Fix applied with Programme Sponsor confirmation. EE-0001 Section 7.4 updated to match. |
 | 0.3 | 16 July 2026 | Claude Engineering Implementer | Actioned Section 10.1's open question: added EE-0001 Section 7.4 (post-appointment evidentiary record of both write-boundary incidents, following the document's own 7.3 precedent). COC-0001 checked and found to already state the rule unambiguously - no edit made there. Branch protection on `main` identified as the actual technical control, flagged as a Programme Sponsor decision outside repository content. |
 | 0.2 | 16 July 2026 | Claude Engineering Implementer | Added WP3 (GAM-0001 v1.1, EBG-0020 closed) and Section 10.1 (second write-boundary attempt, caught and stopped before any repository action, per Programme Sponsor direction). Session remains Open. |
