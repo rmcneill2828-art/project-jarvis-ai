@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | AAM-0001 |
 | Title | Guardian Identity and Cognitive Architecture |
-| Version | 0.2 |
-| Status | Draft |
+| Version | 0.3 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
 | Classification | Internal |
@@ -21,6 +21,8 @@
 # Subsequent Architectural Update
 
 [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) broadened Sentinel's role beyond the "trust gateway protecting platform entry" framing described in this artefact's Sentinel references (Purpose, Domain Interpretation table, Sentinel Relationship section). Sentinel is now the AI Execution and Security Platform, with implemented provider orchestration, execution governance and failover under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot for Sentinel's scope. This note does not change AAM-0001's other architectural content.
+
+[[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] (approved 16 July 2026, ESR-0023 WP2-WP4) operationalises this artefact's Judgement faculty and Guardian Relationship section ("Guardian governs consent, policy, privacy, approval, memory retention and human-in-the-loop decisions") into concrete authority levels, protection boundaries and approval mechanics. GAM-0001 does not change AAM-0001's identity or faculty model - it defines the authority Guardian exercises once that identity is established. Note: Sentinel's `TrustTierPolicy` - the mechanism carrying the classification categories GAM-0001's boundaries are defined against - remains additive/opt-in only; `SimpleApprovalPolicy` is still `SentinelCore`'s production default (`sentinel/core.py`, confirmed at ESR-0023 WP5). GAM-0001's policy content is therefore architecturally complete but not yet operationally connected to the live Guardian runtime - see [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0074.
 
 ---
 
@@ -171,5 +173,6 @@ Obsidian is the human-facing Engineering Knowledge Workspace for OSE. It sits in
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation. ESR-0023 WP5, resolving EBG-0041 (Guardian Identity Architecture Validation, open since ESR-0008). Content re-checked against current implementation - no contradictions found, no rewrite needed. Added a second Subsequent Architectural Update note pointing to GAM-0001 (operationalises the Judgement faculty and Guardian Relationship section), which also surfaced a significant finding: Sentinel's TrustTierPolicy remains additive/opt-in only, SimpleApprovalPolicy is still SentinelCore's production default - GAM-0001's policy content is architecturally complete but not operationally connected to the live runtime (tracked as new EBG-0074). Status promoted Draft to Approved, mirroring MOD-0001's ESR-0023 WP2 fix. Implementation-sequencing judgement for the seven Guardian faculties recorded in ESR-0023's WP5 record, not restated here. |
 | 0.2 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described here. Original content unchanged. |
 | 0.1 | 2 July 2026 | Codex Engineering Implementer | Initial draft created during ESR-0008 closure to record Guardian identity and cognitive architecture. |
