@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -131,7 +131,7 @@ Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 S
 |------|-----------|
 | EBG-0017 - JARVIS Product Requirements and Capability Backlog | High priority, foundational for everything else in this track, but the programme has functioned without it for 20+ sessions by using EBR-0001 and PST-0001 together - not urgent, but overdue. |
 | EBG-0019 - Memory and Data Storage Architecture | Blocks persistent memory, which remains explicitly deferred (PST-0001 Section 10) - sequence architecture-first per this item's own stated rationale. |
-| EBG-0020 - Guardian, Family Safety and Emergency Controls | Depends conceptually on EBG-0031 (Guardian Architecture) landing first. |
+| EBG-0020 - Guardian, Family Safety and Emergency Controls | Depends conceptually on EBG-0031 (Guardian Architecture) landing first. **Resolved at ESR-0023 WP3**: GAM-0001 v1.1 Section 8 added, closed Completed in EBR-0001. |
 | EBG-0042 - Agent Framework Architecture | ADR-0011 exists; this item defines specialist agent contracts building on it. Relevant once GIA moves past Proof of Concept. |
 | EBG-0045 / EBG-0049 - Cost and Strategic Value Framework / Cost-Aware Provider Routing | Explicitly overlapping, already cross-referenced in EBR-0001 - action together, not separately. Directly relevant once the Near-term production-provider-wiring item above happens, since that is where cost first becomes a live concern rather than a research question. |
 
@@ -228,6 +228,7 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.7 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP3 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0020 entry as resolved - GAM-0001 v1.1 Section 8 added, closing EBG-0020 Completed in EBR-0001. |
 | 1.6 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0031 entry as resolved - GAM-0001 (Guardian Authority and Boundary Model) created and approved v1.0, closing EBG-0031 Completed in EBR-0001 and unblocking EBG-0020/EBG-0048. |
 | 1.5 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated EBG-0018's closure judgement and EBG-0067's Longer-term entry as resolved, matching EBR-0001 v1.46's disposition - EBG-0018 closed Completed; EBG-0067 split, UI Architecture Strategy sub-topic Superseded, Knowledge Architecture/relationship-vocabulary sub-topic promoted to Approved Backlog. |
 | 1.4 | 16 July 2026 | Claude Engineering Implementer | Added EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up) to Track C Near-term, discovered by the Programme Sponsor during the live visual check of EBG-0072. |

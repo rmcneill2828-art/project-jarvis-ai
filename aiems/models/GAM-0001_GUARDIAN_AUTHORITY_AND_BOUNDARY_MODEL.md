@@ -2,7 +2,7 @@
 
 > *"Guardian's trust comes from what it will not do without being asked."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | GAM-0001 |
 | Title | Guardian Authority and Boundary Model |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -46,7 +46,6 @@ GAM-0001 does not cover:
 
 - Guardian identity or cognitive faculties - defined in [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]];
 - Sentinel's trust-boundary architecture or execution mechanics - defined in [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] and implemented under `sentinel/` per `CURRENT_ARCHITECTURE.md`;
-- family safety and emergency control specifics - reserved for EBG-0020, referenced here, not restated;
 - consent, privacy, memory-retention and trusted-mobile approve/deny mechanics - reserved for EBG-0048, referenced here, not restated;
 - Sentinel Gate of Durin trust-tier/platform-entry implementation detail - reserved for EBG-0047;
 - React components, Tauri behaviour, Python implementation details or executable policy logic.
@@ -110,22 +109,65 @@ Any Guardian action that changes state, commits resources, or acts on the user's
 
 ## 6.3 Out of Scope (maps to `UNSUPPORTED_HIGH_RISK` / `EMERGENCY_CONTROL` / `LOCAL_AGENT_ACTION` / `DENY`)
 
-Categories that are not merely approval-gated but currently unsupported entirely, regardless of approval: local-agent action (EBG-0021 not yet defined), emergency control execution (EBG-0020 not yet defined), automation, and any high-risk action with no current governance basis. These `DENY` outright under Sentinel's existing precedence rules - GAM-0001 does not open them; it records that they remain closed until EBG-0020/EBG-0021 define the boundaries under which they could ever move to Section 6.2.
+Categories that are not merely approval-gated but currently unsupported entirely, regardless of approval: local-agent action (EBG-0021 not yet defined), emergency control execution (narrow exception defined in Section 8.4), automation, and any high-risk action with no current governance basis. These `DENY` outright under Sentinel's existing precedence rules - GAM-0001 does not open local-agent action; it records that it remains closed until EBG-0021 defines the boundary under which it could ever move to Section 6.2. Emergency control remains closed by the same default except for the one narrow, explicit mechanism Section 8.4 defines.
 
 ---
 
 # 7. Protection Boundaries - General Principles
 
-These are the principles Guardian's judgement shall follow. Concrete family-safety and emergency-control content is reserved for EBG-0020, not restated here.
+These are the principles Guardian's judgement shall follow. Concrete family-safety and emergency-control content is defined in Section 8.
 
 - **Deny-by-default for the unclassified.** An action with no existing classification is treated as Section 6.3 (out of scope), never assumed autonomous. This matches Sentinel's existing conservative precedence rather than introducing a second, competing default.
 - **No silent capability expansion.** Guardian's autonomous authority (Section 6.1) may only grow through a separately approved engineering package that explicitly reclassifies a named action - never through inference, configuration, or accumulated precedent.
 - **Human authority remains explicit for high-risk decisions**, per [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]]'s existing decision - GAM-0001 operationalises that decision's boundary, it does not revisit it.
-- **Family safety and child protection are a distinct, higher-scrutiny concern**, not a subset of general approval-gating - reserved in full for EBG-0020 rather than being defined here as a special case of Section 6.2.
+- **Family safety and child protection are a distinct, higher-scrutiny concern**, not a subset of general approval-gating - defined in full in Section 8.
 
 ---
 
-# 8. Approval and Escalation Path - General Shape
+# 8. Family Safety and Emergency Controls
+
+Resolves [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0020 (Guardian, Family Safety and Emergency Controls, open since ESR-0004's EKR-0001 vision recovery). This section extends Section 7's protection principles with the concrete content originally left deferred there.
+
+## 8.1 Household Role Model
+
+Sourced from the original ESR-0004 EKR-0001 vision-recovery findings (`aiems/History/Full Chat/FCH-0004_ESR-0004_FULL_CHAT_HISTORY.md`), never previously captured in any controlled artefact - confirmed absent from both AAM-0001 and PVTM-0001 before this section:
+
+| Role | Authority |
+|---|---|
+| Administrator | Full household authority; the only role that may author or amend a pre-approved emergency action policy (Section 8.4). |
+| Adult | Standard household authority; may approve `REVIEW`-classified actions within Section 6.2, subject to any Administrator-set limits. |
+| Child | Restricted authority; interacts within Section 8.2's child-safe assistance boundary; cannot approve `REVIEW`-classified actions. |
+| Guest | Minimal authority; Autonomous-tier interaction only (Section 6.1); no access to family-shared memory or approval capability. |
+
+This role model governs who may direct or approve a Guardian action. It does not alter Guardian's own authority levels (Section 6) - a Child-role request is still classified the same way by Sentinel; the role model determines who may satisfy a `REVIEW` escalation, not whether one is required.
+
+## 8.2 Child-Safe Assistance Boundary
+
+- Guardian shall distinguish personal memory (private to the individual) from shared family memory, per the original family-first model - detailed memory-retention mechanics remain EBG-0048's scope; this section states that the boundary exists, not how it is implemented.
+- Content and interaction presented to a Child-role user is a distinct, higher-scrutiny concern from general Approval-Required gating (Section 6.2) - restriction is evaluated against the Child role itself, not inferred from action type alone.
+- A Child-role user cannot satisfy a `REVIEW` escalation (Section 8.1) - only Adult or Administrator roles can.
+
+## 8.3 Emergency Assistance Scope
+
+Guardian's emergency-assistance scope, per the original vision recovery, is bounded to: emergency assistance requests, approved camera access, security monitoring, incident logging, and emergency policies. It explicitly excludes destructive action - the original vision recovery's own words: cyber-security capability "recommends, detects and monitors but does not perform destructive actions without approval," a direct instance of Section 7's "no silent capability expansion" principle.
+
+## 8.4 Pre-Approved Emergency Actions
+
+EBR-0001's EBG-0020 text specifically asks for "pre-approved emergency action boundaries" - a distinct concept from Section 6.1's Autonomous tier. A pre-approved emergency action is:
+
+- explicitly authored and signed off by an Administrator-role user, in advance, as a named policy record - never inferred, defaulted, or granted by an AI judgement call at the moment of the emergency;
+- narrowly scoped to a specific, named action (for example, "notify a specified contact if smoke-alarm telemetry is detected") - not a general emergency override;
+- still routed through Sentinel's `EMERGENCY_CONTROL` classification and logged - pre-approval changes who authorised the action and when, not whether Sentinel sees and records it.
+
+Absent such an explicit, named, Administrator-authored policy, all emergency-control actions remain `DENY` under Section 6.3. This section does not soften Sentinel's existing deny-by-default for `EMERGENCY_CONTROL` - it defines the one narrow, explicit mechanism by which a specific action could ever be pre-authorised. The policy record itself is subject to the same [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] Approval Before Change discipline as any other controlled change - an Administrator authoring a pre-approved emergency action does not bypass Section 7's "no silent capability expansion" principle merely by using this mechanism.
+
+## 8.5 Relationship to EBG-0021 (Local Agent Permission Boundary)
+
+Camera access, security monitoring and incident logging in Section 8.3 are observation/monitoring capabilities, not device or local-agent control. They do not open Section 6.3's `LOCAL_AGENT_ACTION` category, which remains closed pending EBG-0021's own separate definition.
+
+---
+
+# 9. Approval and Escalation Path - General Shape
 
 This section describes the shape of the path only. Consent, notification, retention and trusted-mobile approve/deny mechanics are reserved for EBG-0048.
 
@@ -146,14 +188,14 @@ Remote approve/deny from trusted mobile endpoints is confirmed by ADR-0010 as a 
 
 ---
 
-# 9. Explicit Non-Goals
+# 10. Explicit Non-Goals
 
 GAM-0001 does not:
 
 - implement Sentinel enforcement or the trust-tier classifier itself;
 - implement Guardian runtime behaviour;
 - implement approval workflows, notification channels or trusted-mobile approve/deny;
-- define family safety, child protection or emergency-control specifics (EBG-0020);
+- implement the household role model's authentication or enforcement (Section 8.1 defines the roles and their authority; it does not implement login, identification or access control);
 - define consent, privacy or memory-retention mechanics (EBG-0048);
 - define Sentinel Gate of Durin trust-tier/platform-entry detail (EBG-0047);
 - create a new AI identity or modify Guardian identity as defined in AAM-0001;
@@ -161,19 +203,18 @@ GAM-0001 does not:
 
 ---
 
-# 10. Future Evolution
+# 11. Future Evolution
 
 Future implementation packages may use GAM-0001 to guide Guardian authority and boundary development. Anticipated follow-on work, already sequenced in [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]:
 
-- EBG-0020 - Guardian, Family Safety and Emergency Controls (extends Section 7's protection principles with concrete family-safety/emergency-control content);
-- EBG-0048 - Guardian HITL Governance Specification (extends Section 8's approval path with consent, privacy, memory-retention and trusted-mobile mechanics);
-- EBG-0021 - Local Agent Permission Boundary (defines the boundary Section 6.3 currently leaves closed, once a local agent implementation is planned).
+- EBG-0048 - Guardian HITL Governance Specification (extends Section 9's approval path with consent, privacy, memory-retention and trusted-mobile mechanics);
+- EBG-0021 - Local Agent Permission Boundary (defines the boundary Section 6.3 and Section 8.5 currently leave closed, once a local agent implementation is planned).
 
 Any such evolution shall require separately approved engineering packages.
 
 ---
 
-# 11. OSE Relationships
+# 12. OSE Relationships
 
 | Artefact | Relationship |
 |----------|--------------|
@@ -182,25 +223,26 @@ Any such evolution shall require separately approved engineering packages.
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and Judgement faculty this model operationalises into concrete authority boundaries. |
 | [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]] | Decision that Guardian is the HITL governance point; GAM-0001 defines the boundary that decision governs. |
 | [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] | Decision establishing Sentinel's implemented trust-tier policy model, which GAM-0001's policy content is classified against. |
-| [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | Authoritative snapshot of the implemented Sentinel trust-tier mechanism referenced throughout Sections 5-6. |
+| [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | Authoritative snapshot of the implemented Sentinel trust-tier mechanism referenced throughout Sections 5-6 and 8. |
 | [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
 
 ---
 
-# 12. Related Artefacts
+# 13. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0031 (resolved by this artefact), EBG-0020, EBG-0048, EBG-0021, EBG-0047 (sequenced follow-on work referenced in Section 10). |
-| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031 and its dependent follow-on items. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0031 and EBG-0020 (resolved by this artefact), EBG-0048, EBG-0021, EBG-0047 (sequenced follow-on work referenced in Section 11). |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031/EBG-0020 and their dependent follow-on items. |
 | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Guardian experience architecture that presents Guardian's authority boundary to the user where appropriate. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers GAM-0001 as a controlled architecture model. |
 
 ---
 
-# 13. Version History
+# 14. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 8.4's pre-approval mechanism does not create a backdoor around Sentinel's EMERGENCY_CONTROL deny-by-default, and the Child-role restrictions (8.1/8.2) are adequately conservative. Non-blocking Reviewer note incorporated: Section 8.4 now states the emergency policy record itself is subject to PBK-0001's Approval Before Change discipline, not a bypass of it. New Section 8 resolves EBG-0020 (Guardian, Family Safety and Emergency Controls, open since ESR-0004): household role model (Administrator/Adult/Child/Guest, sourced from the original ESR-0004 EKR-0001 vision recovery, confirmed absent from AAM-0001 and PVTM-0001 before this addition), child-safe assistance boundary, emergency assistance scope, and an explicit boundary against EBG-0021. Sections renumbered 8 to 13 accordingly. ESR-0023 WP3. |
 | 1.0 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation of the authority-level split (Section 6) and protection principles (Section 7), and confirmation that the EBG-0020/EBG-0048/EBG-0021 deferrals do not pre-empt those items' own future scope. Status Draft to Approved; version 0.1 to 1.0 marking baseline acceptance. Resolving EBG-0031 in EBR-0001 as the same action. ESR-0023 WP2. |
 | 0.1 | 16 July 2026 | Claude Engineering Implementer | Initial draft created for ESR-0023 WP2, resolving EBG-0031. Defines Guardian's permission boundary model (autonomous / approval-required / out-of-scope) mapped onto Sentinel's existing trust-tier classification categories, general protection principles, and the general shape of the approval/escalation path - with family-safety specifics (EBG-0020), HITL/consent mechanics (EBG-0048) and local-agent boundary detail (EBG-0021) explicitly deferred rather than restated. Not yet Engineering Reviewer or Programme Sponsor reviewed. |

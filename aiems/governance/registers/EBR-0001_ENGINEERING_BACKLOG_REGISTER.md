@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.47
+**Version:** 1.48
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.47 |
+| Version | 1.48 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -86,7 +86,7 @@ Engineering backlog management shall follow these principles:
 | EBG-0017 | JARVIS Product Requirements and Capability Backlog | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Create or identify the authoritative product requirements backlog for recovered JARVIS capability intent, avoiding raw transcript import and duplicate product documentation. |
 | EBG-0018 | JARVIS AI Provider Abstraction Architecture | ESR-0004 EIP-EKR-0001 | Completed | High | Programme Sponsor | Define provider independence before any external AI provider integration. Preserve technology independence and avoid coupling JARVIS to one model or vendor. **Closed at ESR-0023 WP1** (Engineering Reviewer confirmed): judged substantially satisfied by the existing Sentinel provider abstraction - `aiems/architecture/CURRENT_ARCHITECTURE.md` documents execution provider abstraction, a provider registry, credential reference abstraction and three provider categories (foundation/aggregation/gateway) with explicit no-single-point-of-failure failover, backed by the live `sentinel/` implementation (OpenAI/Gemini/local adapters) and [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]]. Same closure pattern as EBG-0030. |
 | EBG-0019 | JARVIS Memory and Data Storage Architecture | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Define memory, storage, privacy and consent boundaries before long-term memory or family knowledge is implemented. |
-| EBG-0020 | JARVIS Guardian, Family Safety and Emergency Controls | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Define parental oversight, child safety, human approval and pre-approved emergency action boundaries before Guardian capability is implemented. |
+| EBG-0020 | JARVIS Guardian, Family Safety and Emergency Controls | ESR-0004 EIP-EKR-0001 | Completed | High | Programme Sponsor | Define parental oversight, child safety, human approval and pre-approved emergency action boundaries before Guardian capability is implemented. **Resolved at ESR-0023 WP3**: [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8 added (v1.1, Programme Sponsor-approved, Engineering Reviewer confirmed) - household role model (Administrator/Adult/Child/Guest, sourced from the original ESR-0004 EKR-0001 vision recovery), child-safe assistance boundary, emergency assistance scope, and a narrow pre-approved-emergency-action mechanism that does not soften Sentinel's EMERGENCY_CONTROL deny-by-default. |
 | EBG-0021 | JARVIS Local Agent Permission Boundary | ESR-0004 EIP-EKR-0001 | Candidate Backlog | High | Programme Sponsor | Define local device control limits before local agent implementation; local agents must not receive unlimited control. |
 | EBG-0022 | JARVIS AIEMS Knowledge Capability | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Investigate enabling JARVIS to understand and explain AIEMS using repository artefacts as governed knowledge. |
 | EBG-0023 | JARVIS Backup, Recovery and Data Protection Guidance | ESR-0004 EIP-EKR-0001 | Candidate Backlog | Medium | Programme Sponsor | Define backup and recovery expectations before persistent memory, family data or local operational state becomes significant. |
@@ -277,6 +277,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.48 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP3 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): closed EBG-0020 (Guardian, Family Safety and Emergency Controls) as Completed, resolved by GAM-0001 v1.1's new Section 8. |
 | 1.47 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): closed EBG-0031 (Guardian Architecture Specification) as Completed, resolved by the new GAM-0001 (Guardian Authority and Boundary Model, v1.0). |
 | 1.46 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): closed EBG-0018 (Provider Abstraction Architecture) as Completed, satisfied by the existing Sentinel provider abstraction (CURRENT_ARCHITECTURE.md, ADR-0018); promoted EBG-0067 (Dropped ADR-0007 Topics) from Candidate to Approved Backlog with a split disposition - UI Architecture Strategy sub-topic judged Superseded, AIEMS Knowledge Architecture/relationship-vocabulary sub-topic confirmed as a genuine live gap and retained as the item's remaining scope. |
 | 1.45 | 16 July 2026 | Claude Engineering Implementer | Added EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up): Programme Sponsor observed, during the live visual check of EBG-0072's System Health panel, that it duplicates part of the existing DiagnosticsPanel (both show Guardian/Sentinel/Providers from the same platform.status data). No implementation authorised by this entry. |

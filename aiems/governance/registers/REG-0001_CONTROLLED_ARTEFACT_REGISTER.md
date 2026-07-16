@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.156
+**Version:** 3.157
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.156 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.157 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.47 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.48 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -138,10 +138,10 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | MOD-0001 | Model | Platform Architecture Model | 1.5 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
-| GAM-0001 | Model | Guardian Authority and Boundary Model | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
+| GAM-0001 | Model | Guardian Authority and Boundary Model | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
-| JRM-0001 | Roadmap | Project Roadmap | 1.6 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.7 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -293,6 +293,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.157 | 16 July 2026 | Claude Engineering Implementer | GAM-0001 v1.1 approved (Engineering Reviewer and Programme Sponsor) - new Family Safety and Emergency Controls content added, resolving EBG-0020. Aligned EBR-0001 (1.47 to 1.48) and JRM-0001 (1.6 to 1.7): EBG-0020 marked Completed. ESR-0023 WP3. |
 | 3.156 | 16 July 2026 | Claude Engineering Implementer | Registered ESR-0023 (Engineering Session Report, Open 0.1) at Programme Sponsor direction, recording WP0-WP2 and the repository write boundary deviation disclosed during WP2. Session remains Open; WP3 held pending Programme Sponsor direction. |
 | 3.155 | 16 July 2026 | Claude Engineering Implementer | GAM-0001 approved (Engineering Reviewer and Programme Sponsor), version 0.1 to 1.0, status Draft to Approved. Aligned EBR-0001 (1.46 to 1.47) and JRM-0001 (1.5 to 1.6): EBG-0031 marked Completed, resolved by GAM-0001. ESR-0023 WP2. |
 | 3.154 | 16 July 2026 | Claude Engineering Implementer | Registered GAM-0001 (Guardian Authority and Boundary Model, Draft 0.1) as a new controlled artefact under `aiems/models/`, resolving EBG-0031. Drafted for Engineering Reviewer review before Programme Sponsor approval - not yet reviewed. ESR-0023 WP2. |
