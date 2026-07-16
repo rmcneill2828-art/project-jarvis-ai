@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.7 |
+| Version | 1.8 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -147,7 +147,7 @@ Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 S
 | EBG-0029 - Product Growth Philosophy | Documentation-only, no urgency. |
 | EBG-0046 - Device Independence and Restore Architecture | Large scope, no current trigger. |
 | EBG-0047 - Sentinel Gate of Durin Architecture Specification | Extends EBG-0030 (already Completed); worth revisiting once trust-tier work (ESR-0016) sees further use, not before. |
-| EBG-0048 - Guardian HITL Governance Specification | Extends EBG-0031 - sequence after it, not before or in parallel. |
+| EBG-0048 - Guardian HITL Governance Specification | Extends EBG-0031 - sequence after it, not before or in parallel. **Resolved at ESR-0023 WP4**: GAM-0001 v1.2 Section 9 extended, closed Completed in EBR-0001. |
 
 ---
 
@@ -228,6 +228,7 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.8 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP4 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0048 entry as resolved - GAM-0001 v1.2 Section 9 extended, closing EBG-0048 Completed in EBR-0001. |
 | 1.7 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP3 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0020 entry as resolved - GAM-0001 v1.1 Section 8 added, closing EBG-0020 Completed in EBR-0001. |
 | 1.6 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0031 entry as resolved - GAM-0001 (Guardian Authority and Boundary Model) created and approved v1.0, closing EBG-0031 Completed in EBR-0001 and unblocking EBG-0020/EBG-0048. |
 | 1.5 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated EBG-0018's closure judgement and EBG-0067's Longer-term entry as resolved, matching EBR-0001 v1.46's disposition - EBG-0018 closed Completed; EBG-0067 split, UI Architecture Strategy sub-topic Superseded, Knowledge Architecture/relationship-vocabulary sub-topic promoted to Approved Backlog. |

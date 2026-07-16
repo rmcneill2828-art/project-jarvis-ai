@@ -2,7 +2,7 @@
 
 > *"Guardian's trust comes from what it will not do without being asked."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | GAM-0001 |
 | Title | Guardian Authority and Boundary Model |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -169,7 +169,7 @@ Camera access, security monitoring and incident logging in Section 8.3 are obser
 
 # 9. Approval and Escalation Path - General Shape
 
-This section describes the shape of the path only. Consent, notification, retention and trusted-mobile approve/deny mechanics are reserved for EBG-0048.
+Resolves [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0048 (Guardian HITL Governance Specification), extending EBG-0031/EBG-0020's boundaries with consent, memory-retention-consent, and trusted-mobile approve/deny mechanics, per [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]]'s decision that Guardian "governs consent, policy, privacy, approval, memory retention and human-in-the-loop decisions."
 
 ```text
 Guardian proposes an action
@@ -179,12 +179,32 @@ Sentinel classifies (Section 5 categories)
   |
   +-- ROUTINE_INTERACTION --> ALLOW --> Guardian proceeds
   |
-  +-- HUMAN_APPROVAL_REQUIRED --> REVIEW --> escalate to human approval (mechanics: EBG-0048)
+  +-- HUMAN_APPROVAL_REQUIRED --> REVIEW --> escalate to human approval (Sections 9.1/9.3)
   |
   +-- UNSUPPORTED_HIGH_RISK / EMERGENCY_CONTROL / LOCAL_AGENT_ACTION --> DENY --> Guardian does not proceed
 ```
 
-Remote approve/deny from trusted mobile endpoints is confirmed by ADR-0010 as a future Guardian capability, not a current one - GAM-0001 does not bring it forward; it records where it plugs in once EBG-0048 defines it.
+Evidence check: Sentinel's `REVIEW` outcome (`sentinel/policy.py`) is currently an enum value carrying a static message only ("Sentinel routed the request for review") - no approval workflow, notification channel, or consent-recording mechanism exists in code today. The sections below define the architecture that content would implement; none of it is implemented by this artefact.
+
+## 9.1 Consent Mechanics
+
+Before an `HUMAN_APPROVAL_REQUIRED`-classified action proceeds, Guardian shall obtain and record an explicit consent decision from a household member entitled to give it (Section 8.1 - Adult or Administrator; Child role cannot satisfy this per Section 8.2). Consent is scoped to the specific action proposed - it is not a standing grant, and does not itself reclassify the action's Section 6 authority level for future occurrences. This mirrors Section 7's "no silent capability expansion" principle: one consented instance does not become an autonomous pattern.
+
+## 9.2 Memory-Retention Consent Boundary
+
+GAM-0001 governs *whether Guardian may retain something and who consented to that retention* - not the underlying storage technology, encryption, technical retention duration, or data architecture, which remains [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0019's scope (Memory and Data Storage Architecture, still open). The boundary: a memory-retention request is itself a Guardian action subject to Section 6's classification and Section 9.1's consent mechanics like any other - it requires the same explicit, scoped consent, and Section 8.2's personal/shared-family distinction determines who that consent must come from. EBG-0019, when actioned, implements the storage architecture this consent gate sits in front of; it does not need to re-derive the consent requirement, which is defined here.
+
+## 9.3 Trusted Mobile Approve/Deny
+
+Confirmed by ADR-0010 as a future Guardian capability, not a current one - this section records the architectural shape only, not an implementation.
+
+- A trusted mobile endpoint is a remote approval channel, not a separate authority source: it can only exercise the approval authority Section 8.1 already grants a given household role (Adult/Administrator), never more.
+- Remote approval is subject to the same Section 9.1 consent-scoping - a remote approve/deny decision is scoped to the specific escalated action, not a standing remote-approval grant.
+- Endpoint trust (device registration, authentication) is Sentinel's concern (per Section 5's trust-boundary model), not redefined here - this section governs what a trusted endpoint may authorise once Sentinel has established it is trusted, not how that trust is established.
+
+## 9.4 Privacy Boundary Reinforcement
+
+Section 8.2 states Guardian shall distinguish personal memory from shared family memory. This section makes the consent linkage explicit: crossing that boundary - for example, surfacing an individual's personal memory in a shared-family context - is itself an `HUMAN_APPROVAL_REQUIRED` action under Section 6.2, subject to Section 9.1's consent mechanics, not a default behaviour Guardian may perform on inference alone.
 
 ---
 
@@ -194,9 +214,10 @@ GAM-0001 does not:
 
 - implement Sentinel enforcement or the trust-tier classifier itself;
 - implement Guardian runtime behaviour;
-- implement approval workflows, notification channels or trusted-mobile approve/deny;
+- implement approval workflows, notification channels, consent recording, or trusted-mobile approve/deny (Section 9 defines the architecture; none of it is built here);
 - implement the household role model's authentication or enforcement (Section 8.1 defines the roles and their authority; it does not implement login, identification or access control);
-- define consent, privacy or memory-retention mechanics (EBG-0048);
+- implement memory storage technology, encryption, or technical retention duration policy (EBG-0019 - Section 9.2 defines only the consent gate in front of that architecture);
+- implement Sentinel endpoint trust/device registration (Section 9.3 assumes Sentinel has already established endpoint trust; it does not define how);
 - define Sentinel Gate of Durin trust-tier/platform-entry detail (EBG-0047);
 - create a new AI identity or modify Guardian identity as defined in AAM-0001;
 - create product source code.
@@ -207,8 +228,8 @@ GAM-0001 does not:
 
 Future implementation packages may use GAM-0001 to guide Guardian authority and boundary development. Anticipated follow-on work, already sequenced in [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]:
 
-- EBG-0048 - Guardian HITL Governance Specification (extends Section 9's approval path with consent, privacy, memory-retention and trusted-mobile mechanics);
-- EBG-0021 - Local Agent Permission Boundary (defines the boundary Section 6.3 and Section 8.5 currently leave closed, once a local agent implementation is planned).
+- EBG-0021 - Local Agent Permission Boundary (defines the boundary Section 6.3 and Section 8.5 currently leave closed, once a local agent implementation is planned);
+- EBG-0019 - Memory and Data Storage Architecture (implements the storage technology sitting behind Section 9.2's consent gate, once actioned).
 
 Any such evolution shall require separately approved engineering packages.
 
@@ -232,8 +253,8 @@ Any such evolution shall require separately approved engineering packages.
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0031 and EBG-0020 (resolved by this artefact), EBG-0048, EBG-0021, EBG-0047 (sequenced follow-on work referenced in Section 11). |
-| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031/EBG-0020 and their dependent follow-on items. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0031, EBG-0020 and EBG-0048 (resolved by this artefact), EBG-0021, EBG-0047, EBG-0019 (sequenced follow-on work referenced in Section 11). |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031/EBG-0020/EBG-0048 and their dependent follow-on items. |
 | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Guardian experience architecture that presents Guardian's authority boundary to the user where appropriate. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers GAM-0001 as a controlled architecture model. |
 
@@ -243,6 +264,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 9.2's EBG-0019 boundary is drawn in the right place (policy/consent layer only, no pre-emption, no gap - storage technology, encryption and retention duration remain EBG-0019's scope); Section 9.3's endpoint-trust framing is consistent with SAM-0001 and ADR-0010. ESR-0023 WP4, resolving EBG-0048 (Guardian HITL Governance Specification, extending EBG-0031/EBG-0020 per ADR-0010). Section 9 extended with four subsections: 9.1 consent mechanics (scoped to the specific action, not a standing grant); 9.2 memory-retention consent boundary; 9.3 trusted mobile approve/deny, confirmed by ADR-0010 as a future capability, architecture only; 9.4 privacy boundary reinforcement, making Section 8.2's personal/shared-family distinction an explicit HUMAN_APPROVAL_REQUIRED gate. Evidence checked directly: `sentinel/policy.py`'s REVIEW outcome is currently a static-message enum value only, no approval workflow implemented. |
 | 1.1 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 8.4's pre-approval mechanism does not create a backdoor around Sentinel's EMERGENCY_CONTROL deny-by-default, and the Child-role restrictions (8.1/8.2) are adequately conservative. Non-blocking Reviewer note incorporated: Section 8.4 now states the emergency policy record itself is subject to PBK-0001's Approval Before Change discipline, not a bypass of it. New Section 8 resolves EBG-0020 (Guardian, Family Safety and Emergency Controls, open since ESR-0004): household role model (Administrator/Adult/Child/Guest, sourced from the original ESR-0004 EKR-0001 vision recovery, confirmed absent from AAM-0001 and PVTM-0001 before this addition), child-safe assistance boundary, emergency assistance scope, and an explicit boundary against EBG-0021. Sections renumbered 8 to 13 accordingly. ESR-0023 WP3. |
 | 1.0 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation of the authority-level split (Section 6) and protection principles (Section 7), and confirmation that the EBG-0020/EBG-0048/EBG-0021 deferrals do not pre-empt those items' own future scope. Status Draft to Approved; version 0.1 to 1.0 marking baseline acceptance. Resolving EBG-0031 in EBR-0001 as the same action. ESR-0023 WP2. |
 | 0.1 | 16 July 2026 | Claude Engineering Implementer | Initial draft created for ESR-0023 WP2, resolving EBG-0031. Defines Guardian's permission boundary model (autonomous / approval-required / out-of-scope) mapped onto Sentinel's existing trust-tier classification categories, general protection principles, and the general shape of the approval/escalation path - with family-safety specifics (EBG-0020), HITL/consent mechanics (EBG-0048) and local-agent boundary detail (EBG-0021) explicitly deferred rather than restated. Not yet Engineering Reviewer or Programme Sponsor reviewed. |
