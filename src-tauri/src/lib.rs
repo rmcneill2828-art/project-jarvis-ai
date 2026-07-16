@@ -15,6 +15,7 @@
 
 use serde_json::{json, Value};
 use std::io::{BufRead, BufReader, Write};
+use std::path::Path;
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::Mutex;
 use tauri::{Manager, State};
@@ -29,8 +30,19 @@ struct BackendProcess {
 struct BackendState(Mutex<Option<BackendProcess>>);
 
 fn spawn_backend() -> Result<BackendProcess, String> {
+    // `jarvis` is not pip-installed in this dev setup - `python -m jarvis` only
+    // resolves it via the cwd-based sys.path entry `-m` adds, so the child
+    // process's working directory must be anchored to the repository root
+    // (this crate's parent directory) regardless of where `cargo run`/`tauri
+    // dev` itself was launched from. CARGO_MANIFEST_DIR is a compile-time
+    // constant (this crate's directory, `src-tauri/`), not launch-time state.
+    let repo_root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .ok_or_else(|| "Failed to resolve repository root from CARGO_MANIFEST_DIR.".to_string())?;
+
     let mut child = Command::new("python")
         .args(["-m", "jarvis", "--ipc-stdio"])
+        .current_dir(repo_root)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::inherit())

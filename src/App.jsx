@@ -116,6 +116,76 @@ function deriveDiagnostics(platformState, platformError) {
   });
 }
 
+// System Health panel rows (JRM-0001 Track C Near-term): Guardian, Sentinel
+// and Providers, sourced only from real `platform.status` fields - distinct
+// from DiagnosticsPanel below, which mixes these same real-derived rows with
+// permanently-static placeholder rows (boundary, shell, agents, first-light).
+const SYSTEM_HEALTH_LABELS = { guardian: "Guardian", sentinel: "Sentinel", providers: "Providers" };
+
+function deriveSystemHealth(platformState, platformError) {
+  if (platformError) {
+    return ["guardian", "sentinel", "providers"].map((id) => ({
+      id,
+      label: SYSTEM_HEALTH_LABELS[id],
+      state: STATUS.OFFLINE,
+      detail: "JARVIS backend is unavailable",
+    }));
+  }
+  if (!platformState) {
+    return ["guardian", "sentinel", "providers"].map((id) => ({
+      id,
+      label: SYSTEM_HEALTH_LABELS[id],
+      state: STATUS.CONNECTING,
+      detail: "Connecting to the JARVIS backend...",
+    }));
+  }
+
+  const running = platformState.state === "Running";
+  const providers = Array.isArray(platformState.providers) ? platformState.providers : [];
+
+  return [
+    {
+      id: "guardian",
+      label: SYSTEM_HEALTH_LABELS.guardian,
+      state: running ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+      detail: `Runtime: ${platformState.state}`,
+    },
+    {
+      id: "sentinel",
+      label: SYSTEM_HEALTH_LABELS.sentinel,
+      state: running ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+      detail: running ? "Trust gateway active" : "Not running",
+    },
+    {
+      id: "providers",
+      label: SYSTEM_HEALTH_LABELS.providers,
+      state: providers.length > 0 ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+      detail: providers.length > 0 ? providers.join(" -> ") : "No providers connected",
+    },
+  ];
+}
+
+function SystemHealthPanel({ platformState, platformError }) {
+  const rows = deriveSystemHealth(platformState, platformError);
+
+  return (
+    <aside className="system-health-panel" aria-labelledby="system-health-heading">
+      <h2 id="system-health-heading">System Health</h2>
+      <div className="system-health-list">
+        {rows.map((row) => (
+          <article className="system-health-row" key={row.id}>
+            <span className="system-health-label">{row.label}</span>
+            <span className="system-health-value">
+              <StateDot state={row.state} />
+              <span>{row.detail}</span>
+            </span>
+          </article>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
 function deriveGuardianStatus(platformState, platformError) {
   if (platformError) {
     return {
@@ -495,6 +565,7 @@ export function App() {
               />
             </div>
             <div className="side-column">
+              <SystemHealthPanel platformState={platformState} platformError={platformError} />
               <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
               <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} />
               <DiagnosticsPanel diagnostics={deriveDiagnostics(platformState, platformError)} />

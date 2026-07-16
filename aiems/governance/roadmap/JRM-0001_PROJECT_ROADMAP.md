@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.0 |
+| Version | 1.4 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -120,10 +120,10 @@ Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 S
 
 | Item | Rationale |
 |------|-----------|
-| Wire a live provider (OpenAI or Gemini) into a production `ProviderOrchestrator` route | Both providers are live-validated (EBG-0051, and OpenAI since ESR-0015) but neither is wired into default JARVIS/Guardian runtime use - flagged as a candidate in PST-0001 across at least three sessions but never given its own EBG number. **Recommend registering this as a new EBG-0070 in EBR-0001** at whichever session actions it, so it stops being a recurring unnumbered note. |
 | EBG-0031 - Guardian Architecture Specification | High priority since ESR-0005, blocks meaningful Guardian safety/permission work; Guardian is already user-facing (the live Orb/chat) without this specification formally existing. |
 | EBG-0041 - Guardian Identity Architecture Validation | AAM-0001 exists but has never been validated against implementation sequencing, per this item's own text. |
-| EBG-0069 - JARVIS_CAPABILITY_READINESS_MATRIX.md Refresh | Discovered at ESR-0021 WP6. Direct precedent already exists and succeeded: EBG-0056 refreshed the sibling PCB-0001 document the same way. Low-risk, well-understood pattern - should not need its own design work, just execution. |
+| EBG-0069 - JARVIS_CAPABILITY_READINESS_MATRIX.md Refresh | Discovered at ESR-0021 WP6. Direct precedent already exists and succeeded: EBG-0056 refreshed the sibling PCB-0001 document the same way. Low-risk, well-understood pattern - should not need its own design work, just execution. **Delivered at ESR-0021 WP7**; EBR-0001 remains authoritative for its Complete status. |
+| EBG-0070 - Wire a Live Provider into a Production `ProviderOrchestrator` Route | Both providers are live-validated (EBG-0051, and OpenAI since ESR-0015) but neither was wired into default JARVIS/Guardian runtime use - flagged as a candidate in PST-0001 across at least three sessions before this section recommended registering it. **Delivered at ESR-0022 WP1** per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0 (Engineering Reviewer and Programme Sponsor approved): `build_default_runtime()` registers a real OpenAI/Gemini provider (configurable via `JARVIS_PRIMARY_PROVIDER`, default `openai` per PEM-001) when its credential is present and non-blank, with `LocalEchoProvider` retained as failover; registered as EBG-0070 in EBR-0001, Complete. |
 
 ## 7.2 Mid-term
 
@@ -167,8 +167,9 @@ EBG-0028 already carries substantial phased content for the Guardian Orb specifi
 
 | Item | Rationale |
 |------|-----------|
-| System Health panel (using only real fields: Guardian, Sentinel, Providers from `platform.status`) | Directly identified during ESR-0021 WP4 scoping as buildable now without violating the no-mock-fallback rule, deliberately deferred to a future WP rather than bundled into WP4's minor scope. |
-| EBG-0050 remaining scope: streaming notifications | Explicitly kept open under EBG-0050 rather than closed outright; natural next increment once a production provider is wired in (Track B Near-term), since streaming matters most once real conversational latency exists. |
+| System Health panel (using only real fields: Guardian, Sentinel, Providers from `platform.status`) | Directly identified during ESR-0021 WP4 scoping as buildable now without violating the no-mock-fallback rule, deliberately deferred to a future WP rather than bundled into WP4's minor scope. **Delivered at ESR-0022 WP1** per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0, paired with EBG-0070 (Track B) in the same package; registered as EBG-0072 in EBR-0001, Complete. |
+| EBG-0050 remaining scope: streaming notifications | Explicitly kept open under EBG-0050 rather than closed outright; natural next increment now that a production provider is wired in (EBG-0070, delivered ESR-0022 WP1), since streaming matters most once real conversational latency exists. |
+| EBG-0073 - UXP Duplicate Monitoring Elements Tidy-up | Discovered directly by the Programme Sponsor viewing the live app after EBG-0072 shipped: `SystemHealthPanel` and `DiagnosticsPanel` now visibly duplicate Guardian/Sentinel/Providers rows. Low-risk consolidation, no new backend work needed - a natural quick follow-on to EBG-0072 rather than a standalone design effort. |
 
 ## 8.3 Mid-term
 
@@ -191,7 +192,7 @@ EBG-0028 already carries substantial phased content for the Guardian Orb specifi
 
 Two items are referenced repeatedly across sessions without ever being assigned their own EBR-0001 entry. This roadmap does not mint them itself - EBR-0001 remains the register's own authority - but flags them so a future session closes the gap:
 
-1. **Wiring a live provider into a production `ProviderOrchestrator` route.** Mentioned as "a candidate future backlog item, not yet raised as its own EBG entry" in PST-0001 across ESR-0018 through ESR-0020. Recommend EBG-0070 when next actioned.
+1. ~~**Wiring a live provider into a production `ProviderOrchestrator` route.**~~ Mentioned as "a candidate future backlog item, not yet raised as its own EBG entry" in PST-0001 across ESR-0018 through ESR-0020. **Registered as EBG-0070 and delivered at ESR-0022 WP1** per EIP-ESR0022-001 v1.0 (see Section 7.1).
 2. **REG-0001 HST/FCH registration gap** (HST-0015 through HST-0020, FCH-0020_GPT missing from REG-0001's artefact table despite the files existing). Surfaced at ESR-0021 WP4 (EIP-ESR0021-002 Section 12), deferred to a Work Package at ESR-0021 closure per Programme Sponsor direction. Recommend EBG-0071 if not resolved before session close.
 
 **Note (ESR-0021 WP6):** EBG-0059 and EBG-0060 have since been taken by two of the 11 Candidate Backlog items added during this session's historical HST/FCH audit (Engineering Assurance Capability and the DCE/Repository Execution Agent governance model respectively - see EBR-0001). The recommendations above are renumbered to EBG-0070/0071 accordingly to avoid collision.
@@ -227,6 +228,10 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 16 July 2026 | Claude Engineering Implementer | Added EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up) to Track C Near-term, discovered by the Programme Sponsor during the live visual check of EBG-0072. |
+| 1.3 | 16 July 2026 | Claude Engineering Implementer | Marked Track B's production-provider-wiring item and Track C's System Health panel item Delivered/Complete: implemented per EIP-ESR0022-001 v1.0 (Engineering Reviewer and Programme Sponsor approved), registered EBG-0070/EBG-0072 Complete in EBR-0001. Section 9's first unnumbered item struck through as resolved. ESR-0022 WP1. |
+| 1.2 | 16 July 2026 | Claude Engineering Implementer | Following an Engineering Reviewer High finding on EIP-ESR0022-001 v0.1 (a retroactive package cannot be genuinely approved), corrected Track B/Track C entries for EBG-0070/EBG-0072 from `In Progress` to `Approved Backlog`: the earlier implementation was fully reverted, and EIP-ESR0022-001 v0.2 is now a genuine prospective proposal with no code written. |
+| 1.1 | 16 July 2026 | Claude Engineering Implementer | Recorded Track B's production-provider-wiring item and Track C's System Health panel item as registered (EBG-0070, EBG-0072), proposed together at ESR-0022 WP1 per this document's own Backlog Acceleration Opportunity pairing. **Corrected same-day**: both were drafted and tested before an Engineering Implementation Package existed for Engineering Reviewer review - reworded throughout from "Delivered/Complete" to "Proposed, pending review" pending [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] review and Programme Sponsor final approval. ESR-0022 WP1. |
 | 1.0 | 15 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 15 July 2026.** Status Draft to Approved; version 0.3 to 1.0 marking baseline acceptance. Registering in REG-0001 and closing EBG-0012/EBG-0027/EBG-0028 in EBR-0001 as the same action. ESR-0021 WP5/WP6. |
 | 0.3 | 15 July 2026 | Claude Engineering Implementer | Sequenced all 11 EBG-0059-0069 items from the ESR-0021 WP6 historical audit into Tracks A/B: Near-term (EBG-0065, EBG-0068, EBG-0069), Mid-term (EBG-0059, EBG-0061, EBG-0063, EBG-0066), Longer-term (EBG-0060, EBG-0062, EBG-0064, EBG-0067). Flagged EBG-0060/EBG-0057 and EBG-0064/EBG-0033 as overlap pairs needing a combined judgement rather than separate action. Still Draft, not yet Programme Sponsor-reviewed or registered. ESR-0021 WP6. |
 | 0.2 | 15 July 2026 | Claude Engineering Implementer | Renumbered Section 9's two recommended EBG identifiers (0059/0060 to 0070/0071) after those numbers were taken by real Candidate Backlog items added during ESR-0021 WP6's historical HST/FCH audit. No other content changed; not yet Programme Sponsor-reviewed or registered. ESR-0021 WP6. |

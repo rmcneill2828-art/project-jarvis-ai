@@ -142,6 +142,18 @@ class GuardianRuntime:
 
         return MappingProxyType(dict(self._services))
 
+    def configured_providers(self) -> tuple[str, ...]:
+        """Return the names of providers currently eligible to serve conversation
+        requests, in route order, if the connected provider exposes that
+        information; empty otherwise."""
+
+        if self._conversation_provider is None:
+            return ()
+        getter = getattr(self._conversation_provider, "configured_providers", None)
+        if getter is None:
+            return ()
+        return tuple(getter())
+
     def diagnostics(
         self,
         *,

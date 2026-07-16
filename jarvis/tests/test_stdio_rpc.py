@@ -15,14 +15,63 @@ from jarvis.interfaces.stdio_rpc import (
 
 
 def _server() -> StdioRpcServer:
-    return StdioRpcServer(build_default_runtime())
+    # Explicit empty environ: keeps tests deterministic and offline regardless
+    # of real provider credentials the host machine may have set persistently
+    # (e.g. for the manual smoke-test scripts) - never depend on, or
+    # accidentally exercise, real credentials in the automated suite.
+    return StdioRpcServer(build_default_runtime(environ={}))
 
 
 def test_build_default_runtime_is_started_and_connected():
-    runtime = build_default_runtime()
+    runtime = build_default_runtime(environ={})
 
     assert runtime.status().value == "Running"
     assert runtime.services()["Guardian Provider Boundary"].status.value == "Online"
+
+
+def test_build_default_runtime_falls_back_to_local_echo_without_credential():
+    runtime = build_default_runtime(environ={})
+
+    assert runtime.configured_providers() == ("local-echo",)
+
+
+def test_build_default_runtime_wires_openai_as_default_primary_when_credential_present():
+    runtime = build_default_runtime(environ={"OPENAI_API_KEY": "test-key-not-a-real-credential"})
+
+    assert runtime.configured_providers() == ("openai", "local-echo")
+
+
+def test_build_default_runtime_respects_primary_provider_selection():
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_PRIMARY_PROVIDER": "gemini",
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+        }
+    )
+
+    assert runtime.configured_providers() == ("gemini", "local-echo")
+
+
+def test_build_default_runtime_ignores_unselected_provider_credential():
+    # OPENAI_API_KEY being set should not matter when gemini is selected but
+    # has no credential of its own - local-echo remains the only fallback.
+    runtime = build_default_runtime(
+        environ={"JARVIS_PRIMARY_PROVIDER": "gemini", "OPENAI_API_KEY": "test-key-not-a-real-credential"}
+    )
+
+    assert runtime.configured_providers() == ("local-echo",)
+
+
+def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_blank():
+    # A present-but-blank OPENAI_MODEL must not override the fallback default
+    # with an empty string - that would make OpenAIProvider's constructor
+    # reject the configuration, turning a harmless placeholder into a startup
+    # failure (Engineering Reviewer finding, EIP-ESR0022-001).
+    runtime = build_default_runtime(
+        environ={"OPENAI_API_KEY": "test-key-not-a-real-credential", "OPENAI_MODEL": ""}
+    )
+
+    assert runtime.configured_providers() == ("openai", "local-echo")
 
 
 def test_guardian_converse_returns_real_response_through_sentinel():
@@ -48,6 +97,7 @@ def test_platform_status_reflects_real_runtime_state():
         "state": "Running",
         "runtimeHealth": "Healthy",
         "providerConnected": "Online",
+        "providers": ["local-echo"],
     }
 
 

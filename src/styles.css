@@ -162,6 +162,7 @@ button {
 .profile-card,
 .status-card,
 .diagnostics-panel,
+.system-health-panel,
 .knowledge-metrics-panel,
 .active-clusters-panel,
 .command-panel {
@@ -182,6 +183,7 @@ button {
 
 .sidebar-panel h2,
 .diagnostics-panel > h2,
+.system-health-panel > h2,
 .knowledge-metrics-panel > h2,
 .active-clusters-panel > h2 {
   margin: 0;
@@ -562,11 +564,13 @@ button {
   padding: 20px 18px 10px;
 }
 
+.system-health-panel,
 .knowledge-metrics-panel,
 .active-clusters-panel {
   padding: 18px 18px 16px;
 }
 
+.system-health-panel > h2,
 .knowledge-metrics-panel > h2,
 .active-clusters-panel > h2 {
   padding: 0 0 14px;
@@ -578,6 +582,36 @@ button {
   color: #c8d0d5;
   font-size: 0.9rem;
   line-height: 1.4;
+}
+
+.system-health-list {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+}
+
+.system-health-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.system-health-label {
+  color: #c8d0d5;
+  font-size: 0.88rem;
+}
+
+.system-health-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  text-align: right;
 }
 
 .metrics-list {

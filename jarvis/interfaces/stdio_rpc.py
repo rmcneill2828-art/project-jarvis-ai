@@ -14,17 +14,42 @@ notifications can be added without a breaking change (Reviewer finding 5).
 """
 
 import json
+import os
 import sys
-from typing import Any, TextIO
+from typing import Any, Mapping, TextIO
 
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from sentinel.core import SentinelTrustGateway
+from sentinel.gemini_provider import GeminiProvider
 from sentinel.local_provider import LocalEchoProvider
+from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
+from sentinel.provider_config import CredentialReference, ProviderConfiguration
 
 JSONRPC_VERSION = "2.0"
+
+# Selects which real provider build_default_runtime() tries to wire as primary;
+# unset defaults to "openai" per PEM-001's Primary/Secondary designation.
+PRIMARY_PROVIDER_ENV_VAR = "JARVIS_PRIMARY_PROVIDER"
+DEFAULT_PRIMARY_PROVIDER = "openai"
+
+# Per-provider credential/model env var names and default models, matching the
+# established convention from scripts/wp5_first_conversation_demo.py (OpenAI)
+# and scripts/gemini_provider_smoke_test.py (Gemini).
+_REAL_PROVIDER_SPECS: dict[str, dict[str, str]] = {
+    "openai": {
+        "credential_env_var": "OPENAI_API_KEY",
+        "model_env_var": "OPENAI_MODEL",
+        "default_model": "gpt-5.5",
+    },
+    "gemini": {
+        "credential_env_var": "GEMINI_API_KEY",
+        "model_env_var": "GEMINI_MODEL",
+        "default_model": "gemini-2.5-flash",
+    },
+}
 
 # Standard JSON-RPC 2.0 pre-defined error codes, plus one server-defined code
 # in the reserved -32000 to -32099 range for internal handler failures.
@@ -35,15 +60,71 @@ INVALID_PARAMS = -32602
 INTERNAL_ERROR = -32000
 
 
-def build_default_runtime() -> GuardianRuntime:
-    """Build and start the zero-config Guardian+Sentinel stack used by foundation mode."""
+def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvider | GeminiProvider | None:
+    """Build the named real provider adapter, or None if its credential is absent or blank.
+
+    An absent or blank credential is treated as "not available on this machine",
+    not a startup failure - build_default_runtime() always keeps LocalEchoProvider
+    as the route's final fallback, matching this codebase's existing
+    honest-degradation pattern (ESR-0017 WP9's no-mock-fallback rule).
+    """
+
+    spec = _REAL_PROVIDER_SPECS.get(name)
+    if spec is None:
+        return None
+    if not environ.get(spec["credential_env_var"]):
+        return None
+    # A present-but-blank model env var must fall through to the default model,
+    # same as an absent one - environ.get(key, default) alone would let a blank
+    # placeholder silently override the default with "", which the provider
+    # constructor then rejects as an invalid configuration (Engineering
+    # Reviewer finding, EIP-ESR0022-001).
+    model = environ.get(spec["model_env_var"]) or spec["default_model"]
+    configuration = ProviderConfiguration(
+        provider_name=name,
+        default_model=model,
+        credential=CredentialReference(environment_variable=spec["credential_env_var"]),
+    )
+    if name == "openai":
+        return OpenAIProvider(configuration)
+    return GeminiProvider(configuration)
+
+
+def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianRuntime:
+    """Build and start the production Guardian+Sentinel stack.
+
+    Registers a real provider (OpenAI or Gemini, selected by
+    JARVIS_PRIMARY_PROVIDER, default "openai" per PEM-001's Primary
+    designation) as the primary text-generation route provider only when its
+    credential env var is present and non-blank in `environ`; LocalEchoProvider
+    is always registered as the final failover, so a machine with no key
+    configured - or a real provider call that fails at runtime - still has a
+    working conversation path (EBG-0070, ESR-0022).
+
+    `environ` defaults to `os.environ`. Tests must pass an explicit mapping
+    (e.g. `{}`) rather than relying on the default, so test runs stay
+    deterministic and never depend on - or accidentally exercise - real
+    credentials that happen to be set on the host machine.
+    """
+
+    environ = os.environ if environ is None else environ
 
     gateway = SentinelTrustGateway()
     orchestrator = ProviderOrchestrator()
+
+    route_providers: list[str] = []
+    primary_name = environ.get(PRIMARY_PROVIDER_ENV_VAR, DEFAULT_PRIMARY_PROVIDER)
+    real_provider = _build_real_provider(primary_name, environ)
+    if real_provider is not None:
+        orchestrator.register_provider(real_provider)
+        route_providers.append(real_provider.name)
+
     local_provider = LocalEchoProvider()
     orchestrator.register_provider(local_provider)
+    route_providers.append(local_provider.name)
+
     orchestrator.register_route(
-        ProviderRoute(capability="text-generation", providers=(local_provider.name,))
+        ProviderRoute(capability="text-generation", providers=tuple(route_providers))
     )
     conversation_provider = SentinelGatedConversationProvider(gateway=gateway, orchestrator=orchestrator)
     runtime = GuardianRuntime(conversation_provider=conversation_provider)
@@ -77,6 +158,7 @@ class StdioRpcServer:
             "state": snapshot.state.value,
             "runtimeHealth": snapshot.runtime_health.value,
             "providerConnected": provider_boundary.status.value if provider_boundary else "Unknown",
+            "providers": list(self._runtime.configured_providers()),
         }
 
     def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002

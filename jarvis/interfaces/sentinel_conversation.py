@@ -72,3 +72,8 @@ class SentinelGatedConversationProvider:
             message=orchestrated.provider_response.content,
             provider=orchestrated.execution_record.selected_provider or self.name,
         )
+
+    def configured_providers(self) -> tuple[str, ...]:
+        """Return provider names currently eligible for this capability, in route order."""
+
+        return tuple(provider.name for provider in self._orchestrator.eligible_providers(self._capability))
