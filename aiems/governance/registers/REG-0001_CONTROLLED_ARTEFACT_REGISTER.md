@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.151
+**Version:** 3.152
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.151 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.152 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.45 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.46 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -140,7 +140,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
-| JRM-0001 | Roadmap | Project Roadmap | 1.4 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.5 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -291,6 +291,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.152 | 16 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.45 to 1.46) and JRM-0001 (1.4 to 1.5) versions following ESR-0023 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): EBG-0018 closed Completed (Sentinel provider abstraction satisfies original intent); EBG-0067 promoted Candidate to Approved Backlog with split disposition (UI Architecture Strategy sub-topic Superseded, Knowledge Architecture/relationship-vocabulary sub-topic retained as the remaining live gap). ESR-0023 WP1. |
 | 3.151 | 16 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.33 to 2.34) following ESR-0022 closure synchronisation: Current Mode/Baseline, Current Engineering Focus, Active/Next Planned Work, Completed Milestones, Session Start Guidance and OSE Relationships all updated for the ESR-0022 closed state and RBL-0015 acceptance. Corrects a version-mismatch error caught by the validator immediately after the previous entry. ESR-0022 session-wide WP7. |
 | 3.150 | 16 July 2026 | Claude Engineering Implementer | Registered ESR-0022 (Engineering Session Report, Closed) at session closure. Aligned PST-0001 version (2.33 to 2.34) following ESR-0022 closure synchronisation. ESR-0022 session-wide WP7. |
 | 3.149 | 16 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.32 to 2.33) following ESR-0022 WP6/WP7 synchronisation - Current Mode/Baseline, Active/Next Planned Work, Repository Health, Completed Milestones, Session Start Guidance and OSE Relationships updated for RBL-0015's acceptance. Corrects a version-mismatch error caught by the validator immediately after the previous entry. ESR-0022 WP6/WP7. |

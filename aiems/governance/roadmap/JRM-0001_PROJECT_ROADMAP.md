@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -60,7 +60,7 @@ JRM-0001 owns sequencing and phasing. It does not own backlog item detail, curre
 Building this roadmap required auditing the full backlog register for currency. Two stale entries were found, unrelated to the roadmap items themselves but surfaced by the same evidence-gathering pass:
 
 * **EBG-0003** (Lifecycle review of COC-0001) and **EBG-0004** (Lifecycle review of PBK-0001) both still show `Approved Backlog` status in EBR-0001's Section 5 table, despite COC-0001 and PBK-0001 both having been promoted from Draft to Approved at ESR-0020 - repeatedly documented as "EBG-0004 resolved" in PST-0001, EIP-ESR0020-001 and the ESR-0020 session report itself, but never reflected in the backlog register's own Status column. Corrected to `Completed` as part of this WP, per EBR-0001's own Section 12 maintenance trigger ("when the Programme Sponsor directs a backlog review" - this roadmap construction is exactly that).
-* **EBG-0018** (JARVIS AI Provider Abstraction Architecture, Candidate Backlog since ESR-0004) appears substantially satisfied by the Sentinel provider abstraction now implemented (`sentinel/` provider registry, capability resolution, OpenAI/Gemini/local adapters, live-validated per PST-0001 Section 5). Not marked Completed by this WP - the original request was an architecture-definition activity distinct from the implementation that followed it, and closing it is a Programme Sponsor judgement call, not an automatic inference. Flagged here as a Near-term candidate for that judgement (Section 6.2).
+* **EBG-0018** (JARVIS AI Provider Abstraction Architecture, Candidate Backlog since ESR-0004) appears substantially satisfied by the Sentinel provider abstraction now implemented (`sentinel/` provider registry, capability resolution, OpenAI/Gemini/local adapters, live-validated per PST-0001 Section 5). Not marked Completed by this WP - the original request was an architecture-definition activity distinct from the implementation that followed it, and closing it is a Programme Sponsor judgement call, not an automatic inference. Flagged here as a Near-term candidate for that judgement (Section 6.2). **Resolved at ESR-0023 WP1**: closed as Completed in EBR-0001, Engineering Reviewer confirmed.
 
 ---
 
@@ -86,7 +86,7 @@ Governs AIEMS itself: standards, workflow, registers, roles. Sourced from EBR-00
 | EBG-0009 - Engineering Session Standard | Same rationale as EBG-0008, for session lifecycle rather than EIP structure. |
 | EBG-0010 - Repository metadata / cross-reference validation rules | Natural precursor to EBG-0014 (validation automation) - sequence before it. |
 | EBG-0013 - Engineering Decision Index | Growing ADR/decision count (20+ ADRs) makes this increasingly valuable; not urgent yet. |
-| EBG-0018 closure judgement (see Section 5) | Programme Sponsor decision on whether Sentinel's provider abstraction satisfies this item's original architecture-definition intent. |
+| EBG-0018 closure judgement (see Section 5) | Programme Sponsor decision on whether Sentinel's provider abstraction satisfies this item's original architecture-definition intent. **Resolved at ESR-0023 WP1** - closed Completed. |
 | EBG-0059 - Engineering Assurance Capability (EAC/EAA/EAR) | Discovered at ESR-0021 WP6. The highest-value item this audit surfaced: a complete, previously-adversarially-reviewed architecture spec for independent process verification, directly addressing the exact failure mode behind ESR-0020's two self-disclosed process deviations (a human had to catch them). Not Near-term only because it is a substantial build (WP4.1-4.7 in its own original plan), not a quick fix - but it should not sit as long as it already has. |
 | EBG-0061 - Engineering Workspace Standard (EWS-0001) | Discovered at ESR-0021 WP6. Real content already exists from ESR-0010 (tool-responsibility matrix still reflecting operative practice); this is a formalisation pass, not new design work. |
 | EBG-0063 - TMP-0002 Engineering Session Chat Summary Template | Discovered at ESR-0021 WP6. Natural companion to EBG-0009 above - action together for one combined session-documentation pass rather than two separate sessions touching the same area. |
@@ -108,7 +108,7 @@ Governs AIEMS itself: standards, workflow, registers, roles. Sourced from EBR-00
 | EBG-0060 - Direct ChatGPT Execution (DCE) / Repository Execution Agent (REA) | Discovered at ESR-0021 WP6. Conceptually predates and overlaps EBG-0057 immediately above - both are about governed AI repository-write execution paths. Worth a combined judgement when EBG-0057 is next actioned: does the Claude-Codex Bridge architecture already supersede what DCE/REA was reaching for, or does DCE/REA identify a gap the bridge design doesn't cover (e.g. single-AI direct execution outside a two-AI handover model)? |
 | EBG-0062 - CPS-0001 Codex Prompt Standard | Discovered at ESR-0021 WP6. Lowest priority of the newly-discovered items per its own backlog note - 20+ sessions of established EIP convention have substantially met the original need even without a named standard. |
 | EBG-0064 - ISTL-0001 Engineering Inter-Session Task Register | Discovered at ESR-0021 WP6. Likely substantially satisfied already by PST-0001 Section 8 (Active and Next Planned Work) and EBR-0001 itself - action only if a real gap is confirmed, not by default. Overlaps EBG-0033 above. |
-| EBG-0067 - Dropped ADR-0007 topics (JARVIS UI Architecture Strategy; AIEMS Knowledge Architecture) | Discovered at ESR-0021 WP6. The UI-strategy question looks substantively resolved by the later real ADR-0007/ADR-0019 UXP decisions; the knowledge-architecture/relationship-vocabulary question is less clearly resolved elsewhere. Needs a judgement call on whether either is still a live gap before any implementation work, not a build item in itself. |
+| EBG-0067 - Dropped ADR-0007 topics (JARVIS UI Architecture Strategy; AIEMS Knowledge Architecture) | Discovered at ESR-0021 WP6. The UI-strategy question looks substantively resolved by the later real ADR-0007/ADR-0019 UXP decisions; the knowledge-architecture/relationship-vocabulary question is less clearly resolved elsewhere. Needs a judgement call on whether either is still a live gap before any implementation work, not a build item in itself. **Resolved at ESR-0023 WP1**: split disposition applied - UI Architecture Strategy sub-topic judged Superseded; AIEMS Knowledge Architecture/relationship-vocabulary sub-topic confirmed as a genuine live gap, promoted to Approved Backlog scoped to that remaining sub-topic. No longer Longer-term/Not Yet Justified - re-sequence in a future roadmap refresh. |
 
 ---
 
@@ -228,6 +228,7 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated EBG-0018's closure judgement and EBG-0067's Longer-term entry as resolved, matching EBR-0001 v1.46's disposition - EBG-0018 closed Completed; EBG-0067 split, UI Architecture Strategy sub-topic Superseded, Knowledge Architecture/relationship-vocabulary sub-topic promoted to Approved Backlog. |
 | 1.4 | 16 July 2026 | Claude Engineering Implementer | Added EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up) to Track C Near-term, discovered by the Programme Sponsor during the live visual check of EBG-0072. |
 | 1.3 | 16 July 2026 | Claude Engineering Implementer | Marked Track B's production-provider-wiring item and Track C's System Health panel item Delivered/Complete: implemented per EIP-ESR0022-001 v1.0 (Engineering Reviewer and Programme Sponsor approved), registered EBG-0070/EBG-0072 Complete in EBR-0001. Section 9's first unnumbered item struck through as resolved. ESR-0022 WP1. |
 | 1.2 | 16 July 2026 | Claude Engineering Implementer | Following an Engineering Reviewer High finding on EIP-ESR0022-001 v0.1 (a retroactive package cannot be genuinely approved), corrected Track B/Track C entries for EBG-0070/EBG-0072 from `In Progress` to `Approved Backlog`: the earlier implementation was fully reverted, and EIP-ESR0022-001 v0.2 is now a genuine prospective proposal with no code written. |
