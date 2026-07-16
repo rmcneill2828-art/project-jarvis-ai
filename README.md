@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | ESR-0013 closure review prepared / Guardian Platform Foundation |
+| Current Phase | ESR-0022 closed / Guardian Platform Foundation with production provider wiring accepted into the baseline |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
-| Product Implementation | Operational First Light / Conversation Workspace |
-| Current Engineering Focus | [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] closure review prepared for Programme Sponsor decision, with [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] retained as the accepted repository baseline pending any separate baseline acceptance |
+| Product Implementation | Operational First Light / Conversation Workspace with live provider wiring and System Health surface |
+| Current Engineering Focus | [[ESR-0022_ENGINEERING_SESSION_REPORT|ESR-0022]] is closed, [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] is the accepted repository baseline, and [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] now points the next session toward near-term items such as EBG-0073, EBG-0058, EBG-0065, EBG-0068 and the REG-0001 HST/FCH gap |
 
 ---
 
@@ -62,6 +62,8 @@ Current JARVIS implementation includes:
 
 - Product architecture blueprint in [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]].
 - First Light application skeleton launchable with `python -m jarvis`.
+- Production provider wiring in the default runtime, with live OpenAI/Gemini selection and local failover.
+- System Health panel driven by real `platform.status` fields.
 - Operational Conversation Workspace with deterministic offline chat, session metadata and transcript export.
 - Python package structure.
 - Root `Jarvis` lifecycle object.
@@ -82,7 +84,7 @@ Current JARVIS architecture direction includes:
 - Agent Framework for specialist capabilities serving Guardian.
 - Device independence and portable restore as architecture requirements.
 
-The canonical Guardian identity and cognitive architecture is recorded in [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]]. ESR-0008 architecture closure is recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]], ESR-0009 closure / ESR-0010 handover are recorded in [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] and [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]], ESR-0011 implementation-readiness closure is recorded in [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]], ESR-0012 Implementation Phase Initiation closure is recorded in [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]], and ESR-0013 Guardian Platform Foundation closure review is recorded in [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]].
+The canonical Guardian identity and cognitive architecture is recorded in [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]]. ESR-0008 architecture closure is recorded in [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]], ESR-0009 closure / ESR-0010 handover are recorded in [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] and [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]], ESR-0011 implementation-readiness closure is recorded in [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]], ESR-0012 Implementation Phase Initiation closure is recorded in [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]], ESR-0013 Guardian Platform Foundation closure review is recorded in [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]], and ESR-0022 production provider wiring / baseline acceptance is recorded in [[ESR-0022_ENGINEERING_SESSION_REPORT|ESR-0022]] and [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]].
 
 ---
 
@@ -155,11 +157,11 @@ Key engineering artefacts include:
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Human-AI collaboration context |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | AI Engineering Playbook |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Programme status |
-| [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Closure review package for Guardian Platform Foundation implementation |
+| [[ESR-0022_ENGINEERING_SESSION_REPORT|ESR-0022]] | Closed engineering session report for production provider wiring, System Health and baseline acceptance |
 | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] | Closed engineering session report for Implementation Phase Initiation, GIA-BOOT Proof of Concept and AIEMS Engineering Agent validation |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] | Closed engineering session report for Architecture Validation, Implementation Readiness and ESR-0012 handover |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Closed engineering session report for ESR-0009 closure and ESR-0010 handover |
-| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Engineering backlog register |
 | [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Controlled Artefact Standard |
@@ -310,12 +312,12 @@ Status: In progress.
 
 Current focus:
 
-- [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] closure review package is prepared for Programme Sponsor decision.
-- Guardian Runtime Foundation has been established and integrated into the JARVIS lifecycle.
-- Guardian runtime status snapshots and bounded observability interfaces are implemented.
-- [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] remains the accepted repository baseline pending any separate baseline acceptance.
-- Guardian Memory, Provider Framework, Sentinel, Conversation Engine expansion, EAC and GDP-0001 implementation remain deferred.
-- No future engineering session, objective or repository baseline is created by ESR-0013 closure preparation.
+- [[ESR-0022_ENGINEERING_SESSION_REPORT|ESR-0022]] is closed and its WP1 delivery has been accepted into [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]].
+- Guardian Runtime Foundation remains established and integrated into the JARVIS lifecycle.
+- Guardian runtime status snapshots, bounded observability interfaces, production provider wiring and the System Health panel are implemented.
+- [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] is the current accepted repository baseline.
+- Guardian Memory, Conversation Engine expansion, EAC and GDP-0001 implementation remain deferred.
+- The next engineering session is selected separately, from [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] and [[PST-0001_PROGRAMME_STATUS|PST-0001]], rather than being created by this README.
 
 ---
 
@@ -338,8 +340,8 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | Artefact | Relationship |
 |----------|--------------|
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point. |
-| [[RBL-0010_REPOSITORY_BASELINE|RBL-0010]] | Current accepted repository baseline. |
-| [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Closure review package for Guardian Platform Foundation implementation and Programme Sponsor closure decision. |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+| [[ESR-0022_ENGINEERING_SESSION_REPORT|ESR-0022]] | Closed engineering session for production provider wiring, System Health and baseline acceptance. |
 | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] | Closed engineering session for Implementation Phase Initiation, GIA-BOOT Proof of Concept and AIEMS Engineering Agent validation. |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] | Closed engineering session for Architecture Validation, Implementation Readiness and ESR-0012 implementation handover. |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Closed engineering session for ESR-0009 closure and ESR-0010 handover. |
