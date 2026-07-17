@@ -25,6 +25,7 @@ from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationPro
 from sentinel.core import SentinelTrustGateway
 from sentinel.gemini_provider import GeminiProvider
 from sentinel.local_provider import LocalEchoProvider
+from sentinel.ollama_provider import OllamaProvider
 from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
 from sentinel.policy import TrustTierPolicy
@@ -52,6 +53,19 @@ _REAL_PROVIDER_SPECS: dict[str, dict[str, str]] = {
         "default_model": "gemini-2.5-flash",
     },
 }
+
+# Ollama (EBG-0075, EIP-ESR0025-002): unlike the cloud providers above, this
+# has no credential gate - registered unconditionally, since a local, missing
+# or unreachable Ollama installation fails over identically to any other
+# provider failure via ProviderOrchestrator's existing exception-driven
+# failover. Default model is the fastest of the four confirmed-installed
+# models at scoping time - latency matters more than peak capability for a
+# fallback role. Timeout is 90s, not the 30s default, to accommodate the
+# confirmed ~64s cold-start model load.
+OLLAMA_MODEL_ENV_VAR = "JARVIS_OLLAMA_MODEL"
+OLLAMA_ENDPOINT_ENV_VAR = "JARVIS_OLLAMA_ENDPOINT"
+DEFAULT_OLLAMA_MODEL = "qwen3.5:2b"
+OLLAMA_TIMEOUT_SECONDS = 90.0
 
 # Standard JSON-RPC 2.0 pre-defined error codes, plus one server-defined code
 # in the reserved -32000 to -32099 range for internal handler failures.
@@ -120,6 +134,17 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     if real_provider is not None:
         orchestrator.register_provider(real_provider)
         route_providers.append(real_provider.name)
+
+    ollama_model = environ.get(OLLAMA_MODEL_ENV_VAR) or DEFAULT_OLLAMA_MODEL
+    ollama_configuration = ProviderConfiguration(
+        provider_name="ollama",
+        default_model=ollama_model,
+        endpoint=environ.get(OLLAMA_ENDPOINT_ENV_VAR) or None,
+        timeout_seconds=OLLAMA_TIMEOUT_SECONDS,
+    )
+    ollama_provider = OllamaProvider(ollama_configuration)
+    orchestrator.register_provider(ollama_provider)
+    route_providers.append(ollama_provider.name)
 
     local_provider = LocalEchoProvider()
     orchestrator.register_provider(local_provider)

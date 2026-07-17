@@ -9,8 +9,8 @@
 | Package ID | EIP-ESR0025-002 |
 | Artefact ID | EIP-ESR0025-002 |
 | Title | Ollama Local Fallback Provider |
-| Version | 0.1 |
-| Status | Draft - pending Engineering Reviewer review and Programme Sponsor approval |
+| Version | 1.0 |
+| Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | EBR-0001 (EBG-0075) |
@@ -142,7 +142,7 @@ Validation should confirm:
 
 # 12. Approval Request
 
-**Pending Engineering Reviewer (Codex) review and Programme Sponsor approval.** No implementation has begun.
+**Approved and implemented at ESR-0026 WP1.** Engineering Reviewer (Codex) reviewed the full technical scope via the now-working AIEMS Exchange Bridge (`scripts/aiems_bridge.py`) - the first genuine, real (non-manual-relay) review this project has used: no blocking findings; one non-blocking observation (keep the no-credential-rejection and `thinking`-field-discard tests explicit) already satisfied by Sections 7/9's own requirements. Programme Sponsor approved via `sponsor-decision`.
 
 ---
 
@@ -160,4 +160,4 @@ Validation should confirm:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| 0.1 | 17 July 2026 | Claude Engineering Implementer | Initial draft, grounded in a live investigation of the Programme Sponsor's actual Ollama installation (confirmed running, models migrated to `I:\Ollama Models`, real `/api/generate` response shape and cold/warm latency both confirmed via real calls, not assumed). Pending Engineering Reviewer review and Programme Sponsor approval. |
+| 1.0 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP1: Engineering Reviewer (Codex) reviewed via the real AIEMS Exchange Bridge - no blocking findings. Programme Sponsor approved. Implemented exactly as scoped: `sentinel/ollama_provider.py`, wired into `build_default_runtime()`, 11 new tests. Found and fixed a genuine test-isolation defect (a shared test helper was making real network calls to the Programme Sponsor's actual Ollama server, since Ollama needs no credential gate). Live smoke check disclosed: the recommended 90s timeout (Section 7 item 3) actually timed out once, only succeeding at 180s - implemented as approved regardless, noted as a future tuning candidate in Section 11. 249 tests total (was 238), `validate_repository.py` 0 errors, 104 warnings (matching baseline). Status Draft to Approved, version 0.1 to 1.0. |

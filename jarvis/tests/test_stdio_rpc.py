@@ -22,7 +22,17 @@ def _server() -> StdioRpcServer:
     # of real provider credentials the host machine may have set persistently
     # (e.g. for the manual smoke-test scripts) - never depend on, or
     # accidentally exercise, real credentials in the automated suite.
-    return StdioRpcServer(build_default_runtime(environ={}))
+    #
+    # Ollama (EBG-0075) needs no credential, so it is always in the route -
+    # on a machine actually running Ollama (as this one is), a real transport
+    # would make a genuine, non-deterministic network call during automated
+    # tests. Pointing JARVIS_OLLAMA_ENDPOINT at a reserved, never-listening
+    # port forces a fast connection failure, exercising the same real
+    # exception-driven failover to local-echo the suite already relies on,
+    # without depending on whether Ollama happens to be running locally.
+    return StdioRpcServer(
+        build_default_runtime(environ={"JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1"})
+    )
 
 
 def test_build_default_runtime_is_started_and_connected():
@@ -35,13 +45,15 @@ def test_build_default_runtime_is_started_and_connected():
 def test_build_default_runtime_falls_back_to_local_echo_without_credential():
     runtime = build_default_runtime(environ={})
 
-    assert runtime.configured_providers() == ("local-echo",)
+    # Ollama (EBG-0075) is registered unconditionally - no credential gate -
+    # positioned between the (absent) primary cloud provider and local-echo.
+    assert runtime.configured_providers() == ("ollama", "local-echo")
 
 
 def test_build_default_runtime_wires_openai_as_default_primary_when_credential_present():
     runtime = build_default_runtime(environ={"OPENAI_API_KEY": "test-key-not-a-real-credential"})
 
-    assert runtime.configured_providers() == ("openai", "local-echo")
+    assert runtime.configured_providers() == ("openai", "ollama", "local-echo")
 
 
 def test_build_default_runtime_respects_primary_provider_selection():
@@ -52,17 +64,17 @@ def test_build_default_runtime_respects_primary_provider_selection():
         }
     )
 
-    assert runtime.configured_providers() == ("gemini", "local-echo")
+    assert runtime.configured_providers() == ("gemini", "ollama", "local-echo")
 
 
 def test_build_default_runtime_ignores_unselected_provider_credential():
     # OPENAI_API_KEY being set should not matter when gemini is selected but
-    # has no credential of its own - local-echo remains the only fallback.
+    # has no credential of its own - ollama and local-echo remain the fallback.
     runtime = build_default_runtime(
         environ={"JARVIS_PRIMARY_PROVIDER": "gemini", "OPENAI_API_KEY": "test-key-not-a-real-credential"}
     )
 
-    assert runtime.configured_providers() == ("local-echo",)
+    assert runtime.configured_providers() == ("ollama", "local-echo")
 
 
 def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_blank():
@@ -74,7 +86,7 @@ def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_bl
         environ={"OPENAI_API_KEY": "test-key-not-a-real-credential", "OPENAI_MODEL": ""}
     )
 
-    assert runtime.configured_providers() == ("openai", "local-echo")
+    assert runtime.configured_providers() == ("openai", "ollama", "local-echo")
 
 
 def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_engine():
@@ -140,7 +152,7 @@ def test_platform_status_reflects_real_runtime_state():
         "state": "Running",
         "runtimeHealth": "Healthy",
         "providerConnected": "Online",
-        "providers": ["local-echo"],
+        "providers": ["ollama", "local-echo"],
         "policyEngine": "TrustTierPolicy",
     }
 
