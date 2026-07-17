@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.186
+**Version:** 3.187
 
 ---
 
@@ -115,11 +115,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.186 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.187 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.67 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.68 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -306,6 +306,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.187 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP3 fully closed - Codex's post-commit review confirmed committed ADR-0020 content matches the approved draft, EBR-0001/REG-0001/REG-0002 entries accurate. Aligned EBR-0001 (1.67 to 1.68). All three of ESR-0026's Work Packages now fully closed end-to-end, no manual relay throughout. |
 | 3.186 | 17 July 2026 | Claude Engineering Implementer | Registered [[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]] (Sentinel Network Exposure Security Requirements, 1.0, Approved) - resolves EBG-0076. Engineering Reviewer (Codex) reviewed via the bridge, no blocking findings, Programme Sponsor approved. Aligned EBR-0001 (1.66 to 1.67), REG-0002 (2.8 to 2.9) and PST-0001 (2.45 to 2.46) - all three of ESR-0026's Work Packages now complete. ESR-0026 WP3. |
 | 3.185 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP2 fully closed - Codex's post-commit review confirmed committed content matches the approved draft, EBR-0001/REG-0001 entries accurate. Aligned EBR-0001 (1.65 to 1.66). No blocking findings. |
 | 3.184 | 17 July 2026 | Claude Engineering Implementer | Registered [[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] (Memory and Data Storage Architecture, 1.0, Approved) - resolves EBG-0019. Engineering Reviewer (Codex) reviewed via the bridge, no blocking findings, Programme Sponsor approved. Aligned EBR-0001 (1.64 to 1.65) and PST-0001 (2.44 to 2.45), the latter also recording WP1's full closure (post-implementation fix, Codex's final confirmation). ESR-0026 WP1/WP2. |
