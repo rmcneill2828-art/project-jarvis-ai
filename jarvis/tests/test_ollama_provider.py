@@ -98,6 +98,19 @@ def test_execute_raises_on_non_string_response_field():
         provider.execute(ProviderRequest(prompt="hello"))
 
 
+@pytest.mark.parametrize("body", [b"null", b"[]", b'"just a string"', b"42"])
+def test_execute_raises_on_valid_json_that_is_not_an_object(body):
+    """Engineering Reviewer finding (ESR-0026 WP1 post-implementation review):
+    valid JSON that isn't a dict (null, an array, a bare string/number) has no
+    .get method - without a type check this raised AttributeError instead of
+    the intended RuntimeError, breaking the adapter's conservative
+    error-handling contract."""
+    provider = OllamaProvider(_configuration(), transport=lambda *a: body)
+
+    with pytest.raises(RuntimeError, match="Unexpected Ollama response shape"):
+        provider.execute(ProviderRequest(prompt="hello"))
+
+
 def test_execute_raises_on_invalid_json():
     provider = OllamaProvider(_configuration(), transport=lambda *a: b"not-json")
 

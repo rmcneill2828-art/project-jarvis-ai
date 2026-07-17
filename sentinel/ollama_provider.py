@@ -93,6 +93,14 @@ class OllamaProvider:
             msg = "Unexpected Ollama response shape: response was not valid JSON."
             raise RuntimeError(msg) from exc
 
+        # Valid JSON is not guaranteed to be an object - null, an array, or a
+        # bare string/number would all parse successfully but have no `.get`
+        # method, raising AttributeError instead of the intended RuntimeError
+        # (Engineering Reviewer finding, ESR-0026 WP1 post-implementation review).
+        if not isinstance(data, dict):
+            msg = "Unexpected Ollama response shape: response was not a JSON object."
+            raise RuntimeError(msg)
+
         content = data.get("response")
         if not isinstance(content, str):
             msg = "Unexpected Ollama response shape: missing or non-string 'response' field."

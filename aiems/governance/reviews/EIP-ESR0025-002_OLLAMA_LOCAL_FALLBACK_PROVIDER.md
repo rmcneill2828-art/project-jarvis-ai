@@ -9,7 +9,7 @@
 | Package ID | EIP-ESR0025-002 |
 | Artefact ID | EIP-ESR0025-002 |
 | Title | Ollama Local Fallback Provider |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -160,4 +160,5 @@ Validation should confirm:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 17 July 2026 | Claude Engineering Implementer | Post-implementation review of the real committed diff (Engineering Reviewer, Codex, via the bridge) found one genuine finding: `execute()` called `data.get("response")` after `json.loads()` without checking `data` was actually a dict - valid JSON that isn't an object (`null`, an array, a bare string/number) has no `.get` method, raising `AttributeError` instead of the intended `RuntimeError`, breaking the adapter's conservative error-handling contract. Fixed with an explicit `isinstance(data, dict)` check; 4 new parametrised regression tests. 254 tests total (was 250). Codex separately confirmed the test-isolation fix (unreachable-port endpoint) and the route wiring/timeout changes match the approved package, no further findings. |
 | 1.0 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP1: Engineering Reviewer (Codex) reviewed via the real AIEMS Exchange Bridge - no blocking findings. Programme Sponsor approved. Implemented exactly as scoped: `sentinel/ollama_provider.py`, wired into `build_default_runtime()`, 11 new tests. Found and fixed a genuine test-isolation defect (a shared test helper was making real network calls to the Programme Sponsor's actual Ollama server, since Ollama needs no credential gate). Live smoke check disclosed: the recommended 90s timeout (Section 7 item 3) actually timed out once, only succeeding at 180s - implemented as approved regardless, noted as a future tuning candidate in Section 11. 249 tests total (was 238), `validate_repository.py` 0 errors, 104 warnings (matching baseline). Status Draft to Approved, version 0.1 to 1.0. |

@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.181
+**Version:** 3.182
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.181 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.182 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.62 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.63 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -153,7 +153,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0024-001 | Engineering Implementation Package | TrustTierPolicy Production Wiring | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0024-002 | Engineering Implementation Package | System Health Policy Engine Detail | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0025-001 | Engineering Implementation Package | AIEMS Exchange Bridge MVP | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0025-002 | Engineering Implementation Package | Ollama Local Fallback Provider | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0025-002 | Engineering Implementation Package | Ollama Local Fallback Provider | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -304,6 +304,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.182 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP1 post-implementation review (Codex, via the fixed bridge) found one genuine finding on the real committed diff: `sentinel/ollama_provider.py`'s `execute()` could raise `AttributeError` instead of `RuntimeError` on valid-but-non-object JSON (`null`, an array, a bare string/number). Fixed with an explicit `isinstance` check. Aligned EIP-ESR0025-002 (1.0 to 1.1) and EBR-0001 (1.62 to 1.63). 4 new tests, 254 total (was 250). Codex separately confirmed the test-isolation fix and route wiring/timeout match the approved package. |
 | 3.181 | 17 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.61 to 1.62) - added EBG-0079 (Completed): fixed `validate_repository.py`'s `.aiems-exchange/` scan-exclusion gap, a Programme Sponsor-authorised deviation discovered live when the Engineering Reviewer appeared to hang on a bloated post-implementation review request (a runaway evidence-recapture feedback loop, 104 to 425 to 1279 warnings). One regression test added, 250 tests total (was 249). |
 | 3.180 | 17 July 2026 | Claude Engineering Implementer | Registered [[EIP-ESR0025-002_OLLAMA_LOCAL_FALLBACK_PROVIDER|EIP-ESR0025-002]] (1.0, Approved) - previously drafted at ESR-0025 but never registered as a controlled artefact, a gap closed now. Aligned EBR-0001 (1.60 to 1.61) and PST-0001 (2.43 to 2.44) following ESR-0026 WP1: closed EBG-0075 (Ollama Local Fallback Provider) - the first genuine, real Engineering Reviewer review via the working AIEMS Exchange Bridge, no blocking findings, Programme Sponsor approved. |
 | 3.179 | 17 July 2026 | Claude Engineering Implementer | Registered [[ESR-0025A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0025A]] (Post-Closure Engineering Addendum, 1.0, Complete) - Programme Sponsor-authorised deviation from the standard Working Report Lifecycle to fix a Windows `subprocess.run`/`.CMD`-shim crash in `scripts/aiems_bridge.py`'s preflight check, discovered only once `claude`/`codex` CLIs were actually installed and authenticated on this machine for the first time. Aligned EIP-ESR0025-001 (1.2 to 1.3) and EBR-0001 (1.59 to 1.60). 238 tests total (was 237). |
