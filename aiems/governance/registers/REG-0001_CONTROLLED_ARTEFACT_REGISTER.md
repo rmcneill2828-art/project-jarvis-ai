@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.164
+**Version:** 3.166
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.164 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.166 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -206,6 +206,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | HST-0011 | Historical Session Record | ESR-0011 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0011 | `aiems/History/` |
 | HST-0012 | Historical Session Record | ESR-0012 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0012 | `aiems/History/` |
 | HST-0013 | Historical Session Record | ESR-0013 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0013 | `aiems/History/` |
+| HST-0023 | Historical Session Record | ESR-0023 Chat Summary (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/` |
+| HST-0023_GPT | Historical Session Record | ESR-0023 Chat Summary (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/` |
 | FCH-0000 | Full Chat Historical Evidence | Initial Project Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | Initial Project Session | `aiems/History/Full Chat/` |
 | FCH-0001 | Full Chat Historical Evidence | ESR-0001 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/Full Chat/` |
 | FCH-0002 | Full Chat Historical Evidence | ESR-0002 Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/Full Chat/` |
@@ -227,6 +229,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FCH-0017 | Full Chat Historical Evidence | ESR-0017 Full Chat History (Claude) | 1.2 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
 | FCH-0020 | Full Chat Historical Evidence | ESR-0020 Full Chat History (Claude) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0020 | `aiems/History/Full Chat/` |
 | FCH-0017a_GPT | Full Chat Historical Evidence | ESR-0017 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
+| FCH-0023 | Full Chat Historical Evidence | ESR-0023 Full Chat History (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/Full Chat/` |
+| FCH-0023_GPT | Full Chat Historical Evidence | ESR-0023 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/Full Chat/` |
 
 ---
 
@@ -293,6 +297,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.166 | 17 July 2026 | Claude Engineering Implementer | Registered HST-0023_GPT and FCH-0023_GPT (ESR-0023 Chat Summary / Full Chat History, GPT) - Engineering Reviewer-authored historical evidence, created locally and left uncommitted per the Programme Sponsor's own instruction to Codex, then committed by the Engineering Implementer per PBK-0001 Separation of Duties. Both read in full before commit. |
+| 3.165 | 17 July 2026 | Claude Engineering Implementer | Registered HST-0023 (ESR-0023 Chat Summary, Claude) and FCH-0023 (ESR-0023 Full Chat History, Claude) - archived historical evidence covering the entire ESR-0023 session and its post-closure discussion. Extracted programmatically from the session's own JSONL log, following the FCH-0015 through FCH-0020 methodology. HST-0023 registered with a table row; HST-0020 was found to lack one (a pre-existing gap, not corrected by this entry - out of scope). |
 | 3.164 | 17 July 2026 | Claude Engineering Implementer | ESR-0023 session closure: registered ESR-0023-WP6 Independent Repository Verification handover; ESR-0023 (0.4 to 1.0, Open to Closed) finalised with WP4/WP5/WP6 and session-wide WP6/WP7 sections; Engineering Reviewer WP6 Pass, Programme Sponsor WP7 accepted retaining RBL-0015; aligned PST-0001 (2.34 to 2.35) - Current Mode/Baseline/Focus, Completed Milestones, Active/Next Planned Work, Repository Health, Outstanding Observations and Session Start Guidance all updated for the ESR-0023 closed state. |
 | 3.163 | 16 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.50 to 1.51) and JRM-0001 (1.9 to 1.10): EBG-0073 (UXP Duplicate Monitoring Elements Tidy-up) marked Completed - Guardian/Sentinel/Providers duplication removed from DiagnosticsPanel. ESR-0023 WP6, this session's first product-code change. |
 | 3.162 | 16 July 2026 | Claude Engineering Implementer | AAM-0001 approved (Engineering Reviewer and Programme Sponsor), version 0.2 to 0.3, status Draft to Approved - GAM-0001 cross-reference added, resolving EBG-0041. Aligned EBR-0001 (1.49 to 1.50) and JRM-0001 (1.8 to 1.9): EBG-0041 marked Completed; new EBG-0074 registered (Approved Backlog, High priority) for the operational gap the validation surfaced. ESR-0023 WP5. |
