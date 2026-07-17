@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.187
+**Version:** 3.188
 
 ---
 
@@ -115,7 +115,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.187 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.188 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -171,7 +171,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.46 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.47 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -306,6 +306,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.188 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 session-wide WP6 (Pass) and WP7 (Accept, retain RBL-0015) both closed against the full session diff (`85e62c3`..`9058f5c`). Engineering Reviewer (Codex) verified via the bridge, both independent baseline views converged, Programme Sponsor made the WP7 determination. Aligned PST-0001 (2.46 to 2.47). |
 | 3.187 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP3 fully closed - Codex's post-commit review confirmed committed ADR-0020 content matches the approved draft, EBR-0001/REG-0001/REG-0002 entries accurate. Aligned EBR-0001 (1.67 to 1.68). All three of ESR-0026's Work Packages now fully closed end-to-end, no manual relay throughout. |
 | 3.186 | 17 July 2026 | Claude Engineering Implementer | Registered [[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]] (Sentinel Network Exposure Security Requirements, 1.0, Approved) - resolves EBG-0076. Engineering Reviewer (Codex) reviewed via the bridge, no blocking findings, Programme Sponsor approved. Aligned EBR-0001 (1.66 to 1.67), REG-0002 (2.8 to 2.9) and PST-0001 (2.45 to 2.46) - all three of ESR-0026's Work Packages now complete. ESR-0026 WP3. |
 | 3.185 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP2 fully closed - Codex's post-commit review confirmed committed content matches the approved draft, EBR-0001/REG-0001 entries accurate. Aligned EBR-0001 (1.65 to 1.66). No blocking findings. |

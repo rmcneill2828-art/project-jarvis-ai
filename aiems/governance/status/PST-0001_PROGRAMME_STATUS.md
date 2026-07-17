@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.46
+**Version:** 2.47
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.46 |
+| Version | 2.47 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -66,7 +66,7 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
 | Current Phase | ESR-0026 open, under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0026 WP1 is the first Work Package to complete a full real (non-manual-relay) Claude<->Codex review cycle via `scripts/aiems_bridge.py`, following ESR-0025A's preflight fix. |
-| Current Engineering Objective | ESR-0026's three-WP objective all complete: WP1 (EBG-0075, Ollama), WP2 (EBG-0019, [[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] v1.0), WP3 (EBG-0076, [[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]] v1.0). [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B's Near-term EBG-0019 candidate is now resolved at spec level. No new session objective is created by this status update - session-wide WP6/WP7 closure is a separate action. |
+| Current Engineering Objective | ESR-0026's three-WP objective all complete: WP1 (EBG-0075, Ollama), WP2 (EBG-0019, [[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] v1.0), WP3 (EBG-0076, [[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]] v1.0). Session-wide WP6 (Pass) and WP7 (Accept, RBL-0015 retained) both closed. [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B's Near-term EBG-0019 candidate is now resolved at spec level. Authoring the ESR-0026 session report is a separate, not-yet-taken action. |
 
 ---
 
@@ -651,6 +651,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 # Version History
 
+| 2.47 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 session-wide WP6 (Independent Repository Verification, Pass) and WP7 (Repository Baseline Acceptance, Accept - retain RBL-0015) both closed against the full session diff (`85e62c3`..`9058f5c`). Engineering Reviewer (Codex) verified via the bridge, both independent baseline views converged, Programme Sponsor made the WP7 determination. See ESR-0026 WP6 handover v0.3. Updated Current Engineering Objective. |
 | 2.46 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP3 complete: closed EBG-0076 per [[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]] v1.0 (Approved) - a binding three-part security gate (authentication, rate limiting, TLS) any future network-facing Guardian/Sentinel interface must satisfy before approval, grounded in ADR-0019, `sentinel/policy.py` and PEM-001. Engineering Reviewer (Codex) confirmed no blocking findings via the bridge, Programme Sponsor approved. All three of ESR-0026's Work Packages now complete. Updated Current Mode/Objective. |
 | 2.45 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 WP1 fully closed (post-implementation `AttributeError` fix, Codex's final confirmation, no manual relay throughout) and WP2 complete: closed EBG-0019 per [[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] v1.0 (Approved) - Session/Personal/Shared-Family memory taxonomy and storage architecture specification, staying within the boundary GAM-0001 Section 9.2 reserved for it. Engineering Reviewer (Codex) confirmed no blocking findings via the bridge, Programme Sponsor approved. 254 tests total. Updated Current Mode/Objective for both closures. |
 | 2.44 | 17 July 2026 | Claude Engineering Implementer | ESR-0026 opened (three-WP objective: Ollama implementation, EBG-0019 spec, ADR-0020 spec). WP1 complete: closed EBG-0075 (Ollama Local Fallback Provider) per [[EIP-ESR0025-002_OLLAMA_LOCAL_FALLBACK_PROVIDER|EIP-ESR0025-002]] v1.0 - the first genuine, real Engineering Reviewer review via the now-working AIEMS Exchange Bridge (no blocking findings), Programme Sponsor approved via `sponsor-decision`. `sentinel/ollama_provider.py` implemented; a genuine test-isolation defect (real network calls to the Sponsor's actual Ollama server during automated tests) found and fixed; a live smoke check disclosed the EIP's 90s timeout recommendation timed out once, succeeding only at 180s - implemented as approved, flagged for future tuning. 249 tests total (was 238). Updated Current Mode/Phase/Workflow/Objective for ESR-0026's open state and WP1 completion. |
