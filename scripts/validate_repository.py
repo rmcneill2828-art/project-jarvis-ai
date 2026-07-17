@@ -15,7 +15,16 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-IGNORED_DIRS = {".git", ".obsidian", ".pytest_cache", ".ruff_cache", "__pycache__", ".venv", "venv"}
+IGNORED_DIRS = {
+    ".git",
+    ".obsidian",
+    ".pytest_cache",
+    ".ruff_cache",
+    "__pycache__",
+    ".venv",
+    "venv",
+    ".aiems-exchange",
+}
 
 
 @dataclass

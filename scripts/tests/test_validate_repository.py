@@ -8,9 +8,35 @@ from scripts.validate_repository import (
     ValidationResult,
     check_stale_status_references,
     extract_current_esr_reference,
+    iter_markdown_files,
     latest_accepted_baseline,
     latest_closed_numbered,
 )
+
+
+def test_iter_markdown_files_excludes_aiems_exchange(tmp_path, monkeypatch):
+    """The gitignored .aiems-exchange/ directory embeds prior
+    validate_repository.py output as evidence (capture_evidence in
+    scripts/aiems_bridge.py) - if scanned, each run re-embeds the previous
+    run's warnings, growing without bound (confirmed live: 104 -> 425 -> 1279
+    warnings across three evidence captures during ESR-0026 WP1)."""
+
+    import scripts.validate_repository as validator
+
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+
+    tracked_dir = tmp_path / "aiems/governance/registers"
+    tracked_dir.mkdir(parents=True)
+    (tracked_dir / "REG-0001_CONTROLLED_ARTEFACT_REGISTER.md").write_text("tracked", encoding="utf-8")
+
+    exchange_dir = tmp_path / ".aiems-exchange/transcript"
+    exchange_dir.mkdir(parents=True)
+    (exchange_dir / "ESR-0026-WP1.md").write_text("ephemeral", encoding="utf-8")
+
+    files = iter_markdown_files()
+
+    assert any(f.name == "REG-0001_CONTROLLED_ARTEFACT_REGISTER.md" for f in files)
+    assert not any(".aiems-exchange" in f.parts for f in files)
 
 
 def test_extract_current_esr_reference_reads_current_mode_row():
