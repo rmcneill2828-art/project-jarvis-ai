@@ -272,6 +272,11 @@ class PreflightResult:
 
 
 def run_preflight() -> PreflightResult:
+    # On Windows, npm installs global CLI tools (claude, codex) as .CMD shim
+    # files, which subprocess can only launch via the shell - without
+    # shell=True here, subprocess.run raises FileNotFoundError (WinError 2)
+    # even when the tool is genuinely present and shutil.which finds it.
+    use_shell = sys.platform == "win32"
     lines: list[str] = []
     ok = True
     for tool in ("claude", "codex"):
@@ -280,12 +285,16 @@ def run_preflight() -> PreflightResult:
             ok = False
             lines.append(f"{tool}: NOT FOUND on PATH")
             continue
-        version = subprocess.run([tool, "--version"], capture_output=True, text=True)
+        version = subprocess.run(
+            [tool, "--version"], capture_output=True, text=True, shell=use_shell
+        )
         lines.append(f"{tool}: {path} ({(version.stdout or version.stderr).strip()})")
 
     if shutil.which("codex") is not None:
-        status = subprocess.run(["codex", "login-status"], capture_output=True, text=True)
-        lines.append(f"codex login-status: {(status.stdout or status.stderr).strip()}")
+        status = subprocess.run(
+            ["codex", "login", "status"], capture_output=True, text=True, shell=use_shell
+        )
+        lines.append(f"codex login status: {(status.stdout or status.stderr).strip()}")
 
     return PreflightResult(ok=ok, details="\n".join(lines))
 

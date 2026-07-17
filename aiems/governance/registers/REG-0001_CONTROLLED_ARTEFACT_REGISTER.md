@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.178
+**Version:** 3.179
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.178 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.179 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.59 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.60 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -152,7 +152,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0022-001 | Engineering Implementation Package | Production Provider Wiring and System Health Panel | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0024-001 | Engineering Implementation Package | TrustTierPolicy Production Wiring | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0024-002 | Engineering Implementation Package | System Health Policy Engine Detail | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0025-001 | Engineering Implementation Package | AIEMS Exchange Bridge MVP | 1.2 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0025-001 | Engineering Implementation Package | AIEMS Exchange Bridge MVP | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -198,6 +198,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0023 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0024 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0025 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0025A | Engineering Session Report | Post-Closure Engineering Addendum - AIEMS Exchange Bridge Preflight Fix | 1.0 | Complete | Programme Sponsor & Chief Engineering Advisor | ESR-0025 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -302,6 +303,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.179 | 17 July 2026 | Claude Engineering Implementer | Registered [[ESR-0025A_POST_CLOSURE_ENGINEERING_ADDENDUM|ESR-0025A]] (Post-Closure Engineering Addendum, 1.0, Complete) - Programme Sponsor-authorised deviation from the standard Working Report Lifecycle to fix a Windows `subprocess.run`/`.CMD`-shim crash in `scripts/aiems_bridge.py`'s preflight check, discovered only once `claude`/`codex` CLIs were actually installed and authenticated on this machine for the first time. Aligned EIP-ESR0025-001 (1.2 to 1.3) and EBR-0001 (1.59 to 1.60). 238 tests total (was 237). |
 | 3.178 | 17 July 2026 | Claude Engineering Implementer | Registered [[ESR-0025_ENGINEERING_SESSION_REPORT|ESR-0025]] (Engineering Session Report, 1.0, Closed) as a new controlled artefact. Aligned PST-0001 (2.42 to 2.43) following formal ESR-0025 closure - session report authored, PST-0001's Current Mode/Focus/Session Start Guidance/OSE Relationships all retargeted from "open" to "closed," no new session opened. |
 | 3.177 | 17 July 2026 | Claude Engineering Implementer | Aligned PST-0001 (2.41 to 2.42) following ESR-0025 session-wide WP6 (Independent Repository Verification, Pass) and WP7 (Repository Baseline Acceptance, Accept - retain RBL-0015) both closing against the diff through `b803996`. Engineering Reviewer (Codex) verified by reading the full commit diff after its own sandbox failed; both independent baseline views converged; Programme Sponsor made the WP7 determination. See [[ESR-0025_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0025 WP6 handover]] v0.5. |
 | 3.176 | 17 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.58 to 1.59) following Engineering Reviewer (Codex) review of EIP-ESR0025-002: added EBG-0078 recording `scripts/start-jarvis.bat` (previously an ungoverned untracked file) as Completed dev tooling, per the EBG-0054 precedent, rather than folding it into the unrelated Ollama EIP; and split a malformed merged version-history row (`1.57`/`1.56`) that had broken EBR-0001's table structure. |

@@ -24,6 +24,7 @@ from scripts.aiems_bridge import (
     parse_handover,
     read_transcript,
 )
+from scripts.aiems_bridge import run_preflight as _real_run_preflight
 
 
 @pytest.fixture(autouse=True)
@@ -353,3 +354,43 @@ def test_preflight_failure_blocks_submit_to_review_before_any_write(tmp_path, mo
         cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
 
     assert not any((exchange_root(tmp_path) / "codex" / "inbox").glob("*"))
+
+
+def test_run_preflight_invokes_subprocess_with_shell_true_on_windows(monkeypatch):
+    """On Windows, npm installs global CLI tools (claude, codex) as .CMD shim
+    files - subprocess.run([...]) without shell=True raises FileNotFoundError
+    (WinError 2) even when shutil.which finds the tool, since CreateProcess
+    cannot launch a .CMD file directly. Confirmed live: preflight crashed with
+    both tools genuinely installed and on PATH until shell=True was added."""
+    import sys as _sys
+
+    import scripts.aiems_bridge as bridge
+
+    calls: list[tuple[list[str], bool]] = []
+
+    def _fake_which(tool: str) -> str:
+        return f"/fake/{tool}"
+
+    def _fake_run(args, **kwargs):
+        calls.append((list(args), kwargs.get("shell", False)))
+
+        class _Result:
+            stdout = "ok"
+            stderr = ""
+
+        return _Result()
+
+    monkeypatch.setattr(bridge.shutil, "which", _fake_which)
+    monkeypatch.setattr(bridge.subprocess, "run", _fake_run)
+
+    # The file's autouse _fast_preflight fixture replaces run_preflight
+    # itself with a stub for every test; call the real implementation via
+    # the reference captured at import time, before that fixture patches it.
+    result = _real_run_preflight()
+
+    assert result.ok is True
+    expected_shell = _sys.platform == "win32"
+    assert all(shell == expected_shell for _, shell in calls)
+    assert ["claude", "--version"] in [args for args, _ in calls]
+    assert ["codex", "--version"] in [args for args, _ in calls]
+    assert ["codex", "login", "status"] in [args for args, _ in calls]
