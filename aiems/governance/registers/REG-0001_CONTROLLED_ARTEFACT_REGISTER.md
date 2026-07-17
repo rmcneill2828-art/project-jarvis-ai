@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.176
+**Version:** 3.177
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.176 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.177 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -168,7 +168,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.41 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.42 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -301,6 +301,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.177 | 17 July 2026 | Claude Engineering Implementer | Aligned PST-0001 (2.41 to 2.42) following ESR-0025 session-wide WP6 (Independent Repository Verification, Pass) and WP7 (Repository Baseline Acceptance, Accept - retain RBL-0015) both closing against the diff through `b803996`. Engineering Reviewer (Codex) verified by reading the full commit diff after its own sandbox failed; both independent baseline views converged; Programme Sponsor made the WP7 determination. See [[ESR-0025_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0025 WP6 handover]] v0.5. |
 | 3.176 | 17 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.58 to 1.59) following Engineering Reviewer (Codex) review of EIP-ESR0025-002: added EBG-0078 recording `scripts/start-jarvis.bat` (previously an ungoverned untracked file) as Completed dev tooling, per the EBG-0054 precedent, rather than folding it into the unrelated Ollama EIP; and split a malformed merged version-history row (`1.57`/`1.56`) that had broken EBR-0001's table structure. |
 | 3.175 | 17 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.57 to 1.58): added EBG-0076 (Network Exposure Security Hardening - authentication, rate limiting, TLS), Approved Backlog, High priority, per the Programme Sponsor's direct ESR-0025 question on Sentinel's internet-exposure safety and "sooner rather than later" direction; and EBG-0077 (UXP Static Placeholder Row Reconciliation Against Reference Mock-up), Approved Backlog, Medium priority, extending EBG-0073's left-open question, tied to preparing the UXP ahead of planned Guardian self-awareness work. Neither authorises implementation. |
 | 3.174 | 17 July 2026 | Claude Engineering Implementer | ESR-0025 WP1 hardened further: Engineering Reviewer (Codex) third post-implementation review found one Medium (TOCTOU) finding - `submit-response`'s authorisation/drift checks, preflight and evidence capture all ran before the Work Package lock was acquired. Aligned EIP-ESR0025-001 (1.1 to 1.2), EBR-0001 (1.55 to 1.56), JRM-0001 (1.14 to 1.15) and PST-0001 (2.40 to 2.41). 237 tests total (was 236). |
