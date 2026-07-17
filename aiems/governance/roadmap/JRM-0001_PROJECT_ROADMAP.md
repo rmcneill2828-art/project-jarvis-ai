@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.12 |
+| Version | 1.15 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -77,7 +77,7 @@ Governs AIEMS itself: standards, workflow, registers, roles. Sourced from EBR-00
 | EBG-0005 - REG-0001 metadata alignment following P2-004A | Long-approved, low effort, closes a historical gap. |
 | EBG-0065 - STD-0006 Configuration and Secrets Standard | Discovered at ESR-0021 WP6; named at project bootstrapping but never created. Elevated to Near-term because it is no longer theoretical - JARVIS holds real OpenAI/Gemini API keys and Sentinel credential references today. The longer this stays undocumented, the more implicit practice it has to retroactively capture. |
 | EBG-0068 - Engineering Implementation Brief (EIB) artefact type, adopt or drop | Discovered at ESR-0021 WP6. Not a build item - a quick judgement call (confirm EIB was superseded by the EIP convention that followed it, mark Superseded, close). Cheapest possible win in this roadmap; no reason to leave it open. |
-| EBG-0057 - Claude<->Codex Engineering Bridge | Architecture and cost fully decided (see EBR-0001 note). **Elevated to Near-term post-ESR-0024 closure**: the Programme Sponsor has chosen it as the next session's objective, to run as its own AIEMS/engineering-tooling workstream rather than competing with Track B's JARVIS/Guardian sequencing. The EBG-0060 overlap this item was gated on is now resolved (DCE Superseded, REA folded into this item's future-phase scope - see EBG-0060's entry and EBR-0001). Still requires its own EIP before implementation, per PBK-0001's Working Report Lifecycle. |
+| EBG-0057 - Claude<->Codex Engineering Bridge | **Resolved at ESR-0025 WP1**: MVP implemented per [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.2 (v1.0 implemented; three post-implementation Engineering Reviewer findings - path-traversal, unchecked validation exit codes, a TOCTOU race on the authorisation check - addressed across v1.1-v1.2), closed Complete in EBR-0001. `scripts/aiems_bridge.py` - five commands, role-locking enforced as a real code gate. REA remains this item's own future-phase scope, not yet actioned. |
 
 ## 6.2 Mid-term
 
@@ -229,6 +229,9 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.15 | 17 July 2026 | Claude Engineering Implementer | Updated Track A's EBG-0057 entry to reference [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.2 - a further post-implementation Engineering Reviewer finding (TOCTOU: `submit-response`'s checks ran before the Work Package lock was acquired) addressed. |
+| 1.14 | 17 July 2026 | Claude Engineering Implementer | Updated Track A's EBG-0057 entry to reference [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.1 - two post-implementation Engineering Reviewer findings (path-traversal via unsanitised `session`/`work_package`; `submit-to-review`/`submit-response` not checking validation exit codes) addressed. |
+| 1.13 | 17 July 2026 | Claude Engineering Implementer | ESR-0025 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track A's EBG-0057 entry as resolved - `scripts/aiems_bridge.py` MVP implemented per [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.0, closed Complete in EBR-0001. |
 | 1.12 | 17 July 2026 | Claude Engineering Implementer | Resolved the EBG-0060/EBG-0057 overlap post-ESR-0024 closure (Programme Sponsor-approved): moved EBG-0057 from Track A 6.3 (Longer-term) to 6.1 (Near-term), reflecting the Programme Sponsor's decision to action it next as its own AIEMS/engineering-tooling workstream, separate from Track B's JARVIS/Guardian sequencing. Updated EBG-0060's 6.3 entry to record the resolution: DCE Superseded, REA folded into EBG-0057's future-phase scope. |
 | 1.11 | 17 July 2026 | Claude Engineering Implementer | ESR-0024 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0074 entry as resolved - `TrustTierPolicy` wired into `build_default_runtime()` per [[EIP-ESR0024-001_TRUSTTIERPOLICY_PRODUCTION_WIRING|EIP-ESR0024-001]] v1.0, closed Complete in EBR-0001; updated EBG-0019's rationale to reflect EBG-0074 as landed rather than pending. |
 | 1.10 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP6 (Engineering Reviewer/Codex reviewed, Programme Sponsor visually confirmed): annotated Track C's EBG-0073 entry as resolved - Guardian/Sentinel/Providers duplication removed, closed Completed in EBR-0001. |

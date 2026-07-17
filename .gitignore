@@ -52,3 +52,10 @@ Thumbs.db
 # Node / Tauri / React
 # --------------------------------------------------
 node_modules/
+
+# --------------------------------------------------
+# AIEMS Exchange Bridge (EBG-0057, EIP-ESR0025-001)
+# Local Claude<->Codex handover state - never shared/committed, per the
+# bridge's own restrictive-permissions requirement.
+# --------------------------------------------------
+.aiems-exchange/
