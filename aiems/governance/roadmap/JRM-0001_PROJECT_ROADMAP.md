@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.10 |
+| Version | 1.11 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -122,7 +122,7 @@ Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 S
 |------|-----------|
 | EBG-0031 - Guardian Architecture Specification | High priority since ESR-0005, blocks meaningful Guardian safety/permission work; Guardian is already user-facing (the live Orb/chat) without this specification formally existing. **Resolved at ESR-0023 WP2**: [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] created and approved (v1.0), closed Completed in EBR-0001. Unblocks EBG-0020 and EBG-0048 below. |
 | EBG-0041 - Guardian Identity Architecture Validation | AAM-0001 exists but has never been validated against implementation sequencing, per this item's own text. **Resolved at ESR-0023 WP5**: AAM-0001 promoted Approved (v0.3), closed Completed in EBR-0001. Surfaced EBG-0074 below. |
-| EBG-0074 - Wire TrustTierPolicy as SentinelCore's Production Default | Discovered at ESR-0023 WP5. Engineering Reviewer (Codex): "the real operational gap exposed by the review... turns the already-approved architecture into live behaviour." GAM-0001 (Sections 5-9) is architecturally complete but inert until this lands - sequence ahead of Memory/Voice/Vision/Action work (Track B 7.2/7.3), since it activates policy already built rather than starting new architecture. |
+| EBG-0074 - Wire TrustTierPolicy as SentinelCore's Production Default | Discovered at ESR-0023 WP5. Engineering Reviewer (Codex): "the real operational gap exposed by the review... turns the already-approved architecture into live behaviour." **Resolved at ESR-0024 WP1**: [[EIP-ESR0024-001_TRUSTTIERPOLICY_PRODUCTION_WIRING|EIP-ESR0024-001]] v1.0 wired `TrustTierPolicy` into `build_default_runtime()`, closed Complete in EBR-0001. Unblocks EBG-0019 below. |
 | EBG-0069 - JARVIS_CAPABILITY_READINESS_MATRIX.md Refresh | Discovered at ESR-0021 WP6. Direct precedent already exists and succeeded: EBG-0056 refreshed the sibling PCB-0001 document the same way. Low-risk, well-understood pattern - should not need its own design work, just execution. **Delivered at ESR-0021 WP7**; EBR-0001 remains authoritative for its Complete status. |
 | EBG-0070 - Wire a Live Provider into a Production `ProviderOrchestrator` Route | Both providers are live-validated (EBG-0051, and OpenAI since ESR-0015) but neither was wired into default JARVIS/Guardian runtime use - flagged as a candidate in PST-0001 across at least three sessions before this section recommended registering it. **Delivered at ESR-0022 WP1** per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0 (Engineering Reviewer and Programme Sponsor approved): `build_default_runtime()` registers a real OpenAI/Gemini provider (configurable via `JARVIS_PRIMARY_PROVIDER`, default `openai` per PEM-001) when its credential is present and non-blank, with `LocalEchoProvider` retained as failover; registered as EBG-0070 in EBR-0001, Complete. |
 
@@ -131,7 +131,7 @@ Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 S
 | Item | Rationale |
 |------|-----------|
 | EBG-0017 - JARVIS Product Requirements and Capability Backlog | High priority, foundational for everything else in this track, but the programme has functioned without it for 20+ sessions by using EBR-0001 and PST-0001 together - not urgent, but overdue. |
-| EBG-0019 - Memory and Data Storage Architecture | Blocks persistent memory, which remains explicitly deferred (PST-0001 Section 10) - sequence architecture-first per this item's own stated rationale. Per ESR-0023 WP5's sequencing judgement, this is the natural next Guardian faculty after EBG-0074 (Track B 7.1) lands - GAM-0001 Section 9.2 already anticipates its consent boundary. |
+| EBG-0019 - Memory and Data Storage Architecture | Blocks persistent memory, which remains explicitly deferred (PST-0001 Section 10) - sequence architecture-first per this item's own stated rationale. Per ESR-0023 WP5's sequencing judgement, this is the natural next Guardian faculty now that EBG-0074 (Track B 7.1) has landed (ESR-0024 WP1) - GAM-0001 Section 9.2 already anticipates its consent boundary. |
 | EBG-0020 - Guardian, Family Safety and Emergency Controls | Depends conceptually on EBG-0031 (Guardian Architecture) landing first. **Resolved at ESR-0023 WP3**: GAM-0001 v1.1 Section 8 added, closed Completed in EBR-0001. |
 | EBG-0042 - Agent Framework Architecture | ADR-0011 exists; this item defines specialist agent contracts building on it. Relevant once GIA moves past Proof of Concept. |
 | EBG-0045 / EBG-0049 - Cost and Strategic Value Framework / Cost-Aware Provider Routing | Explicitly overlapping, already cross-referenced in EBR-0001 - action together, not separately. Directly relevant once the Near-term production-provider-wiring item above happens, since that is where cost first becomes a live concern rather than a research question. |
@@ -229,6 +229,7 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.11 | 17 July 2026 | Claude Engineering Implementer | ESR-0024 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0074 entry as resolved - `TrustTierPolicy` wired into `build_default_runtime()` per [[EIP-ESR0024-001_TRUSTTIERPOLICY_PRODUCTION_WIRING|EIP-ESR0024-001]] v1.0, closed Complete in EBR-0001; updated EBG-0019's rationale to reflect EBG-0074 as landed rather than pending. |
 | 1.10 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP6 (Engineering Reviewer/Codex reviewed, Programme Sponsor visually confirmed): annotated Track C's EBG-0073 entry as resolved - Guardian/Sentinel/Providers duplication removed, closed Completed in EBR-0001. |
 | 1.9 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP5 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0041 entry as resolved (AAM-0001 approved v0.3, closed Completed in EBR-0001); added EBG-0074 (Wire TrustTierPolicy as Production Default) to Track B Near-term, sequenced ahead of Memory/Voice/Vision/Action per the Engineering Reviewer's explicit recommendation; updated EBG-0019's rationale to reflect it as the next faculty after EBG-0074. |
 | 1.8 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP4 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track B's EBG-0048 entry as resolved - GAM-0001 v1.2 Section 9 extended, closing EBG-0048 Completed in EBR-0001. |

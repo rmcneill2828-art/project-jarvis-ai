@@ -12,6 +12,8 @@ from jarvis.interfaces.stdio_rpc import (
     StdioRpcServer,
     build_default_runtime,
 )
+from sentinel.core import SentinelDecisionOutcome, SentinelRequest
+from sentinel.policy import TrustCategory, TrustTier, TrustTierPolicy
 
 
 def _server() -> StdioRpcServer:
@@ -72,6 +74,46 @@ def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_bl
     )
 
     assert runtime.configured_providers() == ("openai", "local-echo")
+
+
+def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_engine():
+    """EBG-0074 (ESR-0024): build_default_runtime()'s gateway must actually run
+    TrustTierPolicy, not merely have the class available in the codebase.
+    Asserted directly against the object build_default_runtime() itself
+    produces - not a separately constructed gateway - so this proves the real
+    wiring, not just that TrustTierPolicy is importable."""
+
+    runtime = build_default_runtime(environ={})
+
+    assert isinstance(runtime.sentinel_gateway().policy_engine, TrustTierPolicy)
+
+
+def test_guardian_converse_request_shape_classified_routine_under_trust_tier_policy():
+    """Regression, beyond re-asserting the unchanged RPC response: confirms
+    *why* it is unchanged - the real conversation request shape
+    (SentinelGatedConversationProvider.generate()'s fixed
+    metadata={"capability": "text-generation"}, default payload_type,
+    requires_approval=False) is classified TrustCategory.ROUTINE_INTERACTION /
+    TrustTier.ROUTINE -> ALLOW by the production-wired TrustTierPolicy itself,
+    evaluated through build_default_runtime()'s own gateway - not a separately
+    constructed policy instance, and not the category-matrix already covered
+    by jarvis/tests/test_sentinel_policy.py."""
+
+    runtime = build_default_runtime(environ={})
+    conversation_shaped_request = SentinelRequest(
+        source="jarvis.conversation",
+        intent="conversation.generate",
+        metadata={"capability": "text-generation"},
+    )
+
+    decision = runtime.sentinel_gateway().evaluate(conversation_shaped_request).decision
+
+    assert decision.outcome is SentinelDecisionOutcome.ALLOW
+    assert decision.requires_human_approval is False
+
+    policy_decision = runtime.sentinel_gateway().policy_engine.evaluate(conversation_shaped_request)
+    assert policy_decision.trust_tier is TrustTier.ROUTINE
+    assert policy_decision.category is TrustCategory.ROUTINE_INTERACTION
 
 
 def test_guardian_converse_returns_real_response_through_sentinel():

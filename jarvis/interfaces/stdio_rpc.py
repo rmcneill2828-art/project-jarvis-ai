@@ -3,10 +3,11 @@
 Foundation scope only (ESR-0017 WP9): a persistent, newline-delimited
 JSON-RPC 2.0 loop over stdin/stdout, intended to be spawned as a long-lived
 child process by the Tauri shell. Wires a zero-config Guardian+Sentinel stack
-(SentinelTrustGateway + ProviderOrchestrator + LocalEchoProvider) by default -
-proving the UXP-to-Guardian-to-Sentinel path, not external model quality
-(deferred to EBG-0051/a later provider toggle, per ChatGPT Engineering
-Reviewer's WP9 design-review finding 2).
+(SentinelTrustGateway, wired with TrustTierPolicy per EBG-0074/ESR-0024, +
+ProviderOrchestrator + LocalEchoProvider) by default - proving the
+UXP-to-Guardian-to-Sentinel path, not external model quality (deferred to
+EBG-0051/a later provider toggle, per ChatGPT Engineering Reviewer's WP9
+design-review finding 2).
 
 The JSON-RPC 2.0 envelope is adopted now, even though only synchronous
 request/response is implemented, specifically so EBG-0050's later streaming
@@ -26,6 +27,7 @@ from sentinel.gemini_provider import GeminiProvider
 from sentinel.local_provider import LocalEchoProvider
 from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
+from sentinel.policy import TrustTierPolicy
 from sentinel.provider_config import CredentialReference, ProviderConfiguration
 
 JSONRPC_VERSION = "2.0"
@@ -109,7 +111,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
 
     environ = os.environ if environ is None else environ
 
-    gateway = SentinelTrustGateway()
+    gateway = SentinelTrustGateway(policy_engine=TrustTierPolicy())
     orchestrator = ProviderOrchestrator()
 
     route_providers: list[str] = []

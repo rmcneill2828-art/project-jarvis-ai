@@ -114,6 +114,12 @@ class SentinelTrustGateway:
         self._audit_recorder = audit_recorder or MemoryAuditRecorder()
         self._policy_engine = policy_engine or SimpleApprovalPolicy()
 
+    @property
+    def policy_engine(self) -> PolicyEngine:
+        """Return the connected PolicyEngine, for test/diagnostic introspection."""
+
+        return self._policy_engine
+
     def evaluate(self, request: SentinelRequest) -> SentinelResponse:
         """Evaluate a request at the Sentinel trust boundary."""
 

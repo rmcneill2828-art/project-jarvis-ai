@@ -32,6 +32,12 @@ class SentinelGatedConversationProvider:
         self._capability = capability
         self._source = source
 
+    @property
+    def gateway(self) -> SentinelTrustGateway:
+        """Return the connected Sentinel trust gateway, for test/diagnostic introspection."""
+
+        return self._gateway
+
     def generate(self, request: ConversationRequest) -> ConversationResponse:
         """Generate a response by routing the request through Sentinel."""
 

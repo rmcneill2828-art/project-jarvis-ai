@@ -154,6 +154,14 @@ class GuardianRuntime:
             return ()
         return tuple(getter())
 
+    def sentinel_gateway(self):
+        """Return the connected Sentinel trust gateway, if the connected provider
+        exposes one; None otherwise."""
+
+        if self._conversation_provider is None:
+            return None
+        return getattr(self._conversation_provider, "gateway", None)
+
     def diagnostics(
         self,
         *,
