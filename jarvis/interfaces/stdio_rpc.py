@@ -156,11 +156,13 @@ class StdioRpcServer:
     def _platform_status(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
         snapshot = self._runtime.status_snapshot()
         provider_boundary = snapshot.services.get("Guardian Provider Boundary")
+        gateway = self._runtime.sentinel_gateway()
         return {
             "state": snapshot.state.value,
             "runtimeHealth": snapshot.runtime_health.value,
             "providerConnected": provider_boundary.status.value if provider_boundary else "Unknown",
             "providers": list(self._runtime.configured_providers()),
+            "policyEngine": type(gateway.policy_engine).__name__ if gateway is not None else None,
         }
 
     def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002

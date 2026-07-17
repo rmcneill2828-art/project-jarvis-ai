@@ -126,7 +126,11 @@ function deriveSystemHealth(platformState, platformError) {
       id: "sentinel",
       label: SYSTEM_HEALTH_LABELS.sentinel,
       state: running ? STATUS.OPERATIONAL : STATUS.OFFLINE,
-      detail: running ? "Trust gateway active" : "Not running",
+      detail: running
+        ? platformState.policyEngine
+          ? `Trust gateway active (${platformState.policyEngine})`
+          : "Trust gateway active"
+        : "Not running",
     },
     {
       id: "providers",

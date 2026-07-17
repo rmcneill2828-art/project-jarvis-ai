@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.168
+**Version:** 3.169
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.168 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.169 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -151,6 +151,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0021-003 | Engineering Implementation Package | PBK-0001 JRM-0001 Cross-Reference Addition | 0.3 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0022-001 | Engineering Implementation Package | Production Provider Wiring and System Health Panel | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0024-001 | Engineering Implementation Package | TrustTierPolicy Production Wiring | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0024-002 | Engineering Implementation Package | System Health Policy Engine Detail | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -166,7 +167,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.36 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.37 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -298,6 +299,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.169 | 17 July 2026 | Claude Engineering Implementer | ESR-0024 WP2: registered EIP-ESR0024-002 (System Health Policy Engine Detail, 1.0, Approved) - Engineering Reviewer (Codex) reviewed with no blocking findings, Programme Sponsor approved. Aligned PST-0001 (2.36 to 2.37): System Health panel's Sentinel row now names the live-wired policy engine, satisfying PBK-0001's Incremental Visual Convergence practice with real WP1-delivered data only. |
 | 3.168 | 17 July 2026 | Claude Engineering Implementer | ESR-0024 WP1: registered EIP-ESR0024-001 (TrustTierPolicy Production Wiring, 1.0, Approved) - Engineering Reviewer (Codex) reviewed v0.1 with two Medium findings, both addressed at v0.2, Programme Sponsor approved. Aligned EBR-0001 (1.51 to 1.52) and JRM-0001 (1.10 to 1.11): EBG-0074 (Wire TrustTierPolicy as SentinelCore's Production Default) marked Complete - closes the operational gap EBG-0041's validation surfaced at ESR-0023 WP5. |
 | 3.167 | 17 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.25 to 1.26): OSE Relationships historical-archive breadcrumb repointed from HST-0020/FCH-0020 to HST-0023/FCH-0023 as the "latest" entries, matching the EIP-ESR0021-002 precedent. HST-0020/FCH-0020 retained, reworded as lineage-only. |
 | 3.166 | 17 July 2026 | Claude Engineering Implementer | Registered HST-0023_GPT and FCH-0023_GPT (ESR-0023 Chat Summary / Full Chat History, GPT) - Engineering Reviewer-authored historical evidence, created locally and left uncommitted per the Programme Sponsor's own instruction to Codex, then committed by the Engineering Implementer per PBK-0001 Separation of Duties. Both read in full before commit. |

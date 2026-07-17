@@ -12,6 +12,7 @@ from jarvis.interfaces.stdio_rpc import (
     StdioRpcServer,
     build_default_runtime,
 )
+from jarvis.guardian.runtime import GuardianRuntime
 from sentinel.core import SentinelDecisionOutcome, SentinelRequest
 from sentinel.policy import TrustCategory, TrustTier, TrustTierPolicy
 
@@ -140,7 +141,21 @@ def test_platform_status_reflects_real_runtime_state():
         "runtimeHealth": "Healthy",
         "providerConnected": "Online",
         "providers": ["local-echo"],
+        "policyEngine": "TrustTierPolicy",
     }
+
+
+def test_platform_status_policy_engine_is_none_without_a_connected_gateway():
+    """EIP-ESR0024-002: policyEngine must degrade honestly (None), not raise,
+    when no conversation provider - and therefore no Sentinel gateway - is
+    connected. build_default_runtime() always wires one, so this exercises
+    the defensive branch directly via a bare GuardianRuntime instead."""
+
+    server = StdioRpcServer(GuardianRuntime())
+
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "platform.status", "params": {}}))
+
+    assert response["result"]["policyEngine"] is None
 
 
 def test_knowledge_graph_returns_real_repository_data():
