@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.25 |
+| Version | 1.26 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -577,8 +577,10 @@ This is a documentation architecture principle, not a software design principle.
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact; its horizon placements inform Backlog Progression Analysis recommendations. |
 | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Current accepted repository baseline. |
-| [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Latest historical session record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
-| [[FCH-0020_CLAUDE_FULL_CHAT_HISTORY|FCH-0020]] | Latest full chat historical evidence record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[HST-0023_CLAUDE_CHAT_SUMMARY|HST-0023]] | Latest historical session record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[FCH-0023_CLAUDE_FULL_CHAT_HISTORY|FCH-0023]] | Latest full chat historical evidence record (Claude); resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
+| [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Historical session record retained for lineage; no longer the latest archive entry. |
+| [[FCH-0020_CLAUDE_FULL_CHAT_HISTORY|FCH-0020]] | Full chat historical evidence record retained for lineage; no longer the latest archive entry. |
 | [[HST-0013_ESR-0013_CHAT_HISTORY|HST-0013]] | Historical session record retained for lineage; no longer the latest archive entry. |
 | [[FCH-0013_ESR-0013_FULL_CHAT_HISTORY|FCH-0013]] | Full chat historical evidence record retained for lineage; no longer the latest archive entry. |
 | [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] | Defines the knowledge tier structure that bounds WP0 session start review and moves AIEMS History and Full Chat artefacts to search-on-demand access. |
@@ -588,6 +590,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.26 | 17 July 2026 | Claude Engineering Implementer | Corrected the OSE Relationships historical-archive breadcrumb, which still named the ESR-0020 artefacts (HST-0020, FCH-0020) as "latest" despite HST-0023/FCH-0023 (Claude) existing. HST-0023/FCH-0023 now carry the "latest" breadcrumb; HST-0020/FCH-0020 retained, reworded as lineage-only - same pattern as EIP-ESR0021-002. ESR-0023. |
 | 1.25 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-003 (Programme Sponsor-approved, Engineering Reviewer-reviewed with two findings addressed): added JRM-0001 as a cross-reference in Related Artefacts and OSE Relationships, and one sentence to Backlog Progression Analysis directing that an item's existing JRM-0001 horizon placement inform the recommendation rather than being re-derived independently. ESR-0021. |
 | 1.24 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-002 (Programme Sponsor-approved, Engineering Reviewer-drafted): corrected the OSE Relationships historical-archive breadcrumb, which still named the ESR-0013 artefacts (HST-0013, FCH-0013) as "latest" despite HST-0020/FCH-0020 (Claude) existing. HST-0020/FCH-0020 now carry the "latest" breadcrumb; HST-0013/FCH-0013 retained, reworded as lineage-only. ESR-0021 WP3. |
 | 1.23 | 15 July 2026 | Claude Engineering Implementer | Implemented EIP-ESR0021-001 (Programme Sponsor-approved, Engineering Reviewer-drafted): corrected the Version History table's residual sort-order inconsistency - the v1.0-v1.8 block remained in ascending order after v1.9, despite the v1.22 changelog entry claiming the table's ordering was corrected. Reordered v1.0-v1.8 into descending order consistent with the rest of the table; no row text altered. ESR-0021 WP2. |

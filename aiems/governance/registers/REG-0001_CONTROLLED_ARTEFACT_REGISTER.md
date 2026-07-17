@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.166
+**Version:** 3.167
 
 ---
 
@@ -114,7 +114,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.166 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.167 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -160,7 +160,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.25 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.26 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.13 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -297,6 +297,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.167 | 17 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.25 to 1.26): OSE Relationships historical-archive breadcrumb repointed from HST-0020/FCH-0020 to HST-0023/FCH-0023 as the "latest" entries, matching the EIP-ESR0021-002 precedent. HST-0020/FCH-0020 retained, reworded as lineage-only. |
 | 3.166 | 17 July 2026 | Claude Engineering Implementer | Registered HST-0023_GPT and FCH-0023_GPT (ESR-0023 Chat Summary / Full Chat History, GPT) - Engineering Reviewer-authored historical evidence, created locally and left uncommitted per the Programme Sponsor's own instruction to Codex, then committed by the Engineering Implementer per PBK-0001 Separation of Duties. Both read in full before commit. |
 | 3.165 | 17 July 2026 | Claude Engineering Implementer | Registered HST-0023 (ESR-0023 Chat Summary, Claude) and FCH-0023 (ESR-0023 Full Chat History, Claude) - archived historical evidence covering the entire ESR-0023 session and its post-closure discussion. Extracted programmatically from the session's own JSONL log, following the FCH-0015 through FCH-0020 methodology. HST-0023 registered with a table row; HST-0020 was found to lack one (a pre-existing gap, not corrected by this entry - out of scope). |
 | 3.164 | 17 July 2026 | Claude Engineering Implementer | ESR-0023 session closure: registered ESR-0023-WP6 Independent Repository Verification handover; ESR-0023 (0.4 to 1.0, Open to Closed) finalised with WP4/WP5/WP6 and session-wide WP6/WP7 sections; Engineering Reviewer WP6 Pass, Programme Sponsor WP7 accepted retaining RBL-0015; aligned PST-0001 (2.34 to 2.35) - Current Mode/Baseline/Focus, Completed Milestones, Active/Next Planned Work, Repository Health, Outstanding Observations and Session Start Guidance all updated for the ESR-0023 closed state. |
