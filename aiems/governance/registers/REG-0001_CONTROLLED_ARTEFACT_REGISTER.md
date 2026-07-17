@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.174
+**Version:** 3.176
 
 ---
 
@@ -114,11 +114,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0012 | Architecture Decision Record | Device Independence and Portable Restore | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.174 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.176 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.8 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.56 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.59 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -301,6 +301,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.176 | 17 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.58 to 1.59) following Engineering Reviewer (Codex) review of EIP-ESR0025-002: added EBG-0078 recording `scripts/start-jarvis.bat` (previously an ungoverned untracked file) as Completed dev tooling, per the EBG-0054 precedent, rather than folding it into the unrelated Ollama EIP; and split a malformed merged version-history row (`1.57`/`1.56`) that had broken EBR-0001's table structure. |
+| 3.175 | 17 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 (1.57 to 1.58): added EBG-0076 (Network Exposure Security Hardening - authentication, rate limiting, TLS), Approved Backlog, High priority, per the Programme Sponsor's direct ESR-0025 question on Sentinel's internet-exposure safety and "sooner rather than later" direction; and EBG-0077 (UXP Static Placeholder Row Reconciliation Against Reference Mock-up), Approved Backlog, Medium priority, extending EBG-0073's left-open question, tied to preparing the UXP ahead of planned Guardian self-awareness work. Neither authorises implementation. |
 | 3.174 | 17 July 2026 | Claude Engineering Implementer | ESR-0025 WP1 hardened further: Engineering Reviewer (Codex) third post-implementation review found one Medium (TOCTOU) finding - `submit-response`'s authorisation/drift checks, preflight and evidence capture all ran before the Work Package lock was acquired. Aligned EIP-ESR0025-001 (1.1 to 1.2), EBR-0001 (1.55 to 1.56), JRM-0001 (1.14 to 1.15) and PST-0001 (2.40 to 2.41). 237 tests total (was 236). |
 | 3.173 | 17 July 2026 | Claude Engineering Implementer | ESR-0025 WP1 hardened: Engineering Reviewer (Codex) post-implementation review found one High (path-traversal via unsanitised `session`/`work_package`) and one Medium (unchecked validation exit codes) finding on `scripts/aiems_bridge.py`, both addressed. Aligned EIP-ESR0025-001 (1.0 to 1.1), EBR-0001 (1.54 to 1.55), JRM-0001 (1.13 to 1.14) and PST-0001 (2.39 to 2.40). 236 tests total (was 227). |
 | 3.172 | 17 July 2026 | Claude Engineering Implementer | ESR-0025 WP1: registered EIP-ESR0025-001 (AIEMS Exchange Bridge MVP, 1.0, Approved) - Engineering Reviewer (Codex) reviewed v0.1 with one High and one Medium finding, both addressed at v0.2, Programme Sponsor approved. Aligned EBR-0001 (1.53 to 1.54), JRM-0001 (1.12 to 1.13) and PST-0001 (2.38 to 2.39): EBG-0057 (Claude<->Codex Engineering Bridge) marked Complete - `scripts/aiems_bridge.py` MVP implemented, role-locking enforced as a real code gate; PST-0001 retargeted to the ESR-0025 open state. |
