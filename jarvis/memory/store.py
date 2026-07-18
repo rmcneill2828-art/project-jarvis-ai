@@ -160,9 +160,33 @@ class PersonalMemoryStore:
         )
 
     def add(self, record: PersonalMemoryRecord) -> PersonalMemoryRecord:
-        """Add a Personal Memory record."""
+        """Add a Personal Memory record.
+
+        Enforces MDS-0001 Section 7.4's durable-traceability guarantee at the
+        storage layer itself, not only by caller discipline: `record` is
+        rejected unless `consent_decision_id` refers to a `consent_decisions`
+        row already recorded with `decision == "approved"`. Without this, the
+        store's public API let any caller insert an orphan record whose
+        `consent_decision_id` pointed at nothing real (Engineering Reviewer
+        post-commit finding - `PersonalMemoryService.approve()` happened to
+        call `record_decision()` before `add()` in the right order, but
+        nothing in the store itself required that ordering).
+
+        Both the existence check and the insert happen inside the same
+        transaction/connection to avoid a check-then-insert race.
+        """
 
         with self._transaction() as connection:
+            row = connection.execute(
+                "SELECT decision FROM consent_decisions WHERE id = ?",
+                (record.consent_decision_id,),
+            ).fetchone()
+            if row is None or row[0] != "approved":
+                msg = (
+                    f"Cannot add Personal Memory record {record.id!r}: consent_decision_id "
+                    f"{record.consent_decision_id!r} does not reference a recorded approved decision."
+                )
+                raise ValueError(msg)
             connection.execute(
                 """
                 INSERT INTO personal_memory (id, content, created_at, consent_decision_id)

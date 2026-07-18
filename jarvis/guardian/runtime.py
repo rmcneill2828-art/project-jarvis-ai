@@ -143,13 +143,18 @@ class GuardianRuntime:
         """Propose retaining `content` as a Personal Memory item.
 
         Raises RuntimeError naming the unavailable boundary when no memory
-        service is connected - unlike `converse()`, there is no single
-        response envelope shared across propose/approve/deny/list, so the
-        boundary condition is surfaced as an explicit, clearly-named
-        exception rather than a sentinel return value. `stdio_rpc.py`'s
-        existing generic exception handler already turns this into an
-        honest, never-hidden JSON-RPC error - the same "not silently
-        masked" outcome `converse()`'s pattern achieves by other means.
+        service is connected, or when the runtime is not RUNNING - mirroring
+        both of `converse()`'s boundary checks, not just the first (Engineering
+        Reviewer post-commit finding on the initial implementation, which
+        checked service connectivity but never runtime state, letting a
+        connected-but-not-started runtime propose/approve/list memory).
+        Unlike `converse()`, there is no single response envelope shared
+        across propose/approve/deny/list, so the boundary condition is
+        surfaced as an explicit, clearly-named exception rather than a
+        sentinel return value - `stdio_rpc.py`'s existing generic exception
+        handler already turns this into an honest, never-hidden JSON-RPC
+        error, the same "not silently masked" outcome `converse()`'s pattern
+        achieves by other means.
         """
 
         self._require_memory_service()
@@ -176,6 +181,8 @@ class GuardianRuntime:
     def _require_memory_service(self) -> None:
         if self._memory_service is None:
             raise RuntimeError(NO_MEMORY_SERVICE_RESPONSE)
+        if self._state is not GuardianRuntimeState.RUNNING:
+            raise RuntimeError(NOT_RUNNING_RESPONSE)
 
     def register_service(self, service: JarvisService) -> JarvisService:
         """Register or replace a Guardian runtime service."""

@@ -427,3 +427,35 @@ def test_guardian_runtime_memory_methods_delegate_to_connected_service(tmp_path)
 
     assert decision.decision == "denied"
     assert len(runtime.list_memory()) == 1
+
+
+def test_guardian_runtime_memory_methods_refuse_before_start_even_with_connected_service(tmp_path) -> None:
+    """Engineering Reviewer post-commit finding: a connected memory_service
+    alone must not be enough - propose/approve/deny/list must also require
+    the runtime to actually be RUNNING, mirroring converse()'s second check.
+    The original implementation checked only service connectivity, letting a
+    constructed-but-not-started runtime propose/approve/list memory."""
+
+    memory_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "personal.db"))
+    runtime = GuardianRuntime(memory_service=memory_service)
+
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.propose_memory("Robert prefers dark mode.")
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.approve_memory("pending-1")
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.deny_memory("pending-1")
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.list_memory()
+
+
+def test_guardian_runtime_memory_methods_refuse_after_stop(tmp_path) -> None:
+    memory_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "personal.db"))
+    runtime = GuardianRuntime(memory_service=memory_service)
+    runtime.start()
+    runtime.stop()
+
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.propose_memory("Robert prefers dark mode.")
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.list_memory()

@@ -42,6 +42,7 @@ def test_creates_parent_directory(tmp_path):
 
 
 def test_add_and_list_all(store):
+    store.record_decision(_decision())
     store.add(_record())
 
     records = store.list_all()
@@ -56,7 +57,24 @@ def test_list_all_empty_store(store):
     assert store.list_all() == ()
 
 
+def test_add_rejects_record_with_no_matching_decision(store):
+    with pytest.raises(ValueError, match="does not reference a recorded approved decision"):
+        store.add(_record())
+
+    assert store.list_all() == ()
+
+
+def test_add_rejects_record_referencing_denied_decision(store):
+    store.record_decision(_decision(decision="denied"))
+
+    with pytest.raises(ValueError, match="does not reference a recorded approved decision"):
+        store.add(_record())
+
+    assert store.list_all() == ()
+
+
 def test_delete_removes_exactly_one_record(store):
+    store.record_decision(_decision())
     store.add(_record("record-1"))
     store.add(_record("record-2"))
 
