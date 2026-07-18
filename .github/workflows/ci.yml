@@ -18,6 +18,10 @@ jobs:
       - run: ruff check .
       - run: pytest -q
       - run: python scripts/validate_repository.py
+      # Advisory only until an initial findings baseline has been triaged -
+      # see the "gap analysis" review that introduced this step.
+      - run: pip-audit
+        continue-on-error: true
 
   frontend-build:
     runs-on: ubuntu-latest
@@ -29,3 +33,4 @@ jobs:
           node-version: "20"
       - run: npm ci
       - run: npm run build
+      - run: npm audit --audit-level=high

@@ -16,6 +16,7 @@ pythonpath = ["."]
 dev = [
     "ruff",
     "pytest",
+    "pip-audit",
 ]
 
 [project.scripts]
