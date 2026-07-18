@@ -35,7 +35,16 @@ const RADIUS_SCALE = 0.65;
 // One full rotation roughly every 90 seconds at this angle-per-tick and
 // interval, read as ambient presence rather than a spinning logo, per
 // UAM-0001 8.1's "calm interaction" product principle.
-const ROTATION_INTERVAL_MS = 50;
+//
+// 200ms (5 ticks/second) rather than a smoother-looking 50ms: at this
+// rotation speed the per-tick movement is imperceptibly small regardless,
+// but every tick re-renders ~1,880 SVG elements (real graph: 195 nodes +
+// 1,687 edges) - at 20 ticks/second this measured as sustained "Very high"
+// power usage / GPU load in Windows Task Manager on real hardware. 5
+// ticks/second cuts that render load 4x with no visible difference in the
+// rotation's smoothness, since the animation is intentionally slow to
+// begin with.
+const ROTATION_INTERVAL_MS = 200;
 const ROTATION_RADIANS_PER_TICK = (2 * Math.PI) / (90000 / ROTATION_INTERVAL_MS);
 
 // Shared with KnowledgeGraphPanels.jsx so the Knowledge Metrics/Active
