@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.195
+**Version:** 3.196
 
 
 ---
@@ -116,11 +116,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.195 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.196 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.71 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.72 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -173,7 +173,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.50 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.51 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -309,6 +309,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.196 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 WP1 fully closed - Engineering Reviewer (Codex) final confirmation via the bridge: Pass, both Medium findings resolved against fix commit dbd8424, no new blocking findings. Aligned EBR-0001 (1.71 to 1.72) and PST-0001 (2.50 to 2.51). |
 | 3.195 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 WP1 post-commit review (Engineering Reviewer, Codex, via the bridge) of committed diff 505023c found two Medium blocking findings, both fixed: `GuardianRuntime` memory methods now also require `RUNNING` state (not just service connectivity); `PersonalMemoryStore.add()` now enforces durable consent traceability at the storage layer, rejecting records that don't reference a recorded approved decision. Aligned [[EIP-ESR0027-001_PERSONAL_MEMORY_IMPLEMENTATION|EIP-ESR0027-001]] (1.0 to 1.1), EBR-0001 (1.70 to 1.71) and PST-0001 (2.49 to 2.50). 286 tests total (was 282). |
 | 3.194 | 18 July 2026 | Claude Engineering Implementer | Aligned PST-0001 (2.48 to 2.49) following ESR-0027 WP1 closure: Current Mode/Phase/Workflow/Objective and Current Engineering Focus updated (Current Mode still anchors to latest-closed ESR-0026 per PBK-0001 WP0B, since ESR-0027 has not itself closed). |
 | 3.193 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 WP1: Programme Sponsor approved [[EIP-ESR0027-001_PERSONAL_MEMORY_IMPLEMENTATION|EIP-ESR0027-001]] v0.3 via `sponsor-decision`; implemented and closed (0.3 to 1.0, Draft to Approved - implemented). Aligned EBR-0001 (1.69 to 1.70): EBG-0080 (Personal Memory Implementation) marked Complete. `jarvis/memory/` now implements Personal Memory with a working minimal consent gate. 282 tests total (was 254), validator clean. |
