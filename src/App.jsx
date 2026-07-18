@@ -22,7 +22,6 @@ import {
   Square,
   UsersRound,
   X,
-  Zap,
 } from "lucide-react";
 
 import {
@@ -91,7 +90,7 @@ function derivePlatformSignals(platformState, platformError) {
 // and Providers, sourced only from real `platform.status` fields. As of
 // ESR-0023 WP6 (EBG-0073), SystemHealthPanel is these rows' sole owner -
 // DiagnosticsPanel below no longer duplicates them; its remaining rows
-// (boundary, shell, agents, first-light) are permanently-static placeholders.
+// (boundary, shell, agents) are permanently-static placeholders.
 const SYSTEM_HEALTH_LABELS = { guardian: "Guardian", sentinel: "Sentinel", providers: "Providers" };
 
 function deriveSystemHealth(platformState, platformError) {
@@ -202,7 +201,6 @@ const diagnosticIcons = {
   boundary: Code2,
   shell: Monitor,
   agents: UsersRound,
-  "first-light": Zap,
 };
 
 function StatusBadge({ state }) {

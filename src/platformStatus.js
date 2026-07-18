@@ -79,6 +79,9 @@ export const capabilityStatuses = Object.freeze([
 // Guardian/Sentinel/Providers were removed from this list at ESR-0023 WP6
 // (EBG-0073): SystemHealthPanel is now their sole owner, sourced from live
 // platform.status data. The rows below remain permanently-static placeholders.
+// first-light removed at ESR-0027 WP2 (EBG-0077): it reported on the legacy
+// Tkinter First Light app rather than this shell's own implementation
+// boundary, so it didn't fit this panel's UAM-0001 Section 11 purpose.
 export const diagnostics = Object.freeze([
   {
     id: "boundary",
@@ -97,11 +100,5 @@ export const diagnostics = Object.freeze([
     label: "Agents",
     state: STATUS.OFFLINE,
     detail: "No execution",
-  },
-  {
-    id: "first-light",
-    label: "First Light",
-    state: STATUS.OPERATIONAL,
-    detail: "Python reference preserved",
   },
 ]);
