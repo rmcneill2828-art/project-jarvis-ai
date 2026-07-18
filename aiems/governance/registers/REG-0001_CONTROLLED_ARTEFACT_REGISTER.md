@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.203
+**Version:** 3.204
 
 
 ---
@@ -116,7 +116,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.203 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.204 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -144,7 +144,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
-| JRM-0001 | Roadmap | Project Roadmap | 1.15 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.16 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -311,6 +311,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.204 | 18 July 2026 | Claude Engineering Implementer | Aligned [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (1.15 to 1.16): corrected EBG-0065's rationale, which overstated persistent API-key possession as present-tense fact - Programme Sponsor confirmed no such key is persistently configured anywhere on their machine, raised after the claim was repeated uncritically in a backlog-grouping summary. |
 | 3.203 | 18 July 2026 | Claude Engineering Implementer | Version-aligned this register's own PST-0001 (2.54 to 2.55) tracking row following ESR-0027 closure updates. |
 | 3.202 | 18 July 2026 | Claude Engineering Implementer | Registered [[ESR-0027_ENGINEERING_SESSION_REPORT|ESR-0027]] (Engineering Session Report, 1.0, Closed) as a new controlled artefact - the second session run entirely through the AIEMS Exchange Bridge with no manual relay. Aligned PST-0001 - Current Mode/Focus/Session Start Guidance/OSE Relationships all retargeted from "open" to "closed," no new session opened. |
 | 3.201 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 session-wide WP6 (Pass, two Low findings fixed) and WP7 (Accept, retain RBL-0015) both closed against the full session diff (`f4a96a0`..`d7ab1f7`). Engineering Reviewer (Codex) verified via the bridge, both independent baseline views converged, Programme Sponsor made the WP7 determination. Aligned PST-0001 (2.53 to 2.54). |

@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.15 |
+| Version | 1.16 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -75,7 +75,7 @@ Governs AIEMS itself: standards, workflow, registers, roles. Sourced from EBR-00
 | EBG-0058 - PBK-0001 Clause Consolidation | Already Approved Backlog; directly addresses accretion risk in the document governing every session. Programme Sponsor-raised, highest process-hygiene value of anything currently open. |
 | REG-0001 HST/FCH registration gap (unnumbered - see Section 9) | Deferred to an ESR-0021 WP per Programme Sponsor direction (EIP-ESR0021-002 Section 12); small, mechanical, should not linger. |
 | EBG-0005 - REG-0001 metadata alignment following P2-004A | Long-approved, low effort, closes a historical gap. |
-| EBG-0065 - STD-0006 Configuration and Secrets Standard | Discovered at ESR-0021 WP6; named at project bootstrapping but never created. Elevated to Near-term because it is no longer theoretical - JARVIS holds real OpenAI/Gemini API keys and Sentinel credential references today. The longer this stays undocumented, the more implicit practice it has to retroactively capture. |
+| EBG-0065 - STD-0006 Configuration and Secrets Standard | Discovered at ESR-0021 WP6; named at project bootstrapping but never created. Elevated to Near-term because it is no longer theoretical - Sentinel's `CredentialReference` mechanism is live-tested and capable of using real OpenAI/Gemini API keys whenever the Programme Sponsor sets them as a temporary environment variable for a session (confirmed no such key is persistently configured anywhere on the Programme Sponsor's machine, per ESR-0027 closure discussion). ESR-0027 also added a real local SQLite personal-memory store, another category of locally-held data this standard should cover. The longer this stays undocumented, the more implicit practice it has to retroactively capture. |
 | EBG-0068 - Engineering Implementation Brief (EIB) artefact type, adopt or drop | Discovered at ESR-0021 WP6. Not a build item - a quick judgement call (confirm EIB was superseded by the EIP convention that followed it, mark Superseded, close). Cheapest possible win in this roadmap; no reason to leave it open. |
 | EBG-0057 - Claude<->Codex Engineering Bridge | **Resolved at ESR-0025 WP1**: MVP implemented per [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.2 (v1.0 implemented; three post-implementation Engineering Reviewer findings - path-traversal, unchecked validation exit codes, a TOCTOU race on the authorisation check - addressed across v1.1-v1.2), closed Complete in EBR-0001. `scripts/aiems_bridge.py` - five commands, role-locking enforced as a real code gate. REA remains this item's own future-phase scope, not yet actioned. |
 
@@ -229,6 +229,7 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.16 | 18 July 2026 | Claude Engineering Implementer | Corrected EBG-0065's rationale: "JARVIS holds real OpenAI/Gemini API keys... today" overstated a persistent fact - confirmed directly (Windows User/Machine environment variables, current shell process) that no such key is persistently configured anywhere on the Programme Sponsor's machine. Reworded to describe the real capability (CredentialReference reads a temporary session-scoped environment variable when the Sponsor sets one) rather than implying standing possession. Also added ESR-0027's real local SQLite personal-memory store as a second category of locally-held data this standard should cover. Raised by the Programme Sponsor after the claim was repeated uncritically in a backlog-grouping summary. |
 | 1.15 | 17 July 2026 | Claude Engineering Implementer | Updated Track A's EBG-0057 entry to reference [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.2 - a further post-implementation Engineering Reviewer finding (TOCTOU: `submit-response`'s checks ran before the Work Package lock was acquired) addressed. |
 | 1.14 | 17 July 2026 | Claude Engineering Implementer | Updated Track A's EBG-0057 entry to reference [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.1 - two post-implementation Engineering Reviewer findings (path-traversal via unsanitised `session`/`work_package`; `submit-to-review`/`submit-response` not checking validation exit codes) addressed. |
 | 1.13 | 17 July 2026 | Claude Engineering Implementer | ESR-0025 WP1 (Engineering Reviewer/Codex reviewed, Programme Sponsor approved): annotated Track A's EBG-0057 entry as resolved - `scripts/aiems_bridge.py` MVP implemented per [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.0, closed Complete in EBR-0001. |
