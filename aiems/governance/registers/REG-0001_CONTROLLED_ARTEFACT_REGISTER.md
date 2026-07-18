@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.220
+**Version:** 3.221
 
 
 ---
@@ -116,11 +116,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.220 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.221 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.77 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.78 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -326,6 +326,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.221 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3 post-commit fix: EBR-0001 aligned (1.77 to 1.78) following an Engineering Reviewer Medium finding - EBG-0024/EBG-0045 closure notes updated to explicitly preserve the policy-defined-versus-code-not-implemented distinction. |
 | 3.220 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3: EIP-ESR0028-003 implemented per Programme Sponsor approval (0.2 to 1.0, Draft to Approved-implemented). PEM-001 aligned (1.0 to 1.1) and EBR-0001 aligned (1.76 to 1.77) following EBG-0045/EBG-0049/EBG-0024's closure. |
 | 3.219 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3: revised EIP-ESR0028-003 (0.1 to 0.2) addressing an Engineering Reviewer finding - corrected an incorrect claim that TrustTierPolicy remains unwired from production; it has been production-wired since EBG-0074. |
 | 3.218 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP0/WP3: registered [[EIP-ESR0028-003_COST_AND_STRATEGIC_VALUE_FRAMEWORK|EIP-ESR0028-003]] (Cost and Strategic Value Framework, 0.1, Draft) - not yet reviewed or approved. Investigates EBG-0045/EBG-0049/EBG-0024 against direct repository evidence, scoped to a PEM-001 policy-and-criteria revision, explicitly excluding dynamic cost-aware routing code as premature. |
