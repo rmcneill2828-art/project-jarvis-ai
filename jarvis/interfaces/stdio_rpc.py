@@ -17,11 +17,14 @@ notifications can be added without a breaking change (Reviewer finding 5).
 import json
 import os
 import sys
+from pathlib import Path
 from typing import Any, Mapping, TextIO
 
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
+from jarvis.memory.service import PersonalMemoryService
+from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
 from sentinel.gemini_provider import GeminiProvider
 from sentinel.local_provider import LocalEchoProvider
@@ -66,6 +69,14 @@ OLLAMA_MODEL_ENV_VAR = "JARVIS_OLLAMA_MODEL"
 OLLAMA_ENDPOINT_ENV_VAR = "JARVIS_OLLAMA_ENDPOINT"
 DEFAULT_OLLAMA_MODEL = "qwen3.5:2b"
 OLLAMA_TIMEOUT_SECONDS = 90.0
+
+# Personal Memory store location (EIP-ESR0027-001). Overridable so tests never
+# touch the real store - the exact lesson learned from ESR-0026 WP1's Ollama
+# test-isolation defect (a shared test helper making real network calls
+# because nothing pointed it away from the real endpoint) applies here too,
+# just for a local file instead of a network endpoint.
+MEMORY_DB_PATH_ENV_VAR = "JARVIS_MEMORY_DB_PATH"
+DEFAULT_MEMORY_DB_PATH = Path.home() / ".jarvis" / "memory" / "personal.db"
 
 # Standard JSON-RPC 2.0 pre-defined error codes, plus one server-defined code
 # in the reserved -32000 to -32099 range for internal handler failures.
@@ -154,7 +165,14 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
         ProviderRoute(capability="text-generation", providers=tuple(route_providers))
     )
     conversation_provider = SentinelGatedConversationProvider(gateway=gateway, orchestrator=orchestrator)
-    runtime = GuardianRuntime(conversation_provider=conversation_provider)
+
+    memory_db_path = Path(environ[MEMORY_DB_PATH_ENV_VAR]) if environ.get(MEMORY_DB_PATH_ENV_VAR) else DEFAULT_MEMORY_DB_PATH
+    memory_store = PersonalMemoryStore(memory_db_path)
+    # Reuses the same gateway instance conversation requests are evaluated
+    # against - one trust boundary, not two (EIP-ESR0027-001 Section 4).
+    memory_service = PersonalMemoryService(gateway=gateway, store=memory_store)
+
+    runtime = GuardianRuntime(conversation_provider=conversation_provider, memory_service=memory_service)
     runtime.start()
     return runtime
 
@@ -168,6 +186,10 @@ class StdioRpcServer:
             "guardian.converse": self._guardian_converse,
             "platform.status": self._platform_status,
             "knowledge.graph": self._knowledge_graph,
+            "memory.propose": self._memory_propose,
+            "memory.approve": self._memory_approve,
+            "memory.deny": self._memory_deny,
+            "memory.list": self._memory_list,
         }
 
     def _guardian_converse(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -192,6 +214,51 @@ class StdioRpcServer:
 
     def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
         return knowledge_graph.build_graph()
+
+    def _memory_propose(self, params: dict[str, Any]) -> dict[str, Any]:
+        content = params.get("content")
+        if not isinstance(content, str):
+            msg = "params.content must be a string."
+            raise TypeError(msg)
+        pending = self._runtime.propose_memory(content)
+        return {"pendingId": pending.id, "content": pending.content}
+
+    def _memory_approve(self, params: dict[str, Any]) -> dict[str, Any]:
+        pending_id = self._require_pending_id(params)
+        record = self._runtime.approve_memory(pending_id)
+        return {
+            "id": record.id,
+            "content": record.content,
+            "createdAt": record.created_at.isoformat(),
+            "consentDecisionId": record.consent_decision_id,
+        }
+
+    def _memory_deny(self, params: dict[str, Any]) -> dict[str, Any]:
+        pending_id = self._require_pending_id(params)
+        decision = self._runtime.deny_memory(pending_id)
+        return {"decisionId": decision.id, "decision": decision.decision}
+
+    def _memory_list(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
+        records = self._runtime.list_memory()
+        return {
+            "records": [
+                {
+                    "id": record.id,
+                    "content": record.content,
+                    "createdAt": record.created_at.isoformat(),
+                    "consentDecisionId": record.consent_decision_id,
+                }
+                for record in records
+            ]
+        }
+
+    @staticmethod
+    def _require_pending_id(params: dict[str, Any]) -> str:
+        pending_id = params.get("pendingId")
+        if not isinstance(pending_id, str):
+            msg = "params.pendingId must be a string."
+            raise TypeError(msg)
+        return pending_id
 
     def handle_line(self, line: str) -> dict[str, Any] | None:
         """Handle one JSON-RPC 2.0 request line, returning the response object."""

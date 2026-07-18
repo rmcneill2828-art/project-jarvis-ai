@@ -1,3 +1,5 @@
+import pytest
+
 from jarvis import (
     GuardianDiagnosticEvent,
     GuardianRuntime,
@@ -9,9 +11,11 @@ from jarvis import (
     ServiceHealth,
     ServiceStatus,
 )
-from jarvis.guardian.runtime import NOT_CONNECTED_RESPONSE, NOT_RUNNING_RESPONSE
+from jarvis.guardian.runtime import NO_MEMORY_SERVICE_RESPONSE, NOT_CONNECTED_RESPONSE, NOT_RUNNING_RESPONSE
 from jarvis.interfaces.conversation import ConversationRequest, ConversationResponse
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
+from jarvis.memory.service import PersonalMemoryService
+from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
 from sentinel.providers import ProviderRequest, ProviderResponse
@@ -350,3 +354,76 @@ def test_guardian_runtime_converse_end_to_end_through_real_sentinel_gateway() ->
     assert response.provider == "stub-sentinel-provider"
     assert runtime.services()["Guardian Provider Boundary"].status == ServiceStatus.ONLINE
     assert len(gateway.decisions()) == 1
+
+
+def test_guardian_runtime_without_memory_service_leaves_memory_boundary_unavailable_after_start() -> None:
+    runtime = GuardianRuntime()
+
+    runtime.start()
+
+    assert runtime.services()["Guardian Memory Boundary"].status == ServiceStatus.UNAVAILABLE
+    assert runtime.services()["Guardian Memory Boundary"].health == ServiceHealth.UNKNOWN
+    assert "guardian.memory_connected" not in [event.name for event in runtime.diagnostics()]
+
+
+def test_guardian_runtime_with_memory_service_connects_boundary_on_start(tmp_path) -> None:
+    memory_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "personal.db"))
+    runtime = GuardianRuntime(memory_service=memory_service)
+
+    assert runtime.services()["Guardian Memory Boundary"].status == ServiceStatus.UNAVAILABLE
+
+    runtime.start()
+
+    boundary = runtime.services()["Guardian Memory Boundary"]
+    assert boundary.status == ServiceStatus.ONLINE
+    assert boundary.health == ServiceHealth.HEALTHY
+    connected_events = runtime.diagnostics(name="guardian.memory_connected")
+    assert len(connected_events) == 1
+
+
+def test_guardian_runtime_memory_boundary_goes_offline_on_stop(tmp_path) -> None:
+    memory_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "personal.db"))
+    runtime = GuardianRuntime(memory_service=memory_service)
+
+    runtime.start()
+    runtime.stop()
+
+    boundary = runtime.services()["Guardian Memory Boundary"]
+    assert boundary.status == ServiceStatus.OFFLINE
+    assert boundary.health == ServiceHealth.UNKNOWN
+
+
+def test_guardian_runtime_propose_memory_without_service_raises() -> None:
+    runtime = GuardianRuntime()
+
+    with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
+        runtime.propose_memory("Robert prefers dark mode.")
+
+
+def test_guardian_runtime_approve_deny_list_memory_without_service_raise() -> None:
+    runtime = GuardianRuntime()
+
+    with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
+        runtime.approve_memory("pending-1")
+    with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
+        runtime.deny_memory("pending-1")
+    with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
+        runtime.list_memory()
+
+
+def test_guardian_runtime_memory_methods_delegate_to_connected_service(tmp_path) -> None:
+    memory_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "personal.db"))
+    runtime = GuardianRuntime(memory_service=memory_service)
+    runtime.start()
+
+    pending = runtime.propose_memory("Robert prefers dark mode.")
+    record = runtime.approve_memory(pending.id)
+
+    assert record.content == "Robert prefers dark mode."
+    assert record in runtime.list_memory()
+
+    pending_2 = runtime.propose_memory("Robert dislikes cilantro.")
+    decision = runtime.deny_memory(pending_2.id)
+
+    assert decision.decision == "denied"
+    assert len(runtime.list_memory()) == 1

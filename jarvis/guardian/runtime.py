@@ -13,12 +13,15 @@ from jarvis.interfaces.conversation import (
     ConversationRequest,
     ConversationResponse,
 )
+from jarvis.memory.service import PendingMemoryRequest, PersonalMemoryService
+from jarvis.memory.store import ConsentDecisionRecord, PersonalMemoryRecord
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
 
 logger = logging.getLogger(__name__)
 
 NOT_CONNECTED_RESPONSE = "Guardian has no conversation provider connected."
 NOT_RUNNING_RESPONSE = "Guardian runtime is not running."
+NO_MEMORY_SERVICE_RESPONSE = "Guardian has no memory service connected."
 
 
 class GuardianRuntime:
@@ -28,9 +31,11 @@ class GuardianRuntime:
         self,
         config: GuardianRuntimeConfig | None = None,
         conversation_provider: ConversationProvider | None = None,
+        memory_service: PersonalMemoryService | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
         self._conversation_provider = conversation_provider
+        self._memory_service = memory_service
         self._state = GuardianRuntimeState.STOPPED
         provider_capabilities = (
             ("guardian.conversation",)
@@ -88,6 +93,14 @@ class GuardianRuntime:
                 "guardian.provider_connected",
                 f"Guardian provider boundary connected: {self._conversation_provider.name}.",
             )
+        if self._memory_service is not None:
+            memory_service = self._services["Guardian Memory Boundary"]
+            memory_service.status = ServiceStatus.ONLINE
+            memory_service.health = ServiceHealth.HEALTHY
+            self._record(
+                "guardian.memory_connected",
+                "Guardian memory boundary connected: Personal Memory service.",
+            )
         self._state = GuardianRuntimeState.RUNNING
         self._record("guardian.running", "Guardian runtime foundation running.")
         logger.info("Guardian runtime foundation started.")
@@ -99,6 +112,8 @@ class GuardianRuntime:
         self._services["Guardian Runtime"].stop()
         if self._conversation_provider is not None:
             self._services["Guardian Provider Boundary"].stop()
+        if self._memory_service is not None:
+            self._services["Guardian Memory Boundary"].stop()
         self._state = GuardianRuntimeState.STOPPED
         self._record("guardian.stopped", "Guardian runtime foundation stopped.")
         logger.info("Guardian runtime foundation stopped.")
@@ -123,6 +138,44 @@ class GuardianRuntime:
         if self._state is not GuardianRuntimeState.RUNNING:
             return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
         return self._conversation_provider.generate(ConversationRequest(message=message))
+
+    def propose_memory(self, content: str) -> PendingMemoryRequest:
+        """Propose retaining `content` as a Personal Memory item.
+
+        Raises RuntimeError naming the unavailable boundary when no memory
+        service is connected - unlike `converse()`, there is no single
+        response envelope shared across propose/approve/deny/list, so the
+        boundary condition is surfaced as an explicit, clearly-named
+        exception rather than a sentinel return value. `stdio_rpc.py`'s
+        existing generic exception handler already turns this into an
+        honest, never-hidden JSON-RPC error - the same "not silently
+        masked" outcome `converse()`'s pattern achieves by other means.
+        """
+
+        self._require_memory_service()
+        return self._memory_service.propose(content)
+
+    def approve_memory(self, pending_id: str) -> PersonalMemoryRecord:
+        """Approve a pending memory-retention request."""
+
+        self._require_memory_service()
+        return self._memory_service.approve(pending_id)
+
+    def deny_memory(self, pending_id: str) -> ConsentDecisionRecord:
+        """Deny a pending memory-retention request."""
+
+        self._require_memory_service()
+        return self._memory_service.deny(pending_id)
+
+    def list_memory(self) -> tuple[PersonalMemoryRecord, ...]:
+        """Return all stored Personal Memory records."""
+
+        self._require_memory_service()
+        return self._memory_service.list_records()
+
+    def _require_memory_service(self) -> None:
+        if self._memory_service is None:
+            raise RuntimeError(NO_MEMORY_SERVICE_RESPONSE)
 
     def register_service(self, service: JarvisService) -> JarvisService:
         """Register or replace a Guardian runtime service."""

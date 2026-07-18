@@ -17,7 +17,7 @@ from sentinel.core import SentinelDecisionOutcome, SentinelRequest
 from sentinel.policy import TrustCategory, TrustTier, TrustTierPolicy
 
 
-def _server() -> StdioRpcServer:
+def _server(tmp_path) -> StdioRpcServer:
     # Explicit empty environ: keeps tests deterministic and offline regardless
     # of real provider credentials the host machine may have set persistently
     # (e.g. for the manual smoke-test scripts) - never depend on, or
@@ -30,35 +30,44 @@ def _server() -> StdioRpcServer:
     # port forces a fast connection failure, exercising the same real
     # exception-driven failover to local-echo the suite already relies on,
     # without depending on whether Ollama happens to be running locally.
+    #
+    # JARVIS_MEMORY_DB_PATH (EBG-0080) is pointed at a pytest tmp_path for the
+    # same reason - without this, every test in this file would create and
+    # write to the real ~/.jarvis/memory/personal.db on whatever machine runs
+    # the suite, the exact test-isolation defect class ESR-0026 WP1 found for
+    # Ollama's network endpoint, just for a local file instead.
     return StdioRpcServer(
-        build_default_runtime(environ={"JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1"})
+        build_default_runtime(environ={
+            "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+        })
     )
 
 
-def test_build_default_runtime_is_started_and_connected():
-    runtime = build_default_runtime(environ={})
+def test_build_default_runtime_is_started_and_connected(tmp_path):
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
     assert runtime.status().value == "Running"
     assert runtime.services()["Guardian Provider Boundary"].status.value == "Online"
 
 
-def test_build_default_runtime_falls_back_to_local_echo_without_credential():
-    runtime = build_default_runtime(environ={})
+def test_build_default_runtime_falls_back_to_local_echo_without_credential(tmp_path):
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
     # Ollama (EBG-0075) is registered unconditionally - no credential gate -
     # positioned between the (absent) primary cloud provider and local-echo.
     assert runtime.configured_providers() == ("ollama", "local-echo")
 
 
-def test_build_default_runtime_wires_openai_as_default_primary_when_credential_present():
-    runtime = build_default_runtime(environ={"OPENAI_API_KEY": "test-key-not-a-real-credential"})
+def test_build_default_runtime_wires_openai_as_default_primary_when_credential_present(tmp_path):
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "OPENAI_API_KEY": "test-key-not-a-real-credential"})
 
     assert runtime.configured_providers() == ("openai", "ollama", "local-echo")
 
 
-def test_build_default_runtime_respects_primary_provider_selection():
+def test_build_default_runtime_respects_primary_provider_selection(tmp_path):
     runtime = build_default_runtime(
-        environ={
+        environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), 
             "JARVIS_PRIMARY_PROVIDER": "gemini",
             "GEMINI_API_KEY": "test-key-not-a-real-credential",
         }
@@ -67,41 +76,41 @@ def test_build_default_runtime_respects_primary_provider_selection():
     assert runtime.configured_providers() == ("gemini", "ollama", "local-echo")
 
 
-def test_build_default_runtime_ignores_unselected_provider_credential():
+def test_build_default_runtime_ignores_unselected_provider_credential(tmp_path):
     # OPENAI_API_KEY being set should not matter when gemini is selected but
     # has no credential of its own - ollama and local-echo remain the fallback.
     runtime = build_default_runtime(
-        environ={"JARVIS_PRIMARY_PROVIDER": "gemini", "OPENAI_API_KEY": "test-key-not-a-real-credential"}
+        environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "JARVIS_PRIMARY_PROVIDER": "gemini", "OPENAI_API_KEY": "test-key-not-a-real-credential"}
     )
 
     assert runtime.configured_providers() == ("ollama", "local-echo")
 
 
-def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_blank():
+def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_blank(tmp_path):
     # A present-but-blank OPENAI_MODEL must not override the fallback default
     # with an empty string - that would make OpenAIProvider's constructor
     # reject the configuration, turning a harmless placeholder into a startup
     # failure (Engineering Reviewer finding, EIP-ESR0022-001).
     runtime = build_default_runtime(
-        environ={"OPENAI_API_KEY": "test-key-not-a-real-credential", "OPENAI_MODEL": ""}
+        environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "OPENAI_API_KEY": "test-key-not-a-real-credential", "OPENAI_MODEL": ""}
     )
 
     assert runtime.configured_providers() == ("openai", "ollama", "local-echo")
 
 
-def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_engine():
+def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_engine(tmp_path):
     """EBG-0074 (ESR-0024): build_default_runtime()'s gateway must actually run
     TrustTierPolicy, not merely have the class available in the codebase.
     Asserted directly against the object build_default_runtime() itself
     produces - not a separately constructed gateway - so this proves the real
     wiring, not just that TrustTierPolicy is importable."""
 
-    runtime = build_default_runtime(environ={})
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
     assert isinstance(runtime.sentinel_gateway().policy_engine, TrustTierPolicy)
 
 
-def test_guardian_converse_request_shape_classified_routine_under_trust_tier_policy():
+def test_guardian_converse_request_shape_classified_routine_under_trust_tier_policy(tmp_path):
     """Regression, beyond re-asserting the unchanged RPC response: confirms
     *why* it is unchanged - the real conversation request shape
     (SentinelGatedConversationProvider.generate()'s fixed
@@ -112,7 +121,7 @@ def test_guardian_converse_request_shape_classified_routine_under_trust_tier_pol
     constructed policy instance, and not the category-matrix already covered
     by jarvis/tests/test_sentinel_policy.py."""
 
-    runtime = build_default_runtime(environ={})
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
     conversation_shaped_request = SentinelRequest(
         source="jarvis.conversation",
         intent="conversation.generate",
@@ -129,8 +138,8 @@ def test_guardian_converse_request_shape_classified_routine_under_trust_tier_pol
     assert policy_decision.category is TrustCategory.ROUTINE_INTERACTION
 
 
-def test_guardian_converse_returns_real_response_through_sentinel():
-    server = _server()
+def test_guardian_converse_returns_real_response_through_sentinel(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.converse", "params": {"message": "hello"}})
@@ -143,8 +152,8 @@ def test_guardian_converse_returns_real_response_through_sentinel():
     }
 
 
-def test_platform_status_reflects_real_runtime_state():
-    server = _server()
+def test_platform_status_reflects_real_runtime_state(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "platform.status", "params": {}}))
 
@@ -170,12 +179,12 @@ def test_platform_status_policy_engine_is_none_without_a_connected_gateway():
     assert response["result"]["policyEngine"] is None
 
 
-def test_knowledge_graph_returns_real_repository_data():
+def test_knowledge_graph_returns_real_repository_data(tmp_path):
     """EBG-0055 Phase 1 (ESR-0019 WP2): dispatch-level check that the method
     is wired and returns real data, not the full parser behaviour matrix
     (already covered by jarvis/tests/test_knowledge_graph.py)."""
 
-    server = _server()
+    server = _server(tmp_path)
 
     response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 6, "method": "knowledge.graph", "params": {}})
@@ -187,8 +196,8 @@ def test_knowledge_graph_returns_real_repository_data():
     assert len(response["result"]["edges"]) > 0
 
 
-def test_missing_params_defaults_to_empty_object():
-    server = _server()
+def test_missing_params_defaults_to_empty_object(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 3, "method": "platform.status"}))
 
@@ -196,8 +205,8 @@ def test_missing_params_defaults_to_empty_object():
     assert response["result"]["state"] == "Running"
 
 
-def test_malformed_json_returns_parse_error():
-    server = _server()
+def test_malformed_json_returns_parse_error(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line("not valid json{{{")
 
@@ -205,8 +214,8 @@ def test_malformed_json_returns_parse_error():
     assert response["id"] is None
 
 
-def test_missing_jsonrpc_version_returns_invalid_request():
-    server = _server()
+def test_missing_jsonrpc_version_returns_invalid_request(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps({"id": 4, "method": "platform.status", "params": {}}))
 
@@ -214,24 +223,24 @@ def test_missing_jsonrpc_version_returns_invalid_request():
     assert response["id"] == 4
 
 
-def test_wrong_jsonrpc_version_returns_invalid_request():
-    server = _server()
+def test_wrong_jsonrpc_version_returns_invalid_request(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps({"jsonrpc": "1.0", "id": 5, "method": "platform.status", "params": {}}))
 
     assert response["error"]["code"] == INVALID_REQUEST
 
 
-def test_non_object_request_returns_invalid_request():
-    server = _server()
+def test_non_object_request_returns_invalid_request(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps([1, 2, 3]))
 
     assert response["error"]["code"] == INVALID_REQUEST
 
 
-def test_missing_method_returns_invalid_request():
-    server = _server()
+def test_missing_method_returns_invalid_request(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 4, "params": {}}))
 
@@ -239,8 +248,8 @@ def test_missing_method_returns_invalid_request():
     assert response["id"] == 4
 
 
-def test_non_object_params_returns_invalid_params():
-    server = _server()
+def test_non_object_params_returns_invalid_params(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 5, "method": "guardian.converse", "params": "not an object"})
@@ -249,8 +258,8 @@ def test_non_object_params_returns_invalid_params():
     assert response["error"]["code"] == INVALID_PARAMS
 
 
-def test_unknown_method_returns_method_not_found():
-    server = _server()
+def test_unknown_method_returns_method_not_found(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 6, "method": "does.not.exist", "params": {}}))
 
@@ -258,8 +267,8 @@ def test_unknown_method_returns_method_not_found():
     assert "does.not.exist" in response["error"]["message"]
 
 
-def test_handler_exception_returns_internal_error_without_leaking_details():
-    server = _server()
+def test_handler_exception_returns_internal_error_without_leaking_details(tmp_path):
+    server = _server(tmp_path)
 
     response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 7, "method": "guardian.converse", "params": {"message": 12345}})
@@ -269,8 +278,8 @@ def test_handler_exception_returns_internal_error_without_leaking_details():
     assert response["error"]["message"].startswith("TypeError:")
 
 
-def test_serve_forever_processes_multiple_lines_and_skips_blank_lines():
-    server = _server()
+def test_serve_forever_processes_multiple_lines_and_skips_blank_lines(tmp_path):
+    server = _server(tmp_path)
     requests = (
         json.dumps({"jsonrpc": "2.0", "id": 1, "method": "platform.status", "params": {}})
         + "\n\n"
@@ -289,16 +298,97 @@ def test_serve_forever_processes_multiple_lines_and_skips_blank_lines():
     assert second["result"]["message"] == "local-echo: hi"
 
 
-def test_notification_without_id_still_returns_a_response_with_null_id():
+def test_notification_without_id_still_returns_a_response_with_null_id(tmp_path):
     """JSON-RPC 2.0 notifications (no id) are not implemented as fire-and-forget
     here - foundation scope always responds, matching the synchronous
     request/response design recorded in ESR-0017 WP9. Documented explicitly so
     a future notification implementation is a deliberate change, not a silent
     behaviour drift."""
 
-    server = _server()
+    server = _server(tmp_path)
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "method": "platform.status", "params": {}}))
 
     assert response["id"] is None
     assert "result" in response
+
+
+def test_memory_propose_approve_list_round_trip(tmp_path):
+    """EBG-0080: memory.propose -> memory.approve -> memory.list through the
+    real StdioRpcServer, proving the consent gate end to end, not just at the
+    service-unit level (jarvis/tests/test_memory_service.py)."""
+
+    server = _server(tmp_path)
+
+    propose_response = server.handle_line(
+        json.dumps(
+            {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
+        )
+    )
+    pending_id = propose_response["result"]["pendingId"]
+
+    approve_response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.approve", "params": {"pendingId": pending_id}})
+    )
+
+    assert approve_response["result"]["content"] == "Robert prefers dark mode."
+    assert approve_response["result"]["consentDecisionId"]
+
+    list_response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.list", "params": {}}))
+
+    assert len(list_response["result"]["records"]) == 1
+    assert list_response["result"]["records"][0]["content"] == "Robert prefers dark mode."
+
+
+def test_memory_propose_deny_list_round_trip_confirms_denied_item_never_appears(tmp_path):
+    server = _server(tmp_path)
+
+    propose_response = server.handle_line(
+        json.dumps(
+            {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert dislikes cilantro."}}
+        )
+    )
+    pending_id = propose_response["result"]["pendingId"]
+
+    deny_response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.deny", "params": {"pendingId": pending_id}})
+    )
+
+    assert deny_response["result"]["decision"] == "denied"
+
+    list_response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.list", "params": {}}))
+
+    assert list_response["result"]["records"] == []
+
+
+def test_memory_propose_rejects_non_string_content(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": 12345}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("TypeError:")
+
+
+def test_memory_approve_rejects_non_string_pending_id(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.approve", "params": {"pendingId": 12345}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("TypeError:")
+
+
+def test_memory_approve_unknown_pending_id_returns_internal_error(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.approve", "params": {"pendingId": "does-not-exist"}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("KeyError:")
