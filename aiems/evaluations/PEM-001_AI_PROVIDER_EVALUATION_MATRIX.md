@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PEM-001 |
 | Title | AI Provider Evaluation Matrix |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -102,11 +102,19 @@ Local providers are important for resilience and graceful degradation. They may 
 | Capability Coverage | 20% | Text, reasoning, tool calling, structured output, vision, audio, embeddings and future multimodal support. |
 | Reliability | 15% | Provider uptime, operational maturity, rate limits and production readiness. |
 | Resilience Fit | 15% | Suitability for primary, secondary, gateway or local fallback roles. |
-| SDK / API Maturity | 10% | Documentation, SDK quality, API stability and implementation effort. |
-| Cost | 10% | Pricing predictability and suitability for iterative development. |
-| Latency | 10% | Suitability for interactive Guardian experiences. |
+| Cost | 15% | No-discretionary-recurring-spend default; free, low-cost or self-hosted tiers preferred unless capability requirements justify paid usage. See Cost and Strategic Value Principles below. |
+| SDK / API Maturity | 7.5% | Documentation, SDK quality, API stability and implementation effort. |
+| Latency | 7.5% | Suitability for interactive Guardian experiences. |
 | Privacy / Data Handling | 10% | Data retention, enterprise controls, locality and policy compatibility. |
 | Vendor Independence | 10% | Ability to avoid single-provider lock-in and support Sentinel routing flexibility. |
+
+## Cost and Strategic Value Principles
+
+Added at ESR-0028 WP3 (EBG-0045, EBG-0049, EBG-0024) to make cost and strategic value explicit, first-class considerations in provider selection, rather than leaving them implicit in a single low-weighted criterion.
+
+1. **No-discretionary-budget default.** Project JARVIS AI has no budget for new recurring spend beyond what the Programme Sponsor has already decided. This generalises the precedent already established for engineering tooling (`EBR-0001` EBG-0057: "self-hosted, no new recurring spend, is the hard default... unless the Programme Sponsor states otherwise") into AI provider selection specifically. Any provider or tier that introduces new recurring cost requires an explicit Programme Sponsor decision; it is never assumed by default.
+2. **Strategic value and product benefit are already covered, not newly invented.** EBG-0045 asked this framework to define criteria for "strategic value and product benefit" - these are already captured by the existing Capability Coverage, Resilience Fit and Vendor Independence criteria (breadth of capability, fit within the resilience architecture, and freedom from lock-in are what "strategic value" concretely means for a provider decision here). No new criterion is added for them, to avoid duplicating what the table already measures.
+3. **Institutional education credits - disclosed, not actioned.** A possible academic email (`@regents.ac.uk`) may unlock GitHub Education / Azure for Students credit, noted only in an unprocessed raw chat log (`aiems/History/Full Chat/FCH-0016a_GPT_FULL_CHAT_HISTORY.md`). This is disclosed here as a known, not-yet-confirmed cost-reduction lever per EBG-0049's own text - eligibility is untested and no credit has been claimed. It shall not be treated as an available resource or budgeted against until the Programme Sponsor confirms and actions it separately.
 
 ## Initial Qualitative Assessment
 
@@ -141,6 +149,14 @@ Local providers are important for resilience and graceful degradation. They may 
 4. Gateway providers should augment resilience, not replace direct-provider resilience.
 5. Local fallback should exist for degraded operation even if quality is reduced.
 6. Provider choice should be revisitable as the AI ecosystem changes.
+
+## Cost-Aware Routing Policy (Design Principle)
+
+Added at ESR-0028 WP3 (EBG-0049) to define the cost/performance balance policy EBG-0049 asks for.
+
+**Policy**: Sentinel provider routing should prefer lower-cost, local or free providers by default, and escalate to higher-capability, higher-cost providers only when task requirements demand it (capability gap, reliability need, or an explicit routing decision already justified by the existing Resilience Principles above).
+
+**This is a policy statement, not an implementation.** Dynamic, automatic cost-aware routing - a cost dimension added to `TrustTierPolicy`'s classification, or cost logic wired into `ProviderOrchestrator` - is explicitly **not** delivered by this policy statement and remains separate, not-yet-authorised future work. `TrustTierPolicy` is genuinely wired into the production runtime (`build_default_runtime()`, per `EBR-0001` EBG-0074) but classifies purely on trust/safety dimensions today; no per-request cost estimation or budget data exists anywhere in the repository yet, and building that mechanism deserves its own dedicated design review rather than being folded into this framework definition.
 
 ## Proposed Initial Ecosystem Direction
 
@@ -192,11 +208,16 @@ Anthropic was not selected as first adapter for two independent, reinforcing rea
 
 This decision is revisitable per Resilience Principle 6. `ProviderConfiguration`/`ProviderRegistry` were deliberately left extensible for Gemini and Anthropic adapters without requiring changes to `SentinelTrustGateway` or `ProviderOrchestrator`.
 
+### Addendum (ESR-0028 WP3, 18 July 2026)
+
+Following EBG-0070's production provider wiring (ESR-0022 WP1), real billed provider usage now exists, making cost a live rather than theoretical concern. This framework revision (Cost reweighted to 15%, the Cost and Strategic Value Principles and Cost-Aware Routing Policy sections above) does not change the Primary/Secondary provider decision recorded above - it makes explicit the cost-consciousness that decision should operate under going forward, per EIP-ESR0028-003.
+
 ---
 
 ## Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3 per Sponsor-approved EIP-ESR0028-003 (closing EBG-0045, EBG-0049, EBG-0024): reweighted Evaluation Criteria (Cost 10% to 15%, drawn from Latency and SDK/API Maturity, 10% to 7.5% each) with a description naming the no-discretionary-recurring-spend default explicitly; added Cost and Strategic Value Principles (budget default, strategic-value-already-covered clarification, disclosed-not-actioned institutional education credit lever); added a Cost-Aware Routing Policy design principle for EBG-0049, explicitly excluding dynamic routing implementation; added a Decision Outcome addendum. No change to the existing Primary/Secondary provider decision itself. |
 | 1.0 | 8 July 2026 | Claude Engineering Implementer | Recorded the ESR-0015 WP3a Decision Outcome (Primary: OpenAI, Secondary: Gemini, first adapter: OpenAI), replacing the open Decision Required section. Status Draft to Approved per STD-0001 section 13 (Version 1.0 requires Approved status). |
 | 0.1 | 8 July 2026 | Claude Engineering Implementer | Brought PEM-001 into STD-0001 structural compliance (Document Control, Version History) and registered in REG-0001; no evaluation content changed. |

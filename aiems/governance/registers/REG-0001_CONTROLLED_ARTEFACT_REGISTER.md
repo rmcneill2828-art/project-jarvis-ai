@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.217
+**Version:** 3.220
 
 
 ---
@@ -116,11 +116,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.217 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.220 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.76 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.77 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -163,6 +163,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0027-002 | Engineering Implementation Package | UXP DiagnosticsPanel Static Row Reconciliation Against UAM-0001 | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0028-001 | Engineering Implementation Package | AIEMS Process Hygiene Batch | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0028-002 | Engineering Implementation Package | JARVIS Product Requirements Backlog Identification | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0028-003 | Engineering Implementation Package | Cost and Strategic Value Framework | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -179,7 +180,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
 | PST-0001 | Programme Status | Programme Status | 2.55 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
-| PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
+| PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0003 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -325,6 +326,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.220 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3: EIP-ESR0028-003 implemented per Programme Sponsor approval (0.2 to 1.0, Draft to Approved-implemented). PEM-001 aligned (1.0 to 1.1) and EBR-0001 aligned (1.76 to 1.77) following EBG-0045/EBG-0049/EBG-0024's closure. |
+| 3.219 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3: revised EIP-ESR0028-003 (0.1 to 0.2) addressing an Engineering Reviewer finding - corrected an incorrect claim that TrustTierPolicy remains unwired from production; it has been production-wired since EBG-0074. |
+| 3.218 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP0/WP3: registered [[EIP-ESR0028-003_COST_AND_STRATEGIC_VALUE_FRAMEWORK|EIP-ESR0028-003]] (Cost and Strategic Value Framework, 0.1, Draft) - not yet reviewed or approved. Investigates EBG-0045/EBG-0049/EBG-0024 against direct repository evidence, scoped to a PEM-001 policy-and-criteria revision, explicitly excluding dynamic cost-aware routing code as premature. |
 | 3.217 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2 post-commit fix: JARVIS_CAPABILITY_READINESS_MATRIX aligned (2.1 to 2.2) following an Engineering Reviewer Low finding on the committed diff - a stale Related Artefacts relationship note corrected. |
 | 3.216 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: EIP-ESR0028-002 implemented per Programme Sponsor approval (0.4 to 1.0, Draft to Approved-implemented). Registered JARVIS_PRODUCT_ARCHITECTURE (1.3, Approved Product Architecture) and JARVIS_CAPABILITY_READINESS_MATRIX (2.1, Maintained) as controlled artefacts for the first time. Aligned EBR-0001 (1.75 to 1.76) following EBG-0017's closure. |
 | 3.215 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: EIP-ESR0028-002 revised (0.3 to 0.4) fixing a residual editorial finding - the immediately preceding changelog entry below had itself quoted two raw heading-number phrases while describing an unrelated wording fix, reproducing the exact validator warning it was meant to eliminate. Reworded without quoting any heading-number phrase. |
