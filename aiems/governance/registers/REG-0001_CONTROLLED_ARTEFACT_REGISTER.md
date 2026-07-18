@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.230
+**Version:** 3.234
 
 
 ---
@@ -116,11 +116,12 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.230 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.234 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0002 | Register | Architectural Decision Register | 2.12 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.86 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.87 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -327,6 +328,10 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.234 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP5: ADR-0021 approved (1.2 to 1.3, Draft to Approved) per Programme Sponsor decision. EBR-0001 aligned (1.86 to 1.87) - EBG-0081's rendering-engine half closed Complete, shared-scheduler half remains Candidate Backlog. REG-0002 aligned (2.11 to 2.12) to reflect ADR-0021's Approved status. |
+| 3.233 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP5: revised ADR-0021 (1.1 to 1.2) - fixed a residual instance (OSE Relationships table) of the same overstated-Draft-effect wording the v1.1 fix only partially addressed. |
+| 3.232 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP5: revised ADR-0021 (1.0 to 1.1) and REG-0002 (2.10 to 2.11) per Engineering Reviewer finding - corrected wording that overstated a still-Draft, not-yet-approved ADR's effect on EBG-0081's Candidate Backlog status. |
+| 3.231 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP5: registered [[ADR-0021_GUARDIAN_ORB_RENDERING_ENGINE|ADR-0021]] (Guardian Orb Rendering Engine, 1.0, Draft) - not yet reviewed or approved. Reviews the rendering-engine question raised during WP4, recommending Canvas 2D over continued SVG or WebGL, decision-only per Programme Sponsor instruction. |
 | 3.230 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4 seventh fix: EBR-0001 aligned (1.85 to 1.86) - added a visibilitychange listener for the hidden-window resume path, and corrected the stale original delivery-paragraph description. |
 | 3.229 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4: EBR-0001 aligned (1.84 to 1.85) - registered EBG-0081 (UXP Animation Performance Policy) and recorded GuardianOrbGraph.jsx's sixth fix (idle-timeout pause with jump-free resume). |
 | 3.228 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4 fifth fix: EBR-0001 aligned (1.83 to 1.84) - decoupled edge update rate from node update rate and added Page Visibility pausing, following a conclusive fresh-restart isolation of rotation as the sole remaining power-usage driver. |
