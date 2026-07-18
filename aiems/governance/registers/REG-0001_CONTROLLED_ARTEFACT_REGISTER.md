@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.205
+**Version:** 3.211
 
 
 ---
@@ -116,11 +116,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.205 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.211 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.74 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.75 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -159,6 +159,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0025-002 | Engineering Implementation Package | Ollama Local Fallback Provider | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0027-001 | Engineering Implementation Package | Personal Memory Implementation with Minimal Consent Gate | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0027-002 | Engineering Implementation Package | UXP DiagnosticsPanel Static Row Reconciliation Against UAM-0001 | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0028-001 | Engineering Implementation Package | AIEMS Process Hygiene Batch | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -169,7 +170,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.27 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.28 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.13 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -220,6 +221,15 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | HST-0011 | Historical Session Record | ESR-0011 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0011 | `aiems/History/` |
 | HST-0012 | Historical Session Record | ESR-0012 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0012 | `aiems/History/` |
 | HST-0013 | Historical Session Record | ESR-0013 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0013 | `aiems/History/` |
+| HST-0015 | Historical Session Record | ESR-0015 Chat Summary (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/History/` |
+| HST-0015_GPT | Historical Session Record | ESR-0015 Chat Summary (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0015 | `aiems/History/` |
+| HST-0016 | Historical Session Record | ESR-0016 Chat Summary (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/` |
+| HST-0016_GPT | Historical Session Record | ESR-0016 Chat Summary (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/` |
+| HST-0016a_GPT | Historical Session Record | ESR-0016 Chat Summary (GPT, Incremental GitHub Edit) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/` |
+| HST-0017 | Historical Session Record | ESR-0017 Chat Summary (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/` |
+| HST-0017a_GPT | Historical Session Record | ESR-0017 Chat Summary (GPT, Incremental GitHub Edit) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/` |
+| HST-0020 | Historical Session Record | ESR-0020 Chat Summary (Claude) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0020 | `aiems/History/` |
+| HST-0020_GPT | Historical Session Record | ESR-0020 Chat Summary (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0020 | `aiems/History/` |
 | HST-0023 | Historical Session Record | ESR-0023 Chat Summary (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/` |
 | HST-0023_GPT | Historical Session Record | ESR-0023 Chat Summary (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/` |
 | FCH-0000 | Full Chat Historical Evidence | Initial Project Full Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | Initial Project Session | `aiems/History/Full Chat/` |
@@ -242,6 +252,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FCH-0016a_GPT | Full Chat Historical Evidence | ESR-0016 Full Chat History (GPT, Incremental GitHub Edit) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/History/Full Chat/` |
 | FCH-0017 | Full Chat Historical Evidence | ESR-0017 Full Chat History (Claude) | 1.2 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
 | FCH-0020 | Full Chat Historical Evidence | ESR-0020 Full Chat History (Claude) | 1.1 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0020 | `aiems/History/Full Chat/` |
+| FCH-0020_GPT | Full Chat Historical Evidence | ESR-0020 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0020 | `aiems/History/Full Chat/` |
 | FCH-0017a_GPT | Full Chat Historical Evidence | ESR-0017 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/History/Full Chat/` |
 | FCH-0023 | Full Chat Historical Evidence | ESR-0023 Full Chat History (Claude) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/Full Chat/` |
 | FCH-0023_GPT | Full Chat Historical Evidence | ESR-0023 Full Chat History (GPT) | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0023 | `aiems/History/Full Chat/` |
@@ -311,6 +322,12 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.211 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: EIP-ESR0028-001 implemented per Programme Sponsor approval (0.3 to 1.0, Draft to Approved-implemented). |
+| 3.210 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: aligned EBR-0001 (1.74 to 1.75) and PBK-0001 (1.27 to 1.28) tracking rows following EBG-0005 (Resolved by Attrition), EBG-0068 (Superseded) and EBG-0058 (Complete, PBK-0001 clause consolidation) closures. |
+| 3.209 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: registered the 10 previously-untracked HST/FCH artefacts identified against JRM-0001's EBG-0071 reservation and EIP-ESR0028-001 - HST-0015/HST-0015_GPT, HST-0016/HST-0016_GPT/HST-0016a_GPT, HST-0017/HST-0017a_GPT, HST-0020/HST-0020_GPT (all `Archived` `Historical Session Record`), and FCH-0020_GPT (`Archived` `Full Chat Historical Evidence`). Row versions taken from each artefact's internal Document Control field where present, otherwise defaulted to 1.0 per HST-0001 through HST-0013 precedent. |
+| 3.208 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: Engineering Reviewer (Codex) confirmed EIP-ESR0028-001 v0.2 resolves all three v0.1 findings, no Medium/High findings remain; one further Low/editorial finding (incorrect JRM-0001 sub-section number, corrected to Section 9) addressed at v0.3 (0.2 to 0.3). Ready for Programme Sponsor approval. |
+| 3.207 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: revised EIP-ESR0028-001 (0.1 to 0.2) addressing Engineering Reviewer findings - HST/FCH inventory corrected from 9 to 10 rows (FCH-0020_GPT was missed); EBG-0058 now addresses all three of its own named candidate clusters, not just the one independently found; EBG-0071 created against JRM-0001's reserved number rather than closed against a nonexistent row. |
+| 3.206 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP0/WP1: registered [[EIP-ESR0028-001_AIEMS_PROCESS_HYGIENE_BATCH|EIP-ESR0028-001]] (AIEMS Process Hygiene Batch, 0.1, Draft) - not yet reviewed or approved. Bundles EBG-0058/EBG-0005/EBG-0068/HST-registration-gap, each grounded against direct repository evidence before drafting. |
 | 3.205 | 18 July 2026 | Claude Engineering Implementer | Programme Sponsor decision: new HST/FCH artefact creation discontinued for all future Engineering Sessions, formalising practice already true since ESR-0024 - ESR reports have grown detailed enough to make a separate raw-transcript-capture artefact redundant. Aligned [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] (1.2 to 1.3, new Section 6.1) and [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.26 to 1.27, HST-0023/FCH-0023 breadcrumbs corrected from "latest" to "final"). |
 | 3.204 | 18 July 2026 | Claude Engineering Implementer | Aligned [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (1.15 to 1.16): corrected EBG-0065's rationale, which overstated persistent API-key possession as present-tense fact - Programme Sponsor confirmed no such key is persistently configured anywhere on their machine, raised after the claim was repeated uncritically in a backlog-grouping summary. |
 | 3.203 | 18 July 2026 | Claude Engineering Implementer | Version-aligned this register's own PST-0001 (2.54 to 2.55) tracking row following ESR-0027 closure updates. |
