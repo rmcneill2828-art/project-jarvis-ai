@@ -81,6 +81,49 @@ function isPageVisible() {
   return typeof document === "undefined" || document.visibilityState !== "hidden";
 }
 
+// Sustained continuous animation prevents the GPU from reaching its
+// deepest idle/power-saving states regardless of how cheap each individual
+// update is - confirmed directly against real hardware (Windows Task
+// Manager continued flagging "Very high" power usage even after the
+// update-rate and edge-decoupling optimisations above meaningfully cut the
+// actual CPU/GPU percentages). Visibility alone doesn't address a window
+// left open and focused but genuinely idle (the user reading something
+// else, away from the keyboard). Pausing after a period of no interaction
+// - not just when hidden - keeps this ambient feature from costing power
+// indefinitely for as long as the app happens to be open.
+const IDLE_TIMEOUT_MS = 45000;
+const ACTIVITY_EVENTS = ["mousemove", "mousedown", "keydown", "wheel", "touchstart"];
+
+// Returns a ref (not React state) - the only consumer is the imperative
+// rAF loop below, which reads it fresh every frame and has no need to
+// trigger a React re-render (or restart its own effect) on every idle/
+// active transition.
+function useIsIdleRef(timeoutMs) {
+  const lastActivityRef = useRef(typeof performance !== "undefined" ? performance.now() : 0);
+  const idleRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const markActive = () => {
+      lastActivityRef.current = performance.now();
+      idleRef.current = false;
+    };
+    ACTIVITY_EVENTS.forEach((event) => window.addEventListener(event, markActive, { passive: true }));
+
+    const checkId = setInterval(() => {
+      if (performance.now() - lastActivityRef.current >= timeoutMs) idleRef.current = true;
+    }, 5000);
+
+    return () => {
+      ACTIVITY_EVENTS.forEach((event) => window.removeEventListener(event, markActive));
+      clearInterval(checkId);
+    };
+  }, [timeoutMs]);
+
+  return idleRef;
+}
+
 // Node DOM re-sort (painter's algorithm draw order) is decoupled from the
 // per-frame position update: occlusion between two specific nodes only
 // visibly changes when their depth order crosses, a slow, infrequent event
@@ -239,6 +282,7 @@ export function GuardianOrbGraph({ graph, loading, error }) {
   }, [graph]);
 
   const prefersReducedMotion = usePrefersReducedMotion();
+  const isIdleRef = useIsIdleRef(IDLE_TIMEOUT_MS);
 
   const clusterOrder = useMemo(() => computeClusterOrder(graph), [graph]);
 
@@ -267,17 +311,29 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     const startTime = performance.now();
     let lastResort = startTime;
     let lastFrame = startTime;
+    let currentAngle = 0;
     let frameCount = 0;
     let frameId;
 
     const tick = (now) => {
       frameId = requestAnimationFrame(tick);
-      if (!isPageVisible()) return;
+
+      // Paused (hidden window or idle beyond the timeout): keep lastFrame
+      // pinned to "now" every frame while paused, rather than letting it
+      // fall behind, so the elapsed-time delta on the frame that resumes
+      // reflects only real time since resuming - not the whole paused
+      // duration snapping the rotation forward.
+      if (!isPageVisible() || isIdleRef.current) {
+        lastFrame = now;
+        return;
+      }
+
       if (now - lastFrame < MIN_FRAME_INTERVAL_MS) return;
+      currentAngle += ANGLE_PER_MS * (now - lastFrame);
       lastFrame = now;
       frameCount += 1;
 
-      const angle = ANGLE_PER_MS * (now - startTime);
+      const angle = currentAngle;
       const cos = Math.cos(angle);
       const sin = Math.sin(angle);
       const currentById = new Map();
