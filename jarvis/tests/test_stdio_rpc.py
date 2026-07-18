@@ -67,7 +67,8 @@ def test_build_default_runtime_wires_openai_as_default_primary_when_credential_p
 
 def test_build_default_runtime_respects_primary_provider_selection(tmp_path):
     runtime = build_default_runtime(
-        environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), 
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
             "JARVIS_PRIMARY_PROVIDER": "gemini",
             "GEMINI_API_KEY": "test-key-not-a-real-credential",
         }
