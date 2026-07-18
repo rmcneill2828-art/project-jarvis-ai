@@ -6,7 +6,7 @@
 
 | Field | Value |
 |------|-------|
-| Document ID | JARVIS-PRODUCT-ARCHITECTURE |
+| Artefact ID | JARVIS_PRODUCT_ARCHITECTURE |
 | Title | JARVIS Product Architecture |
 | Version | 1.3 |
 | Status | Approved Product Architecture |

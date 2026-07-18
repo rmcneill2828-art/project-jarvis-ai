@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.211
+**Version:** 3.216
 
 
 ---
@@ -116,11 +116,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.211 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.216 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.75 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.76 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -137,6 +137,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0014 | Repository Baseline | ESR-0019 Repository Baseline (Guardian Orb Knowledge Graph) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0019 | `aiems/governance/baselines/` |
 | RBL-0015 | Repository Baseline | ESR-0022 Repository Baseline (Production Provider Wiring) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0022 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
+| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.1 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.5 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.3 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
@@ -160,6 +162,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0027-001 | Engineering Implementation Package | Personal Memory Implementation with Minimal Consent Gate | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0027-002 | Engineering Implementation Package | UXP DiagnosticsPanel Static Row Reconciliation Against UAM-0001 | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0028-001 | Engineering Implementation Package | AIEMS Process Hygiene Batch | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0028-002 | Engineering Implementation Package | JARVIS Product Requirements Backlog Identification | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -322,6 +325,11 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.216 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: EIP-ESR0028-002 implemented per Programme Sponsor approval (0.4 to 1.0, Draft to Approved-implemented). Registered JARVIS_PRODUCT_ARCHITECTURE (1.3, Approved Product Architecture) and JARVIS_CAPABILITY_READINESS_MATRIX (2.1, Maintained) as controlled artefacts for the first time. Aligned EBR-0001 (1.75 to 1.76) following EBG-0017's closure. |
+| 3.215 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: EIP-ESR0028-002 revised (0.3 to 0.4) fixing a residual editorial finding - the immediately preceding changelog entry below had itself quoted two raw heading-number phrases while describing an unrelated wording fix, reproducing the exact validator warning it was meant to eliminate. Reworded without quoting any heading-number phrase. |
+| 3.214 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: revised EIP-ESR0028-002 (0.2 to 0.3) addressing two Low/editorial Engineering Reviewer findings - the Related Artefacts relationship note corrected to match the authorised identity-only edit; this register's own v3.213 entry reworded to remove a quoted heading-number phrase that had been producing an avoidable validator warning. |
+| 3.213 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: revised EIP-ESR0028-002 (0.1 to 0.2) addressing Engineering Reviewer findings - expanded Readiness Matrix scope to include the Overall Programme Capability Summary narrative and the stale RBL-0014 Related Artefacts reference; added a minimal Document Control identity alignment to JARVIS_PRODUCT_ARCHITECTURE.md itself. |
+| 3.212 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP0/WP2: registered [[EIP-ESR0028-002_JARVIS_PRODUCT_REQUIREMENTS_BACKLOG_IDENTIFICATION|EIP-ESR0028-002]] (JARVIS Product Requirements Backlog Identification, 0.1, Draft) - not yet reviewed or approved. Investigates EBG-0017 against direct repository evidence: identifies JARVIS_PRODUCT_ARCHITECTURE.md and JARVIS_CAPABILITY_READINESS_MATRIX.md as the already-existing authoritative product requirements backlog. |
 | 3.211 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: EIP-ESR0028-001 implemented per Programme Sponsor approval (0.3 to 1.0, Draft to Approved-implemented). |
 | 3.210 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: aligned EBR-0001 (1.74 to 1.75) and PBK-0001 (1.27 to 1.28) tracking rows following EBG-0005 (Resolved by Attrition), EBG-0068 (Superseded) and EBG-0058 (Complete, PBK-0001 clause consolidation) closures. |
 | 3.209 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1: registered the 10 previously-untracked HST/FCH artefacts identified against JRM-0001's EBG-0071 reservation and EIP-ESR0028-001 - HST-0015/HST-0015_GPT, HST-0016/HST-0016_GPT/HST-0016a_GPT, HST-0017/HST-0017a_GPT, HST-0020/HST-0020_GPT (all `Archived` `Historical Session Record`), and FCH-0020_GPT (`Archived` `Full Chat Historical Evidence`). Row versions taken from each artefact's internal Document Control field where present, otherwise defaulted to 1.0 per HST-0001 through HST-0013 precedent. |
