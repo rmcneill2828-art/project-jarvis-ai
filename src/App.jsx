@@ -298,14 +298,11 @@ function GuardianOrbit({ knowledgeGraph, knowledgeGraphError }) {
   return (
     <section className="guardian-stage" aria-label="Guardian">
       <div className="guardian-orb" role="img" aria-label="Guardian visual presence: live repository knowledge graph">
-        <span className="orb-glow" />
         <GuardianOrbGraph
           graph={knowledgeGraph}
           loading={!knowledgeGraph && !knowledgeGraphError}
           error={knowledgeGraphError}
         />
-        <span className="orb-ring outer" />
-        <span className="orb-ring inner" />
       </div>
     </section>
   );

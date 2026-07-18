@@ -452,35 +452,9 @@ button {
   width: 312px;
   aspect-ratio: 1;
   place-items: center;
-  border: 2px solid rgba(0, 239, 255, 0.82);
   border-radius: 999px;
   background: rgba(4, 15, 18, 0.86);
-  box-shadow:
-    0 0 28px rgba(0, 239, 255, 0.78),
-    0 0 90px rgba(0, 239, 255, 0.24),
-    inset 0 0 42px rgba(0, 239, 255, 0.18);
   z-index: 1;
-}
-
-.orb-glow,
-.orb-ring {
-  position: absolute;
-  border-radius: 999px;
-}
-
-.orb-glow {
-  inset: 15%;
-  background: radial-gradient(circle, rgba(0, 239, 255, 0.15), transparent 68%);
-}
-
-.orb-ring.outer {
-  inset: 11%;
-  border: 1px solid rgba(0, 239, 255, 0.22);
-}
-
-.orb-ring.inner {
-  inset: 25%;
-  border: 1px solid rgba(0, 239, 255, 0.18);
 }
 
 .diagnostics-panel {
