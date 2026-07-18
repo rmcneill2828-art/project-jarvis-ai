@@ -315,14 +315,32 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     let frameCount = 0;
     let frameId;
 
+    // The idle-timeout pause (above) relies on requestAnimationFrame
+    // continuing to fire so the tick below can keep pinning lastFrame each
+    // frame - true for an idle-but-visible window, since the browser has
+    // no reason to suspend rAF just because the user isn't interacting.
+    // That assumption does NOT hold for a hidden/minimised/backgrounded
+    // window: browsers commonly suspend or heavily throttle rAF entirely
+    // while hidden, so the tick may not run at all during that period -
+    // pinning lastFrame from inside it would never happen, and the first
+    // tick after visibility returns would then add the *entire* hidden
+    // duration to currentAngle in one jump. Handled instead with an
+    // explicit visibilitychange listener that resets lastFrame the moment
+    // visibility returns, independent of whether any rAF callback ran
+    // during the hidden period.
+    const handleVisibilityChange = () => {
+      if (isPageVisible()) lastFrame = performance.now();
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     const tick = (now) => {
       frameId = requestAnimationFrame(tick);
 
-      // Paused (hidden window or idle beyond the timeout): keep lastFrame
-      // pinned to "now" every frame while paused, rather than letting it
-      // fall behind, so the elapsed-time delta on the frame that resumes
-      // reflects only real time since resuming - not the whole paused
-      // duration snapping the rotation forward.
+      // Idle-but-visible pause: keep lastFrame pinned to "now" every frame
+      // while paused, so the elapsed-time delta on the frame that resumes
+      // reflects only real time since resuming, not the whole idle
+      // duration. Safe here specifically because the window being visible
+      // means this callback keeps firing throughout the idle period.
       if (!isPageVisible() || isIdleRef.current) {
         lastFrame = now;
         return;
@@ -379,7 +397,10 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     };
 
     frameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frameId);
+    return () => {
+      cancelAnimationFrame(frameId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [prefersReducedMotion, baseNodes]);
 
   if (error || loading || !graph) {
