@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.204
+**Version:** 3.205
 
 
 ---
@@ -116,7 +116,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.204 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.205 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -169,9 +169,9 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.26 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.27 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.13 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
-| GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
+| GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
 | PST-0001 | Programme Status | Programme Status | 2.55 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
@@ -311,6 +311,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.205 | 18 July 2026 | Claude Engineering Implementer | Programme Sponsor decision: new HST/FCH artefact creation discontinued for all future Engineering Sessions, formalising practice already true since ESR-0024 - ESR reports have grown detailed enough to make a separate raw-transcript-capture artefact redundant. Aligned [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] (1.2 to 1.3, new Section 6.1) and [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.26 to 1.27, HST-0023/FCH-0023 breadcrumbs corrected from "latest" to "final"). |
 | 3.204 | 18 July 2026 | Claude Engineering Implementer | Aligned [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (1.15 to 1.16): corrected EBG-0065's rationale, which overstated persistent API-key possession as present-tense fact - Programme Sponsor confirmed no such key is persistently configured anywhere on their machine, raised after the claim was repeated uncritically in a backlog-grouping summary. |
 | 3.203 | 18 July 2026 | Claude Engineering Implementer | Version-aligned this register's own PST-0001 (2.54 to 2.55) tracking row following ESR-0027 closure updates. |
 | 3.202 | 18 July 2026 | Claude Engineering Implementer | Registered [[ESR-0027_ENGINEERING_SESSION_REPORT|ESR-0027]] (Engineering Session Report, 1.0, Closed) as a new controlled artefact - the second session run entirely through the AIEMS Exchange Bridge with no manual relay. Aligned PST-0001 - Current Mode/Focus/Session Start Guidance/OSE Relationships all retargeted from "open" to "closed," no new session opened. |

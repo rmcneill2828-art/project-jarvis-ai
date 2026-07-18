@@ -2,7 +2,7 @@
 
 > *"Bounded onboarding scales. Exhaustive onboarding does not."*
 
-**Version:** 1.2
+**Version:** 1.3
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | GDE-0001 |
 | Title | Project Knowledge Map |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -94,6 +94,14 @@ Search shall be performed when:
 
 Current State and Architecture artefacts should carry breadcrumbs to specific HST/FCH entries where only the archive holds the rationale for a decision (for example, "see HST-0009 for the Sentinel/Guardian boundary discussion"). This keeps the archive reachable without requiring exhaustive reads.
 
+## 6.1 New HST/FCH Creation Discontinued
+
+No new HST (chat history summary) or FCH (full chat history) artefact shall be created for any future Engineering Session. [[HST-0023_CLAUDE_CHAT_SUMMARY|HST-0023]] and [[FCH-0023_CLAUDE_FULL_CHAT_HISTORY|FCH-0023]] are the final entries in this archive, not merely the "latest so far."
+
+This confirms what has already been true in practice since ESR-0024 - no session from ESR-0024 onward produced a new HST/FCH pair, and none was missed; Engineering Session Reports themselves have grown sufficiently detailed (commit-by-commit narrative, full review-cycle disclosure including findings and fixes, session-wide WP6/WP7 handovers) that a separate raw-transcript-capture artefact is now redundant. Formalised by Programme Sponsor decision at ESR-0027 closure.
+
+This does not retire, delete or devalue the existing HST-0001 through HST-0023 / FCH-0000 through FCH-0023 artefacts - Section 6's Historical Archive Access Rule continues to govern them unchanged. It closes off further growth of the archive, not its existing content.
+
 ---
 
 # 7. Role Terminology
@@ -140,6 +148,7 @@ Where this Guide conflicts with [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] or
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 18 July 2026 | Claude Engineering Implementer | Added Section 6.1: new HST/FCH artefact creation discontinued for all future Engineering Sessions, formalising practice already true since ESR-0024 (no session from ESR-0024 through ESR-0027 produced a new HST/FCH pair) - Engineering Session Reports have grown sufficiently detailed to make a separate raw-transcript-capture artefact redundant. HST-0023/FCH-0023 confirmed as the final archive entries, not "latest so far." Existing HST/FCH-0000 through -0023 content unaffected - Section 6's access rule continues to govern them. Programme Sponsor decision. |
 | 1.2 | 8 July 2026 | Claude Engineering Implementer | Added Section 7, Role Terminology: a lookup table mapping COC-0001 (Engineering Implementer/Reviewer), EE-0001 (Engineering Lead/Independent Reviewer, trial-scoped) and historical vendor-name references (Codex/ChatGPT), so the mapping is checked rather than reconstructed each session. Renumbered subsequent sections. |
 | 1.1 | 8 July 2026 | Claude Engineering Implementer | Corrected Status from Draft to Approved to comply with STD-0001 section 13 versioning (Version 1.0 requires Approved status, not Draft). This artefact is already operationally binding - referenced and followed by PBK-0001, COC-0001 and PST-0001. |
 | 1.0 | 8 July 2026 | Claude Engineering Implementer | Initial Project Knowledge Map created as ESR-0014 post-closure work, bounding mandatory session initialisation reading and moving AIEMS History and Full Chat artefacts to search-on-demand access. |
