@@ -241,7 +241,6 @@ button {
 .capability-row p,
 .status-card p,
 .diagnostic-item p,
-.guardian-copy p,
 .profile-card span,
 .shell-footer {
   color: #c8d0d5;
@@ -447,46 +446,6 @@ button {
   opacity: 0.4;
 }
 
-.orbital-field {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  width: min(780px, 95%);
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  border-radius: 999px;
-}
-
-.orbit-line {
-  position: absolute;
-  border: 1px solid rgba(0, 239, 255, 0.14);
-  border-radius: 999px;
-  box-shadow: inset 0 0 22px rgba(0, 239, 255, 0.035);
-}
-
-.orbit-line-1 { inset: 3%; opacity: 0.4; }
-.orbit-line-2 { inset: 9%; opacity: 0.48; }
-.orbit-line-3 { inset: 16%; opacity: 0.52; }
-.orbit-line-4 { inset: 23%; opacity: 0.58; }
-.orbit-line-5 { inset: 30%; opacity: 0.64; }
-.orbit-line-6 { inset: 37%; opacity: 0.72; }
-.orbit-line-7 { inset: 44%; opacity: 0.8; }
-.orbit-line-8 { inset: 50%; opacity: 0.88; }
-.orbit-line-9 { inset: 55%; opacity: 0.94; }
-
-.orbit-spark {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 999px;
-  background: #0ff7ff;
-  box-shadow: 0 0 14px #0ff7ff;
-}
-
-.spark-one { top: 23%; left: 20%; }
-.spark-two { top: 47%; right: 13%; }
-.spark-three { right: 26%; bottom: 24%; }
-
 .guardian-orb {
   position: relative;
   display: grid;
@@ -522,41 +481,6 @@ button {
 .orb-ring.inner {
   inset: 25%;
   border: 1px solid rgba(0, 239, 255, 0.18);
-}
-
-.guardian-copy h2,
-.guardian-copy p {
-  margin: 0;
-  letter-spacing: 0;
-}
-
-.guardian-copy {
-  position: absolute;
-  bottom: 52px;
-  left: 50%;
-  width: min(720px, calc(100% - 48px));
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 2;
-}
-
-.guardian-copy h2 {
-  color: #12eaf4;
-  font-size: 1.75rem;
-  line-height: 1.2;
-}
-
-.guardian-copy .guardian-role {
-  margin-top: 8px;
-  color: #ffffff;
-  font-size: 1.18rem;
-  font-weight: 800;
-}
-
-.guardian-copy p:not(.guardian-role) {
-  margin-top: 12px;
-  font-size: 1.06rem;
-  line-height: 1.25;
 }
 
 .diagnostics-panel {
@@ -970,19 +894,6 @@ button {
 
   .guardian-orb {
     width: min(280px, 78vw);
-  }
-
-  .guardian-copy {
-    bottom: 32px;
-  }
-
-  .guardian-copy h2 {
-    font-size: 1.35rem;
-  }
-
-  .guardian-copy .guardian-role,
-  .guardian-copy p:not(.guardian-role) {
-    font-size: 0.96rem;
   }
 
   .command-panel {

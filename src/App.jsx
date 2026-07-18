@@ -27,7 +27,6 @@ import {
 import {
   capabilityStatuses as staticCapabilityStatuses,
   diagnostics,
-  guardianStatus as staticGuardianStatus,
   platformSignals as staticPlatformSignals,
   STATUS,
 } from "./platformStatus.js";
@@ -159,26 +158,6 @@ function SystemHealthPanel({ platformState, platformError }) {
       </div>
     </aside>
   );
-}
-
-function deriveGuardianStatus(platformState, platformError) {
-  if (platformError) {
-    return {
-      ...staticGuardianStatus,
-      state: STATUS.OFFLINE,
-      boundary: `JARVIS backend is unavailable: ${platformError}`,
-    };
-  }
-  if (!platformState) return staticGuardianStatus;
-
-  const connected = platformState.providerConnected === "Online";
-  return {
-    ...staticGuardianStatus,
-    state: platformState.state === "Running" ? STATUS.OPERATIONAL : STATUS.OFFLINE,
-    boundary: connected
-      ? "Conversation runtime is connected."
-      : "Conversation runtime is running without a connected provider.",
-  };
 }
 
 const stateClass = (state) => state.toLowerCase().replaceAll(" ", "-");
@@ -315,17 +294,9 @@ function StatusCards({ platformSignals }) {
   );
 }
 
-function GuardianOrbit({ guardianStatus, knowledgeGraph, knowledgeGraphError }) {
+function GuardianOrbit({ knowledgeGraph, knowledgeGraphError }) {
   return (
     <section className="guardian-stage" aria-label="Guardian">
-      <div className="orbital-field" aria-hidden="true">
-        {Array.from({ length: 9 }, (_, index) => (
-          <span className={`orbit-line orbit-line-${index + 1}`} key={index} />
-        ))}
-        <span className="orbit-spark spark-one" />
-        <span className="orbit-spark spark-two" />
-        <span className="orbit-spark spark-three" />
-      </div>
       <div className="guardian-orb" role="img" aria-label="Guardian visual presence: live repository knowledge graph">
         <span className="orb-glow" />
         <GuardianOrbGraph
@@ -335,12 +306,6 @@ function GuardianOrbit({ guardianStatus, knowledgeGraph, knowledgeGraphError }) 
         />
         <span className="orb-ring outer" />
         <span className="orb-ring inner" />
-      </div>
-      <div className="guardian-copy">
-        <h2>{guardianStatus.greeting}</h2>
-        <p className="guardian-role">{guardianStatus.role}</p>
-        <p>{guardianStatus.platform}</p>
-        <p>{guardianStatus.assurance}</p>
       </div>
     </section>
   );
@@ -522,7 +487,6 @@ export function App() {
           <div className="experience-grid">
             <div className="guardian-column">
               <GuardianOrbit
-                guardianStatus={deriveGuardianStatus(platformState, platformError)}
                 knowledgeGraph={knowledgeGraph}
                 knowledgeGraphError={knowledgeGraphError}
               />
