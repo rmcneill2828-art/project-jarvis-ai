@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0028-WP6 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -173,7 +173,9 @@ No blocking findings on the implemented WP1-WP5 scope. WP7 (Repository Baseline 
 
 ## 11. WP7 Baseline Acceptance Result
 
-**Pending Programme Sponsor determination**, informed by both independent views in Section 9, which converge on cutting a new baseline `RBL-0016`.
+**Accept - new baseline `RBL-0016` established.** The Programme Sponsor's own determination, agreeing with both independent views in Section 9: WP4's Guardian Orb rotation and visual cleanup materially changes the running UXP's flagship product surface, both in appearance and behaviour - a user-visible product capability/experience change, not governance churn or a cosmetic subtraction. See [[RBL-0016_REPOSITORY_BASELINE|RBL-0016]] for the full baseline record.
+
+ESR-0028's session-wide WP6/WP7 closing steps are both complete: WP6 Pass (Section 10), WP7 Accept/New Baseline (this section). ESR-0028 itself remains open until its session report is authored, per the practice established at ESR-0022 through ESR-0027.
 
 ---
 
@@ -189,7 +191,8 @@ No blocking findings on the implemented WP1-WP5 scope. WP7 (Repository Baseline 
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Eight backlog items closed this session; EBG-0081 registered and split-dispositioned. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status, caught up ahead of this handover. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Traceability register updated for the session's controlled artefacts. |
-| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Prior accepted repository baseline; recommended for replacement at Section 9. |
+| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Prior accepted repository baseline, superseded by RBL-0016's acceptance at Section 11. |
+| [[RBL-0016_REPOSITORY_BASELINE|RBL-0016]] | New repository baseline accepted at Section 11, per this handover's WP6/WP7 record. |
 | [[ESR-0027_WP6_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0027 WP6 Handover]] | Precedent handover this document follows the structure of. |
 
 ---
@@ -198,5 +201,6 @@ No blocking findings on the implemented WP1-WP5 scope. WP7 (Repository Baseline 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 18 July 2026 | Claude Engineering Implementer | Recorded WP7 result: Programme Sponsor determination **Accept - new baseline RBL-0016 established**, agreeing with both independent views in Section 9. ESR-0028's session-wide WP6/WP7 closing steps are both now complete; the session itself remains open pending its own session report. |
 | 0.2 | 18 July 2026 | Claude Engineering Implementer | Recorded WP6 verification result: **Pass, no findings**. Engineering Reviewer (Codex) independently confirmed repository state, scope characterisation and disclosed session observations via the AIEMS Exchange Bridge, and provided an independent baseline view (cut new baseline `RBL-0016`) converging with the Engineering Implementer's own view. WP7 now awaits the Programme Sponsor's own determination. |
 | 0.1 | 18 July 2026 | Claude Engineering Implementer | Drafted ESR-0028 WP6 Independent Repository Verification handover, covering the full session diff (`dfa13b4`..`48ea84e`) across five Work Packages. Records repository state, authorised working set, session observations (WP4's seven-round fix history, two leaked-process incidents, the PST-0001 catch-up gap), validation evidence, and an independent baseline view (cut new baseline `RBL-0016`, diverging from the retain-RBL-0015 pattern of the last two sessions, given WP4's substantial, live-verified UXP change) for WP7 consideration. Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
