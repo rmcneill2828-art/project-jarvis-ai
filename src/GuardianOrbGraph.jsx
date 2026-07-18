@@ -51,6 +51,19 @@ const RADIUS_SCALE = 0.65;
 const ROTATION_MS_PER_TURN = 90000;
 const ANGLE_PER_MS = (2 * Math.PI) / ROTATION_MS_PER_TURN;
 
+// requestAnimationFrame fires at the display's refresh rate (60Hz+, higher
+// on gaming monitors) - measured directly against real hardware, an
+// uncapped rAF loop mutating ~1,880 SVG element attributes (195 nodes +
+// 1,687 edges on the real graph) every single frame still sustained
+// "Very high" Windows power usage even after moving the mutation itself
+// off React's render cycle (confirmed via an isolated Task Manager
+// comparison: rotation on vs off, with no other confounding process
+// running). The rotation is far too slow for 60fps to matter visually, so
+// the actual DOM-mutation work is capped to this interval regardless of
+// how often rAF itself fires - still timestamp-driven (smooth, frame-rate-
+// independent), just not doing real work on every single callback.
+const MIN_FRAME_INTERVAL_MS = 1000 / 12;
+
 // Node DOM re-sort (painter's algorithm draw order) is decoupled from the
 // per-frame position update: occlusion between two specific nodes only
 // visibly changes when their depth order crosses, a slow, infrequent event
@@ -236,9 +249,14 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     const edgeElements = edgeElementsRef.current;
     const startTime = performance.now();
     let lastResort = startTime;
+    let lastFrame = startTime;
     let frameId;
 
     const tick = (now) => {
+      frameId = requestAnimationFrame(tick);
+      if (now - lastFrame < MIN_FRAME_INTERVAL_MS) return;
+      lastFrame = now;
+
       const angle = ANGLE_PER_MS * (now - startTime);
       const cos = Math.cos(angle);
       const sin = Math.sin(angle);
@@ -280,8 +298,6 @@ export function GuardianOrbGraph({ graph, loading, error }) {
           if (circle) nodeGroup.appendChild(circle);
         }
       }
-
-      frameId = requestAnimationFrame(tick);
     };
 
     frameId = requestAnimationFrame(tick);
