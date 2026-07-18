@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.225
+**Version:** 3.226
 
 
 ---
@@ -116,11 +116,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.225 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.226 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.81 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.82 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -327,6 +327,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.226 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4 third fix: EBR-0001 aligned (1.81 to 1.82) - removed a pre-existing infinite box-shadow CSS animation on .guardian-orb, the real dominant cause of persistent high power usage, unrelated to rotation itself. |
 | 3.225 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4 second post-implementation fix: EBR-0001 aligned (1.80 to 1.81) - the interval-throttling fix proved insufficient; replaced with a ref-based requestAnimationFrame direct-DOM architecture. |
 | 3.224 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4 post-implementation fix: EBR-0001 aligned (1.79 to 1.80) following a Programme Sponsor-observed power-usage regression in GuardianOrbGraph's rotation, fixed by reducing the render interval. |
 | 3.223 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4: EIP-ESR0028-004 implemented per Programme Sponsor approval (0.1 to 1.0, Draft to Approved-implemented). EBR-0001 aligned (1.78 to 1.79) following EBG-0055 Phase 1.5's delivery. |
