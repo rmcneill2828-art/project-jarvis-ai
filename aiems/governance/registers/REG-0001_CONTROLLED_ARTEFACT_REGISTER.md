@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.221
+**Version:** 3.223
 
 
 ---
@@ -116,11 +116,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.221 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.223 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.78 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.79 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -164,6 +164,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0028-001 | Engineering Implementation Package | AIEMS Process Hygiene Batch | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0028-002 | Engineering Implementation Package | JARVIS Product Requirements Backlog Identification | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0028-003 | Engineering Implementation Package | Cost and Strategic Value Framework | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0028-004 | Engineering Implementation Package | Guardian Orb 3D Rotation (EBG-0055 Phase 1.5) | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -326,6 +327,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.223 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP4: EIP-ESR0028-004 implemented per Programme Sponsor approval (0.1 to 1.0, Draft to Approved-implemented). EBR-0001 aligned (1.78 to 1.79) following EBG-0055 Phase 1.5's delivery. |
+| 3.222 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP0/WP4: registered [[EIP-ESR0028-004_GUARDIAN_ORB_3D_ROTATION|EIP-ESR0028-004]] (Guardian Orb 3D Rotation, EBG-0055 Phase 1.5, 0.1, Draft) - not yet reviewed or approved. Scoped to a full-sphere coordinate model with real Y-axis rotation within the existing SVG/d3-force architecture (no new dependency), plus a directionally-informed force retuning from the Programme Sponsor's Obsidian graph-view measurements. |
 | 3.221 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3 post-commit fix: EBR-0001 aligned (1.77 to 1.78) following an Engineering Reviewer Medium finding - EBG-0024/EBG-0045 closure notes updated to explicitly preserve the policy-defined-versus-code-not-implemented distinction. |
 | 3.220 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3: EIP-ESR0028-003 implemented per Programme Sponsor approval (0.2 to 1.0, Draft to Approved-implemented). PEM-001 aligned (1.0 to 1.1) and EBR-0001 aligned (1.76 to 1.77) following EBG-0045/EBG-0049/EBG-0024's closure. |
 | 3.219 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP3: revised EIP-ESR0028-003 (0.1 to 0.2) addressing an Engineering Reviewer finding - corrected an incorrect claim that TrustTierPolicy remains unwired from production; it has been production-wired since EBG-0074. |
