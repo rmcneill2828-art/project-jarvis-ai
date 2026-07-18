@@ -64,6 +64,23 @@ const ANGLE_PER_MS = (2 * Math.PI) / ROTATION_MS_PER_TURN;
 // independent), just not doing real work on every single callback.
 const MIN_FRAME_INTERVAL_MS = 1000 / 12;
 
+// Edges (1,687 on the real graph, ~8.6x the 195 nodes) are by far the
+// larger share of the ~1,880 mutated elements per update. Nodes are the
+// visually salient part of the sphere - their motion is what reads as
+// "rotating" - while the thin, low-opacity connector lines are background
+// context whose position lagging slightly behind the nodes is not
+// perceptible. Updating them at a third of the node rate cuts the
+// dominant share of the remaining per-update DOM-write cost with no
+// visible effect on the rotation itself.
+const EDGE_UPDATE_EVERY_N_FRAMES = 3;
+
+// Page Visibility API: no reason to keep mutating ~1,880 SVG elements 12
+// times a second for a window the user isn't even looking at (minimised,
+// on another virtual desktop, or behind other windows).
+function isPageVisible() {
+  return typeof document === "undefined" || document.visibilityState !== "hidden";
+}
+
 // Node DOM re-sort (painter's algorithm draw order) is decoupled from the
 // per-frame position update: occlusion between two specific nodes only
 // visibly changes when their depth order crosses, a slow, infrequent event
@@ -250,12 +267,15 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     const startTime = performance.now();
     let lastResort = startTime;
     let lastFrame = startTime;
+    let frameCount = 0;
     let frameId;
 
     const tick = (now) => {
       frameId = requestAnimationFrame(tick);
+      if (!isPageVisible()) return;
       if (now - lastFrame < MIN_FRAME_INTERVAL_MS) return;
       lastFrame = now;
+      frameCount += 1;
 
       const angle = ANGLE_PER_MS * (now - startTime);
       const cos = Math.cos(angle);
@@ -274,17 +294,19 @@ export function GuardianOrbGraph({ graph, loading, error }) {
         }
       }
 
-      for (const [key, line] of edgeElements) {
-        const [sourceId, targetId] = key.split("->");
-        const source = currentById.get(sourceId);
-        const target = currentById.get(targetId);
-        if (!source || !target) continue;
-        const depth = (source.depth + target.depth) / 2;
-        line.setAttribute("x1", source.x);
-        line.setAttribute("y1", source.y);
-        line.setAttribute("x2", target.x);
-        line.setAttribute("y2", target.y);
-        line.style.opacity = 0.06 + depth * 0.14;
+      if (frameCount % EDGE_UPDATE_EVERY_N_FRAMES === 0) {
+        for (const [key, line] of edgeElements) {
+          const [sourceId, targetId] = key.split("->");
+          const source = currentById.get(sourceId);
+          const target = currentById.get(targetId);
+          if (!source || !target) continue;
+          const depth = (source.depth + target.depth) / 2;
+          line.setAttribute("x1", source.x);
+          line.setAttribute("y1", source.y);
+          line.setAttribute("x2", target.x);
+          line.setAttribute("y2", target.y);
+          line.style.opacity = 0.06 + depth * 0.14;
+        }
       }
 
       // Periodic DOM re-sort for correct front/back occlusion
