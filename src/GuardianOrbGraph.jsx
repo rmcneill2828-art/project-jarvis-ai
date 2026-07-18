@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from "d3-force";
 
 // Guardian Orb - Knowledge Graph Representation (UAM-0001 Section 8.1;
@@ -15,14 +15,25 @@ import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY
 // cluster near which), then each node is assigned a stable front/back
 // hemisphere sign via a hash of its id, giving every node a real (x, y, z)
 // position on the sphere's surface. Rotation is a real rotation of those
-// (x, y, z) coordinates around the Y axis each tick, re-projected to 2D and
-// re-sorted by resulting depth (painter's algorithm) - genuine nodes move
-// to the back and are replaced by different genuine nodes rotating to the
-// front, not a decorative spin of a static image. This keeps the layout
-// genuinely data-driven, consistent with UAM-0001 8.1's "driven by
-// observed data, not by animation scripts" principle. Phase 3
-// (agent-traversal animation) and Phase 4 (Guardian reasoning connection)
-// remain separate, later, explicitly out-of-scope phases.
+// (x, y, z) coordinates around the Y axis every animation frame, re-
+// projected to 2D - genuine nodes move to the back and are replaced by
+// different genuine nodes rotating to the front, not a decorative spin of
+// a static image. This keeps the layout genuinely data-driven, consistent
+// with UAM-0001 8.1's "driven by observed data, not by animation scripts"
+// principle. Phase 3 (agent-traversal animation) and Phase 4 (Guardian
+// reasoning connection) remain separate, later, out-of-scope phases.
+//
+// Rotation is driven by direct DOM attribute updates inside a
+// requestAnimationFrame loop, not React state/re-render, per node/edge
+// element. An earlier version drove rotation through React state (a full
+// re-render of ~1,880 SVG elements - 195 nodes + 1,687 edges on the real
+// graph - every tick), which measured as sustained "Very high" power
+// usage on real hardware even after throttling the tick rate, and
+// throttling alone made the motion visibly choppy. Bypassing React's
+// reconciliation for the animation hot path fixes both: smooth,
+// frame-rate-independent motion at a fraction of the CPU/GPU cost, since
+// attribute mutation on existing DOM nodes is far cheaper than React
+// re-rendering and diffing the same element count every frame.
 export const CLUSTER_PALETTE = ["#1ff5ff", "#7c5cff", "#ff8a5c", "#5cff9d", "#ffd95c", "#ff5c8a", "#5c9dff", "#c95cff"];
 
 const SIZE = 300;
@@ -32,20 +43,21 @@ const MIN_RADIUS = 1.5;
 const MAX_RADIUS = 9;
 const RADIUS_SCALE = 0.65;
 
-// One full rotation roughly every 90 seconds at this angle-per-tick and
-// interval, read as ambient presence rather than a spinning logo, per
-// UAM-0001 8.1's "calm interaction" product principle.
-//
-// 200ms (5 ticks/second) rather than a smoother-looking 50ms: at this
-// rotation speed the per-tick movement is imperceptibly small regardless,
-// but every tick re-renders ~1,880 SVG elements (real graph: 195 nodes +
-// 1,687 edges) - at 20 ticks/second this measured as sustained "Very high"
-// power usage / GPU load in Windows Task Manager on real hardware. 5
-// ticks/second cuts that render load 4x with no visible difference in the
-// rotation's smoothness, since the animation is intentionally slow to
-// begin with.
-const ROTATION_INTERVAL_MS = 200;
-const ROTATION_RADIANS_PER_TICK = (2 * Math.PI) / (90000 / ROTATION_INTERVAL_MS);
+// One full rotation roughly every 90 seconds, read as ambient presence
+// rather than a spinning logo, per UAM-0001 8.1's "calm interaction"
+// product principle. Angle is derived from elapsed wall-clock time, not a
+// fixed tick count, so the rotation speed is identical regardless of the
+// device's actual achieved frame rate.
+const ROTATION_MS_PER_TURN = 90000;
+const ANGLE_PER_MS = (2 * Math.PI) / ROTATION_MS_PER_TURN;
+
+// Node DOM re-sort (painter's algorithm draw order) is decoupled from the
+// per-frame position update: occlusion between two specific nodes only
+// visibly changes when their depth order crosses, a slow, infrequent event
+// at this rotation speed, so re-sorting the DOM every 300ms (instead of
+// every frame) is visually indistinguishable while avoiding a full
+// insertBefore/appendChild pass on every animation frame.
+const RESORT_INTERVAL_MS = 300;
 
 // Shared with KnowledgeGraphPanels.jsx so the Knowledge Metrics/Active
 // Clusters panels use the identical cluster order and colour assignment as
@@ -115,7 +127,7 @@ function forceContainCircle(radius, cx, cy) {
 // Base sphere-surface layout: 2D force-simulated (x, y) topology (unchanged
 // in spirit from Phase 1) plus a real z coordinate from the deterministic
 // hemisphere sign. This is computed once per graph and never mutated by
-// rotation - rotation operates on these fixed base coordinates each tick.
+// rotation - rotation operates on these fixed base coordinates each frame.
 //
 // Phase 1.5 force retuning: charge -60 to -100 and link strength 0.2 to
 // 0.05, informed by the Programme Sponsor's own tuned Obsidian graph-view
@@ -182,21 +194,12 @@ function usePrefersReducedMotion() {
 
 // Real Y-axis rotation of the base sphere coordinates: bx/bz rotate,
 // by is unchanged (rotation axis is vertical). Depth is renormalised from
-// the rotated z into [0, 1] for the existing opacity/size treatment, and
-// nodes/edges are re-sorted back-to-front each tick (painter's algorithm)
-// so nodes rotating to the front correctly draw over nodes rotating to
-// the back.
-function rotateAndProject(baseNodes, angle) {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const rotated = baseNodes.map((node) => {
-    const rx = node.bx * cos - node.bz * sin;
-    const rz = node.bx * sin + node.bz * cos;
-    const depth = (rz + RADIUS) / (2 * RADIUS);
-    return { ...node, x: CENTER + rx, y: CENTER + node.by, z: rz, depth };
-  });
-  rotated.sort((a, b) => a.z - b.z);
-  return rotated;
+// the rotated z into [0, 1] for the existing opacity/size treatment.
+function rotateNode(node, cos, sin) {
+  const rx = node.bx * cos - node.bz * sin;
+  const rz = node.bx * sin + node.bz * cos;
+  const depth = (rz + RADIUS) / (2 * RADIUS);
+  return { x: CENTER + rx, y: CENTER + node.by, z: rz, depth };
 }
 
 export function GuardianOrbGraph({ graph, loading, error }) {
@@ -206,25 +209,84 @@ export function GuardianOrbGraph({ graph, loading, error }) {
   }, [graph]);
 
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [angle, setAngle] = useState(0);
-
-  useEffect(() => {
-    if (prefersReducedMotion || baseNodes.length === 0) return undefined;
-    const id = setInterval(() => {
-      setAngle((current) => current + ROTATION_RADIANS_PER_TICK);
-    }, ROTATION_INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [prefersReducedMotion, baseNodes]);
-
-  const positioned = useMemo(() => rotateAndProject(baseNodes, angle), [baseNodes, angle]);
 
   const clusterOrder = useMemo(() => computeClusterOrder(graph), [graph]);
 
-  const positionedById = useMemo(() => {
+  // Initial (angle = 0) positions for first paint - React renders this once;
+  // the rAF loop below then mutates these same DOM nodes directly.
+  const initialPositioned = useMemo(() => {
+    return baseNodes.map((node) => ({ ...node, ...rotateNode(node, 1, 0) }));
+  }, [baseNodes]);
+
+  const initialPositionedById = useMemo(() => {
     const map = new Map();
-    positioned.forEach((node) => map.set(node.id, node));
+    initialPositioned.forEach((node) => map.set(node.id, node));
     return map;
-  }, [positioned]);
+  }, [initialPositioned]);
+
+  const nodeGroupRef = useRef(null);
+  const nodeElementsRef = useRef(new Map());
+  const edgeElementsRef = useRef(new Map());
+
+  useEffect(() => {
+    if (prefersReducedMotion || baseNodes.length === 0) return undefined;
+
+    const nodeGroup = nodeGroupRef.current;
+    const nodeElements = nodeElementsRef.current;
+    const edgeElements = edgeElementsRef.current;
+    const startTime = performance.now();
+    let lastResort = startTime;
+    let frameId;
+
+    const tick = (now) => {
+      const angle = ANGLE_PER_MS * (now - startTime);
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      const currentById = new Map();
+
+      for (const node of baseNodes) {
+        const projected = rotateNode(node, cos, sin);
+        currentById.set(node.id, projected);
+        const circle = nodeElements.get(node.id);
+        if (circle) {
+          circle.setAttribute("cx", projected.x);
+          circle.setAttribute("cy", projected.y);
+          circle.setAttribute("r", node.r * (0.6 + projected.depth * 0.4));
+          circle.style.opacity = 0.45 + projected.depth * 0.55;
+        }
+      }
+
+      for (const [key, line] of edgeElements) {
+        const [sourceId, targetId] = key.split("->");
+        const source = currentById.get(sourceId);
+        const target = currentById.get(targetId);
+        if (!source || !target) continue;
+        const depth = (source.depth + target.depth) / 2;
+        line.setAttribute("x1", source.x);
+        line.setAttribute("y1", source.y);
+        line.setAttribute("x2", target.x);
+        line.setAttribute("y2", target.y);
+        line.style.opacity = 0.06 + depth * 0.14;
+      }
+
+      // Periodic DOM re-sort for correct front/back occlusion
+      // (painter's algorithm) - appendChild on an already-attached node
+      // moves it to the end, so appending back-to-front reorders cheaply.
+      if (nodeGroup && now - lastResort >= RESORT_INTERVAL_MS) {
+        lastResort = now;
+        const order = [...currentById.entries()].sort((a, b) => a[1].z - b[1].z);
+        for (const [id] of order) {
+          const circle = nodeElements.get(id);
+          if (circle) nodeGroup.appendChild(circle);
+        }
+      }
+
+      frameId = requestAnimationFrame(tick);
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [prefersReducedMotion, baseNodes]);
 
   if (error || loading || !graph) {
     // Loading/error states stay silent: this component should only add
@@ -248,13 +310,18 @@ export function GuardianOrbGraph({ graph, loading, error }) {
       <g clipPath="url(#guardian-orb-clip)">
         <g className="guardian-orb-graph-edges">
           {graph.edges.map((edge) => {
-            const source = positionedById.get(edge.source);
-            const target = positionedById.get(edge.target);
+            const source = initialPositionedById.get(edge.source);
+            const target = initialPositionedById.get(edge.target);
             if (!source || !target) return null;
             const depth = (source.depth + target.depth) / 2;
+            const key = `${edge.source}->${edge.target}`;
             return (
               <line
-                key={`${edge.source}->${edge.target}`}
+                key={key}
+                ref={(el) => {
+                  if (el) edgeElementsRef.current.set(key, el);
+                  else edgeElementsRef.current.delete(key);
+                }}
                 x1={source.x}
                 y1={source.y}
                 x2={target.x}
@@ -264,10 +331,14 @@ export function GuardianOrbGraph({ graph, loading, error }) {
             );
           })}
         </g>
-        <g className="guardian-orb-graph-nodes">
-          {positioned.map((node) => (
+        <g className="guardian-orb-graph-nodes" ref={nodeGroupRef}>
+          {initialPositioned.map((node) => (
             <circle
               key={node.id}
+              ref={(el) => {
+                if (el) nodeElementsRef.current.set(node.id, el);
+                else nodeElementsRef.current.delete(node.id);
+              }}
               cx={node.x}
               cy={node.y}
               r={node.r * (0.6 + node.depth * 0.4)}
