@@ -8,7 +8,7 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.1 |
+| Version | 2.2 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -72,7 +72,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 | [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Sibling document (Product Capability Baseline) refreshed via the same pattern at ESR-0020 (EBG-0056) - this refresh follows that precedent. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture source; still Draft, underlying the Intelligence row's Planned status. |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register for candidate package selection; this refresh closes EBG-0069. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register for candidate package selection; the v2.0 refresh closed EBG-0069, this v2.1 refresh closes EBG-0017. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact; the Not Started/Planned rows above correspond to items sequenced there. |
 
 ---
@@ -81,6 +81,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.2 | 18 July 2026 | Claude Engineering Implementer | Post-commit fix per Engineering Reviewer (Codex) finding on the ESR-0028 WP2 committed diff: the Related Artefacts EBR-0001 relationship note still said "this refresh closes EBG-0069", true of the prior v2.0 refresh but not this one. Corrected to disclose both - the v2.0 refresh closed EBG-0069, this v2.1 (now v2.2) refresh closes EBG-0017. |
 | 2.1 | 18 July 2026 | Claude Engineering Implementer | Refreshed at ESR-0028 WP2 per EIP-ESR0028-002, closing EBG-0017: registered this document in REG-0001 for the first time (closing the registration gap disclosed in the v2.0 entry below), and corrected two rows found stale against direct PST-0001 Section 5 evidence. Memory row: Implementation/Testing/Overall Readiness updated from Not Started/Planned to reflect the ESR-0027 WP1 Personal Memory foundation (`PersonalMemoryStore`/`PersonalMemoryService`, consent-gated, unit-tested). Provider Architecture row: removed the now-incorrect "unwired from production runtime" qualifier, reflecting EBG-0070's production wiring at ESR-0022 WP1. Updated the Overall Programme Capability Summary narrative and Related Artefacts (`RBL-0014` to `RBL-0015`) to match, so the refreshed rows no longer contradict the surrounding prose - an inconsistency an Engineering Reviewer pre-implementation review caught in the v0.1 implementation draft before it reached this document. |
 | 2.0 | 15 July 2026 | Claude Engineering Implementer | Refreshed at ESR-0021 WP7, closing EBG-0069: corrected 13 sessions of staleness (dated to ESR-0009/RBL-0009). Guardian, Sentinel, Platform Services, User Experience Platform, Knowledge and Provider Architecture all updated from "Not Started"/"Planned" to reflect genuine foundation-scope implementation, each cross-checked against PST-0001 Section 5 and this session's own delivered evidence. Memory, Voice, Vision, Home Automation, Productivity, Multi-device and the JARVIS-internal Engineering Agent confirmed still Not Started - deliberately deferred, not newly discovered gaps. Added a Document Control block and this Refresh History section, neither of which existed before, so future staleness is at least version-trackable. **Observation, not actioned by this refresh**: this document has never been registered in REG-0001 as a controlled artefact (no artefact ID, unlike its sibling PCB-0001) - flagged for a separate Programme Sponsor decision on whether to register it formally. |
 | 1.0 | Undated (ESR-0009 era) | Programme Sponsor & Chief Engineering Advisor | Initial matrix created to support ESR-0009 readiness following RBL-0009. |

@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.216
+**Version:** 3.217
 
 
 ---
@@ -116,7 +116,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.216 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.217 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -138,7 +138,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0015 | Repository Baseline | ESR-0022 Repository Baseline (Production Provider Wiring) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0022 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
-| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.1 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
+| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.5 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.3 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
@@ -325,6 +325,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.217 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2 post-commit fix: JARVIS_CAPABILITY_READINESS_MATRIX aligned (2.1 to 2.2) following an Engineering Reviewer Low finding on the committed diff - a stale Related Artefacts relationship note corrected. |
 | 3.216 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: EIP-ESR0028-002 implemented per Programme Sponsor approval (0.4 to 1.0, Draft to Approved-implemented). Registered JARVIS_PRODUCT_ARCHITECTURE (1.3, Approved Product Architecture) and JARVIS_CAPABILITY_READINESS_MATRIX (2.1, Maintained) as controlled artefacts for the first time. Aligned EBR-0001 (1.75 to 1.76) following EBG-0017's closure. |
 | 3.215 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: EIP-ESR0028-002 revised (0.3 to 0.4) fixing a residual editorial finding - the immediately preceding changelog entry below had itself quoted two raw heading-number phrases while describing an unrelated wording fix, reproducing the exact validator warning it was meant to eliminate. Reworded without quoting any heading-number phrase. |
 | 3.214 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP2: revised EIP-ESR0028-002 (0.2 to 0.3) addressing two Low/editorial Engineering Reviewer findings - the Related Artefacts relationship note corrected to match the authorised identity-only edit; this register's own v3.213 entry reworded to remove a quoted heading-number phrase that had been producing an avoidable validator warning. |
