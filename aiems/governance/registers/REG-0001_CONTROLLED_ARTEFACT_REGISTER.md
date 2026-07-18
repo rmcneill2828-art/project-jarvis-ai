@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.200
+**Version:** 3.201
 
 
 ---
@@ -116,7 +116,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0013 | Architecture Decision Record | Engineering Ecosystem Synchronisation | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/decisions/` |
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.200 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.201 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.9 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -174,7 +174,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.2 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.53 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.54 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -310,6 +310,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.201 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 session-wide WP6 (Pass, two Low findings fixed) and WP7 (Accept, retain RBL-0015) both closed against the full session diff (`f4a96a0`..`d7ab1f7`). Engineering Reviewer (Codex) verified via the bridge, both independent baseline views converged, Programme Sponsor made the WP7 determination. Aligned PST-0001 (2.53 to 2.54). |
 | 3.200 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 WP2 fully closed - Engineering Reviewer (Codex) post-implementation review via the bridge: Pass, no blocking findings against committed diff f29cf66. Aligned EBR-0001 (1.73 to 1.74) and PST-0001 (2.52 to 2.53). Both of ESR-0027's Work Packages now fully closed. |
 | 3.199 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 WP2 complete: Programme Sponsor approved EIP-ESR0027-002 v0.2 via `sponsor-decision`; implemented and closed (0.2 to 1.0, Draft to Approved - implemented). Aligned EBR-0001 (1.72 to 1.73): EBG-0077 marked Complete. Aligned PST-0001 (2.51 to 2.52). `first-light` removed from DiagnosticsPanel; verified live, `npm run build` clean. Both of ESR-0027's Work Packages now complete. |
 | 3.198 | 18 July 2026 | Claude Engineering Implementer | ESR-0027 WP2: Engineering Reviewer (Codex) confirmed EIP-ESR0027-002 v0.1's concept, no blocking findings; one Low/editorial finding (stale App.jsx comment) addressed at v0.2 (0.1 to 0.2). Ready for Programme Sponsor approval. |

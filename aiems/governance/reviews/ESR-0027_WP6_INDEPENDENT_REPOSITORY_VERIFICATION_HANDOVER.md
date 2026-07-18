@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0027-WP6 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -144,7 +144,9 @@ No blocking findings on the implemented WP1/WP2 scope. WP7 (Repository Baseline 
 
 ## 11. WP7 Baseline Acceptance Result
 
-Pending Programme Sponsor determination, informed by Section 9's two independently-converging views.
+**Accept - `RBL-0015` retained.** The Programme Sponsor's own determination, agreeing with both independent views in Section 9: WP1's new backend Personal Memory capability is not yet UXP-reachable, and WP2's UXP change is a small, reviewed subtraction - neither individually nor combined resembles the kind of change that established `RBL-0015` itself.
+
+ESR-0027's session-wide WP6/WP7 closing steps are both complete: WP6 Pass (Section 10), WP7 Accept/Retain (this section). ESR-0027 itself remains open until its session report is authored, per the practice established at ESR-0022 through ESR-0026.
 
 ---
 
@@ -166,5 +168,6 @@ Pending Programme Sponsor determination, informed by Section 9's two independent
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 18 July 2026 | Claude Engineering Implementer | Recorded WP7 result: Programme Sponsor determination **Accept - retain RBL-0015**, agreeing with both independent views in Section 9. ESR-0027's session-wide WP6/WP7 closing steps are both now complete; the session itself remains open pending its own session report. |
 | 0.2 | 18 July 2026 | Claude Engineering Implementer | Recorded WP6 verification result: **Pass**, with two Low findings, both addressed - Section 3/7 wording corrected (working tree cleanliness was overstated against this document's own untracked status), one trailing-whitespace line in `jarvis/tests/test_stdio_rpc.py:70` fixed. Engineering Reviewer (Codex) independently confirmed repository state, scope characterisation and disclosed defects via the AIEMS Exchange Bridge, and provided an independent baseline view (retain `RBL-0015`) converging with the Engineering Implementer's own view. WP7 now awaits the Programme Sponsor's own determination. |
 | 0.1 | 18 July 2026 | Claude Engineering Implementer | Drafted ESR-0027 WP6 Independent Repository Verification handover, covering the full session diff (`f4a96a0`..`05869a7`) across both Work Packages. Records repository state, authorised working set, session observations (scope-check-driven expansion, two review rounds on WP1 with two defects self-found and fixed, a clean two-pass review on WP2), validation evidence, and an independent baseline view (retain RBL-0015) for WP7 consideration. Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
