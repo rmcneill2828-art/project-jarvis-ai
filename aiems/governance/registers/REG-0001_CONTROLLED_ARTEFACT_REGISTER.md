@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.261
+**Version:** 3.262
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.261 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.262 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -338,6 +338,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.262 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP0A post-commit fixes (Codex findings): (1) traced the PBK-0001 row's v1.28-to-v1.29 change (made at REG-0001 v3.261, but never itself recorded in a history row - a missing traceability entry) and added this row to close that gap; (2) README.md's remaining stale ESR-0026/RBL-0015 references (Current Focus bullets, Related Artefacts table) corrected to ESR-0029/RBL-0017, plus separately-found staleness in the same bullets (Personal Memory and GIA Phase 1 both implemented since, not reflected) - README is not itself REG-0001-tracked, but this row records why REG-0001's own version advanced alongside it. |
 | 3.261 | 19 July 2026 | Claude Engineering Implementer | EBR-0001 (1.101 to 1.102) aligned - registered EBG-0085 through EBG-0089 from an external read-only security review (esbuild/vite dev-server vulnerability, .aiems-exchange/ permission enforcement, GitHub Actions SHA-pinning, .env gitignore entry, Tauri CSP unsafe-inline), all Candidate Backlog, no implementation authorised. |
 | 3.260 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 session report fixed to v1.1 - addressed two Codex post-commit findings: the WP2 write-up had misattributed the final closure-commit's validation figures (295 tests/129 warnings) to WP2's own commit; corrected to WP2's contemporaneous figures (286/128). Also fixed a mockup filename reference. |
 | 3.259 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 formally closed. Registered [[ESR-0029_ENGINEERING_SESSION_REPORT|ESR-0029]] Engineering Session Report v1.0 covering WP0 (research-first objective redirection), WP1-WP7 (cross-module resource research, Guardian Orb Canvas 2D migration with a live-verified performance-regression fix, GIA Phase 1's four-slice staged delivery, Sponsor Approval Service decision), and session-wide WP8 (Pass)/WP9 (Accept, new baseline RBL-0017 established after two post-commit fix rounds). |

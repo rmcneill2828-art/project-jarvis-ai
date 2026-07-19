@@ -328,11 +328,12 @@ Current focus (see [[PST-0001_PROGRAMME_STATUS|PST-0001]] for full detail):
 
 - Guardian Runtime Foundation has been established and integrated into the JARVIS lifecycle, with the UXP-backend bridge (ADR-0019) live and reachable from the Tauri + React Guardian Desktop Platform Shell.
 - Sentinel AI Execution and Security Platform is implemented: trust gateway, `TrustTierPolicy` wired as the production policy engine, audit trail, and OpenAI/Gemini/Ollama provider adapters with health-aware orchestration and failover.
-- Guardian Orb knowledge-graph rendering (Guardian Experience Architecture Phase 1) is live, rendering the repository's own tracked markdown and WikiLinks as a graph.
-- Memory and Data Storage Architecture ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]]) and Sentinel Network Exposure Security Requirements ([[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]]) are approved as specifications; neither has a code implementation yet.
-- [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] remains the accepted repository baseline.
-- Guardian Memory implementation, Provider Framework completion, Conversation Engine expansion, EAC and GDP-0001 implementation remain deferred.
-- No engineering session is currently open; ESR-0026 is the latest closed session.
+- Guardian Orb knowledge-graph rendering (Guardian Experience Architecture Phase 1) is live, rendering the repository's own tracked markdown and WikiLinks as a graph on a Canvas 2D surface (migrated from SVG at ESR-0029).
+- Memory and Data Storage Architecture ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]]) is approved and its Personal Memory tier is implemented (`jarvis/memory/`, ESR-0027); Sentinel Network Exposure Security Requirements ([[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]]) remains an approved specification with no network-facing interface built yet.
+- GIA (Guardian Instrumentation Agent) Phase 1 local resource observability (CPU/memory/storage/process health/engineering-environment presence) is implemented and live-verified (ESR-0029).
+- [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] is the current accepted repository baseline.
+- Session/Shared-Family memory tiers, Provider Framework completion, Conversation Engine expansion, EAC and GDP-0001 implementation, and GIA Phases 2-4 remain deferred.
+- No engineering session is currently open; ESR-0029 is the latest closed session.
 
 ---
 
@@ -355,8 +356,8 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | Artefact | Relationship |
 |----------|--------------|
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point - the authoritative source for current programme state; this README summarises but does not replace it. |
-| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
-| [[ESR-0026_ENGINEERING_SESSION_REPORT|ESR-0026]] | Latest closed engineering session: Ollama Local Fallback Provider (EBG-0075), Memory and Data Storage Architecture (MDS-0001), Sentinel Network Exposure Security Requirements (ADR-0020) - the first session run entirely through the AIEMS Exchange Bridge. |
+| [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] | Current accepted repository baseline. |
+| [[ESR-0029_ENGINEERING_SESSION_REPORT|ESR-0029]] | Latest closed engineering session: cross-module resource-interaction research (EBG-0082), Guardian Orb Canvas 2D rendering migration (ADR-0021), GIA Phase 1 local resource observability (EBG-0083), Sponsor Approval Service decision (ADR-0022) - the fourth session run entirely through the AIEMS Exchange Bridge. |
 | [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Closure review package for Guardian Platform Foundation implementation and Programme Sponsor closure decision. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog source for selecting future engineering packages. |
@@ -389,4 +390,5 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.14 | 7 July 2026 | Engineering Agent | Aligned repository orientation with ESR-0013 Guardian Platform Foundation closure review and retained RBL-0010 baseline status. |
 | 3.16 | 8 July 2026 | Claude Engineering Implementer | Replaced exhaustive AIEMS History and Full Chat WP0 review requirement with GDE-0001 knowledge tiering, closing out the item flagged as outstanding in ESR-0014A. |
 | 3.15 | 7 July 2026 | Engineering Agent | Added ESR-0013 AIEMS History and Full Chat artefacts to WP0 session start review guidance. |
+| 3.18 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP0A post-commit fix (Codex finding): the top Project Status table had been corrected to ESR-0029/RBL-0017 but Current Focus and Related Artefacts still described ESR-0026/RBL-0015 as current, and Current Focus's memory/GIA bullets were separately stale (Personal Memory implemented at ESR-0027, GIA Phase 1 implemented at ESR-0029, neither reflected). All corrected to the current ESR-0029/RBL-0017 state. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
 | 3.17 | 18 July 2026 | Claude | Direct Programme Sponsor-requested correction (outside an open ESR): README had drifted 13 sessions stale (last describing ESR-0013 while the repository was at ESR-0026 / RBL-0015 / PST-0001 v2.48). Refreshed Project Status, JARVIS implementation summary, Repository Structure, Capability Roadmap, Phase 2 focus, launch guidance (added Tauri + React Guardian Desktop Platform Shell alongside First Light) and Related Artefacts to match current repository state. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
