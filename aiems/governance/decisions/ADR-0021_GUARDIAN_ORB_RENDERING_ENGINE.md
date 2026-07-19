@@ -8,8 +8,8 @@
 |------|------|
 | ADR ID | ADR-0021 |
 | Title | Guardian Orb Rendering Engine |
-| Version | 1.3 |
-| Status | Approved |
+| Version | 1.4 |
+| Status | Approved-implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 18 July 2026 |
 | Review Trigger | GuardianOrbGraph.jsx node/edge count grows by an order of magnitude, or the knowledge graph gains further animated capability (Phase 3 agent-traversal, Phase 4 Guardian reasoning connection) |
@@ -80,7 +80,8 @@ This ADR authorises the decision only. Implementation is separate, future, scope
 
 ## 6. Consequences
 
-- **Not implemented by this ADR.** A future EIP must scope: the Canvas drawing implementation itself; a manual hit-testing/tooltip replacement for the current per-node `<title>` labels; an accessible-description strategy replacing SVG's DOM-based `role="img"`/`aria-label` treatment (still achievable on a `<canvas>` element, but requires deliberate implementation rather than coming for free from individual DOM nodes); and live before/after performance verification against the real graph, following the same rigour (Playwright live-verification, Task Manager comparison) established in ESR-0028 WP4.
+- **Implemented at ESR-0029 WP2** per [[EIP-ESR0029-001_GUARDIAN_ORB_CANVAS_MIGRATION|EIP-ESR0029-001]]: `GuardianOrbGraph.jsx` migrated to Canvas 2D, live-verified against the real graph to measure below the SVG baseline this ADR's evidence was drawn from. See EIP-ESR0029-001 and EBR-0001's EBG-0081 entry for full delivery detail, including a genuine performance defect found and fixed during that package's own verification.
+- **Not implemented by this ADR itself** (historical framing, retained below for context on what the decision covered versus what implementation later delivered). A future EIP must scope: the Canvas drawing implementation itself; a manual hit-testing/tooltip replacement for the current per-node `<title>` labels; an accessible-description strategy replacing SVG's DOM-based `role="img"`/`aria-label` treatment (still achievable on a `<canvas>` element, but requires deliberate implementation rather than coming for free from individual DOM nodes); and live before/after performance verification against the real graph, following the same rigour (Playwright live-verification, Task Manager comparison) established in ESR-0028 WP4.
 - `computeClusterOrder`/`colorForCluster`/`computeDegree` (exported for `KnowledgeGraphPanels.jsx`) are pure data functions independent of rendering surface and are not expected to change.
 - `d3-force` remains the layout engine regardless of rendering surface - this decision does not touch graph topology or force parameters.
 - EBG-0081's shared-animation-scheduler question remains separately open; a Canvas-based Guardian Orb would still benefit from participating in a shared scheduler if/when one exists, rather than running its own independent draw loop indefinitely.
@@ -111,6 +112,7 @@ This ADR authorises the decision only. Implementation is separate, future, scope
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP2: recorded implementation delivery per EIP-ESR0029-001. Status promoted Approved to Approved-implemented; Consequences section updated with a delivery note, historical "not implemented" framing retained for context. |
 | 1.3 | 18 July 2026 | Claude Engineering Implementer | Approved by the Programme Sponsor via the bridge (`sponsor-decision`, `repository_ref: 003d8c9edec3b43ab3ec2a00d41816cef329413a`, 18 July 2026 22:57:04Z). Status promoted Draft to Approved. Updated the two remaining "pending approval" wording instances (Related Artefacts, OSE Relationships) to reflect the decision is now made, while continuing to clarify that no implementation is authorised by this ADR itself. |
 | 1.2 | 18 July 2026 | Claude Engineering Implementer | Addressed a residual instance of the v1.0 finding: the OSE Relationships table still described EBG-0081 as something this ADR already "resolves," missed in the v1.1 fix which only corrected the separate Related Artefacts table. Reworded to conditional/draft language matching the rest of the document. |
 | 1.1 | 18 July 2026 | Claude Engineering Implementer | Addressed an Engineering Reviewer (Codex) finding on v1.0: the package overstated a still-Draft, not-yet-approved ADR's effect - reworded Related Artefacts to state EBG-0081 remains Candidate Backlog with no implementation authorised until this ADR reaches Approved status, and that any resulting backlog recording is separate future work. REG-0002's changelog entry corrected to match. |

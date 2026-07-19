@@ -634,16 +634,6 @@ button {
   height: 100%;
 }
 
-.guardian-orb-graph-edges line {
-  stroke: rgba(0, 239, 255, 0.55);
-  stroke-width: 0.4;
-}
-
-.guardian-orb-graph-nodes circle {
-  stroke: rgba(2, 7, 9, 0.5);
-  stroke-width: 0.3;
-}
-
 .command-panel h2 {
   margin: 0 0 16px;
   color: #16f7ff;

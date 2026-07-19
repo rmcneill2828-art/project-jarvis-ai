@@ -2,11 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from "d3-force";
 
 // Guardian Orb - Knowledge Graph Representation (UAM-0001 Section 8.1;
-// EBG-0055 Phase 1, Phase 1.5). Renders the repository's knowledge graph
+// EBG-0055 Phase 1, Phase 1.5; rendering migrated to Canvas 2D at
+// ESR-0029 WP2 per ADR-0021). Renders the repository's knowledge graph
 // (`knowledge.graph` JSON-RPC method) as the Guardian Orb's actual visual
 // presence, matching the reference mock-up
 // (aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg): a sphere of coloured,
-// interconnected nodes, not a flat 2D scatter or a decorative-only
+// interconnected, glowing nodes, not a flat 2D scatter or a decorative-only
 // glow/ring animation.
 //
 // The "3D" sphere is a deterministic geometric model, not a physics engine
@@ -21,19 +22,21 @@ import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY
 // a static image. This keeps the layout genuinely data-driven, consistent
 // with UAM-0001 8.1's "driven by observed data, not by animation scripts"
 // principle. Phase 3 (agent-traversal animation) and Phase 4 (Guardian
-// reasoning connection) remain separate, later, out-of-scope phases.
+// reasoning connection) remain separate, later, out-of-scope phases - as
+// does UAM-0001 8.1's access-triggered cluster illumination, which needs
+// real backend activity signal this component does not have.
 //
-// Rotation is driven by direct DOM attribute updates inside a
-// requestAnimationFrame loop, not React state/re-render, per node/edge
-// element. An earlier version drove rotation through React state (a full
-// re-render of ~1,880 SVG elements - 195 nodes + 1,687 edges on the real
-// graph - every tick), which measured as sustained "Very high" power
-// usage on real hardware even after throttling the tick rate, and
-// throttling alone made the motion visibly choppy. Bypassing React's
-// reconciliation for the animation hot path fixes both: smooth,
-// frame-rate-independent motion at a fraction of the CPU/GPU cost, since
-// attribute mutation on existing DOM nodes is far cheaper than React
-// re-rendering and diffing the same element count every frame.
+// Rendering is a single <canvas> surface, fully cleared and redrawn each
+// animation tick (ADR-0021, EIP-ESR0029-001), replacing an earlier SVG
+// implementation where every node/edge was a real DOM element mutated in
+// place. That SVG architecture required seven rounds of fixes (ESR-0028
+// WP4) to bring a single ambient rotation's cost down and still did not
+// clear Windows' "Very high" power-usage classification even after every
+// fix - direct evidence the per-element DOM cost, not any single
+// implementation detail, was the limiting factor at ~1,880 elements (195
+// nodes + 1,687 edges on the real graph). Canvas draws the same element
+// count into one bitmap per frame instead of managing ~1,880 individually
+// laid-out/painted/composited DOM nodes.
 export const CLUSTER_PALETTE = ["#1ff5ff", "#7c5cff", "#ff8a5c", "#5cff9d", "#ffd95c", "#ff5c8a", "#5c9dff", "#c95cff"];
 
 const SIZE = 300;
@@ -52,44 +55,58 @@ const ROTATION_MS_PER_TURN = 90000;
 const ANGLE_PER_MS = (2 * Math.PI) / ROTATION_MS_PER_TURN;
 
 // requestAnimationFrame fires at the display's refresh rate (60Hz+, higher
-// on gaming monitors) - measured directly against real hardware, an
-// uncapped rAF loop mutating ~1,880 SVG element attributes (195 nodes +
-// 1,687 edges on the real graph) every single frame still sustained
-// "Very high" Windows power usage even after moving the mutation itself
-// off React's render cycle (confirmed via an isolated Task Manager
-// comparison: rotation on vs off, with no other confounding process
-// running). The rotation is far too slow for 60fps to matter visually, so
-// the actual DOM-mutation work is capped to this interval regardless of
-// how often rAF itself fires - still timestamp-driven (smooth, frame-rate-
-// independent), just not doing real work on every single callback.
+// on gaming monitors); the rotation is far too slow for 60fps to matter
+// visually, so the actual redraw work is capped to this interval
+// regardless of how often rAF itself fires - still timestamp-driven
+// (smooth, frame-rate-independent), just not doing real work on every
+// single callback. Carried over unchanged from the SVG-era tuning
+// (ESR-0028 WP4); Canvas's different cost profile did not warrant a
+// different value on live verification.
 const MIN_FRAME_INTERVAL_MS = 1000 / 12;
 
 // Edges (1,687 on the real graph, ~8.6x the 195 nodes) are by far the
-// larger share of the ~1,880 mutated elements per update. Nodes are the
-// visually salient part of the sphere - their motion is what reads as
-// "rotating" - while the thin, low-opacity connector lines are background
-// context whose position lagging slightly behind the nodes is not
-// perceptible. Updating them at a third of the node rate cuts the
-// dominant share of the remaining per-update DOM-write cost with no
-// visible effect on the rotation itself.
+// larger share of drawn elements per update. Nodes are the visually
+// salient part of the sphere - their motion is what reads as "rotating" -
+// while the thin, low-opacity connector lines are background context
+// whose position lagging slightly behind the nodes is not perceptible.
+// Under Canvas's full-redraw model this can no longer mean "skip drawing
+// edges" (they would flicker out of existence for that frame, since
+// nothing persists between frames the way DOM elements did) - it means
+// recompute edge endpoint positions only every Nth work-frame, but redraw
+// the (possibly slightly stale) cached positions on every frame. See
+// `edgeCacheRef` in the draw loop.
+//
+// A first live-verified attempt drew each of the 1,745 real edges with its
+// own beginPath/moveTo/lineTo/stroke call every redrawn frame - individually
+// depth-varied but, measured via Chrome DevTools Protocol TaskDuration
+// against the same real graph, materially *more* expensive than the SVG
+// baseline this migration was meant to improve on (~27-29% vs ~9% of one
+// core), the opposite of ADR-0021's premise. Root cause: Canvas's full-
+// redraw model means those ~1,745 individual draw-call sequences repeat
+// every single frame regardless of the recompute-decoupling above, unlike
+// SVG's persistent elements, which cost nothing between attribute updates.
+// Fixed by bucketing edges into a small number of depth bands and building
+// one batched Path2D per band during the (already throttled) recompute
+// step - each redrawn frame then issues one stroke() per band (a handful),
+// not one per edge, while still preserving the depth-based opacity fade
+// (banded, not perfectly continuous, but the original per-edge alpha range
+// - 0.55 * (0.06 to 0.20) - is already narrow enough that banding is not
+// visually distinguishable from continuous variation).
 const EDGE_UPDATE_EVERY_N_FRAMES = 3;
+const EDGE_DEPTH_BANDS = 8;
 
-// Page Visibility API: no reason to keep mutating ~1,880 SVG elements 12
-// times a second for a window the user isn't even looking at (minimised,
-// on another virtual desktop, or behind other windows).
+// Page Visibility API: no reason to keep redrawing the sphere 12 times a
+// second for a window the user isn't even looking at (minimised, on
+// another virtual desktop, or behind other windows).
 function isPageVisible() {
   return typeof document === "undefined" || document.visibilityState !== "hidden";
 }
 
 // Sustained continuous animation prevents the GPU from reaching its
 // deepest idle/power-saving states regardless of how cheap each individual
-// update is - confirmed directly against real hardware (Windows Task
-// Manager continued flagging "Very high" power usage even after the
-// update-rate and edge-decoupling optimisations above meaningfully cut the
-// actual CPU/GPU percentages). Visibility alone doesn't address a window
-// left open and focused but genuinely idle (the user reading something
-// else, away from the keyboard). Pausing after a period of no interaction
-// - not just when hidden - keeps this ambient feature from costing power
+// update is - confirmed directly against real hardware during the SVG-era
+// investigation (ESR-0028 WP4). Pausing after a period of no interaction -
+// not just when hidden - keeps this ambient feature from costing power
 // indefinitely for as long as the app happens to be open.
 const IDLE_TIMEOUT_MS = 45000;
 const ACTIVITY_EVENTS = ["mousemove", "mousedown", "keydown", "wheel", "touchstart"];
@@ -124,13 +141,48 @@ function useIsIdleRef(timeoutMs) {
   return idleRef;
 }
 
-// Node DOM re-sort (painter's algorithm draw order) is decoupled from the
+// Depth-sort (painter's algorithm draw order) is decoupled from the
 // per-frame position update: occlusion between two specific nodes only
 // visibly changes when their depth order crosses, a slow, infrequent event
-// at this rotation speed, so re-sorting the DOM every 300ms (instead of
-// every frame) is visually indistinguishable while avoiding a full
-// insertBefore/appendChild pass on every animation frame.
+// at this rotation speed, so recomputing draw order every 300ms (instead
+// of every frame) is visually indistinguishable while avoiding an O(n log
+// n) sort of ~195 nodes every animation frame. Under Canvas, nodes are
+// still drawn fresh at their current (non-cached) position every frame -
+// only the *order* they are drawn in is cached, per `sortOrderRef` below.
 const RESORT_INTERVAL_MS = 300;
+
+// Glow-sprite treatment (ESR-0029 WP2, per UAM-0001_GUARDIAN_ORB_MOCKUP.jpg's
+// look and layout): one radial-gradient sprite per cluster colour, rendered
+// once onto an offscreen canvas and reused via drawImage every frame,
+// deliberately avoiding per-node ctx.shadowBlur (a real blur convolution
+// per shape, every frame, for up to 195 nodes) or per-node gradient
+// object creation. Edges intentionally receive no glow treatment - 1,687
+// edges is a materially larger performance surface than 195 nodes.
+const GLOW_SPRITE_PX = 128;
+const GLOW_RADIUS_MULTIPLIER = 2.6;
+const GLOW_CENTER_ALPHA = 0.6;
+
+function buildGlowSprite(color) {
+  const canvas = document.createElement("canvas");
+  canvas.width = GLOW_SPRITE_PX;
+  canvas.height = GLOW_SPRITE_PX;
+  const ctx = canvas.getContext("2d");
+  const center = GLOW_SPRITE_PX / 2;
+  const gradient = ctx.createRadialGradient(center, center, 0, center, center, center);
+  gradient.addColorStop(0, `${color}${Math.round(GLOW_CENTER_ALPHA * 255).toString(16).padStart(2, "0")}`);
+  gradient.addColorStop(1, `${color}00`);
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, GLOW_SPRITE_PX, GLOW_SPRITE_PX);
+  return canvas;
+}
+
+function buildGlowSprites() {
+  const sprites = new Map();
+  for (const color of CLUSTER_PALETTE) {
+    sprites.set(color, buildGlowSprite(color));
+  }
+  return sprites;
+}
 
 // Shared with KnowledgeGraphPanels.jsx so the Knowledge Metrics/Active
 // Clusters panels use the identical cluster order and colour assignment as
@@ -283,75 +335,37 @@ export function GuardianOrbGraph({ graph, loading, error }) {
 
   const prefersReducedMotion = usePrefersReducedMotion();
   const isIdleRef = useIsIdleRef(IDLE_TIMEOUT_MS);
-
   const clusterOrder = useMemo(() => computeClusterOrder(graph), [graph]);
+  const glowSprites = useMemo(() => buildGlowSprites(), []);
 
-  // Initial (angle = 0) positions for first paint - React renders this once;
-  // the rAF loop below then mutates these same DOM nodes directly.
-  const initialPositioned = useMemo(() => {
-    return baseNodes.map((node) => ({ ...node, ...rotateNode(node, 1, 0) }));
-  }, [baseNodes]);
+  const canvasRef = useRef(null);
+  // Latest drawn node screen positions + hit radius, kept for manual
+  // hit-testing (Canvas has no free per-shape hit-testing the way SVG did).
+  const hitTestRef = useRef([]);
 
-  const initialPositionedById = useMemo(() => {
+  const labelById = useMemo(() => {
     const map = new Map();
-    initialPositioned.forEach((node) => map.set(node.id, node));
+    if (graph) graph.nodes.forEach((node) => map.set(node.id, node.label));
     return map;
-  }, [initialPositioned]);
-
-  const nodeGroupRef = useRef(null);
-  const nodeElementsRef = useRef(new Map());
-  const edgeElementsRef = useRef(new Map());
+  }, [graph]);
 
   useEffect(() => {
-    if (prefersReducedMotion || baseNodes.length === 0) return undefined;
+    const canvas = canvasRef.current;
+    if (!canvas || baseNodes.length === 0) return undefined;
 
-    const nodeGroup = nodeGroupRef.current;
-    const nodeElements = nodeElementsRef.current;
-    const edgeElements = edgeElementsRef.current;
+    const ctx = canvas.getContext("2d");
+    const nodeById = new Map(baseNodes.map((node) => [node.id, node]));
+    const edgeCacheRef = { current: null };
+    const sortOrderRef = { current: null };
+
     const startTime = performance.now();
     let lastResort = startTime;
-    let lastFrame = startTime;
     let currentAngle = 0;
     let frameCount = 0;
+    let now = startTime;
     let frameId;
 
-    // The idle-timeout pause (above) relies on requestAnimationFrame
-    // continuing to fire so the tick below can keep pinning lastFrame each
-    // frame - true for an idle-but-visible window, since the browser has
-    // no reason to suspend rAF just because the user isn't interacting.
-    // That assumption does NOT hold for a hidden/minimised/backgrounded
-    // window: browsers commonly suspend or heavily throttle rAF entirely
-    // while hidden, so the tick may not run at all during that period -
-    // pinning lastFrame from inside it would never happen, and the first
-    // tick after visibility returns would then add the *entire* hidden
-    // duration to currentAngle in one jump. Handled instead with an
-    // explicit visibilitychange listener that resets lastFrame the moment
-    // visibility returns, independent of whether any rAF callback ran
-    // during the hidden period.
-    const handleVisibilityChange = () => {
-      if (isPageVisible()) lastFrame = performance.now();
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    const tick = (now) => {
-      frameId = requestAnimationFrame(tick);
-
-      // Idle-but-visible pause: keep lastFrame pinned to "now" every frame
-      // while paused, so the elapsed-time delta on the frame that resumes
-      // reflects only real time since resuming, not the whole idle
-      // duration. Safe here specifically because the window being visible
-      // means this callback keeps firing throughout the idle period.
-      if (!isPageVisible() || isIdleRef.current) {
-        lastFrame = now;
-        return;
-      }
-
-      if (now - lastFrame < MIN_FRAME_INTERVAL_MS) return;
-      currentAngle += ANGLE_PER_MS * (now - lastFrame);
-      lastFrame = now;
-      frameCount += 1;
-
-      const angle = currentAngle;
+    const drawFrame = (angle, forceFullRecompute) => {
       const cos = Math.cos(angle);
       const sin = Math.sin(angle);
       const currentById = new Map();
@@ -359,49 +373,202 @@ export function GuardianOrbGraph({ graph, loading, error }) {
       for (const node of baseNodes) {
         const projected = rotateNode(node, cos, sin);
         currentById.set(node.id, projected);
-        const circle = nodeElements.get(node.id);
-        if (circle) {
-          circle.setAttribute("cx", projected.x);
-          circle.setAttribute("cy", projected.y);
-          circle.setAttribute("r", node.r * (0.6 + projected.depth * 0.4));
-          circle.style.opacity = 0.45 + projected.depth * 0.55;
-        }
       }
 
-      if (frameCount % EDGE_UPDATE_EVERY_N_FRAMES === 0) {
-        for (const [key, line] of edgeElements) {
-          const [sourceId, targetId] = key.split("->");
-          const source = currentById.get(sourceId);
-          const target = currentById.get(targetId);
+      if (forceFullRecompute || frameCount % EDGE_UPDATE_EVERY_N_FRAMES === 0 || edgeCacheRef.current === null) {
+        const bandPaths = Array.from({ length: EDGE_DEPTH_BANDS }, () => new Path2D());
+        const bandDepthSum = new Array(EDGE_DEPTH_BANDS).fill(0);
+        const bandCount = new Array(EDGE_DEPTH_BANDS).fill(0);
+        for (const edge of graph.edges) {
+          const source = currentById.get(edge.source);
+          const target = currentById.get(edge.target);
           if (!source || !target) continue;
           const depth = (source.depth + target.depth) / 2;
-          line.setAttribute("x1", source.x);
-          line.setAttribute("y1", source.y);
-          line.setAttribute("x2", target.x);
-          line.setAttribute("y2", target.y);
-          line.style.opacity = 0.06 + depth * 0.14;
+          const band = Math.min(EDGE_DEPTH_BANDS - 1, Math.floor(depth * EDGE_DEPTH_BANDS));
+          bandPaths[band].moveTo(source.x, source.y);
+          bandPaths[band].lineTo(target.x, target.y);
+          bandDepthSum[band] += depth;
+          bandCount[band] += 1;
         }
+        edgeCacheRef.current = bandPaths
+          .map((path, band) => ({
+            path,
+            opacity: bandCount[band] > 0 ? 0.06 + (bandDepthSum[band] / bandCount[band]) * 0.14 : 0,
+          }))
+          .filter((band) => band.opacity > 0);
       }
 
-      // Periodic DOM re-sort for correct front/back occlusion
-      // (painter's algorithm) - appendChild on an already-attached node
-      // moves it to the end, so appending back-to-front reorders cheaply.
-      if (nodeGroup && now - lastResort >= RESORT_INTERVAL_MS) {
+      if (forceFullRecompute || now - lastResort >= RESORT_INTERVAL_MS || sortOrderRef.current === null) {
+        sortOrderRef.current = [...currentById.entries()].sort((a, b) => a[1].z - b[1].z).map(([id]) => id);
         lastResort = now;
-        const order = [...currentById.entries()].sort((a, b) => a[1].z - b[1].z);
-        for (const [id] of order) {
-          const circle = nodeElements.get(id);
-          if (circle) nodeGroup.appendChild(circle);
-        }
       }
+
+      // Hit-testing must search in the same back-to-front order nodes are
+      // actually painted in (sortOrderRef.current), not baseNodes' arbitrary
+      // iteration order - otherwise, for overlapping nodes, handlePointerMove
+      // could report a node the pointer isn't actually looking at instead of
+      // the frontmost visible one (Engineering Reviewer finding, ESR-0029
+      // WP2 post-implementation review). Built fresh from currentById every
+      // frame regardless of the resort-interval cache above, since hit
+      // targets must track each node's current rotated position, not a
+      // stale cached one.
+      const hitEntries = [];
+      for (const id of sortOrderRef.current) {
+        const projected = currentById.get(id);
+        const node = nodeById.get(id);
+        if (!projected || !node) continue;
+        hitEntries.push({ id, x: projected.x, y: projected.y, r: node.r * (0.6 + projected.depth * 0.4) });
+      }
+      hitTestRef.current = hitEntries;
+
+      ctx.clearRect(0, 0, SIZE, SIZE);
+
+      // Edges never need the circular clip below: forceContainCircle keeps
+      // every node within RADIUS of centre, rotation preserves each node's
+      // distance from centre (it moves points on a fixed sphere), and a
+      // disk is convex - a line between two points inside it never leaves
+      // it. Only node glow sprites (Section 4.3) can extend past RADIUS for
+      // nodes sitting right at the boundary, so only the node-drawing pass
+      // is clipped. This matters a great deal in practice, not just in
+      // principle: live-verified via Chrome DevTools Protocol TaskDuration
+      // against the real graph, clipping the edge-stroke calls too cost
+      // ~20 percentage points of one core on its own (clip-vs-complex-path
+      // intersection appears to be the expensive combination, not either
+      // alone) - confining the clip to the ~200 node draws instead of all
+      // ~1,745 edges was the single largest factor in this migration
+      // actually reducing cost versus the SVG baseline it replaces.
+      ctx.lineWidth = 0.4;
+      ctx.strokeStyle = "rgb(0, 239, 255)";
+      for (const band of edgeCacheRef.current) {
+        ctx.globalAlpha = 0.55 * band.opacity;
+        ctx.stroke(band.path);
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(CENTER, CENTER, RADIUS, 0, 2 * Math.PI);
+      ctx.clip();
+
+      for (const id of sortOrderRef.current) {
+        const projected = currentById.get(id);
+        const node = nodeById.get(id);
+        if (!projected || !node) continue;
+        const coreRadius = node.r * (0.6 + projected.depth * 0.4);
+        const depthAlpha = 0.45 + projected.depth * 0.55;
+        const color = colorForCluster(node.cluster, clusterOrder);
+        const sprite = glowSprites.get(color);
+
+        ctx.globalAlpha = depthAlpha;
+        if (sprite) {
+          const glowRadius = coreRadius * GLOW_RADIUS_MULTIPLIER;
+          ctx.drawImage(sprite, projected.x - glowRadius, projected.y - glowRadius, glowRadius * 2, glowRadius * 2);
+        }
+
+        ctx.beginPath();
+        ctx.arc(projected.x, projected.y, coreRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.lineWidth = 0.3;
+        ctx.strokeStyle = "rgb(2, 7, 9)";
+        ctx.stroke();
+      }
+
+      ctx.restore();
+      ctx.globalAlpha = 1;
+    };
+
+    // Canvas has no viewBox equivalent: SVG scaled the same 0-SIZE
+    // coordinate space to any rendered container size for free. Here the
+    // backing store is sized explicitly to the container's actual
+    // rendered CSS size x devicePixelRatio, then the context is scaled so
+    // drawFrame above can keep using the existing 0-SIZE coordinate math
+    // unchanged, regardless of the container's real pixel size.
+    const applySize = (renderedWidth, renderedHeight) => {
+      const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
+      const width = Math.max(1, Math.round(renderedWidth * dpr));
+      const height = Math.max(1, Math.round(renderedHeight * dpr));
+      canvas.width = width;
+      canvas.height = height;
+      const scale = Math.min(width, height) / SIZE;
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      drawFrame(currentAngle, true);
+    };
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      const { width, height } = entry.contentRect;
+      if (width > 0 && height > 0) applySize(width, height);
+    });
+    resizeObserver.observe(canvas);
+
+    // Initial size + first paint, before any rAF loop starts - Canvas has
+    // no declarative initial render the way JSX-rendered SVG elements did,
+    // so an explicit first draw is required regardless of animation state.
+    const rect = canvas.getBoundingClientRect();
+    applySize(rect.width || SIZE, rect.height || SIZE);
+
+    if (prefersReducedMotion) {
+      return () => resizeObserver.disconnect();
+    }
+
+    let lastFrame = startTime;
+
+    const handleVisibilityChange = () => {
+      if (isPageVisible()) lastFrame = performance.now();
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const tick = (frameNow) => {
+      frameId = requestAnimationFrame(tick);
+      now = frameNow;
+
+      if (!isPageVisible() || isIdleRef.current) {
+        lastFrame = frameNow;
+        return;
+      }
+
+      if (frameNow - lastFrame < MIN_FRAME_INTERVAL_MS) return;
+      currentAngle += ANGLE_PER_MS * (frameNow - lastFrame);
+      lastFrame = frameNow;
+      frameCount += 1;
+
+      drawFrame(currentAngle, false);
     };
 
     frameId = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(frameId);
+      resizeObserver.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [prefersReducedMotion, baseNodes]);
+  }, [prefersReducedMotion, baseNodes, clusterOrder, glowSprites, graph]);
+
+  const handlePointerMove = (event) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const localX = ((event.clientX - rect.left) / rect.width) * SIZE;
+    const localY = ((event.clientY - rect.top) / rect.height) * SIZE;
+
+    const hits = hitTestRef.current;
+    let found = null;
+    for (let i = hits.length - 1; i >= 0; i -= 1) {
+      const candidate = hits[i];
+      const dx = localX - candidate.x;
+      const dy = localY - candidate.y;
+      if (dx * dx + dy * dy <= candidate.r * candidate.r) {
+        found = candidate;
+        break;
+      }
+    }
+    canvas.title = found ? labelById.get(found.id) ?? "" : "";
+  };
+
+  const handlePointerLeave = () => {
+    const canvas = canvasRef.current;
+    if (canvas) canvas.title = "";
+  };
 
   if (error || loading || !graph) {
     // Loading/error states stay silent: this component should only add
@@ -411,60 +578,15 @@ export function GuardianOrbGraph({ graph, loading, error }) {
   }
 
   return (
-    <svg
-      viewBox={`0 0 ${SIZE} ${SIZE}`}
+    <canvas
+      ref={canvasRef}
+      width={SIZE}
+      height={SIZE}
       className="guardian-orb-graph"
       role="img"
       aria-label={`Guardian Orb: repository knowledge graph with ${graph.nodes.length} artefacts and ${graph.edges.length} relationships`}
-    >
-      <defs>
-        <clipPath id="guardian-orb-clip">
-          <circle cx={CENTER} cy={CENTER} r={RADIUS} />
-        </clipPath>
-      </defs>
-      <g clipPath="url(#guardian-orb-clip)">
-        <g className="guardian-orb-graph-edges">
-          {graph.edges.map((edge) => {
-            const source = initialPositionedById.get(edge.source);
-            const target = initialPositionedById.get(edge.target);
-            if (!source || !target) return null;
-            const depth = (source.depth + target.depth) / 2;
-            const key = `${edge.source}->${edge.target}`;
-            return (
-              <line
-                key={key}
-                ref={(el) => {
-                  if (el) edgeElementsRef.current.set(key, el);
-                  else edgeElementsRef.current.delete(key);
-                }}
-                x1={source.x}
-                y1={source.y}
-                x2={target.x}
-                y2={target.y}
-                style={{ opacity: 0.06 + depth * 0.14 }}
-              />
-            );
-          })}
-        </g>
-        <g className="guardian-orb-graph-nodes" ref={nodeGroupRef}>
-          {initialPositioned.map((node) => (
-            <circle
-              key={node.id}
-              ref={(el) => {
-                if (el) nodeElementsRef.current.set(node.id, el);
-                else nodeElementsRef.current.delete(node.id);
-              }}
-              cx={node.x}
-              cy={node.y}
-              r={node.r * (0.6 + node.depth * 0.4)}
-              fill={colorForCluster(node.cluster, clusterOrder)}
-              style={{ opacity: 0.45 + node.depth * 0.55 }}
-            >
-              <title>{node.label}</title>
-            </circle>
-          ))}
-        </g>
-      </g>
-    </svg>
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    />
   );
 }

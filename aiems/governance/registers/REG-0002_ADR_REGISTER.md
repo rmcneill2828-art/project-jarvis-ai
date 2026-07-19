@@ -2,7 +2,7 @@
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.12
+**Version:** 2.13
 
 ---
 
@@ -50,7 +50,7 @@ This register includes Architecture Decision Records relating to:
 | [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM]] | Sentinel AI Execution and Security Platform | Architecture | Approved | 8 Jul 2026 | - | Positioned Sentinel as the AI Execution and Security Platform for AIEMS, expanding the earlier trust-gateway interpretation while preserving the Guardian/Sentinel separation. |
 | [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE]] | UXP-Backend Integration Architecture | Architecture | Approved | 9 Jul 2026 | - | Selected a Tauri sidecar-managed Python process communicating over duplex stdio JSON-RPC as the UXP-to-backend integration pattern, over local HTTP/WebSocket, PyO3 embedding and a Rust/Node rewrite. |
 | [[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS]] | Sentinel Network Exposure Security Requirements | Architecture | Approved | 17 Jul 2026 | - | Defines a binding three-part security gate (authentication, rate limiting, TLS) any future network-facing Guardian/Sentinel interface proposal must satisfy before approval - no network interface exists today, this is a prerequisite gate, not implementation. |
-| [[ADR-0021_GUARDIAN_ORB_RENDERING_ENGINE]] | Guardian Orb Rendering Engine | Architecture | Approved | 18 Jul 2026 | - | Recommends migrating GuardianOrbGraph.jsx from SVG DOM rendering to Canvas 2D, grounded in ESR-0028 WP4's seven-round animation-performance optimisation evidence; rejects WebGL/a 3D library as disproportionate to current/anticipated scale. Decision only, no implementation authorised. |
+| [[ADR-0021_GUARDIAN_ORB_RENDERING_ENGINE]] | Guardian Orb Rendering Engine | Architecture | Approved-implemented | 18 Jul 2026 | - | Recommends migrating GuardianOrbGraph.jsx from SVG DOM rendering to Canvas 2D, grounded in ESR-0028 WP4's seven-round animation-performance optimisation evidence; rejects WebGL/a 3D library as disproportionate to current/anticipated scale. Implemented at ESR-0029 WP2 per EIP-ESR0029-001. |
 
 ---
 
@@ -164,6 +164,7 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 
 | Version | Date | Author | Summary |
 |---------|------------|----------------------------|-------------------------------------------------------------|
+| 2.13 | 19 July 2026 | Claude Engineering Implementer | ADR-0021 implementation recorded (1.3 to 1.4, Approved to Approved-implemented) - GuardianOrbGraph.jsx migrated to Canvas 2D at ESR-0029 WP2 per EIP-ESR0029-001. |
 | 2.12 | 18 July 2026 | Claude Engineering Implementer | ADR-0021 approved by the Programme Sponsor via the bridge (1.2 to 1.3, Draft to Approved) - Canvas 2D selected over continued SVG or WebGL/a 3D library for GuardianOrbGraph.jsx's rendering, decision only. |
 | 2.11 | 18 July 2026 | Claude Engineering Implementer | ADR-0021 revised (1.0 to 1.1) per Engineering Reviewer finding - corrected this register's own v2.10 entry, which overstated a still-Draft ADR's effect on EBG-0081. |
 | 2.10 | 18 July 2026 | Claude Engineering Implementer | Registered ADR-0021 Guardian Orb Rendering Engine (Draft), per ESR-0028 WP5, drafted to resolve the rendering-engine question EBG-0081 raises, pending Programme Sponsor approval - EBG-0081 itself remains Candidate Backlog, not yet updated. Not yet Engineering Reviewer or Programme Sponsor reviewed. |
