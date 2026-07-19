@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | [[ESR-0026_ENGINEERING_SESSION_REPORT|ESR-0026]] closed (17 July 2026) / Sentinel provider expansion and Memory & Network-Exposure architecture specifications |
+| Current Phase | [[ESR-0029_ENGINEERING_SESSION_REPORT|ESR-0029]] closed (19 July 2026) / Guardian Orb Canvas 2D rendering migration and GIA (Guardian Instrumentation Agent) Phase 1 local resource observability |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | Operational First Light (Tkinter) / Guardian Desktop Platform Shell (Tauri + React, live UXP-backend bridge) |
-| Current Engineering Focus | No engineering session currently open. [[ESR-0026_ENGINEERING_SESSION_REPORT|ESR-0026]] is the latest closed session, with [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] retained as the accepted repository baseline. See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
+| Current Engineering Focus | No engineering session currently open. [[ESR-0029_ENGINEERING_SESSION_REPORT|ESR-0029]] is the latest closed session, with [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] accepted as the current repository baseline, superseding RBL-0016. See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
 
 ---
 

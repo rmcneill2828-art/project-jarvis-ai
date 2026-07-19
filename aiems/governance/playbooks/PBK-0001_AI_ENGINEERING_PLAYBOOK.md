@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.28 |
+| Version | 1.29 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -555,7 +555,7 @@ This is a documentation architecture principle, not a software design principle.
 
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current programme status used during implementation session initialisation.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines the lightweight collaboration context that complements this playbook.
-* [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] records the current accepted repository baseline. [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
+* [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] records the current accepted repository baseline. [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
 * [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] is the forward-looking sequencing artefact referenced by Backlog Progression Analysis.
@@ -576,7 +576,7 @@ This is a documentation architecture principle, not a software design principle.
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact; its horizon placements inform Backlog Progression Analysis recommendations. |
-| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+| [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] | Current accepted repository baseline. |
 | [[HST-0023_CLAUDE_CHAT_SUMMARY|HST-0023]] | Final historical session record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[FCH-0023_CLAUDE_FULL_CHAT_HISTORY|FCH-0023]] | Final full chat historical evidence record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Historical session record retained for lineage; no longer the latest archive entry. |
@@ -590,6 +590,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.29 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP0A: corrected the stale RBL-0015 baseline reference (Related Artefacts, OSE Relationships) to RBL-0017, the accepted baseline since ESR-0029 WP9 - deferred at ESR-0029 WP0A/closure, caught up now per WP0A's own repository-synchronisation remit rather than deferred a third time. |
 | 1.28 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1, EBG-0058 (Complete) per [[EIP-ESR0028-001_AIEMS_PROCESS_HYGIENE_BATCH|EIP-ESR0028-001]]: consolidated the repository-operations-authorisation restatement, which appeared with zero added content in three places (Session Initialisation item 14, Repository Lifecycle opening sentence, Git Operations opening sentence) - item 14 retained as the canonical statement, the other two now cross-reference it. Working Report Lifecycle's closing sentence, a near-verbatim restatement of Principle 3, now cross-references Principle 3 directly instead of repeating it. Three other named EBG-0058 candidate clusters (Engineering Scope Control checklist, Operational Verification vs Validation Before Completion, Feature-First Delivery Discipline sub-clauses) reviewed and deliberately retained unchanged - each found to carry genuine distinct content, not restatement. Also corrected the stale RBL-0014 baseline reference (Related Artefacts, OSE Relationships) to RBL-0015, the accepted baseline since ESR-0022. |
 | 1.27 | 18 July 2026 | Claude Engineering Implementer | Corrected the OSE Relationships HST-0023/FCH-0023 breadcrumbs from "latest" to "final" - GDE-0001 Section 6.1 (new this version) discontinued new HST/FCH artefact creation for all future Engineering Sessions, formalising practice already true since ESR-0024. Programme Sponsor decision at ESR-0027 closure. |
 | 1.26 | 17 July 2026 | Claude Engineering Implementer | Corrected the OSE Relationships historical-archive breadcrumb, which still named the ESR-0020 artefacts (HST-0020, FCH-0020) as "latest" despite HST-0023/FCH-0023 (Claude) existing. HST-0023/FCH-0023 now carry the "latest" breadcrumb; HST-0020/FCH-0020 retained, reworded as lineage-only - same pattern as EIP-ESR0021-002. ESR-0023. |
