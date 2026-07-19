@@ -222,6 +222,9 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
         memory_percent=64.0,
         memory_used_mb=2048.0,
         memory_total_mb=4096.0,
+        disk_percent=28.7,
+        disk_used_gb=430.5,
+        disk_total_gb=1500.3,
         captured_at=captured_at,
     )
     server = StdioRpcServer(build_default_runtime(), gia_observer=_fake_gia_observer(fake_snapshot))
@@ -233,6 +236,9 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
         "memoryPercent": 64.0,
         "memoryUsedMb": 2048.0,
         "memoryTotalMb": 4096.0,
+        "diskPercent": 28.7,
+        "diskUsedGb": 430.5,
+        "diskTotalGb": 1500.3,
         "capturedAt": "2026-07-19T10:00:00+00:00",
     }
 
@@ -250,6 +256,9 @@ def test_gia_status_does_not_require_a_started_or_connected_runtime():
         memory_percent=2.0,
         memory_used_mb=3.0,
         memory_total_mb=4.0,
+        disk_percent=5.0,
+        disk_used_gb=6.0,
+        disk_total_gb=7.0,
         captured_at=datetime(2026, 7, 19, 10, 0, 0, tzinfo=timezone.utc),
     )
     server = StdioRpcServer(GuardianRuntime(), gia_observer=_fake_gia_observer(fake_snapshot))
@@ -275,6 +284,8 @@ def test_gia_status_defaults_to_the_real_psutil_backed_observer(tmp_path):
     assert 0.0 <= result["cpuPercent"] <= 100.0
     assert 0.0 <= result["memoryPercent"] <= 100.0
     assert result["memoryTotalMb"] >= result["memoryUsedMb"] > 0
+    assert 0.0 <= result["diskPercent"] <= 100.0
+    assert result["diskTotalGb"] >= result["diskUsedGb"] > 0
 
 
 def test_missing_params_defaults_to_empty_object(tmp_path):

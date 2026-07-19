@@ -12,11 +12,20 @@ class _FakeVirtualMemory:
         self.total = total
 
 
+class _FakeDiskUsage:
+    def __init__(self, percent: float, used: int, total: int) -> None:
+        self.percent = percent
+        self.used = used
+        self.total = total
+
+
 class _FakeResourceReader:
-    def __init__(self, cpu_percent: float, memory: _FakeVirtualMemory) -> None:
+    def __init__(self, cpu_percent: float, memory: _FakeVirtualMemory, disk: _FakeDiskUsage) -> None:
         self._cpu_percent = cpu_percent
         self._memory = memory
+        self._disk = disk
         self.cpu_percent_calls: list[float] = []
+        self.disk_usage_calls: list[str] = []
 
     def cpu_percent(self, interval: float) -> float:
         self.cpu_percent_calls.append(interval)
@@ -24,6 +33,10 @@ class _FakeResourceReader:
 
     def virtual_memory(self) -> _FakeVirtualMemory:
         return self._memory
+
+    def disk_usage(self, path: str) -> _FakeDiskUsage:
+        self.disk_usage_calls.append(path)
+        return self._disk
 
 
 class _FailingResourceReader:
@@ -34,10 +47,14 @@ class _FailingResourceReader:
     def virtual_memory(self) -> _FakeVirtualMemory:
         raise AssertionError("should not be called after cpu_percent fails")
 
+    def disk_usage(self, path: str) -> _FakeDiskUsage:
+        raise AssertionError("should not be called after cpu_percent fails")
+
 
 def test_local_resource_observer_returns_real_snapshot_from_injected_reader() -> None:
     memory = _FakeVirtualMemory(percent=42.5, used=4 * 1024 * 1024 * 1024, total=8 * 1024 * 1024 * 1024)
-    reader = _FakeResourceReader(cpu_percent=17.3, memory=memory)
+    disk = _FakeDiskUsage(percent=28.7, used=430 * 1024 * 1024 * 1024, total=1500 * 1024 * 1024 * 1024)
+    reader = _FakeResourceReader(cpu_percent=17.3, memory=memory, disk=disk)
     observer = LocalResourceObserver(reader=reader)
 
     snapshot = observer.snapshot()
@@ -47,13 +64,30 @@ def test_local_resource_observer_returns_real_snapshot_from_injected_reader() ->
     assert snapshot.memory_percent == 42.5
     assert snapshot.memory_used_mb == pytest.approx(4096.0)
     assert snapshot.memory_total_mb == pytest.approx(8192.0)
+    assert snapshot.disk_percent == 28.7
+    assert snapshot.disk_used_gb == pytest.approx(430.0)
+    assert snapshot.disk_total_gb == pytest.approx(1500.0)
     assert snapshot.captured_at.tzinfo is not None
     assert snapshot.captured_at <= datetime.now(timezone.utc)
 
 
+def test_local_resource_observer_reads_disk_usage_for_the_storage_path() -> None:
+    from jarvis.gia.observability import STORAGE_PATH
+
+    memory = _FakeVirtualMemory(percent=1.0, used=1, total=2)
+    disk = _FakeDiskUsage(percent=1.0, used=1, total=2)
+    reader = _FakeResourceReader(cpu_percent=0.0, memory=memory, disk=disk)
+    observer = LocalResourceObserver(reader=reader)
+
+    observer.snapshot()
+
+    assert reader.disk_usage_calls == [STORAGE_PATH]
+
+
 def test_local_resource_observer_samples_cpu_with_a_real_interval_not_zero() -> None:
     memory = _FakeVirtualMemory(percent=1.0, used=1, total=2)
-    reader = _FakeResourceReader(cpu_percent=0.0, memory=memory)
+    disk = _FakeDiskUsage(percent=1.0, used=1, total=2)
+    reader = _FakeResourceReader(cpu_percent=0.0, memory=memory, disk=disk)
     observer = LocalResourceObserver(reader=reader)
 
     observer.snapshot()
@@ -77,3 +111,6 @@ def test_local_resource_observer_defaults_to_the_real_psutil_reader() -> None:
     assert 0.0 <= snapshot.memory_percent <= 100.0
     assert snapshot.memory_used_mb > 0
     assert snapshot.memory_total_mb >= snapshot.memory_used_mb
+    assert 0.0 <= snapshot.disk_percent <= 100.0
+    assert snapshot.disk_used_gb > 0
+    assert snapshot.disk_total_gb >= snapshot.disk_used_gb

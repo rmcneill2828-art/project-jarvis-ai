@@ -239,6 +239,9 @@ class StdioRpcServer:
             "memoryPercent": snapshot.memory_percent,
             "memoryUsedMb": snapshot.memory_used_mb,
             "memoryTotalMb": snapshot.memory_total_mb,
+            "diskPercent": snapshot.disk_percent,
+            "diskUsedGb": snapshot.disk_used_gb,
+            "diskTotalGb": snapshot.disk_total_gb,
             "capturedAt": snapshot.captured_at.isoformat(),
         }
 

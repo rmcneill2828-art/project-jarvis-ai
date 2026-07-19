@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.248
+**Version:** 3.251
 
 
 ---
@@ -117,11 +117,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.248 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.251 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.13 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.95 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.97 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -169,6 +169,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0028-004 | Engineering Implementation Package | Guardian Orb 3D Rotation (EBG-0055 Phase 1.5) | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0029-001 | Engineering Implementation Package | Guardian Orb Canvas 2D Rendering Migration | 1.2 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0029-002 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1a: Local Resource Observability | 1.1 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0029-003 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1b: Storage State | 1.1 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -332,6 +333,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.251 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP4: addressed an Engineering Reviewer finding - EBG-0083's stale WP3-era "Scope of this item" wording contradicted the new WP4 delivery note in the same row; corrected. EIP-ESR0029-003 (1.0 to 1.1) and EBR-0001 (1.96 to 1.97) aligned. |
+| 3.250 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP4 implemented: EIP-ESR0029-003 (0.1 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.95 to 1.96, EBG-0083 Phase 1b Complete) aligned - GiaSnapshot/gia.status extended with real disk usage, 294 tests total. |
+| 3.249 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP4: registered [[EIP-ESR0029-003_GIA_PHASE1B_STORAGE_STATE|EIP-ESR0029-003]] (GIA Phase 1b: Storage State, 0.1, Draft) - not yet reviewed or approved. Extends WP3's GiaSnapshot/LocalResourceObserver with real disk usage, no new dependency. |
 | 3.248 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP3: addressed an Engineering Reviewer post-implementation finding - added an injectable gia_observer parameter to StdioRpcServer and rewrote RPC tests to assert exact serialization from a deterministic fake GiaSnapshot instead of real host state. EIP-ESR0029-002 (1.0 to 1.1) and EBR-0001 (1.94 to 1.95) aligned. |
 | 3.247 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP3 implemented: EIP-ESR0029-002 (0.2 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.93 to 1.94, EBG-0083 Phase 1a Complete) aligned following GIA's first real observability capability (jarvis/gia/observability.py, gia.status RPC method, new psutil dependency). |
 | 3.246 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP3: EIP-ESR0029-002 revised (0.1 to 0.2) addressing an Engineering Reviewer finding - narrowed an overstated GuardianRuntime-independence claim to method-level decoupling only, since run()'s existing startup sequence still requires GuardianRuntime to construct/start before any RPC method is reachable. |
