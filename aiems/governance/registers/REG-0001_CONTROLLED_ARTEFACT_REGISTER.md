@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.270
+**Version:** 3.271
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.270 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.271 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -225,6 +225,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0027 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0028 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0029 | Engineering Session Report | Engineering Session Report | 1.1 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0030 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -339,6 +340,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.271 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 formally closed. Registered [[ESR-0030_ENGINEERING_SESSION_REPORT|ESR-0030]] Engineering Session Report v1.0 covering WP0 (deferred sync-staleness fix), WP1 (Sponsor Approval Service implementation, three fix rounds), WP2 (genuine Sponsor-side Tailscale deployment, EBG-0084 complete in full), and session-wide WP3 (Pass after three self-inflicted fix rounds)/WP4 (Retain, RBL-0017 unchanged). |
 | 3.270 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP2 post-commit fix: EIP-ESR0030-001 (1.4 to 1.5) - addressed a Codex Low finding by adding a Current Status note distinguishing WP1-era body text from the now-satisfied deployment state; PST-0001 (2.63 to 2.64) - addressed a Codex Medium finding, Current Mode/Phase/Workflow/Objective and two further stale "session open" claims all rewritten to reflect ESR-0030 as the current open session. |
 | 3.269 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP2: EIP-ESR0030-001 (1.3 to 1.4) and EBR-0001 (1.103 to 1.104, EBG-0084 Complete in full) aligned - Programme Sponsor deployed the Sponsor Approval Service behind a real Tailscale address, holding the sponsor token exclusively on a genuinely separate device, confirmed via a real end-to-end approval from that device accepted by submit-response with zero Engineering Implementer involvement in the approval action. |
 | 3.268 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP1: EIP-ESR0030-001 (1.2 to 1.3) - addressed a Codex follow-up Low finding: fetch_latest_decision's null-decision check accepted any dict with decision: null regardless of the other three fields' presence/value, not matching the service's actual emitted shape exactly. Fixed to require repository_ref/timestamp/note all present and null. 4 new tests, 338 total. |
