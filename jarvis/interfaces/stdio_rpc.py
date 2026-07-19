@@ -242,6 +242,10 @@ class StdioRpcServer:
             "diskPercent": snapshot.disk_percent,
             "diskUsedGb": snapshot.disk_used_gb,
             "diskTotalGb": snapshot.disk_total_gb,
+            "processStatus": snapshot.process_status,
+            "processUptimeSeconds": snapshot.process_uptime_seconds,
+            "processCpuPercent": snapshot.process_cpu_percent,
+            "processMemoryMb": snapshot.process_memory_mb,
             "capturedAt": snapshot.captured_at.isoformat(),
         }
 

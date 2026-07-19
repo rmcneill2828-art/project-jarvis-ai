@@ -1,4 +1,4 @@
-"""GIA Phase 1a/1b: local resource observability (EBG-0083, EIP-ESR0029-002/003).
+"""GIA Phase 1a/1b/1c: local resource observability (EBG-0083, EIP-ESR0029-002/003/004).
 
 Distinct from `jarvis.gia.bootstrap` (GIA-BOOT, ESR-0012 WP3), which
 evaluates engineering-request readiness and has no connection to platform
@@ -7,6 +7,7 @@ telemetry. This module is GIA's first real observability slice.
 
 import logging
 import os
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Protocol
@@ -42,19 +43,25 @@ class GiaSnapshot:
     disk_percent: float
     disk_used_gb: float
     disk_total_gb: float
+    process_status: str
+    process_uptime_seconds: float
+    process_cpu_percent: float
+    process_memory_mb: float
     captured_at: datetime
 
 
 class ResourceReader(Protocol):
-    """Reads real host CPU/memory/disk state - implemented by `psutil` in
-    production, substitutable with a fake in tests so unit tests never
-    depend on the actual host machine's live resource state."""
+    """Reads real host CPU/memory/disk/process state - implemented by
+    `psutil` in production, substitutable with a fake in tests so unit
+    tests never depend on the actual host machine's live resource state."""
 
     def cpu_percent(self, interval: float) -> float: ...
 
     def virtual_memory(self) -> "VirtualMemory": ...
 
     def disk_usage(self, path: str) -> "DiskUsage": ...
+
+    def process_health(self, interval: float) -> "ProcessHealth": ...
 
 
 class VirtualMemory(Protocol):
@@ -73,6 +80,25 @@ class DiskUsage(Protocol):
     total: int
 
 
+class ProcessHealth(Protocol):
+    """Shape this module needs describing the JARVIS backend's own process -
+    self-observation only (`psutil.Process(os.getpid())`), never an
+    externally-specified PID."""
+
+    status: str
+    create_time: float
+    cpu_percent: float
+    memory_rss: int
+
+
+@dataclass(frozen=True)
+class _ProcessHealthSnapshot:
+    status: str
+    create_time: float
+    cpu_percent: float
+    memory_rss: int
+
+
 class PsutilResourceReader:
     """Default production reader, backed by the real `psutil` library."""
 
@@ -85,9 +111,19 @@ class PsutilResourceReader:
     def disk_usage(self, path: str) -> "DiskUsage":
         return psutil.disk_usage(path)
 
+    def process_health(self, interval: float) -> "ProcessHealth":
+        process = psutil.Process(os.getpid())
+        return _ProcessHealthSnapshot(
+            status=process.status(),
+            create_time=process.create_time(),
+            cpu_percent=process.cpu_percent(interval=interval),
+            memory_rss=process.memory_info().rss,
+        )
+
 
 class LocalResourceObserver:
-    """GIA Phase 1a/1b: observes and publishes real local CPU/memory/disk state.
+    """GIA Phase 1a/1b/1c: observes and publishes real local CPU/memory/disk/
+    process state.
 
     Per ESR-0011 Section 10, GIA "shall observe and publish state. It
     shall not become a policy engine, decision-maker or owner of platform
@@ -108,6 +144,7 @@ class LocalResourceObserver:
         cpu_percent = self._reader.cpu_percent(interval=CPU_SAMPLE_INTERVAL_SECONDS)
         memory = self._reader.virtual_memory()
         disk = self._reader.disk_usage(STORAGE_PATH)
+        process = self._reader.process_health(interval=CPU_SAMPLE_INTERVAL_SECONDS)
         snapshot = GiaSnapshot(
             cpu_percent=cpu_percent,
             memory_percent=memory.percent,
@@ -116,6 +153,10 @@ class LocalResourceObserver:
             disk_percent=disk.percent,
             disk_used_gb=disk.used / _BYTES_PER_GIGABYTE,
             disk_total_gb=disk.total / _BYTES_PER_GIGABYTE,
+            process_status=process.status,
+            process_uptime_seconds=time.time() - process.create_time,
+            process_cpu_percent=process.cpu_percent,
+            process_memory_mb=process.memory_rss / _BYTES_PER_MEGABYTE,
             captured_at=datetime.now(timezone.utc),
         )
         logger.info(
