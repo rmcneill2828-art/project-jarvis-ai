@@ -9,8 +9,8 @@
 | Package ID | EIP-ESR0030-001 |
 | Artefact ID | EIP-ESR0030-001 |
 | Title | Sponsor Approval Service Implementation |
-| Version | 0.2 |
-| Status | Draft |
+| Version | 1.0 |
+| Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | EBR-0001 (EBG-0084) |
@@ -181,5 +181,6 @@ Requesting Engineering Reviewer (Codex) pre-implementation design review via the
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 19 July 2026 | Claude Engineering Implementer | Approved by the Programme Sponsor via the bridge (`sponsor-decision`, `repository_ref: 09a95243c4bd5e3bd78d9c354ecaba10dcebca8c`, 19 July 2026 19:00:47Z), following Engineering Reviewer (Codex) confirmation: Pass, no findings on v0.2 - the overclaim finding resolved, technical design sound. Status promoted Draft to Approved. This is the last use of `sponsor-decision`; the service this package builds replaces it. |
 | 0.2 | 19 July 2026 | Claude Engineering Implementer | Addressed an Engineering Reviewer Medium finding: v0.1 overclaimed full ADR-0022/EBG-0084 closure (Sections 2, 3, 5 item 7, 13) while explicitly excluding actual Tailscale deployment (Decision item 6) as outside the Engineering Implementer's authority (Section 4.7) - an internal inconsistency. Narrowed every closure claim throughout to "code implementation Complete, Tailscale deployment pending Programme Sponsor acceptance," and added Section 9 item 4 defining a checkable Sponsor-side deployment-acceptance step as the actual prerequisite to marking EBG-0084 Complete in full. No scope, file list, or technical design change - wording/claim-accuracy only. |
 | 0.1 | 19 July 2026 | Claude Engineering Implementer | Initial draft created for ESR-0030 WP1, implementing ADR-0022 in full: stdlib-only (no new dependency) HTTP service with SQLite persistence, `sponsor_client.py`, and the `aiems_bridge.py` diff replacing transcript-based sponsor-decision with a fetch from the new service. Not yet Engineering Reviewer or Programme Sponsor reviewed. |
