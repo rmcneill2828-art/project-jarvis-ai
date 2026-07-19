@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.267
+**Version:** 3.268
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.267 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.268 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -174,7 +174,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0029-003 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1b: Storage State | 1.1 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0029-004 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1c: Process Health | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0029-005 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1d: Local Engineering-Environment State | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0030-001 | Engineering Implementation Package | Sponsor Approval Service Implementation | 1.2 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0030-001 | Engineering Implementation Package | Sponsor Approval Service Implementation | 1.3 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -339,6 +339,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.268 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP1: EIP-ESR0030-001 (1.2 to 1.3) - addressed a Codex follow-up Low finding: fetch_latest_decision's null-decision check accepted any dict with decision: null regardless of the other three fields' presence/value, not matching the service's actual emitted shape exactly. Fixed to require repository_ref/timestamp/note all present and null. 4 new tests, 338 total. |
 | 3.267 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP1: EIP-ESR0030-001 (1.1 to 1.2) - addressed two Codex post-commit findings: an unsafe `--host 0.0.0.0` bind was possible despite the module's own stated loopback-only boundary, fixed with an enforced `_is_safe_bind_host` check; `fetch_latest_decision` conflated a non-dict malformed payload with a genuine null-decision response, fixed to distinguish them. 19 new tests, 334 total. |
 | 3.266 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP1 implemented: EIP-ESR0030-001 (1.0 to 1.1, Approved to Approved-implemented) and EBR-0001 (1.102 to 1.103, EBG-0084 code-complete/deployment-pending) aligned - Sponsor Approval Service delivered (stdlib-only HTTP service, sponsor_client.py, aiems_bridge.py diff), 315 tests total, live-verified against a real 127.0.0.1 instance including a genuine connection-draining bug found and fixed. |
 | 3.265 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP1: EIP-ESR0030-001 (0.2 to 1.0, Draft to Approved) - Programme Sponsor approved via the bridge following Codex's Pass/no-findings confirmation. Last use of sponsor-decision; implementation of the replacement service follows. |

@@ -491,6 +491,34 @@ def test_fetch_latest_decision_raises_on_non_dict_payload(monkeypatch, malformed
         fetch_latest_decision("ESR-0030", "WP1")
 
 
+@pytest.mark.parametrize(
+    "inconsistent_null_payload",
+    [
+        {"decision": None, "repository_ref": "deadbeef", "timestamp": None, "note": None},
+        {"decision": None, "repository_ref": None, "timestamp": "2026-07-19T00:00:00Z", "note": None},
+        {"decision": None, "repository_ref": None, "timestamp": None, "note": "unexpected"},
+        {"decision": None},
+    ],
+)
+def test_fetch_latest_decision_raises_on_inconsistent_null_decision_shape(monkeypatch, inconsistent_null_payload):
+    """Engineering Reviewer follow-up Low finding, addressed: a dict with
+    decision: null must match the service's actual emitted shape exactly
+    (every other field also null) to be treated as a genuine absence of
+    approval - any other field being non-null (or simply missing) means
+    the response doesn't match what sponsor_approval_service.py's do_GET
+    actually emits, and must be treated as malformed instead."""
+
+    monkeypatch.setenv("AIEMS_AGENT_TOKEN", "agent-secret")
+    monkeypatch.setenv("AIEMS_SPONSOR_URL", "http://127.0.0.1:8765")
+    monkeypatch.setattr(
+        "scripts.aiems_bridge.urllib.request.urlopen",
+        lambda request, timeout: _FakeResponse(json.dumps(inconsistent_null_payload).encode()),
+    )
+
+    with pytest.raises(BridgeError, match="malformed response"):
+        fetch_latest_decision("ESR-0030", "WP1")
+
+
 def test_fetch_latest_decision_raises_on_dict_missing_required_fields(monkeypatch):
     """A decision value present but the record otherwise incomplete (e.g.
     missing repository_ref) must also be treated as malformed, not

@@ -274,6 +274,22 @@ def fetch_latest_decision(session: str, work_package: str) -> RemoteDecision | N
         msg = "Sponsor Approval Service returned a malformed response."
         raise BridgeError(msg)
     if payload.get("decision") is None:
+        # sponsor_approval_service.py's do_GET emits exactly
+        # {"decision": None, "repository_ref": None, "timestamp": None,
+        # "note": None} when no decision exists yet (Section 5 item 1) -
+        # every other field must be both PRESENT and null to match that
+        # shape. A field missing entirely (e.g. {"decision": None} alone)
+        # is indistinguishable from one explicitly set to null via a bare
+        # `.get()` default, so presence is checked separately from value
+        # (Engineering Reviewer follow-up finding, addressed: the first fix
+        # only caught non-dict payloads, not a dict with an inconsistent or
+        # incomplete null shape).
+        other_fields = ("repository_ref", "timestamp", "note")
+        if not all(key in payload for key in other_fields) or any(
+            payload[key] is not None for key in other_fields
+        ):
+            msg = "Sponsor Approval Service returned a malformed response."
+            raise BridgeError(msg)
         return None
     try:
         return RemoteDecision(
