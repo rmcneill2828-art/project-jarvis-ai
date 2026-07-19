@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.255
+**Version:** 3.257
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.255 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.257 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.100 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.101 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -172,6 +172,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0029-002 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1a: Local Resource Observability | 1.1 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0029-003 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1b: Storage State | 1.1 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0029-004 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1c: Process Health | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0029-005 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1d: Local Engineering-Environment State | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -335,6 +336,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.257 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP7 implemented: EIP-ESR0029-005 (0.1 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.100 to 1.101, EBG-0083 Phase 1 Complete in full) aligned - GiaSnapshot/gia.status extended with local engineering-environment tool presence, 295 tests total, live-verified against both running and not-running states. |
+| 3.256 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP7: registered [[EIP-ESR0029-005_GIA_PHASE1D_ENGINEERING_ENVIRONMENT_STATE|EIP-ESR0029-005]] (GIA Phase 1d: Local Engineering-Environment State, 0.1, Draft) - not yet reviewed or approved. Extends WP3/WP4/WP6's GiaSnapshot/LocalResourceObserver with presence detection for a small, fixed, disclosed list of named engineering tools (VS Code, Obsidian, GitHub Desktop, ChatGPT Desktop), no new dependency. |
 | 3.255 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP6 implemented: EIP-ESR0029-004 (0.1 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.99 to 1.100, EBG-0083 Phase 1c Complete) aligned - GiaSnapshot/gia.status extended with the JARVIS backend's own process health, 294 tests total, live-verified. |
 | 3.254 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP6: registered [[EIP-ESR0029-004_GIA_PHASE1C_PROCESS_HEALTH|EIP-ESR0029-004]] (GIA Phase 1c: Process Health, 0.1, Draft) - not yet reviewed or approved. Extends WP3/WP4's GiaSnapshot/LocalResourceObserver with the JARVIS backend's own process health (self-observation only), no new dependency. |
 | 3.253 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP5: ADR-0022 (1.0 to 1.1, Draft to Approved), REG-0002 (2.14 to 2.15) and EBR-0001 (1.98 to 1.99) aligned - Sponsor Approval Service architecture decision approved by the Programme Sponsor, decision only, implementation remains separate future work. |

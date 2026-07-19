@@ -229,6 +229,7 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
         process_uptime_seconds=120.5,
         process_cpu_percent=3.2,
         process_memory_mb=64.0,
+        engineering_tools_running={"vscode": True, "obsidian": False, "githubDesktop": False, "chatgpt": True},
         captured_at=captured_at,
     )
     server = StdioRpcServer(build_default_runtime(), gia_observer=_fake_gia_observer(fake_snapshot))
@@ -247,6 +248,7 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
         "processUptimeSeconds": 120.5,
         "processCpuPercent": 3.2,
         "processMemoryMb": 64.0,
+        "engineeringToolsRunning": {"vscode": True, "obsidian": False, "githubDesktop": False, "chatgpt": True},
         "capturedAt": "2026-07-19T10:00:00+00:00",
     }
 
@@ -271,6 +273,7 @@ def test_gia_status_does_not_require_a_started_or_connected_runtime():
         process_uptime_seconds=8.0,
         process_cpu_percent=9.0,
         process_memory_mb=10.0,
+        engineering_tools_running={"vscode": True, "obsidian": False, "githubDesktop": False, "chatgpt": False},
         captured_at=datetime(2026, 7, 19, 10, 0, 0, tzinfo=timezone.utc),
     )
     server = StdioRpcServer(GuardianRuntime(), gia_observer=_fake_gia_observer(fake_snapshot))
@@ -302,6 +305,8 @@ def test_gia_status_defaults_to_the_real_psutil_backed_observer(tmp_path):
     assert result["processUptimeSeconds"] >= 0
     assert result["processCpuPercent"] >= 0.0
     assert result["processMemoryMb"] > 0
+    assert set(result["engineeringToolsRunning"]) == {"vscode", "obsidian", "githubDesktop", "chatgpt"}
+    assert all(isinstance(value, bool) for value in result["engineeringToolsRunning"].values())
 
 
 def test_missing_params_defaults_to_empty_object(tmp_path):

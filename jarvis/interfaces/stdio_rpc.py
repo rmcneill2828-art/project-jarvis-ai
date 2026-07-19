@@ -246,6 +246,7 @@ class StdioRpcServer:
             "processUptimeSeconds": snapshot.process_uptime_seconds,
             "processCpuPercent": snapshot.process_cpu_percent,
             "processMemoryMb": snapshot.process_memory_mb,
+            "engineeringToolsRunning": dict(snapshot.engineering_tools_running),
             "capturedAt": snapshot.captured_at.isoformat(),
         }
 
