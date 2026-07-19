@@ -154,7 +154,7 @@ No drift found between the approved state and the actual repository. No findings
 
 ## 11. WP9 Baseline Acceptance Result
 
-Pending Programme Sponsor determination, informed by both independent views in Section 9 (converged: cut new baseline `RBL-0017`).
+**Accept - new baseline established.** The Programme Sponsor determined at ESR-0029 WP9 to accept a new baseline, [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]], superseding RBL-0016, agreeing with both independent views in Section 9. Recorded in `RBL-0017_REPOSITORY_BASELINE.md` (v1.0, Accepted), registered in REG-0001 (v3.257 to v3.258), with PST-0001's Current Repository Baseline references updated accordingly (v2.58 to v2.59).
 
 ---
 
@@ -180,5 +180,6 @@ Pending Programme Sponsor determination, informed by both independent views in S
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 19 July 2026 | Claude Engineering Implementer | Recorded the Programme Sponsor's WP9 determination: Accept - new baseline `RBL-0017` established, superseding RBL-0016 (Section 11), following a Codex post-commit review finding that v0.2 still described the acceptance as pending after the accepting commit had already landed. |
 | 0.2 | 19 July 2026 | Claude Engineering Implementer | Recorded Engineering Reviewer (Codex) independent verification result: Pass / no findings, no drift found, full convergence with the Engineering Implementer's own view that a new baseline `RBL-0017` is warranted. Awaiting Programme Sponsor WP9 baseline acceptance determination. |
 | 0.1 | 19 July 2026 | Claude Engineering Implementer | Drafted ESR-0029 WP8 Independent Repository Verification handover, covering the full session diff (`1df2802`..`8530604`) across seven Work Packages. Records repository state, authorised working set, session observations (WP2's real performance-defect-found-and-fixed cycle, GIA's four-phase staged delivery with two genuine defects found and fixed, ADR-0022's operational-practice finding), validation evidence, and an independent baseline view (cut new baseline `RBL-0017`, given both a Guardian Orb rendering-engine change comparable to `RBL-0016`'s own trigger and a genuinely new backend capability GIA introduces). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
