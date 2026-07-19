@@ -4,12 +4,17 @@ approval moved to a remote service per ADR-0022/EIP-ESR0030-001).
 No test invokes a real claude/codex CLI process or the real automated test
 suite recursively - capture_repository_ref, capture_evidence and
 run_preflight are monkeypatched to fast, deterministic fakes throughout.
-fetch_latest_decision is monkeypatched too, so no test starts a real
-Sponsor Approval Service (that is covered by test_sponsor_approval_service.py
-instead) - this file exercises cmd_submit_response's own logic in isolation.
+fetch_latest_decision is monkeypatched away for cmd_submit_response's own
+tests (below), so no test starts a real Sponsor Approval Service for those
+(that live integration is covered by test_sponsor_approval_service.py
+instead) - but fetch_latest_decision's own JSON-parsing/malformed-response
+logic is exercised directly, with only urllib.request.urlopen mocked, in
+the dedicated section near the bottom of this file.
 """
 
 from __future__ import annotations
+
+import json
 
 import pytest
 
@@ -24,6 +29,7 @@ from scripts.aiems_bridge import (
     cmd_submit_response,
     cmd_submit_to_review,
     exchange_root,
+    fetch_latest_decision,
     parse_handover,
     read_transcript,
 )
@@ -414,3 +420,96 @@ def test_run_preflight_invokes_subprocess_with_shell_true_on_windows(monkeypatch
     assert ["claude", "--version"] in [args for args, _ in calls]
     assert ["codex", "--version"] in [args for args, _ in calls]
     assert ["codex", "login", "status"] in [args for args, _ in calls]
+
+
+# --- fetch_latest_decision's own JSON handling, mocking only urlopen ---
+# (cmd_submit_response's tests above monkeypatch fetch_latest_decision
+# itself, so they never exercise this parsing logic - these tests do.)
+
+
+class _FakeResponse:
+    def __init__(self, payload_bytes: bytes) -> None:
+        self._payload_bytes = payload_bytes
+
+    def read(self) -> bytes:
+        return self._payload_bytes
+
+    def __enter__(self) -> "_FakeResponse":
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        return None
+
+
+def test_fetch_latest_decision_returns_none_for_valid_null_decision(monkeypatch):
+    monkeypatch.setenv("AIEMS_AGENT_TOKEN", "agent-secret")
+    monkeypatch.setenv("AIEMS_SPONSOR_URL", "http://127.0.0.1:8765")
+    monkeypatch.setattr(
+        "scripts.aiems_bridge.urllib.request.urlopen",
+        lambda request, timeout: _FakeResponse(
+            json.dumps({"decision": None, "repository_ref": None, "timestamp": None, "note": None}).encode()
+        ),
+    )
+
+    assert fetch_latest_decision("ESR-0030", "WP1") is None
+
+
+def test_fetch_latest_decision_returns_record_for_a_real_decision(monkeypatch):
+    monkeypatch.setenv("AIEMS_AGENT_TOKEN", "agent-secret")
+    monkeypatch.setenv("AIEMS_SPONSOR_URL", "http://127.0.0.1:8765")
+    monkeypatch.setattr(
+        "scripts.aiems_bridge.urllib.request.urlopen",
+        lambda request, timeout: _FakeResponse(
+            json.dumps(
+                {"decision": "approve", "repository_ref": "deadbeef", "timestamp": "2026-07-19T00:00:00Z", "note": "ok"}
+            ).encode()
+        ),
+    )
+
+    result = fetch_latest_decision("ESR-0030", "WP1")
+
+    assert result == RemoteDecision(
+        decision="approve", repository_ref="deadbeef", timestamp="2026-07-19T00:00:00Z", note="ok"
+    )
+
+
+@pytest.mark.parametrize("malformed_payload", [[], "just a string", 42, True])
+def test_fetch_latest_decision_raises_on_non_dict_payload(monkeypatch, malformed_payload):
+    """Engineering Reviewer Low finding, addressed: a non-dict JSON response
+    (e.g. a bare list) must be treated as a malformed service response, not
+    silently folded into the same 'no decision recorded' case a genuine
+    {"decision": null, ...} reply represents."""
+
+    monkeypatch.setenv("AIEMS_AGENT_TOKEN", "agent-secret")
+    monkeypatch.setenv("AIEMS_SPONSOR_URL", "http://127.0.0.1:8765")
+    monkeypatch.setattr(
+        "scripts.aiems_bridge.urllib.request.urlopen",
+        lambda request, timeout: _FakeResponse(json.dumps(malformed_payload).encode()),
+    )
+
+    with pytest.raises(BridgeError, match="malformed response"):
+        fetch_latest_decision("ESR-0030", "WP1")
+
+
+def test_fetch_latest_decision_raises_on_dict_missing_required_fields(monkeypatch):
+    """A decision value present but the record otherwise incomplete (e.g.
+    missing repository_ref) must also be treated as malformed, not
+    partially trusted."""
+
+    monkeypatch.setenv("AIEMS_AGENT_TOKEN", "agent-secret")
+    monkeypatch.setenv("AIEMS_SPONSOR_URL", "http://127.0.0.1:8765")
+    monkeypatch.setattr(
+        "scripts.aiems_bridge.urllib.request.urlopen",
+        lambda request, timeout: _FakeResponse(json.dumps({"decision": "approve"}).encode()),
+    )
+
+    with pytest.raises(BridgeError, match="malformed response"):
+        fetch_latest_decision("ESR-0030", "WP1")
+
+
+def test_fetch_latest_decision_raises_when_tokens_or_url_missing(monkeypatch):
+    monkeypatch.delenv("AIEMS_AGENT_TOKEN", raising=False)
+    monkeypatch.delenv("AIEMS_SPONSOR_URL", raising=False)
+
+    with pytest.raises(BridgeError, match="must both be set"):
+        fetch_latest_decision("ESR-0030", "WP1")

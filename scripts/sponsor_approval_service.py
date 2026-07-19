@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import hmac
+import ipaddress
 import json
 import os
 import re
@@ -304,6 +305,27 @@ def build_handler_class(
     return Handler
 
 
+def _is_safe_bind_host(host: str) -> bool:
+    """Reject any bind address that isn't loopback-only.
+
+    This service's entire security model assumes it is reachable only via
+    127.0.0.1 directly, or a private Tailscale address forwarded to a
+    loopback port by `tailscale serve` - never by binding to a
+    publicly/LAN-reachable interface itself (ADR-0022 Decision item 6).
+    `--host 0.0.0.0` (or any other non-loopback address) would silently
+    expose both routes on every interface, bypassing that boundary
+    entirely - an Engineering Reviewer post-commit finding, addressed by
+    enforcing this in code rather than only stating it in the docstring.
+    """
+
+    if host == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
+
+
 def build_server(
     host: str = DEFAULT_HOST,
     port: int = DEFAULT_PORT,
@@ -317,6 +339,15 @@ def build_server(
     this way so tests can bind on an ephemeral port, hand the server to a
     background thread, and shut it down deterministically.
     """
+
+    if not _is_safe_bind_host(host):
+        msg = (
+            f"Refusing to bind to {host!r}: only loopback addresses (127.0.0.1, ::1, "
+            "localhost) are permitted. Reach this service from other machines via a "
+            "private Tailscale address forwarded with `tailscale serve`, never by "
+            "binding directly to a non-loopback interface (ADR-0022 Decision item 6)."
+        )
+        raise ServiceError(msg)
 
     resolved_agent_token = agent_token if agent_token is not None else os.environ.get("AIEMS_AGENT_TOKEN")
     resolved_sponsor_token = (

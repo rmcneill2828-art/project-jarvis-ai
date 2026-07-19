@@ -264,7 +264,16 @@ def fetch_latest_decision(session: str, work_package: str) -> RemoteDecision | N
         msg = "Sponsor Approval Service returned a malformed response."
         raise BridgeError(msg) from exc
 
-    if not isinstance(payload, dict) or payload.get("decision") is None:
+    if not isinstance(payload, dict):
+        # A valid "no decision recorded yet" response is always a dict with
+        # decision: null (Section below) - anything else (a list, a bare
+        # string/number, etc.) is a malformed response, not an absence of
+        # decision, and must not be silently treated as "no approval" via
+        # the same code path as a genuine null-decision reply (Engineering
+        # Reviewer finding, addressed).
+        msg = "Sponsor Approval Service returned a malformed response."
+        raise BridgeError(msg)
+    if payload.get("decision") is None:
         return None
     try:
         return RemoteDecision(

@@ -16,7 +16,13 @@ import urllib.request
 
 import pytest
 
-from scripts.sponsor_approval_service import DecisionRecord, DecisionStore, build_server
+from scripts.sponsor_approval_service import (
+    DecisionRecord,
+    DecisionStore,
+    ServiceError,
+    _is_safe_bind_host,
+    build_server,
+)
 
 
 @pytest.fixture
@@ -211,6 +217,52 @@ def test_get_route_never_creates_a_record_regardless_of_repeated_calls(_service)
 
     _, payload = _get(_service, "ESR-0030", "WP1", "agent-secret")
     assert payload == {"decision": None, "repository_ref": None, "timestamp": None, "note": None}
+
+
+@pytest.mark.parametrize("unsafe_host", ["0.0.0.0", "::", "192.168.1.5", "example.com"])
+def test_is_safe_bind_host_rejects_non_loopback_addresses(unsafe_host):
+    """Engineering Reviewer Medium finding, addressed: the module's own
+    docstring says this service must never bind to a non-loopback
+    interface, but nothing previously enforced that - `--host 0.0.0.0`
+    would have silently exposed both routes on every interface."""
+
+    assert _is_safe_bind_host(unsafe_host) is False
+
+
+@pytest.mark.parametrize("safe_host", ["127.0.0.1", "::1", "localhost"])
+def test_is_safe_bind_host_accepts_loopback_addresses(safe_host):
+    assert _is_safe_bind_host(safe_host) is True
+
+
+@pytest.mark.parametrize("unsafe_host", ["0.0.0.0", "192.168.1.5"])
+def test_build_server_refuses_unsafe_bind_hosts(tmp_path, unsafe_host):
+    with pytest.raises(ServiceError, match="loopback"):
+        build_server(
+            host=unsafe_host,
+            port=0,
+            db_path=tmp_path / "sponsor_decisions.db",
+            agent_token="agent-secret",
+            sponsor_token="sponsor-secret",
+        )
+
+
+@pytest.mark.parametrize("safe_host", ["127.0.0.1", "localhost"])
+def test_build_server_accepts_and_binds_practically_reachable_loopback_hosts(tmp_path, safe_host):
+    """::1 is a valid loopback address per _is_safe_bind_host (tested
+    above) but ThreadingHTTPServer's default AF_INET address family cannot
+    actually bind an IPv6 literal on this platform - out of scope to add
+    IPv6 server support for a service ADR-0022 only ever describes via
+    127.0.0.1/Tailscale IPv4 addresses, so only the hosts this server can
+    genuinely bind are exercised end-to-end here."""
+
+    server = build_server(
+        host=safe_host,
+        port=0,
+        db_path=tmp_path / "sponsor_decisions.db",
+        agent_token="agent-secret",
+        sponsor_token="sponsor-secret",
+    )
+    server.server_close()
 
 
 def test_decisions_persist_across_store_reopen(tmp_path):
