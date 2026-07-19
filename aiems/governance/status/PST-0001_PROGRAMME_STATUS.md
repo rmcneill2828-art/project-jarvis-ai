@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.60
+**Version:** 2.61
 
 ---
 
@@ -65,8 +65,8 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.1, refreshed and accepted at ESR-0020 WP4 - not yet refreshed to reflect ESR-0027 WP1's Personal Memory implementation; still shows Memory as not implemented pending a future refresh pass. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
 | Current Phase | ESR-0029 open, through WP9 (Repository Baseline Acceptance, RBL-0017 established); its Engineering Session Report has not yet been authored so the session is not yet formally closed - under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0028 continued the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` across five Work Packages - now confirmed repeatable across a third consecutive session. |
-| Current Engineering Objective | ESR-0028 closed (EBG-0058/0005/0068/0071/0017/0045/0049/0024/0055 and ADR-0021 all Complete/Approved). No new session is opened by this status update - the next Engineering Session's objective is for the Programme Sponsor to select. |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0029 has continued the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` across seven Work Packages plus session-wide WP8/WP9 - now confirmed repeatable across a fourth consecutive session (ESR-0026, ESR-0027, ESR-0028, ESR-0029). |
+| Current Engineering Objective | ESR-0029 through WP9 (EBG-0082, EBG-0083 Phase 1, ADR-0021 implementation and ADR-0022 decision all Complete/Approved; RBL-0017 accepted). Its Engineering Session Report has not yet been authored, so ESR-0029 is not yet formally closed and no new session is opened by this status update - authoring that report and closing ESR-0029 is the immediate next step. |
 
 ---
 
@@ -676,6 +676,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 # Version History
 
+| 2.61 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP9 second post-commit fix - addressed a further Codex Medium finding: Current Workflow and Current Engineering Objective still described ESR-0028 as the current/closed session with no new session opened, directly conflicting with the Current Mode/Phase rows already corrected in 2.60. Both rows rewritten to describe ESR-0029 as the current, not-yet-formally-closed session through WP9. |
 | 2.60 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP9 post-commit fix - addressed a Codex Medium finding: Current Mode and Current Phase still said ESR-0028 was the latest closed session and no further session had been opened, directly contradicting the adjacent Current Repository Baseline row (RBL-0017, accepted at ESR-0029 WP9) added in 2.59. Both rows rewritten to state ESR-0029 is the current, not-yet-formally-closed session, through WP9 (baseline accepted), with its Engineering Session Report still pending. |
 | 2.59 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP9: RBL-0017 accepted (new baseline, superseding RBL-0016) - Programme Sponsor determination, agreeing with both independent WP8 views (Guardian Orb Canvas 2D migration + GIA Phase 1 observability judged at least comparable in substance to RBL-0016's own trigger). Updated Current Repository Baseline references (Current Repository Baseline field, Section 8, Section 9, Session Start Guidance item 2/closing line, OSE Relationships row). Disclosed but not fixed: Section 8's "Current Engineering Session" narrative rows still describe ESR-0026, stale since ESR-0027/ESR-0028/ESR-0029 - flagged for a future catch-up given its scope. |
 | 2.58 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 formally closed (18 July 2026). Authored [[ESR-0028_ENGINEERING_SESSION_REPORT|ESR-0028]] Engineering Session Report v1.0 covering WP0 (two pre-WP1 corrections, four-WP objective selection), WP1-WP5 (process hygiene, product requirements backlog identification, cost framework, Guardian Orb 3D rotation with seven fix rounds, rendering-engine decision), and session-wide WP6 (Pass)/WP7 (Accept, new baseline RBL-0016 established). Updated Current Mode/Phase/Workflow/Objective (ESR-0028 closed, no session currently open), Current Engineering Focus (full session summary), Session Start Guidance (items 2/7 and closing line retargeted to ESR-0028/RBL-0016), and OSE Relationships (ESR-0028 and ESR-0027 both added, closing a pre-existing gap where ESR-0027 had never been added). |

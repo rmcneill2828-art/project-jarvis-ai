@@ -154,7 +154,7 @@ No drift found between the approved state and the actual repository. No findings
 
 ## 11. WP9 Baseline Acceptance Result
 
-**Accept - new baseline established.** The Programme Sponsor determined at ESR-0029 WP9 to accept a new baseline, [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]], superseding RBL-0016, agreeing with both independent views in Section 9. Recorded in `RBL-0017_REPOSITORY_BASELINE.md` (v1.0, Accepted), registered in REG-0001 (v3.257 to v3.258), with PST-0001's Current Repository Baseline references updated accordingly (v2.58 to v2.59).
+**Accept - new baseline established.** The Programme Sponsor determined at ESR-0029 WP9 to accept a new baseline, [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]], superseding RBL-0016, agreeing with both independent views in Section 9. Recorded in `RBL-0017_REPOSITORY_BASELINE.md` (v1.0, Accepted), registered in REG-0001 (v3.257 to v3.258), with PST-0001's Current Repository Baseline references updated accordingly (v2.58 to v2.60, the latter two steps addressing Codex post-commit findings that adjacent top-level current-state rows remained stale after the baseline-reference-only pass).
 
 ---
 
