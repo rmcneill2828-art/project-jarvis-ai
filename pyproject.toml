@@ -3,6 +3,9 @@ name = "jarvis"
 version = "0.1.0"
 description = "JARVIS AI Platform"
 requires-python = ">=3.12"
+dependencies = [
+    "psutil>=6.0",
+]
 
 [tool.ruff]
 line-length = 100

@@ -1,4 +1,4 @@
-"""Guardian Instrumentation Agent bootstrap interfaces."""
+"""Guardian Instrumentation Agent bootstrap and observability interfaces."""
 
 from jarvis.gia.bootstrap import (
     EngineeringReadinessContext,
@@ -6,10 +6,13 @@ from jarvis.gia.bootstrap import (
     GiaBootstrap,
     ReadinessState,
 )
+from jarvis.gia.observability import GiaSnapshot, LocalResourceObserver
 
 __all__ = [
     "EngineeringReadinessContext",
     "EngineeringRequest",
     "GiaBootstrap",
+    "GiaSnapshot",
+    "LocalResourceObserver",
     "ReadinessState",
 ]

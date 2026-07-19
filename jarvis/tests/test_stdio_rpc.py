@@ -2,7 +2,9 @@
 
 import io
 import json
+from datetime import datetime, timezone
 
+from jarvis.gia.observability import GiaSnapshot
 from jarvis.interfaces.stdio_rpc import (
     INTERNAL_ERROR,
     INVALID_PARAMS,
@@ -195,6 +197,84 @@ def test_knowledge_graph_returns_real_repository_data(tmp_path):
     node_ids = {node["id"] for node in response["result"]["nodes"]}
     assert "README.md" in node_ids
     assert len(response["result"]["edges"]) > 0
+
+
+def _fake_gia_observer(snapshot: GiaSnapshot):
+    class _FakeObserver:
+        def snapshot(self) -> GiaSnapshot:
+            return snapshot
+
+    return _FakeObserver()
+
+
+def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp_path):
+    """EBG-0083 Phase 1a (EIP-ESR0029-002 Section 4.6/5.5): the RPC
+    serialization/shape path must be proven against a deterministic fake
+    snapshot, not real host state - an Engineering Reviewer finding on the
+    first implementation attempt, which called the real psutil-backed
+    observer here instead. Deliberately not routed through GuardianRuntime -
+    constructing a bare StdioRpcServer(GuardianRuntime(), ...) still resolves
+    gia.status, confirmed by the companion test below."""
+
+    captured_at = datetime(2026, 7, 19, 10, 0, 0, tzinfo=timezone.utc)
+    fake_snapshot = GiaSnapshot(
+        cpu_percent=12.5,
+        memory_percent=64.0,
+        memory_used_mb=2048.0,
+        memory_total_mb=4096.0,
+        captured_at=captured_at,
+    )
+    server = StdioRpcServer(build_default_runtime(), gia_observer=_fake_gia_observer(fake_snapshot))
+
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 7, "method": "gia.status", "params": {}}))
+
+    assert response["result"] == {
+        "cpuPercent": 12.5,
+        "memoryPercent": 64.0,
+        "memoryUsedMb": 2048.0,
+        "memoryTotalMb": 4096.0,
+        "capturedAt": "2026-07-19T10:00:00+00:00",
+    }
+
+
+def test_gia_status_does_not_require_a_started_or_connected_runtime():
+    """gia.status's own handler has no dependency on GuardianRuntime's
+    lifecycle or any conversation/memory boundary - a bare, unstarted
+    GuardianRuntime still resolves it (method-level decoupling; see
+    EIP-ESR0029-002 Section 4.3 for the disclosed process-level limitation
+    this does not claim to fix). Uses an injected fake observer, not real
+    host state, for the same determinism reason as the test above."""
+
+    fake_snapshot = GiaSnapshot(
+        cpu_percent=1.0,
+        memory_percent=2.0,
+        memory_used_mb=3.0,
+        memory_total_mb=4.0,
+        captured_at=datetime(2026, 7, 19, 10, 0, 0, tzinfo=timezone.utc),
+    )
+    server = StdioRpcServer(GuardianRuntime(), gia_observer=_fake_gia_observer(fake_snapshot))
+
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 8, "method": "gia.status", "params": {}}))
+
+    assert "error" not in response
+    assert response["result"]["cpuPercent"] == 1.0
+
+
+def test_gia_status_defaults_to_the_real_psutil_backed_observer(tmp_path):
+    """Supplementary sanity check that the default (no injection) wiring
+    genuinely uses the real host, not asserted-away by the deterministic
+    tests above - matching the live-verification requirement in
+    EIP-ESR0029-002 Section 9/10, which this test alone does not replace."""
+
+    server = _server(tmp_path)
+
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 9, "method": "gia.status", "params": {}}))
+
+    assert "error" not in response
+    result = response["result"]
+    assert 0.0 <= result["cpuPercent"] <= 100.0
+    assert 0.0 <= result["memoryPercent"] <= 100.0
+    assert result["memoryTotalMb"] >= result["memoryUsedMb"] > 0
 
 
 def test_missing_params_defaults_to_empty_object(tmp_path):

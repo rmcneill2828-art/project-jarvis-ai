@@ -12,6 +12,8 @@ from jarvis.gia import (
     EngineeringReadinessContext,
     EngineeringRequest,
     GiaBootstrap,
+    GiaSnapshot,
+    LocalResourceObserver,
     ReadinessState,
 )
 from jarvis.guardian import (
@@ -36,6 +38,7 @@ __all__ = [
     "EngineeringReadinessContext",
     "EngineeringRequest",
     "GiaBootstrap",
+    "GiaSnapshot",
     "GuardianDiagnosticEvent",
     "GuardianRuntime",
     "GuardianRuntimeConfig",
@@ -45,6 +48,7 @@ __all__ = [
     "Jarvis",
     "JarvisService",
     "JarvisState",
+    "LocalResourceObserver",
     "PlatformBootstrapState",
     "PlatformFoundation",
     "PlatformStatus",

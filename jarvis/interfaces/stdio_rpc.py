@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping, TextIO
 
+from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
@@ -180,8 +181,23 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
 class StdioRpcServer:
     """Minimal JSON-RPC 2.0 server dispatching Guardian/Sentinel calls over stdio."""
 
-    def __init__(self, runtime: GuardianRuntime) -> None:
+    def __init__(
+        self,
+        runtime: GuardianRuntime,
+        gia_observer: LocalResourceObserver | None = None,
+    ) -> None:
         self._runtime = runtime
+        # GIA (EBG-0083) is deliberately not constructed from or dependent on
+        # `runtime` - per ESR-0011 Section 10, it observes and publishes local
+        # resource state independent of Guardian's own lifecycle. This is
+        # method-level decoupling only; `gia.status` is still unreachable if
+        # `build_default_runtime()` fails before this server is constructed
+        # (see `run()`), a disclosed limitation, not fixed by this class.
+        # `gia_observer` is injectable (defaulting to the real psutil-backed
+        # observer) so RPC-layer tests can assert exact serialization from a
+        # deterministic fake snapshot, per EIP-ESR0029-002 Section 4.6/5.5,
+        # rather than depending on the actual host machine's live values.
+        self._gia_observer = gia_observer or LocalResourceObserver()
         self._methods = {
             "guardian.converse": self._guardian_converse,
             "platform.status": self._platform_status,
@@ -190,6 +206,7 @@ class StdioRpcServer:
             "memory.approve": self._memory_approve,
             "memory.deny": self._memory_deny,
             "memory.list": self._memory_list,
+            "gia.status": self._gia_status,
         }
 
     def _guardian_converse(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -214,6 +231,16 @@ class StdioRpcServer:
 
     def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
         return knowledge_graph.build_graph()
+
+    def _gia_status(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
+        snapshot = self._gia_observer.snapshot()
+        return {
+            "cpuPercent": snapshot.cpu_percent,
+            "memoryPercent": snapshot.memory_percent,
+            "memoryUsedMb": snapshot.memory_used_mb,
+            "memoryTotalMb": snapshot.memory_total_mb,
+            "capturedAt": snapshot.captured_at.isoformat(),
+        }
 
     def _memory_propose(self, params: dict[str, Any]) -> dict[str, Any]:
         content = params.get("content")
