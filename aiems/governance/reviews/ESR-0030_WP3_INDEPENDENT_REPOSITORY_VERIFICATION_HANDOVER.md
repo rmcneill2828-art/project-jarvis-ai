@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0030-WP3 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.4 |
+| Version | 0.5 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -135,7 +135,7 @@ Rationale: this session's entire deliverable is AIEMS process tooling (the Spons
 
 ## 11. WP4 Baseline Acceptance Result
 
-Pending Programme Sponsor determination, informed by both independent views in Section 9 (converged: retain `RBL-0017`).
+**Retain - no new baseline established.** The Programme Sponsor determined at ESR-0030 WP4 to retain `RBL-0017` rather than cut a new baseline, agreeing with both independent views in Section 9: this session delivered AIEMS process tooling (the Sponsor Approval Service, replacing a file-based approval command) and governance documentation, not a JARVIS/Guardian product-capability change. `RBL-0017` remains the current accepted repository baseline.
 
 ---
 
@@ -156,6 +156,7 @@ Pending Programme Sponsor determination, informed by both independent views in S
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.5 | 19 July 2026 | Claude Engineering Implementer | Recorded the Programme Sponsor's WP4 determination: Retain - RBL-0017 remains the current baseline, agreeing with both independent WP3 views. |
 | 0.4 | 19 July 2026 | Claude Engineering Implementer | Self-caught fix before commit: Section 10's own description of the v0.2 finding repeated the same literal bracket shorthand a third time, in a document whose entire subject is verifying repository cleanliness. Removed for good this time - reworded to describe the defect class without ever reproducing the literal syntax again, and re-confirmed with a targeted grep across the whole file (not just the edited line) before proceeding. |
 | 0.3 | 19 July 2026 | Claude Engineering Implementer | Recorded Engineering Reviewer (Codex) independent verification result: Pass / no findings, after two fix rounds on this handover's own drafting (a recurring broken WikiLink shorthand). Full convergence with the Engineering Implementer's own view that RBL-0017 should be retained for WP4 - this session delivered AIEMS process tooling, not a product-capability change. Awaiting Programme Sponsor WP4 baseline acceptance determination. |
 | 0.2 | 19 July 2026 | Claude Engineering Implementer | Addressed two Engineering Reviewer findings on v0.1: Medium - Section 6 item 5's prose contained a double-square-bracket shorthand abbreviating a real WikiLink target with an ellipsis, which validate_repository.py tried to resolve as an actual link and could not, causing a genuine VALIDATION: FAILED in this document's own submission evidence, directly contradicting Section 7's "0 errors" claim - the irony of an Independent Repository Verification handover itself failing validation while claiming clean was not lost; fixed by removing that bracket syntax from the prose entirely rather than merely reformatting it (a first attempt wrapping it in backticks still matched the same regex, since the check scans raw text regardless of markdown code-span formatting - a lesson worth stating plainly rather than repeating the broken example verbatim in this very row). Low - Section 3's Repository Access table said "Working tree: Clean" without the qualification Section 7 already correctly stated (this handover itself being the sole untracked file); reworded to match. |
