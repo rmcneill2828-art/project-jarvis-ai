@@ -9,13 +9,19 @@
 | Package ID | EIP-ESR0030-001 |
 | Artefact ID | EIP-ESR0030-001 |
 | Title | Sponsor Approval Service Implementation |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved-implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | EBR-0001 (EBG-0084) |
 | Intended Session | ESR-0030 |
 | Effective Date | 19 July 2026 |
+
+---
+
+# Current Status (as of v1.4, ESR-0030 WP2)
+
+**Section 9 item 4's Sponsor-side deployment acceptance is now satisfied.** Sections 2, 3, 4.7, 5 item 7, and 9 item 4 below were written at WP1 (v0.1-v1.1), when only the code and local (`127.0.0.1`) verification existed - they correctly describe *that* state and are left unedited as the historical record of what WP1 actually delivered, per this project's practice of not silently rewriting past sections. Since then, the Programme Sponsor has deployed the service behind a real Tailscale address, holds `AIEMS_SPONSOR_TOKEN` exclusively on a genuinely separate second device (Android/Termux), and a real cross-device approval has been independently fetched and accepted by `submit-response` with zero Engineering Implementer involvement in the approval action. **EBG-0084 is Complete in full** (`EBR-0001` v1.104) - not merely code-complete. See Version History entry 1.4 for the full evidence. Wherever the sections below say deployment "remains pending" or "future", read that as accurate for WP1's own scope, superseded by this note.
 
 ---
 
@@ -171,8 +177,8 @@ Requesting Engineering Reviewer (Codex) pre-implementation design review via the
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]] | Approved decision this package implements in code; Decision item 6 (Tailscale deployment) remains a separate Sponsor-owned step (Section 9 item 4). |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0084, implementation half's code delivered by this package; full closure pending Sponsor-side deployment acceptance. |
+| [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]] | Approved decision this package implements in full - code (WP1) and Decision item 6's Tailscale deployment, confirmed by the Programme Sponsor at WP2 (Section 9 item 4, satisfied - see Current Status above). |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0084 Complete in full as of ESR-0030 WP2 - code and Sponsor-side deployment acceptance both delivered. |
 | [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] | Original bridge implementation this package amends; its three post-implementation findings are the precedent for this bridge's security properties needing adversarial review. |
 
 ---
@@ -181,6 +187,7 @@ Requesting Engineering Reviewer (Codex) pre-implementation design review via the
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 19 July 2026 | Claude Engineering Implementer | Addressed an Engineering Reviewer Low finding on v1.4: the version history recorded Section 9 item 4's satisfaction, but the document body still repeatedly read as if deployment were future/pending (Sections 2, 3, 4.7, 5 item 7, 9 item 4, Related Artefacts), with nothing distinguishing WP1-era text from the now-superseded state. Added a "Current Status" note directly after Document Control, pointing at the v1.4 history entry and explicitly stating the WP1-era sections below are left unedited as historical record, not current claims. Updated the two Related Artefacts rows (a live reference table, not historical narrative) to reflect current state directly. |
 | 1.4 | 19 July 2026 | Claude Engineering Implementer | Section 9 item 4's Sponsor-side deployment acceptance confirmed at ESR-0030 WP2: the Programme Sponsor installed Tailscale on the service host and a genuinely separate second device (Android/Termux), generated and held `AIEMS_SPONSOR_TOKEN` exclusively, started the service themselves with real tokens, and exposed it via `tailscale serve` at a real tailnet address. Live end-to-end confirmed with genuine separation: a real Sponsor-originated approval from the separate device was independently fetched and accepted by `submit-response` with zero Engineering Implementer involvement in the approval action - exceeding this section's own bar (which only required the Engineering Implementer's `GET` to succeed). EBG-0084 marked Complete in full in EBR-0001 (1.103 to 1.104). |
 | 1.3 | 19 July 2026 | Claude Engineering Implementer | Addressed an Engineering Reviewer follow-up Low finding on v1.2's fix: `fetch_latest_decision` correctly rejected non-dict payloads but still accepted any dict with `decision: null` regardless of the other three fields - a dict with `repository_ref` unexpectedly non-null, or with only `decision: null` and the other keys missing entirely, was still treated as a genuine absence of approval. Fixed to require all three other fields (`repository_ref`, `timestamp`, `note`) both present in the payload and explicitly null, matching `sponsor_approval_service.py`'s actual emitted shape exactly - a field missing via `.get()`'s default is no longer indistinguishable from one explicitly set to null. 4 new tests; 338 tests total (was 334). |
 | 1.2 | 19 July 2026 | Claude Engineering Implementer | Addressed two Engineering Reviewer post-commit findings on the implemented code. Medium: `--host` accepted any value including `0.0.0.0`, letting the service bind to every interface despite the module's own stated loopback-only boundary - fixed with a new `_is_safe_bind_host` check (using `ipaddress.ip_address(...).is_loopback`, plus the `localhost` literal) enforced inside `build_server` itself, refusing any non-loopback bind before the socket is ever opened. Low: `fetch_latest_decision` treated any non-dict JSON payload the same as a genuine `{"decision": null, ...}` response, losing the distinct malformed-response signal the EIP required - fixed by raising `BridgeError` for any non-dict payload before checking `decision`, so only a real dict-shaped null-decision reply is treated as "no decision yet." 19 new tests added (host-safety validation, and fetch_latest_decision's own JSON-handling exercised directly via a mocked `urlopen` rather than only through the monkeypatched-away fixture used elsewhere in the bridge test file); 334 tests total (was 315). |
