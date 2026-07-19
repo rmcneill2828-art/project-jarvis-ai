@@ -9,8 +9,8 @@
 | Package ID | EIP-ESR0030-001 |
 | Artefact ID | EIP-ESR0030-001 |
 | Title | Sponsor Approval Service Implementation |
-| Version | 1.0 |
-| Status | Approved |
+| Version | 1.1 |
+| Status | Approved-implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | EBR-0001 (EBG-0084) |
@@ -181,6 +181,7 @@ Requesting Engineering Reviewer (Codex) pre-implementation design review via the
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 19 July 2026 | Claude Engineering Implementer | Implemented exactly as scoped: `scripts/sponsor_approval_service.py` (new, stdlib-only), `scripts/sponsor_client.py` (new), and the `scripts/aiems_bridge.py` diff (`cmd_sponsor_decision`/`find_latest_sponsor_decision` deleted, `cmd_submit_response` now calls `fetch_latest_decision`, fail-closed). 21 new tests (13 service, 8 client) plus the bridge test file rewritten to inject a fake decision; 315 tests total (was 295). Live end-to-end verified against a real running instance on `127.0.0.1` per Section 9 item 2, all six cases. A real connection-draining bug was found and fixed during this verification: `do_POST` returned an auth-failure response without first reading the client's already-sent request body, leaving unread socket bytes that intermittently caused a client-side connection reset under the full test suite - fixed by draining the body unconditionally before any early return, regardless of auth outcome. EBG-0084 recorded as code-complete, Tailscale deployment pending Programme Sponsor acceptance (Section 9 item 4) - not Complete in full. Status Approved to Approved-implemented. |
 | 1.0 | 19 July 2026 | Claude Engineering Implementer | Approved by the Programme Sponsor via the bridge (`sponsor-decision`, `repository_ref: 09a95243c4bd5e3bd78d9c354ecaba10dcebca8c`, 19 July 2026 19:00:47Z), following Engineering Reviewer (Codex) confirmation: Pass, no findings on v0.2 - the overclaim finding resolved, technical design sound. Status promoted Draft to Approved. This is the last use of `sponsor-decision`; the service this package builds replaces it. |
 | 0.2 | 19 July 2026 | Claude Engineering Implementer | Addressed an Engineering Reviewer Medium finding: v0.1 overclaimed full ADR-0022/EBG-0084 closure (Sections 2, 3, 5 item 7, 13) while explicitly excluding actual Tailscale deployment (Decision item 6) as outside the Engineering Implementer's authority (Section 4.7) - an internal inconsistency. Narrowed every closure claim throughout to "code implementation Complete, Tailscale deployment pending Programme Sponsor acceptance," and added Section 9 item 4 defining a checkable Sponsor-side deployment-acceptance step as the actual prerequisite to marking EBG-0084 Complete in full. No scope, file list, or technical design change - wording/claim-accuracy only. |
 | 0.1 | 19 July 2026 | Claude Engineering Implementer | Initial draft created for ESR-0030 WP1, implementing ADR-0022 in full: stdlib-only (no new dependency) HTTP service with SQLite persistence, `sponsor_client.py`, and the `aiems_bridge.py` diff replacing transcript-based sponsor-decision with a fetch from the new service. Not yet Engineering Reviewer or Programme Sponsor reviewed. |

@@ -1,8 +1,12 @@
-"""Tests for scripts/aiems_bridge.py (EBG-0057, EIP-ESR0025-001).
+"""Tests for scripts/aiems_bridge.py (EBG-0057, EIP-ESR0025-001; sponsor
+approval moved to a remote service per ADR-0022/EIP-ESR0030-001).
 
 No test invokes a real claude/codex CLI process or the real automated test
 suite recursively - capture_repository_ref, capture_evidence and
 run_preflight are monkeypatched to fast, deterministic fakes throughout.
+fetch_latest_decision is monkeypatched too, so no test starts a real
+Sponsor Approval Service (that is covered by test_sponsor_approval_service.py
+instead) - this file exercises cmd_submit_response's own logic in isolation.
 """
 
 from __future__ import annotations
@@ -14,13 +18,12 @@ from scripts.aiems_bridge import (
     EvidenceResult,
     Handover,
     PreflightResult,
+    RemoteDecision,
     cmd_init,
     cmd_return_findings,
-    cmd_sponsor_decision,
     cmd_submit_response,
     cmd_submit_to_review,
     exchange_root,
-    find_latest_sponsor_decision,
     parse_handover,
     read_transcript,
 )
@@ -49,6 +52,21 @@ def _fake_head(monkeypatch):
     return state
 
 
+@pytest.fixture
+def _fake_decision(monkeypatch):
+    """Returns a mutable holder so tests can change what the Sponsor
+    Approval Service would return for fetch_latest_decision, without a
+    real running service (that integration is covered separately in
+    test_sponsor_approval_service.py)."""
+
+    state = {"decision": None}
+    monkeypatch.setattr(
+        "scripts.aiems_bridge.fetch_latest_decision",
+        lambda session, work_package: state["decision"],
+    )
+    return state
+
+
 def test_handover_render_parse_round_trip():
     handover = Handover(
         session="ESR-0025",
@@ -70,6 +88,12 @@ def test_handover_render_parse_round_trip():
 
 
 def test_handover_render_parse_round_trip_with_authorisation_and_no_evidence():
+    """programme_sponsor_authorisation and the "sponsor-decision" type
+    string remain parseable even though no current command writes them -
+    historical transcripts from before ADR-0022/EIP-ESR0030-001 still
+    contain entries shaped exactly like this, and parse_handover must keep
+    reading them correctly."""
+
     handover = Handover(
         session="ESR-0025",
         work_package="WP1",
@@ -158,30 +182,33 @@ def test_return_findings_writes_only_inside_exchange_directory(tmp_path, _fake_h
     assert all(exchange in path.parents for path in new_files)
 
 
-def test_submit_response_refused_without_any_sponsor_decision(tmp_path, _fake_head):
+def test_submit_response_refused_without_any_sponsor_decision(tmp_path, _fake_head, _fake_decision):
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
 
-    with pytest.raises(BridgeError, match="no approving sponsor-decision"):
+    with pytest.raises(BridgeError, match="no approving decision"):
         cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
 
     assert not any((exchange_root(tmp_path) / "claude" / "outbox").glob("*submit-response*"))
 
 
-def test_submit_response_refused_after_rejection(tmp_path, _fake_head):
+def test_submit_response_refused_after_rejection(tmp_path, _fake_head, _fake_decision):
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "looked fine at the time")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "reject", "changed my mind")
+    _fake_decision["decision"] = RemoteDecision(
+        decision="reject", repository_ref="aaaaaaa", timestamp="2026-07-19T00:00:00Z", note="changed my mind"
+    )
 
-    with pytest.raises(BridgeError, match="no approving sponsor-decision"):
+    with pytest.raises(BridgeError, match="no approving decision"):
         cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
 
 
-def test_submit_response_succeeds_after_approval_with_matching_ref(tmp_path, _fake_head):
+def test_submit_response_succeeds_after_approval_with_matching_ref(tmp_path, _fake_head, _fake_decision):
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "looks good")
+    _fake_decision["decision"] = RemoteDecision(
+        decision="approve", repository_ref="aaaaaaa", timestamp="2026-07-19T00:00:00Z", note="looks good"
+    )
 
     handover = cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
 
@@ -189,14 +216,16 @@ def test_submit_response_succeeds_after_approval_with_matching_ref(tmp_path, _fa
     assert any((exchange_root(tmp_path) / "claude" / "outbox").glob("*submit-response*"))
 
 
-def test_submit_response_refused_when_validation_failed(tmp_path, _fake_head):
+def test_submit_response_refused_when_validation_failed(tmp_path, _fake_head, _fake_decision):
     """Engineering Reviewer Medium finding, addressed: a failing pytest/
     validate_repository.py run must hard-block submit-response, not merely
     be attached as evidence for a handover that still looks successful."""
 
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "looks good")
+    _fake_decision["decision"] = RemoteDecision(
+        decision="approve", repository_ref="aaaaaaa", timestamp="2026-07-19T00:00:00Z", note="looks good"
+    )
 
     _fake_head["evidence_passed"] = False
 
@@ -220,56 +249,87 @@ def test_submit_to_review_not_blocked_by_failing_validation_but_marks_it(tmp_pat
     assert handover.evidence.startswith("VALIDATION: FAILED")
 
 
-def test_submit_response_refused_when_repository_has_drifted_since_approval(tmp_path, _fake_head):
+def test_submit_response_refused_when_repository_has_drifted_since_approval(tmp_path, _fake_head, _fake_decision):
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "looks good")
+    _fake_decision["decision"] = RemoteDecision(
+        decision="approve", repository_ref="aaaaaaa", timestamp="2026-07-19T00:00:00Z", note="looks good"
+    )
 
     _fake_head["ref"] = "bbbbbbb"  # an unrelated commit landed after approval
 
-    with pytest.raises(BridgeError, match="drifted since sponsor-decision"):
+    with pytest.raises(BridgeError, match="drifted since the approved decision"):
         cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
 
     assert not any((exchange_root(tmp_path) / "claude" / "outbox").glob("*submit-response*"))
 
 
-def test_submit_response_succeeds_after_fresh_sponsor_decision_clears_drift(tmp_path, _fake_head):
+def test_submit_response_succeeds_after_fresh_sponsor_decision_clears_drift(tmp_path, _fake_head, _fake_decision):
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "looks good")
+    _fake_decision["decision"] = RemoteDecision(
+        decision="approve", repository_ref="aaaaaaa", timestamp="2026-07-19T00:00:00Z", note="looks good"
+    )
 
     _fake_head["ref"] = "bbbbbbb"
     with pytest.raises(BridgeError, match="drifted"):
         cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
 
-    # A fresh sponsor-decision against the new HEAD clears the drift.
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "re-approved at new HEAD")
+    # A fresh decision recorded against the new HEAD clears the drift.
+    _fake_decision["decision"] = RemoteDecision(
+        decision="approve", repository_ref="bbbbbbb", timestamp="2026-07-19T01:00:00Z", note="re-approved at new HEAD"
+    )
 
     handover = cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
     assert handover.type == "submit-response"
 
 
-def test_submit_response_holds_lock_across_evidence_capture_against_concurrent_sponsor_decision(
-    tmp_path, monkeypatch
-):
-    """Engineering Reviewer Medium finding (TOCTOU), addressed: the read of
-    the approving sponsor-decision, the drift check and evidence capture all
-    happen inside the same lock acquisition as the final write, so a
-    concurrent same-WP action attempted mid-flight (here, during evidence
-    capture - the slowest step) must fail against the lock rather than race
-    in and silently change the approval state submit-response already read."""
+def test_submit_response_refused_when_service_unreachable(tmp_path, _fake_head, monkeypatch):
+    """ADR-0022 Decision item 4: an unreachable Sponsor Approval Service
+    must refuse the response, never fall back to any local approval path."""
 
-    monkeypatch.setattr("scripts.aiems_bridge.capture_repository_ref", lambda repo_root: "aaaaaaa")
+    def _unreachable(session, work_package):
+        msg = "Sponsor Approval Service unreachable at http://127.0.0.1:1: [Errno 111] Connection refused"
+        raise BridgeError(msg)
+
+    monkeypatch.setattr("scripts.aiems_bridge.fetch_latest_decision", _unreachable)
 
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "looks good")
+
+    with pytest.raises(BridgeError, match="unreachable"):
+        cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
+
+    assert not any((exchange_root(tmp_path) / "claude" / "outbox").glob("*submit-response*"))
+
+
+def test_submit_response_holds_lock_across_evidence_capture_against_concurrent_invocation(
+    tmp_path, monkeypatch, _fake_decision
+):
+    """Engineering Reviewer Medium finding (TOCTOU), addressed originally
+    against the file-based sponsor-decision command this replaced: the
+    fetch of the approving decision, the drift check and evidence capture
+    all happen inside the same lock acquisition as the final write, so a
+    concurrent same-WP bridge operation attempted mid-flight (here, during
+    evidence capture - the slowest step) must fail against the lock rather
+    than race in."""
+
+    monkeypatch.setattr("scripts.aiems_bridge.capture_repository_ref", lambda repo_root: "aaaaaaa")
+    _fake_decision["decision"] = RemoteDecision(
+        decision="approve", repository_ref="aaaaaaa", timestamp="2026-07-19T00:00:00Z", note="looks good"
+    )
+
+    cmd_init(tmp_path, "ESR-0025", "WP1")
+    cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
 
     concurrent_attempt = {}
 
     def _evidence_with_concurrent_race(repo_root):
+        from scripts.aiems_bridge import work_package_lock
+
         try:
-            cmd_sponsor_decision(repo_root, "ESR-0025", "WP1", "reject", "racing in mid-flight")
+            with work_package_lock(repo_root, "ESR-0025", "WP1"):
+                pass
             concurrent_attempt["blocked"] = False
         except BridgeError:
             concurrent_attempt["blocked"] = True
@@ -279,58 +339,18 @@ def test_submit_response_holds_lock_across_evidence_capture_against_concurrent_s
 
     handover = cmd_submit_response(tmp_path, "ESR-0025", "WP1", "implemented")
 
-    assert concurrent_attempt["blocked"] is True, "concurrent sponsor-decision was not blocked by the lock"
+    assert concurrent_attempt["blocked"] is True, "concurrent same-WP operation was not blocked by the lock"
     assert handover.type == "submit-response"
-
-    handovers = read_transcript(tmp_path, "ESR-0025", "WP1")
-    assert all(h.message != "racing in mid-flight" for h in handovers), (
-        "the racing sponsor-decision must never have been recorded"
-    )
-
-
-def test_sponsor_decision_written_only_to_transcript_never_inbox_or_outbox(tmp_path, _fake_head):
-    cmd_init(tmp_path, "ESR-0025", "WP1")
-    before = {p for p in tmp_path.rglob("*") if p.is_file()}
-
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "fine")
-
-    after = {p for p in tmp_path.rglob("*") if p.is_file()}
-    new_files = after - before
-
-    root = exchange_root(tmp_path)
-    for path in new_files:
-        assert (root / "transcript") in path.parents, f"unexpected non-transcript write: {path}"
-        for role in ("claude", "codex"):
-            for box in ("inbox", "outbox"):
-                assert (root / role / box) not in path.parents
-
-
-def test_find_latest_sponsor_decision_returns_most_recent():
-    older = Handover(
-        session="ESR-0025", work_package="WP1", type="sponsor-decision", sender="programme_sponsor",
-        recipient="n/a", repository_ref="a", files_in_scope=(), programme_sponsor_authorisation=True,
-        timestamp="2026-07-17T00:00:00Z", message="first",
-    )
-    newer = Handover(
-        session="ESR-0025", work_package="WP1", type="sponsor-decision", sender="programme_sponsor",
-        recipient="n/a", repository_ref="b", files_in_scope=(), programme_sponsor_authorisation=False,
-        timestamp="2026-07-17T01:00:00Z", message="second",
-    )
-
-    assert find_latest_sponsor_decision([older, newer]) == newer
-    assert find_latest_sponsor_decision([newer, older]) == older  # list order, not timestamp, is authoritative
-    assert find_latest_sponsor_decision([]) is None
 
 
 def test_read_transcript_round_trips_multiple_handovers(tmp_path, _fake_head):
     cmd_init(tmp_path, "ESR-0025", "WP1")
     cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
     cmd_return_findings(tmp_path, "ESR-0025", "WP1", "looks fine")
-    cmd_sponsor_decision(tmp_path, "ESR-0025", "WP1", "approve", "go ahead")
 
     handovers = read_transcript(tmp_path, "ESR-0025", "WP1")
 
-    assert [h.type for h in handovers] == ["submit-to-review", "return-findings", "sponsor-decision"]
+    assert [h.type for h in handovers] == ["submit-to-review", "return-findings"]
 
 
 def test_work_package_lock_prevents_concurrent_reentry(tmp_path, _fake_head):

@@ -13,8 +13,12 @@ Engineering Reviewer post-implementation finding):
    `session`/`work_package` value could otherwise open.
 2. `submit-response` (the only command that represents "proceed with the
    approved change") refuses to run - before any file write - unless the
-   transcript's most recent `sponsor-decision` approves, and the current
-   repository state matches the state that decision actually approved.
+   Sponsor Approval Service's latest decision for this Work Package approves,
+   and the current repository state matches the state that decision actually
+   approved. Per ADR-0022/EIP-ESR0030-001, approval no longer lives in a
+   locally-writable transcript file: `programme_sponsor_authorisation` can no
+   longer be set by any code path in this module at all - see
+   `scripts/sponsor_approval_service.py` and `scripts/sponsor_client.py`.
 3. `submit-response` additionally refuses if validation (`pytest` and
    `validate_repository.py`) did not pass cleanly - a failing run must not
    produce a handover indistinguishable from a successful one.
@@ -27,11 +31,15 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import json
 import os
 import re
 import shutil
 import subprocess
 import sys
+import urllib.error
+import urllib.parse
+import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -210,9 +218,64 @@ def _write_handover_file(directory: Path, handover: Handover) -> Path:
     return path
 
 
-def find_latest_sponsor_decision(handovers: list[Handover]) -> Handover | None:
-    decisions = [h for h in handovers if h.type == "sponsor-decision"]
-    return decisions[-1] if decisions else None
+@dataclass(frozen=True)
+class RemoteDecision:
+    """A decision fetched from the Sponsor Approval Service (ADR-0022)."""
+
+    decision: str
+    repository_ref: str
+    timestamp: str
+    note: str
+
+
+def fetch_latest_decision(session: str, work_package: str) -> RemoteDecision | None:
+    """Fetch the latest Sponsor Approval Service decision for a Work
+    Package, or None if none has been recorded yet.
+
+    Fails closed (raises BridgeError) on any unreachable-service or
+    malformed-response case - never a silent fallback to a local file
+    (ADR-0022 Decision item 4). Reads AIEMS_AGENT_TOKEN/AIEMS_SPONSOR_URL
+    from the environment; this is the only code path in this module that
+    contacts the service, and it never reads AIEMS_SPONSOR_TOKEN (that
+    token must never exist in any agent-reachable environment at all).
+    """
+
+    agent_token = os.environ.get("AIEMS_AGENT_TOKEN")
+    sponsor_url = os.environ.get("AIEMS_SPONSOR_URL")
+    if not agent_token or not sponsor_url:
+        msg = "AIEMS_AGENT_TOKEN and AIEMS_SPONSOR_URL must both be set to contact the Sponsor Approval Service."
+        raise BridgeError(msg)
+
+    query = urllib.parse.urlencode({"session": session, "work_package": work_package})
+    request = urllib.request.Request(
+        f"{sponsor_url.rstrip('/')}/decisions/latest?{query}",
+        headers={"Authorization": f"Bearer {agent_token}"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=10) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.URLError as exc:
+        # HTTPError is a URLError subclass, so a non-2xx status (e.g. a
+        # misconfigured token) is caught here too, not just connection
+        # failures - either way, fail closed rather than assume approval.
+        msg = f"Sponsor Approval Service unreachable at {sponsor_url}: {exc}"
+        raise BridgeError(msg) from exc
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        msg = "Sponsor Approval Service returned a malformed response."
+        raise BridgeError(msg) from exc
+
+    if not isinstance(payload, dict) or payload.get("decision") is None:
+        return None
+    try:
+        return RemoteDecision(
+            decision=payload["decision"],
+            repository_ref=payload["repository_ref"],
+            timestamp=payload["timestamp"],
+            note=payload.get("note", ""),
+        )
+    except KeyError as exc:
+        msg = "Sponsor Approval Service returned a malformed response."
+        raise BridgeError(msg) from exc
 
 
 def capture_repository_ref(repo_root: Path) -> str:
@@ -372,67 +435,35 @@ def cmd_return_findings(repo_root: Path, session: str, work_package: str, messag
     return handover
 
 
-def cmd_sponsor_decision(
-    repo_root: Path, session: str, work_package: str, decision: str, note: str
-) -> Handover:
-    """Programme Sponsor's own command. The only code path that may write
-    programme_sponsor_authorisation: true. Transcript-only - no inbox/outbox
-    routing, since this is a gate-setting record, not a point-to-point
-    handover between the two AI roles."""
-
-    if decision not in ("approve", "reject"):
-        msg = "decision must be 'approve' or 'reject'."
-        raise BridgeError(msg)
-
-    with work_package_lock(repo_root, session, work_package):
-        handover = Handover(
-            session=session,
-            work_package=work_package,
-            type="sponsor-decision",
-            sender="programme_sponsor",
-            recipient="n/a",
-            repository_ref=capture_repository_ref(repo_root),
-            files_in_scope=(),
-            programme_sponsor_authorisation=(decision == "approve"),
-            timestamp=_now(),
-            message=note,
-        )
-        append_transcript(repo_root, handover)
-    return handover
-
-
 def cmd_submit_response(repo_root: Path, session: str, work_package: str, message: str) -> Handover:
     """The only command representing 'proceed with the approved change'.
-    Refuses before any file write unless the transcript's most recent
-    sponsor-decision approves, the current repository state matches the
-    state that decision actually approved, and validation is clean
-    (Engineering Reviewer finding, addressed: a failing pytest/
+    Refuses before any file write unless the Sponsor Approval Service's
+    latest decision for this Work Package approves, the current repository
+    state matches the state that decision actually approved, and validation
+    is clean (Engineering Reviewer finding, addressed: a failing pytest/
     validate_repository.py run must not produce a handover that looks like
     a successful response)."""
 
-    # The entire read-check-evidence-write sequence runs inside the lock, not
-    # just the final write (Engineering Reviewer finding, addressed): every
-    # other command that can append to this Work Package's transcript
-    # (sponsor-decision, return-findings, submit-to-review, a concurrent
+    # The entire fetch-check-evidence-write sequence runs inside the lock,
+    # not just the final write (Engineering Reviewer finding, addressed,
+    # originally against the file-based sponsor-decision command this
+    # replaced): every other command that can append to this Work Package's
+    # transcript (return-findings, submit-to-review, a concurrent
     # submit-response) also acquires this same lock before writing, so
     # holding it here for the full duration - including the slow evidence
     # capture step - closes the TOCTOU window rather than only narrowing it.
-    # A concurrent same-WP action fails fast against the lock instead of
-    # racing to append a newer sponsor-decision (e.g. a reject) after this
-    # function has already read and approved on the prior one.
     with work_package_lock(repo_root, session, work_package):
-        handovers = read_transcript(repo_root, session, work_package)
-        decision = find_latest_sponsor_decision(handovers)
-        if decision is None or not decision.programme_sponsor_authorisation:
-            msg = "submit-response refused: no approving sponsor-decision found for this Work Package."
+        decision = fetch_latest_decision(session, work_package)
+        if decision is None or decision.decision != "approve":
+            msg = "submit-response refused: no approving decision found for this Work Package."
             raise BridgeError(msg)
 
         current_ref = capture_repository_ref(repo_root)
         if current_ref != decision.repository_ref:
             msg = (
-                "submit-response refused: repository has drifted since sponsor-decision "
+                "submit-response refused: repository has drifted since the approved decision "
                 f"(approved {decision.repository_ref}, current {current_ref}). "
-                "A fresh sponsor-decision is required before this response can proceed."
+                "A fresh decision is required before this response can proceed."
             )
             raise BridgeError(msg)
 
@@ -487,13 +518,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p_findings.add_argument("work_package")
     p_findings.add_argument("--message", required=True)
 
-    p_decision = sub.add_parser("sponsor-decision", help="Programme Sponsor records approve/reject. Run by the Sponsor only.")
-    p_decision.add_argument("session")
-    p_decision.add_argument("work_package")
-    p_decision.add_argument("--decision", required=True, choices=("approve", "reject"))
-    p_decision.add_argument("--note", default="")
-
-    p_response = sub.add_parser("submit-response", help="Claude implements the approved change. Gated on sponsor-decision.")
+    p_response = sub.add_parser("submit-response", help="Claude implements the approved change. Gated on the Sponsor Approval Service.")
     p_response.add_argument("session")
     p_response.add_argument("work_package")
     p_response.add_argument("--message", required=True)
@@ -516,11 +541,6 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "return-findings":
             handover = cmd_return_findings(REPO_ROOT, args.session, args.work_package, args.message)
             print(f"Findings returned at {handover.timestamp}")
-        elif args.command == "sponsor-decision":
-            handover = cmd_sponsor_decision(
-                REPO_ROOT, args.session, args.work_package, args.decision, args.note
-            )
-            print(f"Recorded {args.decision} at {handover.timestamp}")
         elif args.command == "submit-response":
             handover = cmd_submit_response(REPO_ROOT, args.session, args.work_package, args.message)
             print(f"Response submitted at {handover.timestamp}")
