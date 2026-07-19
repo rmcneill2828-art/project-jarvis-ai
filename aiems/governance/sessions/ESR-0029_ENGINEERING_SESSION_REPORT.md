@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0029 |
 | Title | Engineering Session Report |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -109,14 +109,14 @@ Real external research (VS Code Extension Host, Electron/Tauri process models, H
 
 Implements the Canvas 2D migration ADR-0021 recommended (but deliberately deferred) at ESR-0028, per [[EIP-ESR0029-001_GUARDIAN_ORB_CANVAS_MIGRATION|EIP-ESR0029-001]] - this session's largest single product-code change.
 
-**Delivered**: `GuardianOrbGraph.jsx` fully rewritten to a single Canvas 2D surface - pre-baked glow sprites reused via `drawImage`, `Path2D` depth-banded edge stroking, manual hit-testing, `ResizeObserver`/DPR-aware sizing. A static glow/gradient visual refinement toward UAM-0001's reference mock-up (look and layout only, confirmed directly against `UAM-0001_GUARDIAN_ORB_MOCK.jpg` after an initial scope misunderstanding was corrected mid-discussion) was included.
+**Delivered**: `GuardianOrbGraph.jsx` fully rewritten to a single Canvas 2D surface - pre-baked glow sprites reused via `drawImage`, `Path2D` depth-banded edge stroking, manual hit-testing, `ResizeObserver`/DPR-aware sizing. A static glow/gradient visual refinement toward UAM-0001's reference mock-up (look and layout only, confirmed directly against `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg` after an initial scope misunderstanding was corrected mid-discussion) was included.
 
 **A genuine performance regression was found and fixed during the WP's own live verification**: the initial Canvas implementation measured worse than the SVG baseline it was meant to improve on (~27-29% of one core via Chrome DevTools Protocol `TaskDuration`, vs. SVG's ~9%) - the opposite of the migration's purpose. Root-caused via a CDP ablation study to circular `ctx.clip()` combined with per-edge `stroke()` calls specifically. Fixed by batching edges into depth-banded `Path2D` objects and proving edges are mathematically guaranteed within the circular boundary (a disk is convex), scoping the clip to only the node/glow-drawing pass. Final measured cost (plain Canvas ~4.46%, with glow ~6.26%) fell below the SVG baseline, independently confirmed by the Programme Sponsor's own Windows Task Manager check (Power Usage: Low, a categorical change from the SVG-era's sustained "Very high").
 
 **Review cycle**: pre-implementation approved directly. **Post-commit review found one Medium finding** - `hitTestRef` was built from `baseNodes`' arbitrary iteration order rather than the actual depth-sorted paint order `handlePointerMove` assumed, so overlapping-node tooltips could report the wrong node - fixed, then confirmed resolved (v1.2).
 
 - Commit SHA: `c5a8340`
-- `python -m pytest`: 295 passed (unaffected, frontend-only). `python scripts/validate_repository.py`: 0 errors, 129 warnings. `npm run build`: clean throughout.
+- At this commit: `python -m pytest`: 286 passed (unaffected, frontend-only; GIA's test additions came later at WP3-WP7). `python scripts/validate_repository.py`: 0 errors, 128 warnings. `npm run build`: clean throughout. (295 tests / 129 warnings is the session's final closure-commit state, not WP2's own.)
 
 ---
 
@@ -192,4 +192,5 @@ Added mid-session at the Programme Sponsor's request, following a detailed propo
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 19 July 2026 | Claude Engineering Implementer | Fixed two Codex post-commit findings: Section 9 (WP2) had misattributed the session's final closure-commit validation figures (295 tests/129 warnings) to WP2's own commit `c5a8340`, which actually validated at 286 tests/128 warnings - corrected to report the contemporaneous figures and explicitly note the final figures belong to session closure, not WP2; and corrected a mockup filename reference (`UAM-0001_GUARDIAN_ORB_MOCK.jpg` to the actual `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg`). |
 | 1.0 | 19 July 2026 | Claude Engineering Implementer | Initial creation and closure, authored at session close per established practice. Records WP0-WP7 (research redirection at WP0B, Guardian Orb Canvas 2D migration with a genuine live-verified performance-regression fix, GIA Phase 1's four-slice staged delivery, and the Sponsor Approval Service decision), and the session-wide WP8 Independent Repository Verification (Pass, no findings) and WP9 Repository Baseline Acceptance (new baseline RBL-0017 established, superseding RBL-0016, after two rounds of post-commit PST-0001 fixes). Fourth session run entirely through the AIEMS Exchange Bridge with no manual relay. Status Open to Closed. |

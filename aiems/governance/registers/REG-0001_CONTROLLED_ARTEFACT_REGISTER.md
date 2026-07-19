@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.259
+**Version:** 3.260
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.259 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.260 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -223,7 +223,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0026 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0027 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0028 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0029 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0029 | Engineering Session Report | Engineering Session Report | 1.1 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -338,6 +338,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.260 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 session report fixed to v1.1 - addressed two Codex post-commit findings: the WP2 write-up had misattributed the final closure-commit's validation figures (295 tests/129 warnings) to WP2's own commit; corrected to WP2's contemporaneous figures (286/128). Also fixed a mockup filename reference. |
 | 3.259 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 formally closed. Registered [[ESR-0029_ENGINEERING_SESSION_REPORT|ESR-0029]] Engineering Session Report v1.0 covering WP0 (research-first objective redirection), WP1-WP7 (cross-module resource research, Guardian Orb Canvas 2D migration with a live-verified performance-regression fix, GIA Phase 1's four-slice staged delivery, Sponsor Approval Service decision), and session-wide WP8 (Pass)/WP9 (Accept, new baseline RBL-0017 established after two post-commit fix rounds). |
 | 3.258 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP9: registered RBL-0017 (ESR-0029 Repository Baseline, Accepted) - Programme Sponsor determination to cut a new baseline rather than retain RBL-0016, agreeing with both independent WP8 views (Guardian Orb Canvas 2D migration + GIA Phase 1 observability, at least comparable in substance to RBL-0016's own trigger). |
 | 3.257 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP7 implemented: EIP-ESR0029-005 (0.1 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.100 to 1.101, EBG-0083 Phase 1 Complete in full) aligned - GiaSnapshot/gia.status extended with local engineering-environment tool presence, 295 tests total, live-verified against both running and not-running states. |
