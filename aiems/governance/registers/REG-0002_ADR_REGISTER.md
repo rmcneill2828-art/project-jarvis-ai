@@ -2,7 +2,7 @@
 
 > *"Good architecture is not defined by the decisions it makes, but by the reasoning it preserves."*
 
-**Version:** 2.13
+**Version:** 2.15
 
 ---
 
@@ -51,6 +51,7 @@ This register includes Architecture Decision Records relating to:
 | [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE]] | UXP-Backend Integration Architecture | Architecture | Approved | 9 Jul 2026 | - | Selected a Tauri sidecar-managed Python process communicating over duplex stdio JSON-RPC as the UXP-to-backend integration pattern, over local HTTP/WebSocket, PyO3 embedding and a Rust/Node rewrite. |
 | [[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS]] | Sentinel Network Exposure Security Requirements | Architecture | Approved | 17 Jul 2026 | - | Defines a binding three-part security gate (authentication, rate limiting, TLS) any future network-facing Guardian/Sentinel interface proposal must satisfy before approval - no network interface exists today, this is a prerequisite gate, not implementation. |
 | [[ADR-0021_GUARDIAN_ORB_RENDERING_ENGINE]] | Guardian Orb Rendering Engine | Architecture | Approved-implemented | 18 Jul 2026 | - | Recommends migrating GuardianOrbGraph.jsx from SVG DOM rendering to Canvas 2D, grounded in ESR-0028 WP4's seven-round animation-performance optimisation evidence; rejects WebGL/a 3D library as disproportionate to current/anticipated scale. Implemented at ESR-0029 WP2 per EIP-ESR0029-001. |
+| [[ADR-0022_SPONSOR_APPROVAL_SERVICE]] | Sponsor Approval Service | Security/Process | Approved | 19 Jul 2026 | - | Replaces the AIEMS Exchange Bridge's file-based sponsor-decision command with a remote service agents can only read from, never write to - closing a confirmed self-approval gap and requiring submit-response to become the actual, practiced gate before any commit. Decision only, no implementation authorised. |
 
 ---
 
@@ -164,6 +165,8 @@ They ensure that engineering reasoning is preserved alongside engineering implem
 
 | Version | Date | Author | Summary |
 |---------|------------|----------------------------|-------------------------------------------------------------|
+| 2.15 | 19 July 2026 | Claude Engineering Implementer | ADR-0022 approved by the Programme Sponsor via the bridge (1.0 to 1.1, Draft to Approved) - Sponsor Approval Service architecture decision, decision only, no implementation authorised. |
+| 2.14 | 19 July 2026 | Claude Engineering Implementer | Registered ADR-0022 (Sponsor Approval Service, Draft), per ESR-0029 WP5, following the Programme Sponsor's proposal to replace file-based sponsor-decision with a remote agent-read-only approval service. Not yet Engineering Reviewer or Programme Sponsor reviewed. |
 | 2.13 | 19 July 2026 | Claude Engineering Implementer | ADR-0021 implementation recorded (1.3 to 1.4, Approved to Approved-implemented) - GuardianOrbGraph.jsx migrated to Canvas 2D at ESR-0029 WP2 per EIP-ESR0029-001. |
 | 2.12 | 18 July 2026 | Claude Engineering Implementer | ADR-0021 approved by the Programme Sponsor via the bridge (1.2 to 1.3, Draft to Approved) - Canvas 2D selected over continued SVG or WebGL/a 3D library for GuardianOrbGraph.jsx's rendering, decision only. |
 | 2.11 | 18 July 2026 | Claude Engineering Implementer | ADR-0021 revised (1.0 to 1.1) per Engineering Reviewer finding - corrected this register's own v2.10 entry, which overstated a still-Draft ADR's effect on EBG-0081. |

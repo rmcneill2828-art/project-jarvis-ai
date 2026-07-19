@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.251
+**Version:** 3.253
 
 
 ---
@@ -117,11 +117,12 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0019 | Architecture Decision Record | UXP-Backend Integration Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0017 | `aiems/governance/decisions/` |
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.251 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| REG-0002 | Register | Architectural Decision Register | 2.13 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.253 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.97 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.99 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -333,6 +334,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.253 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP5: ADR-0022 (1.0 to 1.1, Draft to Approved), REG-0002 (2.14 to 2.15) and EBR-0001 (1.98 to 1.99) aligned - Sponsor Approval Service architecture decision approved by the Programme Sponsor, decision only, implementation remains separate future work. |
+| 3.252 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP5: registered [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]] (Draft) and EBG-0084 in EBR-0001 (1.97 to 1.98) - Sponsor Approval Service architecture decision, replacing file-based sponsor-decision with a remote agent-read-only approval service. Not yet reviewed or approved. |
 | 3.251 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP4: addressed an Engineering Reviewer finding - EBG-0083's stale WP3-era "Scope of this item" wording contradicted the new WP4 delivery note in the same row; corrected. EIP-ESR0029-003 (1.0 to 1.1) and EBR-0001 (1.96 to 1.97) aligned. |
 | 3.250 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP4 implemented: EIP-ESR0029-003 (0.1 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.95 to 1.96, EBG-0083 Phase 1b Complete) aligned - GiaSnapshot/gia.status extended with real disk usage, 294 tests total. |
 | 3.249 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP4: registered [[EIP-ESR0029-003_GIA_PHASE1B_STORAGE_STATE|EIP-ESR0029-003]] (GIA Phase 1b: Storage State, 0.1, Draft) - not yet reviewed or approved. Extends WP3's GiaSnapshot/LocalResourceObserver with real disk usage, no new dependency. |
