@@ -9,7 +9,7 @@
 | Package ID | EIP-ESR0030-001 |
 | Artefact ID | EIP-ESR0030-001 |
 | Title | Sponsor Approval Service Implementation |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -21,13 +21,13 @@
 
 # 2. Purpose
 
-Implement the architecture [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]] decided but deliberately did not build: a remote Sponsor Approval Service replacing `scripts/aiems_bridge.py`'s file-based `sponsor-decision` command, closing the self-approval gap confirmed at ESR-0029 WP5 - no code path in any agent-accessible environment may set `programme_sponsor_authorisation: true`. This delivers EBG-0084's remaining implementation half.
+Implement the code the architecture [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]] decided but deliberately did not build: a remote Sponsor Approval Service replacing `scripts/aiems_bridge.py`'s file-based `sponsor-decision` command, closing the self-approval gap confirmed at ESR-0029 WP5 - no code path in any agent-accessible environment may set `programme_sponsor_authorisation: true`. **This package delivers the code and its local verification only.** ADR-0022 Decision item 6 additionally requires the service actually run on the Programme Sponsor's own trusted host behind a private Tailscale address - that is a Sponsor-owned deployment step this package cannot perform (Section 4.7) and does not claim to. EBG-0084's implementation half is therefore only fully Complete once both this package's code is implemented *and* the Sponsor-side deployment acceptance in Section 9 item 4 is confirmed - this package moves EBG-0084 from Approved Backlog to a new, narrower "Code Complete, deployment pending Programme Sponsor acceptance" state, not to Complete outright.
 
 ---
 
 # 3. Related Backlog Item
 
-`EBG-0084` (`EBR-0001`), decision half Complete via ADR-0022, implementation half Approved Backlog. This package delivers that implementation half in full: the service, `sponsor_client.py`, the `aiems_bridge.py` diff, and live end-to-end verification, per ADR-0022 Section 6 (Consequences).
+`EBG-0084` (`EBR-0001`), decision half Complete via ADR-0022, implementation half Approved Backlog. This package delivers the code half of that implementation - the service, `sponsor_client.py`, the `aiems_bridge.py` diff, and local (`127.0.0.1`) end-to-end verification - per ADR-0022 Section 6 (Consequences), items covering the service/client/bridge diff. It does **not** deliver ADR-0022 Decision item 6 (actual Tailscale/trusted-host deployment), which remains a separate, Sponsor-owned follow-up step, checkable per Section 9 item 4, before EBG-0084 can be marked Complete in full.
 
 ---
 
@@ -83,7 +83,7 @@ This package authorises:
    - Modify `cmd_submit_response` to call `fetch_latest_decision` in place of `find_latest_sponsor_decision(read_transcript(...))`, preserving the approve-only check and the exact-repository-ref-match drift check unchanged in substance, still inside `work_package_lock`.
 5. Test coverage: `scripts/tests/test_sponsor_approval_service.py` (new, real socket-based tests against the service on an ephemeral localhost port), `scripts/tests/test_sponsor_client.py` (new, mocked HTTP call), and `scripts/tests/test_aiems_bridge.py` rewritten where it currently exercises `cmd_sponsor_decision`/transcript-based approval to instead inject a fake `fetch_latest_decision`, preserving every existing behavioural case (refused without decision, refused after rejection, succeeds after approval with matching ref, refused on drift, succeeds after fresh decision clears drift, refused when validation failed, TOCTOU-lock coverage) plus a new fail-closed-when-unreachable case.
 6. A short operator note (in this EIP's own Constraints/Consequences, not a new controlled artefact) on starting the service and exposing it via `tailscale serve`.
-7. Record delivery against `EBG-0084` in `EBR-0001`, closing it in full.
+7. Record delivery against `EBG-0084` in `EBR-0001` as **code implementation Complete, Tailscale deployment pending Programme Sponsor acceptance** - not Complete in full, per Section 9 item 4.
 
 ---
 
@@ -132,7 +132,8 @@ This package does not authorise:
 
 1. No implementation shall begin until this package reaches Approved status, via the existing `sponsor-decision` command (the last use of it, per Section 4.8).
 2. Live end-to-end verification, against `127.0.0.1` (Section 4.7), must cover: agent-side `GET` succeeding with a valid `AIEMS_AGENT_TOKEN`; `GET` failing with a missing/wrong token; `POST` succeeding with a valid `AIEMS_SPONSOR_TOKEN` via `sponsor_client.py`; `POST` failing (403) if presented `AIEMS_AGENT_TOKEN` instead; `submit-response` correctly refusing when no decision exists, when the decision rejects, when the repository has drifted, and when the service is stopped (fail-closed); `submit-response` succeeding once a matching approval exists.
-3. From this package's own implementing commit onward, the Engineering Implementer commits to using `submit-response` against the real service as the actual gate before every subsequent commit this session (ADR-0022 Decision item 7) - not reverting to reading the transcript directly.
+3. From this package's own implementing commit onward, the Engineering Implementer commits to using `submit-response` against a real running instance of the service (initially local, per item 4) as the actual gate before every subsequent commit this session (ADR-0022 Decision item 7) - not reverting to reading the transcript directly.
+4. **Sponsor-Side Deployment Acceptance (prerequisite to marking EBG-0084 Complete in full, distinct from this package's own code-complete state)**: this package's own commit records EBG-0084 as code-implementation Complete only. Full closure additionally requires the Programme Sponsor to confirm, in a future session or a direct instruction: (a) the service is genuinely running behind a private Tailscale address, not merely `127.0.0.1`; (b) `AIEMS_SPONSOR_TOKEN`/`AIEMS_AGENT_TOKEN` have been set to real, non-development values, with the sponsor token held only on the Sponsor's own host; (c) a real agent-side `GET` against the Tailscale address succeeds from the actual environment agents run in. Until that confirmation, `AIEMS_SPONSOR_URL` in any environment agents use should continue pointing at a local development instance (per item 3) - this package does not require or assume Tailscale deployment has happened by the time it is implemented.
 
 ---
 
@@ -170,8 +171,8 @@ Requesting Engineering Reviewer (Codex) pre-implementation design review via the
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]] | Approved decision this package implements in full. |
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0084, implementation half delivered by this package. |
+| [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]] | Approved decision this package implements in code; Decision item 6 (Tailscale deployment) remains a separate Sponsor-owned step (Section 9 item 4). |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0084, implementation half's code delivered by this package; full closure pending Sponsor-side deployment acceptance. |
 | [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] | Original bridge implementation this package amends; its three post-implementation findings are the precedent for this bridge's security properties needing adversarial review. |
 
 ---
@@ -180,4 +181,5 @@ Requesting Engineering Reviewer (Codex) pre-implementation design review via the
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 19 July 2026 | Claude Engineering Implementer | Addressed an Engineering Reviewer Medium finding: v0.1 overclaimed full ADR-0022/EBG-0084 closure (Sections 2, 3, 5 item 7, 13) while explicitly excluding actual Tailscale deployment (Decision item 6) as outside the Engineering Implementer's authority (Section 4.7) - an internal inconsistency. Narrowed every closure claim throughout to "code implementation Complete, Tailscale deployment pending Programme Sponsor acceptance," and added Section 9 item 4 defining a checkable Sponsor-side deployment-acceptance step as the actual prerequisite to marking EBG-0084 Complete in full. No scope, file list, or technical design change - wording/claim-accuracy only. |
 | 0.1 | 19 July 2026 | Claude Engineering Implementer | Initial draft created for ESR-0030 WP1, implementing ADR-0022 in full: stdlib-only (no new dependency) HTTP service with SQLite persistence, `sponsor_client.py`, and the `aiems_bridge.py` diff replacing transcript-based sponsor-decision with a fetch from the new service. Not yet Engineering Reviewer or Programme Sponsor reviewed. |
