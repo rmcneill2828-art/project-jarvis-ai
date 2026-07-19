@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.257
+**Version:** 3.258
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.257 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.258 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -139,6 +139,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0014 | Repository Baseline | ESR-0019 Repository Baseline (Guardian Orb Knowledge Graph) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0019 | `aiems/governance/baselines/` |
 | RBL-0015 | Repository Baseline | ESR-0022 Repository Baseline (Production Provider Wiring) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0022 | `aiems/governance/baselines/` |
 | RBL-0016 | Repository Baseline | ESR-0028 Repository Baseline (Guardian Orb 3D Rotation) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/baselines/` |
+| RBL-0017 | Repository Baseline | ESR-0029 Repository Baseline (Guardian Orb Canvas 2D Migration + GIA Phase 1) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
@@ -336,6 +337,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.258 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP9: registered RBL-0017 (ESR-0029 Repository Baseline, Accepted) - Programme Sponsor determination to cut a new baseline rather than retain RBL-0016, agreeing with both independent WP8 views (Guardian Orb Canvas 2D migration + GIA Phase 1 observability, at least comparable in substance to RBL-0016's own trigger). |
 | 3.257 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP7 implemented: EIP-ESR0029-005 (0.1 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.100 to 1.101, EBG-0083 Phase 1 Complete in full) aligned - GiaSnapshot/gia.status extended with local engineering-environment tool presence, 295 tests total, live-verified against both running and not-running states. |
 | 3.256 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP7: registered [[EIP-ESR0029-005_GIA_PHASE1D_ENGINEERING_ENVIRONMENT_STATE|EIP-ESR0029-005]] (GIA Phase 1d: Local Engineering-Environment State, 0.1, Draft) - not yet reviewed or approved. Extends WP3/WP4/WP6's GiaSnapshot/LocalResourceObserver with presence detection for a small, fixed, disclosed list of named engineering tools (VS Code, Obsidian, GitHub Desktop, ChatGPT Desktop), no new dependency. |
 | 3.255 | 19 July 2026 | Claude Engineering Implementer | ESR-0029 WP6 implemented: EIP-ESR0029-004 (0.1 to 1.0, Draft to Approved-implemented) and EBR-0001 (1.99 to 1.100, EBG-0083 Phase 1c Complete) aligned - GiaSnapshot/gia.status extended with the JARVIS backend's own process health, 294 tests total, live-verified. |
