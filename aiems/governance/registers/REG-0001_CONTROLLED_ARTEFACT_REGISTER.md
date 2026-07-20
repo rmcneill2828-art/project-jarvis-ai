@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.280
+**Version:** 3.282
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.280 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.282 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.109 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.110 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -175,6 +175,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0029-004 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1c: Process Health | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0029-005 | Engineering Implementation Package | Guardian Instrumentation Agent (GIA) Phase 1d: Local Engineering-Environment State | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0030-001 | Engineering Implementation Package | Sponsor Approval Service Implementation | 1.5 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0031-001 | Engineering Implementation Package | AIEMS Session-Opening Launcher | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -340,6 +341,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.282 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0B: registered [[EIP-ESR0031-001_SESSION_OPENING_LAUNCHER|EIP-ESR0031-001]] (AIEMS Session-Opening Launcher, 0.1, Draft) - not yet reviewed or approved. A read-only reporting script gathering PST-0001/EBR-0001/JRM-0001 evidence into one report for WP0B objective discussion, paired with WP2 (Shared Family Memory) per PBK-0001's Feature-First Delivery Discipline. |
+| 3.281 | 20 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.109 to 1.110) following: ESR-0031 WP0B: registered EBG-0097 (AIEMS Session-Opening Launcher, Approved Backlog, High - draft EIP-ESR0031-001 v0.1 registered, not yet reviewed or approved) and EBG-0098 (Version Badge/Table Drift Detection in validate_repository.py, Candidate Backlog, Medium - discovered during this session's own WP0 version-drift bug, no implementation authorised). Attribution corrected from `bump_version.py`'s default author constant ("Claude Engineering Reviewer" - stale against PBK-0001's binding of Claude to the Engineering Implementer role) to the correct role, in this row's text only; the script's own `DEFAULT_AUTHOR` constant is unchanged and worth a future fix. |
 | 3.280 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 second fix round (Codex Low finding on the v3.279 commit 52edf8c): MDS-0001 (1.2 to 1.3) Section 5's evidence check still cited the JARVIS Capability Readiness Matrix as v2.1, stale against its actual current v2.2. Corrected. |
 | 3.279 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 fix round (Codex Medium findings on the v3.278 commit 7393a03): the "jarvis/memory/ empty stub" staleness ran deeper than the first pass - PST-0001 (2.67 to 2.68) had five further current-facing rows still citing PCB-0001 v2.1/Readiness Matrix v2.0/Memory Not Started, all corrected to v2.2/v2.2/Partial via an exhaustive whole-file sweep; MDS-0001 (1.1 to 1.2) had two further stale references (Future Evolution's "currently an empty stub" bullet, OSE Relationships' PCB-0001 row) corrected. |
 | 3.278 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 repository synchronisation: PST-0001 (2.66 to 2.67, also fixing a header/Document-Control-table version-drift bug found live and a missing Version History table header), MDS-0001 (1.0 to 1.1), PCB-0001 (2.1 to 2.2) - all three corrected stale "jarvis/memory/ is an empty stub" claims that predated ESR-0027 WP1's real Personal Memory delivery (EBG-0080). Also fixed `jarvis/platform/shell.py`'s Memory capability status (was NOT_IMPLEMENTED, now PLACEHOLDER with an accurate summary) - a code-level instance of the same staleness, not just documentation. |
