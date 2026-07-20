@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.272
+**Version:** 3.273
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.272 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.273 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.104 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.105 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -340,6 +340,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.273 | 19 July 2026 | Claude Engineering Implementer | Post-ESR-0030-closure: EBR-0001 (1.104 to 1.105) - registered EBG-0090, Candidate Backlog - investigate CLI-driven coding agents (Claude Code/Codex CLI) as a cost-avoidance route for Guardian research/engineering tasks, conditional on no performance regression versus the current direct-API route. |
 | 3.272 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 closure post-commit fix: PST-0001 (2.65 to 2.66) - three further stale ESR-0030-open/ESR-0029-current statements found via an exhaustive whole-file sweep and fixed in one pass, following a Codex finding that the initial closure commit missed them. |
 | 3.271 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 formally closed. Registered [[ESR-0030_ENGINEERING_SESSION_REPORT|ESR-0030]] Engineering Session Report v1.0 covering WP0 (deferred sync-staleness fix), WP1 (Sponsor Approval Service implementation, three fix rounds), WP2 (genuine Sponsor-side Tailscale deployment, EBG-0084 complete in full), and session-wide WP3 (Pass after three self-inflicted fix rounds)/WP4 (Retain, RBL-0017 unchanged). |
 | 3.270 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP2 post-commit fix: EIP-ESR0030-001 (1.4 to 1.5) - addressed a Codex Low finding by adding a Current Status note distinguishing WP1-era body text from the now-satisfied deployment state; PST-0001 (2.63 to 2.64) - addressed a Codex Medium finding, Current Mode/Phase/Workflow/Objective and two further stale "session open" claims all rewritten to reflect ESR-0030 as the current open session. |
