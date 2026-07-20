@@ -2,7 +2,7 @@
 
 > *"Guardian remembers what it has been trusted to keep, structured so that trust can be revoked as cleanly as it was given."*
 
-**Version:** 1.1
+**Version:** 1.2
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | MDS-0001 |
 | Title | Memory and Data Storage Architecture |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -176,7 +176,7 @@ MDS-0001 does not:
 
 Future implementation packages may use MDS-0001 to guide Memory development. Anticipated follow-on work, already sequenced in [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]:
 
-- an Engineering Implementation Package implementing `jarvis/memory/` against Sections 6-7 (currently an empty stub);
+- an Engineering Implementation Package implementing Session Memory (Section 6.1) and Shared Family Memory (Section 6.3) against Sections 6-7, extending the Personal Memory (Section 6.2) foundation already delivered at ESR-0027 WP1;
 - EBG-0046 - Device Independence and Restore Architecture (implements the sync/restore protocol Section 8 assumes);
 - EBG-0023 - Backup, Recovery and Data Protection (implements the backup/recovery mechanics Section 9 requires be preserved, once actioned).
 
@@ -191,7 +191,7 @@ Any such evolution shall require separately approved engineering packages.
 | [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | Consent gate this model sits beneath; parent artefact - MDS-0001 implements the storage architecture GAM-0001 Section 9.2 reserved for it. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Defines the Memory faculty this model's taxonomy (Section 6) implements. |
 | [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]] | Decision this model's portability content (Section 8) is bound by, not a redefinition of. |
-| [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Records Memory's current "not implemented" baseline state, confirmed by this artefact's evidence check. |
+| [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Records Memory's current baseline state (Personal tier implemented, Session and Shared Family tiers not yet implemented), confirmed by this artefact's evidence check. |
 | [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
 
 ---
@@ -211,6 +211,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 fix round (Codex Medium finding on v1.1/commit 7393a03): Section 11's Future Evolution bullet still said a future package would implement `jarvis/memory/` "currently an empty stub" - reworded to reflect that Personal Memory is already delivered and only Session/Shared-Family remain. Section 12's OSE Relationships row for PCB-0001 still said it "records Memory's current not implemented baseline state" - corrected to describe the Personal/Session/Shared-Family split. |
 | 1.1 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 repository synchronisation: corrected Section 5's "Evidence check" paragraph, which still said no persistence implementation existed and `jarvis/memory/` was an empty stub - stale since ESR-0027 WP1 delivered Personal Memory (EBG-0080, `PersonalMemoryStore`/`PersonalMemoryService`). Now correctly states Personal Memory is implemented while Session and Shared Family Memory remain unbuilt. |
 | 1.0 | 17 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 17 July 2026**, following Engineering Reviewer (Codex) confirmation via the AIEMS Exchange Bridge: the boundary against GAM-0001 is coherent (stays at the storage-architecture layer, does not reopen the consent gate), the Session/Personal/Shared-Family taxonomy matches AAM-0001 and the current product architecture, and the SQLite recommendation is clearly framed as an initial recommendation, not a final technology decision - no blocking findings. Status Draft to Approved, version 0.1 to 1.0, resolving EBG-0019 in EBR-0001. ESR-0026 WP2. |
 | 0.1 | 17 July 2026 | Claude Engineering Implementer | Initial draft created for ESR-0026 WP2, resolving EBG-0019. Defines a Session/Personal/Shared-Family memory taxonomy grounded in existing product architecture and AAM-0001's Memory faculty; storage architecture principles (local-first persistence, data-layer partitioning of the personal/shared-family boundary, an initial embedded-engine recommendation, technical retention/deletion mechanics); device portability and encrypted sync bound by ADR-0012's existing decision; and the extension point EBG-0023 needs once actioned. Not yet Engineering Reviewer or Programme Sponsor reviewed. |
