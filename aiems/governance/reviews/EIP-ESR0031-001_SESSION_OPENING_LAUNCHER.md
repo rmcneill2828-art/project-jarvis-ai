@@ -9,7 +9,7 @@
 | Package ID | EIP-ESR0031-001 |
 | Artefact ID | EIP-ESR0031-001 |
 | Title | AIEMS Session-Opening Launcher |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -23,7 +23,7 @@
 
 WP0A session-opening synchronisation (PBK-0001) requires reviewing PST-0001's Current Mode/Baseline, the latest closed Engineering Session Report, and EBR-0001's open high-priority backlog before a new session's objective can be confirmed at WP0B. Today this is entirely manual reading. This session's own WP0 demonstrated the cost of that manually-maintained state directly: three separate rounds were needed to find and fix stale "current state" claims scattered across PST-0001, MDS-0001 and PCB-0001 that a human (or an AI reading quickly) could easily miss.
 
-This package implements a small, read-only reporting script that gathers the same evidence PBK-0001's WP0A/WP0B checklist already requires a human to gather by hand, and presents it as a single report - reducing session-opening overhead without changing who decides the session's objective.
+This package implements a small reporting script - read-only against the repository it reports on, with one narrow, explicitly-authorised exception (writing its own generated report to a caller-supplied output path) - that gathers the same evidence PBK-0001's WP0A/WP0B checklist already requires a human to gather by hand, and presents it as a single report - reducing session-opening overhead without changing who decides the session's objective.
 
 ---
 
@@ -79,7 +79,7 @@ No other files are authorised unless a dependency is discovered during validatio
 
 1. All three read functions must fail loudly (raise a clear, named exception) on a structural mismatch - a missing expected row or heading - rather than returning an empty or partial result silently. A report that quietly omits a whole section because a heading changed is worse than one that visibly errors.
 2. `read_near_term_roadmap()`'s resolved-item filter must be applied to the `rationale` text only, never to the `item` name - filtering must not accidentally exclude an item whose *name* happens to contain a filtered word (none currently do, but this must not be assumed to hold forever without the implementation guarding it explicitly).
-3. The script must never write, stage, commit or push anything - it is a read-only reporting tool. No `git` operations of any kind.
+3. The script must never modify any existing repository file, stage, commit or push anything, or perform any `git` operation of any kind. `--output PATH` (Section 5 item 2) is the sole exception: it writes the generated report's own content to exactly one file at a path the caller explicitly provides, in place of printing to stdout - a genuine write, correctly authorised by Section 5, but not "read-only" in the strictest sense (Codex post-implementation review finding, v1.0). Distinguishing this from an actual repository-state change: it never edits, appends to, or deletes an existing tracked file's content - it only ever creates or overwrites the one path the caller names, with the report text itself.
 4. Table parsing must tolerate a WikiLinked EBG-ID/Item cell (an internal cross-reference link wrapped in double square brackets, the same convention `parse_register_rows()` already handles for REG-0001) since EBR-0001 and JRM-0001 both use this convention inline in table cells.
 5. The CLI must exit non-zero and print a clear error (not a traceback) on any `BuildReportError`-style failure, matching `bump_version.py`'s existing `main()` error-handling pattern.
 
@@ -90,7 +90,7 @@ No other files are authorised unless a dependency is discovered during validatio
 This package does not authorise:
 
 1. Any automatic selection or recommendation of a WP0B objective - the report surfaces candidates; the Programme Sponsor still decides, per PBK-0001's existing WP0B requirement ("Programme Sponsor approval before engineering activity begins").
-2. Any repository write, git operation, or bridge submission performed by this script itself.
+2. Any git operation or bridge submission performed by this script itself, or any modification to an existing tracked repository file - `--output PATH`'s report-writing capability (Section 7 item 3) is the sole, narrow exception, not a general write capability.
 3. Parsing or surfacing Medium/Low-priority backlog items, Mid-term/Longer-term roadmap items, or any EBR-0001/JRM-0001 content beyond what Section 5 specifies - scope is deliberately narrow (High-priority open backlog, Near-term roadmap only) to keep the report short enough to actually read at WP0.
 4. Building the version-badge-vs-table drift check named in Section 5 item 5 - that is a separate future backlog item, not part of this package's implementation.
 5. Any integration with `codex exec`, the AIEMS Exchange Bridge, or the automated review pattern proven earlier in this session (EBG-0096) - this is a standalone local reporting script, not part of that automation.
@@ -139,7 +139,7 @@ None - this package reads existing controlled artefacts (PST-0001, EBR-0001, JRM
 
 # 12. Approval Request
 
-Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange Bridge, running in `-s read-only` sandbox mode: "no blocking findings... scope is coherent and appropriately bounded... clear to proceed to Programme Sponsor approval for implementation." **Programme Sponsor approved for implementation.** Implemented exactly as scoped - see EBR-0001 EBG-0097 for full implementation detail, including two genuine defects found during the package's own required live smoke check and test suite (a WikiLink-pipe table-parsing bug silently dropping valid backlog items, and a header-row false-positive in the "no rows found" error case), both fixed with regression tests.
+Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange Bridge, running in `-s read-only` sandbox mode: "no blocking findings... scope is coherent and appropriately bounded... clear to proceed to Programme Sponsor approval for implementation." **Programme Sponsor approved for implementation.** Implemented exactly as scoped - see EBR-0001 EBG-0097 for full implementation detail, including two genuine defects found during the package's own required live smoke check and test suite (a WikiLink-pipe table-parsing bug silently dropping valid backlog items, and a header-row false-positive in the "no rows found" error case), both fixed with regression tests. **Post-implementation review (Codex) found one further Medium finding**: this package's own Sections 7/8 (v1.0 pre-fix) claimed the script "never writes... no git operations of any kind," directly contradicting Section 5 item 2's own authorisation of `--output PATH`. Corrected throughout (Purpose, Sections 7/8 above) to accurately distinguish the script's one narrow, explicitly-authorised write (its own generated report, to a caller-supplied path) from an actual repository-state change - it never modifies an existing tracked file's content.
 
 ---
 
@@ -151,3 +151,13 @@ Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange B
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | High-priority backlog source this package reads; EBG-0097 registered by this package. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Near-term roadmap source this package reads. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | WP0A/WP0B session-opening requirements this package supports without changing. |
+
+---
+
+# 14. Version History
+
+| Version | Date | Author | Summary |
+|---------|------|--------|---------|
+| 1.1 | 20 July 2026 | Claude Engineering Implementer | Post-implementation review fix round (Codex Medium finding on v1.0, commit 28d6236): Sections 7/8 and the Purpose statement claimed the script "never writes... no git operations of any kind," directly contradicting Section 5 item 2's own authorisation of `--output PATH`. Corrected throughout to accurately distinguish the script's one narrow, explicitly-authorised write (its own generated report, to a caller-supplied path) from an actual repository-state change. This Version History section itself was also missing from v0.1/v1.0 - a structural gap versus this project's established EIP template - added now, retroactively recording the versions below. |
+| 1.0 | 20 July 2026 | Claude Engineering Implementer | Programme Sponsor approved for implementation following Codex's clean pre-implementation concept/scope review (read-only sandbox mode, no blocking findings). Implemented exactly as scoped in `scripts/session_launcher.py` - two genuine defects found and fixed during the required live smoke check and test suite (WikiLink-pipe table-parsing corruption silently dropping valid backlog items; a header-row false-positive masking the "no rows found" error case), both with regression tests. EBG-0097 marked Complete. |
+| 0.1 | 20 July 2026 | Claude Engineering Implementer | Initial draft, registered in EBR-0001 (EBG-0097) and REG-0001 at ESR-0031 WP0B. Not yet reviewed or approved. |
