@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 2.1 |
+| Version | 2.2 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -78,7 +78,7 @@ PCB-0001 does not duplicate the matrix. Future maturity changes shall be assesse
 The accepted product baseline includes the following constraints:
 
 - External AI providers (OpenAI, Gemini) are implemented and live-validated but not wired into JARVIS/Guardian's default runtime conversation path - both remain opt-in, manual-script-only.
-- Persistent memory is not implemented.
+- Persistent memory: Personal Memory (MDS-0001 Section 6.2) is implemented at foundation level, consent-gated, delivered at ESR-0027 WP1 (EBG-0080); Session Memory (Section 6.1) and Shared Family Memory (Section 6.3) are not yet implemented.
 - Voice capability is not implemented.
 - Vision capability is not implemented.
 - Guardian capability is implemented only at the foundation level (runtime lifecycle, Sentinel connection, UXP reachability, live knowledge-graph Orb) - the full HITL governance, consent/policy, family-safety and pre-approved emergency-action model ([[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]], EBG-0031, EBG-0048) is not implemented.
@@ -127,6 +127,7 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.2 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 repository synchronisation: corrected Section 6's blanket "Persistent memory is not implemented" constraint, stale since ESR-0027 WP1 delivered Personal Memory (EBG-0080) - now correctly distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. |
 | 2.1 | 13 July 2026 | Claude Engineering Implementer | Status In Review to Accepted - the Programme Sponsor accepted the v2.0 refresh at ESR-0020 WP4 closure, following Engineering Reviewer review (no material overstatement, judged conservative). |
 | 2.0 | 13 July 2026 | Claude Engineering Implementer | Refreshed to reflect current repository evidence (ESR-0013 through ESR-0020), addressing EBG-0056 (flagged materially stale at RBL-0013): Sentinel/Guardian foundation, live Tauri+React UXP with real backend bridge and knowledge-graph Orb, two live-validated external provider adapters (neither wired into the default runtime path), refreshed constraints. Status set to In Review pending Programme Sponsor acceptance. |
 | 1.0 | 1 July 2026 | Codex Engineering Implementer | Initial Product Capability Baseline created following RPCA-0001 repository product capability assessment. |

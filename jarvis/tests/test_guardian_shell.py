@@ -18,7 +18,7 @@ def test_guardian_shell_marks_future_capabilities_as_placeholders_or_unavailable
 
     assert states["Sentinel Gateway"] == GuardianShellState.PLACEHOLDER
     assert states["Platform Services"] == GuardianShellState.PLACEHOLDER
-    assert states["Memory"] == GuardianShellState.NOT_IMPLEMENTED
+    assert states["Memory"] == GuardianShellState.PLACEHOLDER
     assert states["Providers"] == GuardianShellState.OFFLINE
     assert states["Agent Framework"] == GuardianShellState.PLACEHOLDER
 

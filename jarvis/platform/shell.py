@@ -62,8 +62,8 @@ def build_guardian_shell_status() -> GuardianShellStatus:
             ),
             GuardianShellCapability(
                 name="Memory",
-                state=GuardianShellState.NOT_IMPLEMENTED,
-                summary="Persistent memory is outside this package.",
+                state=GuardianShellState.PLACEHOLDER,
+                summary="Personal Memory implemented (ESR-0027); Session and Shared Family memory not yet built.",
             ),
             GuardianShellCapability(
                 name="Providers",
