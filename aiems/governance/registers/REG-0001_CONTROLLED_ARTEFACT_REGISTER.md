@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.298
+**Version:** 3.302
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.298 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.302 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.115 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.116 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -140,7 +140,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0015 | Repository Baseline | ESR-0022 Repository Baseline (Production Provider Wiring) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0022 | `aiems/governance/baselines/` |
 | RBL-0016 | Repository Baseline | ESR-0028 Repository Baseline (Guardian Orb 3D Rotation) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/baselines/` |
 | RBL-0017 | Repository Baseline | ESR-0029 Repository Baseline (Guardian Orb Canvas 2D Migration + GIA Phase 1) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/baselines/` |
-| RBL-0018 | Repository Baseline | ESR-0031 Repository Baseline (Streaming Notifications MVP + AIEMS Session-Opening Launcher) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0031 | `aiems/governance/baselines/` |
+| RBL-0018 | Repository Baseline | ESR-0031 Repository Baseline (Streaming Notifications MVP + AIEMS Session-Opening Launcher) | 1.1 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0031 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.2 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
@@ -188,12 +188,12 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.30 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.31 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
 | COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.13 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.73 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.74 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -343,6 +343,10 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.302 | 20 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.115 to 1.116) following: ESR-0031 WP4 post-implementation fix round: registered EBG-0101 (bump_version.py's --date flag silently defaults to a stale hardcoded placeholder, 9 July 2026) - discovered live when three real bump calls this same fix round were run without --date and silently mis-dated. Candidate Backlog, Medium. No implementation authorised. |
+| 3.301 | 20 July 2026 | Claude Engineering Implementer | Aligned RBL-0018 version (1.0 to 1.1) following: Post-implementation fix round (Codex-caught): corrected stale 140-warning verification figure to the actual 143, and corrected the pre-existing/new warning breakdown against RBL-0017's actual recorded 129 (was miscalculated as 130). |
+| 3.300 | 20 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.73 to 2.74) following: ESR-0031 WP4 post-implementation fix round (Codex-caught): corrected stale 140-warning figures to the actual current 143 in two spots (Section 4A narrative, Section 9 Current Activity row). |
+| 3.299 | 20 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.30 to 1.31) following: ESR-0031 WP4 post-implementation fix round (Codex-caught): corrected two stale RBL-0017 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0018. |
 | 3.298 | 20 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.72 to 2.73) following: ESR-0031 WP4: RBL-0018 accepted, superseding RBL-0017 (Documentation Debt Discipline). Current Mode/Phase/Engineering Objective updated to reflect all Work Packages complete including WP3 Pass/WP4 accepted. Section 4A refreshed for ESR-0031 (was still describing ESR-0030). Section 8/9's duplicate 'current state' rows (Current Engineering Session, Current Repository Baseline x2, Current Review State, ESR-0026 Delivered Scope, Current Activity) restructured to reference Section 3/4A instead of restating - these had drifted stale for up to six sessions (Current Activity still said ESR-0025) while Section 3/4A were kept current throughout. Also corrected a stale JRM-0001 version citation (v1.13, actual v1.16) found during the same sweep. |
 | 3.297 | 20 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.29 to 1.30) following: ESR-0031: Added Documentation Debt Discipline (Whole-Document Staleness Sweep on Edit; Documentation-Debt Priority Until Backlog Cleared) - directed by the Programme Sponsor following an observation that disclosed documentation staleness (e.g. EBG-0056) can be correctly tracked yet age indefinitely since it never outranks new capability work for a session's objective. |
 | 3.296 | 20 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.114 to 1.115) following: ESR-0031 WP2 fix round (Codex Low finding on commit 337761777c38b7635ee3439b210840139e84ae7a): EBG-0099's row incorrectly described a real-subprocess smoke test as part of the committed test suite's '4 new tests' - it was actually a separate, ad hoc manual verification script, never added to jarvis/tests/test_stdio_rpc.py. Corrected to distinguish the 4 real in-process unit tests from the manual real-subprocess verification. |

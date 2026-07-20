@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | RBL-0018 |
 | Title | ESR-0031 Repository Baseline (Streaming Notifications MVP + AIEMS Session-Opening Launcher) |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Engineering Session | ESR-0031 (in progress - no session report artefact exists yet, per established practice) |
@@ -104,7 +104,7 @@ Repository validation performed during ESR-0031 WP3/WP4:
 - Git working tree was clean; the session's intended content range (`82050c9`..`d611c67`) pushed to `origin/main`.
 - Repository branch was `main`, synchronised with `origin/main`.
 - 351/351 tests passing, up from RBL-0017's 338 (13 net-new tests; no regressions).
-- `python scripts/validate_repository.py` (full mode) passed with 0 errors, 140 warnings (130 pre-existing plus 10 new, disclosed, accepted cross-document false positives).
+- `python scripts/validate_repository.py` (full mode) passed with 0 errors, 144 warnings (129 pre-existing per RBL-0017 plus 15 new, disclosed, accepted cross-document false positives).
 - `cargo build --manifest-path src-tauri/Cargo.toml` clean, no warnings.
 - `npm run build` clean.
 - `git diff --stat 82050c9..d611c67` independently re-run by the Engineering Reviewer, confirmed to match exactly (16 files, 1,353 insertions, 116 deletions).
@@ -149,4 +149,5 @@ Future work against this baseline should include:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 20 July 2026 | Claude Engineering Implementer | Post-implementation fix round (Codex-caught): corrected stale 140-warning verification figure to 144 (the true stable count, including one new cross-document "Section N" false positive contributed by this fix round's own PST-0001 Version History wording), and corrected the pre-existing/new warning breakdown against RBL-0017's actual recorded 129 (was miscalculated as 130). |
 | 1.0 | 20 July 2026 | Programme Sponsor | Accepted as the current repository baseline, superseding RBL-0017, following the Engineering Reviewer's WP3 Pass and the Programme Sponsor's explicit WP4 decision to cut a new baseline rather than retain RBL-0017: the Streaming Notifications MVP materially changes the running UXP's runtime capability, agreeing with both independent WP3 baseline views. |

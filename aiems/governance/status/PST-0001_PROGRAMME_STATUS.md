@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.73
+**Version:** 2.74
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.73 |
+| Version | 2.74 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -112,7 +112,7 @@ Session-wide **WP3** (Independent Repository Verification): **Pass**, after one 
 
 **A new PBK-0001 practice was directed this session: Documentation Debt Discipline** (whole-document staleness sweeps whenever any controlled artefact is opened for edit; documentation-debt backlog items get first priority over new capability work until that category of backlog is empty) - prompted directly by finishing this baseline acceptance and finding Section 8/9's "current state" rows had duplicated this section's own facts and drifted stale for five sessions (ESR-0027 through ESR-0031) while this section itself was kept current throughout. Section 8/9 restructured to reference this section rather than restate it, removing the duplication rather than patching it again.
 
-351 tests pass (up from 338 - 13 net-new tests across the launcher and the heartbeat mechanism) and `validate_repository.py` (full mode) passes clean throughout (140 warnings, all disclosed cross-document false positives). Full detail to follow in the ESR-0031 Engineering Session Report once authored.
+351 tests pass (up from 338 - 13 net-new tests across the launcher and the heartbeat mechanism) and `validate_repository.py` (full mode) passes clean throughout (144 warnings, all disclosed cross-document false positives). Full detail to follow in the ESR-0031 Engineering Session Report once authored.
 
 **Deferred, not resolved this session**: EBG-0098 (version badge/table drift detection in `validate_repository.py`) and EBG-0100 (the UXP capability sidebar's hardcoded Memory row) both registered as Candidate Backlog, not implemented - the latter found as a byproduct of WP2's own live smoke check, out of that Work Package's scope.
 
@@ -333,7 +333,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Repository Baseline | See Section 3 (Current Mode block) - restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2 (refreshed ESR-0031 WP0); sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.2 (ESR-0028 WP2/WP4) |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | See Section 3 (Current Mode) / Section 4A (Current Engineering Focus) - this row had drifted six sessions stale (still describing ESR-0025) while Section 3/4A were kept current throughout, restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source. Latest figures: `python scripts/validate_repository.py` 0 errors, 140 warnings; `python -m pytest` 351/351 passing. |
+| Current Activity | See Section 3 (Current Mode) / Section 4A (Current Engineering Focus) - this row had drifted six sessions stale (still describing ESR-0025) while Section 3/4A were kept current throughout, restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source. Latest figures: `python scripts/validate_repository.py` 0 errors, 144 warnings; `python -m pytest` 351/351 passing. |
 
 ---
 
@@ -680,6 +680,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.74 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP4 post-implementation fix round (Codex-caught): corrected stale 140-warning figures to 144 (the true stable count including this fix round's own new cross-document "Section N" false-positive references) in two spots (Section 4A narrative, Section 9 Current Activity row). |
 | 2.73 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP4: RBL-0018 accepted, superseding RBL-0017 (Documentation Debt Discipline). Current Mode/Phase/Engineering Objective updated to reflect all Work Packages complete including WP3 Pass/WP4 accepted. Section 4A refreshed for ESR-0031 (was still describing ESR-0030). Section 8/9's duplicate 'current state' rows (Current Engineering Session, Current Repository Baseline x2, Current Review State, ESR-0026 Delivered Scope, Current Activity) restructured to reference Section 3/4A instead of restating - these had drifted stale for up to six sessions (Current Activity still said ESR-0025) while Section 3/4A were kept current throughout. Also corrected a stale JRM-0001 version citation (v1.13, actual v1.16) found during the same sweep. |
 | 2.72 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP2: Current Mode/Phase/Engineering Objective updated to reflect all planned Work Packages (WP0/WP0B/WP1/WP2B/WP2) complete - session-wide WP3 (Independent Repository Verification) and WP4 (Baseline Acceptance) remain before formal closure. |
 | 2.71 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP2B: Current Mode/Phase/Engineering Objective updated to record that Shared Family Memory was considered and ruled out as WP2 (GAM-0001 Section 10's explicit non-goal against household identity/authentication enforcement means genuine role-based access differentiation isn't buildable honestly yet), replaced with Streaming Notifications MVP (EBG-0099, EIP-ESR0031-002 draft registered). |
