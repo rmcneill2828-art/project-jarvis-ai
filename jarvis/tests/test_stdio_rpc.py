@@ -2,6 +2,8 @@
 
 import io
 import json
+import threading
+import time
 from datetime import datetime, timezone
 
 from jarvis.gia.observability import GiaSnapshot
@@ -424,6 +426,124 @@ def test_notification_without_id_still_returns_a_response_with_null_id(tmp_path)
 
     assert response["id"] is None
     assert "result" in response
+
+
+def test_heartbeat_loop_emits_notification_with_no_id_key(tmp_path):
+    """EIP-ESR0031-002: a heartbeat notification is a JSON-RPC object with no
+    `id` key at all - the spec's own signal distinguishing a notification from
+    a response, which always carries `id` (even `null`, per the test above).
+    Exercises `_heartbeat_loop` directly with a short real interval rather than
+    a real 30-second sleep, per the EIP's own validation requirement."""
+
+    server = StdioRpcServer(build_default_runtime(environ={
+        "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+        "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+    }), heartbeat_interval_seconds=0.01)
+    out_stream = io.StringIO()
+    stop_event = threading.Event()
+
+    thread = threading.Thread(target=server._heartbeat_loop, args=(out_stream, stop_event))
+    thread.start()
+    time.sleep(0.05)
+    stop_event.set()
+    thread.join(timeout=1.0)
+
+    assert not thread.is_alive()
+    lines = [line for line in out_stream.getvalue().splitlines() if line]
+    assert len(lines) >= 1
+    notification = json.loads(lines[0])
+    assert "id" not in notification
+    assert notification["jsonrpc"] == "2.0"
+    assert notification["method"] == "system.heartbeat"
+    assert "timestamp" in notification["params"]
+
+
+def test_heartbeat_loop_writes_nothing_after_stop_event_set_before_first_interval(tmp_path):
+    """A stop signalled before the first interval elapses must prevent any
+    heartbeat write - the loop must check stop_event before writing, not just
+    between writes."""
+
+    server = _server(tmp_path)
+    out_stream = io.StringIO()
+    stop_event = threading.Event()
+    stop_event.set()
+
+    server._heartbeat_loop(out_stream, stop_event)
+
+    assert out_stream.getvalue() == ""
+
+
+def test_serve_forever_still_processes_requests_correctly_with_heartbeat_thread_running(tmp_path):
+    """Regression check: serve_forever's existing request/response behaviour
+    (EIP-ESR0031-002 Implementation Requirement 4) must be unaffected by the
+    heartbeat thread now running alongside it. Uses a large interval so the
+    heartbeat itself cannot fire during this test, isolating this assertion
+    from any timing flakiness."""
+
+    server = StdioRpcServer(build_default_runtime(environ={
+        "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+        "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+    }), heartbeat_interval_seconds=9999.0)
+    requests = (
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "platform.status", "params": {}})
+        + "\n\n"
+        + json.dumps({"jsonrpc": "2.0", "id": 2, "method": "guardian.converse", "params": {"message": "hi"}})
+        + "\n"
+    )
+    in_stream = io.StringIO(requests)
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=in_stream, out_stream=out_stream)
+
+    lines = [line for line in out_stream.getvalue().splitlines() if line]
+    assert len(lines) == 2
+    first, second = (json.loads(line) for line in lines)
+    assert first["id"] == 1
+    assert second["result"]["message"] == "local-echo: hi"
+
+
+class _SlowLineStream:
+    """An iterable yielding each line with a short real delay between them,
+    giving a background heartbeat thread a genuine chance to interleave -
+    a plain io.StringIO yields all lines instantly, never allowing that."""
+
+    def __init__(self, lines: list[str], delay_seconds: float) -> None:
+        self._lines = lines
+        self._delay_seconds = delay_seconds
+
+    def __iter__(self):
+        for line in self._lines:
+            time.sleep(self._delay_seconds)
+            yield line
+
+
+def test_serve_forever_interleaves_heartbeats_without_corrupting_any_line(tmp_path):
+    """EIP-ESR0031-002 Implementation Requirement 1: a response write and a
+    heartbeat write must never interleave into one corrupted line. Uses a slow
+    input stream so the heartbeat thread has real chances to fire between
+    requests, then asserts every single output line is independently valid
+    JSON - a corruption would produce an unparsable or malformed line."""
+
+    server = StdioRpcServer(build_default_runtime(environ={
+        "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+        "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+    }), heartbeat_interval_seconds=0.01)
+    requests = [
+        json.dumps({"jsonrpc": "2.0", "id": i, "method": "platform.status", "params": {}})
+        for i in range(5)
+    ]
+    in_stream = _SlowLineStream(requests, delay_seconds=0.03)
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=in_stream, out_stream=out_stream)
+
+    lines = [line for line in out_stream.getvalue().splitlines() if line]
+    parsed = [json.loads(line) for line in lines]  # raises if any line is corrupted
+
+    responses = [obj for obj in parsed if "id" in obj]
+    notifications = [obj for obj in parsed if "id" not in obj]
+    assert len(responses) == 5
+    assert all(notification["method"] == "system.heartbeat" for notification in notifications)
 
 
 def test_memory_propose_approve_list_round_trip(tmp_path):

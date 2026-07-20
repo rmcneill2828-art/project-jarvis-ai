@@ -9,8 +9,8 @@
 | Package ID | EIP-ESR0031-002 |
 | Artefact ID | EIP-ESR0031-002 |
 | Title | Streaming Notifications MVP |
-| Version | 0.2 |
-| Status | Draft |
+| Version | 1.0 |
+| Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | EBR-0001 (EBG-0050's remaining scope, closing that portion of it) |
@@ -149,7 +149,7 @@ Validation should confirm:
 
 # 12. Approval Request
 
-Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange Bridge, running in `-s read-only` sandbox mode: one Medium finding (Implementation Requirements 3/4 contradiction on unparsable-line handling), addressed at v0.2. v0.2 confirmed by the Engineering Reviewer: no remaining blocking findings, "ready for Programme Sponsor implementation approval."
+Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange Bridge, running in `-s read-only` sandbox mode: one Medium finding (Implementation Requirements 3/4 contradiction on unparsable-line handling), addressed at v0.2. v0.2 confirmed by the Engineering Reviewer: no remaining blocking findings, "ready for Programme Sponsor implementation approval." **Programme Sponsor approved v0.2 for implementation.** Implemented exactly as scoped - see EBR-0001 EBG-0099 for full implementation detail, including a genuine live smoke check (two screenshots ~35 seconds apart proving the heartbeat display updates in the real running application) rather than relying on unit tests alone.
 
 ---
 
@@ -168,5 +168,6 @@ Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange B
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 20 July 2026 | Claude Engineering Implementer | Programme Sponsor approved v0.2 for implementation. Implemented exactly as scoped: Python heartbeat emitter, Rust background-reader-plus-dispatch restructuring, React notification listener. Genuine live smoke check performed (real `npm run tauri dev` session, two screenshots ~35s apart proving live update), not just unit tests. EBG-0099 marked Complete. |
 | 0.2 | 20 July 2026 | Claude Engineering Implementer | Addressed a Codex Medium finding on v0.1: Implementation Requirements 3 and 4 directly contradicted each other - Requirement 3 said an unparsable line should be logged/ignored as non-fatal, but the reader thread has no way to know whether that line was a broken notification or the response a pending call is waiting on, so ignoring it could leave that call blocked forever. Rewrote Requirement 3 to treat any unparsable line as connection-level corruption - failing all currently-pending calls and resetting backend state, extending today's single-call teardown behaviour to the multi-call-in-flight case this restructuring introduces. Scope item 6's test-coverage requirement extended to cover this scenario explicitly. |
 | 0.1 | 20 July 2026 | Claude Engineering Implementer | Initial draft. Not yet reviewed or approved. |

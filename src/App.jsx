@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import {
   Activity,
   Bell,
@@ -139,7 +140,7 @@ function deriveSystemHealth(platformState, platformError) {
   ];
 }
 
-function SystemHealthPanel({ platformState, platformError }) {
+function SystemHealthPanel({ platformState, platformError, lastHeartbeatAt }) {
   const rows = deriveSystemHealth(platformState, platformError);
 
   return (
@@ -156,6 +157,15 @@ function SystemHealthPanel({ platformState, platformError }) {
           </article>
         ))}
       </div>
+      {/* EIP-ESR0031-002: proves the streaming-notification plumbing works end
+          to end with real, live data - not a decorative placeholder. Absent
+          until the first heartbeat actually arrives, never a fabricated
+          initial value. */}
+      <p className="system-health-heartbeat">
+        {lastHeartbeatAt
+          ? `Backend heartbeat: ${lastHeartbeatAt.toLocaleTimeString()}`
+          : "Backend heartbeat: waiting for first signal…"}
+      </p>
     </aside>
   );
 }
@@ -426,6 +436,12 @@ export function App() {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState(null);
 
+  // EIP-ESR0031-002 (Streaming Notifications MVP): the UXP's first live-push
+  // channel. platform_status/knowledge_graph above remain one-time mount
+  // fetches, unchanged - this is a second, independent channel proving the
+  // Python-to-Rust-to-React notification plumbing works, not a replacement.
+  const [lastHeartbeatAt, setLastHeartbeatAt] = useState(null);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -447,6 +463,28 @@ export function App() {
 
     return () => {
       cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let unlisten;
+    let cancelled = false;
+
+    listen("jarvis://notification", (event) => {
+      if (event.payload?.method === "system.heartbeat") {
+        setLastHeartbeatAt(new Date());
+      }
+    }).then((fn) => {
+      if (cancelled) {
+        fn();
+      } else {
+        unlisten = fn;
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      if (unlisten) unlisten();
     };
   }, []);
 
@@ -497,7 +535,11 @@ export function App() {
               />
             </div>
             <div className="side-column">
-              <SystemHealthPanel platformState={platformState} platformError={platformError} />
+              <SystemHealthPanel
+                platformState={platformState}
+                platformError={platformError}
+                lastHeartbeatAt={lastHeartbeatAt}
+              />
               <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
               <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} />
               <DiagnosticsPanel diagnostics={diagnostics} />

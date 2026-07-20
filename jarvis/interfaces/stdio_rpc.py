@@ -12,11 +12,23 @@ design-review finding 2).
 The JSON-RPC 2.0 envelope is adopted now, even though only synchronous
 request/response is implemented, specifically so EBG-0050's later streaming
 notifications can be added without a breaking change (Reviewer finding 5).
+
+EIP-ESR0031-002 (Streaming Notifications MVP) exercises that envelope for
+the first time: `serve_forever()` now also runs a background heartbeat
+thread that periodically writes a `system.heartbeat` JSON-RPC
+notification - a message with no `id` key at all, the JSON-RPC 2.0 signal
+distinguishing an unsolicited notification from a response (which always
+carries `id`, even `null` for certain error cases). A single write lock is
+shared between the main loop's response writes and the heartbeat thread's
+notification writes so the two can never interleave partial JSON onto one
+line.
 """
 
 import json
 import os
 import sys
+import threading
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Mapping, TextIO
 
@@ -78,6 +90,12 @@ OLLAMA_TIMEOUT_SECONDS = 90.0
 # just for a local file instead of a network endpoint.
 MEMORY_DB_PATH_ENV_VAR = "JARVIS_MEMORY_DB_PATH"
 DEFAULT_MEMORY_DB_PATH = Path.home() / ".jarvis" / "memory" / "personal.db"
+
+# Streaming Notifications MVP (EIP-ESR0031-002): interval between heartbeat
+# notifications, overridable per JARVIS_MEMORY_DB_PATH's established
+# test-isolation convention - a real 30-second sleep has no place in a test.
+HEARTBEAT_INTERVAL_ENV_VAR = "JARVIS_HEARTBEAT_INTERVAL_SECONDS"
+DEFAULT_HEARTBEAT_INTERVAL_SECONDS = 30.0
 
 # Standard JSON-RPC 2.0 pre-defined error codes, plus one server-defined code
 # in the reserved -32000 to -32099 range for internal handler failures.
@@ -185,8 +203,20 @@ class StdioRpcServer:
         self,
         runtime: GuardianRuntime,
         gia_observer: LocalResourceObserver | None = None,
+        heartbeat_interval_seconds: float | None = None,
     ) -> None:
         self._runtime = runtime
+        # Streaming Notifications MVP (EIP-ESR0031-002): shared between the
+        # main loop's response writes (serve_forever) and the heartbeat
+        # thread's notification writes (_heartbeat_loop) so the two can never
+        # interleave partial JSON onto the same output line.
+        self._write_lock = threading.Lock()
+        if heartbeat_interval_seconds is not None:
+            self._heartbeat_interval_seconds = heartbeat_interval_seconds
+        else:
+            self._heartbeat_interval_seconds = float(
+                os.environ.get(HEARTBEAT_INTERVAL_ENV_VAR, DEFAULT_HEARTBEAT_INTERVAL_SECONDS)
+            )
         # GIA (EBG-0083) is deliberately not constructed from or dependent on
         # `runtime` - per ESR-0011 Section 10, it observes and publishes local
         # resource state independent of Guardian's own lifecycle. This is
@@ -337,20 +367,55 @@ class StdioRpcServer:
     def _error(self, request_id: Any, code: int, message: str) -> dict[str, Any]:
         return {"jsonrpc": JSONRPC_VERSION, "id": request_id, "error": {"code": code, "message": message}}
 
+    def _write_line(self, out_stream: TextIO, payload: dict[str, Any]) -> None:
+        """Write one JSON-RPC line to out_stream, holding the shared write lock only
+        for the write itself - never across a sleep or other blocking operation."""
+
+        with self._write_lock:
+            out_stream.write(json.dumps(payload) + "\n")
+            out_stream.flush()
+
+    def _heartbeat_loop(self, out_stream: TextIO, stop_event: threading.Event) -> None:
+        """Periodically emit a system.heartbeat JSON-RPC notification (no `id` key -
+        the JSON-RPC 2.0 signal distinguishing a notification from a response) until
+        stop_event is set. Runs as a daemon thread; does not hold the write lock
+        while waiting between heartbeats."""
+
+        while not stop_event.wait(self._heartbeat_interval_seconds):
+            notification = {
+                "jsonrpc": JSONRPC_VERSION,
+                "method": "system.heartbeat",
+                "params": {"timestamp": datetime.now(UTC).isoformat()},
+            }
+            self._write_line(out_stream, notification)
+
     def serve_forever(self, in_stream: TextIO | None = None, out_stream: TextIO | None = None) -> None:
-        """Read one JSON-RPC request per line from in_stream, writing responses to out_stream."""
+        """Read one JSON-RPC request per line from in_stream, writing responses to
+        out_stream, while a background thread periodically writes heartbeat
+        notifications to the same stream (EIP-ESR0031-002)."""
 
         in_stream = in_stream if in_stream is not None else sys.stdin
         out_stream = out_stream if out_stream is not None else sys.stdout
 
-        for raw_line in in_stream:
-            line = raw_line.strip()
-            if not line:
-                continue
-            response = self.handle_line(line)
-            if response is not None:
-                out_stream.write(json.dumps(response) + "\n")
-                out_stream.flush()
+        stop_heartbeat = threading.Event()
+        heartbeat_thread = threading.Thread(
+            target=self._heartbeat_loop,
+            args=(out_stream, stop_heartbeat),
+            daemon=True,
+            name="jarvis-heartbeat",
+        )
+        heartbeat_thread.start()
+
+        try:
+            for raw_line in in_stream:
+                line = raw_line.strip()
+                if not line:
+                    continue
+                response = self.handle_line(line)
+                if response is not None:
+                    self._write_line(out_stream, response)
+        finally:
+            stop_heartbeat.set()
 
 
 def run() -> None:
