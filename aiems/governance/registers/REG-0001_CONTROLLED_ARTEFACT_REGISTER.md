@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.302
+**Version:** 3.304
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.302 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.304 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -193,7 +193,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.74 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.75 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -229,6 +229,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0028 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0029 | Engineering Session Report | Engineering Session Report | 1.1 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0030 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0031 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -343,6 +344,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.304 | 20 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.74 to 2.75) following: ESR-0031 formally closed (20 July 2026). Authored ESR-0031 Engineering Session Report v1.0 covering WP0 (stale memory-claim fixes), WP0B/WP1 (AIEMS Session-Opening Launcher), WP2B/WP2 (Streaming Notifications MVP), and session-wide WP3 (Pass)/WP4 (Accept, RBL-0018 established, two further Codex-caught fix rounds). Updated Current Mode (ESR-0031 closed, no session currently open), Current Engineering Focus (closed-state rewrite), Session Start Guidance (items 2/7 and closing line retargeted to ESR-0031/RBL-0018), and Track A EBG-0057 proof count (five to six sessions). |
+| 3.303 | 20 July 2026 | Claude Engineering Implementer | Registered ESR-0031 (Engineering Session Report, Closed) - session closure, authored at close per established practice. |
 | 3.302 | 20 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.115 to 1.116) following: ESR-0031 WP4 post-implementation fix round: registered EBG-0101 (bump_version.py's --date flag silently defaults to a stale hardcoded placeholder, 9 July 2026) - discovered live when three real bump calls this same fix round were run without --date and silently mis-dated. Candidate Backlog, Medium. No implementation authorised. |
 | 3.301 | 20 July 2026 | Claude Engineering Implementer | Aligned RBL-0018 version (1.0 to 1.1) following: Post-implementation fix round (Codex-caught): corrected stale 140-warning verification figure to 144 (the true stable count, including one new cross-document "Section N" false positive contributed by this fix round's own PST-0001 Version History wording), and corrected the pre-existing/new warning breakdown against RBL-0017's actual recorded 129 (was miscalculated as 130). |
 | 3.300 | 20 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.73 to 2.74) following: ESR-0031 WP4 post-implementation fix round (Codex-caught): corrected stale 140-warning figures to 144 (the true stable count including this fix round's own new cross-document "Section N" false-positive references) in two spots (Section 4A narrative, Section 9 Current Activity row). |
