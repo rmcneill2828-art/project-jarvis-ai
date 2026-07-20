@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.75
+**Version:** 2.76
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.75 |
+| Version | 2.76 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -64,9 +64,9 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Current Repository Baseline | [[RBL-0018_REPOSITORY_BASELINE|RBL-0018]], accepted at ESR-0031 WP4, superseding RBL-0017 - the Streaming Notifications MVP (the UXP-backend bridge's first live-push mechanism, live-verified via a real running application session) judged baseline-worthy, both independent WP3 views converging with the Programme Sponsor's determination. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2, refreshed at ESR-0031 WP0 to reflect ESR-0027 WP1's Personal Memory implementation - now distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0031 open, all Work Packages complete including session-wide WP3 (Pass)/WP4 (RBL-0018 accepted); Engineering Session Report authorship and formal closure remain; ESR-0030 closed 19 July 2026; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0030 completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` - now confirmed repeatable across a fifth consecutive session (ESR-0026 through ESR-0030), and the first where the approval step itself ran through a real deployed Sponsor Approval Service rather than a local file or bootstrap instance. ESR-0031 is additionally exercising a refined review pattern for automated Codex invocations: `codex exec -s read-only` (no write capability by construction) with Claude relaying Codex's plain-text findings into the bridge under explicit per-instance Sponsor approval, replacing the earlier `workspace-write` approach that depended on a fragile sandbox permission grant. |
-| Current Engineering Objective | ESR-0031: WP1 (AIEMS Session-Opening Launcher, EBG-0097, Complete) and WP2 (Streaming Notifications MVP, EBG-0099/EBG-0050 remaining scope, Complete) paired per PBK-0001's Feature-First Delivery Discipline. Shared Family Memory was considered and ruled out as WP2 - GAM-0001 Section 10 explicitly excludes household role authentication/enforcement, so genuine per-role access differentiation isn't buildable honestly yet. All Work Packages complete including session-wide WP3 (Pass)/WP4 (RBL-0018 accepted); Engineering Session Report authorship remains before formal closure. |
+| Current Phase | ESR-0031 closed 20 July 2026; no session currently open; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0031 completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - now confirmed repeatable across a sixth consecutive session (ESR-0026 through ESR-0031). ESR-0031 additionally exercised a refined review pattern for automated Codex invocations: `codex exec -s read-only` (no write capability by construction) with Claude relaying Codex's plain-text findings into the bridge under explicit per-instance Sponsor approval, replacing the earlier `workspace-write` approach that depended on a fragile sandbox permission grant. |
+| Current Engineering Objective | None - no session currently open. ESR-0031's objectives (WP1 AIEMS Session-Opening Launcher, EBG-0097; WP2 Streaming Notifications MVP, EBG-0099/EBG-0050 remaining scope) are both Complete; see [[ESR-0031_ENGINEERING_SESSION_REPORT|ESR-0031]] for full detail. |
 
 ---
 
@@ -112,7 +112,7 @@ Session-wide **WP3** (Independent Repository Verification): **Pass**, after one 
 
 **A new PBK-0001 practice was directed this session: Documentation Debt Discipline** (whole-document staleness sweeps whenever any controlled artefact is opened for edit; documentation-debt backlog items get first priority over new capability work until that category of backlog is empty) - prompted directly by finishing this baseline acceptance and finding Section 8/9's "current state" rows had duplicated this section's own facts and drifted stale for five sessions (ESR-0027 through ESR-0031) while this section itself was kept current throughout. Section 8/9 restructured to reference this section rather than restate it, removing the duplication rather than patching it again.
 
-351 tests pass (up from 338 - 13 net-new tests across the launcher and the heartbeat mechanism) and `validate_repository.py` (full mode) passes clean throughout (144 warnings, all disclosed cross-document false positives). Full detail in [[ESR-0031_ENGINEERING_SESSION_REPORT|ESR-0031]].
+351 tests pass (up from 338 - 13 net-new tests across the launcher and the heartbeat mechanism) and `validate_repository.py` (full mode) passes clean throughout (145 warnings, all disclosed cross-document false positives). Full detail in [[ESR-0031_ENGINEERING_SESSION_REPORT|ESR-0031]].
 
 **Deferred, not resolved this session**: EBG-0098 (version badge/table drift detection in `validate_repository.py`) and EBG-0100 (the UXP capability sidebar's hardcoded Memory row) both registered as Candidate Backlog, not implemented - the latter found as a byproduct of WP2's own live smoke check, out of that Work Package's scope.
 
@@ -130,7 +130,7 @@ Session-wide **WP3** (Independent Repository Verification): **Pass**, after one 
 
 ---
 
-PST-0001 records ESR-0030 as the latest closed session and no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0031 as the latest closed session and no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -333,7 +333,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Repository Baseline | See Section 3 (Current Mode block) - restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2 (refreshed ESR-0031 WP0); sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.2 (ESR-0028 WP2/WP4) |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | See Section 3 (Current Mode) / Section 4A (Current Engineering Focus) - this row had drifted six sessions stale (still describing ESR-0025) while Section 3/4A were kept current throughout, restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source. Latest figures: `python scripts/validate_repository.py` 0 errors, 144 warnings; `python -m pytest` 351/351 passing. |
+| Current Activity | See Section 3 (Current Mode) / Section 4A (Current Engineering Focus) - this row had drifted six sessions stale (still describing ESR-0025) while Section 3/4A were kept current throughout, restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source. Latest figures: `python scripts/validate_repository.py` 0 errors, 145 warnings; `python -m pytest` 351/351 passing. |
 
 ---
 
@@ -596,7 +596,8 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[REG-0002_ADR_REGISTER|REG-0002]] | Records architectural decision context relevant to programme status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Records backlog context that informs current and next engineering work. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact, created and approved at ESR-0021 WP5 - closes EBG-0012/0027/0028; cross-referenced directly from PBK-0001's Backlog Progression Analysis; updated at ESR-0022 WP1/WP6/WP7 (EBG-0070/0072/0073). |
-| [[ESR-0030_ENGINEERING_SESSION_REPORT|ESR-0030]] | Current closed engineering session report (19 July 2026) - the fifth session run entirely through the AIEMS Exchange Bridge with no manual relay: WP1 (Sponsor Approval Service implementation, EIP-ESR0030-001, three fix rounds), WP2 (genuine Sponsor-side Tailscale deployment, EBG-0084 Complete in full). Session-wide WP3 Pass (three self-inflicted fix rounds), WP4 Retain - RBL-0017 unchanged, no new baseline. First session where the approval step itself ran through a real deployed Sponsor Approval Service. |
+| [[ESR-0031_ENGINEERING_SESSION_REPORT|ESR-0031]] | Current closed engineering session report (20 July 2026) - the sixth session run entirely through the AIEMS Exchange Bridge and the deployed Sponsor Approval Service with no manual relay: WP0 (repository synchronisation), WP0B/WP1 (AIEMS Session-Opening Launcher, EBG-0097), WP2B/WP2 (Streaming Notifications MVP, EBG-0099). Session-wide WP3 Pass, WP4 Accept - new baseline RBL-0018 established, superseding RBL-0017, after two further Codex-caught fix rounds. Directed a new PBK-0001 practice, Documentation Debt Discipline. |
+| [[ESR-0030_ENGINEERING_SESSION_REPORT|ESR-0030]] | Prior closed engineering session report (19 July 2026) - the fifth session run entirely through the AIEMS Exchange Bridge with no manual relay: WP1 (Sponsor Approval Service implementation, EIP-ESR0030-001, three fix rounds), WP2 (genuine Sponsor-side Tailscale deployment, EBG-0084 Complete in full). Session-wide WP3 Pass (three self-inflicted fix rounds), WP4 Retain - RBL-0017 unchanged, no new baseline. First session where the approval step itself ran through a real deployed Sponsor Approval Service. |
 | [[ESR-0029_ENGINEERING_SESSION_REPORT|ESR-0029]] | Prior closed engineering session report (19 July 2026) - the fourth session run entirely through the AIEMS Exchange Bridge with no manual relay, across seven Work Packages: WP1 (cross-module resource-interaction research, EBG-0082), WP2 (Guardian Orb Canvas 2D rendering migration, ADR-0021 implemented, with a live-verified performance-regression fix), WP3/WP4/WP6/WP7 (GIA Phase 1a-1d, closing EBG-0083 Phase 1 in full), WP5 (Sponsor Approval Service decision, ADR-0022). Session-wide WP8 Pass, WP9 Accept - new baseline RBL-0017 established, superseding RBL-0016, after two post-commit fix rounds. |
 | [[ESR-0028_ENGINEERING_SESSION_REPORT|ESR-0028]] | Prior closed engineering session report (18 July 2026) - the third session run entirely through the AIEMS Exchange Bridge with no manual relay, across five Work Packages: WP1 (process hygiene batch, EBG-0058/0005/0068/0071), WP2 (product requirements backlog identification, EBG-0017), WP3 (cost and strategic value framework, EBG-0045/0049/0024), WP4 (Guardian Orb 3D rotation, EBG-0055 Phase 1.5, seven post-implementation fix rounds), WP5 (Guardian Orb rendering engine decision, ADR-0021). Session-wide WP6 Pass, WP7 Accept - new baseline RBL-0016 established, superseding RBL-0015. |
 | [[ESR-0027_ENGINEERING_SESSION_REPORT|ESR-0027]] | Prior closed engineering session report (18 July 2026) - the second session run entirely through the AIEMS Exchange Bridge with no manual relay. WP1 implemented EBG-0080 (Personal Memory Implementation, EIP-ESR0027-001 v1.1). WP2 implemented EBG-0077 (UXP DiagnosticsPanel Reconciliation, EIP-ESR0027-002 v1.0). Session-wide WP6 Pass, WP7 Accept - RBL-0015 retained. |
@@ -613,7 +614,8 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] | Closed engineering session report - nine Work Packages including the first live interactive UXP and a Guardian Orb design-baseline recovery. |
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Closed engineering session report recording the Sentinel trust-tier policy model and its architecture alignment, delivered and independently verified. |
 | [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] | Closed engineering session report recording the Sentinel execution pipeline delivered and proven end to end. |
-| [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] | Current accepted repository baseline, accepted at ESR-0029 WP9, superseding RBL-0016. |
+| [[RBL-0018_REPOSITORY_BASELINE|RBL-0018]] | Current accepted repository baseline, accepted at ESR-0031 WP4, superseding RBL-0017. |
+| [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] | Previous accepted repository baseline, accepted at ESR-0029 WP9 (retained through ESR-0030), superseding RBL-0016. |
 | [[RBL-0016_REPOSITORY_BASELINE|RBL-0016]] | Previous accepted repository baseline, accepted at ESR-0028 WP7 (retained through no intervening session), superseding RBL-0015. |
 | [[RBL-0014_REPOSITORY_BASELINE|RBL-0014]] | Previous accepted repository baseline, accepted at ESR-0019 closure (retained through ESR-0020 and ESR-0021), superseding RBL-0013. |
 | [[RBL-0013_REPOSITORY_BASELINE|RBL-0013]] | Prior accepted repository baseline, accepted at ESR-0017 closure (retained through ESR-0018), superseding RBL-0012 (mid-ESR-0017) and RBL-0011 (ESR-0015-ESR-0016). |
@@ -680,6 +682,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.76 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 closure post-commit fix (Codex-caught): the v2.75 closure commit correctly retargeted Current Mode's WikiLink, but Current Phase/Workflow/Engineering Objective, Section 4's closing summary line, and the Related Artefacts table (ESR-0030/RBL-0017 rows) were left describing ESR-0031 as open or ESR-0030/RBL-0017 as current. All rewritten to reflect ESR-0031 closed, RBL-0018 current, no session currently open. |
 | 2.75 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 formally closed (20 July 2026). Authored ESR-0031 Engineering Session Report v1.0 covering WP0 (stale memory-claim fixes), WP0B/WP1 (AIEMS Session-Opening Launcher), WP2B/WP2 (Streaming Notifications MVP), and session-wide WP3 (Pass)/WP4 (Accept, RBL-0018 established, two further Codex-caught fix rounds). Updated Current Mode (ESR-0031 closed, no session currently open), Current Engineering Focus (closed-state rewrite), Session Start Guidance (items 2/7 and closing line retargeted to ESR-0031/RBL-0018), and Track A EBG-0057 proof count (five to six sessions). |
 | 2.74 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP4 post-implementation fix round (Codex-caught): corrected stale 140-warning figures to 144 (the true stable count including this fix round's own new cross-document "Section N" false-positive references) in two spots (Section 4A narrative, Section 9 Current Activity row). |
 | 2.73 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP4: RBL-0018 accepted, superseding RBL-0017 (Documentation Debt Discipline). Current Mode/Phase/Engineering Objective updated to reflect all Work Packages complete including WP3 Pass/WP4 accepted. Section 4A refreshed for ESR-0031 (was still describing ESR-0030). Section 8/9's duplicate 'current state' rows (Current Engineering Session, Current Repository Baseline x2, Current Review State, ESR-0026 Delivered Scope, Current Activity) restructured to reference Section 3/4A instead of restating - these had drifted stale for up to six sessions (Current Activity still said ESR-0025) while Section 3/4A were kept current throughout. Also corrected a stale JRM-0001 version citation (v1.13, actual v1.16) found during the same sweep. |
