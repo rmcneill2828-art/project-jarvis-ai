@@ -9,8 +9,8 @@
 | Package ID | EIP-ESR0031-001 |
 | Artefact ID | EIP-ESR0031-001 |
 | Title | AIEMS Session-Opening Launcher |
-| Version | 0.1 |
-| Status | Draft |
+| Version | 1.0 |
+| Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | EBR-0001 (EBG-0096's brainstorm thread, registered by this package as a new item) |
@@ -139,7 +139,7 @@ None - this package reads existing controlled artefacts (PST-0001, EBR-0001, JRM
 
 # 12. Approval Request
 
-Draft v0.1 - not yet reviewed by the Engineering Reviewer or approved by the Programme Sponsor.
+Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange Bridge, running in `-s read-only` sandbox mode: "no blocking findings... scope is coherent and appropriately bounded... clear to proceed to Programme Sponsor approval for implementation." **Programme Sponsor approved for implementation.** Implemented exactly as scoped - see EBR-0001 EBG-0097 for full implementation detail, including two genuine defects found during the package's own required live smoke check and test suite (a WikiLink-pipe table-parsing bug silently dropping valid backlog items, and a header-row false-positive in the "no rows found" error case), both fixed with regression tests.
 
 ---
 
