@@ -2,7 +2,7 @@
 
 > *"Guardian remembers what it has been trusted to keep, structured so that trust can be revoked as cleanly as it was given."*
 
-**Version:** 1.2
+**Version:** 1.3
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | MDS-0001 |
 | Title | Memory and Data Storage Architecture |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -95,7 +95,7 @@ MDS-0001 does not redefine Guardian's authority or consent model. It defines the
 
 MDS-0001 does not alter any of the above. It defines the storage-layer mechanism that records a consent decision once GAM-0001 has produced one, and enforces the personal/shared-family boundary Section 9.4 requires at the data layer, not only in application logic.
 
-**Evidence check (updated post-ESR-0027)**: Personal Memory (Section 6.2) is now implemented - `jarvis/memory/store.py` (`PersonalMemoryStore`) and `jarvis/memory/service.py` (`PersonalMemoryService`) provide a working, consent-gated, unit-tested implementation delivered at ESR-0027 WP1 (EBG-0080), wired into `GuardianRuntime`. Session Memory (Section 6.1) and Shared Family Memory (Section 6.3) remain unimplemented. `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md` (v2.1, refreshed ESR-0028 WP2) correctly reflects this as "Partial" maturity. This artefact continues to define the architecture that Session and Shared Family Memory would build against; only the Personal tier exists in code today.
+**Evidence check (updated post-ESR-0027)**: Personal Memory (Section 6.2) is now implemented - `jarvis/memory/store.py` (`PersonalMemoryStore`) and `jarvis/memory/service.py` (`PersonalMemoryService`) provide a working, consent-gated, unit-tested implementation delivered at ESR-0027 WP1 (EBG-0080), wired into `GuardianRuntime`. Session Memory (Section 6.1) and Shared Family Memory (Section 6.3) remain unimplemented. `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md` (v2.2, refreshed ESR-0028 WP2) correctly reflects this as "Partial" maturity. This artefact continues to define the architecture that Session and Shared Family Memory would build against; only the Personal tier exists in code today.
 
 ---
 
@@ -211,6 +211,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 second fix round (Codex Low finding on v1.2/commit 52edf8c): Section 5's "Evidence check" still cited `JARVIS_CAPABILITY_READINESS_MATRIX.md` as v2.1 - stale, actual current version is v2.2 (confirmed against the matrix's own Document Control and REG-0001). Corrected. |
 | 1.2 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 fix round (Codex Medium finding on v1.1/commit 7393a03): Section 11's Future Evolution bullet still said a future package would implement `jarvis/memory/` "currently an empty stub" - reworded to reflect that Personal Memory is already delivered and only Session/Shared-Family remain. Section 12's OSE Relationships row for PCB-0001 still said it "records Memory's current not implemented baseline state" - corrected to describe the Personal/Session/Shared-Family split. |
 | 1.1 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 repository synchronisation: corrected Section 5's "Evidence check" paragraph, which still said no persistence implementation existed and `jarvis/memory/` was an empty stub - stale since ESR-0027 WP1 delivered Personal Memory (EBG-0080, `PersonalMemoryStore`/`PersonalMemoryService`). Now correctly states Personal Memory is implemented while Session and Shared Family Memory remain unbuilt. |
 | 1.0 | 17 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 17 July 2026**, following Engineering Reviewer (Codex) confirmation via the AIEMS Exchange Bridge: the boundary against GAM-0001 is coherent (stays at the storage-architecture layer, does not reopen the consent gate), the Session/Personal/Shared-Family taxonomy matches AAM-0001 and the current product architecture, and the SQLite recommendation is clearly framed as an initial recommendation, not a final technology decision - no blocking findings. Status Draft to Approved, version 0.1 to 1.0, resolving EBG-0019 in EBR-0001. ESR-0026 WP2. |
