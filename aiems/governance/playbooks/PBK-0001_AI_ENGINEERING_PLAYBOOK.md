@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.29 |
+| Version | 1.30 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -436,6 +436,20 @@ This is an additive discipline alongside the UXP progress requirement above, not
 
 ---
 
+# Documentation Debt Discipline
+
+Directed by the Programme Sponsor at ESR-0031, following an observation that disclosed documentation staleness (for example EBG-0056, correctly tracked as open across ESR-0027 through ESR-0030 before being incidentally resolved rather than deliberately prioritised) can be correctly recorded as backlog and still age indefinitely, because it is never more urgent than new capability work when a session's objective is chosen.
+
+## Whole-Document Staleness Sweep on Edit
+
+Whenever a controlled artefact is opened to fix any specific stale claim or defect, the Engineering Implementer shall sweep the entire document for other current-state claims that may also be stale before considering the edit complete - not fix only the specifically-identified defect and move on. This generalises a practice already adopted ad hoc across ESR-0029 through ESR-0031 (for example, catching three further stale "session open" claims in one pass at ESR-0030 closure, after earlier rounds had fixed only the specific lines a review cited) into a standing expectation rather than a lesson each session has to relearn.
+
+## Documentation-Debt Priority Until Backlog Cleared
+
+Until no open [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] backlog item concerns governance-documentation staleness or incorrectness (as distinct from new product capability), a session's WP0/WP1 selection shall give such items first priority ahead of new capability work. This priority lapses automatically once that category of backlog is empty, without requiring separate Programme Sponsor action to end it - it is a temporary corrective measure to clear an accumulated backlog, not a permanent standing priority order.
+
+---
+
 # Implementation and Engineering Judgement
 
 The Engineering Implementer shall separate implementation from engineering judgement.
@@ -590,6 +604,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.30 | 20 July 2026 | Claude Engineering Implementer | ESR-0031: Added Documentation Debt Discipline (Whole-Document Staleness Sweep on Edit; Documentation-Debt Priority Until Backlog Cleared) - directed by the Programme Sponsor following an observation that disclosed documentation staleness (e.g. EBG-0056) can be correctly tracked yet age indefinitely since it never outranks new capability work for a session's objective. |
 | 1.29 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP0A: corrected the stale RBL-0015 baseline reference (Related Artefacts, OSE Relationships) to RBL-0017, the accepted baseline since ESR-0029 WP9 - deferred at ESR-0029 WP0A/closure, caught up now per WP0A's own repository-synchronisation remit rather than deferred a third time. |
 | 1.28 | 18 July 2026 | Claude Engineering Implementer | ESR-0028 WP1, EBG-0058 (Complete) per [[EIP-ESR0028-001_AIEMS_PROCESS_HYGIENE_BATCH|EIP-ESR0028-001]]: consolidated the repository-operations-authorisation restatement, which appeared with zero added content in three places (Session Initialisation item 14, Repository Lifecycle opening sentence, Git Operations opening sentence) - item 14 retained as the canonical statement, the other two now cross-reference it. Working Report Lifecycle's closing sentence, a near-verbatim restatement of Principle 3, now cross-references Principle 3 directly instead of repeating it. Three other named EBG-0058 candidate clusters (Engineering Scope Control checklist, Operational Verification vs Validation Before Completion, Feature-First Delivery Discipline sub-clauses) reviewed and deliberately retained unchanged - each found to carry genuine distinct content, not restatement. Also corrected the stale RBL-0014 baseline reference (Related Artefacts, OSE Relationships) to RBL-0015, the accepted baseline since ESR-0022. |
 | 1.27 | 18 July 2026 | Claude Engineering Implementer | Corrected the OSE Relationships HST-0023/FCH-0023 breadcrumbs from "latest" to "final" - GDE-0001 Section 6.1 (new this version) discontinued new HST/FCH artefact creation for all future Engineering Sessions, formalising practice already true since ESR-0024. Programme Sponsor decision at ESR-0027 closure. |

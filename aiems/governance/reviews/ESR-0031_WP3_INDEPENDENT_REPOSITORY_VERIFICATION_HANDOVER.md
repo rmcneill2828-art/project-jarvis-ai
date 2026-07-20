@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0031-WP3 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -146,7 +146,9 @@ Rationale: unlike ESR-0030 (pure AIEMS process tooling), this session delivered 
 
 ## 11. WP4 Baseline Acceptance Result
 
-Pending Programme Sponsor determination.
+**Accept - new baseline RBL-0018 established, superseding RBL-0017.** The Programme Sponsor determined at ESR-0031 WP4 to establish a new baseline rather than retain RBL-0017, agreeing with both independent views in Section 9: this session delivered a genuine, live-verified, user-observable UXP capability (the Streaming Notifications MVP), not process tooling alone. [[RBL-0018_REPOSITORY_BASELINE|RBL-0018]] is now the current accepted repository baseline.
+
+This same WP4 closure also prompted a new PBK-0001 practice, **Documentation Debt Discipline**, directed by the Programme Sponsor after finishing PST-0001's baseline update surfaced a concrete live example: Section 8/9's "current state" rows had duplicated Section 3/4A's own facts and drifted stale for up to six sessions, while Section 3/4A themselves were kept current throughout every session in between. Rather than patch the content again, Section 8/9 were restructured to reference the single authoritative source, and PBK-0001 now requires (a) a whole-document staleness sweep whenever any controlled artefact is opened for edit, and (b) documentation-debt backlog items to take first priority over new capability work until that category of backlog is cleared.
 
 ---
 
@@ -167,5 +169,6 @@ Pending Programme Sponsor determination.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 20 July 2026 | Claude Engineering Implementer | Recorded the Programme Sponsor's WP4 determination: Accept - RBL-0018 established, superseding RBL-0017, agreeing with both independent WP3 views. This closure also prompted PBK-0001's new Documentation Debt Discipline, directed after PST-0001's own baseline update surfaced a live example of the exact problem it addresses (Section 8/9's duplicate current-state rows drifted stale for up to six sessions). |
 | 0.2 | 20 July 2026 | Claude Engineering Implementer | Addressed a Codex Low finding on v0.1: Section 3's "Local HEAD" claim is structurally always one commit stale the moment this handover itself is committed, the same self-referential point ESR-0030's WP3 handover ran into. Clarified throughout (Sections 3, 5, 7, 8) to distinguish the session's intended content endpoint (`d611c67`) from this handover's own follow-on commit(s). Recorded Codex's independent WP4 baseline view (converges - accept RBL-0018) and the WP3 Pass result. |
 | 0.1 | 20 July 2026 | Claude Engineering Implementer | Drafted ESR-0031 WP3 Independent Repository Verification handover, covering the full session diff (`82050c9`..`d611c67`) across WP0/WP0B/WP1/WP2B/WP2. Records repository state, authorised working set, session observations (staleness recurrence, the proven read-only review-automation pattern, two genuine WP1 defects found via live smoke test, the Shared Family Memory scope reconsideration, WP2's pre-implementation contradiction fix, WP2's own live smoke test, and a governance-accuracy self-correction), validation evidence, and an independent baseline view (accept a new baseline, RBL-0018 - unlike ESR-0030, this session delivered a genuine live-verified UXP capability). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
