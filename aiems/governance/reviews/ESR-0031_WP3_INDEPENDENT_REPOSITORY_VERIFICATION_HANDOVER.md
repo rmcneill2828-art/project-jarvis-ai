@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0031-WP3 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -29,9 +29,9 @@ This handover prepares ESR-0031's session-wide record for WP3 Independent Reposi
 |---|---|
 | Repository | `project-jarvis-ai` |
 | Branch | `main` |
-| Local `HEAD` | `d611c67` |
-| `origin/main` | `d611c67` (pushed, confirmed matching) |
-| Working tree | Clean; this handover document itself is the sole untracked file at time of writing |
+| ESR-0031's intended content endpoint | `d611c67` - the last commit of actual session content (WP0/WP0B/WP1/WP2B/WP2), and the range Sections 4/5/7's figures describe |
+| This handover's own commit | Necessarily lands after `d611c67`, since the handover is committed once drafted - the same structural point ESR-0030's WP3 handover ran into (Section 10 there). `git log/diff 82050c9..HEAD` will therefore always include this handover's own commit and, once WP4 is recorded, its own follow-on commits too - by design, not an inconsistency to resolve. |
+| `origin/main` | Matches local `HEAD` at every commit in this session (confirmed at each WP's own approval step) |
 | Prior accepted baseline | `RBL-0017` |
 | ESR-0031 session start point | `82050c9` (ESR-0030 closure's final post-commit fix) |
 
@@ -57,7 +57,7 @@ This handover prepares ESR-0031's session-wide record for WP3 Independent Reposi
 
 ## 5. Authorised / Explained Working Set
 
-The full ESR-0031 diff since `82050c9` (16 files changed, 1,353 insertions, 116 deletions):
+The full ESR-0031 session-content diff, `82050c9`..`d611c67` (16 files changed, 1,353 insertions, 116 deletions) - not `82050c9`..`HEAD`, which will always additionally include this handover's own commit and, once WP4 is recorded, its own follow-on commits (Section 3):
 
 **WP0 (repository synchronisation, no code except one field fix):**
 1. `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md` - stale "jarvis/memory/ empty stub" claims corrected across Current Product Capability Baseline, JARVIS Capability Maturity, Current Product Baseline, Repository Health rows; a genuine version-badge-vs-Document-Control-table drift bug found and fixed (2.66 vs 2.58); a missing Version History table header found and fixed.
@@ -112,7 +112,7 @@ Re-run immediately before this handover:
 | `python scripts/validate_repository.py` (full, not governance-only) | 0 errors, 140 warnings |
 | `cargo build --manifest-path src-tauri/Cargo.toml` | Clean, no warnings |
 | `npm run build` | Clean |
-| `git status` | Committed tree clean on `main` at `d611c67`, matching `origin/main`; working tree has only this untracked WP3 handover document. |
+| `git status` | Committed tree clean on `main` at `d611c67` at the time this handover was drafted, matching `origin/main`; the handover document itself was the sole untracked file at that point, prior to being committed as its own follow-on commit (Section 3). |
 
 The warning count rose from 130 (ESR-0030 closure) to 140 across this session - all confirmed to be the same known false-positive pattern (cross-document "Section N.N" references `validate_repository.py` cannot disambiguate from same-document headings), not a new class of problem.
 
@@ -124,7 +124,7 @@ The warning count rose from 130 (ESR-0030 closure) to 140 across this session - 
 - Zero new third-party dependency in either language.
 - No `sentinel/` trust-boundary code touched.
 - No changes to the Sponsor Approval Service, its token handling, or the bridge's core commands beyond what each WP's own EIP explicitly authorised.
-- Working tree is clean and pushed; this handover document is the sole untracked file, being this review's own subject.
+- Working tree was clean and pushed at the point this handover was drafted (`d611c67`), with the handover document itself the sole untracked file at that moment, prior to being committed as its own follow-on commit (Section 3).
 
 ---
 
@@ -134,13 +134,13 @@ The warning count rose from 130 (ESR-0030 closure) to 140 across this session - 
 
 Rationale: unlike ESR-0030 (pure AIEMS process tooling), this session delivered a genuine, live-verified, user-observable UXP capability - the streaming-notifications heartbeat display, the first live-push mechanism the UXP has ever had, proven via a real running application session rather than unit tests alone. This matches the pattern of ESR-0028/ESR-0029's own new-baseline sessions (Guardian Orb rotation, Canvas 2D migration) rather than ESR-0025/ESR-0026/ESR-0027/ESR-0030's retain-baseline pattern. `PCB-0001` and the JARVIS Capability Readiness Matrix both already reflect this session's Memory-status corrections (WP0) as part of the same baseline; the streaming-notifications capability itself is not yet reflected in either and would need its own follow-on refresh, similar to precedent.
 
-**Engineering Reviewer's independent view (Codex):** to be recorded here once WP3 review returns.
+**Engineering Reviewer's independent view (Codex):** converges - accept a new baseline, `RBL-0018`. "The intended ESR-0031 range contains a real user-observable product increment: backend-originated streaming notifications carried through Python stdio JSON-RPC, Rust/Tauri event forwarding, and React display. It is deliberately small, but it changes the UXP's runtime capability rather than only updating governance or process tooling. That is baseline-worthy." Recorded verbatim from the bridge return.
 
 ---
 
 ## 10. WP3 Verification Result
 
-Pending Codex's independent review via the AIEMS Exchange Bridge.
+**Pass / no blocking findings**, reached after one fix round on this handover document itself. Codex independently confirmed `git diff --stat 82050c9..d611c67` matches the claimed 16 files/1,353 insertions/116 deletions exactly, that the `jarvis/`/`src-tauri/`/`src/` files touched are exactly those listed in Section 5, and that no dependency manifests were touched anywhere in the intended range. Section 6's observations were independently checked against the actual commit history and found supported. One Low finding was caught and fixed: Section 3's "Local HEAD" claim is structurally always one step stale the moment this handover itself is committed (since committing it necessarily creates a new HEAD past the content endpoint it describes) - the same self-referential point ESR-0030's WP3 handover ran into. Clarified throughout (Sections 3, 5, 7, 8) to explicitly distinguish the session's intended content endpoint (`d611c67`) from this handover's own follow-on commit(s), rather than treating it as an inconsistency to chase.
 
 ---
 
@@ -167,4 +167,5 @@ Pending Programme Sponsor determination.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| 0.1 | 20 July 2026 | Claude Engineering Implementer | Drafted ESR-0031 WP3 Independent Repository Verification handover, covering the full session diff (`82050c9`..`d611c67`) across WP0/WP0B/WP1/WP2B/WP2. Records repository state, authorised working set, session observations (staleness recurrence, the proven read-only review-automation pattern, two genuine WP1 defects found via live smoke test, the Shared Family Memory scope reconsideration, WP2's pre-implementation contradiction fix, WP2's own live smoke test, and a governance-accuracy self-correction), validation evidence, and an independent baseline view (accept a new baseline, RBL-0018 - unlike ESR-0030, this session delivered a genuine live-verified UXP capability). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification.
+| 0.2 | 20 July 2026 | Claude Engineering Implementer | Addressed a Codex Low finding on v0.1: Section 3's "Local HEAD" claim is structurally always one commit stale the moment this handover itself is committed, the same self-referential point ESR-0030's WP3 handover ran into. Clarified throughout (Sections 3, 5, 7, 8) to distinguish the session's intended content endpoint (`d611c67`) from this handover's own follow-on commit(s). Recorded Codex's independent WP4 baseline view (converges - accept RBL-0018) and the WP3 Pass result. |
+| 0.1 | 20 July 2026 | Claude Engineering Implementer | Drafted ESR-0031 WP3 Independent Repository Verification handover, covering the full session diff (`82050c9`..`d611c67`) across WP0/WP0B/WP1/WP2B/WP2. Records repository state, authorised working set, session observations (staleness recurrence, the proven read-only review-automation pattern, two genuine WP1 defects found via live smoke test, the Shared Family Memory scope reconsideration, WP2's pre-implementation contradiction fix, WP2's own live smoke test, and a governance-accuracy self-correction), validation evidence, and an independent baseline view (accept a new baseline, RBL-0018 - unlike ESR-0030, this session delivered a genuine live-verified UXP capability). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
