@@ -149,7 +149,7 @@ Validation should confirm:
 
 # 12. Approval Request
 
-Draft v0.1 - not yet reviewed by the Engineering Reviewer or approved by the Programme Sponsor.
+Draft v0.1 reviewed by the Engineering Reviewer (Codex) via the AIEMS Exchange Bridge, running in `-s read-only` sandbox mode: one Medium finding (Implementation Requirements 3/4 contradiction on unparsable-line handling), addressed at v0.2. v0.2 confirmed by the Engineering Reviewer: no remaining blocking findings, "ready for Programme Sponsor implementation approval."
 
 ---
 
