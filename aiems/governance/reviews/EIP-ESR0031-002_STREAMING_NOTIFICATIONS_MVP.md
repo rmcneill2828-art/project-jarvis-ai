@@ -9,7 +9,7 @@
 | Package ID | EIP-ESR0031-002 |
 | Artefact ID | EIP-ESR0031-002 |
 | Title | Streaming Notifications MVP |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -61,7 +61,7 @@ This package authorises a future implementation to:
 3. **React (`src/App.jsx`)**: Add a `useEffect` that calls `listen("jarvis://notification", callback)` (from `@tauri-apps/api/event`) once on mount, storing the latest notification's `method`/`params`/receipt-time in state, and unlistening on unmount (the `listen()` call returns an unlisten function per the Tauri v2 API).
 4. Add a small, honest UI element displaying the latest heartbeat receipt time (e.g., "Backend heartbeat: HH:MM:SS" near the existing System Health panel) - satisfying PBK-0001's Incremental Visual Convergence practice with a genuinely live, real-data-backed element, not a decorative placeholder.
 5. Add `jarvis/tests/test_stdio_rpc.py` coverage for the new notification-emitting behaviour (a fake/injectable clock or a short test interval, not a real 30-second sleep in the test suite).
-6. Add a Rust-side test (or, if Tauri's test harness makes a true integration test impractical within this package's scope, a documented manual verification step per Section 10) confirming a notification line is correctly routed to `emit` and not mistaken for a pending call's response.
+6. Add a Rust-side test (or, if Tauri's test harness makes a true integration test impractical within this package's scope, a documented manual verification step per Section 10) confirming: (a) a notification line is correctly routed to `emit` and not mistaken for a pending call's response, and (b) per Implementation Requirement 3, an unparsable line while two or more calls are genuinely in flight fails *all* of them with the existing "malformed response" error, rather than leaving any one hanging indefinitely.
 7. Register **EBG-0099** (this package's own backlog entry, closing EBG-0050's "streaming notifications" remaining-scope line) in EBR-0001 as `Complete` only once actually implemented, validated and committed.
 
 No other files are authorised to change. This is a real, visible UXP-facing increment satisfying PBK-0001's live-UXP-progress requirement directly, not merely a backend-only change.
@@ -86,8 +86,8 @@ No other files are authorised unless a dependency is discovered during validatio
 
 1. The Python-side write lock must guard *every* write to `out_stream` - both the main loop's response writes and the heartbeat thread's notification writes - so a response and a notification can never partially interleave into one corrupted line.
 2. The heartbeat thread must not hold the lock while sleeping - only while performing the actual write - so it cannot block the main loop's ability to respond to real requests during its sleep interval.
-3. The Rust reader thread must treat a JSON parse failure on any line as non-fatal to the process (log/ignore that one line) rather than tearing down the whole backend connection - a malformed notification should not take down in-flight request handling, which is a different failure mode from `call_backend`'s existing "malformed response" handling (which correctly does tear down the connection, since that indicates the response-correlation stream itself can no longer be trusted for the call awaiting it).
-4. `call_backend()`'s existing error semantics (write failure, EOF, malformed response, backend-reported error) must be preserved exactly for actual request/response calls - this package changes *how* the response is delivered to the waiting call (via channel instead of direct `read_line`), not what any existing call observes.
+3. **The reader thread cannot distinguish "a malformed notification" from "the malformed response some pending call is waiting on"** - a line that fails to parse as JSON has no `id` to correlate against anything, by definition (Codex pre-implementation review finding, v0.1). Silently ignoring an unparsable line would leave whichever call it was actually meant to answer (if any) blocked on its channel forever - a real regression from today's behaviour, where a malformed line fails that call immediately and visibly. The reader thread must therefore treat **any** unparsable line as connection-level corruption, not a per-line skip: fail every currently-pending call's channel with the existing "malformed response" error, and reset the shared backend state so the next call attempts a fresh respawn - extending today's single-call teardown behaviour to the multi-call-in-flight case this restructuring introduces, rather than trying to guess which call was affected.
+4. `call_backend()`'s existing error semantics (write failure, EOF, malformed response, backend-reported error) must be preserved exactly for actual request/response calls - this package changes *how* the response is delivered to the waiting call (via channel instead of direct `read_line`) and, per Requirement 3 above, generalises single-call teardown to all-pending-calls teardown now that multiple calls can genuinely be in flight at once, but changes nothing about what any individual call observes when its own response is malformed.
 5. The React `useEffect`'s unlisten function must actually be called on unmount - a leaked listener across component remounts would accumulate duplicate heartbeat handlers over time.
 6. No notification content shall imply a capability or state more complete than what is actually implemented - the heartbeat notification is exactly what it claims to be (proof the plumbing works), not dressed up as a richer "live activity feed."
 
@@ -168,4 +168,5 @@ Draft v0.1 - not yet reviewed by the Engineering Reviewer or approved by the Pro
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 20 July 2026 | Claude Engineering Implementer | Addressed a Codex Medium finding on v0.1: Implementation Requirements 3 and 4 directly contradicted each other - Requirement 3 said an unparsable line should be logged/ignored as non-fatal, but the reader thread has no way to know whether that line was a broken notification or the response a pending call is waiting on, so ignoring it could leave that call blocked forever. Rewrote Requirement 3 to treat any unparsable line as connection-level corruption - failing all currently-pending calls and resetting backend state, extending today's single-call teardown behaviour to the multi-call-in-flight case this restructuring introduces. Scope item 6's test-coverage requirement extended to cover this scenario explicitly. |
 | 0.1 | 20 July 2026 | Claude Engineering Implementer | Initial draft. Not yet reviewed or approved. |
