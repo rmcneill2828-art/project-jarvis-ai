@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.117
+**Version:** 1.118
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.117 |
+| Version | 1.118 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -217,6 +217,117 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 
 ---
 
+# 5A. Active Backlog View - Manual Snapshot (21 July 2026)
+
+**This section is a dated, manually-produced snapshot, not a live or automatically-regenerated view.** It exists to satisfy EBG-0106's own recommendation ahead of that item's actual automation being built, and to avoid the exact risk EBG-0106 itself names: a hand-maintained second source of truth that silently drifts from the table above. **This snapshot shall not be manually updated in place** - if it goes stale, either regenerate it fresh (dating the regeneration) or remove it once EBG-0106's own generation mechanism exists. It covers every row in Section 5 above with Status `Candidate Backlog` or `Approved Backlog` as of this date (57 items) - Complete/Closed/Superseded/Deferred/Adopted rows are intentionally excluded, since those are exactly the historical-ledger content this view is meant to filter out.
+
+## Theme 1 - Deployment & Release Engineering
+
+Both external read-only reviews (21 July 2026) and both AI reviewers independently converge on this as the highest-value near-term cluster.
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0102 | Critical | Guardian Desktop Distribution Foundation (sidecar packaging, Tauri bundling, clean-machine install) |
+| EBG-0103 | High | CI does not build/test/gate the complete desktop product |
+| EBG-0104 | High | No release automation / cross-file version sync |
+
+## Theme 2 - Product Data Trust (Personal Memory Era)
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0023 | Medium | Backup, Recovery and Data Protection - its own stated trigger ("before persistent memory becomes significant") is now met by EBG-0080 |
+| EBG-0100 | Medium | UXP Memory row hardcoded, never live-data-backed |
+
+## Theme 3 - Guardian Action / Local Agent Boundary
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0021 | High | Local Agent Permission Boundary |
+| EBG-0042 | High | Agent Framework Architecture |
+
+## Theme 4 - UXP/Backend Technical Debt and Performance
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0081 | Medium | Shared animation scheduler (Question 1 remaining - Q2 already delivered) |
+| EBG-0098 | Medium | Version badge/table drift detection |
+| EBG-0105 | Low | Transcript export filename collision |
+
+## Theme 5 - Security Hygiene
+
+All five items originate from the same external security review, 19 July 2026.
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0085 | Medium | esbuild/vite dev-server vulnerability |
+| EBG-0086 | Medium | `.aiems-exchange/` filesystem permission enforcement |
+| EBG-0087 | Low | GitHub Actions pinned by mutable tag, not commit SHA |
+| EBG-0088 | Low | No explicit `.env` entry in `.gitignore` |
+| EBG-0089 | Low | Tauri CSP `style-src 'unsafe-inline'` |
+
+## Theme 6 - AIEMS Process and Approval-Workflow Tooling
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0096 | Medium | Automate Claude<->Codex review handoff |
+| EBG-0092 | Medium | Formalise WP-independence/scope-creep discipline into PBK-0001 |
+| EBG-0106 | Medium | EBR-0001 active-backlog view (this section's own future automation) |
+| EBG-0101 | Medium | `bump_version.py` `--date` stale default |
+| EBG-0090 | Low | CLI-driven coding agents investigation |
+| EBG-0091 | Low | Streamline daily Sponsor Approval command |
+| EBG-0093 | Low | PC-side installer script for the Sponsor Approval Service |
+| EBG-0094 | Low | Self-service Sponsor Approval Service status check |
+| EBG-0095 | Low | Auto-start the Sponsor Approval Service on Windows login |
+
+## Theme 7 - Dormant AIEMS Governance/Standards Debt
+
+The notable finding of this snapshot: 23 items, almost all `Approved Backlog`, `Medium`/`High` priority, sitting untouched since ESR-0001 through ESR-0006 - some for 25+ sessions. Mostly proposed standards/registers approved-in-principle early in the project and never revisited because product/process work always outranked them. This cluster is itself just over 40% of the entire open backlog, competing for the same Priority field as active product blockers like EBG-0102.
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0006 | Medium | REV-0002 Repository Baseline Verification |
+| EBG-0008 | Medium | Create Engineering Implementation Package Standard |
+| EBG-0009 | Medium | Create Engineering Session Standard |
+| EBG-0010 | Medium | Define repository metadata and cross-reference validation rules |
+| EBG-0011 | Medium | Create AI Roles and Capability Matrix |
+| EBG-0013 | Medium | Create Engineering Decision Index |
+| EBG-0014 | Medium | Assess repository validation automation |
+| EBG-0032 | Medium | Historical Engineering Register |
+| EBG-0033 | Medium | AIEMS Improvement Register / AIEMS Improvement Review |
+| EBG-0034 | High | Engineering Authority by Work Package |
+| EBG-0035 | High | Context Activation Guidance |
+| EBG-0036 | High | WP6 Repository Content Verification Standard |
+| EBG-0037 | Medium | Engineering Package Classifications: EIP / EAP / ECP |
+| EBG-0038 | High | Formal AIEMS Standards Review |
+| EBG-0040 | Medium | AIEMS Repository Integrity Troubleshooting Playbook |
+| EBG-0043 | High | Engineering Ecosystem Synchronisation Workflow |
+| EBG-0044 | Medium | Obsidian / OSE Validation Workflow |
+| EBG-0061 | Medium | Engineering Workspace Standard (EWS-0001) |
+| EBG-0062 | Low | CPS-0001 Codex Prompt Standard |
+| EBG-0063 | Medium | TMP-0002 Engineering Session Chat Summary Template |
+| EBG-0064 | Medium | ISTL-0001 Engineering Inter-Session Task Register |
+| EBG-0066 | Medium | AIEMS Maturity Model / Index |
+| EBG-0067 | Medium | Dropped ADR-0007 Topics: AIEMS Knowledge Architecture remaining sub-topic |
+
+## Theme 8 - Deferred Product Research
+
+Mostly intentionally parked pending prerequisites (identity/authentication, mature action controls, etc.) rather than simply neglected.
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0065 | High | STD-0006 Configuration and Secrets Standard - arguably closer to Theme 1 now real credentials/local databases exist |
+| EBG-0059 | High | Engineering Assurance Capability (EAC) Implementation |
+| EBG-0046 | High | Device Independence and Restore Architecture |
+| EBG-0047 | High | Sentinel Gate of Durin Architecture Specification |
+| EBG-0015 | Medium | Investigate JARVIS Human-AI Interaction Memory and Behavioural Intelligence Layer - possibly superseded in part by EBG-0080's real Personal Memory, not re-assessed by this snapshot |
+| EBG-0022 | Medium | JARVIS AIEMS Knowledge Capability |
+| EBG-0025 | Medium | JARVIS Home Assistant and Smart Home Integration Assessment |
+| EBG-0029 | Medium | Product Growth Philosophy |
+| EBG-0052 | Medium | PBK-0001/EE-0001 "Execute After Approval" Principle |
+| EBG-0054 | Low | Dev-Environment Setup Automation Expansion |
+
+---
+
 # 6. Candidate Backlog Intake
 
 Backlog items discovered from historical chat sessions must be marked **Candidate Backlog** until reviewed and accepted by the Programme Sponsor.
@@ -329,6 +440,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.118 | 21 July 2026 | Claude Engineering Implementer | Post-ESR-0031-closure: added Section 5A, Active Backlog View - Manual Snapshot (21 July 2026), a dated one-time grouping of all 57 open Candidate/Approved Backlog items into 8 themes (Deployment/Release, Product Data Trust, Guardian Action/Agent Boundary, UXP Technical Debt, Security Hygiene, AIEMS Process Tooling, Dormant AIEMS Governance/Standards Debt, Deferred Product Research), following a Programme Sponsor request to see the backlog grouped WP-shape. Explicitly marked as a non-authoritative, non-live snapshot per EBG-0106's own guard against a hand-maintained second source of truth - not to be manually updated in place. Notable finding surfaced: the dormant AIEMS governance/standards cluster (Theme 7, 23 items dating to ESR-0001-0006) is just over 40% of the entire open backlog. |
 | 1.117 | 21 July 2026 | Claude Engineering Implementer | Post-ESR-0031-closure: registered EBG-0102 through EBG-0106, all Candidate Backlog, no implementation authorised, following two independent external read-only repository reviews (21 July 2026, deployment readiness + backlog gap analyses), each claim independently verified against the live repository by Claude Engineering Implementer and separately by Codex Engineering Reviewer before registration. EBG-0102 (Guardian Desktop Distribution Foundation, Critical) promotes EBG-0050's remaining sidecar-packaging scope to a first-class item - EBG-0050's own text updated to reflect this and that streaming notifications closed at ESR-0031 WP2 (EBG-0099). EBG-0103 (CI does not build/gate the complete desktop product, High), EBG-0104 (no automated release workflow or cross-file version sync, High, distinct from EBG-0098's narrower single-document scope), EBG-0105 (transcript export filename collision, Low), EBG-0106 (EBR-0001 mixes historical ledger/product backlog/process register with no active-development view, Medium). |
 | 1.116 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP4 post-implementation fix round: registered EBG-0101 (bump_version.py's --date flag silently defaults to a stale hardcoded placeholder, 9 July 2026) - discovered live when three real bump calls this same fix round were run without --date and silently mis-dated. Candidate Backlog, Medium. No implementation authorised. |
 | 1.115 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP2 fix round (Codex Low finding on commit 337761777c38b7635ee3439b210840139e84ae7a): EBG-0099's row incorrectly described a real-subprocess smoke test as part of the committed test suite's '4 new tests' - it was actually a separate, ad hoc manual verification script, never added to jarvis/tests/test_stdio_rpc.py. Corrected to distinguish the 4 real in-process unit tests from the manual real-subprocess verification. |
