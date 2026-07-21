@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.308
+**Version:** 3.309
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.308 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.309 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -193,7 +193,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.77 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.78 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -344,6 +344,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.309 | 21 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.77 to 2.78) following: Post-ESR-0031-closure: updated Next Work Package Candidate from 'Not yet determined' to name the two actual candidates discussed following the external gap-analysis reviews and EBR-0001 Section 5A's active-backlog snapshot - Theme 1 Deployment Alpha (EBG-0102/0103/0104) and Theme 7 cleanup (Codex-led triage of 23 dormant AIEMS governance items). Motivated directly by the Programme Sponsor running scripts/session_launcher.py and finding it showed nothing useful for WP0B selection, since these candidates had only existed in conversation, never in a governance record the launcher actually reads. Selection remains the Programme Sponsor's own WP0B decision. |
 | 3.308 | 21 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.117 to 1.118) following: Post-ESR-0031-closure: added Section 5A, Active Backlog View - Manual Snapshot (21 July 2026), a dated one-time grouping of all 56 open Candidate/Approved Backlog items into 8 themes (Deployment/Release, Product Data Trust, Guardian Action/Agent Boundary, UXP Technical Debt, Security Hygiene, AIEMS Process Tooling, Dormant AIEMS Governance/Standards Debt, Deferred Product Research), following a Programme Sponsor request to see the backlog grouped WP-shape. Explicitly marked as a non-authoritative, non-live snapshot per EBG-0106's own guard against a hand-maintained second source of truth - not to be manually updated in place. Notable finding surfaced: the dormant AIEMS governance/standards cluster (Theme 7, 20 items dating to ESR-0001-0006) is roughly 35% of the entire open backlog. |
 | 3.307 | 21 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.116 to 1.117) following: Post-ESR-0031-closure: registered EBG-0102 through EBG-0106, all Candidate Backlog, no implementation authorised, following two independent external read-only repository reviews (21 July 2026, deployment readiness + backlog gap analyses), each claim independently verified against the live repository by Claude Engineering Implementer and separately by Codex Engineering Reviewer before registration. EBG-0102 (Guardian Desktop Distribution Foundation, Critical) promotes EBG-0050's remaining sidecar-packaging scope to a first-class item - EBG-0050's own text updated to reflect this and that streaming notifications closed at ESR-0031 WP2 (EBG-0099). EBG-0103 (CI does not build/gate the complete desktop product, High), EBG-0104 (no automated release workflow or cross-file version sync, High, distinct from EBG-0098's narrower single-document scope), EBG-0105 (transcript export filename collision, Low), EBG-0106 (EBR-0001 mixes historical ledger/product backlog/process register with no active-development view, Medium). |
 | 3.306 | 20 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.76 to 2.77) following: ESR-0031 closure, second Codex-caught fix round: Section 8's Next Required Activity/Next Work Package Candidate rows still described closure authorship as the remaining step and referenced ESR-0031 closing in the future tense. Corrected to reflect the session is closed and the next step is Programme Sponsor selection of a new objective. Also fixed two unrelated stale items found during the same sweep: Deferred Work's EBG-0057 proof-count (one session, actual six) and Authoritative Backlog Source's missing EBG-0101 mention. |
