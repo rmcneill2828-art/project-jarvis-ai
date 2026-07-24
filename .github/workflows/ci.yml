@@ -32,12 +32,14 @@ jobs:
           node-version: "20"
       - run: npm ci
       - run: npm run build
-      # Advisory only until an initial findings baseline has been triaged -
-      # matches the python job's own pip-audit precedent (EIP-ESR0032-002
-      # narrowed this from a job-level continue-on-error, which previously
-      # also covered npm run build itself).
-      - run: npm audit --audit-level=high
-        continue-on-error: true
+      # --omit=dev: vite/esbuild (the only two current findings) are
+      # build-tool devDependencies never present in the shipped `dist/`
+      # bundle - their advisories (GHSA-67mh-4wv8-2f99, GHSA-fx2h-pf6j-xcff)
+      # describe attacks on a locally running `vite dev` server, not the
+      # packaged app. `npm audit --omit=dev` confirmed 0 vulnerabilities
+      # against the real shipped dependency set (EIP-ESR0032-002), so this
+      # is a real hard gate, not an advisory placeholder.
+      - run: npm audit --audit-level=high --omit=dev
 
   playwright:
     runs-on: ubuntu-latest

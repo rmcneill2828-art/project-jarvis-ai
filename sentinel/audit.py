@@ -1,11 +1,12 @@
 """Sentinel audit trail: records what Sentinel decided and executed, and why."""
 
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 from types import MappingProxyType
-from typing import Mapping, Protocol
+from typing import Protocol
 
 
 @dataclass(frozen=True)

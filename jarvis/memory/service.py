@@ -14,8 +14,18 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from jarvis.memory.store import ConsentDecisionRecord, PersonalMemoryRecord, PersonalMemoryStore, utc_now
-from sentinel.core import SentinelDecisionOutcome, SentinelRequest, SentinelResponse, SentinelTrustGateway
+from jarvis.memory.store import (
+    ConsentDecisionRecord,
+    PersonalMemoryRecord,
+    PersonalMemoryStore,
+    utc_now,
+)
+from sentinel.core import (
+    SentinelDecisionOutcome,
+    SentinelRequest,
+    SentinelResponse,
+    SentinelTrustGateway,
+)
 
 logger = logging.getLogger(__name__)
 

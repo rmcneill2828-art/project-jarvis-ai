@@ -1,5 +1,5 @@
 from jarvis import Jarvis, JarvisState
-from jarvis.interfaces.conversation import ConversationService, DEFAULT_RESPONSE
+from jarvis.interfaces.conversation import DEFAULT_RESPONSE, ConversationService
 from jarvis.platform import GuardianShellState, build_guardian_shell_status
 
 

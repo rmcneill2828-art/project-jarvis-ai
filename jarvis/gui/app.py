@@ -219,7 +219,7 @@ class JarvisApp:
     def _export_transcript(self, export_format: str) -> None:
         extension = ".md" if export_format == TRANSCRIPT_FORMAT_MARKDOWN else ".txt"
         export_dir = Path.home() / ".jarvis" / "transcripts"
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # noqa: DTZ005 - filename cosmetic, intentionally local wall-clock time
         file_path = export_dir / f"jarvis_transcript_{timestamp}{extension}"
 
         try:

@@ -88,7 +88,7 @@ def build_sidecar(target_triple: str, work_dir: Path) -> Path:
         str(ENTRY_SCRIPT),
     ]
 
-    result = subprocess.run(command, cwd=REPO_ROOT)
+    result = subprocess.run(command, cwd=REPO_ROOT, check=False)
     if result.returncode != 0:
         raise BuildError(f"PyInstaller exited with code {result.returncode}.")
 

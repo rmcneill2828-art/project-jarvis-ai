@@ -4,11 +4,11 @@ Sentinel is intentionally independent of the JARVIS package so it can become a
 shared trust gateway for Guardian and future AI systems.
 """
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from types import MappingProxyType
-from typing import Mapping
 
 from sentinel.audit import AuditEvent, AuditRecorder, MemoryAuditRecorder
 
@@ -88,7 +88,7 @@ class SentinelResponse:
 # SentinelResponse are already defined, to avoid a circular import: sentinel.policy
 # imports SentinelDecisionOutcome from this module, so this module cannot import
 # sentinel.policy until that name already exists in this module's namespace.
-from sentinel.policy import PolicyEngine, SimpleApprovalPolicy  # noqa: E402
+from sentinel.policy import PolicyEngine, SimpleApprovalPolicy
 
 _OUTCOME_MESSAGES = {
     SentinelDecisionOutcome.ALLOW: "Sentinel allowed the request to proceed.",

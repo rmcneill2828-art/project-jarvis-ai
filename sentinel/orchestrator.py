@@ -1,16 +1,16 @@
 """Sentinel provider orchestration and resilience primitives."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 from sentinel.audit import AuditEvent, AuditRecorder, MemoryAuditRecorder
+from sentinel.core import SentinelResponse
 from sentinel.providers import (
     ExecutionProvider,
     ProviderRequest,
     ProviderResponse,
     execute_with_sentinel_decision,
 )
-from sentinel.core import SentinelResponse
 
 
 class ProviderHealth(Enum):
@@ -159,7 +159,7 @@ class ProviderOrchestrator:
                     provider,
                     request,
                 )
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - any provider failure must fail over, not just known exception types
                 last_error = exc
                 self._health[provider.name] = ProviderHealth.DEGRADED
                 continue

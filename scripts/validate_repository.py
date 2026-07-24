@@ -13,7 +13,6 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 IGNORED_DIRS = {
     ".git",
@@ -247,7 +246,7 @@ def check_stale_status_references(result: ValidationResult) -> None:
         if not path.exists():
             continue
         content = path.read_text(encoding="utf-8", errors="replace")
-        for match in re.finditer(r"current accepted repository baseline[^\n]*\[\[(RBL-\d{4})_", content, re.I):
+        for match in re.finditer(r"current accepted repository baseline[^\n]*\[\[(RBL-\d{4})_", content, re.IGNORECASE):
             if latest_rbl and match.group(1) != latest_rbl:
                 result.warn(
                     f"{path.relative_to(REPO_ROOT)} may contain stale current-baseline wording: {match.group(1)}"

@@ -1,9 +1,9 @@
 """JARVIS platform foundation bootstrap and status boundary."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
 from types import MappingProxyType
-from typing import Mapping
 
 from jarvis.services import (
     CapabilityDescriptor,

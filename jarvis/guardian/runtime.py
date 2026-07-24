@@ -1,8 +1,8 @@
 """Guardian runtime foundation."""
 
 import logging
+from collections.abc import Mapping
 from types import MappingProxyType
-from typing import Mapping
 
 from jarvis.guardian.config import GuardianRuntimeConfig
 from jarvis.guardian.diagnostics import GuardianDiagnosticEvent

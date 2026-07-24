@@ -1,5 +1,5 @@
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -68,7 +68,7 @@ class _FakeResourceReader:
 
 
 class _FailingResourceReader:
-    def cpu_percent(self, interval: float) -> float:  # noqa: ARG002
+    def cpu_percent(self, interval: float) -> float:
         msg = "simulated resource read failure"
         raise OSError(msg)
 
@@ -124,7 +124,7 @@ def test_local_resource_observer_returns_real_snapshot_from_injected_reader() ->
         "chatgpt": True,
     }
     assert snapshot.captured_at.tzinfo is not None
-    assert snapshot.captured_at <= datetime.now(timezone.utc)
+    assert snapshot.captured_at <= datetime.now(UTC)
 
 
 def test_local_resource_observer_matches_chatgpt_desktop_under_either_candidate_name() -> None:

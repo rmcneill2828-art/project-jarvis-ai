@@ -97,7 +97,7 @@ def _resolve_stem(stem: str, candidates_by_stem: dict[str, list[Path]], repo_roo
         return None
     if len(candidates) == 1:
         return candidates[0]
-    return sorted(candidates, key=lambda p: (len(p.relative_to(repo_root).parts), p.as_posix()))[0]
+    return min(candidates, key=lambda p: (len(p.relative_to(repo_root).parts), p.as_posix()))
 
 
 def build_graph(repo_root: Path | None = None) -> dict[str, list[dict[str, str]]]:

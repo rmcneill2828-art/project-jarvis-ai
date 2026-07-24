@@ -1,8 +1,8 @@
 """JARVIS root object and lifecycle orchestration."""
 
+from collections.abc import Mapping
 from enum import Enum
 from types import MappingProxyType
-from typing import Mapping
 
 from jarvis.core.platform import PlatformFoundation, PlatformStatus
 from jarvis.guardian import GuardianRuntime

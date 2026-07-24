@@ -181,7 +181,7 @@ def test_execute_raises_distinct_error_for_prompt_safety_block(monkeypatch):
         ).encode("utf-8"),
     )
 
-    with pytest.raises(RuntimeError, match="safety-blocked \(SAFETY\)"):
+    with pytest.raises(RuntimeError, match=r"safety-blocked \(SAFETY\)"):
         provider.execute(ProviderRequest(prompt="hello"))
 
 
@@ -201,7 +201,7 @@ def test_execute_raises_distinct_error_for_candidate_safety_block(monkeypatch):
         ).encode("utf-8"),
     )
 
-    with pytest.raises(RuntimeError, match="safety-blocked \(SAFETY\)"):
+    with pytest.raises(RuntimeError, match=r"safety-blocked \(SAFETY\)"):
         provider.execute(ProviderRequest(prompt="hello"))
 
 

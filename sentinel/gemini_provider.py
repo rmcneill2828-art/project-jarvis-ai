@@ -11,7 +11,7 @@ import json
 import os
 import urllib.error
 import urllib.request
-from typing import Callable
+from collections.abc import Callable
 
 from sentinel.provider_config import ProviderConfiguration
 from sentinel.providers import ProviderRequest, ProviderResponse

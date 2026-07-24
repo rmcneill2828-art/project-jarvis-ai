@@ -335,12 +335,14 @@ def capture_evidence(repo_root: Path) -> EvidenceResult:
         cwd=repo_root,
         capture_output=True,
         text=True,
+        check=False,
     )
     validate_result = subprocess.run(
         [sys.executable, "scripts/validate_repository.py"],
         cwd=repo_root,
         capture_output=True,
         text=True,
+        check=False,
     )
     passed = pytest_result.returncode == 0 and validate_result.returncode == 0
     text = (
@@ -374,13 +376,13 @@ def run_preflight() -> PreflightResult:
             lines.append(f"{tool}: NOT FOUND on PATH")
             continue
         version = subprocess.run(
-            [tool, "--version"], capture_output=True, text=True, shell=use_shell
+            [tool, "--version"], capture_output=True, text=True, shell=use_shell, check=False
         )
         lines.append(f"{tool}: {path} ({(version.stdout or version.stderr).strip()})")
 
     if shutil.which("codex") is not None:
         status = subprocess.run(
-            ["codex", "login", "status"], capture_output=True, text=True, shell=use_shell
+            ["codex", "login", "status"], capture_output=True, text=True, shell=use_shell, check=False
         )
         lines.append(f"codex login status: {(status.stdout or status.stderr).strip()}")
 

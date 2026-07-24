@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sys
 
-import scripts.bump_version as bump_version
+from scripts import bump_version
 from scripts.bump_version import BumpVersionError, plan_bump
 
 # bump_version.py resolves `validate_repository` via a sys.path.insert() hack
@@ -135,7 +135,7 @@ def test_bumping_reg0001_itself_does_not_silently_drop_wrong_guess(tmp_path, mon
     apply the auto-incremented value instead of raising or respecting the
     caller's explicit input."""
 
-    register_path = _setup(tmp_path, monkeypatch, reg_version="3.60")
+    _setup(tmp_path, monkeypatch, reg_version="3.60")
 
     # A deliberately "wrong" jump (not old + 0.01) must still be honoured
     # literally, not replaced by an auto-incremented 3.61.

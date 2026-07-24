@@ -4,9 +4,9 @@ This module centralises provider configuration without storing secret values in
 source-controlled configuration objects.
 """
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Mapping
 
 
 @dataclass(frozen=True)

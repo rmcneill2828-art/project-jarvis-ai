@@ -12,7 +12,7 @@ credential pointed at an unauthenticated local endpoint.
 import json
 import urllib.error
 import urllib.request
-from typing import Callable
+from collections.abc import Callable
 
 from sentinel.provider_config import ProviderConfiguration
 from sentinel.providers import ProviderRequest, ProviderResponse
@@ -99,12 +99,12 @@ class OllamaProvider:
         # (Engineering Reviewer finding, ESR-0026 WP1 post-implementation review).
         if not isinstance(data, dict):
             msg = "Unexpected Ollama response shape: response was not a JSON object."
-            raise RuntimeError(msg)
+            raise RuntimeError(msg)  # noqa: TRY004 - RuntimeError is this provider's established public error contract, asserted by test_ollama_provider.py
 
         content = data.get("response")
         if not isinstance(content, str):
             msg = "Unexpected Ollama response shape: missing or non-string 'response' field."
-            raise RuntimeError(msg)
+            raise RuntimeError(msg)  # noqa: TRY004 - same established RuntimeError contract as above
 
         return ProviderResponse(
             provider_name=self.name,

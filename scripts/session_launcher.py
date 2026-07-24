@@ -86,10 +86,8 @@ def _split_table_row(line: str) -> list[str]:
     """
 
     stripped = line.strip()
-    if stripped.startswith("|"):
-        stripped = stripped[1:]
-    if stripped.endswith("|"):
-        stripped = stripped[:-1]
+    stripped = stripped.removeprefix("|")
+    stripped = stripped.removesuffix("|")
 
     cells: list[str] = []
     current: list[str] = []
@@ -196,7 +194,7 @@ def read_near_term_roadmap(jrm_path: Path) -> tuple[RoadmapItem, ...]:
         section_text = remainder[: section_end_match.start()] if section_end_match else remainder
 
         for line in section_text.splitlines():
-            if not line.startswith("| ") or line.startswith("|---") or line.startswith("|-"):
+            if not line.startswith("| ") or line.startswith(("|---", "|-")):
                 continue
             cells = _split_table_row(line)
             if len(cells) < 2 or cells[0] == "Item":

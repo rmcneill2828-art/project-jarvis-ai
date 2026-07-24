@@ -22,7 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from validate_repository import (  # noqa: E402
+from validate_repository import (
     REPO_ROOT,
     extract_document_version,
     find_registered_file,

@@ -4,9 +4,10 @@ import io
 import json
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from jarvis.gia.observability import GiaSnapshot
+from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.interfaces.stdio_rpc import (
     INTERNAL_ERROR,
     INVALID_PARAMS,
@@ -16,7 +17,6 @@ from jarvis.interfaces.stdio_rpc import (
     StdioRpcServer,
     build_default_runtime,
 )
-from jarvis.guardian.runtime import GuardianRuntime
 from sentinel.core import SentinelDecisionOutcome, SentinelRequest
 from sentinel.policy import TrustCategory, TrustTier, TrustTierPolicy
 
@@ -218,7 +218,7 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
     constructing a bare StdioRpcServer(GuardianRuntime(), ...) still resolves
     gia.status, confirmed by the companion test below."""
 
-    captured_at = datetime(2026, 7, 19, 10, 0, 0, tzinfo=timezone.utc)
+    captured_at = datetime(2026, 7, 19, 10, 0, 0, tzinfo=UTC)
     fake_snapshot = GiaSnapshot(
         cpu_percent=12.5,
         memory_percent=64.0,
@@ -276,7 +276,7 @@ def test_gia_status_does_not_require_a_started_or_connected_runtime():
         process_cpu_percent=9.0,
         process_memory_mb=10.0,
         engineering_tools_running={"vscode": True, "obsidian": False, "githubDesktop": False, "chatgpt": False},
-        captured_at=datetime(2026, 7, 19, 10, 0, 0, tzinfo=timezone.utc),
+        captured_at=datetime(2026, 7, 19, 10, 0, 0, tzinfo=UTC),
     )
     server = StdioRpcServer(GuardianRuntime(), gia_observer=_fake_gia_observer(fake_snapshot))
 

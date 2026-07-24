@@ -15,6 +15,7 @@ the dedicated section near the bottom of this file.
 from __future__ import annotations
 
 import json
+from typing import Self
 
 import pytest
 
@@ -363,10 +364,12 @@ def test_work_package_lock_prevents_concurrent_reentry(tmp_path, _fake_head):
     from scripts.aiems_bridge import work_package_lock
 
     cmd_init(tmp_path, "ESR-0025", "WP1")
-    with work_package_lock(tmp_path, "ESR-0025", "WP1"):
-        with pytest.raises(BridgeError):
-            with work_package_lock(tmp_path, "ESR-0025", "WP1"):
-                pass
+    with (
+        work_package_lock(tmp_path, "ESR-0025", "WP1"),
+        pytest.raises(BridgeError),
+        work_package_lock(tmp_path, "ESR-0025", "WP1"),
+    ):
+        pass
 
 
 def test_preflight_failure_blocks_submit_to_review_before_any_write(tmp_path, monkeypatch, _fake_head):
@@ -434,7 +437,7 @@ class _FakeResponse:
     def read(self) -> bytes:
         return self._payload_bytes
 
-    def __enter__(self) -> "_FakeResponse":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *exc_info: object) -> None:

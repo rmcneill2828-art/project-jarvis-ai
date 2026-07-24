@@ -10,7 +10,7 @@ import logging
 import os
 import time
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Protocol
 
 import psutil
@@ -187,7 +187,7 @@ class LocalResourceObserver:
             process_cpu_percent=process.cpu_percent,
             process_memory_mb=process.memory_rss / _BYTES_PER_MEGABYTE,
             engineering_tools_running=engineering_tools_running,
-            captured_at=datetime.now(timezone.utc),
+            captured_at=datetime.now(UTC),
         )
         logger.info(
             "GIA local resource snapshot captured: cpu=%.1f%% memory=%.1f%% disk=%.1f%%",

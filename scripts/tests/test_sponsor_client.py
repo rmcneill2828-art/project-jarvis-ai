@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import urllib.error
+from typing import Self
 
 import pytest
 
@@ -23,7 +24,7 @@ class _FakeResponse:
     def read(self) -> bytes:
         return self._body
 
-    def __enter__(self) -> "_FakeResponse":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *exc_info: object) -> None:

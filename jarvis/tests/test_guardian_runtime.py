@@ -11,7 +11,11 @@ from jarvis import (
     ServiceHealth,
     ServiceStatus,
 )
-from jarvis.guardian.runtime import NO_MEMORY_SERVICE_RESPONSE, NOT_CONNECTED_RESPONSE, NOT_RUNNING_RESPONSE
+from jarvis.guardian.runtime import (
+    NO_MEMORY_SERVICE_RESPONSE,
+    NOT_CONNECTED_RESPONSE,
+    NOT_RUNNING_RESPONSE,
+)
 from jarvis.interfaces.conversation import ConversationRequest, ConversationResponse
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.memory.service import PersonalMemoryService
@@ -57,7 +61,7 @@ def test_guardian_diagnostic_event_requires_timezone_aware_timestamp() -> None:
             name="guardian.test",
             state=GuardianRuntimeState.STOPPED,
             message="Test event.",
-            occurred_at=datetime(2026, 1, 1),
+            occurred_at=datetime(2026, 1, 1),  # noqa: DTZ001 - deliberately naive, this test asserts it gets rejected
         )
     except ValueError as exc:
         assert str(exc) == "Guardian diagnostic event timestamp must be timezone-aware."

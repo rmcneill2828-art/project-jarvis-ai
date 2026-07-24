@@ -28,9 +28,10 @@ import json
 import os
 import sys
 import threading
+from collections.abc import Mapping
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Mapping, TextIO
+from typing import Any, TextIO
 
 from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
@@ -247,7 +248,7 @@ class StdioRpcServer:
         response = self._runtime.converse(message)
         return {"message": response.message, "provider": response.provider}
 
-    def _platform_status(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
+    def _platform_status(self, params: dict[str, Any]) -> dict[str, Any]:
         snapshot = self._runtime.status_snapshot()
         provider_boundary = snapshot.services.get("Guardian Provider Boundary")
         gateway = self._runtime.sentinel_gateway()
@@ -259,10 +260,10 @@ class StdioRpcServer:
             "policyEngine": type(gateway.policy_engine).__name__ if gateway is not None else None,
         }
 
-    def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
+    def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:
         return knowledge_graph.build_graph()
 
-    def _gia_status(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
+    def _gia_status(self, params: dict[str, Any]) -> dict[str, Any]:
         snapshot = self._gia_observer.snapshot()
         return {
             "cpuPercent": snapshot.cpu_percent,
@@ -303,7 +304,7 @@ class StdioRpcServer:
         decision = self._runtime.deny_memory(pending_id)
         return {"decisionId": decision.id, "decision": decision.decision}
 
-    def _memory_list(self, params: dict[str, Any]) -> dict[str, Any]:  # noqa: ARG002
+    def _memory_list(self, params: dict[str, Any]) -> dict[str, Any]:
         records = self._runtime.list_memory()
         return {
             "records": [
@@ -355,7 +356,7 @@ class StdioRpcServer:
 
         try:
             result = handler(params)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - any handler failure must become a JSON-RPC error reply, not crash the loop
             # Deliberately expose only the exception type and message, matching
             # the same rationale as OpenAIProvider/GeminiProvider - never let a
             # raw internal error leak more than necessary into a client-facing

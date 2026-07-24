@@ -9,12 +9,12 @@ from sentinel.policy import PolicyDecision
 
 
 class _AlwaysDenyPolicy:
-    def evaluate(self, request: SentinelRequest) -> PolicyDecision:  # noqa: ARG002
+    def evaluate(self, request: SentinelRequest) -> PolicyDecision:
         return PolicyDecision(outcome=SentinelDecisionOutcome.DENY, reason="Denied for test.")
 
 
 class _AlwaysAllowPolicy:
-    def evaluate(self, request: SentinelRequest) -> PolicyDecision:  # noqa: ARG002
+    def evaluate(self, request: SentinelRequest) -> PolicyDecision:
         return PolicyDecision(outcome=SentinelDecisionOutcome.ALLOW, reason="Allowed for test.")
 
 

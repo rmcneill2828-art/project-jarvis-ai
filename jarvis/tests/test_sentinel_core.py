@@ -1,11 +1,10 @@
+from jarvis import GuardianRuntime, GuardianRuntimeState
 from sentinel import (
     SentinelDecisionOutcome,
     SentinelRequest,
     SentinelResponse,
     SentinelTrustGateway,
 )
-
-from jarvis import GuardianRuntime, GuardianRuntimeState
 
 
 def test_sentinel_request_rejects_empty_source() -> None:

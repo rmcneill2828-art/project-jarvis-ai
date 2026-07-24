@@ -32,11 +32,11 @@ import os
 import re
 import sqlite3
 import sys
+from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Iterator
 from urllib.parse import parse_qs, urlsplit
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -181,7 +181,7 @@ def build_handler_class(
     class Handler(BaseHTTPRequestHandler):
         server_version = "SponsorApprovalService/1.0"
 
-        def log_message(self, format: str, *args: object) -> None:  # noqa: A002
+        def log_message(self, format: str, *args: object) -> None:
             pass  # not a diagnostics endpoint; silence default stderr access log
 
         def _send_json(self, status: int, payload: dict) -> None:
@@ -192,7 +192,7 @@ def build_handler_class(
             self.end_headers()
             self.wfile.write(body)
 
-        def do_GET(self) -> None:  # noqa: N802
+        def do_GET(self) -> None:
             parts = urlsplit(self.path)
             if parts.path != "/decisions/latest":
                 self._send_json(404, {"error": "not found"})
@@ -230,7 +230,7 @@ def build_handler_class(
                 },
             )
 
-        def do_POST(self) -> None:  # noqa: N802
+        def do_POST(self) -> None:
             # The request body is drained unconditionally, before any check
             # that might return early - leaving Content-Length bytes unread
             # on the socket when responding early (e.g. an auth failure)

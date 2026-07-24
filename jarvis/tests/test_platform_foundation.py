@@ -8,7 +8,7 @@ from jarvis import (
     ServiceHealth,
     ServiceStatus,
 )
-from jarvis.interfaces.conversation import ConversationService, DEFAULT_RESPONSE
+from jarvis.interfaces.conversation import DEFAULT_RESPONSE, ConversationService
 
 
 def test_platform_foundation_bootstrap_reports_available_status() -> None:
