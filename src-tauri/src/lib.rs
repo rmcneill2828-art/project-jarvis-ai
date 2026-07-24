@@ -61,7 +61,9 @@ enum BackendHandle {
 impl BackendHandle {
     fn write_line(&mut self, line: &str) -> std::io::Result<()> {
         match self {
-            BackendHandle::Dev { stdin, .. } => stdin.write_all(line.as_bytes()).and_then(|_| stdin.flush()),
+            BackendHandle::Dev { stdin, .. } => {
+                stdin.write_all(line.as_bytes()).and_then(|_| stdin.flush())
+            }
             BackendHandle::Sidecar { child } => child
                 .write(line.as_bytes())
                 .map_err(|e| std::io::Error::other(e.to_string())),
@@ -98,7 +100,9 @@ const CONNECTION_CLOSED_MESSAGE: &str =
     "JARVIS backend closed the connection unexpectedly. The next request will attempt to restart it.";
 
 fn fail_all_pending(pending: &PendingMap, message: &str) {
-    let mut pending_guard = pending.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+    let mut pending_guard = pending
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
     for (_, sender) in pending_guard.drain() {
         let _ = sender.send(Err(message.to_string()));
     }
@@ -135,7 +139,9 @@ fn dispatch_line(trimmed: &str, pending: &PendingMap, app_handle: &AppHandle) ->
             // pending call if one is still waiting.
             if let Some(id) = id_value.as_u64() {
                 let sender = {
-                    let mut pending_guard = pending.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+                    let mut pending_guard = pending
+                        .lock()
+                        .unwrap_or_else(|poisoned| poisoned.into_inner());
                     pending_guard.remove(&id)
                 };
                 if let Some(sender) = sender {
@@ -146,10 +152,9 @@ fn dispatch_line(trimmed: &str, pending: &PendingMap, app_handle: &AppHandle) ->
                             .unwrap_or("Unknown JARVIS backend error.");
                         Err(message.to_string())
                     } else {
-                        parsed
-                            .get("result")
-                            .cloned()
-                            .ok_or_else(|| "JARVIS backend response was missing a result.".to_string())
+                        parsed.get("result").cloned().ok_or_else(|| {
+                            "JARVIS backend response was missing a result.".to_string()
+                        })
                     };
                     let _ = sender.send(result);
                 }
@@ -159,9 +164,16 @@ fn dispatch_line(trimmed: &str, pending: &PendingMap, app_handle: &AppHandle) ->
         }
         None => {
             // No `id` key at all - a genuine notification.
-            let method = parsed.get("method").and_then(Value::as_str).unwrap_or("").to_string();
+            let method = parsed
+                .get("method")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
             let params = parsed.get("params").cloned().unwrap_or_else(|| json!({}));
-            let _ = app_handle.emit("jarvis://notification", json!({"method": method, "params": params}));
+            let _ = app_handle.emit(
+                "jarvis://notification",
+                json!({"method": method, "params": params}),
+            );
         }
     }
 
@@ -172,7 +184,12 @@ fn dispatch_line(trimmed: &str, pending: &PendingMap, app_handle: &AppHandle) ->
 /// stdout via a synchronous `BufReader`. Runs until stdout closes (EOF), a
 /// read error occurs, or a line fails to parse - each of which tears down the
 /// shared backend state so the next call respawns a fresh process.
-fn run_dev_reader(stdout: ChildStdout, pending: PendingMap, shared_state: SharedBackend, app_handle: AppHandle) {
+fn run_dev_reader(
+    stdout: ChildStdout,
+    pending: PendingMap,
+    shared_state: SharedBackend,
+    app_handle: AppHandle,
+) {
     let mut reader = BufReader::new(stdout);
     loop {
         let mut line = String::new();
@@ -260,7 +277,10 @@ fn run_sidecar_reader(
     }
 }
 
-fn spawn_backend(app_handle: &AppHandle, shared_state: SharedBackend) -> Result<BackendProcess, String> {
+fn spawn_backend(
+    app_handle: &AppHandle,
+    shared_state: SharedBackend,
+) -> Result<BackendProcess, String> {
     if cfg!(debug_assertions) {
         spawn_dev_backend(app_handle, shared_state)
     } else {
@@ -268,7 +288,10 @@ fn spawn_backend(app_handle: &AppHandle, shared_state: SharedBackend) -> Result<
     }
 }
 
-fn spawn_dev_backend(app_handle: &AppHandle, shared_state: SharedBackend) -> Result<BackendProcess, String> {
+fn spawn_dev_backend(
+    app_handle: &AppHandle,
+    shared_state: SharedBackend,
+) -> Result<BackendProcess, String> {
     // `jarvis` is not pip-installed in this dev setup - `python -m jarvis` only
     // resolves it via the cwd-based sys.path entry `-m` adds, so the child
     // process's working directory must be anchored to the repository root
@@ -310,7 +333,10 @@ fn spawn_dev_backend(app_handle: &AppHandle, shared_state: SharedBackend) -> Res
     })
 }
 
-fn spawn_sidecar_backend(app_handle: &AppHandle, shared_state: SharedBackend) -> Result<BackendProcess, String> {
+fn spawn_sidecar_backend(
+    app_handle: &AppHandle,
+    shared_state: SharedBackend,
+) -> Result<BackendProcess, String> {
     let sidecar_command = app_handle
         .shell()
         .sidecar("jarvis-backend")
@@ -324,7 +350,9 @@ fn spawn_sidecar_backend(app_handle: &AppHandle, shared_state: SharedBackend) ->
 
     let reader_pending = Arc::clone(&pending);
     let reader_app_handle = app_handle.clone();
-    thread::spawn(move || run_sidecar_reader(receiver, reader_pending, shared_state, reader_app_handle));
+    thread::spawn(move || {
+        run_sidecar_reader(receiver, reader_pending, shared_state, reader_app_handle)
+    });
 
     Ok(BackendProcess {
         handle: BackendHandle::Sidecar { child },
@@ -333,7 +361,12 @@ fn spawn_sidecar_backend(app_handle: &AppHandle, shared_state: SharedBackend) ->
     })
 }
 
-fn call_backend(state: &BackendState, app_handle: &AppHandle, method: &str, params: Value) -> Result<Value, String> {
+fn call_backend(
+    state: &BackendState,
+    app_handle: &AppHandle,
+    method: &str,
+    params: Value,
+) -> Result<Value, String> {
     let (id, write_result, receiver) = {
         let mut guard = state
             .0
@@ -383,14 +416,23 @@ fn call_backend(state: &BackendState, app_handle: &AppHandle, method: &str, para
         );
     }
 
-    receiver
-        .recv()
-        .map_err(|_| "JARVIS backend connection was lost while waiting for a response.".to_string())?
+    receiver.recv().map_err(|_| {
+        "JARVIS backend connection was lost while waiting for a response.".to_string()
+    })?
 }
 
 #[tauri::command]
-fn send_message(state: State<BackendState>, app_handle: AppHandle, message: String) -> Result<Value, String> {
-    call_backend(&state, &app_handle, "guardian.converse", json!({ "message": message }))
+fn send_message(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    message: String,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "guardian.converse",
+        json!({ "message": message }),
+    )
 }
 
 #[tauri::command]
@@ -407,7 +449,11 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .manage(BackendState(Arc::new(Mutex::new(None))))
-        .invoke_handler(tauri::generate_handler![send_message, platform_status, knowledge_graph])
+        .invoke_handler(tauri::generate_handler![
+            send_message,
+            platform_status,
+            knowledge_graph
+        ])
         .build(tauri::generate_context!())
         .expect("error while building JARVIS Guardian desktop shell")
         .run(|app_handle, event| {
