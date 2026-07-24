@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.328
+**Version:** 3.330
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.328 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.330 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -141,6 +141,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0016 | Repository Baseline | ESR-0028 Repository Baseline (Guardian Orb 3D Rotation) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/baselines/` |
 | RBL-0017 | Repository Baseline | ESR-0029 Repository Baseline (Guardian Orb Canvas 2D Migration + GIA Phase 1) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/baselines/` |
 | RBL-0018 | Repository Baseline | ESR-0031 Repository Baseline (Streaming Notifications MVP + AIEMS Session-Opening Launcher) | 1.1 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0031 | `aiems/governance/baselines/` |
+| RBL-0019 | Repository Baseline | ESR-0032 Repository Baseline (Deployment Alpha - Guardian Desktop Distribution, CI Build Gate Hardening, Release Automation) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0032 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.2 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
@@ -196,7 +197,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.84 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.85 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -347,6 +348,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.330 | 24 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.84 to 2.85) following: ESR-0032 WP4 Complete (Independent Repository Verification, Pass) and WP5 Complete (Repository Baseline Acceptance - RBL-0019 accepted, superseding RBL-0018). All Theme 1 - Deployment Alpha work now delivered; formal session closure (Engineering Session Report) remains. |
+| 3.329 | 24 July 2026 | Claude Engineering Implementer | Registered RBL-0019 (ESR-0032 Repository Baseline, Deployment Alpha, Accepted 1.0) - superseding RBL-0018 at ESR-0032 WP5. |
 | 3.328 | 24 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.83 to 2.84) following: ESR-0032 WP3 Complete: EBG-0104 (Release Automation and Version Synchronisation) delivered per EIP-ESR0032-003 v1.0, live-verified via a real v0.1.0 GitHub Release. All three Theme 1 items (EBG-0102/0103/0104) now Complete. Current Mode/Phase/Objective updated - session-wide WP4/WP5 remain. |
 | 3.327 | 24 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.123 to 1.124) following: ESR-0032 WP3 Complete: EBG-0104 (Release Automation and Version Synchronisation) delivered per EIP-ESR0032-003 v1.0 - VERSION single source of truth, sync_product_version.py, blocking CI version-equality gate, tag-triggered release.yml. Live-verified via a real v0.1.0 GitHub Release (installer + SHA-256 checksum); a genuine GITHUB_TOKEN permissions bug was found and fixed via the real tag push. All three Theme 1 items now Complete. |
 | 3.326 | 24 July 2026 | Claude Engineering Implementer | Aligned EIP-ESR0032-003 version (0.1 to 1.0, Draft to Approved - implemented) following: Programme Sponsor approved WP3 for implementation; EBG-0104 delivered and live-verified via a real v0.1.0 GitHub Release. |

@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0032-WP4 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -151,7 +151,13 @@ Rationale: this session delivered three genuine, live-verified capabilities that
 
 ---
 
-## 11. Related Artefacts
+## 11. WP5 Baseline Acceptance Result
+
+**Accept - new baseline RBL-0019 established, superseding RBL-0018.** The Programme Sponsor determined at ESR-0032 WP5 to establish a new baseline rather than retain RBL-0018, agreeing with both independent views in Sections 9-10: all three Theme 1 - Deployment Alpha items (EBG-0102, EBG-0103, EBG-0104) delivered a genuinely distributable, CI-gated, and releasable product for the first time - a real installable Windows package, a real green GitHub Actions run across all four CI jobs, and a real published `v0.1.0` GitHub Release with an attached SHA-256 checksum. [[RBL-0019_REPOSITORY_BASELINE|RBL-0019]] is now the current accepted repository baseline.
+
+---
+
+## 12. Related Artefacts
 
 | Artefact | Relationship |
 |----------|--------------|
@@ -165,9 +171,10 @@ Rationale: this session delivered three genuine, live-verified capabilities that
 
 ---
 
-## 12. Version History
+## 13. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 24 July 2026 | Claude Engineering Implementer | Recorded the Programme Sponsor's WP5 determination: Accept - RBL-0019 established, superseding RBL-0018, agreeing with both independent WP4 views. |
 | 0.2 | 24 July 2026 | Claude Engineering Implementer | Recorded the Engineering Reviewer's (Codex) independent verification result: Pass, no blocking findings. Codex independently confirmed the exact diff-stat figures, the file-list/working-set accuracy, the sentinel/ trust-boundary and Sponsor Approval Service scope-check claims (both mechanical-only, no behavioural change), and converges with Section 9's baseline recommendation (accept a new baseline). Disclosed limitation: Codex's own recurring sandbox crash prevented it from independently re-confirming the live GitHub Release via `gh` in its own environment. |
 | 0.1 | 24 July 2026 | Claude Engineering Implementer | Drafted ESR-0032 WP4 Independent Repository Verification handover, covering the full session diff (`077f31b`..`4ec539b`) across WP0B/WP1/WP2/WP3. Records repository state, authorised working set, session observations (two real-environment-verification catches, a self-caught governance-process deviation, Codex's recurring CLI sandbox crashes worked around with explicit Sponsor approval, an explicitly-surfaced release-tag scope decision, a self-corrected author-attribution mistake), validation evidence including a real green GitHub Actions run and a real published GitHub Release, and an independent baseline view (accept a new baseline - all three Theme 1 items delivered a genuinely distributable, tested, and releasable product for the first time). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
