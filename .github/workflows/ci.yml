@@ -16,6 +16,10 @@ jobs:
           python-version: "3.12"
       - run: pip install -e .[dev]
       - run: ruff check .
+      # Fails if pyproject.toml/package.json/src-tauri/Cargo.toml/
+      # src-tauri/tauri.conf.json drift from VERSION (EIP-ESR0032-003).
+      # No pre-existing drift to triage - blocking from introduction.
+      - run: python scripts/sync_product_version.py --check
       - run: pytest -q
       - run: python scripts/validate_repository.py
       # Advisory only until an initial findings baseline has been triaged -

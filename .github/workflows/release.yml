@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
+      - run: pip install -e .[dev]
+      - run: npm ci
+      # Refuses to publish a release whose tag doesn't match the VERSION
+      # this repository actually shipped (EIP-ESR0032-003 Section 7 item 2,
+      # Codex review note) - a manually mistyped tag must not silently
+      # produce a release mislabelled relative to the built artifact.
+      - name: Verify tag matches VERSION
+        shell: bash
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          file_version="$(cat VERSION)"
+          if [ "$tag_version" != "$file_version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match VERSION ($file_version)."
+            exit 1
+          fi
+      - run: python scripts/sync_product_version.py --check
+      - run: python scripts/build_backend_sidecar.py
+      - run: npm run tauri build
+      # Locates the exact installer Tauri just produced rather than a broad
+      # glob - fails loudly if zero or more than one match, rather than
+      # silently uploading a stale or ambiguous artifact (Codex review note).
+      - name: Locate installer and compute checksum
+        shell: bash
+        run: |
+          mapfile -t installers < <(find src-tauri/target/release/bundle/nsis -maxdepth 1 -name '*.exe')
+          if [ "${#installers[@]}" -ne 1 ]; then
+            echo "Expected exactly one installer in bundle/nsis, found ${#installers[@]}: ${installers[*]}"
+            exit 1
+          fi
+          installer="${installers[0]}"
+          sha256sum "$installer" > "$installer.sha256"
+          echo "INSTALLER_PATH=$installer" >> "$GITHUB_ENV"
+          echo "CHECKSUM_PATH=$installer.sha256" >> "$GITHUB_ENV"
+      - uses: softprops/action-gh-release@v3.0.2
+        with:
+          files: |
+            ${{ env.INSTALLER_PATH }}
+            ${{ env.CHECKSUM_PATH }}
