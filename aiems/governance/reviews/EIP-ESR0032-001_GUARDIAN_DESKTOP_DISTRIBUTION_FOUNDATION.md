@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0032-001 |
 | Title | Guardian Desktop Distribution Foundation |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -25,7 +25,7 @@ Closes EBG-0102: package the Python backend as a real Tauri sidecar executable, 
 
 # 3. Objective
 
-Replace the current dev-mode-only backend spawn (`std::process::Command::new("python")`, requiring a full local Python/repository checkout - `src-tauri/src/lib.rs`'s own header comment already discloses this) with a bundled, standalone sidecar executable for release builds, enable `bundle.active`, and produce a real Windows installer via `npm run tauri build` that launches and can hold a basic conversation without any development toolchain present.
+Replace the current dev-mode-only backend spawn (`std::process::Command::new("python")`, requiring a full local Python/repository checkout - `src-tauri/src/lib.rs`'s own header comment already discloses this) with a bundled, standalone sidecar executable for release builds, enable `bundle.active`, and produce a real Windows installer via `npm run tauri build`. **Codex pre-implementation review finding (addressed):** this WP verifies the bundled sidecar path launches and can hold a basic conversation *on this development machine* - it does not itself establish "without any development toolchain present," since no clean-machine (no-toolchain) test is performed (Section 5/8). That broader claim remains for a future WP once a genuinely clean test environment is available.
 
 ---
 
@@ -86,6 +86,8 @@ No other files may be modified without a further approved package.
 3. The sidecar's granted Tauri v2 capability shall be scoped to executing that one named sidecar binary only, not a general shell-execute permission - preserving the CSP/capability-minimisation posture already established for this shell (locked-down CSP, `object-src 'none'`, `base-uri 'none'`).
 4. The PyInstaller-packaged executable shall be built from the same `jarvis/` source the dev-mode path runs - no behavioural fork between the two beyond the packaging mechanism itself.
 5. A real `npm run tauri build` shall be run and its output installer artifact actually installed or executed directly - "the config looks right" is not sufficient evidence; the packaged executable's own conversation round-trip must be observed running, per PBK-0001's Operational Verification Before Reporting.
+6. **Codex pre-implementation review finding (addressed):** the dev/release branch is keyed on Cargo's build profile (`cfg!(debug_assertions)`), not on whether the sidecar binary happens to exist - a debug-profile packaged build (if one is ever produced) still takes the raw `python -m jarvis` path, and a release-profile run always takes the sidecar path regardless of whether a local Python install is also present. This coupling shall be stated in the restructured `spawn_backend()`'s own comments, not left implicit.
+7. **Codex pre-implementation review finding (addressed):** the release-mode sidecar path shall provide equivalent best-effort process termination on app exit to the current `backend.child.kill()` behaviour - `tauri-plugin-shell`'s sidecar `CommandChild` exposes its own kill/termination mechanism, which the exit handler shall call for the sidecar path exactly as the existing handler does for the dev-mode `Child`.
 
 ---
 
@@ -121,6 +123,7 @@ No other files may be modified without a further approved package.
 # 11. Risks and Dependencies
 
 - **Toolchain risk**: PyInstaller and NSIS/WiX availability are unconfirmed until actually exercised - this WP's own biggest technical unknown, disclosed upfront rather than discovered mid-implementation and then hidden.
+- **Runtime environment risk (Codex pre-implementation review finding, addressed)**: the current dev-mode spawn deliberately sets `current_dir(repo_root)` so `python -m jarvis` can resolve source and any relative data/config paths against the repository checkout. A PyInstaller-packaged executable has no repository checkout around it at all - its working directory, bundled resource paths, and any config/database file paths `jarvis/` resolves relative to its own location or cwd must be re-verified against the packaged executable specifically, not assumed to behave identically to the dev-mode invocation. This is real implementation-time investigation, not a known-safe assumption.
 - **Architectural risk**: adapting `run_reader()`'s synchronous line-based design to `tauri-plugin-shell`'s async event model is real design work with more than one reasonable approach; the EIP intentionally does not pre-decide the exact shape, leaving it to be resolved (and reviewed) during implementation.
 - **Dependency**: EBG-0103 (CI) and EBG-0104 (release automation) are separate WPs this session but share this WP's territory (`tauri.conf.json`, `Cargo.toml`, `package.json`) - sequencing this WP first avoids the other two WPs touching files this one is actively restructuring.
 - **No external dependency on EBG-0103/0104's own completion** - this WP is self-contained and can close independently.
@@ -149,4 +152,5 @@ Requesting Programme Sponsor approval to proceed with implementation as scoped a
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 24 July 2026 | Claude Engineering Implementer | Pre-implementation fix round (Codex-caught, four non-blocking findings): tightened Section 3's "without any development toolchain present" overclaim to "verified on this machine"; disclosed the `cfg!(debug_assertions)` profile-coupling behaviour explicitly (Implementation Requirement 6); added an equivalent-sidecar-termination-on-exit requirement (Implementation Requirement 7); added the PyInstaller runtime-environment/cwd/data-path risk to Section 11. No blocking finding on the core approach (PyInstaller sidecar via tauri-plugin-shell, scoped capability, bundle.active, Windows nsis target, preserving EIP-ESR0031-002 semantics) - confirmed internally consistent with the current starting state. |
 | 0.1 | 21 July 2026 | Claude Engineering Implementer | Initial draft, closing EBG-0102. Scoped to sidecar packaging (PyInstaller), tauri-plugin-shell wiring, bundle enablement and a real installer build/run - explicitly excluding clean-machine VM testing, code signing, CI and release-automation scope (EBG-0103/EBG-0104, separate WPs this session). |
