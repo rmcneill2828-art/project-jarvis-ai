@@ -8,6 +8,13 @@ on:
 jobs:
   release:
     runs-on: windows-latest
+    # This repository's default GITHUB_TOKEN permissions are read-only;
+    # softprops/action-gh-release needs contents: write to create the
+    # release and upload assets. Found via a real tag push (v0.1.0) -
+    # the build succeeded but publishing failed with "Resource not
+    # accessible by integration" until this was added.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
