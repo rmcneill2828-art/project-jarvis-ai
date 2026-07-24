@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.322
+**Version:** 3.323
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.322 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.323 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.122 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.123 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -346,6 +346,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.323 | 24 July 2026 | Claude Engineering Reviewer | Aligned EBR-0001 version (1.122 to 1.123) following: ESR-0032 WP2 fix round: ruff CI drift cleanup (17 hand-fixed violations, 70 auto-fixed) + npm audit hard gate (--omit=dev), commit 77c15a8. Codex-reviewed (approved, no findings) and Sponsor-approved via submit-response. Real GitHub Actions CI now genuinely green across all four jobs (python, rust, playwright, frontend-build). |
 | 3.322 | 24 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.81 to 2.82) following: ESR-0032 WP2 Complete: EBG-0103 (CI Build Gate Hardening) delivered per EIP-ESR0032-002 v1.0 - real Linux (WSL Ubuntu) verification found and fixed three genuine bugs before writing the CI job. Current Phase/Objective updated. |
 | 3.321 | 24 July 2026 | Claude Engineering Implementer | Aligned EIP-ESR0032-002 version (0.1 to 1.0, Draft to Approved - implemented) following: Programme Sponsor approved WP2 for implementation; EBG-0103 delivered and live-verified on real Linux (WSL Ubuntu). |
 | 3.320 | 24 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.121 to 1.122) following: ESR-0032 WP2 Complete: EBG-0103 (CI Build Gate Hardening) delivered per EIP-ESR0032-002 v1.0 - Rust CI job, narrowed continue-on-error, real Playwright suite. Real Linux verification via WSL Ubuntu found and fixed three genuine bugs (schemars/indexmap, build_backend_sidecar.py Windows-only, missing PNG icon) before writing the CI job. |
