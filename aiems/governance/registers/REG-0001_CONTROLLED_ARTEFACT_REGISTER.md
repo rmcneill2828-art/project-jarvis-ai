@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.316
+**Version:** 3.317
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.316 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.317 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.120 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.121 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -345,6 +345,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.317 | 24 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.120 to 1.121) following: Fix Codex-caught Low finding on commit 293780a: EBG-0102's entry cited EIP-ESR0032-001 v0.2 (a stale pre-fix-round reference) instead of the actual implemented v1.0. |
 | 3.316 | 24 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.79 to 2.80) following: ESR-0032 WP1 Complete: EBG-0102 (Guardian Desktop Distribution Foundation) delivered per EIP-ESR0032-001 v1.0 - PyInstaller sidecar, tauri-plugin-shell, real installer build, live-verified with zero regression to dev mode. Current Mode/Phase/Objective updated. |
 | 3.315 | 24 July 2026 | Claude Engineering Implementer | Aligned EIP-ESR0032-001 version (0.2 to 1.0, Draft to Approved - implemented) following: Programme Sponsor approved WP1 for implementation; EBG-0102 delivered and live-verified. |
 | 3.314 | 24 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.119 to 1.120) following: ESR-0032 WP1: EBG-0102 (Guardian Desktop Distribution Foundation) marked Complete per EIP-ESR0032-001 v1.0 - PyInstaller sidecar packaging, tauri-plugin-shell wiring, Tauri bundling, real installer build/run, all live-verified with zero regression to dev mode. |
