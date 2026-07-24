@@ -5,6 +5,17 @@ edition = "2021"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
+# Forces indexmap's "std" feature on for schemars 0.8.22 (pulled in
+# transitively via tauri-build/tauri-utils/tauri-plugin's Linux/dbus
+# capability-schema generation). schemars 0.8.22 requests indexmap's
+# "serde-1" feature but never "std", and indexmap 1.9.x has no default
+# features at all - without "std", indexmap's own `#[cfg(has_std)]`
+# split compiles IndexMap<K, V, S> with no default for S, breaking
+# schemars's `type Map<K, V> = indexmap::IndexMap<K, V>;` alias. Only
+# ever surfaces on Linux builds, since Windows never exercises this
+# schemars code path at all - found and root-caused via a real WSL
+# Ubuntu build (EIP-ESR0032-002).
+indexmap = { version = "1.9", features = ["std"] }
 
 [dependencies]
 tauri = { version = "2", features = [] }

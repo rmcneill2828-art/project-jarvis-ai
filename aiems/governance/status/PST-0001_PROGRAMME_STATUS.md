@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.81
+**Version:** 2.82
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.81 |
+| Version | 2.82 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -64,9 +64,9 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Current Repository Baseline | [[RBL-0018_REPOSITORY_BASELINE|RBL-0018]], accepted at ESR-0031 WP4, superseding RBL-0017 - the Streaming Notifications MVP (the UXP-backend bridge's first live-push mechanism, live-verified via a real running application session) judged baseline-worthy, both independent WP3 views converging with the Programme Sponsor's determination. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2, refreshed at ESR-0031 WP0 to reflect ESR-0027 WP1's Personal Memory implementation - now distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0032 open, in progress (opened 21 July 2026); WP0/WP0B/WP1 complete, WP2 in progress, WP3 planned; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Phase | ESR-0032 open, in progress (opened 21 July 2026); WP0/WP0B/WP1/WP2 complete, WP3 planned; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. Continuing the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service, now in its seventh consecutive session (ESR-0026 through ESR-0032), including the `codex exec -s read-only` automated-review pattern proven throughout ESR-0031. |
-| Current Engineering Objective | ESR-0032: Deployment Alpha (Theme 1 from EBR-0001 Section 5A) - WP1 (EBG-0102, Guardian Desktop Distribution Foundation) Complete, EIP-ESR0032-001 v1.0 implemented and live-verified; WP2 (EBG-0103, CI gaps) in progress, draft EIP-ESR0032-002 v0.1 submitted for Engineering Reviewer review (scope expanded per Programme Sponsor direction to include a real Playwright acceptance suite); WP3 (EBG-0104, release automation/version sync) planned, not yet started. |
+| Current Engineering Objective | ESR-0032: Deployment Alpha (Theme 1 from EBR-0001 Section 5A) - WP1 (EBG-0102, Guardian Desktop Distribution Foundation) Complete; WP2 (EBG-0103, CI Build Gate Hardening) Complete, EIP-ESR0032-002 v1.0 implemented, including a real Playwright suite (scope expanded per Programme Sponsor direction) and real Linux (WSL Ubuntu) verification that found and fixed three genuine cross-platform bugs; WP3 (EBG-0104, release automation/version sync) planned, not yet started. |
 
 ---
 
@@ -682,6 +682,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.82 | 24 July 2026 | Claude Engineering Implementer | ESR-0032 WP2 Complete: EBG-0103 (CI Build Gate Hardening) delivered per EIP-ESR0032-002 v1.0 - real Linux (WSL Ubuntu) verification found and fixed three genuine bugs before writing the CI job. Current Phase/Objective updated. |
 | 2.81 | 24 July 2026 | Claude Engineering Implementer | ESR-0032 WP2 draft: registered EIP-ESR0032-002 v0.1 (CI Build Gate Hardening, EBG-0103) - new Rust CI job, narrowed frontend-build continue-on-error, and a real Playwright suite (scope expanded per Programme Sponsor direction). Current Phase/Objective updated. |
 | 2.80 | 24 July 2026 | Claude Engineering Implementer | ESR-0032 WP1 Complete: EBG-0102 (Guardian Desktop Distribution Foundation) delivered per EIP-ESR0032-001 v1.0 - PyInstaller sidecar, tauri-plugin-shell, real installer build, live-verified with zero regression to dev mode. Current Mode/Phase/Objective updated. |
 | 2.79 | 21 July 2026 | Claude Engineering Implementer | ESR-0032 opened (21 July 2026): WP0/WP0B complete - Programme Sponsor selected Theme 1 Deployment Alpha (EBG-0102/0103/0104) as this session's objective, choosing all three items rather than a smaller slice. Current Mode/Phase/Workflow/Objective updated to reflect ESR-0032 open, WP1 in progress (draft EIP-ESR0032-001 v0.1 registered for EBG-0102, submitted for Engineering Reviewer review). Next Required Activity/Next Work Package Candidate updated - Theme 1 now in progress, Theme 7 cleanup remains an open candidate for a future session. Current Mode WikiLink target correctly stays on ESR-0031 (latest closed) per validate_repository.py's extract_current_esr_reference requirement. |

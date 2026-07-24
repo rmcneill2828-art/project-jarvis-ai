@@ -54,6 +54,14 @@ Thumbs.db
 node_modules/
 
 # --------------------------------------------------
+# Playwright (EIP-ESR0032-002)
+# --------------------------------------------------
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# --------------------------------------------------
 # AIEMS Exchange Bridge (EBG-0057, EIP-ESR0025-001)
 # Local Claude<->Codex handover state - never shared/committed, per the
 # bridge's own restrictive-permissions requirement.

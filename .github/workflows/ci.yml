@@ -25,7 +25,6 @@ jobs:
 
   frontend-build:
     runs-on: ubuntu-latest
-    continue-on-error: true   # advisory until the Tauri shell has real tests
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,4 +32,47 @@ jobs:
           node-version: "20"
       - run: npm ci
       - run: npm run build
+      # Advisory only until an initial findings baseline has been triaged -
+      # matches the python job's own pip-audit precedent (EIP-ESR0032-002
+      # narrowed this from a job-level continue-on-error, which previously
+      # also covered npm run build itself).
       - run: npm audit --audit-level=high
+        continue-on-error: true
+
+  playwright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Tauri's own documented Linux build prerequisites (EIP-ESR0032-002,
+      # verified via a real WSL Ubuntu build before this job was written).
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl wget file libssl-dev \
+            libgtk-3-dev librsvg2-dev libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev patchelf
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      # Tauri's generate_context!() macro requires the externalBin sidecar
+      # to exist at compile time regardless of build profile - a plain
+      # `cargo build`/`clippy`/`test` fails without it, not just `tauri build`.
+      - run: python scripts/build_backend_sidecar.py
+      - run: cargo build --manifest-path src-tauri/Cargo.toml
+      - run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
+      - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      - run: cargo test --manifest-path src-tauri/Cargo.toml

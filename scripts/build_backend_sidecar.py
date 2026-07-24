@@ -51,10 +51,21 @@ def detect_target_triple() -> str:
 
 
 def build_sidecar(target_triple: str, work_dir: Path) -> Path:
-    """Run PyInstaller, returning the path to the produced sidecar executable."""
+    """Run PyInstaller, returning the path to the produced sidecar executable.
+
+    Tauri's own `externalBin` naming convention only appends `.exe` for
+    Windows targets (`-windows-` in the triple) - Linux/macOS sidecars are
+    extension-less. PyInstaller follows the same host-platform convention
+    for its own output, so both the located build artefact and the copied,
+    Tauri-facing sidecar name must branch on this - hardcoding `.exe`
+    unconditionally breaks on any non-Windows host (found via a real WSL
+    Ubuntu build, EIP-ESR0032-002).
+    """
 
     if not ENTRY_SCRIPT.exists():
         raise BuildError(f"Entry script not found: {ENTRY_SCRIPT}")
+
+    exe_suffix = ".exe" if "windows" in target_triple else ""
 
     dist_dir = work_dir / "dist"
     build_dir = work_dir / "build"
@@ -81,13 +92,17 @@ def build_sidecar(target_triple: str, work_dir: Path) -> Path:
     if result.returncode != 0:
         raise BuildError(f"PyInstaller exited with code {result.returncode}.")
 
-    built_exe = dist_dir / f"{SIDECAR_NAME}.exe"
+    built_exe = dist_dir / f"{SIDECAR_NAME}{exe_suffix}"
     if not built_exe.exists():
         raise BuildError(f"PyInstaller reported success but {built_exe} does not exist.")
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    target_path = OUTPUT_DIR / f"{SIDECAR_NAME}-{target_triple}.exe"
-    shutil.copyfile(built_exe, target_path)
+    target_path = OUTPUT_DIR / f"{SIDECAR_NAME}-{target_triple}{exe_suffix}"
+    # shutil.copy (not copyfile) preserves the source file's permission bits -
+    # PyInstaller's own output is already executable, and copyfile alone
+    # would silently drop that bit on Linux/macOS, breaking Tauri's sidecar
+    # spawn with a permission error rather than a clear "not found" one.
+    shutil.copy(built_exe, target_path)
     return target_path
 
 
