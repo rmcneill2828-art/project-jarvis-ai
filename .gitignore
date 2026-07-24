@@ -59,3 +59,11 @@ node_modules/
 # bridge's own restrictive-permissions requirement.
 # --------------------------------------------------
 .aiems-exchange/
+
+# --------------------------------------------------
+# Backend sidecar build scratch (EIP-ESR0032-001)
+# scripts/build_backend_sidecar.py's own PyInstaller work directory -
+# the packaged output itself lives in src-tauri/binaries/, ignored
+# separately by src-tauri/.gitignore.
+# --------------------------------------------------
+.sidecar-build/

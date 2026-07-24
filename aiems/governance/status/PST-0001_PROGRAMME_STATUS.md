@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.79
+**Version:** 2.80
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.79 |
+| Version | 2.80 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0031_ENGINEERING_SESSION_REPORT|ESR-0031]] is the latest **closed** session (20 July 2026). **ESR-0032 is now open, in progress.** WP0 (repository synchronisation) and WP0B (session objective selection) complete: the Programme Sponsor selected **Theme 1 - Deployment Alpha** from EBR-0001 Section 5A's active-backlog snapshot, choosing to pursue all three Theme 1 items in this session (EBG-0102, EBG-0103, EBG-0104) rather than a smaller slice. **WP1** (EBG-0102, Guardian Desktop Distribution Foundation - sidecar packaging via PyInstaller, `tauri-plugin-shell` wiring, Tauri bundling, a real installer build) is in progress: draft [[EIP-ESR0032-001_GUARDIAN_DESKTOP_DISTRIBUTION_FOUNDATION|EIP-ESR0032-001]] v0.1 registered, submitted for Engineering Reviewer review. WP2 (EBG-0103, CI gaps) and WP3 (EBG-0104, release automation/version sync) remain planned, not yet started. Full detail to follow in the ESR-0032 Engineering Session Report once authored.
+| Current Mode | [[ESR-0031_ENGINEERING_SESSION_REPORT|ESR-0031]] is the latest **closed** session (20 July 2026). **ESR-0032 is now open, in progress.** WP0 (repository synchronisation) and WP0B (session objective selection) complete: the Programme Sponsor selected **Theme 1 - Deployment Alpha** from EBR-0001 Section 5A's active-backlog snapshot, choosing to pursue all three Theme 1 items in this session (EBG-0102, EBG-0103, EBG-0104) rather than a smaller slice. **WP1** (EBG-0102, Guardian Desktop Distribution Foundation) is **Complete**: [[EIP-ESR0032-001_GUARDIAN_DESKTOP_DISTRIBUTION_FOUNDATION|EIP-ESR0032-001]] v1.0 implemented - the Python backend packaged as a standalone PyInstaller sidecar, `tauri-plugin-shell` wired with a scoped shell-execute capability, `bundle.active` enabled, a real Windows installer produced via `npm run tauri build` (Tauri auto-fetched NSIS live). Live-verified: the release build's System Health panel populated with genuine sidecar-backed data, graceful exit left zero orphaned processes, and dev mode was independently re-confirmed with zero regression. WP2 (EBG-0103, CI gaps) and WP3 (EBG-0104, release automation/version sync) remain planned, not yet started. Full detail to follow in the ESR-0032 Engineering Session Report once authored.
 | Current Repository Baseline | [[RBL-0018_REPOSITORY_BASELINE|RBL-0018]], accepted at ESR-0031 WP4, superseding RBL-0017 - the Streaming Notifications MVP (the UXP-backend bridge's first live-push mechanism, live-verified via a real running application session) judged baseline-worthy, both independent WP3 views converging with the Programme Sponsor's determination. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2, refreshed at ESR-0031 WP0 to reflect ESR-0027 WP1's Personal Memory implementation - now distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0032 open, in progress (opened 21 July 2026); WP0/WP0B complete, WP1 in progress; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Phase | ESR-0032 open, in progress (opened 21 July 2026); WP0/WP0B/WP1 complete, WP2/WP3 planned; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. Continuing the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service, now in its seventh consecutive session (ESR-0026 through ESR-0032), including the `codex exec -s read-only` automated-review pattern proven throughout ESR-0031. |
-| Current Engineering Objective | ESR-0032: Deployment Alpha (Theme 1 from EBR-0001 Section 5A) - WP1 (EBG-0102, Guardian Desktop Distribution Foundation) in progress, draft EIP-ESR0032-001 v0.1 submitted for Engineering Reviewer review; WP2 (EBG-0103, CI gaps) and WP3 (EBG-0104, release automation/version sync) planned, not yet started. |
+| Current Engineering Objective | ESR-0032: Deployment Alpha (Theme 1 from EBR-0001 Section 5A) - WP1 (EBG-0102, Guardian Desktop Distribution Foundation) Complete, EIP-ESR0032-001 v1.0 implemented and live-verified; WP2 (EBG-0103, CI gaps) and WP3 (EBG-0104, release automation/version sync) planned, not yet started. |
 
 ---
 
@@ -682,6 +682,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.80 | 24 July 2026 | Claude Engineering Implementer | ESR-0032 WP1 Complete: EBG-0102 (Guardian Desktop Distribution Foundation) delivered per EIP-ESR0032-001 v1.0 - PyInstaller sidecar, tauri-plugin-shell, real installer build, live-verified with zero regression to dev mode. Current Mode/Phase/Objective updated. |
 | 2.79 | 21 July 2026 | Claude Engineering Implementer | ESR-0032 opened (21 July 2026): WP0/WP0B complete - Programme Sponsor selected Theme 1 Deployment Alpha (EBG-0102/0103/0104) as this session's objective, choosing all three items rather than a smaller slice. Current Mode/Phase/Workflow/Objective updated to reflect ESR-0032 open, WP1 in progress (draft EIP-ESR0032-001 v0.1 registered for EBG-0102, submitted for Engineering Reviewer review). Next Required Activity/Next Work Package Candidate updated - Theme 1 now in progress, Theme 7 cleanup remains an open candidate for a future session. Current Mode WikiLink target correctly stays on ESR-0031 (latest closed) per validate_repository.py's extract_current_esr_reference requirement. |
 | 2.78 | 21 July 2026 | Claude Engineering Implementer | Post-ESR-0031-closure: updated Next Work Package Candidate from 'Not yet determined' to name the two actual candidates discussed following the external gap-analysis reviews and EBR-0001 Section 5A's active-backlog snapshot - Theme 1 Deployment Alpha (EBG-0102/0103/0104) and Theme 7 cleanup (Codex-led triage of 23 dormant AIEMS governance items). Motivated directly by the Programme Sponsor running scripts/session_launcher.py and finding it showed nothing useful for WP0B selection, since these candidates had only existed in conversation, never in a governance record the launcher actually reads. Selection remains the Programme Sponsor's own WP0B decision. |
 | 2.77 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 closure, second Codex-caught fix round: Section 8's Next Required Activity/Next Work Package Candidate rows still described closure authorship as the remaining step and referenced ESR-0031 closing in the future tense. Corrected to reflect the session is closed and the next step is Programme Sponsor selection of a new objective. Also fixed two unrelated stale items found during the same sweep: Deferred Work's EBG-0057 proof-count (one session, actual six) and Authoritative Backlog Source's missing EBG-0101 mention. |

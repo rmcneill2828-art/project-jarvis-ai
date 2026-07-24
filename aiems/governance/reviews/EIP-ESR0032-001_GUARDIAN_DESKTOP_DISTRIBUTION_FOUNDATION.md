@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0032-001 |
 | Title | Guardian Desktop Distribution Foundation |
-| Version | 0.2 |
-| Status | Draft |
+| Version | 1.0 |
+| Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Engineering Session | ESR-0032 |
@@ -152,5 +152,6 @@ Requesting Programme Sponsor approval to proceed with implementation as scoped a
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 24 July 2026 | Claude Engineering Implementer | Approved and implemented. `scripts/jarvis_backend_entry.py` and `scripts/build_backend_sidecar.py` (new) package the backend via PyInstaller; `spawn_backend()` restructured into a `BackendHandle` enum (`Dev`/`Sidecar`) branching on `cfg!(debug_assertions)`, sharing JSON-RPC dispatch logic via a new `dispatch_line()` function; `tauri-plugin-shell`/`@tauri-apps/plugin-shell` added; scoped `shell:allow-execute` capability; `bundle.active` enabled with `nsis` target. Live-verified: a real `npm run tauri build` produced an actual installer (NSIS auto-fetched live); the release executable's System Health panel populated with genuine sidecar-backed data; graceful exit confirmed zero orphaned processes (both the PyInstaller onefile bootloader and its child terminated); dev mode independently re-verified with zero regression (still spawns raw `python -m jarvis --ipc-stdio`). Closes EBG-0102. |
 | 0.2 | 24 July 2026 | Claude Engineering Implementer | Pre-implementation fix round (Codex-caught, four non-blocking findings): tightened Section 3's "without any development toolchain present" overclaim to "verified on this machine"; disclosed the `cfg!(debug_assertions)` profile-coupling behaviour explicitly (Implementation Requirement 6); added an equivalent-sidecar-termination-on-exit requirement (Implementation Requirement 7); added the PyInstaller runtime-environment/cwd/data-path risk to Section 11. No blocking finding on the core approach (PyInstaller sidecar via tauri-plugin-shell, scoped capability, bundle.active, Windows nsis target, preserving EIP-ESR0031-002 semantics) - confirmed internally consistent with the current starting state. |
 | 0.1 | 21 July 2026 | Claude Engineering Implementer | Initial draft, closing EBG-0102. Scoped to sidecar packaging (PyInstaller), tauri-plugin-shell wiring, bundle enablement and a real installer build/run - explicitly excluding clean-machine VM testing, code signing, CI and release-automation scope (EBG-0103/EBG-0104, separate WPs this session). |
