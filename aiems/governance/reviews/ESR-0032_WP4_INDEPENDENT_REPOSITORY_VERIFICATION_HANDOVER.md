@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0032-WP4 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -147,7 +147,7 @@ Rationale: this session delivered three genuine, live-verified capabilities that
 
 ## 10. WP4 Verification Result
 
-*(To be recorded once submitted to the Engineering Reviewer and findings returned.)*
+**Pass / no blocking findings.** Codex independently confirmed `git diff --stat 077f31b..4ec539b` matches Section 5's claimed 70 files/1,788 insertions/191 deletions exactly, and that `git diff --name-status` for the same range supports Section 5's file-list/working-set characterisation with no extra file found outside the described WP1/WP2/WP3/governance scope. `git log --oneline` repeatedly failed to start in Codex's own sandbox (the same recurring `windows sandbox: helper_unknown_error` noted in Section 6), so Codex verified the named commits' actual subjects via `git show -s` instead, confirming they support Section 6's observations. Codex further confirmed via direct diff inspection that `sentinel/` trust-boundary changes are mechanical only (import modernisation, justified `noqa` comments, no behavioural change) and that Sponsor Approval Service / bridge token-handling changes are likewise mechanical only (explicit `check=False`, obsolete `noqa` removal, no token-handling behaviour change) - directly addressing Section 8's scope-check claims, not merely trusting them. **Codex independently converges with Section 9: accept a new baseline.** One disclosed limitation: `gh release view v0.1.0` could not start in Codex's sandbox (the same recurring crash), so the live GitHub Release itself was not independently re-confirmed by Codex - the Engineering Implementer's own `gh release view v0.1.0` output (Section 7) remains the evidence for that specific claim.
 
 ---
 
@@ -169,4 +169,5 @@ Rationale: this session delivered three genuine, live-verified capabilities that
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.2 | 24 July 2026 | Claude Engineering Implementer | Recorded the Engineering Reviewer's (Codex) independent verification result: Pass, no blocking findings. Codex independently confirmed the exact diff-stat figures, the file-list/working-set accuracy, the sentinel/ trust-boundary and Sponsor Approval Service scope-check claims (both mechanical-only, no behavioural change), and converges with Section 9's baseline recommendation (accept a new baseline). Disclosed limitation: Codex's own recurring sandbox crash prevented it from independently re-confirming the live GitHub Release via `gh` in its own environment. |
 | 0.1 | 24 July 2026 | Claude Engineering Implementer | Drafted ESR-0032 WP4 Independent Repository Verification handover, covering the full session diff (`077f31b`..`4ec539b`) across WP0B/WP1/WP2/WP3. Records repository state, authorised working set, session observations (two real-environment-verification catches, a self-caught governance-process deviation, Codex's recurring CLI sandbox crashes worked around with explicit Sponsor approval, an explicitly-surfaced release-tag scope decision, a self-corrected author-attribution mistake), validation evidence including a real green GitHub Actions run and a real published GitHub Release, and an independent baseline view (accept a new baseline - all three Theme 1 items delivered a genuinely distributable, tested, and releasable product for the first time). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
