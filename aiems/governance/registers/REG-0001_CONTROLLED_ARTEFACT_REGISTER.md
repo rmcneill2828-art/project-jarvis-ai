@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.310
+**Version:** 3.312
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.310 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.312 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -178,6 +178,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0030-001 | Engineering Implementation Package | Sponsor Approval Service Implementation | 1.5 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0031-001 | Engineering Implementation Package | AIEMS Session-Opening Launcher | 1.1 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0031-002 | Engineering Implementation Package | Streaming Notifications MVP | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0032-001 | Engineering Implementation Package | Guardian Desktop Distribution Foundation | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -193,7 +194,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.78 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.79 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -344,6 +345,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.312 | 21 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.78 to 2.79) following: ESR-0032 opened (21 July 2026): WP0/WP0B complete - Programme Sponsor selected Theme 1 Deployment Alpha (EBG-0102/0103/0104) as this session's objective, choosing all three items rather than a smaller slice. Current Mode/Phase/Workflow/Objective updated to reflect ESR-0032 open, WP1 in progress (draft EIP-ESR0032-001 v0.1 registered for EBG-0102, submitted for Engineering Reviewer review). Next Required Activity/Next Work Package Candidate updated - Theme 1 now in progress, Theme 7 cleanup remains an open candidate for a future session. Current Mode WikiLink target correctly stays on ESR-0031 (latest closed) per validate_repository.py's extract_current_esr_reference requirement. |
+| 3.311 | 21 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0032-001 (Guardian Desktop Distribution Foundation, Draft 0.1) - ESR-0032 WP1 draft, closing EBG-0102. Submitted for Engineering Reviewer review. |
 | 3.310 | 21 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.118 to 1.119) following: Registered EBG-0107 (session_launcher.py's CurrentState omits Next Work Package Candidate and EBR-0001 Section 5A entirely, High) - discovered live when the Programme Sponsor ran the launcher twice expecting to see the Theme 1/Theme 7 candidates just registered, and it showed neither. Confirmed by direct code inspection, not a caching/overwrite defect: CurrentState has exactly two fields (current_mode, current_baseline), never Next Work Package Candidate; the script predates Section 5A entirely. Deliberately not added to Section 5A's own theme tables, per that section's own explicit no-manual-update rule. |
 | 3.309 | 21 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.77 to 2.78) following: Post-ESR-0031-closure: updated Next Work Package Candidate from 'Not yet determined' to name the two actual candidates discussed following the external gap-analysis reviews and EBR-0001 Section 5A's active-backlog snapshot - Theme 1 Deployment Alpha (EBG-0102/0103/0104) and Theme 7 cleanup (Codex-led triage of 23 dormant AIEMS governance items). Motivated directly by the Programme Sponsor running scripts/session_launcher.py and finding it showed nothing useful for WP0B selection, since these candidates had only existed in conversation, never in a governance record the launcher actually reads. Selection remains the Programme Sponsor's own WP0B decision. |
 | 3.308 | 21 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.117 to 1.118) following: Post-ESR-0031-closure: added Section 5A, Active Backlog View - Manual Snapshot (21 July 2026), a dated one-time grouping of all 56 open Candidate/Approved Backlog items into 8 themes (Deployment/Release, Product Data Trust, Guardian Action/Agent Boundary, UXP Technical Debt, Security Hygiene, AIEMS Process Tooling, Dormant AIEMS Governance/Standards Debt, Deferred Product Research), following a Programme Sponsor request to see the backlog grouped WP-shape. Explicitly marked as a non-authoritative, non-live snapshot per EBG-0106's own guard against a hand-maintained second source of truth - not to be manually updated in place. Notable finding surfaced: the dormant AIEMS governance/standards cluster (Theme 7, 20 items dating to ESR-0001-0006) is roughly 35% of the entire open backlog. |
