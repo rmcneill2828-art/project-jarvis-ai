@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.325
+**Version:** 3.328
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.325 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.328 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.123 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.124 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -180,7 +180,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0031-002 | Engineering Implementation Package | Streaming Notifications MVP | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0032-001 | Engineering Implementation Package | Guardian Desktop Distribution Foundation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0032-002 | Engineering Implementation Package | CI Build Gate Hardening | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0032-003 | Engineering Implementation Package | Release Automation and Version Synchronisation | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0032-003 | Engineering Implementation Package | Release Automation and Version Synchronisation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -196,7 +196,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.83 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.84 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -347,9 +347,12 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| 3.325 | 24 July 2026 | Claude Engineering Reviewer | Registered EIP-ESR0032-003 (Release Automation and Version Synchronisation, Draft 0.1) - ESR-0032 WP3 draft, closing EBG-0104. Submitted for Engineering Reviewer review. |
-| 3.324 | 24 July 2026 | Claude Engineering Reviewer | Aligned PST-0001 version (2.82 to 2.83) following: ESR-0032 WP3 in progress: draft EIP-ESR0032-003 v0.1 registered (Release Automation and Version Synchronisation, EBG-0104), submitted for Engineering Reviewer review. Current Mode/Phase/Objective updated to also reflect WP2's fix round (commit 77c15a8) and fully-green real GitHub Actions run. |
-| 3.323 | 24 July 2026 | Claude Engineering Reviewer | Aligned EBR-0001 version (1.122 to 1.123) following: ESR-0032 WP2 fix round: ruff CI drift cleanup (17 hand-fixed violations, 70 auto-fixed) + npm audit hard gate (--omit=dev), commit 77c15a8. Codex-reviewed (approved, no findings) and Sponsor-approved via submit-response. Real GitHub Actions CI now genuinely green across all four jobs (python, rust, playwright, frontend-build). |
+| 3.328 | 24 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.83 to 2.84) following: ESR-0032 WP3 Complete: EBG-0104 (Release Automation and Version Synchronisation) delivered per EIP-ESR0032-003 v1.0, live-verified via a real v0.1.0 GitHub Release. All three Theme 1 items (EBG-0102/0103/0104) now Complete. Current Mode/Phase/Objective updated - session-wide WP4/WP5 remain. |
+| 3.327 | 24 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.123 to 1.124) following: ESR-0032 WP3 Complete: EBG-0104 (Release Automation and Version Synchronisation) delivered per EIP-ESR0032-003 v1.0 - VERSION single source of truth, sync_product_version.py, blocking CI version-equality gate, tag-triggered release.yml. Live-verified via a real v0.1.0 GitHub Release (installer + SHA-256 checksum); a genuine GITHUB_TOKEN permissions bug was found and fixed via the real tag push. All three Theme 1 items now Complete. |
+| 3.326 | 24 July 2026 | Claude Engineering Implementer | Aligned EIP-ESR0032-003 version (0.1 to 1.0, Draft to Approved - implemented) following: Programme Sponsor approved WP3 for implementation; EBG-0104 delivered and live-verified via a real v0.1.0 GitHub Release. |
+| 3.325 | 24 July 2026 | Claude Engineering Implementer | Registered EIP-ESR0032-003 (Release Automation and Version Synchronisation, Draft 0.1) - ESR-0032 WP3 draft, closing EBG-0104. Submitted for Engineering Reviewer review. |
+| 3.324 | 24 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.82 to 2.83) following: ESR-0032 WP3 in progress: draft EIP-ESR0032-003 v0.1 registered (Release Automation and Version Synchronisation, EBG-0104), submitted for Engineering Reviewer review. Current Mode/Phase/Objective updated to also reflect WP2's fix round (commit 77c15a8) and fully-green real GitHub Actions run. |
+| 3.323 | 24 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.122 to 1.123) following: ESR-0032 WP2 fix round: ruff CI drift cleanup (17 hand-fixed violations, 70 auto-fixed) + npm audit hard gate (--omit=dev), commit 77c15a8. Codex-reviewed (approved, no findings) and Sponsor-approved via submit-response. Real GitHub Actions CI now genuinely green across all four jobs (python, rust, playwright, frontend-build). |
 | 3.322 | 24 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.81 to 2.82) following: ESR-0032 WP2 Complete: EBG-0103 (CI Build Gate Hardening) delivered per EIP-ESR0032-002 v1.0 - real Linux (WSL Ubuntu) verification found and fixed three genuine bugs before writing the CI job. Current Phase/Objective updated. |
 | 3.321 | 24 July 2026 | Claude Engineering Implementer | Aligned EIP-ESR0032-002 version (0.1 to 1.0, Draft to Approved - implemented) following: Programme Sponsor approved WP2 for implementation; EBG-0103 delivered and live-verified on real Linux (WSL Ubuntu). |
 | 3.320 | 24 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.121 to 1.122) following: ESR-0032 WP2 Complete: EBG-0103 (CI Build Gate Hardening) delivered per EIP-ESR0032-002 v1.0 - Rust CI job, narrowed continue-on-error, real Playwright suite. Real Linux verification via WSL Ubuntu found and fixed three genuine bugs (schemars/indexmap, build_backend_sidecar.py Windows-only, missing PNG icon) before writing the CI job. |

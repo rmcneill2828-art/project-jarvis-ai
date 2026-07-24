@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0032-003 |
 | Title | Release Automation and Version Synchronisation |
-| Version | 0.1 |
-| Status | Draft |
+| Version | 1.0 |
+| Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Engineering Session | ESR-0032 |
@@ -101,7 +101,7 @@ No other files may be modified without a further approved package.
 - New unit tests for `sync_product_version.py` covering: successful sync, refusal on an unparseable existing field, refusal on a no-op version.
 - `python -m pytest` and `python scripts/validate_repository.py` both clean (neither should be affected by this WP).
 - The new CI version-equality check verified locally by deliberately drifting one file and confirming the check script exits non-zero, then reverting.
-- **`release.yml`'s actual tag-triggered run is not exercised as part of this WP's own verification** unless the Programme Sponsor explicitly authorises pushing a real `v0.1.0` tag - doing so creates this repository's first-ever public GitHub Release, a visible, shared-state action distinct from every other change this session. Structural review (workflow YAML correctness, action versions pinned, checksum step logic) substitutes for a live run unless authorised.
+- **Live-verified, not merely structurally reviewed**: the Programme Sponsor explicitly authorised pushing a real `v0.1.0` tag. The first attempt (commit bfee19a) built the installer and computed its checksum successfully but failed at the final publish step - `softprops/action-gh-release` returned "Resource not accessible by integration" because this repository's default `GITHUB_TOKEN` workflow permission is read-only (confirmed via `gh api repos/.../actions/permissions/workflow`) and the workflow never requested `contents: write`. Fixed with a job-level `permissions: contents: write` block (commit 42c7e82, Codex-reviewed, no findings) scoped to only this workflow rather than changing the repository-wide default. The `v0.1.0` tag was moved to the fixed commit and re-pushed (the first attempt never published a release, so nothing was overwritten) - the second run passed every step, and `gh release view v0.1.0` confirms a real, non-draft, non-prerelease GitHub Release with both `JARVIS Guardian Shell_0.1.0_x64-setup.exe` and its `.sha256` checksum attached.
 
 ---
 
@@ -134,4 +134,5 @@ Requesting Programme Sponsor approval to proceed with implementation as scoped a
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 24 July 2026 | Claude Engineering Implementer | Approved and implemented (commit bfee19a); fix round (commit 42c7e82) added job-level `contents: write` permissions after a real `v0.1.0` tag push found `release.yml`'s build succeeding but `softprops/action-gh-release` failing to publish due to this repository's read-only default `GITHUB_TOKEN` permission. Live-verified end to end, not merely structurally reviewed: a real GitHub Release now exists at `v0.1.0` with the installer and its SHA-256 checksum attached. Closes EBG-0104. |
 | 0.1 | 24 July 2026 | Claude Engineering Implementer | Initial draft, closing EBG-0104. Scoped to a repo-root `VERSION` file as the single authoritative source, a new `sync_product_version.py` script, a blocking CI version-equality check, and a tag-triggered `release.yml` building the installer and publishing SHA-256 checksums via `softprops/action-gh-release`. Explicitly flags that actually pushing a real release tag is a separate Programme Sponsor decision, not assumed as part of this WP's own verification. |
