@@ -15,7 +15,7 @@
 | Session | ESR-0035 |
 | Date Opened | 25 July 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 in progress |
+| Closure Status | Open - WP1 complete |
 
 ---
 
@@ -53,13 +53,19 @@ Correct the stale RBL-0019/ESR-0033 current-state references identified during W
 
 | WP | Description | Status |
 |----|-------------|--------|
-| WP1 | Correct stale RBL-0019/ESR-0033 current-state references in README.md, COC-0001 and PBK-0001 | In Progress |
+| WP1 | Correct stale RBL-0019/ESR-0033 current-state references in README.md, COC-0001, PBK-0001 and REG-0001 | Complete |
 
 ---
 
 # 7. WP1 - Documentation Debt: RBL-0019/ESR-0033 Staleness Correction
 
-In progress. Full detail to be recorded at WP1 closure.
+Corrected all active current-state references in README.md, [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] from [[RBL-0019_REPOSITORY_BASELINE|RBL-0019]]/ESR-0033/ESR-0032 to [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]]/ESR-0035/ESR-0034, applying PBK-0001's Whole-Document Staleness Sweep on Edit discipline to each document rather than fixing only the originally-cited lines. Added a version-history entry to each of the three documents, aligned [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s PBK-0001/COC-0001 tracking rows and REG-0001's own version, and registered this ESR-0035 report itself. No governance artefact meaning changed - only current-state accuracy.
+
+Run entirely through the AIEMS Exchange Bridge (`scripts/aiems_bridge.py`) and the deployed Sponsor Approval Service (ADR-0022): `submit-to-review` with the full evidence bundle, an independent Codex read-only review (Pass, no findings - relayed into the bridge by the Engineering Implementer under explicit Programme Sponsor approval for the relay act, per the EBG-0096 read-only-plus-relay precedent, since Codex's own sandbox cannot write the bridge's lock file directly), Programme Sponsor approval via the Sponsor Approval Service, `submit-response`, then commit and push.
+
+- Commit SHA: `c939ecf`
+- `python -m pytest`: 374 passed, 1 skipped (unchanged - no code touched). `python scripts/validate_repository.py` (full mode, pre-commit hook): 0 errors, 157 warnings (unchanged baseline).
+- **Post-commit independent verification**: Codex re-reviewed the actual pushed diff (`git show c939ecf`) in a fresh read-only pass and independently re-ran `validate_repository.py` - **Pass**, confirming the committed content matches what was reviewed pre-commit.
 
 ---
 
