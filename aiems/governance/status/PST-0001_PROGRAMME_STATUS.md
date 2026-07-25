@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.95
+**Version:** 2.96
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.95 |
+| Version | 2.96 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is the latest **closed** session (25 July 2026). ESR-0035 is now **open**, following ESR-0034's closure the same day. **WP1** (Complete): corrected stale RBL-0019/ESR-0033 current-state references in README.md, COC-0001 and PBK-0001 to RBL-0020/ESR-0034/ESR-0035 (Documentation Debt Discipline), committed as `c939ecf`/`bd11c8f`. **WP2** (Complete): registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) directly to Approved Backlog, closing [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s own flagged gap - "no backlog item yet authorises this build" - the single most consequential gap in the roadmap per ESR-0034 WP3. No implementation authorised by either WP. Full detail in [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]]. |
+| Current Mode | [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is the latest **closed** session (25 July 2026). ESR-0035 is now **open**, following ESR-0034's closure the same day. **WP1** (Complete): corrected stale RBL-0019/ESR-0033 current-state references in README.md, COC-0001 and PBK-0001 to RBL-0020/ESR-0034/ESR-0035 (Documentation Debt Discipline), committed as `c939ecf`/`bd11c8f`. **WP2** (Complete): registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) directly to Approved Backlog, closing [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s own flagged gap - "no backlog item yet authorises this build" - the single most consequential gap in the roadmap per ESR-0034 WP3, committed as `f471648`. No implementation authorised by either WP1 or WP2. **WP3** (Complete): delivered EBG-0081 Question 1 (UXP shared animation scheduler) per PBK-0001's Feature-First Delivery Discipline (this session's product-moving work) - `src/animationScheduler.js` (new), `GuardianOrbGraph.jsx` migrated to it, three new Playwright tests plus a live rotation check. Full detail in [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]]. |
 | Current Repository Baseline | [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]], accepted at ESR-0033 WP9, superseding RBL-0019, and **retained at ESR-0034 WP5** - that session's entirely governance/roadmap-only content (no runtime, test, CI, dependency, security, or distribution-surface change) did not warrant a new baseline. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2, refreshed at ESR-0031 WP0 to reflect ESR-0027 WP1's Personal Memory implementation - now distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
 | Current Phase | ESR-0035 open (opened 25 July 2026); under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0035 WP1 and WP2 both completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - now confirmed repeatable across a tenth consecutive session (ESR-0026 through ESR-0035). |
-| Current Engineering Objective | ESR-0035 WP1 (documentation debt correction) and WP2 (EBG-0108 registration) both Complete; see [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]] for full detail. The next Work Package's objective remains to be selected. |
+| Current Engineering Objective | ESR-0035 WP1 (documentation debt correction), WP2 (EBG-0108 registration) and WP3 (EBG-0081 Question 1 shared animation scheduler, this session's product-moving work) all Complete; see [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]] for full detail. The next Work Package's objective remains to be selected. |
 
 ---
 
@@ -106,7 +106,9 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 **WP2** (Complete): registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) directly to Approved Backlog, on Programme Sponsor direction, closing [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B's own flagged gap: "no backlog item yet authorises this build" - the single most consequential gap in the whole roadmap per ESR-0034 WP3. [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] remains Approved as architecture only; no implementation is authorised by this registration. JRM-0001 Sections 7.1/7.3 updated to record the registration.
 
-374 tests pass throughout (unchanged - no code touched this session) and `validate_repository.py` (full mode) passes clean throughout (162 warnings by WP2's close, all disclosed cross-document false positives, growing incrementally as expected with new version-history entries). Full detail in [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]].
+**WP3** (Complete): delivered EBG-0081 Question 1 (UXP Animation Performance Policy's shared animation scheduler), selected as this session's required product-moving work per PBK-0001's Feature-First Delivery Discipline (ESR-0035 WP1/WP2 were both governance/backlog-only). `src/animationScheduler.js` (new) - a singleton shared clock exposing `subscribe(callback) -> unsubscribe`, running a single `requestAnimationFrame` loop started lazily on the first subscriber and stopped once the last unsubscribes, with a throwing subscriber caught and logged rather than breaking others' frames. `GuardianOrbGraph.jsx`'s own private rAF loop replaced with a `subscribe` call - identical tick logic, no behavioural change intended. Verified via `npm run build` (clean), the existing Playwright suite (2 tests, unchanged, already mounting the Orb with mocked graph data), three new dedicated tests in `tests/e2e/animationScheduler.spec.js` (shared-loop, throwing-subscriber isolation, loop-stops-at-zero-subscribers - the first written against real rAF timing proved flaky in headless Chromium and was rewritten against a deterministic fake), and a live ad hoc check confirming the Orb canvas genuinely still changes frame-to-frame. EBG-0081 status Approved Backlog to Complete - both of its questions (Question 2's Canvas migration delivered earlier at ESR-0029 WP2) now closed. JRM-0001 Section 7.4 and the Phase 6 Voice/Vision row updated to record the delivery.
+
+374 Python tests pass throughout (unchanged - WP3 touched only frontend JS/TS, no Python) and `validate_repository.py` (full mode) passes clean throughout (166 warnings by WP3's close, all disclosed cross-document false positives, growing incrementally as expected with new version-history entries). WP3 also added 5 Playwright tests (2 existing app-level plus 3 new scheduler tests), all passing. Full detail in [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]].
 
 ---
 
@@ -724,6 +726,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.96 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP3 Complete: EBG-0081 Question 1 (UXP shared animation scheduler) delivered - this session's required product-moving work per PBK-0001's Feature-First Delivery Discipline. Current Mode/Engineering Objective and Section 4A updated with WP3's narrative. |
 | 2.95 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 opened: WP1 (Complete, RBL-0019/ESR-0033 documentation debt correction) and WP2 (Complete, EBG-0108 Guardian Cognitive Core registration) recorded. Current Mode/Phase/Workflow/Engineering Objective updated to reflect ESR-0035 open. Section 4A restructured - ESR-0035's narrative now the current block, ESR-0034 demoted to Prior Session, ESR-0032's block dropped to keep the section bounded. |
 | 2.94 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 closed: Current Mode/Phase/Workflow/Engineering Objective updated to reflect no session currently open. Section 4A restructured - ESR-0034's full narrative (WP1-WP5) now the current block, ESR-0033 demoted to Prior Session, ESR-0031's block dropped to keep the section bounded. |
 | 2.93 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP2 fix round (Codex-caught): Section 4A still said ESR-0033 closed / no session currently open, contradicting Section 3's already-updated Current Mode/Phase. Corrected to state ESR-0034 open with WP1/WP2 Complete, matching Section 3. |

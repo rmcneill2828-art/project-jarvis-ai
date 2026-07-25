@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.19 |
+| Version | 1.20 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -139,7 +139,7 @@ Each phase requires the one(s) before it. Phase numbering is sequencing, not pri
 | **3** | Action faculty (implementation) | **No backlog item yet builds this either** - EBG-0021 (Phase 2) only defines the boundary. Depends on Phase 1 (something must decide what to act on) and Phase 2 (the constraint it must obey). STD-0006 (EBG-0065, see Section 7.4) should land before this phase ships, not after. |
 | **4** | Memory expansion: Session and Shared-Family tiers (extends MDS-0001/EBG-0019 beyond the Personal tier); EBG-0023 - Backup, Recovery and Data Protection | EBG-0023 promoted to Approved Backlog at ESR-0034 WP1, on the basis that its stated prerequisite (EBG-0019/MDS-0001) is Complete - it naturally follows here, since there is little worth backing up beyond the repository itself until this phase lands. |
 | **5** | Knowledge Graph Phases 2-4 (EBG-0055) | Phase 3 (agent-traversal animation) is explicitly blocked on GIA telemetry beyond Phase 1 (EBG-0083 Phases 2-4, not yet delivered); Phase 4 (Guardian reasoning connection) additionally depends on Phase 1 above existing. |
-| **6** | Voice/Vision | **No backlog item yet registered.** Sits after the cognitive core exists (Phase 1) - otherwise it is just a different input modality into a shell with nothing behind it. EBG-0081 Question 1 (Section 7.4) should land before this phase ships new animated UI surfaces. |
+| **6** | Voice/Vision | **No backlog item yet registered.** Sits after the cognitive core exists (Phase 1) - otherwise it is just a different input modality into a shell with nothing behind it. EBG-0081 Question 1's shared animation scheduler (Section 7.4) is now delivered (ESR-0035 WP3), so this phase's future animated UI surfaces (e.g. a voice waveform) have a shared clock to register with rather than needing their own. |
 | **7** | EBG-0046 - Device Independence and Restore Architecture | Promoted to Approved Backlog at ESR-0034 WP1. ADR-0012's architecture decision is already made; matters most once Phase 4 gives there something meaningfully more state to carry across devices. |
 | **8** | EBG-0025 - Home Assistant / Smart Home Integration Assessment | Promoted to Approved Backlog at ESR-0034 WP1. Same shape as Phase 6 - another additive integration once the core (Phases 1-4) exists to integrate with. Not a hard dependency on Phase 6 specifically; the two can proceed in either order once Phase 4 is done. |
 
@@ -150,7 +150,7 @@ Not phase-gated themselves - apply across whichever phases are in flight when th
 | Item | Constraint |
 |------|------------|
 | EBG-0065 - STD-0006 Configuration and Secrets Standard | Promoted to Approved Backlog at ESR-0034 WP1. Becomes materially relevant starting at Phase 3 (an acting agent needs disciplined credential handling) and again at Phase 7 (secrets syncing across devices). Should be actioned before Phase 3 ships, not treated as background debt. |
-| EBG-0081 Question 1 - UXP shared animation scheduler | Question 2 (Canvas migration) already delivered at ESR-0029 WP2; Question 1 remains open, promoted to Approved Backlog at ESR-0034 WP1 on the strength of confirmed prior art (EBG-0082). A scaling constraint that applies whenever Phase 6 or 8 add new animated UI surfaces (voice waveform, smart-home widgets) - should land before those phases ship UI, not after. |
+| EBG-0081 Question 1 - UXP shared animation scheduler | **Delivered at ESR-0035 WP3**: `src/animationScheduler.js` (new) provides a single shared `requestAnimationFrame` loop that `GuardianOrbGraph.jsx` now registers with instead of running its own; the loop starts lazily on first subscriber and stops on last unsubscribe. Question 2 (Canvas migration) was already delivered at ESR-0029 WP2. Both questions now closed - this constraint is satisfied ahead of Phase 6/8 adding new animated UI surfaces (voice waveform, smart-home widgets), which can register with the existing scheduler rather than needing their own. |
 
 ## 7.5 Parallel - Not Gated By, and Not Gating, the Phases Above
 
@@ -244,6 +244,7 @@ JRM-0001 does not itself authorise implementation. Horizon and phase placement a
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.20 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP3: recorded EBG-0081 Question 1's delivery (UXP shared animation scheduler) in Section 7.4 and the Phase 6 Voice/Vision row of Section 7.3 - both questions of EBG-0081 now closed. |
 | 1.19 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP2: recorded EBG-0108's registration (Guardian Cognitive Core Implementation, Approved Backlog) against Phase 1 of Track B's dependency chain (Sections 7.1, 7.3) - closes this roadmap's own flagged gap ("no backlog item yet authorises this build"). No implementation authorised; the phase itself remains unactioned pending a future Engineering Implementation Package. |
 | 1.18 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP3 fix round (Codex-caught, 4 findings): (1) High - restored a literal '## 7.1 Near-term' heading (renumbered 7.1-7.6) so scripts/session_launcher.py's Track B parser doesn't break, verified by running the launcher live; (2) High - removed EBG-0017/0024/0045/0049 from the new Parallel table, all four already Complete, moved into 7.2 Foundation instead; (3) Medium - Section 4 Principle 2 and the Section 10 maintenance line amended to state Track A/C use horizons, Track B uses the new phase model; (4) Medium - fixed three further stale Track C rows exposed by the same review (streaming notifications and sidecar packaging both actually delivered; GIA is Phase 1 Complete, not still Proof-of-Concept-only). |
 | 1.17 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP3: rewrote Track B (JARVIS Product Capability Roadmap) from stale Near/Mid/Longer-term horizon buckets into an explicit 8-phase dependency-chain model - Phase 1 Guardian Cognitive Core (flagged: no backlog item yet authorises this build) through Phase 8 Home Assistant/Smart Home (EBG-0025). Added Cross-Cutting Constraints (EBG-0065, EBG-0081 Q1) and Parallel-not-gating (EBG-0042, 0059, 0047, 0045/0049, 0024, 0022, 0017) subsections, and an explicit Out-of-Scope note pointing Theme 7/tooling items to Track A. Incorporates ESR-0034 WP1/WP2's 22 promotions and closes the staleness gap since v1.16 (18 July) - EBG-0019/Memory was still listed pending despite EBG-0080's real Personal Memory tier having shipped at ESR-0027. |

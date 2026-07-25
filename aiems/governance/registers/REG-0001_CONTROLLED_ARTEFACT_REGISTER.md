@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.360
+**Version:** 3.363
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.360 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.363 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.132 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.133 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -153,7 +153,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
-| JRM-0001 | Roadmap | Project Roadmap | 1.19 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.20 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -198,7 +198,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.95 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.96 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -353,6 +353,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.363 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.95 to 2.96) following: ESR-0035 WP3 Complete: EBG-0081 Question 1 (UXP shared animation scheduler) delivered - this session's required product-moving work per PBK-0001's Feature-First Delivery Discipline. |
+| 3.362 | 25 July 2026 | Claude Engineering Implementer | Aligned JRM-0001 version (1.19 to 1.20) following: ESR-0035 WP3: recorded EBG-0081 Question 1's delivery (UXP shared animation scheduler) in Section 7.4 and the Phase 6 Voice/Vision row - both questions of EBG-0081 now closed. |
+| 3.361 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.132 to 1.133) following: ESR-0035 WP3: EBG-0081 Question 1 (UXP shared animation scheduler) delivered - src/animationScheduler.js (new), GuardianOrbGraph.jsx migrated to it, three new Playwright tests, live rotation check. Status Approved Backlog to Complete. |
 | 3.360 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.94 to 2.95) following: ESR-0035 WP1/WP2 both Complete. Current Mode/Phase/Workflow/Engineering Objective updated to reflect ESR-0035 open. Section 4A restructured - ESR-0035's narrative now the current block, ESR-0034 demoted to Prior Session, ESR-0032's block dropped to keep the section bounded. |
 | 3.359 | 25 July 2026 | Claude Engineering Implementer | Aligned JRM-0001 version (1.18 to 1.19) following: ESR-0035 WP2: recorded EBG-0108's registration (Guardian Cognitive Core Implementation, Approved Backlog) against Phase 1 of Track B's dependency chain (Sections 7.1, 7.3) - closes this roadmap's own flagged gap. No implementation authorised. |
 | 3.358 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.131 to 1.132) following: ESR-0035 WP2: registered EBG-0108 (Guardian Cognitive Core Implementation) directly to Approved Backlog (Programme Sponsor-directed), closing JRM-0001 Track B's own flagged gap - "no backlog item yet authorises this build" - the single most consequential gap in the roadmap per ESR-0034 WP3. References AAM-0001 (Approved, architecture only). No implementation authorised. |

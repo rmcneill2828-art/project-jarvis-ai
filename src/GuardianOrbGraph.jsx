@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from "d3-force";
+import { subscribe as subscribeToAnimationFrame } from "./animationScheduler";
 
 // Guardian Orb - Knowledge Graph Representation (UAM-0001 Section 8.1;
 // EBG-0055 Phase 1, Phase 1.5; rendering migrated to Canvas 2D at
@@ -363,7 +364,6 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     let currentAngle = 0;
     let frameCount = 0;
     let now = startTime;
-    let frameId;
 
     const drawFrame = (angle, forceFullRecompute) => {
       const cos = Math.cos(angle);
@@ -520,7 +520,6 @@ export function GuardianOrbGraph({ graph, loading, error }) {
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     const tick = (frameNow) => {
-      frameId = requestAnimationFrame(tick);
       now = frameNow;
 
       if (!isPageVisible() || isIdleRef.current) {
@@ -536,9 +535,12 @@ export function GuardianOrbGraph({ graph, loading, error }) {
       drawFrame(currentAngle, false);
     };
 
-    frameId = requestAnimationFrame(tick);
+    // Registers with the shared UXP animation clock (EBG-0081 Question 1)
+    // instead of running its own private requestAnimationFrame loop - see
+    // ./animationScheduler.js.
+    const unsubscribe = subscribeToAnimationFrame(tick);
     return () => {
-      cancelAnimationFrame(frameId);
+      unsubscribe();
       resizeObserver.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
