@@ -251,11 +251,13 @@ class StdioRpcServer:
     def _platform_status(self, params: dict[str, Any]) -> dict[str, Any]:
         snapshot = self._runtime.status_snapshot()
         provider_boundary = snapshot.services.get("Guardian Provider Boundary")
+        memory_boundary = snapshot.services.get("Guardian Memory Boundary")
         gateway = self._runtime.sentinel_gateway()
         return {
             "state": snapshot.state.value,
             "runtimeHealth": snapshot.runtime_health.value,
             "providerConnected": provider_boundary.status.value if provider_boundary else "Unknown",
+            "memoryConnected": memory_boundary.status.value if memory_boundary else "Unknown",
             "providers": list(self._runtime.configured_providers()),
             "policyEngine": type(gateway.policy_engine).__name__ if gateway is not None else None,
         }

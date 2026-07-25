@@ -166,6 +166,7 @@ def test_platform_status_reflects_real_runtime_state(tmp_path):
         "state": "Running",
         "runtimeHealth": "Healthy",
         "providerConnected": "Online",
+        "memoryConnected": "Online",
         "providers": ["ollama", "local-echo"],
         "policyEngine": "TrustTierPolicy",
     }
@@ -182,6 +183,7 @@ def test_platform_status_policy_engine_is_none_without_a_connected_gateway():
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "platform.status", "params": {}}))
 
     assert response["result"]["policyEngine"] is None
+    assert response["result"]["memoryConnected"] == "Unavailable"
 
 
 def test_knowledge_graph_returns_real_repository_data(tmp_path):

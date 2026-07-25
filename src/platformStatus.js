@@ -45,8 +45,8 @@ export const capabilityStatuses = Object.freeze([
   {
     id: "memory",
     label: "Memory",
-    state: STATUS.NOT_IMPLEMENTED,
-    detail: "Persistent memory is outside this implementation",
+    state: STATUS.PLACEHOLDER,
+    detail: "Personal Memory service",
   },
   {
     id: "providers",

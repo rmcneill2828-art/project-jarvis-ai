@@ -26,6 +26,7 @@ async function mockTauriIpc(page, { onSendMessage } = {}) {
         state: "Running",
         runtimeHealth: "Healthy",
         providerConnected: "Online",
+        memoryConnected: "Online",
         providers: ["local-echo"],
         policyEngine: "TrustTierPolicy",
       },

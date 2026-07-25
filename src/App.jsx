@@ -49,8 +49,23 @@ function derivePlatformIndicator(platformState, platformError) {
 
 function deriveCapabilityStatuses(platformState, platformError) {
   const connected = platformState?.providerConnected === "Online";
+  const memoryConnected = platformState?.memoryConnected === "Online";
 
   return staticCapabilityStatuses.map((capability) => {
+    if (capability.id === "memory") {
+      if (platformError) {
+        return { ...capability, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
+      }
+      if (!platformState) {
+        return { ...capability, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
+      }
+      return {
+        ...capability,
+        state: memoryConnected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
+        detail: memoryConnected ? "Personal Memory service connected" : "No memory service connected",
+      };
+    }
+
     if (capability.id !== "sentinel" && capability.id !== "providers") return capability;
 
     if (platformError) {
