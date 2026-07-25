@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.347
+**Version:** 3.350
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.347 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.350 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.130 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.131 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -198,7 +198,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.91 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.93 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -351,6 +351,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.350 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.92 to 2.93) following: ESR-0034 WP2 fix round (Codex-caught): Section 4A still said ESR-0033 closed / no session currently open, contradicting Section 3's already-updated Current Mode/Phase. Corrected to state ESR-0034 open with WP1/WP2 Complete, matching Section 3. |
+| 3.349 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.91 to 2.92) following: ESR-0034 WP2 Complete: EBG-0021 promoted to Approved Backlog, reviewed separately from WP1's batch. Current Mode/Phase/Engineering Objective updated to reflect 22 total promotions this session. |
+| 3.348 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.130 to 1.131) following: ESR-0034 WP2: promoted EBG-0021 (JARVIS Local Agent Permission Boundary) from Candidate Backlog to Approved Backlog, on separate Programme Sponsor review after WP1's batch. No stated prerequisite blocks acceptance, but flagged as the root gate for the Action faculty (EBG-0041's sequencing) and GAM-0001 trust-boundary territory - warrants its own dedicated future session, not incidental treatment. No implementation authorised. |
 | 3.347 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.90 to 2.91) following: ESR-0034 WP1 fix round (Codex-caught): Current Mode row was stale relative to Current Engineering Objective/REG-0001 history - still described only the original EBG-0023/0065 promotion and the older EBG-0065 wording. Corrected to reflect the full 21-item batch and the precise credential-reference wording. |
 | 3.346 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.89 to 2.90) following: ESR-0034 WP1 batch: Current Engineering Objective updated to reflect the full 21-item Approved Backlog promotion (EBG-0023/0065 plus a further 19), EBG-0021 review still pending. |
 | 3.345 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.129 to 1.130) following: ESR-0034 WP1 batch: promoted 19 further Candidate Backlog items to Approved Backlog (EBG-0022, 0025, 0029, 0038, 0040, 0046, 0052, 0054, 0061, 0066, 0081 Question 1, 0090, 0091, 0092, 0093, 0094, 0095, 0096, 0106), on Programme Sponsor direction, following the same test as EBG-0023/0065: none has a stated reason it must remain Candidate. EBG-0021, EBG-0042, EBG-0047, EBG-0059 and EBG-0085 deliberately left untouched - genuine stated blockers or a pending separate review. Also corrected EBG-0065's own promotion wording (Codex finding: 'real credentials existing' overstated - precise claim is credential references/credential-gated live routes, not committed secret values). |
