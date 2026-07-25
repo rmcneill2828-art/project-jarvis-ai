@@ -15,7 +15,7 @@
 | Session | ESR-0035 |
 | Date Opened | 25 July 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 complete |
+| Closure Status | Open - WP1, WP2 complete |
 
 ---
 
@@ -33,6 +33,8 @@ During WP0A repository synchronisation, the Engineering Implementer found that R
 
 Per PBK-0001's Documentation-Debt Priority Until Backlog Cleared discipline, the Programme Sponsor directed this be WP1.
 
+For WP2, the Programme Sponsor directed closing [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s own flagged gap: Track B Section 7.1/7.3 names Guardian Cognitive Core as Phase 1 of the Path to a Working Version, with "no backlog item yet authorises this build" - called out at ESR-0034 WP3 as the single most consequential gap in the whole roadmap.
+
 ---
 
 # 4. Engineering Authority
@@ -45,7 +47,7 @@ GitHub and the repository remain the authoritative source of truth.
 
 # 5. Session Objective
 
-Correct the stale RBL-0019/ESR-0033 current-state references identified during WP0A, applying PBK-0001's Whole-Document Staleness Sweep on Edit discipline to each affected document, before selecting further engineering work for this session.
+Correct the stale RBL-0019/ESR-0033 current-state references identified during WP0A, applying PBK-0001's Whole-Document Staleness Sweep on Edit discipline to each affected document, then close JRM-0001's own flagged Guardian Cognitive Core backlog-authorisation gap, before selecting further engineering work for this session.
 
 ---
 
@@ -54,6 +56,7 @@ Correct the stale RBL-0019/ESR-0033 current-state references identified during W
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | Correct stale RBL-0019/ESR-0033 current-state references in README.md, COC-0001, PBK-0001 and REG-0001 | Complete |
+| WP2 | Register EBG-0108 (Guardian Cognitive Core Implementation) to Approved Backlog, closing JRM-0001's flagged Phase 1 gap | Complete |
 
 ---
 
@@ -69,17 +72,31 @@ Run entirely through the AIEMS Exchange Bridge (`scripts/aiems_bridge.py`) and t
 
 ---
 
-# 8. Related Artefacts
+# 8. WP2 - Guardian Cognitive Core Backlog Registration (EBG-0108)
 
-* [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] - prior closed session, immediate predecessor.
-* [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Documentation Debt Discipline, applied by this session.
-* [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] - current accepted repository baseline, the corrected target reference.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - authoritative backlog, checked and found not to already track this finding.
+Registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) directly to Approved Backlog, on Programme Sponsor direction, closing [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B's own flagged gap: Section 7.1/7.3 named Guardian Cognitive Core as Phase 1 of the Path to a Working Version with "no backlog item yet authorises this build" - called out at ESR-0034 WP3 as the single most consequential gap in the whole roadmap, since every later phase (Action faculty, Memory expansion, Knowledge Graph Phase 4, Voice/Vision) either extends this core or depends on it existing. [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] (v0.3, Approved) remains architecture only - no implementation is authorised by this registration. Updated JRM-0001 Sections 7.1 and 7.3 to record the registration.
+
+Run entirely through the AIEMS Exchange Bridge and the deployed Sponsor Approval Service, the same pattern as WP1: `submit-to-review`, independent Codex read-only review (Pass, no findings, relayed under explicit Programme Sponsor approval), Programme Sponsor approval, `submit-response`, commit and push, then post-commit independent re-verification.
+
+- Files: [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] (EBG-0108 entry, version history), [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Sections 7.1/7.3, version history), [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] (EBR-0001/JRM-0001/PST-0001 tracking rows and version), [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current Mode/Phase/Workflow/Objective, Section 4A).
+- `python -m pytest`: 374 passed, 1 skipped (unchanged - no code touched). `python scripts/validate_repository.py` (full mode): 0 errors, 162 warnings (incremental growth from new version-history entries, consistent with the established pattern).
 
 ---
 
-# 9. Version History
+# 9. Related Artefacts
+
+* [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] - prior closed session, immediate predecessor.
+* [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Documentation Debt Discipline, applied by WP1.
+* [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] - current accepted repository baseline, the corrected target reference.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - authoritative backlog; WP1's staleness finding was not already tracked here, and WP2 added EBG-0108 to it.
+* [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] - Track B Phase 1 gap closed by WP2's EBG-0108 registration.
+* [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] - existing Approved architecture EBG-0108 would build against.
+
+---
+
+# 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP2 Complete: registered EBG-0108 (Guardian Cognitive Core Implementation) to Approved Backlog, closing JRM-0001's flagged Phase 1 gap. |
 | 1.0 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 opened. WP1 (RBL-0019/ESR-0033 documentation debt correction) in progress. |

@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 2.94
+**Version:** 2.95
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 2.94 |
+| Version | 2.95 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is the latest **closed** session (25 July 2026). No session is currently open. ESR-0034 was the ninth session run entirely through the AIEMS Exchange Bridge and the deployed Sponsor Approval Service with no manual relay anywhere - entirely Programme Sponsor-directed backlog governance and roadmap sequencing, no code implementation. **WP1** promoted EBG-0023 and EBG-0065 to Approved Backlog, then expanded on Programme Sponsor direction to a full 21-item batch (also EBG-0022, 0025, 0029, 0038, 0040, 0046, 0052, 0054, 0061, 0066, 0081 Question 1, 0090-0096, 0106), each passing the test of having no stated reason to remain Candidate. **WP2** separately reviewed and promoted EBG-0021 (JARVIS Local Agent Permission Boundary), flagged as the root gate for the Action faculty and GAM-0001 trust-boundary territory rather than routine curation. **WP3** rewrote [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s Track B from stale horizon buckets into an explicit 8-phase dependency-chain model answering "what is the logical path to a working version" - Phase 1 Guardian Cognitive Core (flagged: no backlog item yet authorises this build) through Phase 8 Home Assistant/Smart Home. Session-wide **WP4** (Independent Repository Verification: Pass, one disclosed pre-existing Codex-sandbox limitation unrelated to this session's work) and **WP5** (Repository Baseline Determination: **Retain** - RBL-0020 remains current, no new baseline warranted) closed the session. EBG-0042, 0047, 0059 and 0085 deliberately left untouched throughout - each carries genuine stated blocking/prerequisite language. Three genuine Codex-caught defects were fixed across the session (a stale wording overstatement, a stale PST-0001 section, and - at WP3 - four findings including a real `session_launcher.py` parser regression), all disclosed and fixed rather than silently corrected. Full detail in [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]]. |
+| Current Mode | [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is the latest **closed** session (25 July 2026). ESR-0035 is now **open**, following ESR-0034's closure the same day. **WP1** (Complete): corrected stale RBL-0019/ESR-0033 current-state references in README.md, COC-0001 and PBK-0001 to RBL-0020/ESR-0034/ESR-0035 (Documentation Debt Discipline), committed as `c939ecf`/`bd11c8f`. **WP2** (Complete): registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) directly to Approved Backlog, closing [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s own flagged gap - "no backlog item yet authorises this build" - the single most consequential gap in the roadmap per ESR-0034 WP3. No implementation authorised by either WP. Full detail in [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]]. |
 | Current Repository Baseline | [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]], accepted at ESR-0033 WP9, superseding RBL-0019, and **retained at ESR-0034 WP5** - that session's entirely governance/roadmap-only content (no runtime, test, CI, dependency, security, or distribution-surface change) did not warrant a new baseline. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2, refreshed at ESR-0031 WP0 to reflect ESR-0027 WP1's Personal Memory implementation - now distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0034 closed (25 July 2026); no session currently open; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0034 completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - now confirmed repeatable across a ninth consecutive session (ESR-0026 through ESR-0034). No session is currently open; the next session will select its own objective at WP0B. |
-| Current Engineering Objective | None - no session currently open. ESR-0034's three Work Packages (WP1-WP3) plus session-wide WP4/WP5 are all Complete; see [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] for full detail. The next session's objective remains to be selected at its own WP0B. |
+| Current Phase | ESR-0035 open (opened 25 July 2026); under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0035 WP1 and WP2 both completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - now confirmed repeatable across a tenth consecutive session (ESR-0026 through ESR-0035). |
+| Current Engineering Objective | ESR-0035 WP1 (documentation debt correction) and WP2 (EBG-0108 registration) both Complete; see [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]] for full detail. The next Work Package's objective remains to be selected. |
 
 ---
 
@@ -100,13 +100,19 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is **closed** (25 July 2026). **No session is currently open.** The ninth session run entirely through the AIEMS Exchange Bridge with no manual relay anywhere, run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step. Unlike prior code-implementation sessions, ESR-0034 was entirely Programme Sponsor-directed backlog governance and roadmap sequencing.
+[[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]] is **open** (opened 25 July 2026, immediately following ESR-0034's closure). The tenth session run entirely through the AIEMS Exchange Bridge with no manual relay anywhere, run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
 
-**WP1** promoted EBG-0023 and EBG-0065 to Approved Backlog, then expanded on Programme Sponsor direction to a full 21-item batch (also EBG-0022, 0025, 0029, 0038, 0040, 0046, 0052, 0054, 0061, 0066, 0081 Question 1, 0090-0096, 0106), each passing the test of having no stated reason to remain Candidate - two Codex review rounds, both findings fixed (an overstated wording claim, a stale PST-0001 row). **WP2** separately reviewed and promoted EBG-0021 (JARVIS Local Agent Permission Boundary), flagged as the root gate for the Action faculty and GAM-0001 trust-boundary territory rather than routine curation - one Codex finding fixed (a further stale PST-0001 section). **WP3** rewrote [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s Track B from stale horizon buckets (last touched 18 July) into an explicit 8-phase dependency-chain model directly answering the Programme Sponsor's own question, "what is the logical path to a working version": Phase 1 Guardian Cognitive Core (flagged - no backlog item yet authorises this build, the single most consequential gap in the roadmap) through Phase 8 Home Assistant/Smart Home. Codex's review caught four real defects on the first pass - a `scripts/session_launcher.py` parser regression from a heading rename (reproduced live as an actual error, fixed and reconfirmed by re-running the launcher), four already-Complete items wrongly carried into a "still open" table, a horizon-vs-phase principle inconsistency, and three further stale Track C rows the same review exposed - all fixed and independently reconfirmed.
+**WP1** (Complete): WP0A repository synchronisation found README.md, [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] and [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] all still citing [[RBL-0019_REPOSITORY_BASELINE|RBL-0019]] as the current baseline and README still describing ESR-0033 as open/ESR-0032 as latest closed, despite [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] (accepted ESR-0033 WP9, retained ESR-0034 WP5) and both ESR-0033/ESR-0034 having since closed - not already tracked in EBR-0001. Per PBK-0001's Documentation-Debt Priority discipline, the Programme Sponsor directed this be WP1. All current-state references corrected, REG-0001's tracking rows/version aligned, ESR-0035 itself registered. Codex read-only review: Pass, no findings, relayed into the bridge under explicit Programme Sponsor approval (Codex's own sandbox cannot write the bridge's lock file directly). Committed as `c939ecf` (the fix) and `bd11c8f` (closure narrative), both pushed and independently re-verified post-commit (Pass).
 
-Session-wide **WP4** (Independent Repository Verification): **Pass**, with one disclosed environmental limitation (Codex's read-only sandbox cannot reproduce `pytest` due to a known, previously-documented temp-directory restriction, not a defect in this session's work) - Codex independently confirmed the exact diff-stat figures, that only governance/roadmap artefacts were touched, and a live `session_launcher.py` re-run confirming the WP3 fix holds. Session-wide **WP5** (Repository Baseline Determination): **Retain** - [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] remains current, both independent views agreeing this session's entirely governance-only content does not warrant a new baseline.
+**WP2** (Complete): registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) directly to Approved Backlog, on Programme Sponsor direction, closing [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B's own flagged gap: "no backlog item yet authorises this build" - the single most consequential gap in the whole roadmap per ESR-0034 WP3. [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] remains Approved as architecture only; no implementation is authorised by this registration. JRM-0001 Sections 7.1/7.3 updated to record the registration.
 
-374 tests pass throughout (unchanged - no code touched this session) and `validate_repository.py` (full mode) passes clean throughout (157 warnings by close, all disclosed cross-document false positives, growing incrementally as expected with REG-0001's own Version History length). Full detail in [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]].
+374 tests pass throughout (unchanged - no code touched this session) and `validate_repository.py` (full mode) passes clean throughout (162 warnings by WP2's close, all disclosed cross-document false positives, growing incrementally as expected with new version-history entries). Full detail in [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]].
+
+---
+
+## Prior Session: ESR-0034
+
+[[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is **Closed** (25 July 2026). The ninth session run entirely through the AIEMS Exchange Bridge with no manual relay anywhere - entirely Programme Sponsor-directed backlog governance and roadmap sequencing, no code implementation. **WP1** promoted a 21-item batch to Approved Backlog (EBG-0023, 0065, 0022, 0025, 0029, 0038, 0040, 0046, 0052, 0054, 0061, 0066, 0081 Question 1, 0090-0096, 0106). **WP2** separately promoted EBG-0021 (JARVIS Local Agent Permission Boundary), flagged as the root gate for the Action faculty and GAM-0001 trust-boundary territory. **WP3** rewrote [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s Track B into an explicit 8-phase dependency-chain model - Phase 1 Guardian Cognitive Core (flagged: no backlog item yet authorises this build, later resolved by ESR-0035 WP2's EBG-0108) through Phase 8 Home Assistant/Smart Home, with a four-finding Codex fix round including a real `session_launcher.py` parser regression. Session-wide WP4 Pass, WP5 Retain - [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] remains current. Full detail in [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]].
 
 ---
 
@@ -116,13 +122,7 @@ Session-wide **WP4** (Independent Repository Verification): **Pass**, with one d
 
 ---
 
-## Prior Session: ESR-0032
-
-[[ESR-0032_ENGINEERING_SESSION_REPORT|ESR-0032]] is **Closed** (24 July 2026). **The seventh session run entirely through the AIEMS Exchange Bridge with no manual relay anywhere.** Delivered Theme 1 - Deployment Alpha in full: WP1 the **Guardian Desktop Distribution Foundation** (EBG-0102, a real PyInstaller sidecar and installer), WP2 **CI Build Gate Hardening** (EBG-0103, real Rust/Playwright CI jobs, a ruff-drift fix round), WP3 **Release Automation and Version Synchronisation** (EBG-0104, a real `v0.1.0` GitHub Release). Session-wide WP4 Pass, WP5 Accept - [[RBL-0019_REPOSITORY_BASELINE|RBL-0019]] established, superseding RBL-0018. 359 tests pass (was 351). Full detail in [[ESR-0032_ENGINEERING_SESSION_REPORT|ESR-0032]].
-
----
-
-PST-0001 records ESR-0034 as the latest closed session and no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0035 as the current open session. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -724,6 +724,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.95 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 opened: WP1 (Complete, RBL-0019/ESR-0033 documentation debt correction) and WP2 (Complete, EBG-0108 Guardian Cognitive Core registration) recorded. Current Mode/Phase/Workflow/Engineering Objective updated to reflect ESR-0035 open. Section 4A restructured - ESR-0035's narrative now the current block, ESR-0034 demoted to Prior Session, ESR-0032's block dropped to keep the section bounded. |
 | 2.94 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 closed: Current Mode/Phase/Workflow/Engineering Objective updated to reflect no session currently open. Section 4A restructured - ESR-0034's full narrative (WP1-WP5) now the current block, ESR-0033 demoted to Prior Session, ESR-0031's block dropped to keep the section bounded. |
 | 2.93 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP2 fix round (Codex-caught): Section 4A still said ESR-0033 closed / no session currently open, contradicting Section 3's already-updated Current Mode/Phase. Corrected to state ESR-0034 open with WP1/WP2 Complete, matching Section 3. |
 | 2.92 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP2 Complete: EBG-0021 promoted to Approved Backlog, reviewed separately from WP1's batch. Current Mode/Phase/Engineering Objective updated to reflect 22 total promotions this session. |

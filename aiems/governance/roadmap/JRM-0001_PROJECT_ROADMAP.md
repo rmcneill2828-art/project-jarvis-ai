@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.18 |
+| Version | 1.19 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -122,7 +122,7 @@ Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 S
 
 | Item | Rationale |
 |------|-----------|
-| Guardian Cognitive Core (Phase 1 of the Path to a Working Version, Section 7.3) | No backlog item yet authorises this build - AAM-0001 is Approved as architecture only. The single most consequential open item in Track B; a future session should register a dedicated EBG item before attempting it, then action it. |
+| Guardian Cognitive Core (Phase 1 of the Path to a Working Version, Section 7.3) | **EBG-0108 registered at ESR-0035 WP2** (Approved Backlog) - AAM-0001 remains Approved as architecture only; no implementation is yet authorised. The single most consequential open item in Track B; a future session should action EBG-0108 via its own Engineering Implementation Package. |
 
 ## 7.2 Foundation (Delivered)
 
@@ -134,7 +134,7 @@ Each phase requires the one(s) before it. Phase numbering is sequencing, not pri
 
 | Phase | Item(s) | Why it sits here |
 |-------|---------|-------------------|
-| **1** | Guardian Cognitive Core | **No backlog item yet authorises this build** - AAM-0001 is Approved as architecture only; Guardian today routes messages to a provider with no persistent persona or memory-informed reasoning loop. The single most consequential gap in the whole roadmap - every phase below either extends it or depends on it existing. A future session should register a dedicated EBG item for this before attempting it. |
+| **1** | Guardian Cognitive Core | **EBG-0108 registered at ESR-0035 WP2** (Approved Backlog) - AAM-0001 remains Approved as architecture only; Guardian today routes messages to a provider with no persistent persona or memory-informed reasoning loop. The single most consequential gap in the whole roadmap - every phase below either extends it or depends on it existing. No implementation is authorised by EBG-0108's registration itself; a future session should action it via its own Engineering Implementation Package. |
 | **2** | EBG-0021 - Local Agent Permission Boundary | Promoted to Approved Backlog at ESR-0034 WP2. Must be defined before any action-taking capability exists, per its own text and GAM-0001 - the boundary comes first, not concurrently with or after the capability it constrains. |
 | **3** | Action faculty (implementation) | **No backlog item yet builds this either** - EBG-0021 (Phase 2) only defines the boundary. Depends on Phase 1 (something must decide what to act on) and Phase 2 (the constraint it must obey). STD-0006 (EBG-0065, see Section 7.4) should land before this phase ships, not after. |
 | **4** | Memory expansion: Session and Shared-Family tiers (extends MDS-0001/EBG-0019 beyond the Personal tier); EBG-0023 - Backup, Recovery and Data Protection | EBG-0023 promoted to Approved Backlog at ESR-0034 WP1, on the basis that its stated prerequisite (EBG-0019/MDS-0001) is Complete - it naturally follows here, since there is little worth backing up beyond the repository itself until this phase lands. |
@@ -244,6 +244,7 @@ JRM-0001 does not itself authorise implementation. Horizon and phase placement a
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.19 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP2: recorded EBG-0108's registration (Guardian Cognitive Core Implementation, Approved Backlog) against Phase 1 of Track B's dependency chain (Sections 7.1, 7.3) - closes this roadmap's own flagged gap ("no backlog item yet authorises this build"). No implementation authorised; the phase itself remains unactioned pending a future Engineering Implementation Package. |
 | 1.18 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP3 fix round (Codex-caught, 4 findings): (1) High - restored a literal '## 7.1 Near-term' heading (renumbered 7.1-7.6) so scripts/session_launcher.py's Track B parser doesn't break, verified by running the launcher live; (2) High - removed EBG-0017/0024/0045/0049 from the new Parallel table, all four already Complete, moved into 7.2 Foundation instead; (3) Medium - Section 4 Principle 2 and the Section 10 maintenance line amended to state Track A/C use horizons, Track B uses the new phase model; (4) Medium - fixed three further stale Track C rows exposed by the same review (streaming notifications and sidecar packaging both actually delivered; GIA is Phase 1 Complete, not still Proof-of-Concept-only). |
 | 1.17 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP3: rewrote Track B (JARVIS Product Capability Roadmap) from stale Near/Mid/Longer-term horizon buckets into an explicit 8-phase dependency-chain model - Phase 1 Guardian Cognitive Core (flagged: no backlog item yet authorises this build) through Phase 8 Home Assistant/Smart Home (EBG-0025). Added Cross-Cutting Constraints (EBG-0065, EBG-0081 Q1) and Parallel-not-gating (EBG-0042, 0059, 0047, 0045/0049, 0024, 0022, 0017) subsections, and an explicit Out-of-Scope note pointing Theme 7/tooling items to Track A. Incorporates ESR-0034 WP1/WP2's 22 promotions and closes the staleness gap since v1.16 (18 July) - EBG-0019/Memory was still listed pending despite EBG-0080's real Personal Memory tier having shipped at ESR-0027. |
 | 1.16 | 18 July 2026 | Claude Engineering Implementer | Corrected EBG-0065's rationale: "JARVIS holds real OpenAI/Gemini API keys... today" overstated a persistent fact - confirmed directly (Windows User/Machine environment variables, current shell process) that no such key is persistently configured anywhere on the Programme Sponsor's machine. Reworded to describe the real capability (CredentialReference reads a temporary session-scoped environment variable when the Sponsor sets one) rather than implying standing possession. Also added ESR-0027's real local SQLite personal-memory store as a second category of locally-held data this standard should cover. Raised by the Programme Sponsor after the claim was repeated uncritically in a backlog-grouping summary. |
