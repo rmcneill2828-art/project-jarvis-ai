@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { colorForCluster, computeClusterOrder, computeDegree } from "./GuardianOrbGraph.jsx";
 
 // Knowledge Metrics and Active Clusters panels (UAM-0001_GUARDIAN_ORB_MOCKUP.jpg
@@ -13,6 +14,21 @@ function formatPercent(value) {
 
 function PanelStatusMessage({ error }) {
   return <p className="panel-status-message">{error ? "Knowledge graph is unavailable." : "Connecting to the knowledge graph..."}</p>;
+}
+
+// EBG-0089 (ESR-0033 WP4): sets the swatch colour via the CSSOM
+// (element.style.setProperty), not a JSX `style` attribute. The Tauri CSP's
+// `style-src` restricts inline `style="..."` attributes/`cssText`, but not
+// individual CSSOM property mutations - this renders the same per-cluster
+// dynamic colour without requiring `'unsafe-inline'` in the policy.
+function ClusterSwatch({ color }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    ref.current?.style.setProperty("background", color);
+  }, [color]);
+
+  return <span ref={ref} className="cluster-swatch" aria-hidden="true" />;
 }
 
 export function KnowledgeMetricsPanel({ graph, error }) {
@@ -81,11 +97,7 @@ export function ActiveClustersPanel({ graph, error }) {
       <ul className="cluster-list">
         {clusters.map(({ cluster, count }) => (
           <li className="cluster-row" key={cluster}>
-            <span
-              className="cluster-swatch"
-              style={{ background: colorForCluster(cluster, clusterOrder) }}
-              aria-hidden="true"
-            />
+            <ClusterSwatch color={colorForCluster(cluster, clusterOrder)} />
             <span className="cluster-name">{cluster}</span>
             <span className="cluster-count">{count.toLocaleString()}</span>
           </li>

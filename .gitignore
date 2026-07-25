@@ -63,10 +63,24 @@ playwright/.cache/
 
 # --------------------------------------------------
 # AIEMS Exchange Bridge (EBG-0057, EIP-ESR0025-001)
-# Local Claude<->Codex handover state - never shared/committed, per the
-# bridge's own restrictive-permissions requirement.
+# Local Claude<->Codex handover state - never shared/committed. Convention-
+# only protection against other repository content (kept out of version
+# control by this entry); scripts/aiems_bridge.py additionally restricts
+# filesystem permissions on this directory at creation on POSIX systems
+# (EBG-0086, ESR-0033 WP4) - this is not an enforced guarantee on Windows,
+# where standard chmod bits do not restrict other local accounts.
 # --------------------------------------------------
 .aiems-exchange/
+
+# --------------------------------------------------
+# Local secrets (EBG-0088, ESR-0033 WP4)
+# No .env file is tracked or expected today - every credential in this
+# codebase is a CredentialReference to an environment variable name, never
+# a value in source (confirmed by external security review, 19 July 2026).
+# This is a standing guard against a future accidental `git add .env`.
+# --------------------------------------------------
+.env
+.env.*
 
 # --------------------------------------------------
 # Backend sidecar build scratch (EIP-ESR0032-001)

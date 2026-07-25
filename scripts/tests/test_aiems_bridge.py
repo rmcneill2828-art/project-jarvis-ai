@@ -15,6 +15,8 @@ the dedicated section near the bottom of this file.
 from __future__ import annotations
 
 import json
+import stat
+import sys as _sys_module
 from typing import Self
 
 import pytest
@@ -133,6 +135,20 @@ def test_init_refuses_to_overwrite_existing_work_package(tmp_path):
 
     with pytest.raises(BridgeError):
         cmd_init(tmp_path, "ESR-0025", "WP1")
+
+
+@pytest.mark.skipif(_sys_module.platform == "win32", reason="os.chmod cannot restrict access on Windows (EBG-0086)")
+def test_init_restricts_exchange_root_to_owner_on_posix(tmp_path):
+    """EBG-0086 (ESR-0033 WP4): .aiems-exchange/ and its subdirectories are
+    now actually restricted to owner-only access on POSIX, not just kept out
+    of version control by .gitignore."""
+
+    cmd_init(tmp_path, "ESR-0025", "WP1")
+
+    root = exchange_root(tmp_path)
+    assert stat.S_IMODE(root.stat().st_mode) == 0o700
+    for sub in ("claude/inbox", "claude/outbox", "codex/inbox", "codex/outbox", "transcript", ".locks"):
+        assert stat.S_IMODE((root / sub).stat().st_mode) == 0o700
 
 
 @pytest.mark.parametrize(

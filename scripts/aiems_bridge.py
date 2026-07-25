@@ -171,8 +171,34 @@ def _lock_path(repo_root: Path, session: str, work_package: str) -> Path:
 
 def ensure_layout(repo_root: Path) -> None:
     root = exchange_root(repo_root)
+    root.mkdir(parents=True, exist_ok=True)
+    _restrict_to_owner(root)
     for sub in ("claude/inbox", "claude/outbox", "codex/inbox", "codex/outbox", "transcript", ".locks"):
-        (root / sub).mkdir(parents=True, exist_ok=True)
+        path = root / sub
+        path.mkdir(parents=True, exist_ok=True)
+        _restrict_to_owner(path)
+
+
+def _restrict_to_owner(path: Path) -> None:
+    """Restrict `path` to owner-only access where the platform can enforce it.
+
+    EBG-0086 (ESR-0033 WP4, external security review 19 July 2026): the
+    `.gitignore` comment previously implied enforced protection for this
+    directory when only `.gitignore` itself (a version-control convention,
+    not a filesystem control) actually applied. `os.chmod(0o700)` is a real,
+    meaningful restriction on POSIX (this repository's own CI runners and any
+    multi-user Linux/WSL host) - on Windows, `os.chmod` can only toggle the
+    read-only attribute and cannot restrict other local accounts, so this
+    call is a harmless no-op there, not a working control. Best-effort:
+    failures (e.g. a filesystem that rejects the mode change) are swallowed
+    rather than blocking bridge operation, since the bridge's own commands
+    remain safe to use even where this hardening cannot apply.
+    """
+
+    try:
+        path.chmod(0o700)
+    except OSError:
+        pass
 
 
 @contextlib.contextmanager
