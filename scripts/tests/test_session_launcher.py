@@ -12,6 +12,7 @@ import pytest
 from scripts.session_launcher import (
     SessionLauncherError,
     build_report,
+    read_active_backlog_snapshot,
     read_current_state,
     read_high_priority_backlog,
     read_near_term_roadmap,
@@ -24,6 +25,12 @@ _PST_FIXTURE = """\
 |-------|-------|
 | Current Mode | ESR-0030 is the latest closed session. |
 | Current Repository Baseline | RBL-0017, accepted at ESR-0029 WP9. |
+
+# 8. Active and Next Planned Work
+
+| Item | Notes | Status |
+|------|-------|--------|
+| Next Work Package Candidate | Theme 7 cleanup, see [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] Section 5A - the pipe inside this WikiLink must not shift the Status column into this cell. | Not yet selected |
 """
 
 _PST_FIXTURE_MISSING_BASELINE = """\
@@ -100,6 +107,41 @@ _JRM_FIXTURE = """\
 ---
 """
 
+_EBR_FIXTURE_WITH_5A = _EBR_FIXTURE + """
+# 5A. Active Backlog View - Manual Snapshot (regenerated 25 July 2026)
+
+**This section is a dated, manually-produced snapshot.**
+
+## Theme 1 - Deployment & Release Engineering
+
+Fully delivered - no open items remain in this theme.
+
+## Theme 2 - Product Data Trust (Personal Memory Era)
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0023 | Medium | Backup, Recovery and Data Protection |
+
+## Theme 7 - Dormant AIEMS Governance/Standards Debt
+
+| ID | Priority | Item |
+|---|---|---|
+| EBG-0008 | Medium | Create Engineering Implementation Package Standard |
+| EBG-0011 | Medium | See [[EIP-ESR0031-001_SESSION_OPENING_LAUNCHER|EIP-ESR0031-001]] - the pipe here must not shift columns |
+
+# 6. Candidate Backlog Intake
+"""
+
+_EBR_FIXTURE_NO_5A_HEADING = _EBR_FIXTURE
+
+_EBR_FIXTURE_5A_NO_THEMES = _EBR_FIXTURE + """
+# 5A. Active Backlog View - Manual Snapshot (regenerated 25 July 2026)
+
+Nothing here yet.
+
+# 6. Candidate Backlog Intake
+"""
+
 _JRM_FIXTURE_MISSING_TRACK = """\
 # JRM-0001 - Project Roadmap
 
@@ -121,6 +163,25 @@ def test_read_current_state_extracts_both_rows(tmp_path) -> None:
 
     assert state.current_mode == "ESR-0030 is the latest closed session."
     assert state.current_baseline == "RBL-0017, accepted at ESR-0029 WP9."
+
+
+def test_read_current_state_extracts_next_wp_candidate_from_three_column_row(tmp_path) -> None:
+    """EBG-0107 (ESR-0033 WP5): Next Work Package Candidate lives in a
+    3-column Section 8 row (Item | Notes | Status), not the 2-column
+    Section 3 rows - a naive end-anchored regex would swallow the trailing
+    Status column into the same capture. Also regresses the WikiLink-pipe
+    column-shift bug this script's own live smoke test previously found."""
+
+    pst_path = tmp_path / "PST-0001.md"
+    pst_path.write_text(_PST_FIXTURE, encoding="utf-8")
+
+    state = read_current_state(pst_path)
+
+    assert state.next_wp_candidate == (
+        "Theme 7 cleanup, see [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] Section 5A - "
+        "the pipe inside this WikiLink must not shift the Status column into this cell."
+    )
+    assert "Not yet selected" not in state.next_wp_candidate
 
 
 def test_read_current_state_raises_on_missing_row(tmp_path) -> None:
@@ -200,27 +261,79 @@ def test_build_report_includes_all_sections(tmp_path) -> None:
     pst_path = tmp_path / "PST-0001.md"
     pst_path.write_text(_PST_FIXTURE, encoding="utf-8")
     ebr_path = tmp_path / "EBR-0001.md"
-    ebr_path.write_text(_EBR_FIXTURE, encoding="utf-8")
+    ebr_path.write_text(_EBR_FIXTURE_WITH_5A, encoding="utf-8")
     jrm_path = tmp_path / "JRM-0001.md"
     jrm_path.write_text(_JRM_FIXTURE, encoding="utf-8")
 
     state = read_current_state(pst_path)
     backlog_items = read_high_priority_backlog(ebr_path)
     roadmap_items = read_near_term_roadmap(jrm_path)
-    report = build_report(state, backlog_items, roadmap_items)
+    active_backlog_items = read_active_backlog_snapshot(ebr_path)
+    report = build_report(state, backlog_items, roadmap_items, active_backlog_items)
 
     assert "## Current State" in report
     assert "## High-Priority Open Backlog (EBR-0001)" in report
     assert "## Near-Term Roadmap Candidates (JRM-0001)" in report
+    assert "## Active Backlog Snapshot (EBR-0001 Section 5A)" in report
+    assert "**Next Work Package Candidate:**" in report
     assert "EBG-0001" in report
     assert "Open Track A Item" in report
+    assert "### Theme 2 - Product Data Trust (Personal Memory Era)" in report
+    assert "### Theme 7 - Dormant AIEMS Governance/Standards Debt" in report
+    assert "EBG-0023" in report
+    assert "EBG-0008" in report
 
 
 def test_build_report_handles_empty_results() -> None:
     from scripts.session_launcher import CurrentState
 
-    state = CurrentState(current_mode="No session open.", current_baseline="RBL-0017.")
-    report = build_report(state, (), ())
+    state = CurrentState(
+        current_mode="No session open.",
+        current_baseline="RBL-0017.",
+        next_wp_candidate="Not yet determined.",
+    )
+    report = build_report(state, (), (), ())
 
     assert "_No High-priority Approved/Candidate Backlog items found._" in report
     assert "_No open Near-term roadmap items found._" in report
+    assert "_No active-backlog items found in Section 5A._" in report
+
+
+def test_read_active_backlog_snapshot_groups_by_theme(tmp_path) -> None:
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE_WITH_5A, encoding="utf-8")
+
+    items = read_active_backlog_snapshot(ebr_path)
+    by_id = {item.id: item for item in items}
+
+    assert by_id["EBG-0023"].theme == "Theme 2 - Product Data Trust (Personal Memory Era)"
+    assert by_id["EBG-0023"].priority == "Medium"
+    assert by_id["EBG-0008"].theme == "Theme 7 - Dormant AIEMS Governance/Standards Debt"
+    # Theme 1 has no table (fully delivered) - contributes zero items, not an error.
+    assert all(item.theme != "Theme 1 - Deployment & Release Engineering" for item in items)
+
+
+def test_read_active_backlog_snapshot_wikilink_pipe_does_not_shift_columns(tmp_path) -> None:
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE_WITH_5A, encoding="utf-8")
+
+    items = {item.id: item for item in read_active_backlog_snapshot(ebr_path)}
+
+    assert items["EBG-0011"].priority == "Medium"
+    assert "the pipe here must not shift columns" in items["EBG-0011"].item
+
+
+def test_read_active_backlog_snapshot_raises_on_missing_section(tmp_path) -> None:
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE_NO_5A_HEADING, encoding="utf-8")
+
+    with pytest.raises(SessionLauncherError, match="Section 5A heading"):
+        read_active_backlog_snapshot(ebr_path)
+
+
+def test_read_active_backlog_snapshot_raises_on_no_theme_headings(tmp_path) -> None:
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE_5A_NO_THEMES, encoding="utf-8")
+
+    with pytest.raises(SessionLauncherError, match="No Theme headings found"):
+        read_active_backlog_snapshot(ebr_path)
