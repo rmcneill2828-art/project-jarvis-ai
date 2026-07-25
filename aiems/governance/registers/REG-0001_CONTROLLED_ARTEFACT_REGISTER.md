@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.335
+**Version:** 3.336
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.335 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.336 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.124 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.125 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -349,6 +349,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.336 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.124 to 1.125) following: ESR-0033 WP2: Theme 7 cleanup - Codex-led independent triage (codex exec -s read-only) of the 23 dormant AIEMS governance/standards backlog items closed 16 (13 Complete, 2 Superseded, 1 Duplicate folded into EBG-0008), leaving 7 confirmed still-open (EBG-0008/0011/0038/0040/0061/0066/0067). Each closed item's Section 5 Notes column records Codex's specific repository-evidence rationale and confidence. Section 5A regenerated in full (not edited in place, per its own standing rule) to reflect Theme 1's full delivery at ESR-0032 and Theme 7's reduction - 57 to 38 open items across the snapshot. Advisory triage per COC-0001 Rule 33/43; Programme Sponsor approved applying all 16 recommended closures. |
 | 3.335 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.86 to 2.87) following: ESR-0033 WP0/WP0B: repository synchronisation and session-open record. WP0 found stale RBL-baseline references in README.md/PBK-0001/COC-0001 (Documentation Debt Discipline trigger); WP0B session objective selection - Programme Sponsor approved fixing the stale references as WP1, then selected Theme 7 cleanup (EBR-0001 Section 5A) as WP2. Current Mode/Phase/Workflow/Objective and Section 8 Next Required Activity/Next Work Package Candidate updated to reflect ESR-0033 open. **Fix round (Codex review findings, addressed)**: README.md's Key Engineering Artefacts table and PST-0001 Section 4A/closing sentence had further missed stale claims (a residual RBL-0010 reference, two residual "no session is currently open" claims contradicting Section 3) - corrected. This register's own Related Artefacts row for RBL-0010 was separately found to say "Current accepted ESR-0009 repository baseline" (stale since RBL-0011 superseded it 8 July 2026) and corrected to "Previous accepted...superseded by RBL-0011." |
 | 3.334 | 25 July 2026 | Claude Engineering Implementer | Aligned COC-0001 version (1.13 to 1.14) following: ESR-0033 WP1 (Documentation Debt Discipline): corrected the stale RBL-0011 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0019 - stale since ESR-0016, nine baselines behind and the longest-drifted of the three references found this WP, since COC-0001 sits outside the mandatory per-session reading set. Found during ESR-0033 WP0A repository synchronisation alongside equivalent staleness in README.md and PBK-0001. |
 | 3.333 | 25 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.31 to 1.32) following: ESR-0033 WP1 (Documentation Debt Discipline): corrected the stale RBL-0018 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0019, accepted at ESR-0032 WP5. Found during ESR-0033 WP0A repository synchronisation alongside equivalent staleness in README.md and COC-0001. |
