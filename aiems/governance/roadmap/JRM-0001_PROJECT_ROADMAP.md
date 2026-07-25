@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.16 |
+| Version | 1.18 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -48,7 +48,7 @@ JRM-0001 owns sequencing and phasing. It does not own backlog item detail, curre
 # 4. Roadmap Principles
 
 1. JRM-0001 is advisory. It does not itself authorise implementation - matching EBR-0001's own Section 3 principle. No Engineering Implementation Package may cite JRM-0001 alone as authorisation; Programme Sponsor approval remains required as normal.
-2. Sequencing is expressed as horizons (Near-term, Mid-term, Longer-term, Not Yet Justified), not fixed ESR numbers or dates. AIEMS sessions are opened ad hoc based on Programme Sponsor availability and priority, not a calendar - committing to "EBG-0012 in ESR-0024" would be false precision.
+2. Sequencing is expressed as horizons (Near-term, Mid-term, Longer-term, Not Yet Justified) for Track A and Track C, or as an explicit numbered dependency-chain (Track B, since ESR-0034 WP3 - see Section 7.3) where a genuine build order exists rather than an independent priority ranking. Neither form commits to fixed ESR numbers or dates. AIEMS sessions are opened ad hoc based on Programme Sponsor availability and priority, not a calendar - committing to "EBG-0012 in ESR-0024" would be false precision.
 3. JRM-0001 references backlog items by ID and states sequencing rationale only. It does not restate EBR-0001 content. Where an EBG item's own note already contains phased detail (for example EBG-0028's four-phase Guardian Orb roadmap), JRM-0001 points to it rather than duplicating it.
 4. JRM-0001 is reviewed at engineering session transition, alongside EBR-0001, per Continuous Repository Synchronisation. It is expected to need frequent revision in its early versions, the same way PVTM-0001 has remained Draft/iterating since ESR-0008.
 5. Every Engineering Session Report should note, at closure, whether that session's delivered work moves JRM-0001's near-term horizon forward - this is how the roadmap stays connected to actual per-session backlog selection rather than becoming a document nobody consults.
@@ -116,39 +116,54 @@ Governs AIEMS itself: standards, workflow, registers, roles. Sourced from EBR-00
 
 Governs JARVIS/Guardian/Sentinel product capability. Current state is PST-0001 Section 5's authority; this section sequences what is not yet there.
 
+**Rewritten at ESR-0034 WP3** (Programme Sponsor-directed), replacing the prior Near/Mid/Longer-term horizon buckets below with an explicit dependency-chain model. The horizon-bucket approach had gone stale relative to real delivery (it still listed EBG-0019/Memory as pending Mid-term work after EBG-0080 had already built the real Personal Memory tier, among other gaps) and, more fundamentally, obscured genuine build *order* - several items are not independently prioritisable, they are strictly sequenced by what they need to exist first. The phase model below states that ordering explicitly. Horizons remain the right tool for Track A (process work has no comparable dependency chain); Track B's product-capability path does not.
+
 ## 7.1 Near-term
 
 | Item | Rationale |
 |------|-----------|
-| EBG-0031 - Guardian Architecture Specification | High priority since ESR-0005, blocks meaningful Guardian safety/permission work; Guardian is already user-facing (the live Orb/chat) without this specification formally existing. **Resolved at ESR-0023 WP2**: [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] created and approved (v1.0), closed Completed in EBR-0001. Unblocks EBG-0020 and EBG-0048 below. |
-| EBG-0041 - Guardian Identity Architecture Validation | AAM-0001 exists but has never been validated against implementation sequencing, per this item's own text. **Resolved at ESR-0023 WP5**: AAM-0001 promoted Approved (v0.3), closed Completed in EBR-0001. Surfaced EBG-0074 below. |
-| EBG-0074 - Wire TrustTierPolicy as SentinelCore's Production Default | Discovered at ESR-0023 WP5. Engineering Reviewer (Codex): "the real operational gap exposed by the review... turns the already-approved architecture into live behaviour." **Resolved at ESR-0024 WP1**: [[EIP-ESR0024-001_TRUSTTIERPOLICY_PRODUCTION_WIRING|EIP-ESR0024-001]] v1.0 wired `TrustTierPolicy` into `build_default_runtime()`, closed Complete in EBR-0001. Unblocks EBG-0019 below. |
-| EBG-0069 - JARVIS_CAPABILITY_READINESS_MATRIX.md Refresh | Discovered at ESR-0021 WP6. Direct precedent already exists and succeeded: EBG-0056 refreshed the sibling PCB-0001 document the same way. Low-risk, well-understood pattern - should not need its own design work, just execution. **Delivered at ESR-0021 WP7**; EBR-0001 remains authoritative for its Complete status. |
-| EBG-0070 - Wire a Live Provider into a Production `ProviderOrchestrator` Route | Both providers are live-validated (EBG-0051, and OpenAI since ESR-0015) but neither was wired into default JARVIS/Guardian runtime use - flagged as a candidate in PST-0001 across at least three sessions before this section recommended registering it. **Delivered at ESR-0022 WP1** per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0 (Engineering Reviewer and Programme Sponsor approved): `build_default_runtime()` registers a real OpenAI/Gemini provider (configurable via `JARVIS_PRIMARY_PROVIDER`, default `openai` per PEM-001) when its credential is present and non-blank, with `LocalEchoProvider` retained as failover; registered as EBG-0070 in EBR-0001, Complete. |
+| Guardian Cognitive Core (Phase 1 of the Path to a Working Version, Section 7.3) | No backlog item yet authorises this build - AAM-0001 is Approved as architecture only. The single most consequential open item in Track B; a future session should register a dedicated EBG item before attempting it, then action it. |
 
-## 7.2 Mid-term
+## 7.2 Foundation (Delivered)
+
+Not sequenced further - already landed and not revisited by this roadmap. Sentinel trust gateway with `TrustTierPolicy` wired into the production default (EBG-0074); a live provider wired into the default conversation route with local failover (EBG-0070, EBG-0075); Personal Memory, a real consent-gated SQLite tier (EBG-0080); GIA Phase 1, local resource/engineering-environment observability (EBG-0083 Phase 1 of 4); the UXP-backend bridge including streaming notifications (EBG-0050, EBG-0099); Guardian Desktop distribution, CI and release automation (EBG-0102/0103/0104, Theme 1 in full); GAM-0001's authority/HITL/family-safety model (EBG-0031/0020/0048); JARVIS Product Requirements/Capability Backlog and Cost Strategy/Framework work (EBG-0017, 0024, 0045, 0049, all Complete at ESR-0028 WP2/WP3).
+
+## 7.3 Path to a Working Version - Phased Dependency Chain
+
+Each phase requires the one(s) before it. Phase numbering is sequencing, not priority ranking within a phase.
+
+| Phase | Item(s) | Why it sits here |
+|-------|---------|-------------------|
+| **1** | Guardian Cognitive Core | **No backlog item yet authorises this build** - AAM-0001 is Approved as architecture only; Guardian today routes messages to a provider with no persistent persona or memory-informed reasoning loop. The single most consequential gap in the whole roadmap - every phase below either extends it or depends on it existing. A future session should register a dedicated EBG item for this before attempting it. |
+| **2** | EBG-0021 - Local Agent Permission Boundary | Promoted to Approved Backlog at ESR-0034 WP2. Must be defined before any action-taking capability exists, per its own text and GAM-0001 - the boundary comes first, not concurrently with or after the capability it constrains. |
+| **3** | Action faculty (implementation) | **No backlog item yet builds this either** - EBG-0021 (Phase 2) only defines the boundary. Depends on Phase 1 (something must decide what to act on) and Phase 2 (the constraint it must obey). STD-0006 (EBG-0065, see Section 7.4) should land before this phase ships, not after. |
+| **4** | Memory expansion: Session and Shared-Family tiers (extends MDS-0001/EBG-0019 beyond the Personal tier); EBG-0023 - Backup, Recovery and Data Protection | EBG-0023 promoted to Approved Backlog at ESR-0034 WP1, on the basis that its stated prerequisite (EBG-0019/MDS-0001) is Complete - it naturally follows here, since there is little worth backing up beyond the repository itself until this phase lands. |
+| **5** | Knowledge Graph Phases 2-4 (EBG-0055) | Phase 3 (agent-traversal animation) is explicitly blocked on GIA telemetry beyond Phase 1 (EBG-0083 Phases 2-4, not yet delivered); Phase 4 (Guardian reasoning connection) additionally depends on Phase 1 above existing. |
+| **6** | Voice/Vision | **No backlog item yet registered.** Sits after the cognitive core exists (Phase 1) - otherwise it is just a different input modality into a shell with nothing behind it. EBG-0081 Question 1 (Section 7.4) should land before this phase ships new animated UI surfaces. |
+| **7** | EBG-0046 - Device Independence and Restore Architecture | Promoted to Approved Backlog at ESR-0034 WP1. ADR-0012's architecture decision is already made; matters most once Phase 4 gives there something meaningfully more state to carry across devices. |
+| **8** | EBG-0025 - Home Assistant / Smart Home Integration Assessment | Promoted to Approved Backlog at ESR-0034 WP1. Same shape as Phase 6 - another additive integration once the core (Phases 1-4) exists to integrate with. Not a hard dependency on Phase 6 specifically; the two can proceed in either order once Phase 4 is done. |
+
+## 7.4 Cross-Cutting Constraints
+
+Not phase-gated themselves - apply across whichever phases are in flight when they become relevant.
+
+| Item | Constraint |
+|------|------------|
+| EBG-0065 - STD-0006 Configuration and Secrets Standard | Promoted to Approved Backlog at ESR-0034 WP1. Becomes materially relevant starting at Phase 3 (an acting agent needs disciplined credential handling) and again at Phase 7 (secrets syncing across devices). Should be actioned before Phase 3 ships, not treated as background debt. |
+| EBG-0081 Question 1 - UXP shared animation scheduler | Question 2 (Canvas migration) already delivered at ESR-0029 WP2; Question 1 remains open, promoted to Approved Backlog at ESR-0034 WP1 on the strength of confirmed prior art (EBG-0082). A scaling constraint that applies whenever Phase 6 or 8 add new animated UI surfaces (voice waveform, smart-home widgets) - should land before those phases ship UI, not after. |
+
+## 7.5 Parallel - Not Gated By, and Not Gating, the Phases Above
 
 | Item | Rationale |
 |------|-----------|
-| EBG-0017 - JARVIS Product Requirements and Capability Backlog | High priority, foundational for everything else in this track, but the programme has functioned without it for 20+ sessions by using EBR-0001 and PST-0001 together - not urgent, but overdue. |
-| EBG-0019 - Memory and Data Storage Architecture | Blocks persistent memory, which remains explicitly deferred (PST-0001 Section 10) - sequence architecture-first per this item's own stated rationale. Per ESR-0023 WP5's sequencing judgement, this is the natural next Guardian faculty now that EBG-0074 (Track B 7.1) has landed (ESR-0024 WP1) - GAM-0001 Section 9.2 already anticipates its consent boundary. |
-| EBG-0020 - Guardian, Family Safety and Emergency Controls | Depends conceptually on EBG-0031 (Guardian Architecture) landing first. **Resolved at ESR-0023 WP3**: GAM-0001 v1.1 Section 8 added, closed Completed in EBR-0001. |
-| EBG-0042 - Agent Framework Architecture | ADR-0011 exists; this item defines specialist agent contracts building on it. Relevant once GIA moves past Proof of Concept. |
-| EBG-0045 / EBG-0049 - Cost and Strategic Value Framework / Cost-Aware Provider Routing | Explicitly overlapping, already cross-referenced in EBR-0001 - action together, not separately. Directly relevant once the Near-term production-provider-wiring item above happens, since that is where cost first becomes a live concern rather than a research question. |
+| EBG-0042 - Agent Framework Architecture | ADR-0011 exists; matures naturally once Phases 1-3 exist to define specialist agent contracts against. Left Candidate Backlog - not confidently ready before then. |
+| EBG-0059 - Engineering Assurance Capability (EAC/EAA/EAR) | A complete, previously adversarially-reviewed architecture spec for independent process verification. Unblocks once GIA (Phase 5's prerequisite) matures further - left Candidate Backlog, cross-referenced to EBG-0055 Phase 3's own GIA dependency. |
+| EBG-0047 - Sentinel Gate of Durin Architecture Specification | Extends EBG-0030 (Completed). Worth revisiting as trust-tier work (EBG-0074) sees further production use - left Candidate Backlog, not confidently satisfied by the current Sentinel Core implementation as of its last review. |
+| EBG-0022 - JARVIS AIEMS Knowledge Capability | Self-referential (JARVIS explaining AIEMS itself), not a phase dependency in either direction. Promoted to Approved Backlog at ESR-0034 WP1; action whenever convenient. |
 
-## 7.3 Longer-term / Not Yet Justified
+## 7.6 Explicitly Out of Scope for This Track
 
-| Item | Rationale |
-|------|-----------|
-| EBG-0021 - Local Agent Permission Boundary | No local agent implementation exists yet to bound - premature until one is planned. |
-| EBG-0022 - JARVIS AIEMS Knowledge Capability | Interesting, not blocking anything currently planned. |
-| EBG-0023 - Backup, Recovery and Data Protection | Gated on EBG-0019 (memory architecture) existing first - nothing significant to back up yet beyond the repository itself. |
-| EBG-0024 - JARVIS Cost Strategy | Substantially overlaps EBG-0045/EBG-0049 above; likely mergeable once one of the three is actioned. |
-| EBG-0025 - Home Assistant / Smart Home Integration Assessment | No dependency currently forces this; purely additive future scope. |
-| EBG-0029 - Product Growth Philosophy | Documentation-only, no urgency. |
-| EBG-0046 - Device Independence and Restore Architecture | Large scope, no current trigger. |
-| EBG-0047 - Sentinel Gate of Durin Architecture Specification | Extends EBG-0030 (already Completed); worth revisiting once trust-tier work (ESR-0016) sees further use, not before. |
-| EBG-0048 - Guardian HITL Governance Specification | Extends EBG-0031 - sequence after it, not before or in parallel. **Resolved at ESR-0023 WP4**: GAM-0001 v1.2 Section 9 extended, closed Completed in EBR-0001. |
+EBG-0008, 0011, 0038, 0040, 0061, 0066, 0067 (Track A - AIEMS governance/standards debt); EBG-0090-0096, 0106 (AIEMS engineering-tooling backlog, all promoted at ESR-0034 WP1); EBG-0029 (Product Growth Philosophy, documentation-only); EBG-0052 (Execute After Approval Principle, process discipline); EBG-0054 (Dev-Environment Setup Automation). None of these change whether JARVIS/Guardian functions as a product - they govern the engineering process that builds it, not the product itself. See Track A (Section 6) for the first group.
 
 ---
 
@@ -169,7 +184,7 @@ EBG-0028 already carries substantial phased content for the Guardian Orb specifi
 | Item | Rationale |
 |------|-----------|
 | System Health panel (using only real fields: Guardian, Sentinel, Providers from `platform.status`) | Directly identified during ESR-0021 WP4 scoping as buildable now without violating the no-mock-fallback rule, deliberately deferred to a future WP rather than bundled into WP4's minor scope. **Delivered at ESR-0022 WP1** per [[EIP-ESR0022-001_PROVIDER_WIRING_AND_SYSTEM_HEALTH_PANEL|EIP-ESR0022-001]] v1.0, paired with EBG-0070 (Track B) in the same package; registered as EBG-0072 in EBR-0001, Complete. |
-| EBG-0050 remaining scope: streaming notifications | Explicitly kept open under EBG-0050 rather than closed outright; natural next increment now that a production provider is wired in (EBG-0070, delivered ESR-0022 WP1), since streaming matters most once real conversational latency exists. |
+| EBG-0050 remaining scope: streaming notifications | **Delivered at ESR-0031 WP2** per [[EIP-ESR0031-002_STREAMING_NOTIFICATIONS_MVP|EIP-ESR0031-002]] as EBG-0099 - the UXP-backend bridge's first live-push mechanism, closing this remaining EBG-0050 scope. Corrected here (ESR-0034 WP3) - this row previously described it as still pending. |
 | EBG-0073 - UXP Duplicate Monitoring Elements Tidy-up | Discovered directly by the Programme Sponsor viewing the live app after EBG-0072 shipped: `SystemHealthPanel` and `DiagnosticsPanel` now visibly duplicate Guardian/Sentinel/Providers rows. Low-risk consolidation, no new backend work needed - a natural quick follow-on to EBG-0072 rather than a standalone design effort. **Resolved at ESR-0023 WP6**: duplication removed, closed Completed in EBR-0001. |
 
 ## 8.3 Mid-term
@@ -177,14 +192,14 @@ EBG-0028 already carries substantial phased content for the Guardian Orb specifi
 | Item | Rationale |
 |------|-----------|
 | EBG-0055 Phase 1.5 / next continuation - true 3D rendering and live animation of the Orb | Explicitly deferred by Programme Sponsor decision at ESR-0019 ("doesn't have to be perfect first time"); a future EIP should clarify whether this becomes explicit Phase 1.5 scope or folds into Phase 3, per EBG-0055's own note. |
-| EBG-0050 remaining scope: production sidecar packaging (`tauri-plugin-shell`) | Only matters once the UXP moves toward actual distribution rather than dev-mode use; not urgent while still in active development. |
+| EBG-0050 remaining scope: production sidecar packaging (`tauri-plugin-shell`) | **Delivered at ESR-0032 WP1** as its own promoted item, EBG-0102 (Guardian Desktop Distribution Foundation) - a real PyInstaller sidecar, `tauri-plugin-shell` wiring, and installer build. Corrected here (ESR-0034 WP3) - this row previously described it as not yet urgent/undelivered. |
 | Real-Time Activity feed (mock-up panel) | No backend event/activity log exists yet - this is new backend work, not a UXP-only increment, and should be scoped as such rather than attempted as a "quick" UXP session. |
 
 ## 8.4 Longer-term / Blocked
 
 | Item | Rationale |
 |------|-----------|
-| EBG-0055 Phase 3 - agent-traversal animation | Explicitly blocked on GIA telemetry; GIA remains a Proof of Concept with further implementation deferred (PST-0001 Section 10). Cannot proceed until GIA does. |
+| EBG-0055 Phase 3 - agent-traversal animation | Explicitly blocked on GIA telemetry beyond Phase 1. **Corrected here (ESR-0034 WP3)**: GIA is no longer only a Proof of Concept - EBG-0083 Phase 1 (local resource/engineering-environment observability) delivered in full at ESR-0029 WP3/WP4/WP6/WP7. Phases 2-4 (platform, engineering-repository and external instrumentation) remain undelivered; Phase 3 cannot proceed until those land - see Track B Section 7.3 Phase 5. |
 | EBG-0055 Phase 4 - Guardian reasoning connection | Depends on Phase 3 and on Guardian Cognitive Architecture (currently Draft, per PST-0001 Section 5) maturing beyond its current bounded-runtime-foundation scope. |
 
 ---
@@ -208,7 +223,7 @@ JRM-0001 shall be reviewed:
 * Whenever a backlog item it references changes status in EBR-0001 (completed, superseded, merged, rejected).
 * Whenever the Programme Sponsor directs a roadmap review.
 
-JRM-0001 does not itself authorise implementation. Horizon placement is advisory sequencing guidance; the Programme Sponsor determines actual per-session engineering priorities, as EBR-0001 Section 8 (Prioritisation Rules) and PBK-0001's Repository Engineering Health Review Guidance already establish for backlog work generally.
+JRM-0001 does not itself authorise implementation. Horizon and phase placement alike are advisory sequencing guidance; the Programme Sponsor determines actual per-session engineering priorities, as EBR-0001 Section 8 (Prioritisation Rules) and PBK-0001's Repository Engineering Health Review Guidance already establish for backlog work generally.
 
 ---
 
@@ -229,6 +244,8 @@ JRM-0001 does not itself authorise implementation. Horizon placement is advisory
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.18 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP3 fix round (Codex-caught, 4 findings): (1) High - restored a literal '## 7.1 Near-term' heading (renumbered 7.1-7.6) so scripts/session_launcher.py's Track B parser doesn't break, verified by running the launcher live; (2) High - removed EBG-0017/0024/0045/0049 from the new Parallel table, all four already Complete, moved into 7.2 Foundation instead; (3) Medium - Section 4 Principle 2 and the Section 10 maintenance line amended to state Track A/C use horizons, Track B uses the new phase model; (4) Medium - fixed three further stale Track C rows exposed by the same review (streaming notifications and sidecar packaging both actually delivered; GIA is Phase 1 Complete, not still Proof-of-Concept-only). |
+| 1.17 | 25 July 2026 | Claude Engineering Implementer | ESR-0034 WP3: rewrote Track B (JARVIS Product Capability Roadmap) from stale Near/Mid/Longer-term horizon buckets into an explicit 8-phase dependency-chain model - Phase 1 Guardian Cognitive Core (flagged: no backlog item yet authorises this build) through Phase 8 Home Assistant/Smart Home (EBG-0025). Added Cross-Cutting Constraints (EBG-0065, EBG-0081 Q1) and Parallel-not-gating (EBG-0042, 0059, 0047, 0045/0049, 0024, 0022, 0017) subsections, and an explicit Out-of-Scope note pointing Theme 7/tooling items to Track A. Incorporates ESR-0034 WP1/WP2's 22 promotions and closes the staleness gap since v1.16 (18 July) - EBG-0019/Memory was still listed pending despite EBG-0080's real Personal Memory tier having shipped at ESR-0027. |
 | 1.16 | 18 July 2026 | Claude Engineering Implementer | Corrected EBG-0065's rationale: "JARVIS holds real OpenAI/Gemini API keys... today" overstated a persistent fact - confirmed directly (Windows User/Machine environment variables, current shell process) that no such key is persistently configured anywhere on the Programme Sponsor's machine. Reworded to describe the real capability (CredentialReference reads a temporary session-scoped environment variable when the Sponsor sets one) rather than implying standing possession. Also added ESR-0027's real local SQLite personal-memory store as a second category of locally-held data this standard should cover. Raised by the Programme Sponsor after the claim was repeated uncritically in a backlog-grouping summary. |
 | 1.15 | 17 July 2026 | Claude Engineering Implementer | Updated Track A's EBG-0057 entry to reference [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.2 - a further post-implementation Engineering Reviewer finding (TOCTOU: `submit-response`'s checks ran before the Work Package lock was acquired) addressed. |
 | 1.14 | 17 July 2026 | Claude Engineering Implementer | Updated Track A's EBG-0057 entry to reference [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.1 - two post-implementation Engineering Reviewer findings (path-traversal via unsanitised `session`/`work_package`; `submit-to-review`/`submit-response` not checking validation exit codes) addressed. |
