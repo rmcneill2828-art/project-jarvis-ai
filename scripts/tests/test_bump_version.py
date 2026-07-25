@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from datetime import date
 
 from scripts import bump_version
 from scripts.bump_version import BumpVersionError, plan_bump
@@ -157,3 +158,75 @@ def test_bumping_reg0001_rejects_noop_version(tmp_path, monkeypatch):
         assert "already at version" in str(exc)
     else:
         raise AssertionError("Expected a no-op REG-0001 version bump to be rejected.")
+
+
+class _FixedDate(date):
+    """A `datetime.date` subclass with a fixed `.today()` for deterministic
+    tests - real `date` instances otherwise, so `.day`/`.strftime()` work
+    exactly as they would on the genuine class."""
+
+    @classmethod
+    def today(cls):
+        return cls(2026, 7, 5)
+
+
+def test_today_display_date_has_no_leading_zero_on_single_digit_day(monkeypatch):
+    """EBG-0101 (ESR-0033 WP7): the prior stale hardcoded default ("9 July
+    2026") happened to have a single-digit day with no leading zero, matching
+    this repository's Version History date convention - the fix must
+    preserve that, not introduce a zero-padded day like "05 July 2026"."""
+
+    monkeypatch.setattr(bump_version, "date", _FixedDate)
+
+    assert bump_version._today_display_date() == "5 July 2026"
+
+
+def test_main_defaults_date_to_today_when_omitted(tmp_path, monkeypatch):
+    """EBG-0101: `--date` previously defaulted to a literal stale string
+    ("9 July 2026") regardless of the real date - omitting the flag must now
+    compute today's date instead of silently reusing that hardcoded value."""
+
+    _setup(tmp_path, monkeypatch, reg_version="3.60")
+    monkeypatch.setattr(bump_version, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(bump_version, "_today_display_date", lambda: "5 July 2026")
+    monkeypatch.setattr(
+        sys, "argv", ["bump_version.py", "ADR-0099", "1.1", "--summary", "Test change.", "--author", "Test Author"]
+    )
+
+    exit_code = bump_version.main()
+
+    assert exit_code == 0
+    adr_path = tmp_path / "aiems/governance/decisions/ADR-0099_EXAMPLE_DECISION.md"
+    assert "| 1.1 | 5 July 2026 | Test Author | Test change. |" in adr_path.read_text(encoding="utf-8")
+
+
+def test_main_uses_explicit_date_when_provided(tmp_path, monkeypatch):
+    """An explicitly-passed --date (e.g. to backdate a historical entry)
+    must still override the computed-today default."""
+
+    _setup(tmp_path, monkeypatch, reg_version="3.60")
+    monkeypatch.setattr(bump_version, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(bump_version, "_today_display_date", lambda: "5 July 2026")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "bump_version.py",
+            "ADR-0099",
+            "1.1",
+            "--summary",
+            "Backdated change.",
+            "--author",
+            "Test Author",
+            "--date",
+            "1 January 2020",
+        ],
+    )
+
+    exit_code = bump_version.main()
+
+    assert exit_code == 0
+    adr_path = tmp_path / "aiems/governance/decisions/ADR-0099_EXAMPLE_DECISION.md"
+    text = adr_path.read_text(encoding="utf-8")
+    assert "| 1.1 | 1 January 2020 | Test Author | Backdated change. |" in text
+    assert "5 July 2026" not in text

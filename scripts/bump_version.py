@@ -6,10 +6,12 @@ since editing REG-0001 is itself a REG-0001 change) with one command.
 
 Usage:
     python scripts/bump_version.py <ARTEFACT_ID> <NEW_VERSION> --summary "..."
-        [--author "Claude Engineering Reviewer"] [--date "9 July 2026"]
+        [--author "Claude Engineering Reviewer"] [--date "25 July 2026"]
 
 This is mechanical only. It does not decide what changed - the --summary
 text is required and inserted verbatim into both Version History tables.
+--date defaults to today's date if omitted; pass it explicitly only to
+backdate a historical entry.
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ import argparse
 import re
 import sys
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -31,6 +34,24 @@ from validate_repository import (
 
 REGISTER_PATH = REPO_ROOT / "aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md"
 DEFAULT_AUTHOR = "Claude Engineering Reviewer"
+
+
+def _today_display_date() -> str:
+    """Return today's date as e.g. "25 July 2026" - day without a leading
+    zero, matching this repository's Version History date convention.
+
+    EBG-0101 (ESR-0033 WP7): `--date` previously defaulted to a literal
+    "9 July 2026" (a copy-pasted `--help` example reused as a real
+    functional default), silently dating every Version History row
+    incorrectly whenever the flag was omitted - found live at ESR-0031 WP4
+    after three real invocations were dated "9 July 2026" while eleven days
+    stale against the actual date. `%-d`/`%e` day-without-zero-padding
+    strftime codes are platform-dependent (unavailable on Windows' MSVC C
+    library), so the day is formatted separately rather than relying on one.
+    """
+
+    today = date.today()  # noqa: DTZ011 - Version History date cosmetic, intentionally local wall-clock date
+    return f"{today.day} {today.strftime('%B %Y')}"
 
 
 class BumpVersionError(Exception):
@@ -161,11 +182,16 @@ def main() -> int:
     parser.add_argument("new_version", help="New version string, e.g. 0.4")
     parser.add_argument("--summary", required=True, help="What changed - inserted verbatim into Version History")
     parser.add_argument("--author", default=DEFAULT_AUTHOR)
-    parser.add_argument("--date", default="9 July 2026")
+    parser.add_argument(
+        "--date",
+        default=None,
+        help="Defaults to today's date (e.g. '25 July 2026') if omitted; pass explicitly to backdate a historical entry.",
+    )
     args = parser.parse_args()
+    date_arg = args.date if args.date is not None else _today_display_date()
 
     try:
-        edits = plan_bump(args.artefact_id, args.new_version, args.summary, args.author, args.date)
+        edits = plan_bump(args.artefact_id, args.new_version, args.summary, args.author, date_arg)
     except BumpVersionError as exc:
         print(f"ERROR: {exc}")
         print("No files were changed.")
