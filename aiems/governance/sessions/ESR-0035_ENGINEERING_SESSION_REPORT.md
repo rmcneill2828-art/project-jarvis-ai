@@ -9,13 +9,13 @@
 | Artefact ID | ESR-0035 |
 | Title | Engineering Session Report |
 | Version | 1.0 |
-| Status | Open |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0035 |
 | Date Opened | 25 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1, WP2, WP3 complete |
+| Date Closed | 25 July 2026 |
+| Closure Status | Closed - WP1-WP3 complete, session-wide WP4 Pass, WP5 Establish (RBL-0021 accepted) |
 
 ---
 
@@ -60,6 +60,8 @@ Correct the stale RBL-0019/ESR-0033 current-state references identified during W
 | WP1 | Correct stale RBL-0019/ESR-0033 current-state references in README.md, COC-0001, PBK-0001 and REG-0001 | Complete |
 | WP2 | Register EBG-0108 (Guardian Cognitive Core Implementation) to Approved Backlog, closing JRM-0001's flagged Phase 1 gap | Complete |
 | WP3 | Deliver EBG-0081 Question 1 (UXP shared animation scheduler) - this session's required product-moving work | Complete |
+| WP4 | Session-wide Independent Repository Verification | Complete - Pass |
+| WP5 | Session-wide Repository Baseline Determination | Complete - Establish (RBL-0021) |
 
 ---
 
@@ -106,21 +108,54 @@ Run through the same AIEMS Exchange Bridge / Sponsor Approval Service cycle as W
 
 ---
 
-# 10. Related Artefacts
+# 10. Session-Wide WP4 - Independent Repository Verification
 
-* [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] - prior closed session, immediate predecessor.
-* [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Documentation Debt Discipline, applied by WP1.
-* [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] - current accepted repository baseline, the corrected target reference.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - authoritative backlog; WP1's staleness finding was not already tracked here, WP2 added EBG-0108, WP3 closed EBG-0081.
-* [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] - Track B Phase 1 gap closed by WP2's EBG-0108 registration; Section 7.4/Phase 6 updated by WP3's EBG-0081 delivery.
-* [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] - existing Approved architecture EBG-0108 would build against.
+**Handover preparation**: an [[ESR-0035_WP4_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0035 WP4 Independent Repository Verification handover]] was prepared and submitted to Codex via the bridge, covering the full session content range (`096a06b`..`2d9cf7e`) across all three Work Packages.
+
+**Pass, one reporting correction, no blocking findings**: Codex independently confirmed `git diff --stat 096a06b..2d9cf7e` matches the handover's claimed 11 files/368 insertions/48 deletions exactly, and that no `sentinel/`, `jarvis/`, `src-tauri/` or `.github/workflows/` file was touched anywhere in the diff. The one reporting correction: the handover file itself, being untracked at review time, adds 3 further warnings of its own (169 including it, versus 166 for the session-content diff alone) - both figures independently confirmed correct for their respective scopes, not a contradiction. Codex's own read-only sandbox could not independently reproduce `python -m pytest` or `npx playwright test` (temp-directory/write restrictions), a disclosed environmental limitation consistent with prior sessions, not a defect. Codex independently converged with the handover's own baseline recommendation: establish a new baseline, superseding RBL-0020.
+
+- Commit SHA: pending (handover committed as part of session closure)
+- `python -m pytest`: 374 passed, 1 skipped. `npx playwright test`: 5 passed. `python scripts/validate_repository.py` (full mode): 0 errors, 172 warnings (final count at session close, including this handover's own prose plus subsequent closure-narrative additions).
 
 ---
 
-# 11. Version History
+# 11. Session-Wide WP5 - Repository Baseline Determination (RBL-0021 Established)
+
+**Both independent WP4 views recommended establishing a new baseline** rather than retaining the current one: WP3 delivered a genuine, live-verified product code change (a new shared UXP animation-scheduling module, a live-component refactor, and new automated test coverage), unlike ESR-0034's entirely governance/roadmap-only content. The Programme Sponsor's determination: **establish** - [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] is accepted as the new current repository baseline, superseding [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]].
+
+- Commit SHA: pending (recorded as part of session closure)
+- `python -m pytest`: 374 passed, 1 skipped throughout. `npx playwright test`: 5 passed. `python scripts/validate_repository.py` (full mode): 0 errors, 172 warnings.
+
+---
+
+# 12. Governance Process Notes
+
+One real scope expansion occurred at this session's opening: WP0A repository synchronisation surfaced the RBL-0019/ESR-0033 documentation debt finding, and the Programme Sponsor directed it become WP1 before any other engineering objective was selected - flagged plainly before proceeding, consistent with the standing scope-creep-flagging practice. A second, deliberate expansion occurred after WP2: since WP1/WP2 were both governance-only, the Programme Sponsor directed WP3 add real product-moving work per PBK-0001's Feature-First Delivery Discipline, rather than closing the session at WP2.
+
+No environment gaps or lost background processes occurred this session. The one tooling limitation encountered (Codex's read-only sandbox cannot reproduce `pytest`/Playwright, or write its own scheduling lock file for `return-findings`) was already known and disclosed from prior sessions, handled throughout via the standing EBG-0096 read-only-plus-relay pattern (Codex reviews read-only; the Engineering Implementer relays its verbatim findings into the bridge under explicit per-instance Programme Sponsor approval).
+
+Every Work Package in this session followed the full cycle without exception: draft, Codex read-only review (relayed via `return-findings` under explicit per-instance Sponsor approval), a fix round wherever findings existed (WP2 and WP3 each had at least one genuine finding, both stale warning-count mentions), a second Codex confirmation pass where a fix round occurred, Sponsor approval via the real deployed Sponsor Approval Service, `submit-response`, then commit - including the session-wide WP4/WP5 activities themselves.
+
+---
+
+# 13. Related Artefacts
+
+* [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] - prior closed session, immediate predecessor.
+* [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Documentation Debt Discipline (WP1) and Feature-First Delivery Discipline (WP3), both applied this session.
+* [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] - current accepted repository baseline, established at this session's WP5.
+* [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] - prior accepted repository baseline, superseded by RBL-0021.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - authoritative backlog; WP1's staleness finding was not already tracked here, WP2 added EBG-0108, WP3 closed EBG-0081.
+* [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] - Track B Phase 1 gap closed by WP2's EBG-0108 registration; Section 7.4/Phase 6 updated by WP3's EBG-0081 delivery.
+* [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] - existing Approved architecture EBG-0108 would build against.
+* [[ESR-0035_WP4_INDEPENDENT_REPOSITORY_VERIFICATION_HANDOVER|ESR-0035 WP4 Handover]] - session-wide Independent Repository Verification and Baseline Determination record, Section 10/11.
+
+---
+
+# 14. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 formally closed. Session-wide WP4 (Independent Repository Verification: Pass, one reporting correction) and WP5 (Repository Baseline Determination: Establish - RBL-0021 accepted, superseding RBL-0020) complete. |
 | 1.2 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP3 Complete: delivered EBG-0081 Question 1 (UXP shared animation scheduler) - this session's required product-moving work per PBK-0001's Feature-First Delivery Discipline. |
 | 1.1 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP2 Complete: registered EBG-0108 (Guardian Cognitive Core Implementation) to Approved Backlog, closing JRM-0001's flagged Phase 1 gap. |
 | 1.0 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 opened. WP1 (RBL-0019/ESR-0033 documentation debt correction) in progress. |
