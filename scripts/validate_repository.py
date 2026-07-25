@@ -94,15 +94,29 @@ def parse_register_rows(register_path: Path) -> list[dict[str, str]]:
     return rows
 
 
+def extract_table_version(text: str) -> str | None:
+    match = re.search(r"(?m)^\|\s*Version\s*\|\s*([^|\r\n]+?)\s*\|$", text)
+    return match.group(1).strip() if match else None
+
+
+def extract_badge_version(text: str) -> str | None:
+    # Restricted to the document header (first 20 lines), not the whole
+    # file: a bare whole-file search false-positived on HST/FCH archives,
+    # which embed raw pasted transcripts containing many incidental
+    # "**Version:**" occurrences (quoted content from other documents) far
+    # from any real top-of-file badge - `re.search` returns the first such
+    # match, not necessarily this document's own metadata.
+    header = "\n".join(text.splitlines()[:20])
+    match = re.search(r"(?m)^\*\*Version:\*\*\s*([^\r\n]+)", header)
+    return match.group(1).strip() if match else None
+
+
 def extract_document_version(path: Path) -> str | None:
     text = path.read_text(encoding="utf-8", errors="replace")
-    table_match = re.search(r"(?m)^\|\s*Version\s*\|\s*([^|\r\n]+?)\s*\|$", text)
-    if table_match:
-        return table_match.group(1).strip()
-    bold_match = re.search(r"(?m)^\*\*Version:\*\*\s*([^\r\n]+)", text)
-    if bold_match:
-        return bold_match.group(1).strip()
-    return None
+    table_version = extract_table_version(text)
+    if table_version is not None:
+        return table_version
+    return extract_badge_version(text)
 
 
 def find_registered_file(artefact_id: str, location: str) -> Path | None:
@@ -134,6 +148,36 @@ def check_controlled_register(result: ValidationResult) -> None:
             rel = path.relative_to(REPO_ROOT)
             result.error(
                 f"{row['id']} version mismatch: REG-0001={row['version']} file={document_version} path={rel}"
+            )
+
+
+def check_version_badge_table_consistency(result: ValidationResult) -> None:
+    """EBG-0098 (ESR-0033 WP6): `extract_document_version()` only ever reads
+    one of a document's two version locations (preferring the Document
+    Control table), so a badge/table drift within the same document
+    produced no validation error - the exact defect found at ESR-0031 WP0
+    (PST-0001's top-of-file badge read 2.66 while its own Document Control
+    table read 2.58, eight versions apart, unnoticed for several sessions).
+    This check compares both locations directly wherever a controlled
+    artefact carries both, independent of check_controlled_register's own
+    REG-0001-vs-file comparison above."""
+
+    register_path = REPO_ROOT / "aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md"
+    if not register_path.exists():
+        return  # check_controlled_register already reports this as an error.
+
+    for row in parse_register_rows(register_path):
+        path = find_registered_file(row["id"], row["location"])
+        if path is None:
+            continue  # check_controlled_register already reports this as an error.
+        text = path.read_text(encoding="utf-8", errors="replace")
+        badge_version = extract_badge_version(text)
+        table_version = extract_table_version(text)
+        if badge_version is not None and table_version is not None and badge_version != table_version:
+            rel = path.relative_to(REPO_ROOT)
+            result.error(
+                f"{row['id']} version badge/table drift within the same document: "
+                f"badge={badge_version} table={table_version} path={rel}"
             )
 
 
@@ -416,6 +460,7 @@ def run_validation(governance_only: bool) -> ValidationResult:
     result = ValidationResult(errors=[], warnings=[])
     check_wikilinks(result)
     check_controlled_register(result)
+    check_version_badge_table_consistency(result)
     check_stale_status_references(result)
     check_precommit_hook_installed(result)
     check_section_references(result)

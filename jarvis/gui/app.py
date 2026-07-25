@@ -14,6 +14,19 @@ from jarvis.interfaces.conversation import (
 )
 
 
+def _transcript_filename(export_format: str) -> str:
+    """Build a transcript export filename with microsecond resolution.
+
+    EBG-0105 (ESR-0033 WP6): second-level resolution let two exports
+    triggered within the same wall-clock second silently overwrite one
+    another with no error surfaced to the user.
+    """
+
+    extension = ".md" if export_format == TRANSCRIPT_FORMAT_MARKDOWN else ".txt"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S%f")  # noqa: DTZ005 - filename cosmetic, intentionally local wall-clock time
+    return f"jarvis_transcript_{timestamp}{extension}"
+
+
 class JarvisApp:
     """First Light GUI shell."""
 
@@ -217,10 +230,8 @@ class JarvisApp:
         self._conversation_display.configure(state="disabled")
 
     def _export_transcript(self, export_format: str) -> None:
-        extension = ".md" if export_format == TRANSCRIPT_FORMAT_MARKDOWN else ".txt"
         export_dir = Path.home() / ".jarvis" / "transcripts"
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # noqa: DTZ005 - filename cosmetic, intentionally local wall-clock time
-        file_path = export_dir / f"jarvis_transcript_{timestamp}{extension}"
+        file_path = export_dir / _transcript_filename(export_format)
 
         try:
             export_dir.mkdir(parents=True, exist_ok=True)

@@ -7,7 +7,10 @@ import textwrap
 from scripts.validate_repository import (
     ValidationResult,
     check_stale_status_references,
+    check_version_badge_table_consistency,
+    extract_badge_version,
     extract_current_esr_reference,
+    extract_table_version,
     iter_markdown_files,
     latest_accepted_baseline,
     latest_closed_numbered,
@@ -242,5 +245,89 @@ def test_check_stale_status_references_does_not_flag_open_session_as_stale(tmp_p
 
     result = ValidationResult(errors=[], warnings=[])
     check_stale_status_references(result)
+
+    assert result.errors == []
+
+
+def test_extract_badge_version_ignores_occurrences_outside_the_header():
+    """EBG-0098 fix round (found live against FCH-0000): a bare whole-file
+    search false-positived on HST/FCH archives, which embed raw pasted
+    transcripts containing many incidental '**Version:**' occurrences (quoted
+    content from other documents) far from any real top-of-file badge."""
+
+    lines = ["# FCH-0000 - Full Chat History", "", "| Version | 1.0 |", ""]
+    lines += ["filler line"] * 30
+    lines.append("**Version:** 0.1 Foundation")
+    text = "\n".join(lines)
+
+    assert extract_table_version(text) == "1.0"
+    assert extract_badge_version(text) is None
+
+
+def test_extract_badge_version_finds_a_genuine_header_badge():
+    text = "# PST-0001 - Programme Status\n\n**Version:** 2.87\n\n| Version | 2.87 |\n"
+
+    assert extract_badge_version(text) == "2.87"
+    assert extract_table_version(text) == "2.87"
+
+
+def _write_register(register_path, rows):
+    header = "| Artefact ID | Type | Title | Version | Status | Owner | Classification | Location |\n"
+    header += "|---|---|---|---|---|---|---|---|\n"
+    body = "".join(
+        f"| {r['id']} | Doc | {r['title']} | {r['version']} | Approved | Owner | Internal | {r['location']} |\n"
+        for r in rows
+    )
+    register_path.parent.mkdir(parents=True, exist_ok=True)
+    register_path.write_text(header + body, encoding="utf-8")
+
+
+def test_check_version_badge_table_consistency_flags_real_drift(tmp_path, monkeypatch):
+    import scripts.validate_repository as validator
+
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+
+    doc_dir = tmp_path / "aiems/governance/status"
+    doc_dir.mkdir(parents=True)
+    (doc_dir / "PST-0001_PROGRAMME_STATUS.md").write_text(
+        "# PST-0001\n\n**Version:** 2.66\n\n| Version | 2.58 |\n",
+        encoding="utf-8",
+    )
+
+    register_path = tmp_path / "aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md"
+    _write_register(
+        register_path,
+        [{"id": "PST-0001", "title": "Programme Status", "version": "2.58", "location": "aiems/governance/status"}],
+    )
+
+    result = ValidationResult(errors=[], warnings=[])
+    check_version_badge_table_consistency(result)
+
+    assert len(result.errors) == 1
+    assert "PST-0001" in result.errors[0]
+    assert "badge=2.66" in result.errors[0]
+    assert "table=2.58" in result.errors[0]
+
+
+def test_check_version_badge_table_consistency_passes_when_aligned(tmp_path, monkeypatch):
+    import scripts.validate_repository as validator
+
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+
+    doc_dir = tmp_path / "aiems/governance/status"
+    doc_dir.mkdir(parents=True)
+    (doc_dir / "PST-0001_PROGRAMME_STATUS.md").write_text(
+        "# PST-0001\n\n**Version:** 2.87\n\n| Version | 2.87 |\n",
+        encoding="utf-8",
+    )
+
+    register_path = tmp_path / "aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md"
+    _write_register(
+        register_path,
+        [{"id": "PST-0001", "title": "Programme Status", "version": "2.87", "location": "aiems/governance/status"}],
+    )
+
+    result = ValidationResult(errors=[], warnings=[])
+    check_version_badge_table_consistency(result)
 
     assert result.errors == []
