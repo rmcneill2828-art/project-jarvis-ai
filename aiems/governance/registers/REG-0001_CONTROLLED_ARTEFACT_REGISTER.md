@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.340
+**Version:** 3.342
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.340 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.342 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -198,7 +198,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.87 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.88 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -236,6 +236,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0030 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0031 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0032 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0033 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -350,6 +351,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.342 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.87 to 2.88) following: ESR-0033 formally closed (25 July 2026). Authored ESR-0033 Engineering Session Report v1.0 covering incrementally-selected WP1-WP7 (documentation debt, Theme 7 cleanup, EBG-0100 UXP Memory row, Theme 5 Security Hygiene, EBG-0107 session_launcher.py fix, EBG-0098/0105 version-drift and transcript-filename fixes, EBG-0101 bump_version.py date fix) and session-wide WP8 (Pass)/WP9 (Accept, RBL-0020 established). Updated Current Mode (ESR-0033 closed, no session currently open), Current Phase/Workflow/Objective, Section 4A (closed-state rewrite with full WP1-WP9 summary, ESR-0032 demoted to Prior Session, oldest Prior Session blocks ESR-0027/ESR-0026 trimmed), Section 8 Next Required/Candidate rows, Session Start Guidance and Related Artefacts (RBL-0020/ESR-0033 rows, RBL-0019/ESR-0032 demoted to prior). |
+| 3.341 | 25 July 2026 | Claude Engineering Implementer | Registered ESR-0033 (Engineering Session Report, Closed 1.0) - session formally closed 25 July 2026, delivering WP1-WP7 (documentation debt, Theme 7 cleanup, EBG-0100 UXP Memory row, Theme 5 Security Hygiene, EBG-0107 session_launcher.py fix, EBG-0098/0105 version-drift and transcript-filename fixes, EBG-0101 bump_version.py date fix) and establishing RBL-0020. |
 | 3.340 | 25 July 2026 | Claude Engineering Implementer | Registered RBL-0020 (Repository Baseline, 1.0, Accepted) - ESR-0033 WP9: accepted at the Programme Sponsor's determination, superseding RBL-0019, following the Engineering Reviewer's WP8 Pass. Both independent WP8 views converged on establishing a new baseline, citing WP3's live UXP Memory-row change and WP4's material security-posture improvement as the combined justification beyond pure governance churn. **Fix round (Codex review finding, addressed)**: the initial bump incorrectly reused version 3.336 (already assigned to an earlier WP2 entry in this same table) instead of advancing past the actual highest existing version (3.339) - corrected to 3.340. |
 | 3.339 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.127 to 1.128) following: ESR-0033 WP7: EBG-0101 (bump_version.py's --date flag silently defaulting to a stale hardcoded '9 July 2026' placeholder) closed - now computes today's date when omitted. Section 5A regenerated in full: Theme 6 loses EBG-0101 - open-item total corrected from 31 to 30, independently recounted via session_launcher.py's own WikiLink-safe row splitter. |
 | 3.338 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.126 to 1.127) following: ESR-0033 WP6: EBG-0098 (version badge/table drift detection in validate_repository.py) and EBG-0105 (transcript export filename microsecond resolution) closed. Section 5A regenerated in full: Theme 4 loses both items - open-item total corrected from 33 to 31, independently recounted via session_launcher.py's own WikiLink-safe row splitter. |
