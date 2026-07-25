@@ -157,7 +157,7 @@ Rationale: while five of this session's seven Work Packages were governance/tool
 
 ## 11. WP9 Baseline Acceptance Result
 
-*Pending Programme Sponsor determination.*
+**Accept - new baseline RBL-0020 established, superseding RBL-0019.** The Programme Sponsor determined at ESR-0033 WP9 to establish a new baseline rather than retain RBL-0019, agreeing with both independent views in Sections 9-10: WP3's live UXP Memory-row change (EBG-0100), WP4's material security-posture improvement (Theme 5 Security Hygiene), and WP5-WP7's real process-tooling fixes together warranted a new baseline. [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] is now the current accepted repository baseline.
 
 ---
 
@@ -176,5 +176,6 @@ Rationale: while five of this session's seven Work Packages were governance/tool
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 25 July 2026 | Claude Engineering Implementer | Recorded the Programme Sponsor's WP9 determination: Accept - RBL-0020 established, superseding RBL-0019, agreeing with both independent WP8 views. |
 | 0.2 | 25 July 2026 | Claude Engineering Implementer | Recorded the Engineering Reviewer's (Codex) independent verification result: Pass, no blocking findings. Codex independently confirmed the exact diff-stat figures, file-list/scope accuracy, the sentinel/ boundary and aiems_bridge.py scope-check claims, and converges with Section 9's baseline recommendation (accept a new baseline). Disclosed limitation: three of the nine session observations (subprocess-level events, real-time CI status, conversational Sponsor exchanges) are not independently reconstructable from git history alone - an honest evidence-scope note, not a finding against their accuracy. |
 | 0.1 | 25 July 2026 | Claude Engineering Implementer | Drafted ESR-0033 WP8 Independent Repository Verification handover, covering the full session diff (`c62e361`..`07cac41`) across seven Work Packages (WP1 documentation debt, WP2 Theme 7 cleanup, WP3 UXP Memory row, WP4 Theme 5 Security Hygiene, WP5 session_launcher.py fix, WP6 version-drift detection and transcript filename fix, WP7 bump_version.py date fix). Records repository state, authorised working set, nine session observations (repeated explicit Sponsor scope decisions, a lost-then-recovered background review, a hung network-dependent review pass recovered via independent manual verification, a live-caught validation false positive, a caught-before-commit flaky test, a live self-demonstrated fix, a self-caught documentation-debt gap, and real GitHub Actions confirmation at every CI-relevant push), validation evidence, and an independent baseline view (accept a new baseline). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |

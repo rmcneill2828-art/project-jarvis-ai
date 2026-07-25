@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.339
+**Version:** 3.340
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.339 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.340 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -142,6 +142,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0017 | Repository Baseline | ESR-0029 Repository Baseline (Guardian Orb Canvas 2D Migration + GIA Phase 1) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/baselines/` |
 | RBL-0018 | Repository Baseline | ESR-0031 Repository Baseline (Streaming Notifications MVP + AIEMS Session-Opening Launcher) | 1.1 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0031 | `aiems/governance/baselines/` |
 | RBL-0019 | Repository Baseline | ESR-0032 Repository Baseline (Deployment Alpha - Guardian Desktop Distribution, CI Build Gate Hardening, Release Automation) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0032 | `aiems/governance/baselines/` |
+| RBL-0020 | Repository Baseline | ESR-0033 Repository Baseline (Documentation Debt, Theme 7 Cleanup, UXP Memory Row, Security Hygiene, and AIEMS Tooling Fixes) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0033 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.2 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
@@ -349,6 +350,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.340 | 25 July 2026 | Claude Engineering Implementer | Registered RBL-0020 (Repository Baseline, 1.0, Accepted) - ESR-0033 WP9: accepted at the Programme Sponsor's determination, superseding RBL-0019, following the Engineering Reviewer's WP8 Pass. Both independent WP8 views converged on establishing a new baseline, citing WP3's live UXP Memory-row change and WP4's material security-posture improvement as the combined justification beyond pure governance churn. **Fix round (Codex review finding, addressed)**: the initial bump incorrectly reused version 3.336 (already assigned to an earlier WP2 entry in this same table) instead of advancing past the actual highest existing version (3.339) - corrected to 3.340. |
 | 3.339 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.127 to 1.128) following: ESR-0033 WP7: EBG-0101 (bump_version.py's --date flag silently defaulting to a stale hardcoded '9 July 2026' placeholder) closed - now computes today's date when omitted. Section 5A regenerated in full: Theme 6 loses EBG-0101 - open-item total corrected from 31 to 30, independently recounted via session_launcher.py's own WikiLink-safe row splitter. |
 | 3.338 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.126 to 1.127) following: ESR-0033 WP6: EBG-0098 (version badge/table drift detection in validate_repository.py) and EBG-0105 (transcript export filename microsecond resolution) closed. Section 5A regenerated in full: Theme 4 loses both items - open-item total corrected from 33 to 31, independently recounted via session_launcher.py's own WikiLink-safe row splitter. |
 | 3.337 | 25 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.125 to 1.126) following: ESR-0033 WP5: EBG-0107 closed (session_launcher.py's Next Work Package Candidate / Section 5A gaps fixed). Documentation sweep also caught two earlier misses from this same session: EBG-0100 (fixed at WP3) and EBG-0086/0087/0088/0089 (fixed at WP4) had never been marked Complete in their own Section 5 rows - all five corrected now, disclosed rather than silently backfilled. Section 5A regenerated in full (not edited in place, per its own standing rule): Theme 2 loses EBG-0100, Theme 5 shrinks to just the separately-deferred EBG-0085, Theme 6 loses EBG-0107 - open-item total corrected from 39 to 33 (independently recounted via session_launcher.py's own WikiLink-safe row splitter, not a naive line.split). |
