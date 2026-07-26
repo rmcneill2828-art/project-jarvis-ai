@@ -2,7 +2,7 @@
 
 **Status:** Approved
 
-**Version:** 1.15
+**Version:** 1.16
 
 ---
 
@@ -247,7 +247,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]], the current accepted repository baseline.
+* Review [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]], the current accepted repository baseline.
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -263,7 +263,7 @@ Before beginning engineering activities:
 
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
-* [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0033 WP9 on 25 July 2026, retained at ESR-0034 WP5, superseding [[RBL-0019_REPOSITORY_BASELINE|RBL-0019]].
+* [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0035 WP5 on 25 July 2026, superseding [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]].
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
@@ -279,7 +279,7 @@ Before beginning engineering activities:
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing Engineering Implementer behaviour that complements COC-0001. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used for session reload and synchronisation. |
-| [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0033 WP9 on 25 July 2026, retained at ESR-0034 WP5, superseding RBL-0019. |
+| [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0035 WP5 on 25 July 2026, superseding RBL-0020. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed session report that hands over to ESR-0009 validation readiness. |
 
 ---
@@ -287,6 +287,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.16 | 26 July 2026 | Claude Engineering Implementer | ESR-0036 WP2 (Documentation Debt Discipline, deferred to the last engineering Work Package before session closure by Programme Sponsor direction rather than run first): corrected the stale RBL-0020 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0021, accepted at ESR-0035 WP5. Found during ESR-0036 WP0A repository synchronisation alongside equivalent staleness in README.md and PBK-0001. |
 | 1.15 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP1 (Documentation Debt Discipline): corrected the stale RBL-0019 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0020, accepted at ESR-0033 WP9 and retained at ESR-0034 WP5. Found during ESR-0035 WP0A repository synchronisation alongside equivalent staleness in README.md and PBK-0001. |
 | 1.14 | 25 July 2026 | Claude Engineering Implementer | ESR-0033 WP1 (Documentation Debt Discipline): corrected the stale RBL-0011 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0019 - stale since ESR-0016, nine baselines behind and the longest-drifted of the three references found this WP, since COC-0001 sits outside the mandatory per-session reading set. Found during ESR-0033 WP0A repository synchronisation alongside equivalent staleness in README.md and PBK-0001. |
 | 1.13 | 13 July 2026 | Claude Engineering Implementer | Promoted status Draft to Approved, per Programme Sponsor decision resolving EBG-0004 (the PBK-0001/COC-0001 lifecycle-status question open since ESR-0001) alongside the equivalent PBK-0001 promotion. ESR-0020 WP1/WP2. |

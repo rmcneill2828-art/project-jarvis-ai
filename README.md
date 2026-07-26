@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] closed (25 July 2026) / Backlog Promotion Batch, EBG-0021 Promotion and JRM-0001 Track B 8-Phase Roadmap Rewrite |
+| Current Phase | [[ESR-0036_ENGINEERING_SESSION_REPORT|ESR-0036]] open (26 July 2026) / EBG-0108 First Increment: Guardian Persona Injection |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | Operational First Light (Tkinter) / Guardian Desktop Platform Shell (Tauri + React, live UXP-backend bridge, packaged as a distributable installer since ESR-0032) |
-| Current Engineering Focus | ESR-0035 is the currently open engineering session. [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is the latest closed session, with [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] accepted as the current repository baseline, superseding RBL-0019. See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
+| Current Engineering Focus | ESR-0036 is the currently open engineering session. [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]] is the latest closed session, with [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] accepted as the current repository baseline, superseding RBL-0020. See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
 
 ---
 
@@ -172,7 +172,7 @@ Key engineering artefacts include:
 | [[ESR-0012_ENGINEERING_SESSION_REPORT|ESR-0012]] | Closed engineering session report for Implementation Phase Initiation, GIA-BOOT Proof of Concept and AIEMS Engineering Agent validation |
 | [[ESR-0011_ENGINEERING_SESSION_REPORT|ESR-0011]] | Closed engineering session report for Architecture Validation, Implementation Readiness and ESR-0012 handover |
 | [[ESR-0009_ENGINEERING_SESSION_REPORT|ESR-0009]] | Closed engineering session report for ESR-0009 closure and ESR-0010 handover |
-| [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] | Current accepted repository baseline |
+| [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] | Current accepted repository baseline |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Engineering backlog register |
 | [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] | Controlled Artefact Standard |
@@ -331,9 +331,9 @@ Current focus (see [[PST-0001_PROGRAMME_STATUS|PST-0001]] for full detail):
 - Guardian Orb knowledge-graph rendering (Guardian Experience Architecture Phase 1) is live, rendering the repository's own tracked markdown and WikiLinks as a graph on a Canvas 2D surface (migrated from SVG at ESR-0029).
 - Memory and Data Storage Architecture ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]]) is approved and its Personal Memory tier is implemented (`jarvis/memory/`, ESR-0027); Sentinel Network Exposure Security Requirements ([[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]]) remains an approved specification with no network-facing interface built yet.
 - GIA (Guardian Instrumentation Agent) Phase 1 local resource observability (CPU/memory/storage/process health/engineering-environment presence) is implemented and live-verified (ESR-0029).
-- [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] is the current accepted repository baseline, established at ESR-0033 WP9 and retained at ESR-0034 WP5 - the Guardian Desktop Platform Shell is packaged as a real installer, CI-gated across Python/Rust/Playwright, and released through an automated tag-triggered pipeline (ESR-0032).
+- [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] is the current accepted repository baseline, established at ESR-0035 WP5 - a new shared UXP animation-scheduling module, live-component refactor and new test coverage, superseding RBL-0020.
 - Session/Shared-Family memory tiers, Provider Framework completion, Conversation Engine expansion, EAC and GDP-0001 implementation, and GIA Phases 2-4 remain deferred.
-- ESR-0035 is currently open; [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] is the latest closed session.
+- ESR-0036 is currently open; [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]] is the latest closed session.
 
 ---
 
@@ -356,8 +356,8 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | Artefact | Relationship |
 |----------|--------------|
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point - the authoritative source for current programme state; this README summarises but does not replace it. |
-| [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] | Current accepted repository baseline, established at ESR-0033 WP9 and retained at ESR-0034 WP5, superseding RBL-0019. |
-| [[ESR-0034_ENGINEERING_SESSION_REPORT|ESR-0034]] | Latest closed engineering session: 21-item Approved Backlog promotion batch (WP1), separately-reviewed EBG-0021 promotion (WP2), and a rewrite of JRM-0001 Track B into an explicit 8-phase dependency-chain roadmap (WP3) - entirely Programme Sponsor-directed backlog governance and roadmap sequencing; the ninth session run entirely through the AIEMS Exchange Bridge. |
+| [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] | Current accepted repository baseline, established at ESR-0035 WP5, superseding RBL-0020. |
+| [[ESR-0035_ENGINEERING_SESSION_REPORT|ESR-0035]] | Latest closed engineering session: RBL-0019/ESR-0033 documentation-debt correction (WP1), EBG-0108 (Guardian Cognitive Core Implementation) registered to Approved Backlog (WP2), and the UXP shared animation scheduler delivered (WP3) - the tenth session run entirely through the AIEMS Exchange Bridge. |
 | [[ESR-0032_ENGINEERING_SESSION_REPORT|ESR-0032]] | Guardian Desktop Distribution Foundation (EBG-0102, a real installer), CI Build Gate Hardening (EBG-0103, real Rust/Playwright CI jobs), Release Automation and Version Synchronisation (EBG-0104, a real published GitHub Release) - Theme 1, Deployment Alpha, delivered in full; retained for lineage, no longer the latest closed session. |
 | [[ESR-0013_ENGINEERING_SESSION_REPORT|ESR-0013]] | Closure review package for Guardian Platform Foundation implementation and Programme Sponsor closure decision. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture. |
@@ -394,4 +394,5 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.18 | 19 July 2026 | Claude Engineering Implementer | ESR-0030 WP0A post-commit fix (Codex finding): the top Project Status table had been corrected to ESR-0029/RBL-0017 but Current Focus and Related Artefacts still described ESR-0026/RBL-0015 as current, and Current Focus's memory/GIA bullets were separately stale (Personal Memory implemented at ESR-0027, GIA Phase 1 implemented at ESR-0029, neither reflected). All corrected to the current ESR-0029/RBL-0017 state. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
 | 3.17 | 18 July 2026 | Claude | Direct Programme Sponsor-requested correction (outside an open ESR): README had drifted 13 sessions stale (last describing ESR-0013 while the repository was at ESR-0026 / RBL-0015 / PST-0001 v2.48). Refreshed Project Status, JARVIS implementation summary, Repository Structure, Capability Roadmap, Phase 2 focus, launch guidance (added Tauri + React Guardian Desktop Platform Shell alongside First Light) and Related Artefacts to match current repository state. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
 | 3.19 | 25 July 2026 | Claude Engineering Implementer | ESR-0033 WP1 (Documentation Debt Discipline): corrected stale ESR-0029/RBL-0017 references (top Project Status table, Current Roadmap Phase 2 bullets, Related Artefacts, and a further missed RBL-0010 reference in the Key Engineering Artefacts table - Codex pre-implementation review finding, addressed) to ESR-0032/RBL-0019, and updated the "no session currently open" claims to reflect ESR-0033 now open - three sessions and two accepted baselines stale, found during ESR-0033 WP0A repository synchronisation. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
+| 3.21 | 26 July 2026 | Claude Engineering Implementer | ESR-0036 WP2 (Documentation Debt Discipline, deferred to the last engineering Work Package before session closure by Programme Sponsor direction rather than run first): corrected stale ESR-0034/RBL-0020 references (top Project Status table, Current Roadmap Phase 2 bullets, Related Artefacts, Key Engineering Artefacts table) to ESR-0035/RBL-0021, and updated the "ESR-0035 currently open" claims to reflect ESR-0036 now open. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
 | 3.20 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP1 (Documentation Debt Discipline): corrected stale ESR-0032/RBL-0019 references (top Project Status table, Current Roadmap Phase 2 bullets, Related Artefacts, Key Engineering Artefacts table) to ESR-0034/RBL-0020, and updated the "ESR-0033 currently open" claims to reflect ESR-0035 now open - two sessions and one accepted baseline stale, found during ESR-0035 WP0A repository synchronisation. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |

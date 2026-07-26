@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.367
+**Version:** 3.370
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.367 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.370 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -194,12 +194,12 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.33 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
-| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.15 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.34 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.16 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 2.97 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 2.98 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -240,6 +240,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0033 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0034 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0035 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0036 | Engineering Session Report | Engineering Session Report | 1.0 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -354,6 +355,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.370 | 26 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.97 to 2.98) following: ESR-0036 opened, WP1 Complete (EBG-0108 first increment, `d72a8ba`), WP2 (documentation-staleness correction) in progress. Current Mode/Phase/Workflow/Objective and Section 4A updated. |
+| 3.369 | 26 July 2026 | Claude Engineering Implementer | Aligned PBK-0001 (1.33 to 1.34) and COC-0001 (1.15 to 1.16) versions following: ESR-0036 WP2 documentation-debt correction - stale RBL-0020 current-baseline references corrected to RBL-0021 (accepted at ESR-0035 WP5) in both artefacts, alongside README.md. |
+| 3.368 | 26 July 2026 | Claude Engineering Implementer | Registered ESR-0036 (Engineering Session Report, Open, v1.0) following: ESR-0036 opened, WP1 (EBG-0108 first increment - Guardian persona injection) Complete. |
 | 3.367 | 26 July 2026 | Claude Engineering Implementer | Aligned AAM-0001 version (0.3 to 0.4) following: ESR-0036 WP1 added the Guardian Persona section, formally adopting the ESR-0004 recovered "EKR-0001 Task 2" JARVIS character draft for Guardian - the one EKR-0001 item never promoted into an EBR-0001 backlog item alongside its siblings. Supports EBG-0108's first implementation increment (static persona injection). |
 | 3.366 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.96 to 2.97) following: ESR-0035 formally closed. Session-wide WP4 (Independent Repository Verification: Pass) and WP5 (Repository Baseline Determination: Establish, RBL-0021 accepted) complete. Current Mode/Baseline/Phase/Workflow/Objective updated; Section 4A restructured (ESR-0034 retained as Prior Session, ESR-0033's block dropped). |
 | 3.365 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 formally closed (25 July 2026). Session-wide WP4 (Independent Repository Verification: Pass, one reporting correction) and WP5 (Repository Baseline Determination: Establish, RBL-0021 accepted) complete. ESR-0035 registration status Open to Closed. |
