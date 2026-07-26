@@ -362,7 +362,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Item | Status |
 |------|--------|
 | Repository Health | Good |
-| Repository Acceptance | Accepted through [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] |
+| Repository Acceptance | Accepted through [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] |
 | Current Repository Baseline | See Section 3 (Current Mode block) - restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. |
 | Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2 (refreshed ESR-0031 WP0); sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.2 (ESR-0028 WP2/WP4) |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
@@ -580,7 +580,7 @@ ESR-0008 success criteria have been met for local documentation implementation:
 At the start of the next separately approved engineering session or approved implementation activity, follow [[GDE-0001_PROJECT_KNOWLEDGE_MAP|GDE-0001]] knowledge tiering:
 
 1. Review README.md for repository orientation and platform context.
-2. Review [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]], the repository baseline the Programme Sponsor has accepted as current (established at ESR-0033 WP9, superseding RBL-0019).
+2. Review [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]], the repository baseline the Programme Sponsor has accepted as current (established at ESR-0035 WP5, superseding RBL-0020).
 3. Review [[PST-0001_PROGRAMME_STATUS|PST-0001]] (Current State tier).
 4. Review [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (Project Roadmap) for horizon-placement guidance before selecting the next Work Package - per PBK-0001's Backlog Progression Analysis, an item's existing JRM-0001 placement should inform the recommendation rather than being re-derived from scratch. **Note JRM-0001's own Track A/B tables are themselves stale, not reflecting ESR-0028's or ESR-0029's progress - a deferred gap, flagged rather than silently left. ESR-0029 closed EBG-0082 (cross-module resource research) and EBG-0083 Phase 1 in full (GIA local observability)**. **ESR-0030 (closed) delivered EBG-0084 in full** (WP1 code, WP2 real Tailscale deployment with genuine Sponsor/agent token separation) - `sponsor-decision` is retired; `submit-response` against the real Sponsor Approval Service is now the practiced commit gate. Remaining open items include EBG-0083 Phases 2-4, EBG-0081's shared-animation-scheduler half (Candidate Backlog), EBG-0046, EBG-0023 (Backup/Recovery, unblocked since EBG-0080). **Track A (AIEMS process): EBG-0057 (Claude<->Codex Engineering Bridge) is now proven in genuine real use across seven consecutive entire sessions (ESR-0026 through ESR-0032)** - REA (its own future-phase scope) is a candidate once the MVP core has been proven in more real use.
 5. Review the Architecture tier as referenced by PST-0001 - for Guardian authority/permission/safety work specifically, review [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] (v1.2, Approved) and [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] (v0.3, Approved) before touching Guardian/Sentinel enforcement code - note GAM-0001's policy model is now wired into the production runtime (`build_default_runtime()`, EBG-0074, ESR-0024 WP1) though no production call site yet varies request shape per Guardian action. For UXP/Guardian-experience work specifically, review [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1 before touching `src/GuardianOrbGraph.jsx`, `src/KnowledgeGraphPanels.jsx` or `src/App.jsx` - the `SystemHealthPanel`/`DiagnosticsPanel` duplication (EBG-0073) was resolved at ESR-0023 WP6.
@@ -648,7 +648,8 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 | [[ESR-0017_ENGINEERING_SESSION_REPORT|ESR-0017]] | Closed engineering session report - nine Work Packages including the first live interactive UXP and a Guardian Orb design-baseline recovery. |
 | [[ESR-0016_ENGINEERING_SESSION_REPORT|ESR-0016]] | Closed engineering session report recording the Sentinel trust-tier policy model and its architecture alignment, delivered and independently verified. |
 | [[ESR-0015_ENGINEERING_SESSION_REPORT|ESR-0015]] | Closed engineering session report recording the Sentinel execution pipeline delivered and proven end to end. |
-| [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] | Current accepted repository baseline, accepted at ESR-0033 WP9, superseding RBL-0019. |
+| [[RBL-0021_REPOSITORY_BASELINE|RBL-0021]] | Current accepted repository baseline, accepted at ESR-0035 WP5, superseding RBL-0020. |
+| [[RBL-0020_REPOSITORY_BASELINE|RBL-0020]] | Previous accepted repository baseline, accepted at ESR-0033 WP9, superseding RBL-0019. |
 | [[RBL-0019_REPOSITORY_BASELINE|RBL-0019]] | Previous accepted repository baseline, accepted at ESR-0032 WP5, superseding RBL-0018. |
 | [[RBL-0018_REPOSITORY_BASELINE|RBL-0018]] | Previous accepted repository baseline, accepted at ESR-0031 WP4, superseding RBL-0017. |
 | [[RBL-0017_REPOSITORY_BASELINE|RBL-0017]] | Previous accepted repository baseline, accepted at ESR-0029 WP9 (retained through ESR-0030), superseding RBL-0016. |
