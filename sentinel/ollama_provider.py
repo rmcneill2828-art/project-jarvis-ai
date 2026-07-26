@@ -61,11 +61,13 @@ class OllamaProvider:
 
     def execute(self, request: ProviderRequest) -> ProviderResponse:
         endpoint = self._configuration.endpoint or DEFAULT_ENDPOINT
-        payload = {
+        payload: dict[str, object] = {
             "model": self._configuration.default_model,
             "prompt": request.prompt,
             "stream": False,
         }
+        if request.system_prompt:
+            payload["system"] = request.system_prompt
         headers = {"Content-Type": "application/json"}
 
         try:

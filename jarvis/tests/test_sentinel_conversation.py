@@ -16,6 +16,7 @@ from sentinel.providers import ProviderRequest, ProviderResponse
 class _StubProvider:
     def __init__(self, name: str = "stub") -> None:
         self._name = name
+        self.received: list[ProviderRequest] = []
 
     @property
     def name(self) -> str:
@@ -26,6 +27,7 @@ class _StubProvider:
         return ("text-generation",)
 
     def execute(self, request: ProviderRequest) -> ProviderResponse:
+        self.received.append(request)
         return ProviderResponse(
             provider_name=self._name,
             content=f"echo: {request.prompt}",
@@ -71,6 +73,32 @@ def test_allow_path_calls_orchestrator_and_returns_provider_content():
     assert response.provider == "stub"
     assert len(gateway.decisions()) == 1
     assert len(orchestrator.history()) == 1
+
+
+def test_persona_is_threaded_into_provider_request_as_system_prompt():
+    gateway = SentinelTrustGateway()
+    stub = _StubProvider()
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(stub)
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("stub",)))
+    provider = SentinelGatedConversationProvider(gateway=gateway, orchestrator=orchestrator)
+
+    provider.generate(ConversationRequest(message="hello", persona="You are Guardian."))
+
+    assert stub.received[0].system_prompt == "You are Guardian."
+
+
+def test_no_persona_leaves_system_prompt_none():
+    gateway = SentinelTrustGateway()
+    stub = _StubProvider()
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(stub)
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("stub",)))
+    provider = SentinelGatedConversationProvider(gateway=gateway, orchestrator=orchestrator)
+
+    provider.generate(ConversationRequest(message="hello"))
+
+    assert stub.received[0].system_prompt is None
 
 
 def test_review_outcome_blocks_orchestrator_and_hides_internal_reason():

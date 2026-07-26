@@ -19,6 +19,7 @@ class ConversationRequest:
     """User request submitted to the conversation framework."""
 
     message: str
+    persona: str | None = None
 
 
 @dataclass(frozen=True)

@@ -59,9 +59,13 @@ class OpenAIProvider:
             raise RuntimeError(msg)
 
         endpoint = self._configuration.endpoint or "https://api.openai.com/v1/chat/completions"
+        messages: list[dict[str, str]] = []
+        if request.system_prompt:
+            messages.append({"role": "system", "content": request.system_prompt})
+        messages.append({"role": "user", "content": request.prompt})
         payload = {
             "model": self._configuration.default_model,
-            "messages": [{"role": "user", "content": request.prompt}],
+            "messages": messages,
         }
         headers = {
             "Authorization": f"Bearer {api_key}",

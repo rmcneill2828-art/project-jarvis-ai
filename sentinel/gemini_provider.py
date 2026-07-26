@@ -100,7 +100,9 @@ class GeminiProvider:
             self._configuration.endpoint
             or f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         )
-        payload = {"contents": [{"parts": [{"text": request.prompt}]}]}
+        payload: dict[str, object] = {"contents": [{"parts": [{"text": request.prompt}]}]}
+        if request.system_prompt:
+            payload["systemInstruction"] = {"parts": [{"text": request.system_prompt}]}
         headers = {
             "x-goog-api-key": api_key,
             "Content-Type": "application/json",

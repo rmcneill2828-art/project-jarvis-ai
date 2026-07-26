@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.366
+**Version:** 3.367
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.366 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.367 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -149,7 +149,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.5 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
-| AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.3 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
+| AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.4 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
 | GAM-0001 | Model | Guardian Authority and Boundary Model | 1.2 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
@@ -354,6 +354,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.367 | 26 July 2026 | Claude Engineering Implementer | Aligned AAM-0001 version (0.3 to 0.4) following: ESR-0036 WP1 added the Guardian Persona section, formally adopting the ESR-0004 recovered "EKR-0001 Task 2" JARVIS character draft for Guardian - the one EKR-0001 item never promoted into an EBR-0001 backlog item alongside its siblings. Supports EBG-0108's first implementation increment (static persona injection). |
 | 3.366 | 25 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.96 to 2.97) following: ESR-0035 formally closed. Session-wide WP4 (Independent Repository Verification: Pass) and WP5 (Repository Baseline Determination: Establish, RBL-0021 accepted) complete. Current Mode/Baseline/Phase/Workflow/Objective updated; Section 4A restructured (ESR-0034 retained as Prior Session, ESR-0033's block dropped). |
 | 3.365 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 formally closed (25 July 2026). Session-wide WP4 (Independent Repository Verification: Pass, one reporting correction) and WP5 (Repository Baseline Determination: Establish, RBL-0021 accepted) complete. ESR-0035 registration status Open to Closed. |
 | 3.364 | 25 July 2026 | Claude Engineering Implementer | Registered RBL-0021 (Repository Baseline, 1.0, Accepted) - ESR-0035 WP5: accepted at the Programme Sponsor's determination, superseding RBL-0020, following the Engineering Reviewer's WP4 Pass. Both independent WP4 views converged on establishing a new baseline, citing WP3's real product code change (new src/animationScheduler.js module, GuardianOrbGraph.jsx refactor, new Playwright test coverage) as justification beyond pure governance churn. |

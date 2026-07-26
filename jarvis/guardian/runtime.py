@@ -137,7 +137,9 @@ class GuardianRuntime:
             return ConversationResponse(message=NOT_CONNECTED_RESPONSE, provider="guardian-boundary")
         if self._state is not GuardianRuntimeState.RUNNING:
             return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
-        return self._conversation_provider.generate(ConversationRequest(message=message))
+        return self._conversation_provider.generate(
+            ConversationRequest(message=message, persona=self._config.persona)
+        )
 
     def propose_memory(self, content: str) -> PendingMemoryRequest:
         """Propose retaining `content` as a Personal Memory item.

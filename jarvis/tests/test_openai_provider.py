@@ -108,6 +108,26 @@ def test_execute_raises_on_malformed_response(monkeypatch):
         provider.execute(ProviderRequest(prompt="hello"))
 
 
+def test_execute_prepends_system_message_when_persona_present(monkeypatch):
+    monkeypatch.setenv("TEST_OPENAI_API_KEY", "sk-test-key")
+
+    captured: dict[str, object] = {}
+
+    def fake_transport(url: str, body: bytes, headers: dict[str, str], timeout: float) -> bytes:
+        captured["body"] = json.loads(body)
+        return json.dumps(
+            {"choices": [{"message": {"role": "assistant", "content": "hello back"}}]}
+        ).encode("utf-8")
+
+    provider = OpenAIProvider(_configuration(), transport=fake_transport)
+    provider.execute(ProviderRequest(prompt="hello", system_prompt="You are Guardian."))
+
+    assert captured["body"]["messages"] == [
+        {"role": "system", "content": "You are Guardian."},
+        {"role": "user", "content": "hello"},
+    ]
+
+
 def test_capabilities_and_name_reflect_configuration(monkeypatch):
     provider = OpenAIProvider(_configuration(default_capability="text-generation"))
 

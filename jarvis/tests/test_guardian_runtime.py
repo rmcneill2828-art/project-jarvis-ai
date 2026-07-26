@@ -11,6 +11,7 @@ from jarvis import (
     ServiceHealth,
     ServiceStatus,
 )
+from jarvis.guardian.config import DEFAULT_GUARDIAN_PERSONA
 from jarvis.guardian.runtime import (
     NO_MEMORY_SERVICE_RESPONSE,
     NOT_CONNECTED_RESPONSE,
@@ -336,6 +337,27 @@ def test_guardian_runtime_converse_delegates_to_connected_provider() -> None:
     assert response.message == "stub: hello Guardian"
     assert response.provider == "stub-conversation"
     assert provider.received[0].message == "hello Guardian"
+
+
+def test_guardian_runtime_converse_passes_configured_persona() -> None:
+    provider = _StubConversationProvider()
+    config = GuardianRuntimeConfig(persona="You are Guardian.")
+    runtime = GuardianRuntime(config=config, conversation_provider=provider)
+    runtime.start()
+
+    runtime.converse("hello Guardian")
+
+    assert provider.received[0].persona == "You are Guardian."
+
+
+def test_guardian_runtime_converse_uses_default_persona_when_not_overridden() -> None:
+    provider = _StubConversationProvider()
+    runtime = GuardianRuntime(conversation_provider=provider)
+    runtime.start()
+
+    runtime.converse("hello Guardian")
+
+    assert provider.received[0].persona == DEFAULT_GUARDIAN_PERSONA
 
 
 def test_guardian_runtime_converse_end_to_end_through_real_sentinel_gateway() -> None:

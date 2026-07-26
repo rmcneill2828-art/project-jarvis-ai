@@ -49,6 +49,24 @@ def test_execute_returns_content_on_success():
     assert captured["headers"]["Content-Type"] == "application/json"
 
 
+def test_execute_adds_system_field_when_persona_present():
+    captured: dict[str, object] = {}
+
+    def fake_transport(url: str, body: bytes, headers: dict[str, str], timeout: float) -> bytes:
+        captured["body"] = json.loads(body)
+        return json.dumps({"response": "pong", "done": True}).encode("utf-8")
+
+    provider = OllamaProvider(_configuration(), transport=fake_transport)
+    provider.execute(ProviderRequest(prompt="ping", system_prompt="You are Guardian."))
+
+    assert captured["body"] == {
+        "model": "qwen3.5:2b",
+        "prompt": "ping",
+        "stream": False,
+        "system": "You are Guardian.",
+    }
+
+
 def test_thinking_field_is_never_surfaced_in_content():
     """Reasoning-capable models (e.g. qwen3.5) return an extra 'thinking' field
     alongside 'response' - confirmed via a real call during EIP-ESR0025-002

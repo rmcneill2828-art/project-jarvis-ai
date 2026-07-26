@@ -18,6 +18,7 @@ class ProviderRequest:
     prompt: str
     capability: str = "text-generation"
     metadata: dict[str, str] = field(default_factory=dict)
+    system_prompt: str | None = None
 
     def __post_init__(self) -> None:
         if not self.prompt.strip():

@@ -66,6 +66,24 @@ def test_execute_returns_content_on_success(monkeypatch):
     assert "gemini-2.5-flash:generateContent" in captured["url"]
 
 
+def test_execute_adds_system_instruction_when_persona_present(monkeypatch):
+    monkeypatch.setenv("TEST_GEMINI_API_KEY", "test-gemini-key")
+
+    captured: dict[str, object] = {}
+
+    def fake_transport(url: str, body: bytes, headers: dict[str, str], timeout: float) -> bytes:
+        captured["body"] = json.loads(body)
+        return json.dumps(
+            {"candidates": [{"content": {"parts": [{"text": "hello back"}], "role": "model"}}]}
+        ).encode("utf-8")
+
+    provider = GeminiProvider(_configuration(), transport=fake_transport)
+    provider.execute(ProviderRequest(prompt="hello", system_prompt="You are Guardian."))
+
+    assert captured["body"]["contents"] == [{"parts": [{"text": "hello"}]}]
+    assert captured["body"]["systemInstruction"] == {"parts": [{"text": "You are Guardian."}]}
+
+
 def test_execute_joins_multiple_text_parts(monkeypatch):
     monkeypatch.setenv("TEST_GEMINI_API_KEY", "test-gemini-key")
     provider = GeminiProvider(

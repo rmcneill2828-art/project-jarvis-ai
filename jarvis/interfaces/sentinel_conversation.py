@@ -63,7 +63,11 @@ class SentinelGatedConversationProvider:
                 provider=self.name,
             )
 
-        provider_request = ProviderRequest(prompt=request.message, capability=self._capability)
+        provider_request = ProviderRequest(
+            prompt=request.message,
+            capability=self._capability,
+            system_prompt=request.persona,
+        )
 
         try:
             orchestrated = self._orchestrator.execute(sentinel_response, provider_request)
