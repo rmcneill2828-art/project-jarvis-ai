@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0036 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
+| Version | 1.5 |
 | Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -112,6 +112,8 @@ No environment gaps or lost background processes occurred this session. Every re
 **Pass, after one fix round - no remaining blocking findings**: Codex independently confirmed `git diff --stat 6cf2aeb..26dfc55` matches the handover's claimed 20 files/315 insertions/47 deletions exactly, and that no `src/`, `src-tauri/`, `.github/workflows/` or `jarvis/memory/` file was touched anywhere in the diff. First pass caught a genuine defect the handover's own first draft had not disclosed: the ESR-0036 report itself had been bumped to v1.1 (recording WP2's completion) while REG-0001's tracking row still read 1.0 - `validate_repository.py` correctly failed on this. Fixed; Codex's fix-round pass independently re-ran `validate_repository.py` itself (its sandbox allowed this that time, unlike `pytest`, which remained blocked by a temp-directory restriction throughout - a disclosed environmental limitation consistent with prior sessions) and confirmed clean. Codex independently converged with the handover's own baseline recommendation: establish a new baseline, superseding RBL-0021.
 
 - `python -m pytest`: 381 passed, 1 skipped. `python scripts/validate_repository.py` (full mode): 0 errors, 172 warnings (after the fix above).
+- **Real GitHub Actions CI, checked retroactively**: green at every commit this session (`d72a8ba`, `4667374`, `26dfc55`, `f5acf51`), all 4 jobs (`python`, `rust`, `playwright`, `frontend-build`) passing for `d72a8ba` - the one commit touching CI-relevant `jarvis/`/`sentinel/` code. This check was omitted from the session's own validation evidence until the Programme Sponsor asked whether a verification step had been missed, after WP4 had already closed - a disclosed process gap, not a defect in the result itself.
+- **Programme Sponsor validation, also performed retroactively after being separately raised**: PBK-0001's Repository Lifecycle names Programme Sponsor validation as distinct from Engineering Reviewer verification and automated testing, and WP1's validation up to that point was entirely mocked tests and diff review - nobody had actually run the live product. Performed after session closure: Ollama started (at Programme Sponsor direction), `qwen3.5:2b` serving as the real conversation provider, the Guardian Desktop Platform Shell launched via `npm run tauri dev`, and the Programme Sponsor personally sent a message and confirmed Guardian's response reflected the new persona. A long response delay was observed and confirmed as an expected property of a local CPU-run reasoning model, not a defect of this session's change. Both processes stopped afterward at the Programme Sponsor's direction.
 
 ---
 
@@ -140,6 +142,8 @@ No environment gaps or lost background processes occurred this session. Every re
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 26 July 2026 | Claude Engineering Implementer | Post-closure correction: added the missing Programme Sponsor validation record to Section 8A - a live run of the Guardian Desktop Platform Shell against a real Ollama provider, with the Programme Sponsor personally confirming Guardian's response reflected the new persona. Disclosed as a second distinct process gap (PBK-0001's Repository Lifecycle names Sponsor validation separately from Reviewer verification and automated testing), raised by the Programme Sponsor after the CI gap was already being corrected. |
+| 1.4 | 26 July 2026 | Claude Engineering Implementer | Post-closure correction: added the missing real GitHub Actions CI verification to Section 8A, after the Programme Sponsor asked whether a verification step had been missed. Checked retroactively via `gh run list`/`gh run view`: green at every commit this session, all 4 jobs passing for `d72a8ba`. Disclosed as a gap in the check itself, not just an added data point. |
 | 1.3 | 26 July 2026 | Claude Engineering Implementer | ESR-0036 formally closed. Session-wide WP3 (Independent Repository Verification: Pass, after one fix round) and WP4 (Repository Baseline Determination: Establish - RBL-0022 accepted, superseding RBL-0021) complete. |
 | 1.1 | 26 July 2026 | Claude Engineering Implementer | ESR-0036 WP2 Complete: consolidated documentation staleness fix, across three commits (`4667374`, then a post-commit fix `26dfc55` after Codex caught a whole-document-sweep miss). |
 | 1.0 | 26 July 2026 | Claude Engineering Implementer | ESR-0036 opened. WP1 (EBG-0108 first increment - Guardian persona injection) Complete. Report created retroactively during WP2, a disclosed process gap against PBK-0001's own session lifecycle. |

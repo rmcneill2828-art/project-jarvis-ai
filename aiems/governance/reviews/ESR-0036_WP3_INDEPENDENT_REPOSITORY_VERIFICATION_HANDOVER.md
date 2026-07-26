@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | ESR-0036-WP3 |
 | Title | Independent Repository Verification Handover |
-| Version | 0.2 |
+| Version | 0.4 |
 | Status | Working Report - not a controlled artefact |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -79,10 +79,13 @@ Re-run immediately before this handover:
 | `python -m pytest` | 381 passed, 1 skipped (was 374 before WP1; unchanged since - WP2 touched no code) |
 | `python scripts/validate_repository.py` (full, not governance-only) | 0 errors, 172 warnings, after one real fix (see below) |
 | `git status` | Clean working tree at `26dfc55` plus this handover's own drafting |
+| Real GitHub Actions CI | Green at every commit this session (`d72a8ba`, `4667374`, `26dfc55`, `f5acf51`) - `gh run list`/`gh run view` confirmed all 4 jobs (`python`, `rust`, `playwright`, `frontend-build`) passed for `d72a8ba`, the one commit touching CI-relevant `jarvis/`/`sentinel/` Python code. **Disclosed process gap**: this check was omitted from the session's validation evidence until the Programme Sponsor asked whether a verification step was missing, after WP4 had already closed - every check above this row was run at the time; this one was not, despite being standard practice in every prior session's own report (e.g. ESR-0035 Section 7). Checked retroactively, result clean, no corrective commit needed beyond recording it here. |
 
 **Codex's independent WP3 verification pass caught a genuine defect this handover's own first draft did not disclose**: `ESR-0036_ENGINEERING_SESSION_REPORT.md` had been bumped to v1.1 (recording WP2's completion) but `REG-0001`'s tracking row still read 1.0 - `validate_repository.py` correctly failed with `ESR-0036 version mismatch: REG-0001=1.0 file=1.1`, contradicting this section's original 0-errors claim. Fixed by aligning REG-0001's ESR-0036 row and version/changelog (3.370 to 3.371); re-validated clean (0 errors, 172 warnings, confirmed above).
 
 The warning count is unchanged from ESR-0035's closing figure (172) - all confirmed to be the same known false-positive class (cross-document "Section N.N" prose references), not a new class of problem; this session's version-history additions did not move the count, unlike most prior sessions, since no new "Section N.N"-style cross-reference prose was added this time.
+
+**Second disclosed process gap, also raised by the Programme Sponsor post-closure**: PBK-0001's Repository Lifecycle names "Programme Sponsor validates the completed work" as a distinct step from Engineering Reviewer verification and automated testing - and this had not happened either. WP1's own validation to that point was entirely mocked unit tests (`ProviderRequest`/`ConversationRequest` fixtures) and Codex's diff review; nobody had actually run the live product and observed the persona reach a real conversation. Performed retroactively: Ollama (installed but not running) was started at the Programme Sponsor's direction, `qwen3.5:2b` (already pulled, matching `DEFAULT_OLLAMA_MODEL`) served as the real provider (no cloud API key configured, so Ollama - not `LocalEchoProvider` - was first in the routing order), the Guardian Desktop Platform Shell was launched via `npm run tauri dev`, and the Programme Sponsor personally sent a message and confirmed Guardian's real response reflected the new persona. One genuine, expected observation: a long pause before each response, caused by `qwen3.5` being a reasoning-capable model (an internal "thinking" pass before the visible answer, per `sentinel/ollama_provider.py`'s own docstring) running on local CPU with no GPU acceleration - unrelated to the persona-injection change itself, and within the 90-second timeout the Ollama provider configuration already accounts for. Both the dev server and Ollama were stopped afterward at the Programme Sponsor's direction (dev server via `TaskStop`, Ollama via `taskkill` on both its tray and server processes, confirmed clean via `tasklist`).
 
 ---
 
@@ -134,5 +137,7 @@ Rationale: WP1 delivered a genuine, live-verified product code change - the firs
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.4 | 26 July 2026 | Claude Engineering Implementer | Added the missing Programme Sponsor validation record to Section 7 - a live run of the Guardian Desktop Platform Shell against a real Ollama provider, with the Programme Sponsor personally confirming Guardian's response reflected the new persona. A second distinct process gap the Programme Sponsor raised post-closure, separate from the CI gap. |
+| 0.3 | 26 July 2026 | Claude Engineering Implementer | Added the missing real GitHub Actions CI verification to Section 7, after the Programme Sponsor asked whether a verification step had been missed post-closure. Checked retroactively via `gh run list`/`gh run view`: green at every commit this session, all 4 jobs passing for `d72a8ba` (the CI-relevant one). Disclosed as a process gap in the check itself, not just an added data point. |
 | 0.2 | 26 July 2026 | Claude Engineering Implementer | Recorded the Programme Sponsor's WP4 determination: establish a new baseline - RBL-0022 supersedes RBL-0021, agreeing with both independent WP3 views. |
 | 0.1 | 26 July 2026 | Claude Engineering Implementer | Drafted ESR-0036 WP3 Independent Repository Verification handover, covering the full session diff (`6cf2aeb`..`26dfc55`) across two Work Packages (WP1 EBG-0108 first increment, WP2 documentation staleness fix). Records repository state, authorised working set, six session observations, validation evidence, and an independent baseline view (establish a new baseline, superseding RBL-0021). Submitted to the Engineering Reviewer via the AIEMS Exchange Bridge for genuine independent verification. |
