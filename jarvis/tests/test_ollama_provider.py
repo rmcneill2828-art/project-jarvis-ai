@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from sentinel.ollama_provider import DEFAULT_ENDPOINT, OllamaProvider
+from sentinel.ollama_provider import DEFAULT_ENDPOINT, DEFAULT_NUM_CTX, OllamaProvider
 from sentinel.provider_config import CredentialReference, ProviderConfiguration
 from sentinel.providers import ProviderRequest
 
@@ -44,7 +44,13 @@ def test_execute_returns_content_on_success():
     assert response.provider_name == "ollama"
     assert response.metadata["model"] == "qwen3.5:2b"
     assert captured["timeout"] == 90.0
-    assert captured["body"] == {"model": "qwen3.5:2b", "prompt": "ping", "stream": False}
+    assert captured["body"] == {
+        "model": "qwen3.5:2b",
+        "prompt": "ping",
+        "stream": False,
+        "think": False,
+        "options": {"num_ctx": DEFAULT_NUM_CTX},
+    }
     assert captured["url"] == f"{DEFAULT_ENDPOINT}/api/generate"
     assert captured["headers"]["Content-Type"] == "application/json"
 
@@ -63,8 +69,30 @@ def test_execute_adds_system_field_when_persona_present():
         "model": "qwen3.5:2b",
         "prompt": "ping",
         "stream": False,
+        "think": False,
+        "options": {"num_ctx": DEFAULT_NUM_CTX},
         "system": "You are Guardian.",
     }
+
+
+def test_execute_disables_thinking_and_bounds_context_unconditionally():
+    """EBG-0109 Finding 1: qwen3.5:2b's default 262144-token context and
+    reasoning ("thinking") pass measured 3m15s for a trivial prompt, comfortably
+    exceeding OLLAMA_TIMEOUT_SECONDS. Both must be present on every request,
+    not only ones aimed at a model believed to be reasoning-capable - Ollama
+    ignores options a given model does not use."""
+
+    captured: dict[str, object] = {}
+
+    def fake_transport(url: str, body: bytes, headers: dict[str, str], timeout: float) -> bytes:
+        captured["body"] = json.loads(body)
+        return json.dumps({"response": "pong", "done": True}).encode("utf-8")
+
+    provider = OllamaProvider(_configuration(), transport=fake_transport)
+    provider.execute(ProviderRequest(prompt="ping"))
+
+    assert captured["body"]["think"] is False
+    assert captured["body"]["options"] == {"num_ctx": DEFAULT_NUM_CTX}
 
 
 def test_thinking_field_is_never_surfaced_in_content():

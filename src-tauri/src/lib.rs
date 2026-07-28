@@ -44,12 +44,25 @@ use std::path::Path;
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
+use std::time::Duration;
 use tauri::{AppHandle, Emitter, Manager, State};
 use tauri_plugin_shell::process::{CommandChild, CommandEvent};
 use tauri_plugin_shell::ShellExt;
 
 type PendingMap = Arc<Mutex<HashMap<u64, mpsc::Sender<Result<Value, String>>>>>;
 type SharedBackend = Arc<Mutex<Option<BackendProcess>>>;
+
+/// EBG-0109 Finding 2(c): call_backend() previously waited on an unbounded
+/// channel receive, so a stalled backend produced an indefinite freeze with no
+/// user-visible error (the OS's own "(Not Responding)" state, not this app's).
+/// 120s gives 30s of headroom over the Python side's own OLLAMA_TIMEOUT_SECONDS
+/// (90s) for JSON-RPC marshalling/process-scheduling overhead, while still
+/// bounding the wait so a genuine stall surfaces a clear error instead of never
+/// resolving. This does not root-cause why a request can fail to reach Ollama
+/// at all (Finding 2(b), still open) - it only bounds the symptom.
+const BACKEND_CALL_TIMEOUT: Duration = Duration::from_secs(120);
+const BACKEND_TIMEOUT_MESSAGE: &str =
+    "JARVIS backend did not respond in time. The request may still complete in the background; try again.";
 
 /// Unifies the two possible backend handle shapes so `call_backend()` and the
 /// app-exit cleanup handler do not need to duplicate write/kill logic per path.
@@ -108,10 +121,55 @@ fn fail_all_pending(pending: &PendingMap, message: &str) {
     }
 }
 
+/// Drops a single pending call's entry (EBG-0109 Finding 2(c) timeout cleanup).
+/// If the backend's response for this id ever does arrive afterwards,
+/// dispatch_line()'s existing "no pending call for this id" branch already
+/// drops it safely - removing the entry here is what makes that the case,
+/// rather than leaving a sender nothing will ever receive from.
+fn remove_pending(pending: &PendingMap, id: u64) {
+    pending
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+        .remove(&id);
+}
+
 /// What to do after processing one line of backend output.
 enum LineOutcome {
     Continue,
     TearDown,
+}
+
+/// Routes one already-parsed JSON-RPC response (a line carrying an `id` key)
+/// to its matching pending call, if one is still waiting. Extracted from
+/// dispatch_line() so this path is unit-testable without a full `AppHandle`
+/// (only needed by dispatch_line's other, notification branch) - in
+/// particular EBG-0109's "a late response arrives after timeout cleanup
+/// already removed the pending entry" case, which must be a harmless no-op.
+fn route_response(id: u64, parsed: &Value, pending: &PendingMap) {
+    let sender = {
+        let mut pending_guard = pending
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        pending_guard.remove(&id)
+    };
+    if let Some(sender) = sender {
+        let result = if let Some(error) = parsed.get("error") {
+            let message = error
+                .get("message")
+                .and_then(Value::as_str)
+                .unwrap_or("Unknown JARVIS backend error.");
+            Err(message.to_string())
+        } else {
+            parsed
+                .get("result")
+                .cloned()
+                .ok_or_else(|| "JARVIS backend response was missing a result.".to_string())
+        };
+        let _ = sender.send(result);
+    }
+    // No pending call for this id: nothing is waiting - a stale or unexpected
+    // id, e.g. one EBG-0109's client-side timeout cleanup already removed -
+    // nothing to route to.
 }
 
 /// Classifies and routes a single already-trimmed, non-empty line of backend
@@ -138,28 +196,7 @@ fn dispatch_line(trimmed: &str, pending: &PendingMap, app_handle: &AppHandle) ->
             // even when its value is null. Route to the matching
             // pending call if one is still waiting.
             if let Some(id) = id_value.as_u64() {
-                let sender = {
-                    let mut pending_guard = pending
-                        .lock()
-                        .unwrap_or_else(|poisoned| poisoned.into_inner());
-                    pending_guard.remove(&id)
-                };
-                if let Some(sender) = sender {
-                    let result = if let Some(error) = parsed.get("error") {
-                        let message = error
-                            .get("message")
-                            .and_then(Value::as_str)
-                            .unwrap_or("Unknown JARVIS backend error.");
-                        Err(message.to_string())
-                    } else {
-                        parsed.get("result").cloned().ok_or_else(|| {
-                            "JARVIS backend response was missing a result.".to_string()
-                        })
-                    };
-                    let _ = sender.send(result);
-                }
-                // No pending call for this id: nothing is waiting (a
-                // stale or unexpected id) - nothing to route to.
+                route_response(id, &parsed, pending);
             }
         }
         None => {
@@ -402,11 +439,7 @@ fn call_backend(
         // semantics.
         if let Ok(mut guard) = state.0.lock() {
             if let Some(backend) = guard.as_ref() {
-                backend
-                    .pending
-                    .lock()
-                    .unwrap_or_else(|poisoned| poisoned.into_inner())
-                    .remove(&id);
+                remove_pending(&backend.pending, id);
             }
             *guard = None;
         }
@@ -416,9 +449,24 @@ fn call_backend(
         );
     }
 
-    receiver.recv().map_err(|_| {
-        "JARVIS backend connection was lost while waiting for a response.".to_string()
-    })?
+    match receiver.recv_timeout(BACKEND_CALL_TIMEOUT) {
+        Ok(result) => result,
+        Err(mpsc::RecvTimeoutError::Timeout) => {
+            // Deliberately does not tear down or respawn the backend: the
+            // process may still be genuinely working (e.g. a slow model), and
+            // a late response arriving after this cleanup is already handled
+            // safely by dispatch_line()'s "no pending call for this id" branch.
+            if let Ok(guard) = state.0.lock() {
+                if let Some(backend) = guard.as_ref() {
+                    remove_pending(&backend.pending, id);
+                }
+            }
+            Err(BACKEND_TIMEOUT_MESSAGE.to_string())
+        }
+        Err(mpsc::RecvTimeoutError::Disconnected) => {
+            Err("JARVIS backend connection was lost while waiting for a response.".to_string())
+        }
+    }
 }
 
 #[tauri::command]
@@ -474,4 +522,74 @@ pub fn run() {
                 }
             }
         });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    fn empty_pending() -> PendingMap {
+        Arc::new(Mutex::new(HashMap::new()))
+    }
+
+    #[test]
+    fn remove_pending_drops_the_entry() {
+        let pending = empty_pending();
+        let (tx, _rx) = mpsc::channel();
+        pending.lock().unwrap().insert(1, tx);
+
+        remove_pending(&pending, 1);
+
+        assert!(pending.lock().unwrap().is_empty());
+    }
+
+    #[test]
+    fn remove_pending_on_an_unknown_id_is_a_no_op() {
+        let pending = empty_pending();
+
+        remove_pending(&pending, 42);
+
+        assert!(pending.lock().unwrap().is_empty());
+    }
+
+    #[test]
+    fn route_response_delivers_a_result_to_the_matching_pending_call() {
+        let pending = empty_pending();
+        let (tx, rx) = mpsc::channel();
+        pending.lock().unwrap().insert(1, tx);
+        let parsed = json!({"jsonrpc": "2.0", "id": 1, "result": {"ok": true}});
+
+        route_response(1, &parsed, &pending);
+
+        assert_eq!(rx.recv().unwrap(), Ok(json!({"ok": true})));
+        assert!(pending.lock().unwrap().is_empty());
+    }
+
+    #[test]
+    fn route_response_delivers_an_error_message_to_the_matching_pending_call() {
+        let pending = empty_pending();
+        let (tx, rx) = mpsc::channel();
+        pending.lock().unwrap().insert(1, tx);
+        let parsed =
+            json!({"jsonrpc": "2.0", "id": 1, "error": {"code": -32000, "message": "boom"}});
+
+        route_response(1, &parsed, &pending);
+
+        assert_eq!(rx.recv().unwrap(), Err("boom".to_string()));
+    }
+
+    /// EBG-0109 Finding 2(c): simulates a response arriving for an id whose
+    /// pending entry was already removed by remove_pending() (e.g. after a
+    /// client-side call_backend() timeout). Must be a harmless no-op, not a
+    /// panic - there is simply nothing left to route the late response to.
+    #[test]
+    fn route_response_after_pending_entry_already_removed_is_harmless() {
+        let pending = empty_pending();
+        let parsed = json!({"jsonrpc": "2.0", "id": 1, "result": {"ok": true}});
+
+        route_response(1, &parsed, &pending);
+
+        assert!(pending.lock().unwrap().is_empty());
+    }
 }

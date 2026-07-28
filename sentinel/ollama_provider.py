@@ -21,6 +21,14 @@ Transport = Callable[[str, bytes, dict[str, str], float], bytes]
 
 DEFAULT_ENDPOINT = "http://localhost:11434"
 
+# EBG-0109 Finding 1: reasoning-capable models (e.g. qwen3.5) default to a very
+# large context window and an internal "thinking" pass when neither is bounded,
+# which measured 3m15s for a trivial prompt against this project's own default
+# model - comfortably exceeding OLLAMA_TIMEOUT_SECONDS (90s). Both are disabled
+# unconditionally rather than only for models believed to be reasoning-capable,
+# since Ollama ignores unrecognised/inapplicable options for other models.
+DEFAULT_NUM_CTX = 4096
+
 
 def _default_transport(url: str, body: bytes, headers: dict[str, str], timeout_seconds: float) -> bytes:
     request = urllib.request.Request(url, data=body, headers=headers, method="POST")
@@ -65,6 +73,8 @@ class OllamaProvider:
             "model": self._configuration.default_model,
             "prompt": request.prompt,
             "stream": False,
+            "think": False,
+            "options": {"num_ctx": DEFAULT_NUM_CTX},
         }
         if request.system_prompt:
             payload["system"] = request.system_prompt
