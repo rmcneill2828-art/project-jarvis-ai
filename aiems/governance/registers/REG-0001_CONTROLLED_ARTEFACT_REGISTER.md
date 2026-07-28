@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.388
+**Version:** 3.386
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.388 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.386 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.135 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.136 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -201,7 +201,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 3.6 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 3.8 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -244,6 +244,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0035 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0036 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0037 | Engineering Session Report | Engineering Session Report | 1.4 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0038 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -358,6 +359,11 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.386 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.7 to 3.8) following: ESR-0038 WP1 Complete: EBG-0109 closed. Rust mock_app() reproduction harness abandoned/reverted (confirmed Tauri/Windows environment incompatibility); Programme Sponsor-run live GUI reproduction found no defect across two runs. Section 3/4A updated. |
+| 3.385 | 28 July 2026 | Claude Engineering Implementer | Synced ESR-0038's REG-0001 row to 1.1 (WP1 Complete, EBG-0109 closed). |
+| 3.384 | 28 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.135 to 1.136) following: ESR-0038 WP1: closed EBG-0109 (marked Complete). Two clean, live, Sponsor-run reproduction attempts (npm run tauri dev, JARVIS_OLLAMA_MODEL=qwen2.5:7b, two sequential messages, two independent fresh app launches) found no trace of Findings 2(a)/2(b) - most likely explanation is the original diagnostic session's own concurrent direct-Ollama calls as the confound recommendation (a) itself named, not a genuine IPC defect. A parallel tauri::test::mock_app()-based Rust reproduction attempt was abandoned after confirming (via a minimal, project-independent throwaway crate) that mock_app() itself crashes with STATUS_ENTRYPOINT_NOT_FOUND on this machine - a Tauri/Windows environment incompatibility, not a code defect; fully reverted, no trace left in src-tauri/. |
+| 3.383 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.6 to 3.7) following: ESR-0038 WP0B: opened ESR-0038 (objective: reproduce and fix EBG-0109's remaining open findings 2(a)/2(b), Tauri IPC path). Section 3/4A updated; ESR-0037 demoted to Prior Session summary. |
+| 3.382 | 28 July 2026 | Claude Engineering Implementer | Registered ESR-0038 (Engineering Session Report, Open) at WP0B session opening. |
 | 3.388 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.5 to 3.6) following: ESR-0037 WP3 fix round (Codex-caught, third pass): two further pre-existing stale current-state claims found - Session Start Guidance's closing line and the OSE Relationships table's ESR-0032 row (mislabeled 'Current' since ESR-0033, five sessions stale) - both corrected to ESR-0037/RBL-0023. Disclosed rather than backfilled: the OSE Relationships table's missing ESR-0033 through ESR-0036 rows are a pre-existing gap, out of this narrower fix's scope. |
 | 3.387 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.4 to 3.5) following: ESR-0037 WP3 fix round: corrected the closing warning-count figure to 177 (the true final count after all this session's edits), matching the checker's own inherently self-perturbing behavior when new descriptive text is added - no further chase of this figure past this point. |
 | 3.386 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.3 to 3.4) following: ESR-0037 WP3 fix round (Codex-caught, second pass): Section 9 Repository Health's Current Activity row still cited 152 warnings/374 tests, an ESR-0031-era figure several sessions stale and missed by the first fix pass's targeted sweep. Corrected to the actual current 176 warnings/382 tests. |
