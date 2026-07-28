@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0038 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
-| Status | Open |
+| Version | 1.2 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0038 |
 | Date Opened | 28 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 complete, session-wide verification pending |
+| Date Closed | 28 July 2026 |
+| Closure Status | Closed - WP1 complete (two post-commit fix rounds), session-wide WP2 Pass, WP3 Retain |
 
 ---
 
@@ -54,6 +54,8 @@ Reproduce and diagnose [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-01
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | Reproduce and diagnose EBG-0109 Findings 2(a)/2(b); close the item | Complete |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Retain (RBL-0023) |
 
 ---
 
@@ -80,6 +82,34 @@ The Programme Sponsor ran `npm run tauri dev` directly (with `JARVIS_OLLAMA_MODE
 
 - Files: [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]], [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]. No source code changes in the final state (the Rust refactor attempt was fully reverted).
 - `python -m pytest`: 382 passed, 1 skipped, unchanged (no Python code touched). `cargo build`/`clippy -- -D warnings`/`fmt --check`/`test`: all clean, unchanged from RBL-0023 (5 existing unit tests, no new ones - the reproduction attempt left no trace).
+- Commit SHA: `b0bd8cf`, pushed (`f9ee120..b0bd8cf`). Real CI green.
+
+## Post-Commit Fix Rounds (Codex-Caught, Both Resolved)
+
+Codex's post-commit independent review of `b0bd8cf` found one blocking finding: this session's own REG-0001 version-bump batch had been numbered 3.382-3.386 without re-checking the file's actual current version at the time, colliding with the pre-existing 3.382-3.388 range from ESR-0037's own fix-round sequence - duplicate version numbers, non-monotonic history. Fixed by renumbering the five colliding rows to 3.389-3.393 (chronological order preserved), badge and self-row corrected, a new 3.394 entry added.
+
+A second, independent Codex pass then found a genuinely separate, pre-existing defect from 10 July 2026 (ESR-0017 closure era): four real historical entries (FCH-0017 alignment, FCH-0017 registration, PST-0001 alignment, ESR-0017 alignment) had only ever been assigned two version numbers (3.102/3.103 used twice each). Rather than deferring this to backlog as initially considered, the Programme Sponsor directed a full fix: every row from old-3.104 through old-3.394 (291 rows, confirmed entirely within major version 3, no major-version-boundary crossing) was shifted up by exactly 2 (mechanical, position-based - not raw arithmetic on major.minor, which would have broken across any major-boundary crossing had one existed), the four affected rows reassigned to 3.105/3.104/3.103/3.102 in their original chronological order, and nothing at 3.101 or older touched. A new 3.397 entry records this fix.
+
+Both fix rounds were independently verified by Codex using its own read-only scripts against the live file (not the design description) before being accepted: 418 Version History rows, zero duplicate version numbers across the entire table, strictly decreasing order throughout, badge and self-row both matching the newest entry.
+
+- Commit SHA: `8ded6fb`, pushed (`b0bd8cf..8ded6fb`). Real CI green.
+- **Post-commit independent verification**: Codex re-reviewed the actual pushed diff (`git show 8ded6fb`) in a fresh read-only pass - **Pass**. Confirmed only `REG-0001` changed, and independently re-ran its own verification script against the current file: 418 rows, 0 duplicates, strictly decreasing, badge/self-row match the newest entry (3.397).
+
+---
+
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no findings.** Codex independently reviewed both pushed commits (`b0bd8cf`, `8ded6fb`) via fresh, read-only passes: confirmed the diff scope matched what was approved at each step, confirmed no `src-tauri/`, `src/`, `jarvis/memory/` or `.github/workflows/` file was touched anywhere in the session, and confirmed the EBG-0109 closure narrative is honest and appropriately hedged (disclosed as evidence, not proof). Real GitHub Actions CI green for both commits.
+
+- `python -m pytest`: 382 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors, 179 warnings throughout (up from 177 at RBL-0023's close, consistent with the established disclosed cross-document-reference false-positive category).
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0023 Retained)
+
+No source code changed anywhere in this session - the Rust reproduction attempt was fully reverted before any commit, and both commits touched only governance artefacts (`EBR-0001`, `PST-0001`, `ESR-0038`, `REG-0001`). Consistent with established precedent (documentation/governance-only sessions retain the existing baseline rather than establishing a new one, e.g. ESR-0033 WP1, ESR-0035 WP1), the Programme Sponsor's determination: **retain** - [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]] remains the current accepted repository baseline, established at ESR-0037 WP3.
+
+- `python -m pytest`: 382 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors, 179 warnings throughout.
 
 ---
 
@@ -95,5 +125,6 @@ The Programme Sponsor ran `npm run tauri dev` directly (with `JARVIS_OLLAMA_MODE
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 28 July 2026 | Claude Engineering Implementer | ESR-0038 formally closed. Two post-commit fix rounds on WP1 (REG-0001 version-history integrity, both Codex-caught and independently re-verified). Session-wide WP2 (Independent Repository Verification: Pass, no findings) and WP3 (Repository Baseline Determination: Retain - RBL-0023) complete. |
 | 1.1 | 28 July 2026 | Claude Engineering Implementer | WP1 Complete: `tauri::test::mock_app()` reproduction harness attempt abandoned (confirmed Tauri 2.11.5/Windows environment incompatibility, fully reverted); Programme Sponsor-run live GUI reproduction found no trace of Findings 2(a)/2(b) across two independent runs; EBG-0109 closed. |
 | 1.0 | 28 July 2026 | Claude Engineering Implementer | ESR-0038 opened at WP0B, before WP1 began. Objective: reproduce and fix EBG-0109's remaining open findings (2(a)/2(b)) via a real, non-GUI reproduction harness using `tauri::test::mock_app()`. |

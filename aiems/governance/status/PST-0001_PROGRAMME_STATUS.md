@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 3.8
+**Version:** 3.9
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 3.8 |
+| Version | 3.9 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0037_ENGINEERING_SESSION_REPORT|ESR-0037]] is the latest **closed** session (28 July 2026). [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] is currently **open** (28 July 2026), opened directly from ESR-0037's closure, per PBK-0001 WP0B this row continues naming the latest closed session until ESR-0038 itself closes. **WP1** (Complete): closed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0109. A `tauri::test::mock_app()`-based Rust reproduction harness was designed, Codex-reviewed and Sponsor-approved, but abandoned after `mock_app()` itself was confirmed (via a minimal, project-independent throwaway crate) to crash with `STATUS_ENTRYPOINT_NOT_FOUND` on this machine - a Tauri 2.11.5/Windows environment incompatibility, not a code defect; fully reverted before commit. The Programme Sponsor then ran a live GUI reproduction directly (`npm run tauri dev`, `JARVIS_OLLAMA_MODEL=qwen2.5:7b`, two sequential messages, two independent fresh launches) and found no trace of Findings 2(a)/2(b) in either run - most likely explanation is the original diagnostic session's own concurrent direct-Ollama calls as the confound its own recommendation (a) named. EBG-0109 closed on that basis. Full detail in [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]]. |
-| Current Repository Baseline | [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]], accepted at ESR-0037 WP3, superseding RBL-0022 - WP1's real Ollama-provider and Tauri IPC-layer fix, with new test coverage, warranted a new baseline. |
+| Current Mode | [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] is the latest **closed** session (28 July 2026). No session is currently open. **WP1** closed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0109. A `tauri::test::mock_app()`-based Rust reproduction harness was designed, Codex-reviewed and Sponsor-approved, but abandoned after `mock_app()` itself was confirmed (via a minimal, project-independent throwaway crate) to crash with `STATUS_ENTRYPOINT_NOT_FOUND` on this machine - a Tauri 2.11.5/Windows environment incompatibility, not a code defect; fully reverted before commit. The Programme Sponsor then ran a live GUI reproduction directly (`npm run tauri dev`, `JARVIS_OLLAMA_MODEL=qwen2.5:7b`, two sequential messages, two independent fresh launches) and found no trace of Findings 2(a)/2(b) in either run - most likely explanation is the original diagnostic session's own concurrent direct-Ollama calls as the confound its own recommendation (a) named. EBG-0109 closed on that basis. Two post-commit fix rounds corrected REG-0001 version-history integrity issues (Codex-caught, independently re-verified). Session-wide **WP2** (Independent Repository Verification: Pass, no findings) and **WP3** (Repository Baseline Determination: **Retain** - no source code changed this session, [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]] remains current) closed the session. Full detail in [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]]. |
+| Current Repository Baseline | [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]], accepted at ESR-0037 WP3, superseding RBL-0022, retained at ESR-0038 WP3 (no source code changed this session) - WP1's real Ollama-provider and Tauri IPC-layer fix, with new test coverage, warranted a new baseline. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2, refreshed at ESR-0031 WP0 to reflect ESR-0027 WP1's Personal Memory implementation - now distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0038 open (28 July 2026); under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0037 completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - confirmed repeatable across a twelfth consecutive session (ESR-0026 through ESR-0037); ESR-0038 continues the same practice. |
-| Current Engineering Objective | ESR-0038 WP1 Complete (EBG-0109 closed); session-wide verification and closure pending. See [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] for full detail. |
+| Current Phase | ESR-0038 closed (28 July 2026); no session currently open; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0038 completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - confirmed repeatable across a thirteenth consecutive session (ESR-0026 through ESR-0038). No session is currently open; the next session will select its own objective at WP0B. |
+| Current Engineering Objective | None - no session currently open. ESR-0038's WP1 plus session-wide WP2/WP3 are all Complete; see [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] for full detail. |
 
 ---
 
@@ -100,9 +100,13 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] is **open** (28 July 2026), created at WP0B before WP1 began. Run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
+[[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] is **closed** (28 July 2026). **No session is currently open.** The thirteenth session run entirely through the AIEMS Exchange Bridge with no manual relay anywhere, run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
 
-**WP1** (Complete): closed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0109's remaining open findings - 2(a) (silent `LocalEchoProvider` fallback) and 2(b) (indefinite hang, request apparently never reaching Ollama), both specific to the Tauri desktop shell's IPC path. Two reproduction attempts: (1) a `tauri::test::mock_app()`-based Rust harness - Codex design review Pass, Programme Sponsor-approved, implemented and compiled cleanly, but the ignored test itself crashed the compiled test binary with `STATUS_ENTRYPOINT_NOT_FOUND` purely from linking `mock_app()`, independently reproduced in a minimal, project-independent throwaway crate confirming a Tauri 2.11.5/Windows environment incompatibility rather than a code defect; fully reverted (`git checkout`) before commit, with `cargo build`/`clippy`/`fmt`/`test` confirming no trace remained. (2) A live GUI reproduction run directly by the Programme Sponsor (`npm run tauri dev`, `JARVIS_OLLAMA_MODEL=qwen2.5:7b`, two sequential messages, two independent fresh app launches) - neither Finding 2(a) nor 2(b) reproduced in either run; `ollama ps` confirmed the correct model genuinely loaded and serving both requests. Closed on the disclosed conclusion that the original diagnostic session's own concurrent direct-Ollama calls were the likely confound, per recommendation (a)'s own framing - not proof of absence, and open to reopening if it recurs under real load. No source code changes in the final committed state. Full detail in [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]].
+**WP1** (Complete): closed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0109's remaining open findings - 2(a) (silent `LocalEchoProvider` fallback) and 2(b) (indefinite hang, request apparently never reaching Ollama), both specific to the Tauri desktop shell's IPC path. Two reproduction attempts: (1) a `tauri::test::mock_app()`-based Rust harness - Codex design review Pass, Programme Sponsor-approved, implemented and compiled cleanly, but the ignored test itself crashed the compiled test binary with `STATUS_ENTRYPOINT_NOT_FOUND` purely from linking `mock_app()`, independently reproduced in a minimal, project-independent throwaway crate confirming a Tauri 2.11.5/Windows environment incompatibility rather than a code defect; fully reverted (`git checkout`) before commit, with `cargo build`/`clippy`/`fmt`/`test` confirming no trace remained. (2) A live GUI reproduction run directly by the Programme Sponsor (`npm run tauri dev`, `JARVIS_OLLAMA_MODEL=qwen2.5:7b`, two sequential messages, two independent fresh app launches) - neither Finding 2(a) nor 2(b) reproduced in either run; `ollama ps` confirmed the correct model genuinely loaded and serving both requests. Closed on the disclosed conclusion that the original diagnostic session's own concurrent direct-Ollama calls were the likely confound, per recommendation (a)'s own framing - not proof of absence, and open to reopening if it recurs under real load. No source code changes in the final committed state. Two post-commit fix rounds corrected genuine REG-0001 version-history integrity defects (one self-introduced this session, one pre-existing from 10 July 2026), both Codex-caught and independently re-verified. Full detail in [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]].
+
+Session-wide **WP2** (Independent Repository Verification): **Pass, no findings** - Codex independently reviewed both pushed commits, confirmed diff scope matched approvals, confirmed no `src-tauri/`, `src/`, `jarvis/memory/` or `.github/workflows/` file was touched, real CI green throughout. Session-wide **WP3** (Repository Baseline Determination): **Retain** - no source code changed this session; [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]] remains the current accepted baseline.
+
+382 Python tests pass (unchanged - no Python code touched) plus 1 correctly-skipped test; `cargo build`/`clippy -- -D warnings`/`fmt --check`/`test` clean throughout, unchanged from RBL-0023 (the Rust reproduction attempt left no trace). `validate_repository.py` (full mode) passes clean (179 warnings at session close, up from 177 at RBL-0023's closing figure, consistent with the established disclosed cross-document-reference false-positive category).
 
 ---
 
@@ -112,7 +116,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 ---
 
-PST-0001 records ESR-0038 as the currently open session. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0038 as the latest closed session and no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -717,6 +721,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.9 | 28 July 2026 | Claude Engineering Implementer | ESR-0038 formally closed: session-wide WP2 (Independent Repository Verification: Pass) and WP3 (Repository Baseline Determination: Retain, RBL-0023) complete. Current Mode/Phase/Workflow/Objective updated to reflect no session currently open; ESR-0037 remains Prior Session. |
 | 3.8 | 28 July 2026 | Claude Engineering Implementer | ESR-0038 WP1 Complete: EBG-0109 closed. Rust mock_app() reproduction harness abandoned/reverted (confirmed Tauri/Windows environment incompatibility); Programme Sponsor-run live GUI reproduction found no defect across two runs. Section 3/4A updated. |
 | 3.7 | 28 July 2026 | Claude Engineering Implementer | ESR-0038 WP0B: opened ESR-0038 (objective: reproduce and fix EBG-0109's remaining open findings 2(a)/2(b), Tauri IPC path). Section 3/4A updated; ESR-0037 demoted to Prior Session summary. |
 | 3.6 | 28 July 2026 | Claude Engineering Implementer | ESR-0037 WP3 fix round (Codex-caught, third pass): two further pre-existing stale current-state claims found - Session Start Guidance's closing line and the OSE Relationships table's ESR-0032 row (mislabeled 'Current' since ESR-0033, five sessions stale) - both corrected to ESR-0037/RBL-0023. Disclosed rather than backfilled: the OSE Relationships table's missing ESR-0033 through ESR-0036 rows are a pre-existing gap, out of this narrower fix's scope. |

@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.397
+**Version:** 3.399
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.397 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.399 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -201,7 +201,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 3.8 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 3.9 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -244,7 +244,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0035 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0036 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0037 | Engineering Session Report | Engineering Session Report | 1.4 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0038 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0038 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -359,6 +359,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.399 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.8 to 3.9) following: ESR-0038 formally closed: session-wide WP2 (Independent Repository Verification: Pass) and WP3 (Repository Baseline Determination: Retain, RBL-0023) complete. Current Mode/Phase/Workflow/Objective updated to reflect no session currently open; ESR-0037 remains Prior Session. |
+| 3.398 | 28 July 2026 | Claude Engineering Implementer | Synced ESR-0038's REG-0001 row to Closed/1.2 (session formally closed). |
 | 3.397 | 28 July 2026 | Claude Engineering Implementer | Post-commit fix (Codex-caught, second finding): a separate, pre-existing version-history defect from 10 July 2026 (ESR-0017 closure era) - four real historical entries (FCH-0017 alignment, FCH-0017 registration, PST-0001 alignment, ESR-0017 alignment, all genuinely distinct changes) had only ever been assigned two version numbers (3.102 and 3.103 used twice each), leaving no room to disambiguate them without a wider renumbering. Fixed at the Programme Sponsor's explicit direction (not deferred to backlog): the four affected rows were assigned four distinct numbers (3.105, 3.104, 3.103, 3.102, in their existing chronological order) by shifting every newer row above them (291 rows, old 3.104 through old 3.394, all within major version 3 - confirmed no major-version boundary crosses this range) up by exactly 2. No row older than the affected cluster (3.101 and below, down to 1.0) was touched. Verified programmatically: 417 rows before and after, no duplicates, strictly decreasing order throughout, oldest entry still 1.0. |
 | 3.396 | 28 July 2026 | Claude Engineering Implementer | Post-commit fix (Codex-caught blocking finding on commit b0bd8cf): this session's ESR-0038 version-bump batch had been numbered 3.382-3.386 without first re-checking the file's actual current version, colliding with and duplicating the pre-existing 3.382-3.388 range from the ESR-0037 WP3 fix-round sequence - non-monotonic history with duplicate version numbers. Renumbered the five colliding rows to 3.389-3.393 (chronological order preserved), badge and self-row corrected to match. |
 | 3.395 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.7 to 3.8) following: ESR-0038 WP1 Complete: EBG-0109 closed. Rust mock_app() reproduction harness abandoned/reverted (confirmed Tauri/Windows environment incompatibility); Programme Sponsor-run live GUI reproduction found no defect across two runs. Section 3/4A updated. |
