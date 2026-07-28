@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.379
+**Version:** 3.388
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.379 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.388 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -145,6 +145,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0020 | Repository Baseline | ESR-0033 Repository Baseline (Documentation Debt, Theme 7 Cleanup, UXP Memory Row, Security Hygiene, and AIEMS Tooling Fixes) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0033 | `aiems/governance/baselines/` |
 | RBL-0021 | Repository Baseline | ESR-0035 Repository Baseline (Documentation Debt, Guardian Cognitive Core Backlog Registration, and UXP Shared Animation Scheduler) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0035 | `aiems/governance/baselines/` |
 | RBL-0022 | Repository Baseline | ESR-0036 Repository Baseline (EBG-0108 First Increment - Guardian Persona Injection) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0036 | `aiems/governance/baselines/` |
+| RBL-0023 | Repository Baseline | ESR-0037 Repository Baseline (EBG-0109 Findings 1/2(c) - Ollama Timeout Risk and Tauri IPC Indefinite Hang) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0037 | `aiems/governance/baselines/` |
 | PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.2 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
@@ -200,7 +201,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 3.0 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 3.6 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -242,7 +243,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0034 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0035 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0036 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0037 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0037 | Engineering Session Report | Engineering Session Report | 1.4 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -357,6 +358,15 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.388 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.5 to 3.6) following: ESR-0037 WP3 fix round (Codex-caught, third pass): two further pre-existing stale current-state claims found - Session Start Guidance's closing line and the OSE Relationships table's ESR-0032 row (mislabeled 'Current' since ESR-0033, five sessions stale) - both corrected to ESR-0037/RBL-0023. Disclosed rather than backfilled: the OSE Relationships table's missing ESR-0033 through ESR-0036 rows are a pre-existing gap, out of this narrower fix's scope. |
+| 3.387 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.4 to 3.5) following: ESR-0037 WP3 fix round: corrected the closing warning-count figure to 177 (the true final count after all this session's edits), matching the checker's own inherently self-perturbing behavior when new descriptive text is added - no further chase of this figure past this point. |
+| 3.386 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.3 to 3.4) following: ESR-0037 WP3 fix round (Codex-caught, second pass): Section 9 Repository Health's Current Activity row still cited 152 warnings/374 tests, an ESR-0031-era figure several sessions stale and missed by the first fix pass's targeted sweep. Corrected to the actual current 176 warnings/382 tests. |
+| 3.385 | 28 July 2026 | Claude Engineering Implementer | Aligned ESR-0037 version (1.3 to 1.4) following: Fix round: corrected the WP3 evidence line's warning-count figure to the actual final 176 rather than an intermediate 174. |
+| 3.384 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.2 to 3.3) following: ESR-0037 WP3 fix round: corrected the closing warning-count language to state the actual final figure (176, up from 172) rather than an intermediate 174 that had already drifted during the same fix round's own edits. |
+| 3.383 | 28 July 2026 | Claude Engineering Implementer | Aligned ESR-0037 version (1.2 to 1.3) following: Fix round (Codex pre-commit finding on the WP3 closure package): corrected the WP2 section's warning-count figure, which had been overwritten to 174 by an unscoped replace-all when it should have stayed 173 (WP2 added no new files; the +1 to 174 only occurs once WP3 creates RBL-0023). |
+| 3.382 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.1 to 3.2) following: ESR-0037 WP3 fix round (Codex pre-commit finding on the closure package): corrected three remaining stale RBL-0022 'current baseline' references outside Sections 3/4A (Repository Health Section 9, Session Start Guidance item 2, Related Artefacts list) to RBL-0023, and corrected a stale 173-warning figure to the actual 174 (the new RBL-0023 document itself adds one further disclosed cross-document-reference false positive). |
+| 3.381 | 28 July 2026 | Claude Engineering Implementer | ESR-0037 closure: registered RBL-0023 (Accepted, superseding RBL-0022) and updated ESR-0037's own row from Open/1.1 to Closed/1.2. |
+| 3.380 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.0 to 3.1) following: ESR-0037 WP2/WP3 closure: session-wide Independent Repository Verification Pass (no findings) and Repository Baseline Determination Establish - RBL-0023 accepted, superseding RBL-0022. Section 3/4A updated to reflect ESR-0037 closed, no session currently open; ESR-0036 demoted to Prior Session summary. |
 | 3.379 | 28 July 2026 | Claude Engineering Implementer | Synced ESR-0037's REG-0001 row to 1.1, matching ESR-0037 WP1's own version bump (EBG-0109 Findings 1/2(c) closed). |
 | 3.378 | 28 July 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.134 to 1.135) following: ESR-0037 WP1: closed EBG-0109 Findings 1 and 2(c) (Ollama reasoning-model timeout risk; Tauri IPC indefinite-hang/no-visible-error symptom), design reviewed by Codex (PASS) and Programme Sponsor-approved via the Sponsor Approval Service. Findings 2(a)/2(b)/recommendation (d) remain open - item stays Approved Backlog pending a live, controlled reproduction. |
 | 3.377 | 28 July 2026 | Claude Engineering Implementer | Aligned PST-0001 version (2.99 to 3.0) following: ESR-0037 WP0B: opened ESR-0037 (objective: diagnose and fix EBG-0109, Ollama/Tauri conversation-path reliability), created at WP0B before WP1 per PBK-0001's Engineering Session Lifecycle. Section 3/4A updated; ESR-0036 demoted to Prior Session summary. |

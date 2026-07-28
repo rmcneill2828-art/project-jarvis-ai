@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0037 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
-| Status | Open |
+| Version | 1.4 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0037 |
 | Date Opened | 28 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 complete, session-wide verification pending |
+| Date Closed | 28 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP2 Pass, WP3 Establish (RBL-0023 accepted) |
 
 ---
 
@@ -54,8 +54,8 @@ Diagnose and fix [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0109: th
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | EBG-0109: diagnose and fix Ollama/Tauri conversation-path reliability | Complete |
-| WP2 | Session-wide Independent Repository Verification | Pending |
-| WP3 | Session-wide Repository Baseline Determination | Pending |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Establish (RBL-0023) |
 
 ---
 
@@ -76,12 +76,31 @@ Reviewed `sentinel/ollama_provider.py`, `sentinel/orchestrator.py`, `jarvis/inte
 
 ---
 
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no findings.** Codex independently reviewed the real pushed diff for commit `2b1e531` (`ff5f67d..2b1e531`) via a fresh, read-only CLI pass (not taken on the pre-commit design review's word alone): confirmed the implementation matches what was approved (`think: false`/`options.num_ctx=4096` unconditionally in `sentinel/ollama_provider.py`; `src-tauri/src/lib.rs`'s `call_backend()` using a 120s `recv_timeout` with `remove_pending()` cleanup and `route_response()` extracted from `dispatch_line()`; 5 new Rust unit tests; updated/added Python tests), confirmed no file under `src/`, `jarvis/memory/` or `.github/workflows/` was touched, and confirmed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]'s EBG-0109 entry and this report accurately describe the actual committed change with no aspirational overclaiming.
+
+Real GitHub Actions CI (run `30342589297`) also confirmed green for `2b1e531`: all four jobs (`python`, `rust`, `playwright`, `frontend-build`) passed.
+
+- `python -m pytest`: 382 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors, 173 warnings throughout - unchanged from WP1's close, since this WP added no new files.
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0023 Established)
+
+**Both independent verification passes recommended establishing a new baseline** rather than retaining RBL-0022: the pre-commit Codex design review (Pass) and the post-commit Codex diff review (Pass, no findings) both confirmed WP1 delivered a genuine, live-verified product code change to the Ollama provider adapter and the Tauri IPC layer, backed by new test coverage (1 new Python test, 5 new Rust unit tests) and real green CI. The Programme Sponsor's determination: **establish** - [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]] is accepted as the new current repository baseline, superseding [[RBL-0022_REPOSITORY_BASELINE|RBL-0022]].
+
+- `python -m pytest`: 382 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors throughout - warning count rose from 173 at WP1's close to 177 by session close, across this WP's own governance edits (the new RBL-0023 document plus several REG-0001 version-history entries, whose summary text occasionally contains a phrase the checker's cross-document "Section N" pattern matches against an unrelated document, including this fix round's own entries); all disclosed as the same pre-existing false-positive category, not new defects. This count is not re-verified after this point - any further edit to this report itself would trigger the same mechanism again.
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0036_ENGINEERING_SESSION_REPORT|ESR-0036]] - prior closed session, immediate predecessor; EBG-0109 was discovered and registered immediately after its closure.
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Session Initialisation and Engineering Session Lifecycle guidance followed for WP0A/WP0B.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0109 (this session's objective) and EBG-0108 (the dependent item motivating priority).
-* [[RBL-0022_REPOSITORY_BASELINE|RBL-0022]] - current accepted repository baseline at session open.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0109 (this session's objective, Findings 1/2(c) closed, item remains open) and EBG-0108 (the dependent item motivating priority).
+* [[RBL-0022_REPOSITORY_BASELINE|RBL-0022]] - prior accepted repository baseline, superseded by RBL-0023.
+* [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]] - current accepted repository baseline, established at this session's WP3.
 
 ---
 
@@ -89,5 +108,8 @@ Reviewed `sentinel/ollama_provider.py`, `sentinel/orchestrator.py`, `jarvis/inte
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 28 July 2026 | Claude Engineering Implementer | Fix round: corrected the WP3 evidence line's warning-count figure to the actual final 176 rather than an intermediate 174. |
+| 1.3 | 28 July 2026 | Claude Engineering Implementer | Fix round (Codex pre-commit finding on the WP3 closure package): corrected the WP2 section's warning-count figure, which had been overwritten to 174 by an unscoped replace-all when it should have stayed 173 (WP2 added no new files; the +1 to 174 only occurs once WP3 creates RBL-0023). |
+| 1.2 | 28 July 2026 | Claude Engineering Implementer | ESR-0037 formally closed. Session-wide WP2 (Independent Repository Verification: Pass, no findings) and WP3 (Repository Baseline Determination: Establish - RBL-0023 accepted, superseding RBL-0022) complete. |
 | 1.1 | 28 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0109 Findings 1 and 2(c) fixed (Ollama reasoning-model timeout risk; Tauri IPC indefinite-hang/no-visible-error symptom), Codex design review Pass, Programme Sponsor-approved via the Sponsor Approval Service. |
 | 1.0 | 28 July 2026 | Claude Engineering Implementer | ESR-0037 opened at WP0B, before WP1 began. Objective: diagnose and fix EBG-0109 (Ollama/Tauri conversation-path reliability). |
