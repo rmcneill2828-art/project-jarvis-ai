@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0040 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
-| Status | Open |
+| Version | 1.4 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0040 |
 | Date Opened | 29 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 complete |
+| Date Closed | 29 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP2 Pass, WP3 Establish (RBL-0025 accepted) |
 
 ---
 
@@ -56,6 +56,8 @@ Scope [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0112 (JRM-0001 Trac
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | EBG-0112: scope, design and implement Voice/Vision Phase 6 Increment A (speech output); Codex design review; Programme Sponsor approval | Complete |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Establish (RBL-0025) |
 
 ---
 
@@ -81,7 +83,24 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 - Files: `sentinel/speech_providers.py` (new), `sentinel/piper_provider.py` (new), `jarvis/interfaces/voice.py` (new), `jarvis/guardian/runtime.py`, `pyproject.toml`, `jarvis/tests/test_speech_providers.py` (new), `jarvis/tests/test_piper_provider.py` (new), `jarvis/tests/test_voice_interface.py` (new), `jarvis/tests/test_guardian_runtime.py`, [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]], [[JRM-0001_PROJECT_ROADMAP|JRM-0001]], [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]], [[EIP-ESR0040-001_VOICE_PHASE6_INCREMENT_A_SPEECH_OUTPUT_SCOPE|EIP-ESR0040-001]], [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]].
 - `python -m pytest`: 418 passed, 1 skipped (was 396 passed, 1 skipped - 22 new tests, no regressions).
-- `python scripts/validate_repository.py` (full mode): 0 errors, 191 warnings (was 190 - one new cross-document Section-reference false positive, consistent with the established disclosed category).
+- `python scripts/validate_repository.py` (full mode): 0 errors, 192 warnings (was 190 - two new cross-document Section-reference false positives, consistent with the established disclosed category).
+- Committed as `6f595ab` (`1399c4f..6f595ab`), pushed to `origin/main`.
+
+---
+
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no findings.** Codex independently reviewed the real pushed diff for commit range `1399c4f..6f595ab` via a fresh, read-only CLI pass: confirmed the diff touches exactly the 15 claimed files and none outside that scope, confirmed no `src/`, `src-tauri/`, `jarvis/memory/` or `.github/workflows/` file was touched, confirmed no change to `ConversationRequest`, `ProviderRequest`, `ExecutionProvider`, `SentinelGatedConversationProvider` or any existing text-generation provider adapter, confirmed (via `git ls-files`) that `sentinel/elevenlabs_provider.py` and its test file are genuinely absent from the final committed tree, and spot-checked `PiperProvider` against the approved v1.2 design (localised `import piper`, required/validated `endpoint`, safe `RuntimeError` wrapping). Independently re-ran `python scripts/validate_repository.py`: 0 errors, 192 warnings, matching this session's own evidence. Independently attempted `python -m pytest` but could not complete it in Codex's own read-only sandbox (`FileNotFoundError: No usable temporary directory found`) - the same disclosed, pre-existing Codex read-only-sandbox limitation recorded in EBG-0096's history, not a new issue or evidence against this session's own 418-passed/1-skipped result. Codex's `return-findings` call again failed inside its sandbox; relayed verbatim under explicit per-instance Programme Sponsor approval.
+
+- `python scripts/validate_repository.py` (full mode): 0 errors, 192 warnings throughout - unchanged from WP1's close.
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0025 Established)
+
+**Both independent verification passes recommended establishing a new baseline** rather than retaining RBL-0024: the pre-commit Codex design reviews (two rounds, both Pass) and the post-commit Codex diff review (Pass, no findings) all confirmed WP1 delivered a genuine, live-verified product code change - Guardian's first Voice faculty capability, backed by new test coverage (22 new tests) and a real end-to-end live audio-synthesis confirmation. The Programme Sponsor's determination: **establish** - [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]] is accepted as the new current repository baseline, superseding [[RBL-0024_REPOSITORY_BASELINE|RBL-0024]].
+
+- `python -m pytest`: 418 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors throughout; warning count held at 192 across this WP's own governance edits.
 
 ---
 
@@ -101,6 +120,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 29 July 2026 | Claude Engineering Implementer | ESR-0040 formally closed. Session-wide WP2 (Independent Repository Verification: Pass, no findings) and WP3 (Repository Baseline Determination: Establish - RBL-0025 accepted, superseding RBL-0024) complete, per explicit Programme Sponsor decision. |
 | 1.3 | 29 July 2026 | Claude Engineering Implementer | WP1 finalised: v1.0's ElevenLabs implementation failed live validation (HTTP 402, Free-plan API restriction) and was superseded, on Programme Sponsor direction, by a self-hosted Piper local-TTS adapter (`sentinel/piper_provider.py`) - the project's first runtime dependency beyond `psutil`. Revision separately Codex design-reviewed (no blocking findings) and Programme Sponsor-approved via the real Sponsor Approval Service. `sentinel/elevenlabs_provider.py` and its tests removed; `sentinel/piper_provider.py` and its tests added. 22 new tests, full suite 418 passed/1 skipped. AAM-0001, JRM-0001 and EBR-0001 (EBG-0112 Increment A Complete) updated to describe the final Piper-based delivery. |
 | 1.2 | 29 July 2026 | Claude Engineering Implementer | WP1 Complete: Codex design review no blocking findings (one non-blocking clarification folded into v0.2), Programme Sponsor approval verified via `submit-response` against the real Sponsor Approval Service, Voice Faculty Phase 6 Increment A (speech output) implemented exactly as scoped against ElevenLabs (later superseded - see v1.3). 22 new tests, full suite 418 passed/1 skipped. AAM-0001, JRM-0001 and EBR-0001 (EBG-0112 Increment A Complete) updated. |
 | 1.1 | 29 July 2026 | Claude Engineering Implementer | WP1 In Progress: drafted [[EIP-ESR0040-001_VOICE_PHASE6_INCREMENT_A_SPEECH_OUTPUT_SCOPE|EIP-ESR0040-001]] v0.1 scoping Voice Phase 6 Increment A (speech output only), submitted to Codex for design review (no blocking findings, one non-blocking clarification folded into v0.2). No source code changed. Programme Sponsor approval pending. |
