@@ -14,6 +14,14 @@ from jarvis.interfaces.conversation import (
     ConversationRequest,
     ConversationResponse,
 )
+from jarvis.interfaces.voice import (
+    NOT_CONNECTED_MESSAGE as SPEECH_NOT_CONNECTED_MESSAGE,
+    NOT_RUNNING_MESSAGE as SPEECH_NOT_RUNNING_MESSAGE,
+    STATUS_NOT_CONNECTED,
+    STATUS_NOT_RUNNING,
+    GuardianSpeechProvider,
+    SpeechOutcome,
+)
 from jarvis.memory.service import PendingMemoryRequest, PersonalMemoryService
 from jarvis.memory.store import ConsentDecisionRecord, PersonalMemoryRecord
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
@@ -54,10 +62,12 @@ class GuardianRuntime:
         config: GuardianRuntimeConfig | None = None,
         conversation_provider: ConversationProvider | None = None,
         memory_service: PersonalMemoryService | None = None,
+        speech_provider: GuardianSpeechProvider | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
         self._conversation_provider = conversation_provider
         self._memory_service = memory_service
+        self._speech_provider = speech_provider
         self._cognitive_core = GuardianCognitiveCore()
         self._state = GuardianRuntimeState.STOPPED
         provider_capabilities = (
@@ -175,6 +185,28 @@ class GuardianRuntime:
         if response.message not in _NON_RECORDABLE_RESPONSES:
             self._cognitive_core.record_exchange(message, response.message)
         return response
+
+    def speak(self, text: str) -> SpeechOutcome:
+        """Synthesize `text` as speech via the connected speech provider.
+
+        Voice Faculty Phase 6, Increment A (EIP-ESR0040-001): speech output
+        only. Returns a named-status `SpeechOutcome` for every case - no
+        speech provider connected, runtime not running, Sentinel denial or
+        provider failure - rather than raising or returning `None`,
+        mirroring `converse()`'s honest-boundary-response discipline while
+        keeping each outcome separately assertable, per the Engineering
+        Reviewer's design-review finding on this package.
+
+        `text` is expected to be Guardian's own already-generated response
+        content, not arbitrary caller-supplied text - this increment does
+        not introduce a new unrelated speech-generation entry point.
+        """
+
+        if self._speech_provider is None:
+            return SpeechOutcome(status=STATUS_NOT_CONNECTED, message=SPEECH_NOT_CONNECTED_MESSAGE)
+        if self._state is not GuardianRuntimeState.RUNNING:
+            return SpeechOutcome(status=STATUS_NOT_RUNNING, message=SPEECH_NOT_RUNNING_MESSAGE)
+        return self._speech_provider.synthesize(text)
 
     def propose_memory(self, content: str) -> PendingMemoryRequest:
         """Propose retaining `content` as a Personal Memory item.

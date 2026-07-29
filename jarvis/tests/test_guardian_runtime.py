@@ -19,11 +19,13 @@ from jarvis.guardian.runtime import (
 )
 from jarvis.interfaces.conversation import ConversationRequest, ConversationResponse
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
+from jarvis.interfaces.voice import STATUS_NOT_CONNECTED, STATUS_NOT_RUNNING, STATUS_SYNTHESIZED, SpeechOutcome
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
 from sentinel.providers import ProviderRequest, ProviderResponse
+from sentinel.speech_providers import SpeechSynthesisResponse
 
 
 class _StubConversationProvider:
@@ -53,6 +55,20 @@ class _ScriptedConversationProvider:
     def generate(self, request: ConversationRequest) -> ConversationResponse:
         self.received.append(request)
         return ConversationResponse(message=self._responses.pop(0), provider=self.name)
+
+
+class _StubSpeechProvider:
+    """Minimal GuardianSpeechProvider double for boundary-behaviour tests."""
+
+    def __init__(self) -> None:
+        self.received: list[str] = []
+
+    def synthesize(self, text: str) -> SpeechOutcome:
+        self.received.append(text)
+        audio = SpeechSynthesisResponse(
+            provider_name="stub-speech", audio_bytes=f"audio:{text}".encode(), mime_type="audio/mpeg"
+        )
+        return SpeechOutcome(status=STATUS_SYNTHESIZED, audio=audio)
 
 
 class _StubSentinelProvider:
@@ -578,3 +594,44 @@ def test_guardian_runtime_memory_methods_refuse_after_stop(tmp_path) -> None:
         runtime.propose_memory("Robert prefers dark mode.")
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.list_memory()
+
+
+def test_guardian_runtime_speak_without_provider_returns_not_connected_outcome() -> None:
+    runtime = GuardianRuntime()
+    runtime.start()
+
+    outcome = runtime.speak("Guardian's response.")
+
+    assert outcome.status == STATUS_NOT_CONNECTED
+    assert outcome.audio is None
+
+
+def test_guardian_runtime_speak_before_start_returns_not_running_outcome() -> None:
+    runtime = GuardianRuntime(speech_provider=_StubSpeechProvider())
+
+    outcome = runtime.speak("Guardian's response.")
+
+    assert outcome.status == STATUS_NOT_RUNNING
+    assert outcome.audio is None
+
+
+def test_guardian_runtime_speak_after_stop_returns_not_running_outcome() -> None:
+    runtime = GuardianRuntime(speech_provider=_StubSpeechProvider())
+    runtime.start()
+    runtime.stop()
+
+    outcome = runtime.speak("Guardian's response.")
+
+    assert outcome.status == STATUS_NOT_RUNNING
+
+
+def test_guardian_runtime_speak_delegates_to_connected_provider() -> None:
+    provider = _StubSpeechProvider()
+    runtime = GuardianRuntime(speech_provider=provider)
+    runtime.start()
+
+    outcome = runtime.speak("Guardian's response.")
+
+    assert outcome.status == STATUS_SYNTHESIZED
+    assert outcome.audio.audio_bytes == b"audio:Guardian's response."
+    assert provider.received == ["Guardian's response."]
