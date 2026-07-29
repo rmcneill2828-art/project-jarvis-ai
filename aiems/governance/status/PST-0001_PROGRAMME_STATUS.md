@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 3.10
+**Version:** 3.11
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 3.10 |
+| Version | 3.11 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] is the latest **closed** session (28 July 2026). [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]] is now **open** (29 July 2026), opened directly from ESR-0038's closure via WP0A/WP0B session initialisation. Objective: scope [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) - produce an Engineering Implementation Package for Codex design review and Programme Sponsor approval, per EBG-0108's own registration text requiring this before any code is written. **WP1 not yet started.** Full detail in [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]]. |
-| Current Repository Baseline | [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]], accepted at ESR-0037 WP3, superseding RBL-0022, retained at ESR-0038 WP3 (no source code changed this session) - WP1's real Ollama-provider and Tauri IPC-layer fix, with new test coverage, warranted a new baseline. |
+| Current Mode | [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]] is the latest **closed** session (29 July 2026). No session is currently open. **WP1** closed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 Phase 1: a Guardian Cognitive Core (`jarvis/guardian/cognitive_core.py`) now composes persona, retained Personal Memory content and bounded 6-exchange conversation history before each provider call, replacing the previous stateless single-turn pass-through - approved via [[EIP-ESR0039-001_GUARDIAN_COGNITIVE_CORE_PHASE1_SCOPE|EIP-ESR0039-001]] (Codex design review Pass, Programme Sponsor approval verified via the real Sponsor Approval Service). Session-wide **WP2** (Independent Repository Verification: Pass, no findings) and **WP3** (Repository Baseline Determination: **Establish** - [[RBL-0024_REPOSITORY_BASELINE|RBL-0024]] accepted, superseding RBL-0023) closed the session. Full detail in [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]]. |
+| Current Repository Baseline | [[RBL-0024_REPOSITORY_BASELINE|RBL-0024]], accepted at ESR-0039 WP3, superseding RBL-0023 - WP1's real Guardian Cognitive Core delivery, with new test coverage, warranted a new baseline. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.2, refreshed at ESR-0031 WP0 to reflect ESR-0027 WP1's Personal Memory implementation - now distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] was refreshed to v2.2 at ESR-0028 WP2/WP4 (registered in REG-0001 for the first time, Memory and Provider Architecture rows corrected). |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | ESR-0039 open (29 July 2026); under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0038 completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - confirmed repeatable across a thirteenth consecutive session (ESR-0026 through ESR-0038). ESR-0039 is expected to follow the same template. |
-| Current Engineering Objective | Scope EBG-0108 (Guardian Cognitive Core Implementation) and produce an Engineering Implementation Package for Codex review and Programme Sponsor approval; see [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]] for full detail. |
+| Current Phase | ESR-0039 closed (29 July 2026); no session currently open; under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, ChatGPT/Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. ESR-0039 completed the standing draft/review/approval/implementation/commit/post-commit-review template entirely through `scripts/aiems_bridge.py` and the deployed Sponsor Approval Service - confirmed repeatable across a fourteenth consecutive session (ESR-0026 through ESR-0039). No session is currently open; the next session will select its own objective at WP0B. |
+| Current Engineering Objective | None - no session currently open. ESR-0039's WP1 plus session-wide WP2/WP3 are all Complete; see [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]] for full detail. |
 
 ---
 
@@ -100,9 +100,13 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]] is **open** (29 July 2026), opened directly from [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]]'s closure via WP0A/WP0B session initialisation, run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
+[[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]] is **closed** (29 July 2026). **No session is currently open.** The fourteenth session run entirely through the AIEMS Exchange Bridge with no manual relay anywhere, run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
 
-**WP1** (Not Started): scope [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cognitive Core Implementation) - flagged since ESR-0034 WP3 as the single most consequential gap in the roadmap (JRM-0001 Track B Section 7.1/7.3, Phase 1 of the dependency chain) - and produce an Engineering Implementation Package for Codex design review and Programme Sponsor approval, against [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]]'s existing architecture, per EBG-0108's own registration text requiring this before any code is written. Full detail in [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]].
+**WP1** (Complete): closed [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 Phase 1 (Guardian Cognitive Core Implementation) - flagged since ESR-0034 WP3 as the single most consequential gap in the roadmap (JRM-0001 Track B Section 7.1/7.3). A new `GuardianCognitiveCore` (`jarvis/guardian/cognitive_core.py`) composes persona, retained Personal Memory content (read fresh every turn) and bounded 6-exchange conversation history into the existing persona/system-prompt channel, wired into `GuardianRuntime.converse()`, with no change to `ConversationRequest`/`ProviderRequest`/any provider adapter. [[EIP-ESR0039-001_GUARDIAN_COGNITIVE_CORE_PHASE1_SCOPE|EIP-ESR0039-001]] was Codex design-reviewed (Pass, two non-blocking clarifications folded in) and Programme Sponsor-approved via the real Sponsor Approval Service (`submit-response`, not chat assertion) before implementation, including an explicit Sponsor decision to proceed with the disclosed EBG-0110 data-flow risk (retained memory content reaching whichever provider is configured) rather than restrict to local-only. 14 new/extended tests; full suite 396 passed, 1 skipped (was 382/1). [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] updated to record Reasoning/Memory faculties as Phase 1 implemented. Full detail in [[ESR-0039_ENGINEERING_SESSION_REPORT|ESR-0039]].
+
+Session-wide **WP2** (Independent Repository Verification): **Pass, no findings** - Codex independently reviewed the pushed commit, confirmed diff scope matched approvals, confirmed no `src/`, `src-tauri/`, `jarvis/memory/` or `.github/workflows/` file was touched, real CI green throughout. Session-wide **WP3** (Repository Baseline Determination): **Establish** - [[RBL-0024_REPOSITORY_BASELINE|RBL-0024]] accepted as the new current repository baseline, superseding [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]].
+
+396 Python tests pass plus 1 correctly-skipped test (was 382 plus 1); `validate_repository.py` (full mode) passes clean (184 warnings, unchanged from session start, consistent with the established disclosed cross-document-reference false-positive category).
 
 ---
 
@@ -112,7 +116,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 ---
 
-PST-0001 records ESR-0039 as the currently open session. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0039 as the latest closed session and no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -717,6 +721,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.11 | 29 July 2026 | Claude Engineering Implementer | ESR-0039 formally closed: session-wide WP2 (Independent Repository Verification: Pass) and WP3 (Repository Baseline Determination: Establish, RBL-0024) complete. Current Mode/Baseline/Phase/Workflow/Objective updated to reflect no session currently open; ESR-0038 remains Prior Session. |
 | 3.10 | 29 July 2026 | Claude Engineering Implementer | ESR-0039 WP0B: opened ESR-0039 (objective: scope EBG-0108 Guardian Cognitive Core Implementation, produce an Engineering Implementation Package for Codex review and Programme Sponsor approval). Section 3/4A updated; ESR-0038 demoted to Prior Session summary. |
 | 3.9 | 28 July 2026 | Claude Engineering Implementer | ESR-0038 formally closed: session-wide WP2 (Independent Repository Verification: Pass) and WP3 (Repository Baseline Determination: Retain, RBL-0023) complete. Current Mode/Phase/Workflow/Objective updated to reflect no session currently open; ESR-0037 remains Prior Session. |
 | 3.8 | 28 July 2026 | Claude Engineering Implementer | ESR-0038 WP1 Complete: EBG-0109 closed. Rust mock_app() reproduction harness abandoned/reverted (confirmed Tauri/Windows environment incompatibility); Programme Sponsor-run live GUI reproduction found no defect across two runs. Section 3/4A updated. |

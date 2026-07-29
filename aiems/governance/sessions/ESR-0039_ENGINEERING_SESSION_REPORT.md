@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0039 |
 | Title | Engineering Session Report |
-| Version | 1.2 |
-| Status | Open |
+| Version | 1.4 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0039 |
 | Date Opened | 29 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 Complete; session-wide WP2/WP3 not yet run |
+| Date Closed | 29 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP2 Pass, WP3 Establish (RBL-0024 accepted) |
 
 ---
 
@@ -56,6 +56,8 @@ Scope [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108 (Guardian Cogn
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | EBG-0108: scope, design and implement the Guardian Cognitive Core Phase 1 build; Codex design review; Programme Sponsor approval | Complete |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Establish (RBL-0024) |
 
 ---
 
@@ -82,6 +84,22 @@ A standalone `python -m jarvis --ipc-stdio` subprocess smoke check was attempted
 
 ---
 
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no findings.** Codex independently reviewed the real pushed diff for commit `0c2e7a2` (`503c9a9..0c2e7a2`) via a fresh, read-only CLI pass (not taken on the pre-commit design review's word alone): confirmed the diff touches exactly the 10 claimed files and none outside that scope, confirmed no `src/`, `src-tauri/`, `jarvis/memory/` or `.github/workflows/` file was touched, confirmed no change to `ConversationRequest`, `ProviderRequest`, `SentinelGatedConversationProvider` or any provider adapter, and spot-checked `GuardianCognitiveCore`/`GuardianRuntime.converse()` against the approved design (byte-identical persona with no memory/history, memory read fresh per call, bounded history via `deque(maxlen=6)`, and the two duplicated Sentinel-failure literals verified to match `sentinel_conversation.py` exactly). Independently re-ran `python scripts/validate_repository.py`: 0 errors, 184 warnings, matching this session's own evidence. Independently attempted `python -m pytest` but could not complete it in Codex's own read-only sandbox (`FileNotFoundError: No usable temporary directory found`, affecting every `tmp_path`-based test) - the same disclosed, pre-existing Codex read-only-sandbox limitation recorded in EBG-0096's history, not a new issue or evidence against this session's own 396-passed/1-skipped result. Real GitHub Actions CI (run `30436758080`) also confirmed green.
+
+- `python -m pytest`: 396 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors, 184 warnings throughout - unchanged from WP1's close, since this WP added no new files.
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0024 Established)
+
+**Both independent verification passes recommended establishing a new baseline** rather than retaining RBL-0023: the pre-commit Codex design review (Pass) and the post-commit Codex diff review (Pass, no findings) both confirmed WP1 delivered a genuine, live-verified product code change - a Guardian Cognitive Core replacing stateless single-turn conversation with persona/memory/history composition - backed by new test coverage (14 new/extended tests) and real green CI. The Programme Sponsor's determination: **establish** - [[RBL-0024_REPOSITORY_BASELINE|RBL-0024]] is accepted as the new current repository baseline, superseding [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]].
+
+- `python -m pytest`: 396 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors throughout; warning count held at 184 across this WP's own governance edits (the new RBL-0024 document plus REG-0001/PST-0001 version-history entries).
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0038_ENGINEERING_SESSION_REPORT|ESR-0038]] - prior closed session, immediate predecessor.
@@ -89,8 +107,9 @@ A standalone `python -m jarvis --ipc-stdio` subprocess smoke check was attempted
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0108 (this session's objective).
 * [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] - the approved architecture the cognitive-core build must be scoped against.
 * [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] - Track B Section 7.1/7.3, the roadmap placement motivating this session's objective selection.
-* [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]] - current accepted repository baseline at session open.
-* [[EIP-ESR0039-001_GUARDIAN_COGNITIVE_CORE_PHASE1_SCOPE|EIP-ESR0039-001]] - this session's WP1 scoping deliverable, produced against AAM-0001's architecture.
+* [[RBL-0023_REPOSITORY_BASELINE|RBL-0023]] - repository baseline at session open, superseded by RBL-0024.
+* [[RBL-0024_REPOSITORY_BASELINE|RBL-0024]] - current accepted repository baseline, established at this session's WP3.
+* [[EIP-ESR0039-001_GUARDIAN_COGNITIVE_CORE_PHASE1_SCOPE|EIP-ESR0039-001]] - this session's WP1 deliverable, approved and implemented against AAM-0001's architecture.
 
 ---
 
@@ -98,6 +117,8 @@ A standalone `python -m jarvis --ipc-stdio` subprocess smoke check was attempted
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 29 July 2026 | Claude Engineering Implementer | ESR-0039 formally closed. Session-wide WP3 (Repository Baseline Determination: Establish - RBL-0024 accepted, superseding RBL-0023) complete, per explicit Programme Sponsor decision. |
+| 1.3 | 29 July 2026 | Claude Engineering Implementer | Session-wide WP2 Complete: Codex independent post-commit verification of pushed commit 0c2e7a2 - Pass, no findings. Real GitHub Actions CI (run 30436758080) confirmed green. WP3 (baseline determination) pending Programme Sponsor decision. |
 | 1.2 | 29 July 2026 | Claude Engineering Implementer | WP1 Complete: Codex design review Pass (two non-blocking clarifications folded into v0.2), Programme Sponsor approval verified via submit-response against the real Sponsor Approval Service, Guardian Cognitive Core implemented exactly as scoped (jarvis/guardian/cognitive_core.py new, jarvis/guardian/runtime.py wired). 14 new/extended tests, full suite 396 passed/1 skipped. AAM-0001 and EBR-0001 (EBG-0108 Phase 1 Complete) updated. |
 | 1.1 | 29 July 2026 | Claude Engineering Implementer | WP1 In Progress: drafted [[EIP-ESR0039-001_GUARDIAN_COGNITIVE_CORE_PHASE1_SCOPE|EIP-ESR0039-001]] v0.1 scoping the Guardian Cognitive Core Phase 1 build, registered EBG-0110 (Candidate Backlog) for a disclosed memory-content/external-provider policy gap, submitted to Codex for design review. No source code changed. |
 | 1.0 | 29 July 2026 | Claude Engineering Implementer | ESR-0039 opened at WP0B, before WP1 began. Objective: scope EBG-0108 (Guardian Cognitive Core Implementation) and produce an Engineering Implementation Package for Codex review and Programme Sponsor approval. |
