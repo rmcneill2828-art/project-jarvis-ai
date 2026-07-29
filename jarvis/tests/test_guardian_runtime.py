@@ -39,6 +39,22 @@ class _StubConversationProvider:
         return ConversationResponse(message=f"stub: {request.message}", provider=self.name)
 
 
+class _ScriptedConversationProvider:
+    """ConversationProvider double returning a fixed sequence of response
+    messages, one per call - used to test the Guardian Cognitive Core's
+    history-exclusion and history-threading behaviour."""
+
+    name = "scripted-conversation"
+
+    def __init__(self, responses: list[str]) -> None:
+        self._responses = list(responses)
+        self.received: list[ConversationRequest] = []
+
+    def generate(self, request: ConversationRequest) -> ConversationResponse:
+        self.received.append(request)
+        return ConversationResponse(message=self._responses.pop(0), provider=self.name)
+
+
 class _StubSentinelProvider:
     name = "stub-sentinel-provider"
 
@@ -473,6 +489,83 @@ def test_guardian_runtime_memory_methods_refuse_before_start_even_with_connected
         runtime.deny_memory("pending-1")
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.list_memory()
+
+
+def test_guardian_runtime_converse_includes_retained_memory_content(tmp_path) -> None:
+    memory_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "personal.db"))
+    provider = _StubConversationProvider()
+    runtime = GuardianRuntime(conversation_provider=provider, memory_service=memory_service)
+    runtime.start()
+    pending = runtime.propose_memory("Robert prefers dark mode.")
+    runtime.approve_memory(pending.id)
+
+    runtime.converse("What theme do I like?")
+
+    assert "Retained Memory:" in provider.received[0].persona
+    assert "Robert prefers dark mode." in provider.received[0].persona
+
+
+def test_guardian_runtime_converse_reads_memory_fresh_every_turn(tmp_path) -> None:
+    memory_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "personal.db"))
+    provider = _StubConversationProvider()
+    runtime = GuardianRuntime(conversation_provider=provider, memory_service=memory_service)
+    runtime.start()
+
+    runtime.converse("first message")
+    assert "Retained Memory:" not in provider.received[0].persona
+
+    pending = runtime.propose_memory("Robert dislikes cilantro.")
+    runtime.approve_memory(pending.id)
+    runtime.converse("second message")
+
+    assert "Retained Memory:" in provider.received[1].persona
+    assert "Robert dislikes cilantro." in provider.received[1].persona
+
+
+def test_guardian_runtime_converse_includes_recent_history_on_next_turn() -> None:
+    provider = _StubConversationProvider()
+    runtime = GuardianRuntime(conversation_provider=provider)
+    runtime.start()
+
+    runtime.converse("first message")
+    runtime.converse("second message")
+
+    assert "Recent Conversation:" not in provider.received[0].persona
+    assert "Recent Conversation:" in provider.received[1].persona
+    assert "User: first message" in provider.received[1].persona
+    assert "Guardian: stub: first message" in provider.received[1].persona
+
+
+def test_guardian_runtime_converse_does_not_record_boundary_errors_into_history() -> None:
+    runtime = GuardianRuntime()
+    runtime.start()
+    runtime.converse("hello")  # no provider connected -> NOT_CONNECTED_RESPONSE, short-circuits before composing
+
+    provider = _StubConversationProvider()
+    runtime = GuardianRuntime(conversation_provider=provider)
+    runtime.converse("hello")  # not running -> NOT_RUNNING_RESPONSE, short-circuits before composing
+    runtime.start()
+    runtime.converse("first real message")
+
+    assert "Recent Conversation:" not in provider.received[0].persona
+
+
+def test_guardian_runtime_converse_does_not_record_sentinel_or_provider_failure_responses_into_history() -> None:
+    provider = _ScriptedConversationProvider(
+        [
+            "Sentinel did not allow this request to proceed.",
+            "JARVIS could not reach an AI provider right now. Please try again.",
+            "a genuine reply",
+        ]
+    )
+    runtime = GuardianRuntime(conversation_provider=provider)
+    runtime.start()
+
+    runtime.converse("denied message")
+    runtime.converse("unreachable message")
+    runtime.converse("third message")
+
+    assert "Recent Conversation:" not in provider.received[2].persona
 
 
 def test_guardian_runtime_memory_methods_refuse_after_stop(tmp_path) -> None:

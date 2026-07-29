@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | AAM-0001 |
 | Title | Guardian Identity and Cognitive Architecture |
-| Version | 0.4 |
+| Version | 0.5 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -101,6 +101,8 @@ Guardian is calm, measured, thoughtful, confident and professional - never frant
 
 Guardian is the singular user-facing AI entity. Guardian perceives, reasons, remembers, judges and acts through governed platform capabilities.
 
+**Reasoning and Memory faculties, Phase 1 implemented** ([[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108, [[EIP-ESR0039-001_GUARDIAN_COGNITIVE_CORE_PHASE1_SCOPE|EIP-ESR0039-001]], ESR-0039): a Guardian Cognitive Core (`jarvis/guardian/cognitive_core.py`) now composes each conversation turn from persona, retained Personal Memory content and bounded (6-exchange) recent conversation history before the request reaches Sentinel/the provider layer, replacing the previous stateless single-turn pass-through. Composition is folded entirely into the existing persona/system-prompt channel, with no change to the provider abstraction. Action, Voice and Vision faculties remain not started, per JRM-0001's phasing.
+
 ```text
 User / Device / External Event
   |
@@ -181,6 +183,7 @@ Obsidian is the human-facing Engineering Knowledge Workspace for OSE. It sits in
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.5 | 29 July 2026 | Claude Engineering Implementer | ESR-0039 WP1: recorded EBG-0108 Phase 1 (Guardian Cognitive Core - Reasoning and Memory faculties) as implemented, per [[EIP-ESR0039-001_GUARDIAN_COGNITIVE_CORE_PHASE1_SCOPE|EIP-ESR0039-001]]. Guardian conversation is no longer stateless/single-turn - persona, retained Personal Memory and bounded recent history are now composed before each provider call. Action/Voice/Vision remain not started. |
 | 0.4 | 26 July 2026 | Claude Engineering Implementer | ESR-0036 WP1: added the Guardian Persona section, formally adopting the ESR-0004 recovered "EKR-0001 Task 2" JARVIS character draft ([[FCH-0004_ESR-0004_FULL_CHAT_HISTORY|FCH-0004]]) for Guardian - the one EKR-0001 recovered item never promoted into an EBR-0001 backlog item alongside its siblings (EBG-0017 through EBG-0025). Persona wording reviewed and approved directly by the Programme Sponsor; household-role differentiation explicitly disclosed as deferred pending user-identity plumbing. Supports [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0108's first implementation increment (static persona injection). Engineering Reviewer (Codex) design review: Pass, with non-blocking implementation-detail findings addressed in the code itself. |
 | 0.3 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation. ESR-0023 WP5, resolving EBG-0041 (Guardian Identity Architecture Validation, open since ESR-0008). Content re-checked against current implementation - no contradictions found, no rewrite needed. Added a second Subsequent Architectural Update note pointing to GAM-0001 (operationalises the Judgement faculty and Guardian Relationship section), which also surfaced a significant finding: Sentinel's TrustTierPolicy remains additive/opt-in only, SimpleApprovalPolicy is still SentinelCore's production default - GAM-0001's policy content is architecturally complete but not operationally connected to the live runtime (tracked as new EBG-0074). Status promoted Draft to Approved, mirroring MOD-0001's ESR-0023 WP2 fix. Implementation-sequencing judgement for the seven Guardian faculties recorded in ESR-0023's WP5 record, not restated here. |
 | 0.2 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described here. Original content unchanged. |

@@ -4,6 +4,7 @@ import logging
 from collections.abc import Mapping
 from types import MappingProxyType
 
+from jarvis.guardian.cognitive_core import GuardianCognitiveCore
 from jarvis.guardian.config import GuardianRuntimeConfig
 from jarvis.guardian.diagnostics import GuardianDiagnosticEvent
 from jarvis.guardian.state import GuardianRuntimeState
@@ -23,6 +24,27 @@ NOT_CONNECTED_RESPONSE = "Guardian has no conversation provider connected."
 NOT_RUNNING_RESPONSE = "Guardian runtime is not running."
 NO_MEMORY_SERVICE_RESPONSE = "Guardian has no memory service connected."
 
+# Must match SentinelGatedConversationProvider's own literal response text
+# (jarvis/interfaces/sentinel_conversation.py) exactly. Duplicated here
+# rather than imported/promoted to a shared constant there because that file
+# is outside this package's authorised scope (EIP-ESR0039-001 Section 6) - a
+# future change should promote these to shared named constants in
+# sentinel_conversation.py instead of duplicating them.
+_SENTINEL_DENIED_RESPONSE = "Sentinel did not allow this request to proceed."
+_PROVIDER_UNAVAILABLE_RESPONSE = "JARVIS could not reach an AI provider right now. Please try again."
+
+# Responses that must never be recorded into Guardian Cognitive Core history
+# (EIP-ESR0039-001 Implementation Requirement 6) - boundary errors and
+# Sentinel-denial/provider-failure responses are not genuine model replies.
+_NON_RECORDABLE_RESPONSES = frozenset(
+    {
+        NOT_CONNECTED_RESPONSE,
+        NOT_RUNNING_RESPONSE,
+        _SENTINEL_DENIED_RESPONSE,
+        _PROVIDER_UNAVAILABLE_RESPONSE,
+    }
+)
+
 
 class GuardianRuntime:
     """Minimum executable runtime boundary for Guardian."""
@@ -36,6 +58,7 @@ class GuardianRuntime:
         self._config = config or GuardianRuntimeConfig()
         self._conversation_provider = conversation_provider
         self._memory_service = memory_service
+        self._cognitive_core = GuardianCognitiveCore()
         self._state = GuardianRuntimeState.STOPPED
         provider_capabilities = (
             ("guardian.conversation",)
@@ -131,15 +154,27 @@ class GuardianRuntime:
         connected or the runtime is not running - matching this codebase's
         existing pattern of returning an honest message instead of a hidden
         failure (see `SentinelGatedConversationProvider`).
+
+        The Guardian Cognitive Core (EBG-0108 Phase 1) composes the actual
+        persona/system-prompt text sent to the provider from persona,
+        retained Personal Memory content (read fresh on every turn - no
+        caching) and bounded recent conversation history, then records the
+        exchange once a genuine, non-error response comes back.
         """
 
         if self._conversation_provider is None:
             return ConversationResponse(message=NOT_CONNECTED_RESPONSE, provider="guardian-boundary")
         if self._state is not GuardianRuntimeState.RUNNING:
             return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
-        return self._conversation_provider.generate(
-            ConversationRequest(message=message, persona=self._config.persona)
+
+        memory_records = () if self._memory_service is None else self._memory_service.list_records()
+        composed_persona = self._cognitive_core.compose(self._config.persona, memory_records)
+        response = self._conversation_provider.generate(
+            ConversationRequest(message=message, persona=composed_persona)
         )
+        if response.message not in _NON_RECORDABLE_RESPONSES:
+            self._cognitive_core.record_exchange(message, response.message)
+        return response
 
     def propose_memory(self, content: str) -> PendingMemoryRequest:
         """Propose retaining `content` as a Personal Memory item.
