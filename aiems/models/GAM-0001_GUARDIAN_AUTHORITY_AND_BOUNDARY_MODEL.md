@@ -2,7 +2,7 @@
 
 > *"Guardian's trust comes from what it will not do without being asked."*
 
-**Version:** 1.2
+**Version:** 1.3
 
 ---
 
@@ -12,12 +12,12 @@
 |-------|-------|
 | Artefact ID | GAM-0001 |
 | Title | Guardian Authority and Boundary Model |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] |
-| Effective Date | 16 July 2026 |
+| Effective Date | 30 July 2026 |
 | Review Frequency | At architecture review or Guardian implementation package selection |
 
 ---
@@ -109,7 +109,7 @@ Any Guardian action that changes state, commits resources, or acts on the user's
 
 ## 6.3 Out of Scope (maps to `UNSUPPORTED_HIGH_RISK` / `EMERGENCY_CONTROL` / `LOCAL_AGENT_ACTION` / `DENY`)
 
-Categories that are not merely approval-gated but currently unsupported entirely, regardless of approval: local-agent action (EBG-0021 not yet defined), emergency control execution (narrow exception defined in Section 8.4), automation, and any high-risk action with no current governance basis. These `DENY` outright under Sentinel's existing precedence rules - GAM-0001 does not open local-agent action; it records that it remains closed until EBG-0021 defines the boundary under which it could ever move to Section 6.2. Emergency control remains closed by the same default except for the one narrow, explicit mechanism Section 8.4 defines.
+Categories that are not merely approval-gated but currently unsupported entirely, regardless of approval: local-agent action (boundary defined in Section 8A), emergency control execution (narrow exception defined in Section 8.4), automation, and any high-risk action with no current governance basis. These `DENY` outright under Sentinel's existing precedence rules - Section 8A defines the boundary under which a specific local-agent action could ever move to Section 6.2; it does not itself open local-agent action, which remains `DENY` today exactly as before. Emergency control remains closed by the same default except for the one narrow, explicit mechanism Section 8.4 defines.
 
 ---
 
@@ -163,7 +163,45 @@ Absent such an explicit, named, Administrator-authored policy, all emergency-con
 
 ## 8.5 Relationship to EBG-0021 (Local Agent Permission Boundary)
 
-Camera access, security monitoring and incident logging in Section 8.3 are observation/monitoring capabilities, not device or local-agent control. They do not open Section 6.3's `LOCAL_AGENT_ACTION` category, which remains closed pending EBG-0021's own separate definition.
+Camera access, security monitoring and incident logging in Section 8.3 are observation/monitoring capabilities, not device or local-agent control. They do not open Section 6.3's `LOCAL_AGENT_ACTION` category, whose boundary is now defined in Section 8A.
+
+---
+
+# 8A. Local Agent Permission Boundary
+
+Resolves [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0021 (JARVIS Local Agent Permission Boundary, open since ESR-0004's EKR-0001 vision recovery, promoted to Approved Backlog at ESR-0034 WP2 as "the root gate for the Action faculty," per [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B Section 7.3 Phase 2). This section defines the permission boundary; it does not implement a Local Agent module, and it does not move any action out of Section 6.3.
+
+## 8A.1 What This Boundary Governs
+
+A "local agent action" is any Guardian-initiated action that would control, configure or modify state on the local device or a connected local system, outside JARVIS's own already-governed conversational/data path - the same category Sentinel's `TrustCategory.LOCAL_AGENT_ACTION` already reserves an extension point for (`sentinel/policy.py`: `TrustTierPolicy.classify()` matches `payload_type in {"local_agent", "device_control"}` or `capability == "local_agent"`). No such request is ever constructed anywhere in the repository today - confirmed directly against the live code: no local-agent, device-control or automation module exists under `jarvis/` or elsewhere. This section defines the boundary content in advance of that capability, per EBG-0021's own text ("Define local device control limits before local agent implementation").
+
+Observation is not control. GIA's existing local resource observability (`jarvis/gia/observability.py` - CPU, memory, disk, process presence) reads local system state but never modifies it, and does not go through Sentinel's request path at all. It is not a "local agent action" under this section and is unaffected by it, matching Section 8.5's existing distinction between observation/monitoring and device control.
+
+## 8A.2 Category Ceiling: No Local Agent Action May Ever Be Autonomous
+
+EBG-0021's own text states "local agents must not receive unlimited control." That text supports, but does not by itself logically compel, a rule this strict - the stricter rule below is a deliberate GAM-0001 policy decision, made under Section 7's "no silent capability expansion" principle, not a direct unavoidable consequence of the backlog text alone. This section sets a hard ceiling: no local agent action may ever be classified Section 6.1 (Autonomous) - the ceiling for any local agent action, however narrow or reversible, is Section 6.2 (Approval-Required), and only once a future, separately approved Engineering Implementation Package defines the concrete enforcement mechanism for that specific named action. This is a permanent constraint on this category, not a default that a future package may quietly loosen - loosening it would itself require a further explicit amendment to this section, not merely an implementation package citing it.
+
+## 8A.3 Action Tiers
+
+| Tier | Examples | Ceiling |
+|---|---|---|
+| Permanently out of scope | Deleting or modifying data outside JARVIS's own governed storage; disabling or weakening security controls, backups or Sentinel itself; operating-system or firmware-level changes; installing, uninstalling or updating software; force-terminating an application (bypassing unsaved-work/save prompts); any smart-home command touching physical security or safety-critical state - locks, alarms, garage doors, gates, or heating/cooking/power controls capable of causing harm or property damage; any action with no realistic undo | Section 6.3 (`DENY`), permanently - not eligible to move to 6.2 under this section. Moving any of these would require a future amendment to this section itself, not merely an implementation package. |
+| Conditionally eligible | Launching, or gracefully requesting the close of (respecting normal user-facing save prompts, never force-terminating), a specific, named, already-installed application at explicit user request; sending a notification, or a command with no physical-security or safety-critical effect (for example switching a labelled light or plug on/off), to a specific, named, already-paired smart-home device the user has explicitly configured; adjusting a JARVIS-owned configuration value | Section 6.2 (`REVIEW`) at most, only once a future implementation package names the specific action, defines its reversal path, and is itself separately approved. Remains Section 6.3 (`DENY`) until that happens - this section does not itself reclassify anything. |
+
+This table is illustrative, not exhaustive - a future implementation package proposing a local agent action not listed here shall be assessed against 8A.2's ceiling and 8A.4's approval requirement, not assumed permitted by omission, consistent with Section 7's "deny-by-default for the unclassified" principle. Any smart-home or device command whose physical-security or safety classification is ambiguous shall be treated as permanently out of scope until a future amendment to this section resolves the ambiguity - the conditionally-eligible tier does not extend to uncertain cases by default.
+
+## 8A.4 Approval Authority
+
+Where a future package narrows a specific local agent action to Section 6.2, approval for that action requires the Administrator household role (Section 8.1), not the general Adult approval authority Section 6.2 otherwise grants. This is a new, category-specific policy choice, by analogy to (not a restatement of) Section 8.4's requirement that pre-approved emergency actions be Administrator-authored: local agent actions carry materially higher risk (they act on the device itself, not within JARVIS's own governed data) than the ordinary approval-required actions Section 6.2 contemplates, even though the two mechanisms differ (Section 8.4 is advance policy authorship, this is per-instance approval). This does not amend Section 8.1's role table; it states a stricter application of it for this one category.
+
+## 8A.5 Non-Goals
+
+This section does not:
+
+- implement a Local Agent module, agent framework wiring, or any device-control code;
+- change Sentinel's `TrustCategory.LOCAL_AGENT_ACTION` classification behaviour - it remains `DENY` for every request today, exactly as before this section existed;
+- authorise any specific named action to move to Section 6.2 - 8A.3's "conditionally eligible" tier states a ceiling, not a grant;
+- define the Local Agent module's own architecture (transport, sandboxing, process isolation) - that remains a future implementation package's scope, constrained by this boundary.
 
 ---
 
@@ -228,7 +266,7 @@ GAM-0001 does not:
 
 Future implementation packages may use GAM-0001 to guide Guardian authority and boundary development. Anticipated follow-on work, already sequenced in [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]:
 
-- EBG-0021 - Local Agent Permission Boundary (defines the boundary Section 6.3 and Section 8.5 currently leave closed, once a local agent implementation is planned);
+- A future Local Agent implementation package, constrained by Section 8A's boundary (EBG-0021, resolved by this artefact - the boundary is now defined; building the Local Agent module itself remains separate, not-yet-authorised future work, per JRM-0001 Track B Phase 3);
 - EBG-0019 - Memory and Data Storage Architecture (implements the storage technology sitting behind Section 9.2's consent gate, once actioned).
 
 Any such evolution shall require separately approved engineering packages.
@@ -245,7 +283,7 @@ Any such evolution shall require separately approved engineering packages.
 | [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]] | Decision that Guardian is the HITL governance point; GAM-0001 defines the boundary that decision governs. |
 | [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] | Decision establishing Sentinel's implemented trust-tier policy model, which GAM-0001's policy content is classified against. |
 | [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] | Authoritative snapshot of the implemented Sentinel trust-tier mechanism referenced throughout Sections 5-6 and 8. |
-| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+| [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]] | Current accepted repository baseline. |
 
 ---
 
@@ -253,8 +291,8 @@ Any such evolution shall require separately approved engineering packages.
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0031, EBG-0020 and EBG-0048 (resolved by this artefact), EBG-0021, EBG-0047, EBG-0019 (sequenced follow-on work referenced in Section 11). |
-| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031/EBG-0020/EBG-0048 and their dependent follow-on items. |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0031, EBG-0020, EBG-0048 and EBG-0021 (resolved by this artefact), EBG-0047, EBG-0019 (sequenced follow-on work referenced in Section 11). |
+| [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031/EBG-0020/EBG-0048/EBG-0021 and their dependent follow-on items. |
 | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Guardian experience architecture that presents Guardian's authority boundary to the user where appropriate. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers GAM-0001 as a controlled architecture model. |
 
@@ -264,6 +302,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 30 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 30 July 2026**, verified via `submit-response` against the real Sponsor Approval Service, following Engineering Reviewer (Codex) design review of [[EIP-ESR0041-001_LOCAL_AGENT_PERMISSION_BOUNDARY_SCOPE|EIP-ESR0041-001]] (v0.1 Fail with findings - 8A.3's smart-home "command" example too broad; v0.2 Pass after narrowing). New Section 8A resolves EBG-0021 (Local Agent Permission Boundary, JRM-0001 Track B Phase 2): defines what counts as a local agent action (distinct from GIA's read-only observability), a permanent ceiling that no local agent action may ever be classified Autonomous, an illustrative Action Tiers table separating permanently-out-of-scope (destructive/safety-critical) from conditionally-eligible-for-future-approval-gating actions, and an Administrator-only approval requirement by analogy to Section 8.4. Architecture/policy-definition only - no code changed, Sentinel's `LOCAL_AGENT_ACTION` classification remains `DENY` exactly as before. Section 6.3 and Section 8.5 cross-references updated to point to Section 8A; Section 11 updated to remove EBG-0021 from the still-open list. Whole-document staleness sweep (PBK-0001) also corrected a stale RBL-0015 "current baseline" reference (Section 12) to RBL-0025. ESR-0041 WP1. |
 | 1.2 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 9.2's EBG-0019 boundary is drawn in the right place (policy/consent layer only, no pre-emption, no gap - storage technology, encryption and retention duration remain EBG-0019's scope); Section 9.3's endpoint-trust framing is consistent with SAM-0001 and ADR-0010. ESR-0023 WP4, resolving EBG-0048 (Guardian HITL Governance Specification, extending EBG-0031/EBG-0020 per ADR-0010). Section 9 extended with four subsections: 9.1 consent mechanics (scoped to the specific action, not a standing grant); 9.2 memory-retention consent boundary; 9.3 trusted mobile approve/deny, confirmed by ADR-0010 as a future capability, architecture only; 9.4 privacy boundary reinforcement, making Section 8.2's personal/shared-family distinction an explicit HUMAN_APPROVAL_REQUIRED gate. Evidence checked directly: `sentinel/policy.py`'s REVIEW outcome is currently a static-message enum value only, no approval workflow implemented. |
 | 1.1 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 8.4's pre-approval mechanism does not create a backdoor around Sentinel's EMERGENCY_CONTROL deny-by-default, and the Child-role restrictions (8.1/8.2) are adequately conservative. Non-blocking Reviewer note incorporated: Section 8.4 now states the emergency policy record itself is subject to PBK-0001's Approval Before Change discipline, not a bypass of it. New Section 8 resolves EBG-0020 (Guardian, Family Safety and Emergency Controls, open since ESR-0004): household role model (Administrator/Adult/Child/Guest, sourced from the original ESR-0004 EKR-0001 vision recovery, confirmed absent from AAM-0001 and PVTM-0001 before this addition), child-safe assistance boundary, emergency assistance scope, and an explicit boundary against EBG-0021. Sections renumbered 8 to 13 accordingly. ESR-0023 WP3. |
 | 1.0 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation of the authority-level split (Section 6) and protection principles (Section 7), and confirmation that the EBG-0020/EBG-0048/EBG-0021 deferrals do not pre-empt those items' own future scope. Status Draft to Approved; version 0.1 to 1.0 marking baseline acceptance. Resolving EBG-0031 in EBR-0001 as the same action. ESR-0023 WP2. |
