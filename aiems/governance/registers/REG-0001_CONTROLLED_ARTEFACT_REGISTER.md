@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.437
+**Version:** 3.438
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.437 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.438 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -151,7 +151,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0025 | Repository Baseline | ESR-0040 Repository Baseline (EBG-0112 Increment A - Guardian Voice Faculty, Speech Output) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0040 | `aiems/governance/baselines/` |
 | RBL-0026 | Repository Baseline | ESR-0043 Repository Baseline (Guardian Persona - JARVIS Characterisation Refinement) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0043 | `aiems/governance/baselines/` |
 | RBL-0027 | Repository Baseline | ESR-0044 Repository Baseline (Guardian Voice Faculty Wired into the Live Runtime and UXP) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0044 | `aiems/governance/baselines/` |
-| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.2 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.3 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.5 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
@@ -213,7 +213,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 3.18 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 3.19 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -263,7 +263,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0042 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0043 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0044 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0045 | Engineering Session Report | Engineering Session Report | 1.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0045 | Engineering Session Report | Engineering Session Report | 1.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -378,6 +378,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.438 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP3: synced PCB-0001 (2.2 to 2.3, Product Capability Baseline refreshed for ESR-0040/0041/0043/0044), PST-0001 (3.18 to 3.19) and ESR-0045 (1.2 to 1.3) rows. |
 | 3.437 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP2 (Documentation Debt Discipline sweep): synced PST-0001 (3.17 to 3.18) row; discovered and fixed two artefacts that had never been registered at all - ESR-0045 itself (added at 1.1, then synced to 1.2 as WP2 completed) and EIP-ESR0045-001 (added at 1.0, Approved - implemented) - both already referenced elsewhere in the register's own version history but missing their own artefact-table rows. |
 | 3.436 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP1: registered STD-0006 (Configuration and Secrets Standard, Approved, 1.0) per EIP-ESR0045-001 (Codex design-reviewed - v0.1 Fail with findings, v0.2 Pass; Programme Sponsor approved via the real Sponsor Approval Service). Synced EBR-0001 (1.148 to 1.149, EBG-0065 Completed) and JRM-0001 (1.22 to 1.23, EBG-0065 marked Resolved/Delivered) rows. |
 | 3.435 | 30 July 2026 | Claude Engineering Implementer | Synced PST-0001 (3.16 to 3.17) row following ESR-0044 closure. |

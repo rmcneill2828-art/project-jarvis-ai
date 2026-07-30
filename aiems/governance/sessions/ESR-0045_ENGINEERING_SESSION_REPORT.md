@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0045 |
 | Title | Engineering Session Report |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0045 |
 | Date Opened | 30 July 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 and WP2 complete, further governance WPs to follow per Programme Sponsor direction |
+| Closure Status | Open - WP1, WP2 and WP3 complete, further governance WPs to follow per Programme Sponsor direction |
 
 ---
 
@@ -57,6 +57,7 @@ Draft [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0065 (STD-0006 Conf
 |----|-------------|--------|
 | WP1 | EBG-0065: draft STD-0006 Configuration and Secrets Standard; Codex design review; Programme Sponsor approval | Complete |
 | WP2 | Documentation Debt Discipline sweep (README/PST-0001 staleness), prompted by an independent Codex governance/v1.0-readiness gap analysis found in the AIEMS Exchange Bridge inbox | Complete |
+| WP3 | Refresh PCB-0001 (Product Capability Baseline) for ESR-0040/0041/0043/0044, per the Programme Sponsor's selection of the triggering Codex review's recommendation | Complete |
 
 The Programme Sponsor has directed that this session remain open for further governance work beyond WP1, rather than closing after a single Work Package - additional WPs will be added to this table as they are scoped. Session-wide Independent Repository Verification and Repository Baseline Determination remain pending until the session's final Work Package.
 
@@ -73,6 +74,24 @@ Per the Programme Sponsor's direction, this WP addresses item (1) - the docs cle
 **Completed.** [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.17 to 3.18): Current Mode, Current Phase, Current Workflow, Current Engineering Objective and Section 4A rewritten to reflect ESR-0045 open (WP1 and WP2 both complete) rather than the stale "ESR-0044 closed, no session open" claim; ESR-0044 moved to the Prior Session slot. `README.md` (3.22 to 3.23): top Project Status table, JARVIS Development capability bullets (Voice now wired into the live UXP per ESR-0044, persona refinement per ESR-0043, STD-0006 per ESR-0045), automated-test count (418 to 424 passed/1 skipped, reverified live via `python -m pytest`), Key Engineering Artefacts table (added STD-0004 and STD-0006, both previously missing entirely), Phase 2 Current Roadmap focus and Related Artefacts table all corrected from the stale ESR-0041/RBL-0025 state to ESR-0045/RBL-0027. [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]: synced PST-0001's version row (3.17 to 3.18); added missing rows for ESR-0045 (added at 1.1, then synced to 1.2 as this WP completed) and [[EIP-ESR0045-001_STD0006_CONFIGURATION_AND_SECRETS_STANDARD|EIP-ESR0045-001]] (1.0, Approved - implemented), neither of which had been registered despite already being referenced elsewhere - a further, previously-undetected instance of the same documentation-debt pattern this WP exists to fix.
 
 `python -m pytest`: 424 passed, 1 skipped (no code touched). `python scripts/validate_repository.py` (full mode): 0 errors, 262 warnings (all pre-existing, unrelated dangling section-heading references).
+
+---
+
+# 6C. WP3 - Refresh PCB-0001 (Product Capability Baseline)
+
+Per the Programme Sponsor's direction ("PCB-0001 refresh" selected over the v1.0 readiness scorecard or launch-gap backlog as this session's next Work Package), refreshed [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (v2.2 to v2.3), last refreshed at ESR-0031 WP0 and flagged stale by the same `govreview`/`v1_0_gap_analysis` finding that triggered WP2 (not refreshed for the live Voice wiring).
+
+Section 4's Provider abstraction framework and Guardian rows updated, a new Voice faculty row added, and Section 6's constraints corrected for: [[ESR-0040_ENGINEERING_SESSION_REPORT|ESR-0040]] (Voice faculty, speech output, self-hosted Piper), [[ESR-0041_ENGINEERING_SESSION_REPORT|ESR-0041]] (Local Agent Permission Boundary, GAM-0001 Section 8A), [[ESR-0043_ENGINEERING_SESSION_REPORT|ESR-0043]] (Guardian Persona refinement) and [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]] (Voice wired into the live JSON-RPC bridge and UXP speak button).
+
+**Discovered, not merely assumed**: verified `jarvis/interfaces/stdio_rpc.py`'s `build_default_runtime()` directly before writing any correction, rather than trusting PCB-0001's existing text. This surfaced a further staleness the triggering review itself had not flagged: PCB-0001's Provider abstraction framework row and a Section 6 constraint both still claimed no external AI provider was wired into JARVIS/Guardian's default runtime conversation path - stale since EBG-0070 (ESR-0022, over a month before this WP). Corrected, and Ollama's unconditional fallback registration (EBG-0075, ESR-0026) added alongside. A duplicate "Local agent capability is not implemented" bullet was also found and merged into the existing GAM-0001 Section 8A constraint.
+
+No Programme Sponsor re-acceptance of PCB-0001 was sought for this refresh, matching the v2.2 precedent (a factual correction to an already-Accepted baseline, not a new baseline proposal requiring fresh acceptance).
+
+[[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] and [[PST-0001_PROGRAMME_STATUS|PST-0001]] synced (PCB-0001's version row, Current Product Capability Baseline row).
+
+- Files: `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`.
+- `python -m pytest`: 424 passed, 1 skipped (no code touched). `python scripts/validate_repository.py` (full mode): 0 errors, 262 warnings (all pre-existing).
+- Codex design-reviewed prior to commit via direct `codex exec -s read-only` invocation; Programme Sponsor approval verified via the real Sponsor Approval Service before commit.
 
 ---
 
@@ -107,6 +126,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 * [[STD-0001_CONTROLLED_ARTEFACT_STANDARD|STD-0001]] / [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] - structural precedent for the new standard.
 * [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] - repository baseline at session open.
 * [[EIP-ESR0045-001_STD0006_CONFIGURATION_AND_SECRETS_STANDARD|EIP-ESR0045-001]] - this session's WP1 deliverable, Codex design-reviewed (v0.1 Fail with findings, v0.2/v0.3 Pass) and Programme Sponsor-approved via the real Sponsor Approval Service.
+* [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] - this session's WP3 deliverable, refreshed to v2.3.
 
 ---
 
@@ -114,6 +134,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 30 July 2026 | Claude Engineering Implementer | WP3 Complete: PCB-0001 (Product Capability Baseline) refreshed v2.2 to v2.3 for ESR-0040/0041/0043/0044, per the Programme Sponsor's selection of the triggering Codex review's recommendation. Also caught and corrected a further PCB-0001 staleness the triggering review itself missed: provider-wiring claims stale since EBG-0070/ESR-0022. REG-0001/PST-0001 synced. Codex design-reviewed, Programme Sponsor approval verified via the real Sponsor Approval Service before commit. Session kept open per Programme Sponsor direction for further governance work beyond WP1/WP2/WP3. |
 | 1.2 | 30 July 2026 | Claude Engineering Implementer | WP2 Complete: Documentation Debt Discipline sweep of README and PST-0001, prompted by an independent Codex `govreview`/`v1_0_gap_analysis` finding (README/PST-0001 out of sync with the repository's actual current session/baseline). Also caught and fixed two missing REG-0001 rows (ESR-0045 itself, EIP-ESR0045-001) discovered during the sweep. Session kept open per Programme Sponsor direction for further governance work beyond WP1/WP2. |
 | 1.1 | 30 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0065 (STD-0006 Configuration and Secrets Standard) resolved via EIP-ESR0045-001 (Codex design review: v0.1 Fail with findings on three overstated/inaccurate credential-handling claims, v0.2/v0.3 Pass after correction). STD-0006 created directly at Approved/1.0, formalising already-established practice - no code changed. Session kept open per Programme Sponsor direction for further governance work beyond WP1. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 opened at WP0B, before WP1 began. Objective: draft STD-0006 (Configuration and Secrets Standard, EBG-0065), producing an Engineering Implementation Package for Codex review and Programme Sponsor approval before the artefact is created. |
