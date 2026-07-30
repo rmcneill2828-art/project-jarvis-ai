@@ -678,6 +678,24 @@ button {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.speak-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  padding: 2px;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.speak-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .conversation-error {
   padding: 8px 12px;
   border: 1px solid rgba(255, 66, 82, 0.35);

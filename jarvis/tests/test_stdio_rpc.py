@@ -1,10 +1,12 @@
 """Tests for the JSON-RPC 2.0 stdio bridge (ESR-0017 WP9)."""
 
+import base64
 import io
 import json
 import threading
 import time
 from datetime import UTC, datetime
+from unittest.mock import patch
 
 from jarvis.gia.observability import GiaSnapshot
 from jarvis.guardian.runtime import GuardianRuntime
@@ -19,6 +21,27 @@ from jarvis.interfaces.stdio_rpc import (
 )
 from sentinel.core import SentinelDecisionOutcome, SentinelRequest
 from sentinel.policy import TrustCategory, TrustTier, TrustTierPolicy
+from sentinel.speech_providers import SpeechSynthesisResponse
+
+
+class _FakePiperProvider:
+    """Stands in for a real `PiperProvider` without ever loading a model or
+    importing `piper` - `jarvis.interfaces.stdio_rpc.PiperProvider` is patched
+    to return this, so wiring tests exercise real branching logic
+    (env var present/absent, gateway reuse, RPC serialization) without the
+    ML dependency cost a real construction would pay."""
+
+    name = "piper"
+
+    def __init__(self, configuration) -> None:
+        self.configuration = configuration
+
+    def synthesize(self, request):
+        return SpeechSynthesisResponse(
+            provider_name="piper",
+            audio_bytes=b"fake-wav-bytes",
+            mime_type="audio/wav",
+        )
 
 
 def _server(tmp_path) -> StdioRpcServer:
@@ -113,6 +136,95 @@ def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_
     runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
     assert isinstance(runtime.sentinel_gateway().policy_engine, TrustTierPolicy)
+
+
+def test_build_default_runtime_leaves_speech_unavailable_without_piper_path(tmp_path):
+    """EBG-0114: an absent JARVIS_PIPER_VOICE_PATH must mean speak() returns
+    the honest not_connected outcome, mirroring an absent provider credential -
+    never a startup failure and never a fabricated result."""
+
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
+
+    outcome = runtime.speak("hello")
+
+    assert outcome.status == "not_connected"
+    assert outcome.audio is None
+
+
+def test_build_default_runtime_wires_speech_provider_when_piper_path_present(tmp_path):
+    """EBG-0114: a present JARVIS_PIPER_VOICE_PATH must wire a real,
+    reachable speech provider into the runtime build_default_runtime()
+    actually produces - not merely that PiperProvider is importable."""
+
+    with patch("jarvis.interfaces.stdio_rpc.PiperProvider", _FakePiperProvider):
+        runtime = build_default_runtime(
+            environ={
+                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                "JARVIS_PIPER_VOICE_PATH": "/fake/voices/en_US-lessac-medium.onnx",
+            }
+        )
+
+    outcome = runtime.speak("hello")
+
+    assert outcome.status == "synthesized"
+    assert outcome.audio.audio_bytes == b"fake-wav-bytes"
+
+
+def test_build_default_runtime_reuses_the_same_gateway_for_speech_and_conversation(tmp_path):
+    """EBG-0114: speech must share build_default_runtime()'s single
+    SentinelTrustGateway instance, not construct a second one - one trust
+    boundary and audit trail, matching how memory_service already reuses it."""
+
+    with patch("jarvis.interfaces.stdio_rpc.PiperProvider", _FakePiperProvider):
+        runtime = build_default_runtime(
+            environ={
+                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                "JARVIS_PIPER_VOICE_PATH": "/fake/voices/en_US-lessac-medium.onnx",
+            }
+        )
+
+    speech_gateway = runtime._speech_provider.gateway
+    assert speech_gateway is runtime.sentinel_gateway()
+
+
+def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
+    with patch("jarvis.interfaces.stdio_rpc.PiperProvider", _FakePiperProvider):
+        server = StdioRpcServer(
+            build_default_runtime(
+                environ={
+                    "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+                    "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                    "JARVIS_PIPER_VOICE_PATH": "/fake/voices/en_US-lessac-medium.onnx",
+                }
+            )
+        )
+
+    result = server._methods["guardian.speak"]({"text": "hello"})
+
+    assert result["status"] == "synthesized"
+    assert base64.b64decode(result["audio"]) == b"fake-wav-bytes"
+    assert result["mimeType"] == "audio/wav"
+
+
+def test_guardian_speak_rpc_returns_not_connected_shape_without_audio(tmp_path):
+    server = _server(tmp_path)
+
+    result = server._methods["guardian.speak"]({"text": "hello"})
+
+    assert result["status"] == "not_connected"
+    assert "audio" not in result
+    assert "mimeType" not in result
+
+
+def test_guardian_speak_rpc_rejects_non_string_text(tmp_path):
+    server = _server(tmp_path)
+
+    try:
+        server._methods["guardian.speak"]({"text": 123})
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("Expected TypeError for non-string params.text")
 
 
 def test_guardian_converse_request_shape_classified_routine_under_trust_tier_policy(tmp_path):

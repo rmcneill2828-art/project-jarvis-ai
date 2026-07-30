@@ -24,6 +24,7 @@ notification writes so the two can never interleave partial JSON onto one
 line.
 """
 
+import base64
 import json
 import os
 import sys
@@ -37,6 +38,7 @@ from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
+from jarvis.interfaces.voice import GuardianSpeechProvider, SentinelGatedSpeechProvider
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
@@ -45,6 +47,7 @@ from sentinel.local_provider import LocalEchoProvider
 from sentinel.ollama_provider import OllamaProvider
 from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
+from sentinel.piper_provider import PiperProvider
 from sentinel.policy import TrustTierPolicy
 from sentinel.provider_config import CredentialReference, ProviderConfiguration
 
@@ -83,6 +86,14 @@ OLLAMA_MODEL_ENV_VAR = "JARVIS_OLLAMA_MODEL"
 OLLAMA_ENDPOINT_ENV_VAR = "JARVIS_OLLAMA_ENDPOINT"
 DEFAULT_OLLAMA_MODEL = "qwen3.5:2b"
 OLLAMA_TIMEOUT_SECONDS = 90.0
+
+# Piper voice model path (EIP-ESR0044-001, EBG-0114): unlike
+# OLLAMA_MODEL_ENV_VAR above, this has no sensible default - no voice model
+# file is ever committed to the repository or auto-downloaded (a disclosed,
+# one-time manual step, EIP-ESR0040-001 Section 6 item 9). Absent or blank
+# means no speech provider is wired, mirroring _build_real_provider()'s
+# absent-credential handling exactly, not Ollama's has-a-default pattern.
+PIPER_VOICE_PATH_ENV_VAR = "JARVIS_PIPER_VOICE_PATH"
 
 # Personal Memory store location (EIP-ESR0027-001). Overridable so tests never
 # touch the real store - the exact lesson learned from ESR-0026 WP1's Ollama
@@ -137,6 +148,31 @@ def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvide
     return GeminiProvider(configuration)
 
 
+def _build_speech_provider(
+    gateway: SentinelTrustGateway, environ: Mapping[str, str]
+) -> GuardianSpeechProvider | None:
+    """Build a Sentinel-gated Piper speech provider, or None if unconfigured.
+
+    Mirrors `_build_real_provider()`'s absent-credential handling: an absent
+    or blank `JARVIS_PIPER_VOICE_PATH` means the capability is not available
+    on this machine, not a startup failure - `GuardianRuntime.speak()`
+    already returns the honest `not_connected` outcome for a None provider.
+    A present-but-invalid path is a deliberate exception, not softened here
+    (EIP-ESR0044-001 Section 8 item 2) - `PiperProvider`'s own constructor
+    already raises `RuntimeError` on an unloadable model.
+
+    Reuses the caller's `gateway` instance rather than constructing a second
+    one, so conversation, memory and speech all share one trust boundary and
+    audit trail (matching how `memory_service` already reuses it).
+    """
+
+    voice_path = environ.get(PIPER_VOICE_PATH_ENV_VAR)
+    if not voice_path:
+        return None
+    piper_provider = PiperProvider(ProviderConfiguration(provider_name="piper", endpoint=voice_path))
+    return SentinelGatedSpeechProvider(gateway=gateway, provider=piper_provider)
+
+
 def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianRuntime:
     """Build and start the production Guardian+Sentinel stack.
 
@@ -147,6 +183,13 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     is always registered as the final failover, so a machine with no key
     configured - or a real provider call that fails at runtime - still has a
     working conversation path (EBG-0070, ESR-0022).
+
+    Also wires Guardian's Voice faculty (EIP-ESR0044-001, EBG-0114) - a
+    Sentinel-gated Piper speech provider is constructed only when
+    `JARVIS_PIPER_VOICE_PATH` is present and non-blank; otherwise
+    `GuardianRuntime.speak()` honestly reports `not_connected`, exactly like
+    an absent OpenAI/Gemini credential already degrades the conversation
+    path. No voice model is ever auto-downloaded.
 
     `environ` defaults to `os.environ`. Tests must pass an explicit mapping
     (e.g. `{}`) rather than relying on the default, so test runs stay
@@ -192,7 +235,13 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     # against - one trust boundary, not two (EIP-ESR0027-001 Section 4).
     memory_service = PersonalMemoryService(gateway=gateway, store=memory_store)
 
-    runtime = GuardianRuntime(conversation_provider=conversation_provider, memory_service=memory_service)
+    speech_provider = _build_speech_provider(gateway, environ)
+
+    runtime = GuardianRuntime(
+        conversation_provider=conversation_provider,
+        memory_service=memory_service,
+        speech_provider=speech_provider,
+    )
     runtime.start()
     return runtime
 
@@ -231,6 +280,7 @@ class StdioRpcServer:
         self._gia_observer = gia_observer or LocalResourceObserver()
         self._methods = {
             "guardian.converse": self._guardian_converse,
+            "guardian.speak": self._guardian_speak,
             "platform.status": self._platform_status,
             "knowledge.graph": self._knowledge_graph,
             "memory.propose": self._memory_propose,
@@ -247,6 +297,18 @@ class StdioRpcServer:
             raise TypeError(msg)
         response = self._runtime.converse(message)
         return {"message": response.message, "provider": response.provider}
+
+    def _guardian_speak(self, params: dict[str, Any]) -> dict[str, Any]:
+        text = params.get("text")
+        if not isinstance(text, str):
+            msg = "params.text must be a string."
+            raise TypeError(msg)
+        outcome = self._runtime.speak(text)
+        result: dict[str, Any] = {"status": outcome.status, "message": outcome.message}
+        if outcome.status == "synthesized":
+            result["audio"] = base64.b64encode(outcome.audio.audio_bytes).decode("ascii")
+            result["mimeType"] = outcome.audio.mime_type
+        return result
 
     def _platform_status(self, params: dict[str, Any]) -> dict[str, Any]:
         snapshot = self._runtime.status_snapshot()

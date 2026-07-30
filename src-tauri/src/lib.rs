@@ -484,6 +484,20 @@ fn send_message(
 }
 
 #[tauri::command]
+fn speak_message(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    text: String,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "guardian.speak",
+        json!({ "text": text }),
+    )
+}
+
+#[tauri::command]
 fn platform_status(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
     call_backend(&state, &app_handle, "platform.status", json!({}))
 }
@@ -499,6 +513,7 @@ pub fn run() {
         .manage(BackendState(Arc::new(Mutex::new(None))))
         .invoke_handler(tauri::generate_handler![
             send_message,
+            speak_message,
             platform_status,
             knowledge_graph
         ])

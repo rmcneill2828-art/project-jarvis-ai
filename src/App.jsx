@@ -22,6 +22,7 @@ import {
   Shield,
   Square,
   UsersRound,
+  Volume2,
   X,
 } from "lucide-react";
 
@@ -363,7 +364,16 @@ function DiagnosticsPanel({ diagnostics }) {
   );
 }
 
-function CommandPanel({ messages, inputValue, onInputChange, onSubmit, sending, sendError }) {
+function CommandPanel({
+  messages,
+  inputValue,
+  onInputChange,
+  onSubmit,
+  sending,
+  sendError,
+  onSpeak,
+  speakError,
+}) {
   return (
     <section className="command-panel" aria-labelledby="command-heading">
       <h2 id="command-heading">How can I help you today?</h2>
@@ -371,7 +381,17 @@ function CommandPanel({ messages, inputValue, onInputChange, onSubmit, sending, 
         <div className="conversation-log" aria-live="polite" aria-label="Conversation with Guardian">
           {messages.map((entry) => (
             <p className={`conversation-message ${entry.role}`} key={entry.id}>
-              {entry.text}
+              <span>{entry.text}</span>
+              {entry.role === "guardian" && (
+                <button
+                  type="button"
+                  className="speak-button"
+                  aria-label="Speak this response"
+                  onClick={() => onSpeak(entry.text)}
+                >
+                  <Volume2 size={16} />
+                </button>
+              )}
             </p>
           ))}
         </div>
@@ -379,6 +399,11 @@ function CommandPanel({ messages, inputValue, onInputChange, onSubmit, sending, 
       {sendError && (
         <p className="conversation-error" role="alert">
           {sendError}
+        </p>
+      )}
+      {speakError && (
+        <p className="conversation-error" role="alert">
+          {speakError}
         </p>
       )}
       <form
@@ -450,6 +475,7 @@ export function App() {
   const [inputValue, setInputValue] = useState("");
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState(null);
+  const [speakError, setSpeakError] = useState(null);
 
   // EIP-ESR0031-002 (Streaming Notifications MVP): the UXP's first live-push
   // channel. platform_status/knowledge_graph above remain one-time mount
@@ -527,6 +553,29 @@ export function App() {
       });
   };
 
+  const handleSpeak = (text) => {
+    setSpeakError(null);
+
+    invoke("speak_message", { text })
+      .then((result) => {
+        if (result.status !== "synthesized") {
+          setSpeakError(result.message || "Guardian could not speak this response.");
+          return;
+        }
+        try {
+          const audio = new Audio(`data:${result.mimeType};base64,${result.audio}`);
+          audio.play().catch((error) => {
+            setSpeakError(`Guardian's voice could not play: ${error}`);
+          });
+        } catch (error) {
+          setSpeakError(`Guardian's voice could not play: ${error}`);
+        }
+      })
+      .catch((error) => {
+        setSpeakError(`Guardian could not speak this response: ${error}`);
+      });
+  };
+
   return (
     <main className="jarvis-shell">
       <AppHeader platformIndicator={derivePlatformIndicator(platformState, platformError)} />
@@ -547,6 +596,8 @@ export function App() {
                 onSubmit={handleSubmit}
                 sending={sending}
                 sendError={sendError}
+                onSpeak={handleSpeak}
+                speakError={speakError}
               />
             </div>
             <div className="side-column">
