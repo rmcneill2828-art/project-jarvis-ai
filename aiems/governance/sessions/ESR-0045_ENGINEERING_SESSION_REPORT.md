@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0045 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0045 |
 | Date Opened | 30 July 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 complete, further governance WPs to follow per Programme Sponsor direction |
+| Closure Status | Open - WP1 and WP2 complete, further governance WPs to follow per Programme Sponsor direction |
 
 ---
 
@@ -56,8 +56,23 @@ Draft [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0065 (STD-0006 Conf
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | EBG-0065: draft STD-0006 Configuration and Secrets Standard; Codex design review; Programme Sponsor approval | Complete |
+| WP2 | Documentation Debt Discipline sweep (README/PST-0001 staleness), prompted by an independent Codex governance/v1.0-readiness gap analysis found in the AIEMS Exchange Bridge inbox | Complete |
 
 The Programme Sponsor has directed that this session remain open for further governance work beyond WP1, rather than closing after a single Work Package - additional WPs will be added to this table as they are scoped. Session-wide Independent Repository Verification and Repository Baseline Determination remain pending until the session's final Work Package.
+
+---
+
+# 6B. WP2 - Documentation Debt Discipline Sweep
+
+The Programme Sponsor directed the Engineering Implementer to check the AIEMS Exchange Bridge inbox, surfacing a genuinely independent artefact: `.aiems-exchange/transcript/govreview-v1_0_gap_analysis.md`, a Codex-authored governance/v1.0-readiness gap analysis run outside this session's own review cycle (`session: govreview`, `work_package: v1_0_gap_analysis`, `repository_ref: 58baee3` - the ESR-0044 closure commit). Its findings: README and PST-0001 are out of sync on the current session/baseline; PCB-0001 has not been refreshed for the live Voice wiring (ESR-0044); the product still lacks voice input, vision, session/shared-family memory, local agent/action capability and full HITL live wiring; ADR-0020 confirms no network-facing Guardian/Sentinel interface exists yet. Recommended next actions, in order: (1) fix the stale governance/docs mismatch first, (2) a v1.0 readiness scorecard, (3) a prioritised launch-gap backlog split must-ship vs defer.
+
+Confirmed directly against the live repository (not assumed): PST-0001's Current Mode/Phase/Workflow/Objective still stated "ESR-0044 is the latest closed session... no session currently open" despite ESR-0045 having been open, with WP1 (STD-0006) already complete, since before this WP began - the staleness had already worsened past what the external review itself observed. README's top Project Status table separately still described ESR-0041/RBL-0025 as current, four sessions and two baselines further stale than PST-0001.
+
+Per the Programme Sponsor's direction, this WP addresses item (1) - the docs cleanup - first; items (2) and (3) remain open for a later Work Package.
+
+**Completed.** [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.17 to 3.18): Current Mode, Current Phase, Current Workflow, Current Engineering Objective and Section 4A rewritten to reflect ESR-0045 open (WP1 and WP2 both complete) rather than the stale "ESR-0044 closed, no session open" claim; ESR-0044 moved to the Prior Session slot. `README.md` (3.22 to 3.23): top Project Status table, JARVIS Development capability bullets (Voice now wired into the live UXP per ESR-0044, persona refinement per ESR-0043, STD-0006 per ESR-0045), automated-test count (418 to 424 passed/1 skipped, reverified live via `python -m pytest`), Key Engineering Artefacts table (added STD-0004 and STD-0006, both previously missing entirely), Phase 2 Current Roadmap focus and Related Artefacts table all corrected from the stale ESR-0041/RBL-0025 state to ESR-0045/RBL-0027. [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]: synced PST-0001's version row (3.17 to 3.18); added missing rows for ESR-0045 (added at 1.1, then synced to 1.2 as this WP completed) and [[EIP-ESR0045-001_STD0006_CONFIGURATION_AND_SECRETS_STANDARD|EIP-ESR0045-001]] (1.0, Approved - implemented), neither of which had been registered despite already being referenced elsewhere - a further, previously-undetected instance of the same documentation-debt pattern this WP exists to fix.
+
+`python -m pytest`: 424 passed, 1 skipped (no code touched). `python scripts/validate_repository.py` (full mode): 0 errors, 262 warnings (all pre-existing, unrelated dangling section-heading references).
 
 ---
 
@@ -99,5 +114,6 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 30 July 2026 | Claude Engineering Implementer | WP2 Complete: Documentation Debt Discipline sweep of README and PST-0001, prompted by an independent Codex `govreview`/`v1_0_gap_analysis` finding (README/PST-0001 out of sync with the repository's actual current session/baseline). Also caught and fixed two missing REG-0001 rows (ESR-0045 itself, EIP-ESR0045-001) discovered during the sweep. Session kept open per Programme Sponsor direction for further governance work beyond WP1/WP2. |
 | 1.1 | 30 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0065 (STD-0006 Configuration and Secrets Standard) resolved via EIP-ESR0045-001 (Codex design review: v0.1 Fail with findings on three overstated/inaccurate credential-handling claims, v0.2/v0.3 Pass after correction). STD-0006 created directly at Approved/1.0, formalising already-established practice - no code changed. Session kept open per Programme Sponsor direction for further governance work beyond WP1. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 opened at WP0B, before WP1 began. Objective: draft STD-0006 (Configuration and Secrets Standard, EBG-0065), producing an Engineering Implementation Package for Codex review and Programme Sponsor approval before the artefact is created. |
