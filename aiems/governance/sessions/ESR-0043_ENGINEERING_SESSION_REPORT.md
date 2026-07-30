@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0043 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
-| Status | Open |
+| Version | 1.2 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0043 |
 | Date Opened | 30 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 complete |
+| Date Closed | 30 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP2 Pass, WP3 Establish (RBL-0026) |
 
 ---
 
@@ -56,8 +56,8 @@ Define, against the classic J.A.R.V.I.S. characterisation the Programme Sponsor 
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | Guardian persona refinement toward the classic JARVIS characterisation; Codex design review; Programme Sponsor approval | Complete |
-| WP2 | Session-wide Independent Repository Verification | Pending |
-| WP3 | Session-wide Repository Baseline Determination | Pending |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Establish (RBL-0026) |
 
 ---
 
@@ -78,7 +78,25 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 - Files: `aiems/models/AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE.md`, `jarvis/guardian/config.py`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, [[EIP-ESR0043-001_GUARDIAN_PERSONA_JARVIS_CHARACTERISATION_REFINEMENT|EIP-ESR0043-001]] (new).
 - `python -m pytest`: 418 passed, 1 skipped (no regression).
 - `python scripts/validate_repository.py` (full mode): 0 errors, 257 warnings (was 255 - two new cross-document Section-reference false positives, consistent with the established disclosed category).
-- Committed and pushed to `origin/main` (SHA reported at session close).
+- Committed as `5a88539`, pushed to `origin/main`.
+
+---
+
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no findings.** Codex independently reviewed the real pushed commit `5a88539` via a fresh `codex exec -s read-only` pass: confirmed via `git show --stat` and `git show --name-only` that the diff touches exactly the 5 claimed files and none outside that scope, confirmed the AAM-0001 diff shows only added lines to the Guardian Persona section (no existing sentence deleted or reworded), confirmed `DEFAULT_GUARDIAN_PERSONA`'s new text substantively matches AAM-0001's new persona text despite the person-perspective transformation, and confirmed no other `jarvis/` or `sentinel/` file was touched.
+
+Codex's own sandbox hit the same disclosed `CreateProcessAsUserW failed: 1920` spawn error recorded at WP1 and in EBG-0096's history when attempting `validate_repository.py` and `pytest` directly - a pre-existing environment limitation, not a finding against this change. The Engineering Implementer independently re-ran both against the real pushed HEAD (`5a88539`) to complete the evidence: `python scripts/validate_repository.py` (full mode) - 0 errors, 257 warnings, matching this session's own WP1 evidence exactly; `python -m pytest -q` - 418 passed, 1 skipped, unchanged.
+
+- `python scripts/validate_repository.py` (full mode): 0 errors, 257 warnings - unchanged from WP1's close.
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0026 Established)
+
+Unlike ESR-0041 (GAM-0001 architecture-only) and ESR-0042 (evaluation with a negative result), this session's WP1 changed the actual text Guardian composes into every live conversation turn - a genuine, live, observable product-behaviour change. The Programme Sponsor's determination: **establish** - [[RBL-0026_REPOSITORY_BASELINE|RBL-0026]] is accepted as the new current repository baseline, superseding [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]].
+
+- `python -m pytest`: 418 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors throughout; warning count held at 257 across this WP.
 
 ---
 
@@ -90,6 +108,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 * [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8.1 Household Role Model, relevant to the address-by-name/title design tension this session must disclose.
 * [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]] - repository baseline at session open.
 * [[EIP-ESR0043-001_GUARDIAN_PERSONA_JARVIS_CHARACTERISATION_REFINEMENT|EIP-ESR0043-001]] - this session's WP1 deliverable, Codex design-reviewed (Pass, with non-blocking findings) and Programme Sponsor-approved via the real Sponsor Approval Service.
+* [[RBL-0026_REPOSITORY_BASELINE|RBL-0026]] - repository baseline established at this session's WP3.
 
 ---
 
@@ -97,5 +116,6 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 30 July 2026 | Claude Engineering Implementer | ESR-0043 formally closed. Session-wide WP2 (Independent Repository Verification: Pass, no findings - Codex verified commit scope/content directly; validate_repository.py and pytest independently re-run by the Engineering Implementer after Codex's own sandbox hit the disclosed EBG-0096 spawn-error limitation) and WP3 (Repository Baseline Determination: Establish, RBL-0026, per explicit Programme Sponsor decision - this session changed real, live product behaviour, unlike ESR-0041/ESR-0042) complete. |
 | 1.1 | 30 July 2026 | Claude Engineering Implementer | WP1 Complete: Guardian's persona refined toward the classic JARVIS characterisation via EIP-ESR0043-001 (Codex design review Pass, with non-blocking findings folded into v0.2). AAM-0001 v0.7 and `DEFAULT_GUARDIAN_PERSONA` extended additively - precise phrasing, understated register with bounded dry wit, mild reasoned pushback, "Sir"/preferred-name addressing (disclosed as a single-user stopgap), and a voice-accent mismatch disclosure. No existing approved text reworded or removed. 418 tests pass, 1 skipped (unchanged). Live qualitative check not performed - no provider configured, disclosed honestly. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | ESR-0043 opened at WP0B, before WP1 began. Objective: refine Guardian's persona toward the classic JARVIS characterisation the Programme Sponsor described, producing an AAM-0001 amendment and Engineering Implementation Package for Codex review and Programme Sponsor approval before `DEFAULT_GUARDIAN_PERSONA` is changed. |
