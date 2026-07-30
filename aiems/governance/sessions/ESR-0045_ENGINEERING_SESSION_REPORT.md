@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0045 |
 | Title | Engineering Session Report |
-| Version | 1.5 |
-| Status | Open |
+| Version | 1.6 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0045 |
 | Date Opened | 30 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 through WP5 complete, further governance WPs to follow per Programme Sponsor direction |
+| Date Closed | 30 July 2026 |
+| Closure Status | Closed - WP1 through WP5 complete, session-wide WP6 (Pass) and WP7 (Retain RBL-0027) complete |
 
 ---
 
@@ -61,7 +61,7 @@ Draft [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0065 (STD-0006 Conf
 | WP4 | Create RSC-0001 (v1.0 Readiness Scorecard), per the Programme Sponsor's selection of one of the triggering Codex review's three recommendations | Complete |
 | WP5 | Create LGB-0001 (Launch Gap Backlog), per the Programme Sponsor's selection of the triggering Codex review's second recommendation | Complete |
 
-The Programme Sponsor has directed that this session remain open for further governance work beyond WP1, rather than closing after a single Work Package - additional WPs will be added to this table as they are scoped. Session-wide Independent Repository Verification and Repository Baseline Determination remain pending until the session's final Work Package.
+The Programme Sponsor directed this session remain open across five Work Packages rather than closing after the first. With all three of the triggering `govreview` finding's recommendations addressed (WP2 docs cleanup, WP4 readiness scorecard, WP5 launch-gap backlog), the Programme Sponsor selected closure over adding a further Work Package. Session-wide Independent Repository Verification (WP6) and Repository Baseline Determination (WP7) follow below.
 
 ---
 
@@ -154,7 +154,23 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 - Files: `aiems/governance/baselines/LGB-0001_LAUNCH_GAP_BACKLOG.md` (new), `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, [[EIP-ESR0045-003_LAUNCH_GAP_BACKLOG|EIP-ESR0045-003]] (new).
 - `python -m pytest`: 424 passed, 1 skipped (no code touched). `python scripts/validate_repository.py` (full mode): 0 errors.
-- To be committed and pushed to `origin/main` following Programme Sponsor approval (SHA to be recorded, then independently re-reviewed by Codex against the actual pushed diff).
+- Committed and pushed to `origin/main` as `0a5c5db`; Codex independently re-reviewed the actual pushed diff post-commit (`32fd37e..0a5c5db`) - Pass, no findings.
+
+---
+
+# 6F. Session-Wide WP6 - Independent Repository Verification
+
+Covering the full session range `58baee3..0a5c5db` (5 commits: `ac648d1` WP1, `cb82297` WP2, `0606bc2` WP3, `32fd37e` WP4, `0a5c5db` WP5), each already individually design-reviewed and post-commit-verified by Codex earlier in this session. This is the session-wide close-out check, submitted via direct `codex exec -s read-only` invocation.
+
+**Pass, with a disclosed environment limitation.** Codex independently confirmed: `git diff --stat 58baee3..0a5c5db` matches exactly 13 files changed, 1290 insertions, 52 deletions; `git diff --name-only 58baee3..0a5c5db -- src src-tauri jarvis sentinel scripts` returned empty - no code file touched anywhere across the session; `python scripts/validate_repository.py` ran successfully in its own sandbox this time (0 errors, 262 warnings); and, reading each file directly rather than trusting the diff alone, README.md, PST-0001, REG-0001 and EBR-0001 are all internally consistent in their final state (ESR-0045 open with WP1-WP5 complete, RBL-0027 current, STD-0006/RSC-0001/LGB-0001/EBG-0116/EBG-0117 all correctly reflected). Codex's own sandbox could not run `python -m pytest` (the same disclosed, pre-existing `CreateProcessAsUserW` Windows sandbox limitation as prior sessions); the Engineering Implementer independently re-ran it directly against the real pushed HEAD: 424 passed, 1 skipped.
+
+---
+
+# 6G. Session-Wide WP7 - Repository Baseline Determination
+
+Codex's own WP6 review suggested **Establish** a new baseline, reasoning from the volume of new governance content (a new Standard, scorecard, backlog artefact and two new backlog items). This was flagged to the Programme Sponsor as conflicting with this project's own standing convention - applied consistently at [[ESR-0041_ENGINEERING_SESSION_REPORT|ESR-0041]] and [[ESR-0042_ENGINEERING_SESSION_REPORT|ESR-0042]], both zero-code-change sessions - that baseline determination turns on whether the live running product's behaviour changed (`jarvis/`, `sentinel/`, `src/`, `src-tauri/`, `scripts/`), not on the volume of governance/documentation content. This entire session touched none of those paths, confirmed independently by every individual WP's post-commit review and by WP6's session-wide check above.
+
+**Programme Sponsor determination: Retain [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]]** (established at [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]]). This session was architecture/policy/documentation-only - a new controlled Standard, a scorecard, a backlog artefact and two new Candidate Backlog registrations, none of which changed what the live running product does. No new RBL is created.
 
 ---
 
@@ -169,6 +185,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 * [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] - this session's WP3 deliverable, refreshed to v2.3.
 * [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] - this session's WP4 deliverable, new artefact created at Accepted/1.0.
 * [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] - this session's WP5 deliverable, new artefact created at Accepted/1.0, registering EBG-0116/EBG-0117.
+* [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] - repository baseline retained at this session's WP7 closure (no code changed across any Work Package).
 
 ---
 
@@ -176,6 +193,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 30 July 2026 | Claude Engineering Implementer | **ESR-0045 formally closed.** Session-wide WP6 (Independent Repository Verification): Codex Pass, confirming zero code files (`jarvis/`, `sentinel/`, `src/`, `src-tauri/`, `scripts/`) touched across all five Work Packages and internal consistency of README/PST-0001/REG-0001/EBR-0001's final state; `python -m pytest` 424 passed/1 skipped (independently re-run against the pushed HEAD after Codex's own sandbox could not spawn it, a disclosed pre-existing limitation), `validate_repository.py` 0 errors. Session-wide WP7 (Repository Baseline Determination): **Retain [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]]** - Codex's own WP6 review suggested Establish based on governance-content volume, but this was flagged to the Programme Sponsor as conflicting with the project's own standing convention (baseline turns on live product behaviour change, not documentation volume - the same test applied at ESR-0041/ESR-0042). Programme Sponsor determination: Retain, since no code changed anywhere this session. |
 | 1.5 | 30 July 2026 | Claude Engineering Implementer | WP5 Complete: created [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] (Launch Gap Backlog, new artefact) - split RSC-0001's scored gaps into 2 Must-Ship (both newly registered as EBG-0116/EBG-0117, confirmed genuinely untracked before registering) and 7 Defer items, resolving the triggering Codex review's second recommended next action. Codex design review: v0.1 Fail (EBG-0042 status misstated), v0.2 Pass after correction. EBR-0001/REG-0001 synced. Programme Sponsor approval verified via the real Sponsor Approval Service before commit. All three of the triggering review's recommended next actions are now addressed. Session kept open per Programme Sponsor direction for further governance work beyond WP1-WP5. |
 | 1.4 | 30 July 2026 | Claude Engineering Implementer | WP4 Complete: created [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] (v1.0 Readiness Scorecard, new artefact) - scored JARVIS against all 8 MLP 0.1 items from JARVIS_PRODUCT_ARCHITECTURE Section 5 (5 Pass, 1 Partial, 2 Fail), resolving one of the triggering Codex review's three recommended next actions (the prioritised launch-gap backlog was open at this point in the session, resolved next at WP5). Codex design review: v0.1 Fail (Guardian Orb animation understated), v0.2 Pass after correction. REG-0001 synced. Programme Sponsor approval verified via the real Sponsor Approval Service before commit. Session kept open per Programme Sponsor direction for further governance work beyond WP1-WP4. |
 | 1.3 | 30 July 2026 | Claude Engineering Implementer | WP3 Complete: PCB-0001 (Product Capability Baseline) refreshed v2.2 to v2.3 for ESR-0040/0041/0043/0044, per the Programme Sponsor's selection of the triggering Codex review's recommendation. Also caught and corrected a further PCB-0001 staleness the triggering review itself missed: provider-wiring claims stale since EBG-0070/ESR-0022. REG-0001/PST-0001 synced. Codex design-reviewed, Programme Sponsor approval verified via the real Sponsor Approval Service before commit. Session kept open per Programme Sponsor direction for further governance work beyond WP1/WP2/WP3. |

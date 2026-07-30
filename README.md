@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] open (30 July 2026) / EBG-0065: STD-0006 Configuration and Secrets Standard created (WP1); Documentation Debt Discipline sweep complete (WP2) |
+| Current Phase | No session currently open. [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] closed (30 July 2026) / five Work Packages delivered: STD-0006, README/PST-0001 documentation debt fixed, PCB-0001 refreshed, RSC-0001 (v1.0 Readiness Scorecard) and LGB-0001 (Launch Gap Backlog) created |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | Operational First Light (Tkinter) / Guardian Desktop Platform Shell (Tauri + React, live UXP-backend bridge, packaged as a distributable installer since ESR-0032) |
-| Current Engineering Focus | [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] is currently open. [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]] is the latest closed session, with [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] accepted as the current repository baseline (established at ESR-0044 - Guardian's Voice faculty wired into the live UXP). See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
+| Current Engineering Focus | No session is currently open. [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] is the latest closed session, with [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] retained as the current repository baseline (established at ESR-0044, retained at ESR-0045 - architecture/policy/documentation-only session, no code changed). See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
 
 ---
 
@@ -182,6 +182,8 @@ Key engineering artefacts include:
 | [[STD-0003_SOFTWARE_PYTHON_ENGINEERING_STANDARD|STD-0003]] | Software / Python Engineering Standard |
 | [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] | Validation and Quality Assurance Standard |
 | [[STD-0006_CONFIGURATION_AND_SECRETS_STANDARD|STD-0006]] | Configuration and Secrets Standard |
+| [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] | v1.0 Readiness Scorecard |
+| [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] | Launch Gap Backlog |
 
 ---
 
@@ -338,7 +340,7 @@ Current focus (see [[PST-0001_PROGRAMME_STATUS|PST-0001]] for full detail):
 - Guardian's Voice faculty, Phase 6 Increment A (speech output only, self-hosted Piper local TTS) is implemented and live-verified (ESR-0040), and is now wired into the live JSON-RPC bridge and the Guardian Desktop Platform Shell's speak button (ESR-0044); the Local Agent Permission Boundary is defined ([[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A, ESR-0041) - the prerequisite gate for the still-unimplemented Action faculty. Guardian's Persona has also been refined toward its classic characterisation (ESR-0043), and configuration/secrets practice is now formalised in [[STD-0006_CONFIGURATION_AND_SECRETS_STANDARD|STD-0006]] (ESR-0045).
 - [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] is the current accepted repository baseline, established at ESR-0044 (Guardian's Voice faculty wired into the live UXP).
 - Session/Shared-Family memory tiers, Action faculty implementation, Vision, speech input, Provider Framework completion, Conversation Engine expansion, EAC and GDP-0001 implementation, and GIA Phases 2-4 remain deferred.
-- [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] is currently open; [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]] is the latest closed session.
+- No session is currently open; [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] is the latest closed session.
 
 ---
 
@@ -362,8 +364,8 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 |----------|--------------|
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point - the authoritative source for current programme state; this README summarises but does not replace it. |
 | [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] | Current accepted repository baseline, established at ESR-0044 (Guardian's Voice faculty wired into the live UXP). |
-| [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] | Currently open engineering session: EBG-0065 (STD-0006 Configuration and Secrets Standard) resolved at WP1; a Documentation Debt Discipline sweep of this README and PST-0001 completed at WP2, prompted by an independent Codex governance/v1.0-readiness gap analysis. |
-| [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]] | Latest closed engineering session: EBG-0114 (Guardian Voice faculty wired into the live JSON-RPC bridge, Tauri bridge and UXP speak button) delivered and live-verified across all three layers. |
+| [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] | Latest closed engineering session (five Work Packages): EBG-0065 (STD-0006 Configuration and Secrets Standard) resolved at WP1; a Documentation Debt Discipline sweep of this README and PST-0001 at WP2, prompted by an independent Codex governance/v1.0-readiness gap analysis; PCB-0001 refreshed at WP3; RSC-0001 (v1.0 Readiness Scorecard) created at WP4; LGB-0001 (Launch Gap Backlog) created at WP5, registering EBG-0116/EBG-0117. Session-wide WP6 Pass, WP7 Retain - RBL-0027 retained. |
+| [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]] | EBG-0114 (Guardian Voice faculty wired into the live JSON-RPC bridge, Tauri bridge and UXP speak button) delivered and live-verified across all three layers; retained for lineage, no longer the latest closed session. |
 | [[ESR-0043_ENGINEERING_SESSION_REPORT|ESR-0043]] | Guardian Persona refined toward its classic JARVIS characterisation, recorded in AAM-0001. |
 | [[ESR-0041_ENGINEERING_SESSION_REPORT|ESR-0041]] | EBG-0021 (Local Agent Permission Boundary) resolved via a new GAM-0001 Section 8A - defines the boundary a future Local Agent/Action faculty implementation must obey. Architecture/policy-definition only, no code changed; retained for lineage. |
 | [[ESR-0040_ENGINEERING_SESSION_REPORT|ESR-0040]] | Guardian's first Voice faculty capability (EBG-0112 Increment A, speech output only via self-hosted Piper local TTS) delivered and live-verified; retained for lineage. |
@@ -371,6 +373,8 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog source for selecting future engineering packages. |
 | [[STD-0006_CONFIGURATION_AND_SECRETS_STANDARD|STD-0006]] | Configuration and Secrets Standard - formalises environment-variable-only credential supply and the agent-accessible/Sponsor-only token boundary. |
+| [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] | v1.0 Readiness Scorecard - pass/fail assessment of JARVIS against the eight MLP 0.1 items. |
+| [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] | Launch Gap Backlog - splits RSC-0001's scored gaps into Must-Ship vs Defer. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture model. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Authoritative JARVIS product architecture. |
 | [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] | Capability maturity and prioritisation support. |
@@ -406,4 +410,5 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | 3.21 | 26 July 2026 | Claude Engineering Implementer | ESR-0036 WP2 (Documentation Debt Discipline, deferred to the last engineering Work Package before session closure by Programme Sponsor direction rather than run first): corrected stale ESR-0034/RBL-0020 references (top Project Status table, Current Roadmap Phase 2 bullets, Related Artefacts, Key Engineering Artefacts table) to ESR-0035/RBL-0021, and updated the "ESR-0035 currently open" claims to reflect ESR-0036 now open. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
 | 3.20 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP1 (Documentation Debt Discipline): corrected stale ESR-0032/RBL-0019 references (top Project Status table, Current Roadmap Phase 2 bullets, Related Artefacts, Key Engineering Artefacts table) to ESR-0034/RBL-0020, and updated the "ESR-0033 currently open" claims to reflect ESR-0035 now open - two sessions and one accepted baseline stale, found during ESR-0035 WP0A repository synchronisation. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
 | 3.22 | 30 July 2026 | Claude Engineering Implementer | Direct Programme Sponsor-requested correction (outside an open ESR, following ESR-0041 closure). Whole-document staleness sweep (PBK-0001): README had drifted 5 sessions/4 baselines stale (last describing ESR-0036 open / RBL-0021, while the repository was at ESR-0041 closed / RBL-0025) - top Project Status table, Related Artefacts and Key Engineering Artefacts table corrected. Also caught and corrected staleness predating this drift: the automated-test count (254, stale since well before ESR-0027) corrected to 418 passed/1 skipped; the "persistent memory, voice... not started" JARVIS Development/implementation claims (stale since ESR-0027's Personal Memory and ESR-0040's Voice Increment A) corrected to reflect Guardian Cognitive Core, Personal Memory and Voice Phase 6 Increment A as implemented, and the new Local Agent Permission Boundary (GAM-0001 Section 8A, ESR-0041) as defined. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
+| 3.24 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 formally closed (five Work Packages: STD-0006, documentation debt sweep, PCB-0001 refresh, RSC-0001 v1.0 Readiness Scorecard, LGB-0001 Launch Gap Backlog; session-wide WP6 Pass, WP7 Retain RBL-0027). Top Project Status table, JARVIS Development capability bullets, Key Engineering Artefacts table (added RSC-0001/LGB-0001), Related Artefacts table and Phase 2 Current Roadmap focus updated to reflect no session currently open. No governance artefact content changed; PST-0001 remains the authoritative source this README summarises. |
 | 3.23 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP2 (Documentation Debt Discipline sweep), prompted by an independent Codex governance/v1.0-readiness gap analysis (`govreview`/`v1_0_gap_analysis`) found in the AIEMS Exchange Bridge inbox, which flagged README and PST-0001 as out of sync with the repository's actual current session/baseline. README had drifted 4 sessions/2 baselines stale (last describing ESR-0041 closed / RBL-0025, while the repository was at ESR-0045 open / RBL-0027) - top Project Status table, JARVIS Development capability bullets, automated-test count (418 -> 424 passed/1 skipped, reverified live), Key Engineering Artefacts table (added STD-0004 and STD-0006, both previously missing), Phase 2 Current Roadmap focus and Related Artefacts table all corrected. PST-0001 (3.17 to 3.18) and REG-0001 (3.436 to 3.437) were corrected in the same Work Package - PST-0001 remains the authoritative source this README summarises. |
