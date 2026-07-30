@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.435
+**Version:** 3.436
 
 
 ---
@@ -118,15 +118,16 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.435 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.436 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.148 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.149 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0004 | Standard | Validation and Quality Assurance Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
+| STD-0006 | Standard | Configuration and Secrets Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | TPL-0001 | Template | Engineering Execution Package Template | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | CHR-0002 | `aiems/templates/` |
 | RBL-0004 | Repository Baseline | ESR-0004 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
@@ -160,7 +161,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
-| JRM-0001 | Roadmap | Project Roadmap | 1.22 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.23 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -375,6 +376,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.436 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP1: registered STD-0006 (Configuration and Secrets Standard, Approved, 1.0) per EIP-ESR0045-001 (Codex design-reviewed - v0.1 Fail with findings, v0.2 Pass; Programme Sponsor approved via the real Sponsor Approval Service). Synced EBR-0001 (1.148 to 1.149, EBG-0065 Completed) and JRM-0001 (1.22 to 1.23, EBG-0065 marked Resolved/Delivered) rows. |
 | 3.435 | 30 July 2026 | Claude Engineering Implementer | Synced PST-0001 (3.16 to 3.17) row following ESR-0044 closure. |
 | 3.434 | 30 July 2026 | Claude Engineering Implementer | ESR-0044 closure: session-wide WP2 (Pass, no blocking findings) and WP3 (Establish, RBL-0027 - real, live-verified Guardian Voice product-capability change) complete. Registered RBL-0027; synced ESR-0044 (Open/1.1 to Closed/1.2) row. PST-0001 synced separately. |
 | 3.433 | 30 July 2026 | Claude Engineering Implementer | ESR-0044 WP1: registered ESR-0044 (Open, 1.0) and EIP-ESR0044-001 (Approved - implemented, 1.0). Synced AAM-0001 (0.7 to 0.8) and EBR-0001 (1.147 to 1.148) rows following Guardian's Voice faculty being wired into the live runtime and UXP (EBG-0114, real 3-layer change: Python backend, Rust Tauri bridge, React speak button). |

@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | JRM-0001 |
 | Title | Project Roadmap |
-| Version | 1.22 |
+| Version | 1.23 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -75,7 +75,7 @@ Governs AIEMS itself: standards, workflow, registers, roles. Sourced from EBR-00
 | EBG-0058 - PBK-0001 Clause Consolidation | Already Approved Backlog; directly addresses accretion risk in the document governing every session. Programme Sponsor-raised, highest process-hygiene value of anything currently open. |
 | REG-0001 HST/FCH registration gap (unnumbered - see Section 9) | Deferred to an ESR-0021 WP per Programme Sponsor direction (EIP-ESR0021-002 Section 12); small, mechanical, should not linger. |
 | EBG-0005 - REG-0001 metadata alignment following P2-004A | Long-approved, low effort, closes a historical gap. |
-| EBG-0065 - STD-0006 Configuration and Secrets Standard | Discovered at ESR-0021 WP6; named at project bootstrapping but never created. Elevated to Near-term because it is no longer theoretical - Sentinel's `CredentialReference` mechanism is live-tested and capable of using real OpenAI/Gemini API keys whenever the Programme Sponsor sets them as a temporary environment variable for a session (confirmed no such key is persistently configured anywhere on the Programme Sponsor's machine, per ESR-0027 closure discussion). ESR-0027 also added a real local SQLite personal-memory store, another category of locally-held data this standard should cover. The longer this stays undocumented, the more implicit practice it has to retroactively capture. |
+| EBG-0065 - STD-0006 Configuration and Secrets Standard | **Resolved at ESR-0045 WP1**: [[STD-0006_CONFIGURATION_AND_SECRETS_STANDARD|STD-0006]] created directly at Approved/1.0 per [[EIP-ESR0045-001_STD0006_CONFIGURATION_AND_SECRETS_STANDARD|EIP-ESR0045-001]], formalising already-established practice - `CredentialReference`/named-env-var indirection, optional-capability-vs-authority-bearing credential failure postures, the real `AIEMS_AGENT_TOKEN`/`AIEMS_SPONSOR_TOKEN` process-possession boundary, and local database file/test-isolation conventions. No code changed - the codebase already complied. |
 | EBG-0068 - Engineering Implementation Brief (EIB) artefact type, adopt or drop | Discovered at ESR-0021 WP6. Not a build item - a quick judgement call (confirm EIB was superseded by the EIP convention that followed it, mark Superseded, close). Cheapest possible win in this roadmap; no reason to leave it open. |
 | EBG-0057 - Claude<->Codex Engineering Bridge | **Resolved at ESR-0025 WP1**: MVP implemented per [[EIP-ESR0025-001_AIEMS_EXCHANGE_BRIDGE_MVP|EIP-ESR0025-001]] v1.2 (v1.0 implemented; three post-implementation Engineering Reviewer findings - path-traversal, unchecked validation exit codes, a TOCTOU race on the authorisation check - addressed across v1.1-v1.2), closed Complete in EBR-0001. `scripts/aiems_bridge.py` - five commands, role-locking enforced as a real code gate. REA remains this item's own future-phase scope, not yet actioned. |
 
@@ -147,7 +147,7 @@ Not phase-gated themselves - apply across whichever phases are in flight when th
 
 | Item | Constraint |
 |------|------------|
-| EBG-0065 - STD-0006 Configuration and Secrets Standard | Promoted to Approved Backlog at ESR-0034 WP1. Becomes materially relevant starting at Phase 3 (an acting agent needs disciplined credential handling) and again at Phase 7 (secrets syncing across devices). Should be actioned before Phase 3 ships, not treated as background debt. |
+| EBG-0065 - STD-0006 Configuration and Secrets Standard | **Delivered at ESR-0045 WP1**: [[STD-0006_CONFIGURATION_AND_SECRETS_STANDARD|STD-0006]] created, formalising already-established credential/secrets practice. Remains materially relevant at Phase 3 (an acting agent needs disciplined credential handling) and Phase 7 (secrets syncing across devices) - those phases now have a documented standard to build against rather than implicit practice to retroactively capture. |
 | EBG-0081 Question 1 - UXP shared animation scheduler | **Delivered at ESR-0035 WP3**: `src/animationScheduler.js` (new) provides a single shared `requestAnimationFrame` loop that `GuardianOrbGraph.jsx` now registers with instead of running its own; the loop starts lazily on first subscriber and stops on last unsubscribe. Question 2 (Canvas migration) was already delivered at ESR-0029 WP2. Both questions now closed - this constraint is satisfied ahead of Phase 6/8 adding new animated UI surfaces (voice waveform, smart-home widgets), which can register with the existing scheduler rather than needing their own. |
 
 ## 7.5 Parallel - Not Gated By, and Not Gating, the Phases Above
@@ -242,6 +242,7 @@ JRM-0001 does not itself authorise implementation. Horizon and phase placement a
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.23 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP1: EBG-0065 (STD-0006 Configuration and Secrets Standard) marked Resolved/Delivered in Section 7.1 (Track A) and Section 7.4 (Cross-Cutting Constraints), following STD-0006's creation. Not in EIP-ESR0045-001's original Authorised Files list - a minor, directly necessary discovered dependency (keeping the roadmap consistent with the closed backlog item), disclosed rather than silently expanded. |
 | 1.22 | 30 July 2026 | Claude Engineering Implementer | ESR-0041 WP1: Section 7.3 Phase 2 (EBG-0021, Local Agent Permission Boundary) marked Delivered - GAM-0001 Section 8A now defines the boundary, per EIP-ESR0041-001. Section 7.1 Near-term emptied (Phase 2 was its only occupant) and Section 7.2 Foundation list extended with Phase 2. Section 7.3 Phase 3 (Action faculty) row updated to reflect Phase 2's constraint now being delivered, not merely pending. |
 | 1.21 | 29 July 2026 | Claude Engineering Implementer | ESR-0040 WP1 (Documentation Debt Discipline, whole-document sweep on edit): Section 7.1/7.3 Phase 1 (Guardian Cognitive Core) rows corrected from "no implementation yet authorised" to Delivered (ESR-0039); Section 7.2 Foundation list extended with Phase 1 and Phase 6 Increment A; Section 7.3 Phase 6 (Voice/Vision) row corrected from "no backlog item yet registered" to record EBG-0112's registration and Increment A's delivery (speech output only, per EIP-ESR0040-001), with Increment B/C deferral reasoned against GAM-0001 Section 8.1. Section 7.1 Near-term now names Phase 2 (EBG-0021) as the next dependency-chain item. Found while opening this document for the Phase 6 update; both Phase 1 rows were already stale from ESR-0039, not previously caught. |
 | 1.20 | 25 July 2026 | Claude Engineering Implementer | ESR-0035 WP3: recorded EBG-0081 Question 1's delivery (UXP shared animation scheduler) in Section 7.4 and the Phase 6 Voice/Vision row of Section 7.3 - both questions of EBG-0081 now closed. |
