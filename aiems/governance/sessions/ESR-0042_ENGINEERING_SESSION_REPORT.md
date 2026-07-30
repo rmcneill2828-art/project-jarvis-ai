@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0042 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
-| Status | Open |
+| Version | 1.2 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0042 |
 | Date Opened | 30 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 complete |
+| Date Closed | 30 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP2 Pass, WP3 Retain (RBL-0025) |
 
 ---
 
@@ -58,8 +58,8 @@ Evaluate [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0113 (Higher-Qua
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | EBG-0113: evaluate and select a higher-quality Piper voice model; live comparison; Codex design review; Programme Sponsor approval | Complete |
-| WP2 | Session-wide Independent Repository Verification | Pending |
-| WP3 | Session-wide Repository Baseline Determination | Pending |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Retain (RBL-0025) |
 
 ---
 
@@ -81,8 +81,26 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 - Files: `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, [[EIP-ESR0042-001_HIGHER_QUALITY_GUARDIAN_VOICE_MODEL|EIP-ESR0042-001]] (new).
 - `python -m pytest`: 418 passed, 1 skipped (unchanged - no code touched).
-- `python scripts/validate_repository.py` (full mode): 0 errors (warning count reported at session close).
-- Committed and pushed to `origin/main` (SHA reported at session close).
+- `python scripts/validate_repository.py` (full mode): 0 errors, 255 warnings.
+- Committed as `870d53e`, pushed to `origin/main`.
+
+---
+
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no findings.** Codex independently reviewed the real pushed commit `870d53e` via a fresh `codex exec -s read-only` pass: confirmed via `git show --stat` and `git show --name-only` that the diff touches exactly the 4 claimed files and none outside that scope, confirmed no `sentinel/` or `jarvis/` file was touched, confirmed via `git status --short --untracked-files=all` that no leftover `.voice-models-local` directory or stray `.onnx`/`.wav` file was staged or committed, and confirmed EBR-0001's EBG-0113 entry honestly records the negative result (no perceptible difference, `lessac-high` not recommended) rather than being spun positive, with EBG-0114 correctly registered as separate, not-yet-authorised future work.
+
+Codex's own sandbox hit the same disclosed `CreateProcessAsUserW failed: 1920` spawn error recorded at WP1 and in EBG-0096's history when attempting `validate_repository.py` and `pytest` directly - a pre-existing environment limitation, not a finding against this change. The Engineering Implementer independently re-ran both against the real pushed HEAD (`870d53e`) to complete the evidence: `python scripts/validate_repository.py` (full mode) - 0 errors, 255 warnings, matching this session's own WP1 evidence exactly; `python -m pytest -q` - 418 passed, 1 skipped, unchanged (no code touched by this session).
+
+- `python scripts/validate_repository.py` (full mode): 0 errors, 255 warnings - unchanged from WP1's close.
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0025 Retained)
+
+This session's WP1 delivered a pure evaluation record - no code changed, and the substantive outcome was a decision *not* to change the running product (the Programme Sponsor found no perceptible improvement from the candidate voice model). This is an even clearer case than the ESR-0023/ESR-0041 precedent for retaining the baseline on non-capability-changing work: not only was no runtime behaviour altered, no change was even recommended. The Programme Sponsor's determination: **retain** - [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]] remains the current accepted repository baseline; no new baseline is established for this session's evaluation-only delivery.
+
+- `python -m pytest`: 418 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors throughout; warning count held at 255 across this WP.
 
 ---
 
@@ -101,5 +119,6 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 30 July 2026 | Claude Engineering Implementer | ESR-0042 formally closed. Session-wide WP2 (Independent Repository Verification: Pass, no findings - Codex verified commit scope/content directly; validate_repository.py and pytest independently re-run by the Engineering Implementer after Codex's own sandbox hit the disclosed EBG-0096 spawn-error limitation) and WP3 (Repository Baseline Determination: Retain RBL-0025, per explicit Programme Sponsor decision - no code changed and no change was even recommended by this session's evaluation) complete. |
 | 1.1 | 30 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0113 (Higher-Quality Guardian Voice Model) evaluated via EIP-ESR0042-001 (Codex design review Pass). Real live comparison of `en_US-lessac-medium` vs `en_US-lessac-high` - Programme Sponsor personally listened to both and reported no perceptible difference. EBG-0113 marked Completed recording the honest negative result; EBG-0114 registered (Voice faculty not wired into `build_default_runtime()`, discovered while scoping this package). No code changed. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | ESR-0042 opened at WP0B, before WP1 began. Objective: evaluate EBG-0113 (Higher-Quality Guardian Voice Model), select and live-validate a candidate against the ESR-0040 baseline, and produce an Engineering Implementation Package for Codex review and Programme Sponsor approval. |
