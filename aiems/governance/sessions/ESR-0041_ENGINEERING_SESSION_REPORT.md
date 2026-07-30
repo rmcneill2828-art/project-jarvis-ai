@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0041 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
-| Status | Open |
+| Version | 1.2 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0041 |
 | Date Opened | 30 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 in progress |
+| Date Closed | 30 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP2 Pass, WP3 Retain (RBL-0025) |
 
 ---
 
@@ -58,8 +58,8 @@ Define [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0021 (JRM-0001 Tra
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | EBG-0021: scope and define the Local Agent Permission Boundary as a GAM-0001 amendment; Codex design review; Programme Sponsor approval | Complete |
-| WP2 | Session-wide Independent Repository Verification | Pending |
-| WP3 | Session-wide Repository Baseline Determination | Pending |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Retain (RBL-0025) |
 
 ---
 
@@ -82,6 +82,27 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]: EBG-0021 marked Completed, mirroring the EBG-0020/GAM-0001-Section-8 precedent; Section 5A Theme 3 loses its now-resolved row (open-item total corrected from 30 to 29). [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]: Track B Section 7.3 Phase 2 marked Delivered; Section 7.1 Near-term emptied (Phase 2 was its only occupant) and Section 7.2 Foundation list extended; Section 7.3 Phase 3 (Action faculty) row updated to reflect Phase 2's constraint now being delivered rather than merely pending.
 
 - Files: `aiems/models/GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL.md`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/roadmap/JRM-0001_PROJECT_ROADMAP.md`, [[EIP-ESR0041-001_LOCAL_AGENT_PERMISSION_BOUNDARY_SCOPE|EIP-ESR0041-001]] (new).
+- `python -m pytest`: 418 passed, 1 skipped (unchanged - no code touched).
+- `python scripts/validate_repository.py` (full mode): 0 errors, 255 warnings (baseline 254 before this session, +1 consistent with the disclosed cross-document Section-reference false-positive category).
+- Committed as `67ca7c1` (`9c6cd50..67ca7c1`), pushed to `origin/main`.
+
+---
+
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no findings.** Codex independently reviewed the real pushed commit `67ca7c1` via a fresh `codex exec -s read-only` pass: confirmed via `git show --stat` and `git show --name-only` that the diff touches exactly the 6 claimed files and none outside that scope, confirmed no `sentinel/` or `jarvis/` file was touched, confirmed via `git diff 67ca7c1^ 67ca7c1 -- sentinel/policy.py` (empty output) that `TrustCategory.LOCAL_AGENT_ACTION` and its unconditional deny are genuinely unchanged, and spot-checked the committed GAM-0001 Section 8A directly against EIP-ESR0041-001's reviewed v0.2/v0.3 text - confirmed the narrowed Action Tiers (force-termination and safety/security-critical smart-home commands correctly in permanently-out-of-scope; narrow non-safety commands and graceful close correctly conditionally-eligible; ambiguity-defaults-out-of-scope rule present) and the Administrator-only approval framing (policy choice by analogy, not restatement) both match what was approved.
+
+Codex's own sandbox hit the same disclosed `CreateProcessAsUserW failed: 1920` spawn error recorded earlier this session and in EBG-0096's history when attempting `git log`, `validate_repository.py` and `pytest` directly - a pre-existing environment limitation, not a finding against this change. The Engineering Implementer independently re-ran both against the real pushed HEAD (`67ca7c1`) to complete the evidence: `python scripts/validate_repository.py` (full mode) - 0 errors, 255 warnings, matching this session's own WP1 evidence exactly; `python -m pytest -q` - 418 passed, 1 skipped, unchanged (no code touched by this session).
+
+- `python scripts/validate_repository.py` (full mode): 0 errors, 255 warnings - unchanged from WP1's close.
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0025 Retained)
+
+This session's WP1 delivered architecture/policy content only - a new GAM-0001 section and consequential register/roadmap updates - with zero `sentinel/` or `jarvis/` code change, matching the exact precedent set when GAM-0001's Section 8 (family safety) was first added: **"RBL-0015 retained at ESR-0023 WP7 (governance/architecture-maturity work, not a runtime capability change)"** ([[PST-0001_PROGRAMME_STATUS|PST-0001]] Section 6). Codex's WP2 pass confirmed no runtime behaviour changed - Sentinel's `LOCAL_AGENT_ACTION` classification remains `DENY` exactly as before this session. The Programme Sponsor's determination, consistent with that precedent: **retain** - [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]] remains the current accepted repository baseline; no new baseline is established for this session's governance/architecture-only delivery.
+
+- `python -m pytest`: 418 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors throughout; warning count held at 255 across this WP.
 
 ---
 
@@ -101,5 +122,6 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 30 July 2026 | Claude Engineering Implementer | ESR-0041 formally closed. Session-wide WP2 (Independent Repository Verification: Pass, no findings - Codex verified commit scope/content directly; validate_repository.py and pytest independently re-run by the Engineering Implementer after Codex's own sandbox hit the disclosed EBG-0096 spawn-error limitation) and WP3 (Repository Baseline Determination: Retain RBL-0025, per explicit Programme Sponsor decision matching the ESR-0023 GAM-0001-Section-8 precedent - architecture/policy-only work, no runtime capability change) complete. |
 | 1.1 | 30 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0021 (Local Agent Permission Boundary) resolved via GAM-0001 v1.3's new Section 8A, per EIP-ESR0041-001 (Codex design review: v0.1 Fail with findings on 8A.3's overly broad smart-home "command" example, v0.2/v0.3 Pass after narrowing). Programme Sponsor approval verified via `submit-response` against the real Sponsor Approval Service. EBR-0001 (EBG-0021 Completed) and JRM-0001 (Track B Phase 2 Delivered) updated. Architecture/policy-definition only - no code changed. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | ESR-0041 opened at WP0B, before WP1 began. Objective: define EBG-0021 (Local Agent Permission Boundary, JRM-0001 Track B Phase 2) as a GAM-0001 amendment and produce an Engineering Implementation Package for Codex review and Programme Sponsor approval. README.md staleness (4 sessions/4 baselines behind) disclosed at WP0A, not actioned this session. |
