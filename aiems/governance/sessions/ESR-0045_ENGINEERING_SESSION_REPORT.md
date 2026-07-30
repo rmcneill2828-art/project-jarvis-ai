@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0045 |
 | Title | Engineering Session Report |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0045 |
 | Date Opened | 30 July 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 through WP4 complete, further governance WPs to follow per Programme Sponsor direction |
+| Closure Status | Open - WP1 through WP5 complete, further governance WPs to follow per Programme Sponsor direction |
 
 ---
 
@@ -59,6 +59,7 @@ Draft [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0065 (STD-0006 Conf
 | WP2 | Documentation Debt Discipline sweep (README/PST-0001 staleness), prompted by an independent Codex governance/v1.0-readiness gap analysis found in the AIEMS Exchange Bridge inbox | Complete |
 | WP3 | Refresh PCB-0001 (Product Capability Baseline) for ESR-0040/0041/0043/0044, per the Programme Sponsor's selection of the triggering Codex review's recommendation | Complete |
 | WP4 | Create RSC-0001 (v1.0 Readiness Scorecard), per the Programme Sponsor's selection of one of the triggering Codex review's three recommendations | Complete |
+| WP5 | Create LGB-0001 (Launch Gap Backlog), per the Programme Sponsor's selection of the triggering Codex review's second recommendation | Complete |
 
 The Programme Sponsor has directed that this session remain open for further governance work beyond WP1, rather than closing after a single Work Package - additional WPs will be added to this table as they are scoped. Session-wide Independent Repository Verification and Repository Baseline Determination remain pending until the session's final Work Package.
 
@@ -121,7 +122,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 # 6D. WP4 - Create RSC-0001 (v1.0 Readiness Scorecard)
 
-Per the Programme Sponsor's selection of one of the triggering Codex `govreview`/`v1_0_gap_analysis` finding's three recommended next actions ("(1) v1.0 readiness scorecard with pass/fail per capability"), created [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]]: a pass/fail-per-capability scorecard of JARVIS against the eight Minimum Lovable Product (MLP 0.1) items literally listed in [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5. The review's second recommendation - "(2) a prioritised launch-gap backlog split into must-ship vs defer" - remains open for a future Work Package.
+Per the Programme Sponsor's selection of one of the triggering Codex `govreview`/`v1_0_gap_analysis` finding's three recommended next actions ("(1) v1.0 readiness scorecard with pass/fail per capability"), created [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]]: a pass/fail-per-capability scorecard of JARVIS against the eight Minimum Lovable Product (MLP 0.1) items literally listed in [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5. The review's second recommendation - "(2) a prioritised launch-gap backlog split into must-ship vs defer" - was open at this point in the session; it was addressed next, at WP5 (Section 6E).
 
 Verified each score directly against live code, not assumed: grepped `jarvis/` and `sentinel/` for any voice-input or user-profile/login implementation before scoring Basic Voice Input and User Profiles Fail; checked `jarvis/interfaces/knowledge_graph.py` and [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8 before scoring Animated Avatar/Orb Partial. Result: **5 Pass, 1 Partial, 2 Fail** of 8 MLP 0.1 items. Also recorded, for completeness and not scored against MLP 0.1 criteria they were never part of, the related beyond-MLP-0.1 gaps the triggering review separately named (richer voice/speech input, Family Profiles, Session/Shared-Family memory, Local Agent, Internet capability, Vision, expanded Guardian/HITL live wiring).
 
@@ -134,6 +135,24 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 **Created exactly as scoped.** `aiems/governance/baselines/RSC-0001_V1_0_READINESS_SCORECARD.md` (new) created directly at Accepted/1.0, matching the STD-0006/PCB-0001 precedent for artefacts documenting an assessment of already-existing state rather than proposing new, untested rules. No `jarvis/`, `sentinel/`, `src/`, `src-tauri/` or `scripts/` file touched - assessment only.
 
 - Files: `aiems/governance/baselines/RSC-0001_V1_0_READINESS_SCORECARD.md` (new), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, [[EIP-ESR0045-002_V1_0_READINESS_SCORECARD|EIP-ESR0045-002]] (new).
+- `python -m pytest`: 424 passed, 1 skipped (no code touched). `python scripts/validate_repository.py` (full mode): 0 errors.
+- Committed and pushed to `origin/main` as `32fd37e`; Codex independently re-reviewed the actual pushed diff post-commit (`0606bc2..32fd37e`) - Pass, no findings.
+
+---
+
+# 6E. WP5 - Create LGB-0001 (Launch Gap Backlog)
+
+Per the Programme Sponsor's selection of the triggering Codex `govreview`/`v1_0_gap_analysis` finding's second recommended next action ("(2) a prioritised launch-gap backlog split into must-ship vs defer"), created [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]]: splits [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]]'s scored gaps (2 Fail, 1 Partial MLP 0.1 items, plus its Section 5 beyond-MLP-0.1 gaps) into Must-Ship (blocks the MLP 0.1/v1.0 launch itself) versus Defer (a later MLP phase or an enhancement beyond MLP 0.1's own bar).
+
+Confirmed by direct search of [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] before drafting (not assumed): neither of the two Must-Ship gaps - User Profiles and Basic Voice Input, both scored Fail by RSC-0001 - had any existing backlog item tracking their implementation. Registered two new entries: **EBG-0116** (User Identity and Profile Foundation) and **EBG-0117** (Voice Faculty Increment B: Speech Input, splitting it out of EBG-0112 per that item's own explicit invitation to do so once selected as a future session's objective). Deliberately did not register a new EBG for every Defer-bucket gap - most are either subsumed by an existing item, covered by an existing item's own deferred-increment text, or left for a future dedicated backlog-curation pass, to keep this package's scope to the genuine launch-blockers only (matching the Theme 7 precedent, ESR-0033 WP2).
+
+Produced [[EIP-ESR0045-003_LAUNCH_GAP_BACKLOG|EIP-ESR0045-003]] (v0.1, Draft) alongside the artefact itself. Submitted to Codex for design review via direct `codex exec -s read-only` invocation - **v0.1: Fail with one finding**: EBG-0042 (Agent Framework Architecture) was misstated as "Approved Backlog" when EBR-0001 records it as "Candidate Backlog." Corrected in both LGB-0001 and the EIP. **v0.2/final: Pass**, Codex separately confirmed (by its own independent grep of EBR-0001) that neither User Identity/Profile nor Voice Input has any existing tracking item, that EBG-0112's row does defer Increment B/C registration exactly as cited, and that the EBG-0021/0025/0048/0076 status citations in the Defer table are accurate.
+
+Programme Sponsor approval obtained and verified via `submit-response` directly against the real Sponsor Approval Service before the artefact and new backlog entries were finalised.
+
+**Created exactly as scoped.** `aiems/governance/baselines/LGB-0001_LAUNCH_GAP_BACKLOG.md` (new) created directly at Accepted/1.0. `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md` gained two new Candidate Backlog rows (EBG-0116, EBG-0117) and its Section 5A Active Backlog View snapshot updated (open-item total 29 to 31) - neither authorises implementation, a future Engineering Implementation Package would still need to be drafted, reviewed and approved for either. No `jarvis/`, `sentinel/`, `src/`, `src-tauri/` or `scripts/` file touched.
+
+- Files: `aiems/governance/baselines/LGB-0001_LAUNCH_GAP_BACKLOG.md` (new), `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, [[EIP-ESR0045-003_LAUNCH_GAP_BACKLOG|EIP-ESR0045-003]] (new).
 - `python -m pytest`: 424 passed, 1 skipped (no code touched). `python scripts/validate_repository.py` (full mode): 0 errors.
 - To be committed and pushed to `origin/main` following Programme Sponsor approval (SHA to be recorded, then independently re-reviewed by Codex against the actual pushed diff).
 
@@ -149,6 +168,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 * [[EIP-ESR0045-001_STD0006_CONFIGURATION_AND_SECRETS_STANDARD|EIP-ESR0045-001]] - this session's WP1 deliverable, Codex design-reviewed (v0.1 Fail with findings, v0.2/v0.3 Pass) and Programme Sponsor-approved via the real Sponsor Approval Service.
 * [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] - this session's WP3 deliverable, refreshed to v2.3.
 * [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] - this session's WP4 deliverable, new artefact created at Accepted/1.0.
+* [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] - this session's WP5 deliverable, new artefact created at Accepted/1.0, registering EBG-0116/EBG-0117.
 
 ---
 
@@ -156,7 +176,8 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| 1.4 | 30 July 2026 | Claude Engineering Implementer | WP4 Complete: created [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] (v1.0 Readiness Scorecard, new artefact) - scored JARVIS against all 8 MLP 0.1 items from JARVIS_PRODUCT_ARCHITECTURE Section 5 (5 Pass, 1 Partial, 2 Fail), resolving one of the triggering Codex review's three recommended next actions (the prioritised launch-gap backlog remains open). Codex design review: v0.1 Fail (Guardian Orb animation understated), v0.2 Pass after correction. REG-0001 synced. Programme Sponsor approval verified via the real Sponsor Approval Service before commit. Session kept open per Programme Sponsor direction for further governance work beyond WP1-WP4. |
+| 1.5 | 30 July 2026 | Claude Engineering Implementer | WP5 Complete: created [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] (Launch Gap Backlog, new artefact) - split RSC-0001's scored gaps into 2 Must-Ship (both newly registered as EBG-0116/EBG-0117, confirmed genuinely untracked before registering) and 7 Defer items, resolving the triggering Codex review's second recommended next action. Codex design review: v0.1 Fail (EBG-0042 status misstated), v0.2 Pass after correction. EBR-0001/REG-0001 synced. Programme Sponsor approval verified via the real Sponsor Approval Service before commit. All three of the triggering review's recommended next actions are now addressed. Session kept open per Programme Sponsor direction for further governance work beyond WP1-WP5. |
+| 1.4 | 30 July 2026 | Claude Engineering Implementer | WP4 Complete: created [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] (v1.0 Readiness Scorecard, new artefact) - scored JARVIS against all 8 MLP 0.1 items from JARVIS_PRODUCT_ARCHITECTURE Section 5 (5 Pass, 1 Partial, 2 Fail), resolving one of the triggering Codex review's three recommended next actions (the prioritised launch-gap backlog was open at this point in the session, resolved next at WP5). Codex design review: v0.1 Fail (Guardian Orb animation understated), v0.2 Pass after correction. REG-0001 synced. Programme Sponsor approval verified via the real Sponsor Approval Service before commit. Session kept open per Programme Sponsor direction for further governance work beyond WP1-WP4. |
 | 1.3 | 30 July 2026 | Claude Engineering Implementer | WP3 Complete: PCB-0001 (Product Capability Baseline) refreshed v2.2 to v2.3 for ESR-0040/0041/0043/0044, per the Programme Sponsor's selection of the triggering Codex review's recommendation. Also caught and corrected a further PCB-0001 staleness the triggering review itself missed: provider-wiring claims stale since EBG-0070/ESR-0022. REG-0001/PST-0001 synced. Codex design-reviewed, Programme Sponsor approval verified via the real Sponsor Approval Service before commit. Session kept open per Programme Sponsor direction for further governance work beyond WP1/WP2/WP3. |
 | 1.2 | 30 July 2026 | Claude Engineering Implementer | WP2 Complete: Documentation Debt Discipline sweep of README and PST-0001, prompted by an independent Codex `govreview`/`v1_0_gap_analysis` finding (README/PST-0001 out of sync with the repository's actual current session/baseline). Also caught and fixed two missing REG-0001 rows (ESR-0045 itself, EIP-ESR0045-001) discovered during the sweep. Session kept open per Programme Sponsor direction for further governance work beyond WP1/WP2. |
 | 1.1 | 30 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0065 (STD-0006 Configuration and Secrets Standard) resolved via EIP-ESR0045-001 (Codex design review: v0.1 Fail with findings on three overstated/inaccurate credential-handling claims, v0.2/v0.3 Pass after correction). STD-0006 created directly at Approved/1.0, formalising already-established practice - no code changed. Session kept open per Programme Sponsor direction for further governance work beyond WP1. |
