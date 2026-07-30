@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0044 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
-| Status | Open |
+| Version | 1.2 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0044 |
 | Date Opened | 30 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 complete |
+| Date Closed | 30 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP2 Pass, WP3 Establish (RBL-0027) |
 
 ---
 
@@ -56,8 +56,8 @@ Wire [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0114: connect Guardi
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | EBG-0114: wire Voice faculty into the live runtime/UXP; Codex design review; Programme Sponsor approval | Complete |
-| WP2 | Session-wide Independent Repository Verification | Pending |
-| WP3 | Session-wide Repository Baseline Determination | Pending |
+| WP2 | Session-wide Independent Repository Verification | Complete - Pass, no blocking findings |
+| WP3 | Session-wide Repository Baseline Determination | Complete - Establish (RBL-0027) |
 
 ---
 
@@ -82,7 +82,27 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 - `cargo build`/`cargo clippy -- -D warnings`/`cargo fmt --check`/`cargo test`: all clean.
 - `npx playwright test`: 7 passed (2 new).
 - `python scripts/validate_repository.py` (full mode): 0 errors (warning count reported at session close).
-- Committed and pushed to `origin/main` (SHA reported at session close).
+- Committed as `899e67f`, pushed to `origin/main`.
+
+---
+
+# 6B. Session-Wide WP2 - Independent Repository Verification
+
+**Pass, no blocking findings.** Codex independently reviewed the real pushed commit `899e67f` via a fresh `codex exec -s read-only` pass: confirmed via `git show --stat` and `git diff --name-only` that the diff touches exactly the 11 claimed files and none outside that scope; confirmed via `git diff` against `jarvis/guardian/runtime.py`, `jarvis/interfaces/voice.py`, `sentinel/piper_provider.py` and `sentinel/speech_providers.py` (all empty output) that every already-approved Voice component is genuinely untouched; confirmed the `guardian.speak` RPC and `speak_message` Tauri command match the claimed shapes, reusing the existing gateway and gating audio inclusion on `status == "synthesized"`; confirmed the new unit tests patch a fake `PiperProvider`, never constructing or loading a real model.
+
+**One non-blocking observation**: `_build_speech_provider`'s `if not voice_path` check treats a whitespace-only string as "configured" rather than absent - consistent with the existing codebase convention (`_build_real_provider`'s identical credential check has the same property), not a new gap this package introduces. Disclosed, not fixed, to stay consistent with established convention rather than gold-plating one new function differently from the rest of the file.
+
+Codex's own sandbox hit the same disclosed `CreateProcessAsUserW failed: 1920` spawn error recorded in EBG-0096's history when attempting `validate_repository.py`/`pytest` directly - a pre-existing environment limitation, not a finding against this change. The Engineering Implementer independently re-ran both against the real pushed HEAD (`899e67f`) to complete the evidence: `python scripts/validate_repository.py` (full mode) - 0 errors, 258 warnings, matching this session's own WP1 evidence exactly; `python -m pytest -q` - 424 passed, 1 skipped, unchanged.
+
+- `python scripts/validate_repository.py` (full mode): 0 errors, 258 warnings - unchanged from WP1's close.
+
+---
+
+# 6C. Session-Wide WP3 - Repository Baseline Determination (RBL-0027 Established)
+
+This session delivered a genuine, live product-capability change: Guardian's Voice faculty is now reachable through the actual running Tauri UXP for the first time (backend RPC wiring, a new Tauri command, and a working UI speak button), live-verified with a real 161,836-byte `audio/wav` payload through the exact new wiring. The Programme Sponsor's determination: **establish** - [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] is accepted as the new current repository baseline, superseding [[RBL-0026_REPOSITORY_BASELINE|RBL-0026]].
+
+- `python -m pytest`: 424 passed, 1 skipped throughout. `python scripts/validate_repository.py` (full mode): 0 errors throughout; warning count held at 258 across this WP.
 
 ---
 
@@ -94,6 +114,7 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 * [[ESR-0040_ENGINEERING_SESSION_REPORT|ESR-0040]] / [[ESR-0042_ENGINEERING_SESSION_REPORT|ESR-0042]] - delivered and evaluated the Voice faculty this session wires into the live product.
 * [[RBL-0026_REPOSITORY_BASELINE|RBL-0026]] - repository baseline at session open.
 * [[EIP-ESR0044-001_WIRE_VOICE_INTO_LIVE_RUNTIME_AND_UXP|EIP-ESR0044-001]] - this session's WP1 deliverable, Codex design-reviewed (Pass, with non-blocking findings) and Programme Sponsor-approved via the real Sponsor Approval Service.
+* [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] - repository baseline established at this session's WP3.
 
 ---
 
@@ -101,5 +122,6 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 30 July 2026 | Claude Engineering Implementer | ESR-0044 formally closed. Session-wide WP2 (Independent Repository Verification: Pass, no blocking findings - Codex verified commit scope/content directly; validate_repository.py and pytest independently re-run by the Engineering Implementer after Codex's own sandbox hit the disclosed EBG-0096 spawn-error limitation) and WP3 (Repository Baseline Determination: Establish, RBL-0027, per explicit Programme Sponsor decision - a genuine, live-verified product capability change) complete. |
 | 1.1 | 30 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0114 (Voice faculty wiring) implemented via EIP-ESR0044-001 (Codex design review Pass, non-blocking findings folded into v0.2) - a 3-layer change (Python backend, Rust Tauri bridge, React frontend) with no change to any already-approved Voice component itself. Live-verified end to end with a real 161,836-byte `audio/wav` payload. 424 tests pass, 1 skipped (6 new); Rust build/clippy/fmt/test clean; e2e suite (7, 2 new) passes. `src/styles.css` touched as a disclosed discovered dependency. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | ESR-0044 opened at WP0B, before WP1 began. Objective: wire Guardian's Voice faculty into the live runtime/UXP (EBG-0114), producing an Engineering Implementation Package for Codex review and Programme Sponsor approval before implementation. |
