@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.428
+**Version:** 3.429
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.428 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.429 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -153,7 +153,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.2 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.5 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
-| AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.6 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
+| AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.7 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
 | GAM-0001 | Model | Guardian Authority and Boundary Model | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
@@ -192,6 +192,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0040-001 | Engineering Implementation Package | Voice Faculty Phase 6, Increment A: Speech Output (Text-to-Speech) | 1.2 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0041-001 | Engineering Implementation Package | Local Agent Permission Boundary | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0042-001 | Engineering Implementation Package | Higher-Quality Guardian Voice Model | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0043-001 | Engineering Implementation Package | Guardian Persona: JARVIS Characterisation Refinement | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -255,6 +256,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0040 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0041 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0042 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0043 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -369,6 +371,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.429 | 30 July 2026 | Claude Engineering Implementer | ESR-0043 WP1: registered ESR-0043 (Open, 1.0) and EIP-ESR0043-001 (Approved - implemented, 1.0). Synced AAM-0001 (0.6 to 0.7) row following the Guardian Persona JARVIS-characterisation refinement (additive: precise phrasing, understated register with bounded dry wit, mild reasoned pushback, "Sir"/preferred-name addressing convention disclosed as a single-user stopgap, voice-accent mismatch disclosure). |
 | 3.428 | 30 July 2026 | Claude Engineering Implementer | Synced PST-0001 (3.14 to 3.15) row following ESR-0042 closure. |
 | 3.427 | 30 July 2026 | Claude Engineering Implementer | ESR-0042 closure: session-wide WP2 (Pass) and WP3 (Retain, RBL-0025) complete. Synced ESR-0042 (Open/1.1 to Closed/1.2) row; PST-0001 synced separately. |
 | 3.426 | 30 July 2026 | Claude Engineering Implementer | ESR-0042 WP1: registered ESR-0042 (Open, 1.0) and EIP-ESR0042-001 (Approved - implemented, 1.0). Synced EBR-0001 (1.145 to 1.146) row following EBG-0113's closure (Higher-Quality Guardian Voice Model - live comparison found no perceptible improvement, `lessac-high` not recommended) and EBG-0114's registration (Voice faculty not wired into `build_default_runtime()`). |
