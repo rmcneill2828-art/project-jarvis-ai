@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.442
+**Version:** 3.443
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.442 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.443 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.151 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.152 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -269,7 +269,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0043 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0044 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0045 | Engineering Session Report | Engineering Session Report | 1.6 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0046 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0046 | Engineering Session Report | Engineering Session Report | 1.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -384,6 +384,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.443 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1 closure addendum: registered EBG-0118 (local Codex CLI state stalling `codex exec` invocations, disclosed when the standing post-commit re-review could not complete). Synced EBR-0001 (1.151 to 1.152) and ESR-0046 (1.1 to 1.2) rows. |
 | 3.442 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1: registered ESR-0046 (Open, 1.0) and EIP-ESR0046-001 (1.0, Approved - implemented, User Identity and Profile Foundation). Synced EBR-0001 (1.150 to 1.151, EBG-0116 Completed), GAM-0001 (1.3 to 1.4, Section 10 non-goal corrected), LGB-0001 (1.0 to 1.1, Must-Ship item struck through) and PST-0001 (3.22 to 3.23) rows. |
 | 3.441 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 formally closed: session-wide WP6 (Independent Repository Verification: Codex Pass, zero code touched) and WP7 (Repository Baseline Determination: Retain RBL-0027 - Programme Sponsor overrode Codex's own suggestion to Establish) complete. Synced ESR-0045 (1.5 to 1.6, Open to Closed) and PST-0001 (3.21 to 3.22) rows. |
 | 3.440 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP5: registered LGB-0001 (Launch Gap Backlog, new artefact, Accepted, 1.0) and EIP-ESR0045-003 (1.0, Approved - implemented). Synced EBR-0001 (1.149 to 1.150, EBG-0116/EBG-0117 registered), ESR-0045 (1.4 to 1.5) and PST-0001 (3.20 to 3.21) rows. |

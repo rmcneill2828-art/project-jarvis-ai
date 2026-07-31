@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0046 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -82,6 +82,8 @@ Programme Sponsor approval obtained and verified via `submit-response` directly 
 
 Full Python suite: 453 passed, 1 skipped (was 424/1, 29 new). `validate_repository.py` (full mode): 0 errors, 266 warnings (pre-existing, unrelated dangling section-heading references).
 
+**Codex post-commit re-review of the actual pushed diff (`d095f48..0546b77`, the standing template's final step) could not be completed.** Two attempts via direct `codex exec -s read-only` invocation stalled indefinitely (30+ minutes, then a second attempt with a lighter, subprocess-avoiding prompt also stalled) before producing any substantive output beyond the initial banner - a different failure mode from the disclosed `CreateProcessAsUserW` sandbox limitation seen in prior sessions (that failure is immediate and explicit; this was a silent hang). Investigation found `~/.codex/logs_2.sqlite` at 322 MB alongside two lock files (`~/.codex/.tmp/plugins.sync.lock`, `~/.codex/tmp/arg0/codex-arg0.../.lock`) - global Codex CLI state outside this repository, not touched without Programme Sponsor direction. The Programme Sponsor selected skipping the post-commit re-review rather than clearing CLI state or continuing to retry. This WP's independent-review evidence therefore rests on the pre-implementation Codex design review (Pass, Section 6A above) plus the Engineering Implementer's own direct post-commit checks (full test suite, `validate_repository.py`, and a manual `git diff`/Authorised-Files cross-check), not an independent post-commit re-review of the real pushed diff. Disclosed as an outstanding verification gap, not silently treated as equivalent to a completed post-commit Pass.
+
 - Files: `jarvis/identity/__init__.py` (new), `jarvis/identity/store.py` (new), `jarvis/identity/service.py` (new), `jarvis/tests/test_identity_store.py` (new), `jarvis/tests/test_identity_service.py` (new), `jarvis/interfaces/stdio_rpc.py`, `jarvis/tests/test_stdio_rpc.py`, `src-tauri/src/lib.rs`, `src/App.jsx`, `src/styles.css`, `tests/e2e/app.spec.js`, `aiems/models/GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL.md`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/baselines/LGB-0001_LAUNCH_GAP_BACKLOG.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`, `README.md`, [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] (new).
 - Committed and pushed to `origin/main` (SHA reported at closure).
 
@@ -103,5 +105,6 @@ Full Python suite: 453 passed, 1 skipped (was 424/1, 29 new). `validate_reposito
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 31 July 2026 | Claude Engineering Implementer | WP1 closure addendum: disclosed that the standing post-commit Codex re-review of the pushed diff could not be completed (two `codex exec -s read-only` attempts stalled indefinitely, traced to a 322 MB `~/.codex/logs_2.sqlite` plus stale lock files - global CLI state outside this repository). Registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0118 to track it. Programme Sponsor selected skipping the re-review over clearing CLI state. |
 | 1.1 | 31 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0116 (User Identity and Profile Foundation) resolved per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] (Codex design review: Pass, no blocking findings; Programme Sponsor approval verified via the real Sponsor Approval Service). New `jarvis/identity/` module, four new `profile.*` RPC methods, real UXP profile picker replacing the static placeholder. Full validation clean across Python/Rust/frontend/Playwright; live smoke check performed at the RPC/storage layer. |
 | 1.0 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 opened at WP0B, before WP1 began. Objective: scope and draft EBG-0116 (User Identity and Profile Foundation), selected by the Programme Sponsor from LGB-0001's two Must-Ship items as the higher-leverage item, producing an Engineering Implementation Package for Codex review and Programme Sponsor approval before implementation. |
