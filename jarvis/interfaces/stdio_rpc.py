@@ -36,6 +36,8 @@ from typing import Any, TextIO
 
 from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
+from jarvis.identity.service import ProfileService
+from jarvis.identity.store import ProfileStore
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.interfaces.voice import GuardianSpeechProvider, SentinelGatedSpeechProvider
@@ -102,6 +104,11 @@ PIPER_VOICE_PATH_ENV_VAR = "JARVIS_PIPER_VOICE_PATH"
 # just for a local file instead of a network endpoint.
 MEMORY_DB_PATH_ENV_VAR = "JARVIS_MEMORY_DB_PATH"
 DEFAULT_MEMORY_DB_PATH = Path.home() / ".jarvis" / "memory" / "personal.db"
+
+# Identity/profile store location (EIP-ESR0046-001), mirroring the Personal
+# Memory store's env-var/default/test-isolation convention exactly.
+IDENTITY_DB_PATH_ENV_VAR = "JARVIS_IDENTITY_DB_PATH"
+DEFAULT_IDENTITY_DB_PATH = Path.home() / ".jarvis" / "identity" / "profiles.db"
 
 # Streaming Notifications MVP (EIP-ESR0031-002): interval between heartbeat
 # notifications, overridable per JARVIS_MEMORY_DB_PATH's established
@@ -254,6 +261,7 @@ class StdioRpcServer:
         runtime: GuardianRuntime,
         gia_observer: LocalResourceObserver | None = None,
         heartbeat_interval_seconds: float | None = None,
+        identity_service: ProfileService | None = None,
     ) -> None:
         self._runtime = runtime
         # Streaming Notifications MVP (EIP-ESR0031-002): shared between the
@@ -278,6 +286,23 @@ class StdioRpcServer:
         # deterministic fake snapshot, per EIP-ESR0029-002 Section 4.6/5.5,
         # rather than depending on the actual host machine's live values.
         self._gia_observer = gia_observer or LocalResourceObserver()
+        # Identity/profile storage (EIP-ESR0046-001) is likewise decoupled
+        # from `runtime`/`build_default_runtime()`, mirroring the GIA
+        # precedent immediately above: profile identity is local-device state
+        # independent of Guardian's own conversation lifecycle, not a
+        # capability `GuardianRuntime` itself needs to know about (Section 8
+        # exclusion 1 - this package deliberately does not scope conversation
+        # or memory by profile). `identity_service` is injectable so
+        # RPC-layer tests never touch the real `~/.jarvis/identity/` store.
+        if identity_service is not None:
+            self._identity_service = identity_service
+        else:
+            identity_db_path = (
+                Path(os.environ[IDENTITY_DB_PATH_ENV_VAR])
+                if os.environ.get(IDENTITY_DB_PATH_ENV_VAR)
+                else DEFAULT_IDENTITY_DB_PATH
+            )
+            self._identity_service = ProfileService(ProfileStore(identity_db_path))
         self._methods = {
             "guardian.converse": self._guardian_converse,
             "guardian.speak": self._guardian_speak,
@@ -287,6 +312,10 @@ class StdioRpcServer:
             "memory.approve": self._memory_approve,
             "memory.deny": self._memory_deny,
             "memory.list": self._memory_list,
+            "profile.list": self._profile_list,
+            "profile.create": self._profile_create,
+            "profile.select": self._profile_select,
+            "profile.active": self._profile_active,
             "gia.status": self._gia_status,
         }
 
@@ -389,6 +418,43 @@ class StdioRpcServer:
             msg = "params.pendingId must be a string."
             raise TypeError(msg)
         return pending_id
+
+    @staticmethod
+    def _serialize_profile(record) -> dict[str, Any]:
+        return {
+            "id": record.id,
+            "displayName": record.display_name,
+            "role": record.role,
+            "createdAt": record.created_at.isoformat(),
+        }
+
+    def _profile_list(self, params: dict[str, Any]) -> dict[str, Any]:
+        profiles = self._identity_service.list_profiles()
+        return {"profiles": [self._serialize_profile(record) for record in profiles]}
+
+    def _profile_create(self, params: dict[str, Any]) -> dict[str, Any]:
+        display_name = params.get("displayName")
+        role = params.get("role")
+        if not isinstance(display_name, str):
+            msg = "params.displayName must be a string."
+            raise TypeError(msg)
+        if not isinstance(role, str):
+            msg = "params.role must be a string."
+            raise TypeError(msg)
+        record = self._identity_service.create_profile(display_name, role)
+        return self._serialize_profile(record)
+
+    def _profile_select(self, params: dict[str, Any]) -> dict[str, Any]:
+        profile_id = params.get("profileId")
+        if not isinstance(profile_id, str):
+            msg = "params.profileId must be a string."
+            raise TypeError(msg)
+        record = self._identity_service.select_profile(profile_id)
+        return self._serialize_profile(record)
+
+    def _profile_active(self, params: dict[str, Any]) -> dict[str, Any]:
+        record = self._identity_service.active_profile()
+        return {"profile": self._serialize_profile(record) if record is not None else None}
 
     def handle_line(self, line: str) -> dict[str, Any] | None:
         """Handle one JSON-RPC 2.0 request line, returning the response object."""

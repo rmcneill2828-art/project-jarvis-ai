@@ -2,7 +2,7 @@
 
 > *"Guardian's trust comes from what it will not do without being asked."*
 
-**Version:** 1.3
+**Version:** 1.4
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | GAM-0001 |
 | Title | Guardian Authority and Boundary Model |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -253,7 +253,7 @@ GAM-0001 does not:
 - implement Sentinel enforcement or the trust-tier classifier itself;
 - implement Guardian runtime behaviour;
 - implement approval workflows, notification channels, consent recording, or trusted-mobile approve/deny (Section 9 defines the architecture; none of it is built here);
-- implement the household role model's authentication or enforcement (Section 8.1 defines the roles and their authority; it does not implement login, identification or access control);
+- implement the household role model's authentication or enforcement (Section 8.1 defines the roles and their authority; it does not itself implement identification or access control - **local, unauthenticated profile identification and switching, role-tagged against exactly these four values, is now implemented** via `jarvis/identity/` per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] (EBG-0116, ESR-0046); credentialed authentication and enforcement of the roles' differing authority against Sentinel/`TrustTierPolicy` remain not implemented);
 - implement memory storage technology, encryption, or technical retention duration policy (EBG-0019 - Section 9.2 defines only the consent gate in front of that architecture);
 - implement Sentinel endpoint trust/device registration (Section 9.3 assumes Sentinel has already established endpoint trust; it does not define how);
 - define Sentinel Gate of Durin trust-tier/platform-entry detail (EBG-0047);
@@ -295,6 +295,7 @@ Any such evolution shall require separately approved engineering packages.
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0031/EBG-0020/EBG-0048/EBG-0021 and their dependent follow-on items. |
 | [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] | Guardian experience architecture that presents Guardian's authority boundary to the user where appropriate. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers GAM-0001 as a controlled architecture model. |
+| [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] | Implements Section 8.1's Household Role Model as a real, selectable local profile (EBG-0116); does not implement enforcement of the roles' differing authority. |
 
 ---
 
@@ -302,6 +303,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1, resolving EBG-0116 (User Identity and Profile Foundation) per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] (Codex design review: Pass; Programme Sponsor approval verified via the real Sponsor Approval Service): Section 10's non-goal statement corrected - local, unauthenticated profile identification and switching against Section 8.1's four household roles is now implemented (`jarvis/identity/`), closing RSC-0001's scored "User Profiles" Fail. Credentialed authentication and enforcement of the roles' differing authority against Sentinel/`TrustTierPolicy` remain not implemented, unchanged from before. |
 | 1.3 | 30 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 30 July 2026**, verified via `submit-response` against the real Sponsor Approval Service, following Engineering Reviewer (Codex) design review of [[EIP-ESR0041-001_LOCAL_AGENT_PERMISSION_BOUNDARY_SCOPE|EIP-ESR0041-001]] (v0.1 Fail with findings - 8A.3's smart-home "command" example too broad; v0.2 Pass after narrowing). New Section 8A resolves EBG-0021 (Local Agent Permission Boundary, JRM-0001 Track B Phase 2): defines what counts as a local agent action (distinct from GIA's read-only observability), a permanent ceiling that no local agent action may ever be classified Autonomous, an illustrative Action Tiers table separating permanently-out-of-scope (destructive/safety-critical) from conditionally-eligible-for-future-approval-gating actions, and an Administrator-only approval requirement by analogy to Section 8.4. Architecture/policy-definition only - no code changed, Sentinel's `LOCAL_AGENT_ACTION` classification remains `DENY` exactly as before. Section 6.3 and Section 8.5 cross-references updated to point to Section 8A; Section 11 updated to remove EBG-0021 from the still-open list. Whole-document staleness sweep (PBK-0001) also corrected a stale RBL-0015 "current baseline" reference (Section 12) to RBL-0025. ESR-0041 WP1. |
 | 1.2 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 9.2's EBG-0019 boundary is drawn in the right place (policy/consent layer only, no pre-emption, no gap - storage technology, encryption and retention duration remain EBG-0019's scope); Section 9.3's endpoint-trust framing is consistent with SAM-0001 and ADR-0010. ESR-0023 WP4, resolving EBG-0048 (Guardian HITL Governance Specification, extending EBG-0031/EBG-0020 per ADR-0010). Section 9 extended with four subsections: 9.1 consent mechanics (scoped to the specific action, not a standing grant); 9.2 memory-retention consent boundary; 9.3 trusted mobile approve/deny, confirmed by ADR-0010 as a future capability, architecture only; 9.4 privacy boundary reinforcement, making Section 8.2's personal/shared-family distinction an explicit HUMAN_APPROVAL_REQUIRED gate. Evidence checked directly: `sentinel/policy.py`'s REVIEW outcome is currently a static-message enum value only, no approval workflow implemented. |
 | 1.1 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 8.4's pre-approval mechanism does not create a backdoor around Sentinel's EMERGENCY_CONTROL deny-by-default, and the Child-role restrictions (8.1/8.2) are adequately conservative. Non-blocking Reviewer note incorporated: Section 8.4 now states the emergency policy record itself is subject to PBK-0001's Approval Before Change discipline, not a bypass of it. New Section 8 resolves EBG-0020 (Guardian, Family Safety and Emergency Controls, open since ESR-0004): household role model (Administrator/Adult/Child/Guest, sourced from the original ESR-0004 EKR-0001 vision recovery, confirmed absent from AAM-0001 and PVTM-0001 before this addition), child-safe assistance boundary, emergency assistance scope, and an explicit boundary against EBG-0021. Sections renumbered 8 to 13 accordingly. ESR-0023 WP3. |

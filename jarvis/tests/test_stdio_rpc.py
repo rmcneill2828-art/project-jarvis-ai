@@ -10,6 +10,8 @@ from unittest.mock import patch
 
 from jarvis.gia.observability import GiaSnapshot
 from jarvis.guardian.runtime import GuardianRuntime
+from jarvis.identity.service import ProfileService
+from jarvis.identity.store import ProfileStore
 from jarvis.interfaces.stdio_rpc import (
     INTERNAL_ERROR,
     INVALID_PARAMS,
@@ -63,11 +65,17 @@ def _server(tmp_path) -> StdioRpcServer:
     # write to the real ~/.jarvis/memory/personal.db on whatever machine runs
     # the suite, the exact test-isolation defect class ESR-0026 WP1 found for
     # Ollama's network endpoint, just for a local file instead.
+    #
+    # identity_service (EIP-ESR0046-001) is passed explicitly for the same
+    # reason - it is decoupled from build_default_runtime()/environ (mirroring
+    # the GIA precedent), so without an explicit override here every test in
+    # this file would otherwise touch the real ~/.jarvis/identity/profiles.db.
     return StdioRpcServer(
         build_default_runtime(environ={
             "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
             "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-        })
+        }),
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
     )
 
 
@@ -196,7 +204,8 @@ def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
                     "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                     "JARVIS_PIPER_VOICE_PATH": "/fake/voices/en_US-lessac-medium.onnx",
                 }
-            )
+            ),
+            identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
         )
 
     result = server._methods["guardian.speak"]({"text": "hello"})
@@ -284,13 +293,15 @@ def test_platform_status_reflects_real_runtime_state(tmp_path):
     }
 
 
-def test_platform_status_policy_engine_is_none_without_a_connected_gateway():
+def test_platform_status_policy_engine_is_none_without_a_connected_gateway(tmp_path):
     """EIP-ESR0024-002: policyEngine must degrade honestly (None), not raise,
     when no conversation provider - and therefore no Sentinel gateway - is
     connected. build_default_runtime() always wires one, so this exercises
     the defensive branch directly via a bare GuardianRuntime instead."""
 
-    server = StdioRpcServer(GuardianRuntime())
+    server = StdioRpcServer(
+        GuardianRuntime(), identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db"))
+    )
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "platform.status", "params": {}}))
 
@@ -348,7 +359,11 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
         engineering_tools_running={"vscode": True, "obsidian": False, "githubDesktop": False, "chatgpt": True},
         captured_at=captured_at,
     )
-    server = StdioRpcServer(build_default_runtime(), gia_observer=_fake_gia_observer(fake_snapshot))
+    server = StdioRpcServer(
+        build_default_runtime(),
+        gia_observer=_fake_gia_observer(fake_snapshot),
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 7, "method": "gia.status", "params": {}}))
 
@@ -369,7 +384,7 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
     }
 
 
-def test_gia_status_does_not_require_a_started_or_connected_runtime():
+def test_gia_status_does_not_require_a_started_or_connected_runtime(tmp_path):
     """gia.status's own handler has no dependency on GuardianRuntime's
     lifecycle or any conversation/memory boundary - a bare, unstarted
     GuardianRuntime still resolves it (method-level decoupling; see
@@ -392,7 +407,11 @@ def test_gia_status_does_not_require_a_started_or_connected_runtime():
         engineering_tools_running={"vscode": True, "obsidian": False, "githubDesktop": False, "chatgpt": False},
         captured_at=datetime(2026, 7, 19, 10, 0, 0, tzinfo=UTC),
     )
-    server = StdioRpcServer(GuardianRuntime(), gia_observer=_fake_gia_observer(fake_snapshot))
+    server = StdioRpcServer(
+        GuardianRuntime(),
+        gia_observer=_fake_gia_observer(fake_snapshot),
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
 
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 8, "method": "gia.status", "params": {}}))
 
@@ -549,10 +568,14 @@ def test_heartbeat_loop_emits_notification_with_no_id_key(tmp_path):
     Exercises `_heartbeat_loop` directly with a short real interval rather than
     a real 30-second sleep, per the EIP's own validation requirement."""
 
-    server = StdioRpcServer(build_default_runtime(environ={
-        "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
-        "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-    }), heartbeat_interval_seconds=0.01)
+    server = StdioRpcServer(
+        build_default_runtime(environ={
+            "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+        }),
+        heartbeat_interval_seconds=0.01,
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
     out_stream = io.StringIO()
     stop_event = threading.Event()
 
@@ -594,10 +617,14 @@ def test_serve_forever_still_processes_requests_correctly_with_heartbeat_thread_
     heartbeat itself cannot fire during this test, isolating this assertion
     from any timing flakiness."""
 
-    server = StdioRpcServer(build_default_runtime(environ={
-        "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
-        "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-    }), heartbeat_interval_seconds=9999.0)
+    server = StdioRpcServer(
+        build_default_runtime(environ={
+            "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+        }),
+        heartbeat_interval_seconds=9999.0,
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
     requests = (
         json.dumps({"jsonrpc": "2.0", "id": 1, "method": "platform.status", "params": {}})
         + "\n\n"
@@ -638,10 +665,14 @@ def test_serve_forever_interleaves_heartbeats_without_corrupting_any_line(tmp_pa
     requests, then asserts every single output line is independently valid
     JSON - a corruption would produce an unparsable or malformed line."""
 
-    server = StdioRpcServer(build_default_runtime(environ={
-        "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
-        "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-    }), heartbeat_interval_seconds=0.01)
+    server = StdioRpcServer(
+        build_default_runtime(environ={
+            "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+        }),
+        heartbeat_interval_seconds=0.01,
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
     requests = [
         json.dumps({"jsonrpc": "2.0", "id": i, "method": "platform.status", "params": {}})
         for i in range(5)
@@ -739,3 +770,126 @@ def test_memory_approve_unknown_pending_id_returns_internal_error(tmp_path):
 
     assert response["error"]["code"] == INTERNAL_ERROR
     assert response["error"]["message"].startswith("KeyError:")
+
+
+def test_profile_list_empty_before_any_profile_created(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "profile.list", "params": {}}))
+
+    assert response["result"] == {"profiles": []}
+
+
+def test_profile_active_none_before_any_selection(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "profile.active", "params": {}}))
+
+    assert response["result"] == {"profile": None}
+
+
+def test_profile_create_list_select_active_round_trip(tmp_path):
+    server = _server(tmp_path)
+
+    create_response = server.handle_line(
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "profile.create",
+                "params": {"displayName": "Robert", "role": "Administrator"},
+            }
+        )
+    )
+    created = create_response["result"]
+    assert created["displayName"] == "Robert"
+    assert created["role"] == "Administrator"
+    assert "id" in created
+    assert "createdAt" in created
+
+    list_response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "profile.list", "params": {}}))
+    assert list_response["result"] == {"profiles": [created]}
+
+    select_response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "profile.select", "params": {"profileId": created["id"]}})
+    )
+    assert select_response["result"] == created
+
+    active_response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 4, "method": "profile.active", "params": {}})
+    )
+    assert active_response["result"] == {"profile": created}
+
+
+def test_profile_create_rejects_non_string_display_name(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "profile.create", "params": {"displayName": 123, "role": "Adult"}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("TypeError:")
+
+
+def test_profile_create_rejects_unknown_role(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "profile.create",
+                "params": {"displayName": "Robert", "role": "Superuser"},
+            }
+        )
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("ValueError:")
+
+
+def test_profile_select_unknown_id_returns_internal_error(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "profile.select", "params": {"profileId": "does-not-exist"}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("ValueError:")
+
+
+def test_profile_active_persists_across_new_server_instance_against_same_db(tmp_path):
+    """Mirrors the memory store's own persists-across-instance precedent -
+    the active profile selection must survive a process restart, since
+    ProfileStore persists it to the same SQLite file rather than holding it
+    only in memory."""
+
+    db_path = tmp_path / "profiles.db"
+    first_server = StdioRpcServer(
+        GuardianRuntime(), identity_service=ProfileService(ProfileStore(db_path))
+    )
+    created = first_server.handle_line(
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "profile.create",
+                "params": {"displayName": "Robert", "role": "Administrator"},
+            }
+        )
+    )["result"]
+    first_server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 2, "method": "profile.select", "params": {"profileId": created["id"]}})
+    )
+
+    second_server = StdioRpcServer(
+        GuardianRuntime(), identity_service=ProfileService(ProfileStore(db_path))
+    )
+    response = second_server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "profile.active", "params": {}})
+    )
+
+    assert response["result"] == {"profile": created}

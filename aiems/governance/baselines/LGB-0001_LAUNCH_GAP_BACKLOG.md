@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | LGB-0001 |
 | Title | Launch Gap Backlog |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -35,7 +35,7 @@ An item is **Must-Ship** only if [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5 (MLP 
 
 | Gap | RSC-0001 Score | Backlog Status | Rationale |
 |-----|-----------------|-----------------|-----------|
-| User Identity and Profile Foundation | User Profiles: **Fail** | **New: [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0116** (registered by this WP; no prior tracking item existed - confirmed by direct search of EBR-0001 before drafting) | MLP 0.1 explicitly requires "User Profiles." No login, identification or profile-switching code exists; [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8.1 defines roles but explicitly does not implement authentication. This is also the single highest-leverage item: RSC-0001 Section 6 already identified it as the shared prerequisite blocking Family Profiles (MLP 0.3) and full HITL/family-safety live wiring (MLP 0.8) as well. |
+| ~~User Identity and Profile Foundation~~ | User Profiles: **Fail** (at time of scoring) | **[[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0116 - Completed at ESR-0046 WP1** per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] | **Resolved.** Local, unauthenticated profile identification and switching implemented (`jarvis/identity/`), role-tagged against GAM-0001 Section 8.1's four household roles. Credentialed authentication, memory scoping by profile and enforcement of the roles' differing authority remain deliberately unimplemented, disclosed separately-tracked follow-on work, not part of this Must-Ship item's own bar. |
 | Voice Faculty Increment B (Speech Input) | Basic Voice Input: **Fail** | **New: EBR-0001 EBG-0117** (registered by this WP; EBG-0112's own text explicitly deferred registering this as its own item "when actually selected as a future session's objective" - that condition is now met) | MLP 0.1 explicitly requires "Basic Voice Input." Speech output only is implemented (EBG-0112 Increment A, live since ESR-0044); no microphone-capture/speech-to-text path exists anywhere. |
 
 No item is scored Must-Ship at only Partial: Animated Avatar/Orb's Partial score already reflects a genuinely live, animating presence meeting MLP 0.1's basic bar (see RSC-0001 Section 4) - its remaining gap belongs in Defer below.
@@ -69,7 +69,7 @@ Neither entry authorises implementation. A future Engineering Implementation Pac
 
 # 7. Interpretation
 
-Two items are Must-Ship; both share no common code dependency on each other, but User Identity and Profile Foundation is the higher-leverage item, since RSC-0001 already identified it as blocking two further Defer-bucket items (Family Profiles, full HITL live wiring) beyond User Profiles itself. This artefact does not recommend an order between the two Must-Ship items or a target session - that remains a Programme Sponsor / future-session decision, informed by [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s existing sequencing.
+Two items were originally Must-Ship, sharing no common code dependency on each other. User Identity and Profile Foundation, identified as the higher-leverage item since RSC-0001 flagged it as blocking two further Defer-bucket items (Family Profiles, full HITL live wiring) beyond User Profiles itself, was resolved first, at ESR-0046 WP1. Voice Faculty Increment B (Speech Input) remains open; this artefact does not recommend a target session for it - that remains a Programme Sponsor / future-session decision, informed by [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s existing sequencing.
 
 ---
 
@@ -96,4 +96,5 @@ LGB-0001 shall be refreshed whenever a Must-Ship item is delivered (moving it ou
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 31 July 2026 | Claude Engineering Implementer | Per Section 8's own maintenance rule: EBG-0116 (User Identity and Profile Foundation) resolved at ESR-0046 WP1 per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]]. Section 4's Must-Ship row struck through and marked resolved; Section 7's Interpretation updated to reflect one of two Must-Ship items now delivered. One Must-Ship item (EBG-0117, Voice Faculty Increment B) remains open. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | Initial LGB-0001 created at ESR-0045 WP5, per the Programme Sponsor's selection of the triggering Codex review's second recommended next action (a prioritised launch-gap backlog split must-ship vs defer). Split RSC-0001's scored gaps into 2 Must-Ship items (both newly registered as EBG-0116/EBG-0117, confirmed genuinely untracked before registering) and 7 Defer items (later MLP phases or beyond-MLP-0.1 enhancements). |

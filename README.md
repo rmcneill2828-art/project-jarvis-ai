@@ -13,11 +13,11 @@ Supporting principle:
 | Item | Status |
 |------|--------|
 | Project | Project JARVIS AI |
-| Current Phase | No session currently open. [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] closed (30 July 2026) / five Work Packages delivered: STD-0006, README/PST-0001 documentation debt fixed, PCB-0001 refreshed, RSC-0001 (v1.0 Readiness Scorecard) and LGB-0001 (Launch Gap Backlog) created |
+| Current Phase | [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] open (31 July 2026) / WP1 delivered: EBG-0116 (User Identity and Profile Foundation) resolved via `jarvis/identity/`, real UXP profile picker |
 | Repository Status | Operational |
 | Engineering Framework | AIEMS v1.0 in development |
 | Product Implementation | Operational First Light (Tkinter) / Guardian Desktop Platform Shell (Tauri + React, live UXP-backend bridge, packaged as a distributable installer since ESR-0032) |
-| Current Engineering Focus | No session is currently open. [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] is the latest closed session, with [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] retained as the current repository baseline (established at ESR-0044, retained at ESR-0045 - architecture/policy/documentation-only session, no code changed). See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
+| Current Engineering Focus | [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] is open, WP1 complete. [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] remains the current repository baseline pending this session's own WP6/WP7 determination. See [[PST-0001_PROGRAMME_STATUS|PST-0001]] for the current authoritative programme-state snapshot. |
 
 ---
 
@@ -69,13 +69,14 @@ Current JARVIS implementation includes:
 - Memory and Data Storage Architecture specification ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]]) approved; its Personal Memory tier is implemented (`jarvis/memory/`, a real consent-gated SQLite store, ESR-0027) and wired into live conversation via the Guardian Cognitive Core (ESR-0039). Session and Shared-Family tiers remain not started.
 - Guardian Voice faculty, Phase 6 Increment A: Sentinel-gated speech output only, via a self-hosted Piper local-TTS provider (`sentinel/piper_provider.py`, no API key or recurring cost), wired into the live JSON-RPC bridge (`guardian.speak`) and the Guardian Desktop Platform Shell's speak button (ESR-0044). Speech input and Vision remain not started (ESR-0040).
 - Local Agent Permission Boundary defined ([[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A): the policy boundary a future Local Agent/Action faculty implementation must obey. Architecture only - no local-agent code exists yet (ESR-0041).
+- User Identity and Profile Foundation (`jarvis/identity/`): local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's four household roles, reachable through a real UXP profile picker replacing the previous static placeholder (ESR-0046). Credentialed authentication, memory scoping by profile and enforcement of the roles' differing authority remain not implemented.
 - Python package structure.
 - Root `Jarvis` lifecycle object.
 - `JarvisState` lifecycle enumeration.
 - Guardian Runtime Foundation with lifecycle ownership, service status snapshots and bounded observability interfaces.
 - Package-level public API.
 - GIA-BOOT Proof of Concept readiness interfaces.
-- Automated tests for lifecycle, provider, policy, orchestration, stdio-bridge, memory, cognitive-core and voice behaviour (424 tests plus 1 correctly-skipped test, `jarvis/tests/` and `scripts/tests/`).
+- Automated tests for lifecycle, provider, policy, orchestration, stdio-bridge, memory, cognitive-core, voice and identity behaviour (453 tests plus 1 correctly-skipped test, `jarvis/tests/` and `scripts/tests/`).
 - Packaging configuration using package discovery.
 
 Current JARVIS architecture direction includes:
@@ -184,6 +185,7 @@ Key engineering artefacts include:
 | [[STD-0006_CONFIGURATION_AND_SECRETS_STANDARD|STD-0006]] | Configuration and Secrets Standard |
 | [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] | v1.0 Readiness Scorecard |
 | [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] | Launch Gap Backlog |
+| [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | Guardian Authority and Boundary Model - Section 8.1's Household Role Model, now operationally implemented by `jarvis/identity/`. |
 
 ---
 
@@ -296,7 +298,7 @@ Engineering work is evidence-led: context is gathered before implementation, dec
 | Platform Architecture | In Review | High | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] defines the platform architecture; [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] defines Guardian identity and cognitive architecture. |
 | Sentinel AI Execution and Security Platform | Implemented | High | Trust gateway, `TrustTierPolicy` (production policy engine), audit trail, and OpenAI/Gemini/Ollama provider adapters with failover, reachable live through the UXP-backend bridge. |
 | Engineering Ecosystem | In Progress | High | ESR-0008 recognised Obsidian as the human-facing Engineering Knowledge Workspace for OSE while GitHub remains source of truth. |
-| JARVIS Development | In Progress | Early/Partial | Operational First Light / Conversation Workspace, Guardian Desktop Platform Shell (Tauri + React) with a live backend bridge, Guardian Orb knowledge-graph rendering, lifecycle object, public API, GIA-BOOT Proof of Concept, Guardian Runtime Foundation, packaging configuration and tests exist. Guardian Cognitive Core (memory/history-informed reasoning), Personal Memory tier and Voice Phase 6 Increment A (speech output) are implemented; the Local Agent Permission Boundary is now defined (GAM-0001 Section 8A), but the Action faculty, Vision, Session/Shared-Family memory and the wider agent framework remain not started. |
+| JARVIS Development | In Progress | Early/Partial | Operational First Light / Conversation Workspace, Guardian Desktop Platform Shell (Tauri + React) with a live backend bridge, Guardian Orb knowledge-graph rendering, lifecycle object, public API, GIA-BOOT Proof of Concept, Guardian Runtime Foundation, packaging configuration and tests exist. Guardian Cognitive Core (memory/history-informed reasoning), Personal Memory tier, Voice Phase 6 Increment A (speech output) and User Identity and Profile Foundation (`jarvis/identity/`, local unauthenticated profile create/list/select) are implemented; the Local Agent Permission Boundary is defined (GAM-0001 Section 8A), but credentialed authentication, memory scoping by profile, role-authority enforcement, the Action faculty, Vision, Session/Shared-Family memory and the wider agent framework remain not started. |
 
 ---
 
@@ -338,9 +340,10 @@ Current focus (see [[PST-0001_PROGRAMME_STATUS|PST-0001]] for full detail):
 - Memory and Data Storage Architecture ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]]) is approved and its Personal Memory tier is implemented (`jarvis/memory/`, ESR-0027) and wired into live conversation via the Guardian Cognitive Core (ESR-0039); Sentinel Network Exposure Security Requirements ([[ADR-0020_SENTINEL_NETWORK_EXPOSURE_SECURITY_REQUIREMENTS|ADR-0020]]) remains an approved specification with no network-facing interface built yet.
 - GIA (Guardian Instrumentation Agent) Phase 1 local resource observability (CPU/memory/storage/process health/engineering-environment presence) is implemented and live-verified (ESR-0029).
 - Guardian's Voice faculty, Phase 6 Increment A (speech output only, self-hosted Piper local TTS) is implemented and live-verified (ESR-0040), and is now wired into the live JSON-RPC bridge and the Guardian Desktop Platform Shell's speak button (ESR-0044); the Local Agent Permission Boundary is defined ([[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A, ESR-0041) - the prerequisite gate for the still-unimplemented Action faculty. Guardian's Persona has also been refined toward its classic characterisation (ESR-0043), and configuration/secrets practice is now formalised in [[STD-0006_CONFIGURATION_AND_SECRETS_STANDARD|STD-0006]] (ESR-0045).
-- [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] is the current accepted repository baseline, established at ESR-0044 (Guardian's Voice faculty wired into the live UXP).
-- Session/Shared-Family memory tiers, Action faculty implementation, Vision, speech input, Provider Framework completion, Conversation Engine expansion, EAC and GDP-0001 implementation, and GIA Phases 2-4 remain deferred.
-- No session is currently open; [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] is the latest closed session.
+- User Identity and Profile Foundation (`jarvis/identity/`) is implemented and live-verified (ESR-0046) - local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's four household roles, reachable through a real UXP profile picker. Credentialed authentication, memory scoping by profile and enforcement of the roles' differing authority remain not implemented, deliberately deferred to later work.
+- [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] is the current accepted repository baseline, established at ESR-0044 (Guardian's Voice faculty wired into the live UXP); ESR-0046 WP1 is a genuine, live code change and its own baseline determination remains open pending that session's WP6/WP7.
+- Session/Shared-Family memory tiers, credentialed profile authentication, role-authority enforcement, Action faculty implementation, Vision, speech input, Provider Framework completion, Conversation Engine expansion, EAC and GDP-0001 implementation, and GIA Phases 2-4 remain deferred.
+- [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] is open; WP1 is complete.
 
 ---
 
@@ -363,9 +366,10 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 | Artefact | Relationship |
 |----------|--------------|
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status and reload point - the authoritative source for current programme state; this README summarises but does not replace it. |
-| [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] | Current accepted repository baseline, established at ESR-0044 (Guardian's Voice faculty wired into the live UXP). |
-| [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] | Latest closed engineering session (five Work Packages): EBG-0065 (STD-0006 Configuration and Secrets Standard) resolved at WP1; a Documentation Debt Discipline sweep of this README and PST-0001 at WP2, prompted by an independent Codex governance/v1.0-readiness gap analysis; PCB-0001 refreshed at WP3; RSC-0001 (v1.0 Readiness Scorecard) created at WP4; LGB-0001 (Launch Gap Backlog) created at WP5, registering EBG-0116/EBG-0117. Session-wide WP6 Pass, WP7 Retain - RBL-0027 retained. |
-| [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]] | EBG-0114 (Guardian Voice faculty wired into the live JSON-RPC bridge, Tauri bridge and UXP speak button) delivered and live-verified across all three layers; retained for lineage, no longer the latest closed session. |
+| [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] | Current accepted repository baseline, established at ESR-0044 (Guardian's Voice faculty wired into the live UXP); ESR-0046 WP1 changed live code, its own baseline determination pending that session's WP6/WP7. |
+| [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] | Open engineering session. WP1 (Complete): EBG-0116 (User Identity and Profile Foundation) resolved per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] - `jarvis/identity/` module, four new `profile.*` RPC methods, real UXP profile picker. Codex Pass; Programme Sponsor approval verified via the real Sponsor Approval Service. |
+| [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] | Five Work Packages: EBG-0065 (STD-0006 Configuration and Secrets Standard) resolved at WP1; a Documentation Debt Discipline sweep of this README and PST-0001 at WP2; PCB-0001 refreshed at WP3; RSC-0001 (v1.0 Readiness Scorecard) created at WP4; LGB-0001 (Launch Gap Backlog) created at WP5, registering EBG-0116 (resolved at ESR-0046 WP1)/EBG-0117. Session-wide WP6 Pass, WP7 Retain - RBL-0027 retained; retained for lineage, no longer the latest closed session. |
+| [[ESR-0044_ENGINEERING_SESSION_REPORT|ESR-0044]] | EBG-0114 (Guardian Voice faculty wired into the live JSON-RPC bridge, Tauri bridge and UXP speak button) delivered and live-verified across all three layers; retained for lineage. |
 | [[ESR-0043_ENGINEERING_SESSION_REPORT|ESR-0043]] | Guardian Persona refined toward its classic JARVIS characterisation, recorded in AAM-0001. |
 | [[ESR-0041_ENGINEERING_SESSION_REPORT|ESR-0041]] | EBG-0021 (Local Agent Permission Boundary) resolved via a new GAM-0001 Section 8A - defines the boundary a future Local Agent/Action faculty implementation must obey. Architecture/policy-definition only, no code changed; retained for lineage. |
 | [[ESR-0040_ENGINEERING_SESSION_REPORT|ESR-0040]] | Guardian's first Voice faculty capability (EBG-0112 Increment A, speech output only via self-hosted Piper local TTS) delivered and live-verified; retained for lineage. |
@@ -385,6 +389,7 @@ Project JARVIS AI is a collaborative engineering programme between the Programme
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 3.25 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1: resolved EBG-0116 (User Identity and Profile Foundation) per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] - new `jarvis/identity/` module, four new `profile.*` RPC methods, real UXP profile picker replacing the static "Robert" placeholder. Top Project Status table, JARVIS implementation bullets, Capability Roadmap table, Key Engineering Artefacts table (added GAM-0001), Related Artefacts table (added ESR-0046) and Phase 2 Current Roadmap focus updated to reflect ESR-0046 open, WP1 complete. Automated-test count updated 424 to 453 passed/1 skipped. No governance artefact content changed beyond this session's own delivery; PST-0001 remains the authoritative source this README summarises. |
 | 1.0 | 22 June 2026 | Project Sponsor | Initial repository created and project introduced. |
 | 2.0 | 24 June 2026 | Project Sponsor & Chief Architect | Phase 0 validated and completed. Introduced AIEMS, Engineering Philosophy, Strategic Alignment Reviews, AI-assisted engineering model, repository governance and updated project roadmap. |
 | 3.0 | 26 June 2026 | Programme Sponsor & Chief Engineering Advisor | Reconciled README with current AIEMS repository structure, governance artefacts, project roadmap and JARVIS implementation baseline. |

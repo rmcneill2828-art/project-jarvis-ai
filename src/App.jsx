@@ -259,7 +259,7 @@ function AppHeader({ platformIndicator }) {
   );
 }
 
-function CapabilitySidebar({ capabilityStatuses }) {
+function CapabilitySidebar({ capabilityStatuses, profiles, activeProfile, profileError, onCreateProfile, onSelectProfile }) {
   return (
     <aside className="sidebar" aria-labelledby="sidebar-heading">
       <section className="sidebar-panel">
@@ -285,17 +285,118 @@ function CapabilitySidebar({ capabilityStatuses }) {
           <ChevronRight size={18} />
         </button>
       </section>
-      <section className="profile-card" aria-label="Signed in profile">
+      <ProfileCard
+        profiles={profiles}
+        activeProfile={activeProfile}
+        profileError={profileError}
+        onCreateProfile={onCreateProfile}
+        onSelectProfile={onSelectProfile}
+      />
+    </aside>
+  );
+}
+
+// GAM-0001 Section 8.1's Household Role Model - the only roles a profile may
+// be created with (EIP-ESR0046-001).
+const HOUSEHOLD_ROLES = ["Administrator", "Adult", "Child", "Guest"];
+
+function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, onSelectProfile }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState("");
+  const [newRole, setNewRole] = useState(HOUSEHOLD_ROLES[0]);
+
+  if (!activeProfile) {
+    return (
+      <section className="profile-card profile-card-create" aria-label="Create a Guardian profile">
+        <form
+          className="profile-create-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const trimmed = newDisplayName.trim();
+            if (!trimmed) return;
+            onCreateProfile(trimmed, newRole);
+            setNewDisplayName("");
+          }}
+        >
+          <span className="avatar" aria-hidden="true">
+            <CircleUserRound size={34} />
+          </span>
+          <div className="profile-create-fields">
+            <input
+              value={newDisplayName}
+              onChange={(event) => setNewDisplayName(event.target.value)}
+              placeholder="Your name"
+              aria-label="New profile display name"
+            />
+            <select
+              value={newRole}
+              onChange={(event) => setNewRole(event.target.value)}
+              aria-label="New profile household role"
+            >
+              {HOUSEHOLD_ROLES.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+            <button type="submit" disabled={newDisplayName.trim().length === 0}>
+              Create profile
+            </button>
+          </div>
+        </form>
+        {profileError && (
+          <p className="profile-error" role="alert">
+            {profileError}
+          </p>
+        )}
+      </section>
+    );
+  }
+
+  const otherProfiles = (profiles ?? []).filter((profile) => profile.id !== activeProfile.id);
+
+  return (
+    <section className="profile-card" aria-label="Signed in profile">
+      <button
+        type="button"
+        className="profile-summary"
+        onClick={() => setPickerOpen((open) => !open)}
+        aria-expanded={pickerOpen}
+        aria-label="Switch Guardian profile"
+      >
         <span className="avatar" aria-hidden="true">
           <CircleUserRound size={34} />
         </span>
         <div>
-          <strong>Robert</strong>
-          <span>Signed in locally</span>
+          <strong>{activeProfile.displayName}</strong>
+          <span>{activeProfile.role}</span>
         </div>
         <ChevronDown size={18} aria-hidden="true" />
-      </section>
-    </aside>
+      </button>
+      {pickerOpen && otherProfiles.length > 0 && (
+        <ul className="profile-picker" aria-label="Other profiles">
+          {otherProfiles.map((profile) => (
+            <li key={profile.id}>
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectProfile(profile.id);
+                  setPickerOpen(false);
+                }}
+              >
+                <strong>{profile.displayName}</strong>
+                <span>{profile.role}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {profileError && (
+        <p className="profile-error" role="alert">
+          {profileError}
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -477,6 +578,10 @@ export function App() {
   const [sendError, setSendError] = useState(null);
   const [speakError, setSpeakError] = useState(null);
 
+  const [profiles, setProfiles] = useState([]);
+  const [activeProfile, setActiveProfile] = useState(null);
+  const [profileError, setProfileError] = useState(null);
+
   // EIP-ESR0031-002 (Streaming Notifications MVP): the UXP's first live-push
   // channel. platform_status/knowledge_graph above remain one-time mount
   // fetches, unchanged - this is a second, independent channel proving the
@@ -500,6 +605,22 @@ export function App() {
       })
       .catch((error) => {
         if (!cancelled) setKnowledgeGraphError(String(error));
+      });
+
+    invoke("list_profiles")
+      .then((result) => {
+        if (!cancelled) setProfiles(result.profiles ?? []);
+      })
+      .catch((error) => {
+        if (!cancelled) setProfileError(String(error));
+      });
+
+    invoke("active_profile")
+      .then((result) => {
+        if (!cancelled) setActiveProfile(result.profile ?? null);
+      })
+      .catch((error) => {
+        if (!cancelled) setProfileError(String(error));
       });
 
     return () => {
@@ -576,11 +697,46 @@ export function App() {
       });
   };
 
+  const handleCreateProfile = (displayName, role) => {
+    setProfileError(null);
+
+    invoke("create_profile", { displayName, role })
+      .then((created) => {
+        setProfiles((current) => [...current, created]);
+        return invoke("select_profile", { profileId: created.id });
+      })
+      .then((selected) => {
+        setActiveProfile(selected);
+      })
+      .catch((error) => {
+        setProfileError(`Could not create profile: ${error}`);
+      });
+  };
+
+  const handleSelectProfile = (profileId) => {
+    setProfileError(null);
+
+    invoke("select_profile", { profileId })
+      .then((selected) => {
+        setActiveProfile(selected);
+      })
+      .catch((error) => {
+        setProfileError(`Could not switch profile: ${error}`);
+      });
+  };
+
   return (
     <main className="jarvis-shell">
       <AppHeader platformIndicator={derivePlatformIndicator(platformState, platformError)} />
       <div className="shell-grid">
-        <CapabilitySidebar capabilityStatuses={deriveCapabilityStatuses(platformState, platformError)} />
+        <CapabilitySidebar
+          capabilityStatuses={deriveCapabilityStatuses(platformState, platformError)}
+          profiles={profiles}
+          activeProfile={activeProfile}
+          profileError={profileError}
+          onCreateProfile={handleCreateProfile}
+          onSelectProfile={handleSelectProfile}
+        />
         <section className="workspace" aria-label="Guardian desktop experience">
           <StatusCards platformSignals={derivePlatformSignals(platformState, platformError)} />
           <div className="experience-grid">

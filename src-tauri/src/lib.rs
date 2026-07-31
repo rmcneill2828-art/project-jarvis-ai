@@ -507,6 +507,45 @@ fn knowledge_graph(state: State<BackendState>, app_handle: AppHandle) -> Result<
     call_backend(&state, &app_handle, "knowledge.graph", json!({}))
 }
 
+#[tauri::command]
+fn list_profiles(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
+    call_backend(&state, &app_handle, "profile.list", json!({}))
+}
+
+#[tauri::command]
+fn create_profile(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    display_name: String,
+    role: String,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "profile.create",
+        json!({ "displayName": display_name, "role": role }),
+    )
+}
+
+#[tauri::command]
+fn select_profile(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    profile_id: String,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "profile.select",
+        json!({ "profileId": profile_id }),
+    )
+}
+
+#[tauri::command]
+fn active_profile(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
+    call_backend(&state, &app_handle, "profile.active", json!({}))
+}
+
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -515,7 +554,11 @@ pub fn run() {
             send_message,
             speak_message,
             platform_status,
-            knowledge_graph
+            knowledge_graph,
+            list_profiles,
+            create_profile,
+            select_profile,
+            active_profile
         ])
         .build(tauri::generate_context!())
         .expect("error while building JARVIS Guardian desktop shell")
