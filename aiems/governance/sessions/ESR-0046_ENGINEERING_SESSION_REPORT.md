@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0046 |
 | Title | Engineering Session Report |
-| Version | 1.2 |
-| Status | Open |
+| Version | 1.3 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0046 |
 | Date Opened | 31 July 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 complete |
+| Date Closed | 31 July 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP6 (performed directly, Codex unavailable) and WP7 (Establish RBL-0028) complete |
 
 ---
 
@@ -85,7 +85,32 @@ Full Python suite: 453 passed, 1 skipped (was 424/1, 29 new). `validate_reposito
 **Codex post-commit re-review of the actual pushed diff (`d095f48..0546b77`, the standing template's final step) could not be completed.** Two attempts via direct `codex exec -s read-only` invocation stalled indefinitely (30+ minutes, then a second attempt with a lighter, subprocess-avoiding prompt also stalled) before producing any substantive output beyond the initial banner - a different failure mode from the disclosed `CreateProcessAsUserW` sandbox limitation seen in prior sessions (that failure is immediate and explicit; this was a silent hang). Investigation found `~/.codex/logs_2.sqlite` at 322 MB alongside two lock files (`~/.codex/.tmp/plugins.sync.lock`, `~/.codex/tmp/arg0/codex-arg0.../.lock`) - global Codex CLI state outside this repository, not touched without Programme Sponsor direction. The Programme Sponsor selected skipping the post-commit re-review rather than clearing CLI state or continuing to retry. This WP's independent-review evidence therefore rests on the pre-implementation Codex design review (Pass, Section 6A above) plus the Engineering Implementer's own direct post-commit checks (full test suite, `validate_repository.py`, and a manual `git diff`/Authorised-Files cross-check), not an independent post-commit re-review of the real pushed diff. Disclosed as an outstanding verification gap, not silently treated as equivalent to a completed post-commit Pass.
 
 - Files: `jarvis/identity/__init__.py` (new), `jarvis/identity/store.py` (new), `jarvis/identity/service.py` (new), `jarvis/tests/test_identity_store.py` (new), `jarvis/tests/test_identity_service.py` (new), `jarvis/interfaces/stdio_rpc.py`, `jarvis/tests/test_stdio_rpc.py`, `src-tauri/src/lib.rs`, `src/App.jsx`, `src/styles.css`, `tests/e2e/app.spec.js`, `aiems/models/GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL.md`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/baselines/LGB-0001_LAUNCH_GAP_BACKLOG.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`, `README.md`, [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] (new).
-- Committed and pushed to `origin/main` (SHA reported at closure).
+- Committed and pushed to `origin/main` as two commits: `0546b77` (WP1) and `02f7f39` (WP1 closure addendum disclosing the skipped post-commit re-review).
+
+---
+
+# 6B. Session-Wide WP6 - Independent Repository Verification
+
+Covering the full session range `d095f48..02f7f39` (2 commits: `0546b77` WP1, `02f7f39` the WP1 closure addendum).
+
+**Codex's own post-commit re-review of the pushed diff could not be completed.** Two direct `codex exec -s read-only` invocations stalled indefinitely (30+ minutes on the first attempt, a shorter but still-stalled second attempt with a lighter, subprocess-avoiding prompt) - a different failure mode from the disclosed `CreateProcessAsUserW` sandbox limitation seen in prior sessions (that fails immediately and explicitly; this hung silently with no output beyond the initial banner). Investigation found `~/.codex/logs_2.sqlite` at 322 MB alongside two lock files (`~/.codex/.tmp/plugins.sync.lock`, `~/.codex/tmp/arg0/codex-arg0.../.lock`) - global Codex CLI state outside this repository. Registered as [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0118. The Programme Sponsor directed skipping further retries given the repeated stalls.
+
+**Independent verification performed directly instead**, since PBK-0001's Repository Lifecycle requires WP6 to occur regardless of tooling availability:
+
+* `git diff --stat d095f48..02f7f39`: 19 files changed, matching every file claimed across both WP1 commits.
+* `git diff --name-only d095f48..02f7f39 -- jarvis sentinel src src-tauri scripts`: exactly 10 files (`jarvis/identity/__init__.py`, `jarvis/identity/service.py`, `jarvis/identity/store.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/tests/test_identity_service.py`, `jarvis/tests/test_identity_store.py`, `jarvis/tests/test_stdio_rpc.py`, `src-tauri/src/lib.rs`, `src/App.jsx`, `src/styles.css`) - cross-checked against [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] Section 6's Authorised Files list: an exact match, nothing outside scope.
+* `python -m pytest`: 453 passed, 1 skipped.
+* `python scripts/validate_repository.py` (full mode): 0 errors, 268 warnings (pre-existing, unrelated dangling section-heading references).
+
+**This is a genuine, disclosed reduction in independent-review rigour relative to prior sessions** (which had a real second-party Codex re-review of the pushed diff): this WP6 was performed by the same party that implemented WP1, not an independent reviewer. Recorded honestly rather than presented as equivalent to a completed Codex post-commit Pass.
+
+---
+
+# 6C. Session-Wide WP7 - Repository Baseline Determination
+
+This session's WP1 touched `jarvis/`, `src-tauri/` and `src/` with a genuine, live-verified product-capability change (real, working local user profiles, not merely architecture or documentation) - matching the Establish threshold applied at [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]] and [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] (both real Voice-faculty delivery/wiring), not the Retain threshold applied at architecture/documentation-only sessions (ESR-0041, ESR-0042, ESR-0045).
+
+**Programme Sponsor determination: Establish [[RBL-0028_REPOSITORY_BASELINE|RBL-0028]]**, superseding [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]]. Full rationale, deliverables and verification evidence recorded in RBL-0028 itself.
 
 ---
 
@@ -93,11 +118,12 @@ Full Python suite: 453 passed, 1 skipped (was 424/1, 29 new). `validate_reposito
 
 * [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] - prior closed session, immediate predecessor.
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Session Initialisation and Engineering Session Lifecycle guidance followed.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0116 (this session's objective).
-* [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] - source of this session's objective selection (Must-Ship item).
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0116 (this session's objective, Completed); EBG-0118 (Codex CLI tooling stall, registered this session).
+* [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]] - source of this session's objective selection (Must-Ship item, now struck through).
 * [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] - scored the User Profiles gap this session addresses.
-* [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8.1 Household Role Model, the authority taxonomy this session's identity mechanism must implement against.
+* [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8.1 Household Role Model, the authority taxonomy this session's identity mechanism implements against.
 * [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] - repository baseline at session open.
+* [[RBL-0028_REPOSITORY_BASELINE|RBL-0028]] - repository baseline established at this session's WP7 closure.
 
 ---
 
@@ -105,6 +131,7 @@ Full Python suite: 453 passed, 1 skipped (was 424/1, 29 new). `validate_reposito
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 31 July 2026 | Claude Engineering Implementer | **ESR-0046 formally closed**, at the Programme Sponsor's direction (concerned about the ongoing Codex CLI stalling issue). Session-wide WP6 (Independent Repository Verification): Codex's post-commit re-review unavailable (EBG-0118); performed directly instead - `git diff --stat`/`git diff --name-only -- jarvis sentinel src src-tauri scripts` confirmed exactly the 10 authorised files changed, `pytest` 453/1, `validate_repository.py` 0 errors. Disclosed as a genuine, reduced-rigour substitute for an independent second-party review, not equivalent to one. Session-wide WP7 (Repository Baseline Determination): **Establish [[RBL-0028_REPOSITORY_BASELINE|RBL-0028]]**, superseding RBL-0027 - Programme Sponsor decision, matching the standing convention that a genuine live product-capability change (this session's real User Identity and Profile Foundation delivery) warrants a new baseline. |
 | 1.2 | 31 July 2026 | Claude Engineering Implementer | WP1 closure addendum: disclosed that the standing post-commit Codex re-review of the pushed diff could not be completed (two `codex exec -s read-only` attempts stalled indefinitely, traced to a 322 MB `~/.codex/logs_2.sqlite` plus stale lock files - global CLI state outside this repository). Registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0118 to track it. Programme Sponsor selected skipping the re-review over clearing CLI state. |
 | 1.1 | 31 July 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0116 (User Identity and Profile Foundation) resolved per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] (Codex design review: Pass, no blocking findings; Programme Sponsor approval verified via the real Sponsor Approval Service). New `jarvis/identity/` module, four new `profile.*` RPC methods, real UXP profile picker replacing the static placeholder. Full validation clean across Python/Rust/frontend/Playwright; live smoke check performed at the RPC/storage layer. |
 | 1.0 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 opened at WP0B, before WP1 began. Objective: scope and draft EBG-0116 (User Identity and Profile Foundation), selected by the Programme Sponsor from LGB-0001's two Must-Ship items as the higher-leverage item, producing an Engineering Implementation Package for Codex review and Programme Sponsor approval before implementation. |
