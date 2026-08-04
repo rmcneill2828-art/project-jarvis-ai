@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.444
+**Version:** 3.446
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.444 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.446 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -214,8 +214,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.34 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
-| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.16 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.35 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.17 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
@@ -271,6 +271,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0044 | Engineering Session Report | Engineering Session Report | 1.2 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0045 | Engineering Session Report | Engineering Session Report | 1.6 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0046 | Engineering Session Report | Engineering Session Report | 1.3 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0047 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -385,6 +386,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.446 | 4 August 2026 | Claude Engineering Implementer | ESR-0047 WP1 Complete: synced ESR-0047 (1.0 to 1.1, Open). |
+| 3.445 | 4 August 2026 | Claude Engineering Implementer | ESR-0047 WP1 (Documentation Debt Discipline): registered ESR-0047 (Open, 1.0). Synced PBK-0001 (1.34 to 1.35) and COC-0001 (1.16 to 1.17) rows - both corrected seven-baseline-stale RBL-0021 current-baseline references to RBL-0028. |
 | 3.444 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 formally closed: session-wide WP6 (Independent Repository Verification, performed directly - Codex's post-commit re-review unavailable per EBG-0118) and WP7 (Repository Baseline Determination: Establish RBL-0028, Programme Sponsor decision) complete. Registered RBL-0028. Synced ESR-0046 (1.2 to 1.3, Open to Closed) and PST-0001 (3.23 to 3.24) rows. |
 | 3.443 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1 closure addendum: registered EBG-0118 (local Codex CLI state stalling `codex exec` invocations, disclosed when the standing post-commit re-review could not complete). Synced EBR-0001 (1.151 to 1.152) and ESR-0046 (1.1 to 1.2) rows. |
 | 3.442 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1: registered ESR-0046 (Open, 1.0) and EIP-ESR0046-001 (1.0, Approved - implemented, User Identity and Profile Foundation). Synced EBR-0001 (1.150 to 1.151, EBG-0116 Completed), GAM-0001 (1.3 to 1.4, Section 10 non-goal corrected), LGB-0001 (1.0 to 1.1, Must-Ship item struck through) and PST-0001 (3.22 to 3.23) rows. |
