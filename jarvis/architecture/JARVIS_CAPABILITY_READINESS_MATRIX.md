@@ -8,11 +8,11 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.2 |
+| Version | 2.3 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
-| Last Refreshed | ESR-0028 WP2 (18 July 2026) |
+| Last Refreshed | ESR-0048 WP1 (4 August 2026) |
 
 ---
 
@@ -29,9 +29,10 @@ It supports product capability prioritisation without approving implementation b
 | Capability | Vision | Architecture | Implementation | Testing | Overall Readiness |
 |------------|--------|--------------|----------------|---------|-------------------|
 | Conversation | Complete | Complete | Implemented | Implemented | Implemented (Foundation) |
-| Intelligence | Complete | Draft | Partial (bounded runtime, no full cognition) | Partial | Planned |
+| Intelligence | Complete | Draft | Phase 1 implemented (Guardian Cognitive Core composes persona/memory/history each turn, `jarvis/guardian/cognitive_core.py`) - ESR-0039 | Implemented | Implemented (Phase 1) |
 | Memory | Complete | Partial | Personal Memory foundation implemented (`PersonalMemoryStore`/`PersonalMemoryService`, consent-gated, wired into `GuardianRuntime`) - ESR-0027 WP1 | Implemented (unit-tested: `test_memory_store.py`, `test_memory_service.py`) | Implemented (Foundation) |
-| Voice | Complete | Partial | Not Started | Not Started | Planned |
+| Identity | Complete | Partial | Local, unauthenticated profile create/list/select implemented (`jarvis/identity/`), role-tagged against GAM-0001 Section 8.1's four household roles - ESR-0046 | Implemented (unit- and RPC-tested) | Implemented (Foundation) |
+| Voice | Complete | Partial | Both increments implemented: speech output (self-hosted Piper, ESR-0040/ESR-0044) and speech input (self-hosted `faster-whisper`, push-to-talk, ESR-0047) | Implemented (unit-, RPC- and Playwright-tested) | Implemented (Foundation) |
 | Vision | Complete | Partial | Not Started | Not Started | Planned |
 | Guardian | Complete | Complete | Implemented (Foundation) | Implemented | Implemented (Foundation) |
 | Sentinel | Complete | Complete | Implemented | Implemented | Implemented (Foundation) |
@@ -56,10 +57,13 @@ JARVIS has moved well past the early executable foundation this matrix described
 - **Knowledge** has a real backend graph builder and live-rendered Guardian Orb (Phase 1 complete, Phase 2 partially delivered).
 - **Provider Architecture** has two live-validated adapters, and one is now wired into the default production runtime conversation path (EBG-0070, Complete, ESR-0022 WP1) - `LocalEchoProvider` remains the failover.
 - **Memory** has a Personal Memory foundation (`PersonalMemoryStore`/`PersonalMemoryService`), consent-gated and wired into `GuardianRuntime`, delivered at ESR-0027 WP1. Session and Shared Family memory remain not implemented.
+- **Intelligence** moved from Draft/Planned to Implemented (Phase 1): the Guardian Cognitive Core now composes persona, retained Personal Memory and bounded recent history before every provider call, delivered at ESR-0039. Full cognition beyond this remains architecturally Draft, per AAM-0001.
+- **Identity** is newly implemented at foundation level: local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's four household roles, delivered at ESR-0046. Credentialed authentication, memory scoping by profile and role-authority enforcement remain not implemented.
+- **Voice** is now implemented at foundation level for both directions: speech output (ESR-0040/ESR-0044) and speech input (ESR-0047), both self-hosted, Sentinel-gated and reachable through the live UXP.
 
-**Voice, Vision, Home Automation, Productivity, Multi-device and a JARVIS-internal specialist Engineering Agent remain not implemented**, consistent with PST-0001's "Outstanding Observations" - these are deliberately deferred, not overlooked. "Intelligence" (full Guardian cognition, beyond the current bounded runtime foundation) also remains architecturally Draft only, per AAM-0001.
+**Vision, Home Automation, Productivity, Multi-device and a JARVIS-internal specialist Engineering Agent remain not implemented**, consistent with PST-0001's "Outstanding Observations" - these are deliberately deferred, not overlooked.
 
-JARVIS implementation maturity is now foundation-level-and-live across its core platform capabilities, with product-depth capabilities (voice, vision, automation, multi-device, and Session/Shared Family memory) still ahead.
+JARVIS implementation maturity is now foundation-level-and-live across its core platform capabilities plus Memory, Intelligence Phase 1, Identity and Voice, with product-depth capabilities (vision, automation, multi-device, and Session/Shared Family memory) still ahead.
 
 ---
 
@@ -69,7 +73,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 |----------|--------------|
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture source for capability intent and hierarchy. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture context for JARVIS as flagship implementation. |
-| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+| [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] | Current accepted repository baseline. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Sibling document (Product Capability Baseline) refreshed via the same pattern at ESR-0020 (EBG-0056) - this refresh follows that precedent. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture source; still Draft, underlying the Intelligence row's Planned status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register for candidate package selection; the v2.0 refresh closed EBG-0069, this v2.1 refresh closes EBG-0017. |
@@ -81,6 +85,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.3 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline): refreshed for ESR-0039 (Guardian Cognitive Core Phase 1), ESR-0046 (User Identity) and ESR-0047 (Voice Increment B) - flagged stale since ESR-0028 at ESR-0047 WP4's Repository Engineering Health Review. Intelligence row updated Draft/Planned to Implemented (Phase 1); new Identity row added; Voice row updated Not Started to Implemented (Foundation) for both directions. Overall Programme Capability Summary and Related Artefacts (`RBL-0015` to `RBL-0029`) updated to match. |
 | 2.2 | 18 July 2026 | Claude Engineering Implementer | Post-commit fix per Engineering Reviewer (Codex) finding on the ESR-0028 WP2 committed diff: the Related Artefacts EBR-0001 relationship note still said "this refresh closes EBG-0069", true of the prior v2.0 refresh but not this one. Corrected to disclose both - the v2.0 refresh closed EBG-0069, this v2.1 (now v2.2) refresh closes EBG-0017. |
 | 2.1 | 18 July 2026 | Claude Engineering Implementer | Refreshed at ESR-0028 WP2 per EIP-ESR0028-002, closing EBG-0017: registered this document in REG-0001 for the first time (closing the registration gap disclosed in the v2.0 entry below), and corrected two rows found stale against direct PST-0001 Section 5 evidence. Memory row: Implementation/Testing/Overall Readiness updated from Not Started/Planned to reflect the ESR-0027 WP1 Personal Memory foundation (`PersonalMemoryStore`/`PersonalMemoryService`, consent-gated, unit-tested). Provider Architecture row: removed the now-incorrect "unwired from production runtime" qualifier, reflecting EBG-0070's production wiring at ESR-0022 WP1. Updated the Overall Programme Capability Summary narrative and Related Artefacts (`RBL-0014` to `RBL-0015`) to match, so the refreshed rows no longer contradict the surrounding prose - an inconsistency an Engineering Reviewer pre-implementation review caught in the v0.1 implementation draft before it reached this document. |
 | 2.0 | 15 July 2026 | Claude Engineering Implementer | Refreshed at ESR-0021 WP7, closing EBG-0069: corrected 13 sessions of staleness (dated to ESR-0009/RBL-0009). Guardian, Sentinel, Platform Services, User Experience Platform, Knowledge and Provider Architecture all updated from "Not Started"/"Planned" to reflect genuine foundation-scope implementation, each cross-checked against PST-0001 Section 5 and this session's own delivered evidence. Memory, Voice, Vision, Home Automation, Productivity, Multi-device and the JARVIS-internal Engineering Agent confirmed still Not Started - deliberately deferred, not newly discovered gaps. Added a Document Control block and this Refresh History section, neither of which existed before, so future staleness is at least version-trackable. **Observation, not actioned by this refresh**: this document has never been registered in REG-0001 as a controlled artefact (no artefact ID, unlike its sibling PCB-0001) - flagged for a separate Programme Sponsor decision on whether to register it formally. |

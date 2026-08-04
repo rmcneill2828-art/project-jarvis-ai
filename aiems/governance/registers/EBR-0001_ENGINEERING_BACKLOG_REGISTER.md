@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.154
+**Version:** 1.155
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.154 |
+| Version | 1.155 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -229,9 +229,9 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 
 ---
 
-# 5A. Active Backlog View - Manual Snapshot (regenerated 25 July 2026)
+# 5A. Active Backlog View - Manual Snapshot (regenerated 4 August 2026)
 
-**This section is a dated, manually-produced snapshot, not a live or automatically-regenerated view.** It exists to satisfy EBG-0106's own recommendation ahead of that item's actual automation being built, and to avoid the exact risk EBG-0106 itself names: a hand-maintained second source of truth that silently drifts from the table above. **This snapshot shall not be manually updated in place** - if it goes stale, either regenerate it fresh (dating the regeneration) or remove it once EBG-0106's own generation mechanism exists. **Regenerated in full at ESR-0033 WP7** (not edited in place) after WP3 closed EBG-0100 (Theme 2), WP4 closed EBG-0086/0087/0088/0089 (Theme 5, leaving only the separately-deferred EBG-0085), WP5 closed EBG-0107 (Theme 6), WP6 closed EBG-0098/0105 (Theme 4), and WP7 itself closed EBG-0101 (Theme 6) - Themes 3/7/8 re-verified unchanged against Section 5's current Status/Priority fields, no further drift found. It covers every row in Section 5 above with Status `Candidate Backlog` or `Approved Backlog` as of this date (31 items, was 29 - ESR-0045 WP5 registered EBG-0116/EBG-0117) - Complete/Closed/Superseded/Deferred/Adopted rows are intentionally excluded, since those are exactly the historical-ledger content this view is meant to filter out.
+**This section is a dated, manually-produced snapshot, not a live or automatically-regenerated view.** It exists to satisfy EBG-0106's own recommendation ahead of that item's actual automation being built, and to avoid the exact risk EBG-0106 itself names: a hand-maintained second source of truth that silently drifts from the table above. **This snapshot shall not be manually updated in place** - if it goes stale, either regenerate it fresh (dating the regeneration) or remove it once EBG-0106's own generation mechanism exists. **Regenerated in full at ESR-0048 WP1** (not edited in place), correcting drift disclosed at ESR-0047 WP4's Repository Engineering Health Review: EBG-0081 had been closed since ESR-0035 WP3 (both questions delivered) but remained listed in Theme 4; EBG-0110 (registered ESR-0039) and EBG-0111 (registered 29 July 2026) were both missing entirely despite the snapshot having been hand-edited more recently than either was registered - a direct violation of this section's own manual-edit prohibition above. EBG-0116/EBG-0117 removed (both Completed, ESR-0046/ESR-0047). It covers every row in Section 5 above with Status `Candidate Backlog` or `Approved Backlog` as of this date (31 items) - Complete/Closed/Superseded/Deferred/Adopted rows are intentionally excluded, since those are exactly the historical-ledger content this view is meant to filter out.
 
 ## Theme 1 - Deployment & Release Engineering
 
@@ -242,6 +242,7 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 | ID | Priority | Item |
 |---|---|---|
 | EBG-0023 | Medium | Backup, Recovery and Data Protection - its own stated trigger ("before persistent memory becomes significant") is now met by EBG-0080 |
+| EBG-0110 | Medium | No policy-level distinction between ordinary conversation content and retained Personal Memory content reaching external providers |
 
 ## Theme 3 - Guardian Action / Local Agent Boundary
 
@@ -251,9 +252,7 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 
 ## Theme 4 - UXP/Backend Technical Debt and Performance
 
-| ID | Priority | Item |
-|---|---|---|
-| EBG-0081 | Medium | Shared animation scheduler (Question 1 remaining - Q2 already delivered) |
+**Fully delivered at ESR-0035 WP3** (EBG-0081's remaining Question 1 - shared animation scheduler - closed alongside Q2) - no open items remain in this theme. Number retained for stable cross-reference rather than renumbering the remaining themes.
 
 ## Theme 5 - Security Hygiene
 
@@ -305,8 +304,9 @@ Mostly intentionally parked pending prerequisites (identity/authentication, matu
 | EBG-0029 | Medium | Product Growth Philosophy |
 | EBG-0052 | Medium | PBK-0001/EE-0001 "Execute After Approval" Principle |
 | EBG-0054 | Low | Dev-Environment Setup Automation Expansion |
+| EBG-0111 | Low | Composio (managed external-app/service integration tooling) - not yet assessed against JARVIS Product Architecture |
 | EBG-0115 | Low | Evaluate Kokoro TTS for a more expressive Guardian voice |
-| EBG-0118 | Low | Local Codex CLI state (`~/.codex/logs_2.sqlite`, 322 MB) causing `codex exec` invocations to stall indefinitely |
+| EBG-0118 | Low | Local Codex CLI state (`~/.codex/logs_2.sqlite`) causing `codex exec` invocations to stall intermittently - investigated at ESR-0047 WP2, inconclusive |
 
 ---
 
@@ -422,6 +422,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.155 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline): regenerated Section 5A's Active Backlog View snapshot in full - removed EBG-0081 (closed since ESR-0035 WP3, wrongly still listed in Theme 4), added EBG-0110 (registered ESR-0039, Theme 2) and EBG-0111 (registered 29 July 2026, Theme 8), both missing despite the snapshot being edited more recently than either was registered - a direct violation of the snapshot's own manual-edit prohibition, disclosed at ESR-0047 WP4's Repository Engineering Health Review. Snapshot now matches Section 5's 31 open items exactly. |
 | 1.154 | 4 August 2026 | Claude Engineering Implementer | ESR-0047 WP3: closed EBG-0117 (Voice Faculty Increment B: Speech Input, marked Completed) per [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] - push-to-talk microphone capture transcribed via a new self-hosted `faster-whisper` provider, Sentinel-gated, populating the message composer (never auto-submitted). Section 5A Theme 8 loses EBG-0117 - open-item total corrected from 31 to 30. |
 | 1.153 | 4 August 2026 | Claude Engineering Implementer | ESR-0047 WP2 (Programme Sponsor-directed): investigated EBG-0118. The disclosed 30+ minute silent hang did not reproduce across four live `codex exec` tests; a related, previously-known `CreateProcessAsUserW` sandbox spawn failure did reproduce on parallel `git grep` calls, and disappeared (replaced by an immediate policy rejection, not a hang) after removing `[windows] sandbox = "elevated"` from `~/.codex/config.toml` (backed up) per Programme Sponsor direction. One of the diagnostic reviews independently Pass-verified the real ESR-0047 WP1 commit. Net outcome disclosed as inconclusive on the actual stall; remains open, Candidate Backlog. |
 | 1.152 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1 closure addendum: registered EBG-0118 (local Codex CLI state - `~/.codex/logs_2.sqlite` at 322 MB plus two lock files - causing `codex exec` invocations to stall indefinitely, disclosed when the standing post-commit Codex re-review could not complete). Candidate Backlog, Low, no investigation authorised - out-of-repo host state, Programme Sponsor selected skipping the re-review over clearing it. Section 5A Theme 8 gains EBG-0118 - open-item total corrected from 30 to 31. |

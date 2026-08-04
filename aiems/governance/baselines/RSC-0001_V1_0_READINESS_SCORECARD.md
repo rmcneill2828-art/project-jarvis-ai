@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | RSC-0001 |
 | Title | v1.0 Readiness Scorecard |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -51,12 +51,12 @@ Per [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5, MLP 0.1 "shall include" the follo
 | Chat Interface | **Pass** | Live conversation workspace reachable through both the Tkinter First Light shell and the UXP; the UXP chat input calls the real backend over a duplex stdio JSON-RPC bridge (`python -m jarvis --ipc-stdio`, [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE|ADR-0019]]), not a static mock-up. |
 | Text Responses | **Pass** | `GuardianRuntime.converse()` returns real generated or deterministic-fallback text through the same live path as Chat Interface; a real external provider (OpenAI or Gemini) is wired into the default path when credentialed (EBG-0070, ESR-0022), with Ollama and a deterministic local provider as further fallbacks. |
 | Animated Avatar / Orb | **Partial** | The Guardian Orb is Guardian's visual presence ([[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8) and renders the live repository knowledge graph as a 2D force-directed, circle-confined visualisation, genuinely animating today via a continuous `requestAnimationFrame` rotation loop (`src/GuardianOrbGraph.jsx`'s `drawFrame`/`rotateNode`, ESR-0019 WP2) - not a static placeholder. The MLP's "animated" qualifier is therefore met at a basic level; true 3D rendering and knowledge-graph Phases 2-4 (cluster illumination, agent-traversal animation, Guardian reasoning connection) remain not implemented, which is why this is Partial rather than Pass. |
-| Basic Voice Input | **Fail** | No speech input / microphone capture / speech-to-text code path exists anywhere under `jarvis/` or `sentinel/` today. Guardian's Voice faculty (Phase 6 Increment A, ESR-0040, wired into the live UXP at ESR-0044) is speech **output** only; speech input is explicitly deferred as a distinct future increment (EBG-0112) because, unlike output-only voice, it engages [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8.1's Household Role Model. |
+| Basic Voice Input | **Pass** | Push-to-talk microphone capture is implemented (Voice faculty Phase 6 Increment B, `sentinel/whisper_provider.py`/`jarvis/interfaces/voice.py`, EBG-0117, [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]], ESR-0047), Sentinel-gated exactly like the existing speech-output path and reachable through the live UXP's mic button (conditionally rendered on real-time capability detection). Live-verified: Guardian's own Piper-synthesized speech was transcribed back by Guardian's own Whisper path via the real `guardian.transcribe` RPC, exact text match. No wake-word/continuous listening, speaker identification or role enforcement - deliberately out of MLP 0.1's "basic" bar. |
 | Basic Conversation Memory | **Pass** | Personal Memory is implemented at foundation level, consent-gated (`jarvis/memory/`, ESR-0027 WP1) and wired into live conversation via the Guardian Cognitive Core, which composes persona, retained Personal Memory and bounded recent conversation history before each provider call (`jarvis/guardian/runtime.py`, ESR-0039). This satisfies the MLP's "basic" qualifier; Session and Shared-Family memory tiers ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] Sections 6.1/6.3) are a later-phase capability, not part of MLP 0.1's own stated scope. |
-| User Profiles | **Fail** | No user identification, login or profile-switching code path exists anywhere under `jarvis/` today. [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8.1 defines a Household Role Model (Administrator/Adult/Child/Guest) but explicitly states it does not implement authentication or enforcement - it defines roles and their authority, nothing more. Guardian's current persona addresses a single user by a configured preferred name, explicitly disclosed as a single-user stopgap (ESR-0043), not a profiles system. |
+| User Profiles | **Pass** | Local, unauthenticated profile create/list/select is implemented (`jarvis/identity/`, EBG-0116, [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]], ESR-0046), role-tagged against [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8.1's four household roles and reachable through a real UXP profile picker replacing the previous static placeholder. Credentialed authentication, memory scoping by profile and enforcement of the roles' differing authority remain not implemented - deliberately deferred, disclosed follow-on work beyond MLP 0.1's "basic" bar. |
 | Service Status Dashboard | **Pass** | `platform.status` JSON-RPC method exposes a live service/health model consumed by the UXP's diagnostics panels, not the original lightweight model alone. |
 
-**Score: 5 Pass, 1 Partial, 2 Fail (of 8 MLP 0.1 items).**
+**Score: 7 Pass, 1 Partial, 0 Fail (of 8 MLP 0.1 items).**
 
 ---
 
@@ -66,8 +66,8 @@ The independent Codex `govreview` finding that prompted this artefact also named
 
 | Gap | MLP Phase | Status |
 |-----|-----------|--------|
-| Richer voice interaction, speech input | MLP 0.2 Voice | Not started (see Basic Voice Input above). |
-| Family profile behaviour (Administrator/Adult/Child/Guest differentiation) | MLP 0.3 Family Profiles | Not started - blocked on the same user-identity plumbing gap as User Profiles above ([[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8.1). |
+| Richer voice interaction beyond basic push-to-talk input | MLP 0.2 Voice | Basic input now Pass (see above); richer interaction (continuous listening, multi-language, speaker identification) remains not started. |
+| Family profile behaviour (Administrator/Adult/Child/Guest differentiation) | MLP 0.3 Family Profiles | User identity/profile plumbing now exists (EBG-0116), but role-authority enforcement against Sentinel/`TrustTierPolicy` remains not implemented - the actual differentiation this MLP phase describes is still not started. |
 | Session and Shared Family memory tiers | MLP 0.4 Memory | Not started ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] Sections 6.1/6.3 specify the architecture; no implementation exists). |
 | Local device assistance (Local Agent) | MLP 0.5 Local Agent | Not started - the permission boundary is defined ([[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A, EBG-0021, ESR-0041), but no Local Agent module exists under `jarvis/`; `Sentinel`'s `TrustCategory.LOCAL_AGENT_ACTION` remains `DENY` for every request today. |
 | Controlled internet-assisted capability | MLP 0.6 Internet | Not started. |
@@ -78,9 +78,9 @@ The independent Codex `govreview` finding that prompted this artefact also named
 
 # 6. Interpretation
 
-JARVIS is **not yet at v1.0** if v1.0 is defined as MLP 0.1 fully delivered: 2 of 8 MLP 0.1 items (Basic Voice Input, User Profiles) have no implementation at all, and a third (Animated Avatar/Orb) is only partially met.
+JARVIS is **not yet at v1.0** if v1.0 is defined as MLP 0.1 fully delivered, but the gap has narrowed materially since this scorecard's original scoring: both items that scored Fail (Basic Voice Input, User Profiles) are now Pass, resolved at ESR-0047 and ESR-0046 respectively. Only one item, Animated Avatar/Orb, remains short of full Pass - genuinely animating today but not yet 3D or connected to the Guardian Orb knowledge-graph vision's later phases.
 
-The 5 Pass items represent genuine, live-verified capability, not aspirational claims - each cites a specific code path and, where applicable, a live-verification record in its originating Engineering Session Report. The gap is concentrated, not diffuse: Basic Voice Input and User Profiles both trace back to the same underlying prerequisite - user identity/profile plumbing does not exist, which is also why Family Profiles (MLP 0.3) and the full HITL/family-safety wiring (MLP 0.8) remain blocked. Closing that one prerequisite would very likely unblock more than one currently-failing item at once.
+The 7 Pass items represent genuine, live-verified capability, not aspirational claims - each cites a specific code path and a live-verification record in its originating Engineering Session Report. The prerequisite this scorecard originally identified (user identity/profile plumbing) has been closed, which is also what unblocked Basic Voice Input's own delivery and now leaves the path clear for Family Profiles (MLP 0.3) and full HITL/family-safety wiring (MLP 0.8), neither of which is itself complete yet - both remain gated on role-authority enforcement, which EBG-0116/EBG-0117 deliberately did not implement.
 
 This artefact does not recommend implementation order - that remains for a future Work Package or Engineering Session, informed by [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s existing phase sequencing and [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]'s backlog.
 
@@ -102,6 +102,8 @@ RSC-0001 shall be refreshed whenever a Work Package changes the score of any MLP
 | [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | Source of the Household Role Model and Local Agent Permission Boundary referenced in the User Profiles and beyond-MLP-0.1 rows. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Governed source for future engineering priorities; this artefact does not itself prioritise. |
 | [[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] | Session that created this artefact (WP4), triggered by an independent Codex governance/v1.0-readiness gap analysis. |
+| [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] | Delivered EBG-0116 (User Profiles), the first of this scorecard's two Fail items, now Pass. |
+| [[ESR-0047_ENGINEERING_SESSION_REPORT|ESR-0047]] | Delivered EBG-0117 (Basic Voice Input), the second of this scorecard's two Fail items, now Pass. |
 
 ---
 
@@ -109,4 +111,5 @@ RSC-0001 shall be refreshed whenever a Work Package changes the score of any MLP
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline), per this artefact's own Section 7 maintenance rule: refreshed both Fail items to Pass - Basic Voice Input (EBG-0117, ESR-0047) and User Profiles (EBG-0116, ESR-0046). Score corrected from 5 Pass/1 Partial/2 Fail to 7 Pass/1 Partial/0 Fail. Section 5's Voice/Family Profiles rows and Section 6's Interpretation updated accordingly. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | Initial RSC-0001 created at ESR-0045 WP4, per the Programme Sponsor's selection of the triggering Codex governance review's first recommendation (a single explicit v1.0 release-criteria artefact). Scored all 8 MLP 0.1 items against live repository evidence: 5 Pass, 1 Partial (Animated Avatar/Orb), 2 Fail (Basic Voice Input, User Profiles). Recorded beyond-MLP-0.1 gaps for completeness. |
