@@ -498,6 +498,21 @@ fn speak_message(
 }
 
 #[tauri::command]
+fn transcribe_audio(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    audio_base64: String,
+    mime_type: String,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "guardian.transcribe",
+        json!({ "audioBase64": audio_base64, "mimeType": mime_type }),
+    )
+}
+
+#[tauri::command]
 fn platform_status(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
     call_backend(&state, &app_handle, "platform.status", json!({}))
 }
@@ -553,6 +568,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             send_message,
             speak_message,
+            transcribe_audio,
             platform_status,
             knowledge_graph,
             list_profiles,

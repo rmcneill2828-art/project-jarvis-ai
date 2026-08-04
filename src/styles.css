@@ -801,6 +801,21 @@ button {
   background: rgba(255, 255, 255, 0.12);
 }
 
+.mic-button.recording {
+  color: #ff5c66;
+  animation: mic-recording-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes mic-recording-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
 .conversation-error {
   padding: 8px 12px;
   border: 1px solid rgba(255, 66, 82, 0.35);
@@ -812,7 +827,7 @@ button {
 
 .input-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 46px;
+  grid-template-columns: minmax(0, 1fr) 46px 46px;
   gap: 10px;
   align-items: center;
   min-height: 50px;

@@ -16,11 +16,18 @@ from jarvis.interfaces.conversation import (
 )
 from jarvis.interfaces.voice import (
     NOT_CONNECTED_MESSAGE as SPEECH_NOT_CONNECTED_MESSAGE,
+)
+from jarvis.interfaces.voice import (
     NOT_RUNNING_MESSAGE as SPEECH_NOT_RUNNING_MESSAGE,
+)
+from jarvis.interfaces.voice import (
     STATUS_NOT_CONNECTED,
     STATUS_NOT_RUNNING,
+    TRANSCRIPTION_NOT_CONNECTED_MESSAGE,
     GuardianSpeechProvider,
+    GuardianTranscriptionProvider,
     SpeechOutcome,
+    TranscriptionOutcome,
 )
 from jarvis.memory.service import PendingMemoryRequest, PersonalMemoryService
 from jarvis.memory.store import ConsentDecisionRecord, PersonalMemoryRecord
@@ -63,11 +70,13 @@ class GuardianRuntime:
         conversation_provider: ConversationProvider | None = None,
         memory_service: PersonalMemoryService | None = None,
         speech_provider: GuardianSpeechProvider | None = None,
+        transcription_provider: GuardianTranscriptionProvider | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
         self._conversation_provider = conversation_provider
         self._memory_service = memory_service
         self._speech_provider = speech_provider
+        self._transcription_provider = transcription_provider
         self._cognitive_core = GuardianCognitiveCore()
         self._state = GuardianRuntimeState.STOPPED
         provider_capabilities = (
@@ -207,6 +216,29 @@ class GuardianRuntime:
         if self._state is not GuardianRuntimeState.RUNNING:
             return SpeechOutcome(status=STATUS_NOT_RUNNING, message=SPEECH_NOT_RUNNING_MESSAGE)
         return self._speech_provider.synthesize(text)
+
+    def transcribe(self, audio_bytes: bytes, mime_type: str) -> TranscriptionOutcome:
+        """Transcribe `audio_bytes` into text via the connected transcription provider.
+
+        Voice Faculty Phase 6, Increment B (EIP-ESR0047-001): push-to-talk
+        speech input only. Returns a named-status `TranscriptionOutcome` for
+        every case - no transcription provider connected, runtime not
+        running, Sentinel denial or provider failure - mirroring `speak()`'s
+        boundary-response discipline exactly.
+
+        The returned text is not itself sent to `converse()` by this
+        method - the caller (the UXP message composer) decides whether and
+        when to submit it, per EIP-ESR0047-001 Section 5.5's explicit
+        no-auto-submit requirement.
+        """
+
+        if self._transcription_provider is None:
+            return TranscriptionOutcome(
+                status=STATUS_NOT_CONNECTED, message=TRANSCRIPTION_NOT_CONNECTED_MESSAGE
+            )
+        if self._state is not GuardianRuntimeState.RUNNING:
+            return TranscriptionOutcome(status=STATUS_NOT_RUNNING, message=SPEECH_NOT_RUNNING_MESSAGE)
+        return self._transcription_provider.transcribe(audio_bytes, mime_type)
 
     def propose_memory(self, content: str) -> PendingMemoryRequest:
         """Propose retaining `content` as a Personal Memory item.

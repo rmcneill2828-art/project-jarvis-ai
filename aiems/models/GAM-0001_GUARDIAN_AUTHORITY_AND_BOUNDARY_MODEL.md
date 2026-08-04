@@ -2,7 +2,7 @@
 
 > *"Guardian's trust comes from what it will not do without being asked."*
 
-**Version:** 1.4
+**Version:** 1.5
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | GAM-0001 |
 | Title | Guardian Authority and Boundary Model |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -161,6 +161,8 @@ EBR-0001's EBG-0020 text specifically asks for "pre-approved emergency action bo
 
 Absent such an explicit, named, Administrator-authored policy, all emergency-control actions remain `DENY` under Section 6.3. This section does not soften Sentinel's existing deny-by-default for `EMERGENCY_CONTROL` - it defines the one narrow, explicit mechanism by which a specific action could ever be pre-authorised. The policy record itself is subject to the same [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] Approval Before Change discipline as any other controlled change - an Administrator authoring a pre-approved emergency action does not bypass Section 7's "no silent capability expansion" principle merely by using this mechanism.
 
+**Voice Faculty Increment B (Speech Input, [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]], EBG-0117) applies this section's advance-authorisation pattern by analogy, not as an equivalent mechanism.** No live Sentinel `REVIEW`-resolution path exists for satisfying a per-request approval, so speech-input capability availability itself - a new `JARVIS_WHISPER_MODEL_PATH` environment variable an Administrator-level household member must explicitly set - is that package's own deployment-level enablement gate. Unlike a genuine Section 8.4 pre-approved emergency action, this is not role-authenticated, signed, or recorded as a named policy record; it is an operational assumption, disclosed as such in [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] Section 5.2. This does not satisfy Section 8.1's Household Role Model enforcement - speaker identification and role-authority enforcement remain unimplemented, as [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] Section 8 explicitly excludes both.
+
 ## 8.5 Relationship to EBG-0021 (Local Agent Permission Boundary)
 
 Camera access, security monitoring and incident logging in Section 8.3 are observation/monitoring capabilities, not device or local-agent control. They do not open Section 6.3's `LOCAL_AGENT_ACTION` category, whose boundary is now defined in Section 8A.
@@ -303,6 +305,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 4 August 2026 | Claude Engineering Implementer | ESR-0047 WP3, resolving EBG-0117 (Voice Faculty Increment B: Speech Input) per [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service): Section 8.4 records that Increment B applies its advance-authorisation pattern by analogy (a new `JARVIS_WHISPER_MODEL_PATH` deployment-level enablement gate, not a role-authenticated or signed policy record) for speech-input capability availability, since no live Sentinel `REVIEW`-resolution mechanism exists. Explicitly does not satisfy Section 8.1's Household Role Model enforcement - speaker identification and role-authority enforcement remain unimplemented. |
 | 1.4 | 31 July 2026 | Claude Engineering Implementer | ESR-0046 WP1, resolving EBG-0116 (User Identity and Profile Foundation) per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] (Codex design review: Pass; Programme Sponsor approval verified via the real Sponsor Approval Service): Section 10's non-goal statement corrected - local, unauthenticated profile identification and switching against Section 8.1's four household roles is now implemented (`jarvis/identity/`), closing RSC-0001's scored "User Profiles" Fail. Credentialed authentication and enforcement of the roles' differing authority against Sentinel/`TrustTierPolicy` remain not implemented, unchanged from before. |
 | 1.3 | 30 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 30 July 2026**, verified via `submit-response` against the real Sponsor Approval Service, following Engineering Reviewer (Codex) design review of [[EIP-ESR0041-001_LOCAL_AGENT_PERMISSION_BOUNDARY_SCOPE|EIP-ESR0041-001]] (v0.1 Fail with findings - 8A.3's smart-home "command" example too broad; v0.2 Pass after narrowing). New Section 8A resolves EBG-0021 (Local Agent Permission Boundary, JRM-0001 Track B Phase 2): defines what counts as a local agent action (distinct from GIA's read-only observability), a permanent ceiling that no local agent action may ever be classified Autonomous, an illustrative Action Tiers table separating permanently-out-of-scope (destructive/safety-critical) from conditionally-eligible-for-future-approval-gating actions, and an Administrator-only approval requirement by analogy to Section 8.4. Architecture/policy-definition only - no code changed, Sentinel's `LOCAL_AGENT_ACTION` classification remains `DENY` exactly as before. Section 6.3 and Section 8.5 cross-references updated to point to Section 8A; Section 11 updated to remove EBG-0021 from the still-open list. Whole-document staleness sweep (PBK-0001) also corrected a stale RBL-0015 "current baseline" reference (Section 12) to RBL-0025. ESR-0041 WP1. |
 | 1.2 | 16 July 2026 | Claude Engineering Implementer | **Approved by the Programme Sponsor, 16 July 2026**, following Engineering Reviewer (Codex) confirmation: Section 9.2's EBG-0019 boundary is drawn in the right place (policy/consent layer only, no pre-emption, no gap - storage technology, encryption and retention duration remain EBG-0019's scope); Section 9.3's endpoint-trust framing is consistent with SAM-0001 and ADR-0010. ESR-0023 WP4, resolving EBG-0048 (Guardian HITL Governance Specification, extending EBG-0031/EBG-0020 per ADR-0010). Section 9 extended with four subsections: 9.1 consent mechanics (scoped to the specific action, not a standing grant); 9.2 memory-retention consent boundary; 9.3 trusted mobile approve/deny, confirmed by ADR-0010 as a future capability, architecture only; 9.4 privacy boundary reinforcement, making Section 8.2's personal/shared-family distinction an explicit HUMAN_APPROVAL_REQUIRED gate. Evidence checked directly: `sentinel/policy.py`'s REVIEW outcome is currently a static-message enum value only, no approval workflow implemented. |

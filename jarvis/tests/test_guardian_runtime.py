@@ -19,7 +19,14 @@ from jarvis.guardian.runtime import (
 )
 from jarvis.interfaces.conversation import ConversationRequest, ConversationResponse
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
-from jarvis.interfaces.voice import STATUS_NOT_CONNECTED, STATUS_NOT_RUNNING, STATUS_SYNTHESIZED, SpeechOutcome
+from jarvis.interfaces.voice import (
+    STATUS_NOT_CONNECTED,
+    STATUS_NOT_RUNNING,
+    STATUS_SYNTHESIZED,
+    STATUS_TRANSCRIBED,
+    SpeechOutcome,
+    TranscriptionOutcome,
+)
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
@@ -69,6 +76,17 @@ class _StubSpeechProvider:
             provider_name="stub-speech", audio_bytes=f"audio:{text}".encode(), mime_type="audio/mpeg"
         )
         return SpeechOutcome(status=STATUS_SYNTHESIZED, audio=audio)
+
+
+class _StubTranscriptionProvider:
+    """Minimal GuardianTranscriptionProvider double for boundary-behaviour tests."""
+
+    def __init__(self) -> None:
+        self.received: list[tuple[bytes, str]] = []
+
+    def transcribe(self, audio_bytes: bytes, mime_type: str) -> TranscriptionOutcome:
+        self.received.append((audio_bytes, mime_type))
+        return TranscriptionOutcome(status=STATUS_TRANSCRIBED, text=f"transcript:{len(audio_bytes)}")
 
 
 class _StubSentinelProvider:
@@ -635,3 +653,44 @@ def test_guardian_runtime_speak_delegates_to_connected_provider() -> None:
     assert outcome.status == STATUS_SYNTHESIZED
     assert outcome.audio.audio_bytes == b"audio:Guardian's response."
     assert provider.received == ["Guardian's response."]
+
+
+def test_guardian_runtime_transcribe_without_provider_returns_not_connected_outcome() -> None:
+    runtime = GuardianRuntime()
+    runtime.start()
+
+    outcome = runtime.transcribe(b"fake-audio", "audio/webm")
+
+    assert outcome.status == STATUS_NOT_CONNECTED
+    assert outcome.text is None
+
+
+def test_guardian_runtime_transcribe_before_start_returns_not_running_outcome() -> None:
+    runtime = GuardianRuntime(transcription_provider=_StubTranscriptionProvider())
+
+    outcome = runtime.transcribe(b"fake-audio", "audio/webm")
+
+    assert outcome.status == STATUS_NOT_RUNNING
+    assert outcome.text is None
+
+
+def test_guardian_runtime_transcribe_after_stop_returns_not_running_outcome() -> None:
+    runtime = GuardianRuntime(transcription_provider=_StubTranscriptionProvider())
+    runtime.start()
+    runtime.stop()
+
+    outcome = runtime.transcribe(b"fake-audio", "audio/webm")
+
+    assert outcome.status == STATUS_NOT_RUNNING
+
+
+def test_guardian_runtime_transcribe_delegates_to_connected_provider() -> None:
+    provider = _StubTranscriptionProvider()
+    runtime = GuardianRuntime(transcription_provider=provider)
+    runtime.start()
+
+    outcome = runtime.transcribe(b"fake-audio", "audio/webm")
+
+    assert outcome.status == STATUS_TRANSCRIBED
+    assert outcome.text == "transcript:10"
+    assert provider.received == [(b"fake-audio", "audio/webm")]

@@ -24,6 +24,7 @@ from jarvis.interfaces.stdio_rpc import (
 from sentinel.core import SentinelDecisionOutcome, SentinelRequest
 from sentinel.policy import TrustCategory, TrustTier, TrustTierPolicy
 from sentinel.speech_providers import SpeechSynthesisResponse
+from sentinel.transcription_providers import TranscriptionResponse
 
 
 class _FakePiperProvider:
@@ -44,6 +45,21 @@ class _FakePiperProvider:
             audio_bytes=b"fake-wav-bytes",
             mime_type="audio/wav",
         )
+
+
+class _FakeWhisperProvider:
+    """Stands in for a real `WhisperProvider` without ever loading a model or
+    importing `faster_whisper` - `jarvis.interfaces.stdio_rpc.WhisperProvider`
+    is patched to return this, mirroring `_FakePiperProvider`'s pattern
+    exactly for the opposite data direction."""
+
+    name = "whisper"
+
+    def __init__(self, configuration) -> None:
+        self.configuration = configuration
+
+    def transcribe(self, request):
+        return TranscriptionResponse(provider_name="whisper", text="fake transcript")
 
 
 def _server(tmp_path) -> StdioRpcServer:
@@ -234,6 +250,126 @@ def test_guardian_speak_rpc_rejects_non_string_text(tmp_path):
         pass
     else:
         raise AssertionError("Expected TypeError for non-string params.text")
+
+
+def test_build_default_runtime_leaves_transcription_unavailable_without_whisper_path(tmp_path):
+    """EIP-ESR0047-001: an absent JARVIS_WHISPER_MODEL_PATH must mean
+    transcribe() returns the honest not_connected outcome, mirroring an
+    absent Piper voice path - never a startup failure and never a
+    fabricated result."""
+
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
+
+    outcome = runtime.transcribe(b"fake-audio", "audio/webm")
+
+    assert outcome.status == "not_connected"
+    assert outcome.text is None
+
+
+def test_build_default_runtime_wires_transcription_provider_when_whisper_path_present(tmp_path):
+    """EIP-ESR0047-001: a present JARVIS_WHISPER_MODEL_PATH must wire a real,
+    reachable transcription provider into the runtime build_default_runtime()
+    actually produces - not merely that WhisperProvider is importable."""
+
+    with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
+        runtime = build_default_runtime(
+            environ={
+                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                "JARVIS_WHISPER_MODEL_PATH": "base.en",
+            }
+        )
+
+    outcome = runtime.transcribe(b"fake-audio", "audio/webm")
+
+    assert outcome.status == "transcribed"
+    assert outcome.text == "fake transcript"
+
+
+def test_build_default_runtime_reuses_the_same_gateway_for_transcription_and_conversation(tmp_path):
+    """EIP-ESR0047-001: transcription must share build_default_runtime()'s
+    single SentinelTrustGateway instance, not construct a second one - one
+    trust boundary and audit trail, matching speech/memory's own reuse."""
+
+    with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
+        runtime = build_default_runtime(
+            environ={
+                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                "JARVIS_WHISPER_MODEL_PATH": "base.en",
+            }
+        )
+
+    transcription_gateway = runtime._transcription_provider.gateway
+    assert transcription_gateway is runtime.sentinel_gateway()
+
+
+def test_guardian_transcribe_rpc_returns_transcribed_shape(tmp_path):
+    with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
+        server = StdioRpcServer(
+            build_default_runtime(
+                environ={
+                    "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+                    "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                    "JARVIS_WHISPER_MODEL_PATH": "base.en",
+                }
+            ),
+            identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+        )
+
+    audio_base64 = base64.b64encode(b"fake-audio").decode("ascii")
+    result = server._methods["guardian.transcribe"](
+        {"audioBase64": audio_base64, "mimeType": "audio/webm"}
+    )
+
+    assert result["status"] == "transcribed"
+    assert result["text"] == "fake transcript"
+
+
+def test_guardian_transcribe_rpc_returns_not_connected_shape_without_text(tmp_path):
+    server = _server(tmp_path)
+
+    audio_base64 = base64.b64encode(b"fake-audio").decode("ascii")
+    result = server._methods["guardian.transcribe"](
+        {"audioBase64": audio_base64, "mimeType": "audio/webm"}
+    )
+
+    assert result["status"] == "not_connected"
+    assert result["text"] is None
+
+
+def test_guardian_transcribe_rpc_rejects_non_string_audio_base64(tmp_path):
+    server = _server(tmp_path)
+
+    try:
+        server._methods["guardian.transcribe"]({"audioBase64": 123, "mimeType": "audio/webm"})
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("Expected TypeError for non-string params.audioBase64")
+
+
+def test_guardian_transcribe_rpc_rejects_non_string_mime_type(tmp_path):
+    server = _server(tmp_path)
+    audio_base64 = base64.b64encode(b"fake-audio").decode("ascii")
+
+    try:
+        server._methods["guardian.transcribe"]({"audioBase64": audio_base64, "mimeType": 123})
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("Expected TypeError for non-string params.mimeType")
+
+
+def test_guardian_transcribe_rpc_rejects_invalid_base64(tmp_path):
+    server = _server(tmp_path)
+
+    try:
+        server._methods["guardian.transcribe"](
+            {"audioBase64": "not-valid-base64!!!", "mimeType": "audio/webm"}
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Expected ValueError for invalid params.audioBase64")
 
 
 def test_guardian_converse_request_shape_classified_routine_under_trust_tier_policy(tmp_path):

@@ -6,9 +6,43 @@ import { test, expect } from "@playwright/test";
 // actually calls under the hood (confirmed by direct source read,
 // EIP-ESR0032-002). There is no live backend and no bundled Tauri binary
 // in this test - it drives the Vite dev server's React app directly.
-async function mockTauriIpc(page, { speakResult, profiles = [], activeProfile = null } = {}) {
+async function mockTauriIpc(
+  page,
+  { speakResult, transcribeResult, profiles = [], activeProfile = null } = {},
+) {
   await page.addInitScript(
-    ({ platformStatus, knowledgeGraph, speakResult, profiles, activeProfile }) => {
+    ({ platformStatus, knowledgeGraph, speakResult, transcribeResult, profiles, activeProfile }) => {
+      // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
+      // and MediaRecorder are real browser APIs the app calls directly,
+      // before ever reaching the mocked Tauri invoke() below - stubbed here
+      // so the mic button's full click-to-populated-composer path can be
+      // exercised without real microphone hardware, matching Increment A's
+      // own disclosed real-audio-hardware e2e limitation.
+      class FakeMediaRecorder {
+        constructor() {
+          this.state = "inactive";
+          this.mimeType = "audio/webm";
+          this.ondataavailable = null;
+          this.onstop = null;
+        }
+
+        start() {
+          this.state = "recording";
+        }
+
+        stop() {
+          this.state = "inactive";
+          if (this.ondataavailable) {
+            this.ondataavailable({ data: new Blob(["fake-audio-bytes"], { type: this.mimeType }) });
+          }
+          if (this.onstop) this.onstop();
+        }
+      }
+
+      window.MediaRecorder = FakeMediaRecorder;
+      if (!window.navigator.mediaDevices) window.navigator.mediaDevices = {};
+      window.navigator.mediaDevices.getUserMedia = () =>
+        Promise.resolve({ getTracks: () => [{ stop: () => {} }] });
       // Stateful, in-page mock (EIP-ESR0046-001): list_profiles/active_profile
       // read this state, create_profile/select_profile mutate it - a real
       // Tauri backend behaves the same way, just persisted to SQLite instead
@@ -27,6 +61,15 @@ async function mockTauriIpc(page, { speakResult, profiles = [], activeProfile = 
           if (cmd === "speak_message") {
             return Promise.resolve(
               speakResult || { status: "not_connected", message: "Guardian has no speech synthesis provider connected." },
+            );
+          }
+          if (cmd === "transcribe_audio") {
+            return Promise.resolve(
+              transcribeResult || {
+                status: "not_connected",
+                text: null,
+                message: "Guardian has no speech transcription provider connected.",
+              },
             );
           }
           if (cmd === "list_profiles") return Promise.resolve({ profiles: state.profiles });
@@ -68,6 +111,7 @@ async function mockTauriIpc(page, { speakResult, profiles = [], activeProfile = 
         edges: [{ source: "n1", target: "n2" }],
       },
       speakResult,
+      transcribeResult,
       profiles,
       activeProfile,
     },
@@ -135,6 +179,47 @@ test("speak button plays synthesized audio without showing an error note", async
 
   await page.getByRole("button", { name: "Speak this response" }).click();
 
+  await expect(page.locator(".conversation-error")).toHaveCount(0);
+});
+
+// EIP-ESR0047-001 (EBG-0117): the mic button is a new, additive affordance
+// on the message composer - these two tests cover guardian.transcribe's two
+// observable outcome shapes, mirroring the speak button's own pattern.
+// getUserMedia/MediaRecorder are stubbed in mockTauriIpc (no real
+// microphone hardware, matching Increment A's own disclosed limitation).
+test("mic button shows an inline note when Guardian has no transcription provider connected", async ({
+  page,
+}) => {
+  await mockTauriIpc(page, {
+    transcribeResult: {
+      status: "not_connected",
+      text: null,
+      message: "Guardian has no speech transcription provider connected.",
+    },
+  });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Speak a message" }).click();
+  await page.getByRole("button", { name: "Stop recording and transcribe" }).click();
+
+  await expect(page.locator(".conversation-error")).toContainText(
+    "Guardian has no speech transcription provider connected.",
+  );
+});
+
+test("mic button populates the composer with the transcript without auto-sending", async ({
+  page,
+}) => {
+  await mockTauriIpc(page, {
+    transcribeResult: { status: "transcribed", text: "hello Guardian", message: null },
+  });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Speak a message" }).click();
+  await page.getByRole("button", { name: "Stop recording and transcribe" }).click();
+
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toHaveValue("hello Guardian");
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(0);
   await expect(page.locator(".conversation-error")).toHaveCount(0);
 });
 

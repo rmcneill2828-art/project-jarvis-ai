@@ -40,7 +40,12 @@ from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
-from jarvis.interfaces.voice import GuardianSpeechProvider, SentinelGatedSpeechProvider
+from jarvis.interfaces.voice import (
+    GuardianSpeechProvider,
+    GuardianTranscriptionProvider,
+    SentinelGatedSpeechProvider,
+    SentinelGatedTranscriptionProvider,
+)
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
@@ -52,6 +57,7 @@ from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
 from sentinel.piper_provider import PiperProvider
 from sentinel.policy import TrustTierPolicy
 from sentinel.provider_config import CredentialReference, ProviderConfiguration
+from sentinel.whisper_provider import WhisperProvider
 
 JSONRPC_VERSION = "2.0"
 
@@ -96,6 +102,14 @@ OLLAMA_TIMEOUT_SECONDS = 90.0
 # means no speech provider is wired, mirroring _build_real_provider()'s
 # absent-credential handling exactly, not Ollama's has-a-default pattern.
 PIPER_VOICE_PATH_ENV_VAR = "JARVIS_PIPER_VOICE_PATH"
+
+# Whisper model size or local path (EIP-ESR0047-001, EBG-0117): mirrors
+# PIPER_VOICE_PATH_ENV_VAR's absent-means-invisible pattern exactly, and is
+# this capability's own approval gate per EIP-ESR0047-001 Section 5.2 -
+# capability availability itself, not a per-request live approval this
+# codebase has no mechanism to satisfy. No model is ever auto-downloaded
+# without this variable being set first.
+WHISPER_MODEL_PATH_ENV_VAR = "JARVIS_WHISPER_MODEL_PATH"
 
 # Personal Memory store location (EIP-ESR0027-001). Overridable so tests never
 # touch the real store - the exact lesson learned from ESR-0026 WP1's Ollama
@@ -180,6 +194,29 @@ def _build_speech_provider(
     return SentinelGatedSpeechProvider(gateway=gateway, provider=piper_provider)
 
 
+def _build_transcription_provider(
+    gateway: SentinelTrustGateway, environ: Mapping[str, str]
+) -> GuardianTranscriptionProvider | None:
+    """Build a Sentinel-gated Whisper transcription provider, or None if unconfigured.
+
+    Mirrors `_build_speech_provider()` exactly, for the opposite data
+    direction: an absent or blank `JARVIS_WHISPER_MODEL_PATH` means speech
+    input is not available on this machine, not a startup failure -
+    `GuardianRuntime.transcribe()` already returns the honest
+    `not_connected` outcome for a None provider. Per EIP-ESR0047-001
+    Section 5.2, setting this variable is itself the deployment-level
+    enablement act this capability is gated on.
+    """
+
+    model_path = environ.get(WHISPER_MODEL_PATH_ENV_VAR)
+    if not model_path:
+        return None
+    whisper_provider = WhisperProvider(
+        ProviderConfiguration(provider_name="whisper", endpoint=model_path)
+    )
+    return SentinelGatedTranscriptionProvider(gateway=gateway, provider=whisper_provider)
+
+
 def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianRuntime:
     """Build and start the production Guardian+Sentinel stack.
 
@@ -197,6 +234,12 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     `GuardianRuntime.speak()` honestly reports `not_connected`, exactly like
     an absent OpenAI/Gemini credential already degrades the conversation
     path. No voice model is ever auto-downloaded.
+
+    Voice Faculty Increment B (EIP-ESR0047-001, EBG-0117) mirrors this
+    exactly for speech input: a Sentinel-gated Whisper transcription
+    provider is constructed only when `JARVIS_WHISPER_MODEL_PATH` is present
+    and non-blank; otherwise `GuardianRuntime.transcribe()` honestly reports
+    `not_connected`. No Whisper model is ever auto-downloaded.
 
     `environ` defaults to `os.environ`. Tests must pass an explicit mapping
     (e.g. `{}`) rather than relying on the default, so test runs stay
@@ -243,11 +286,13 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     memory_service = PersonalMemoryService(gateway=gateway, store=memory_store)
 
     speech_provider = _build_speech_provider(gateway, environ)
+    transcription_provider = _build_transcription_provider(gateway, environ)
 
     runtime = GuardianRuntime(
         conversation_provider=conversation_provider,
         memory_service=memory_service,
         speech_provider=speech_provider,
+        transcription_provider=transcription_provider,
     )
     runtime.start()
     return runtime
@@ -306,6 +351,7 @@ class StdioRpcServer:
         self._methods = {
             "guardian.converse": self._guardian_converse,
             "guardian.speak": self._guardian_speak,
+            "guardian.transcribe": self._guardian_transcribe,
             "platform.status": self._platform_status,
             "knowledge.graph": self._knowledge_graph,
             "memory.propose": self._memory_propose,
@@ -338,6 +384,23 @@ class StdioRpcServer:
             result["audio"] = base64.b64encode(outcome.audio.audio_bytes).decode("ascii")
             result["mimeType"] = outcome.audio.mime_type
         return result
+
+    def _guardian_transcribe(self, params: dict[str, Any]) -> dict[str, Any]:
+        audio_base64 = params.get("audioBase64")
+        mime_type = params.get("mimeType")
+        if not isinstance(audio_base64, str):
+            msg = "params.audioBase64 must be a string."
+            raise TypeError(msg)
+        if not isinstance(mime_type, str):
+            msg = "params.mimeType must be a string."
+            raise TypeError(msg)
+        try:
+            audio_bytes = base64.b64decode(audio_base64, validate=True)
+        except (ValueError, TypeError) as exc:
+            msg = "params.audioBase64 must be valid base64."
+            raise ValueError(msg) from exc
+        outcome = self._runtime.transcribe(audio_bytes, mime_type)
+        return {"status": outcome.status, "text": outcome.text, "message": outcome.message}
 
     def _platform_status(self, params: dict[str, Any]) -> dict[str, Any]:
         snapshot = self._runtime.status_snapshot()

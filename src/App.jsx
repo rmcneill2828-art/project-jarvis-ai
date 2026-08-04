@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
@@ -14,6 +14,7 @@ import {
   FlaskConical,
   Grid3X3,
   Link2,
+  Mic,
   Minus,
   Monitor,
   SendHorizontal,
@@ -474,6 +475,9 @@ function CommandPanel({
   sendError,
   onSpeak,
   speakError,
+  isRecording,
+  onToggleRecording,
+  transcribeError,
 }) {
   return (
     <section className="command-panel" aria-labelledby="command-heading">
@@ -507,6 +511,11 @@ function CommandPanel({
           {speakError}
         </p>
       )}
+      {transcribeError && (
+        <p className="conversation-error" role="alert">
+          {transcribeError}
+        </p>
+      )}
       <form
         className="input-shell"
         aria-label="Guardian conversation input"
@@ -521,6 +530,16 @@ function CommandPanel({
           placeholder="Ask Guardian anything..."
           disabled={sending}
         />
+        <button
+          type="button"
+          className={`mic-button${isRecording ? " recording" : ""}`}
+          aria-label={isRecording ? "Stop recording and transcribe" : "Speak a message"}
+          aria-pressed={isRecording}
+          disabled={sending}
+          onClick={onToggleRecording}
+        >
+          <Mic size={20} />
+        </button>
         <button type="submit" disabled={sending || inputValue.trim().length === 0} aria-label="Send">
           <SendHorizontal size={24} />
         </button>
@@ -577,6 +596,16 @@ export function App() {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState(null);
   const [speakError, setSpeakError] = useState(null);
+
+  // Voice Faculty Increment B (EIP-ESR0047-001): push-to-talk speech input.
+  // isRecording drives the mic button's visual state only - the actual
+  // MediaRecorder instance and its bounded 30s auto-stop timer live in refs,
+  // not state, since neither needs to trigger a re-render.
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcribeError, setTranscribeError] = useState(null);
+  const mediaRecorderRef = useRef(null);
+  const recordedChunksRef = useRef([]);
+  const recordingTimeoutRef = useRef(null);
 
   const [profiles, setProfiles] = useState([]);
   const [activeProfile, setActiveProfile] = useState(null);
@@ -697,6 +726,89 @@ export function App() {
       });
   };
 
+  // Maximum push-to-talk recording length (EIP-ESR0047-001 Section 5.5 item
+  // 9 / Implementation Requirement 4): a hard client-side cap, not merely a
+  // UI suggestion - recording is force-stopped at this limit.
+  const MAX_RECORDING_MS = 30000;
+
+  const blobToBase64 = (blob) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result;
+        resolve(dataUrl.slice(dataUrl.indexOf(",") + 1));
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+
+  const handleStopRecording = () => {
+    if (recordingTimeoutRef.current) {
+      clearTimeout(recordingTimeoutRef.current);
+      recordingTimeoutRef.current = null;
+    }
+    const recorder = mediaRecorderRef.current;
+    if (recorder && recorder.state !== "inactive") {
+      recorder.stop();
+    }
+    setIsRecording(false);
+  };
+
+  const handleStartRecording = async () => {
+    setTranscribeError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      recordedChunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) recordedChunksRef.current.push(event.data);
+      };
+
+      recorder.onstop = () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const mimeType = recorder.mimeType || "audio/webm";
+        const blob = new Blob(recordedChunksRef.current, { type: mimeType });
+        recordedChunksRef.current = [];
+
+        blobToBase64(blob)
+          .then((audioBase64) => invoke("transcribe_audio", { audioBase64, mimeType }))
+          .then((result) => {
+            if (result.status !== "transcribed") {
+              setTranscribeError(result.message || "Guardian could not transcribe that.");
+              return;
+            }
+            // Populated for the household member to review and send
+            // themselves - never auto-submitted (EIP-ESR0047-001 Section
+            // 5.5 item 10 / Section 8 exclusion 4).
+            applyTranscript(result.text);
+          })
+          .catch((error) => {
+            setTranscribeError(`Guardian could not transcribe that: ${error}`);
+          });
+      };
+
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setIsRecording(true);
+      recordingTimeoutRef.current = setTimeout(handleStopRecording, MAX_RECORDING_MS);
+    } catch (error) {
+      setTranscribeError(`Microphone unavailable: ${error}`);
+    }
+  };
+
+  const applyTranscript = (text) => {
+    setInputValue((current) => (current.trim().length > 0 ? `${current.trim()} ${text}` : text));
+  };
+
+  const handleToggleRecording = () => {
+    if (isRecording) {
+      handleStopRecording();
+    } else {
+      handleStartRecording();
+    }
+  };
+
   const handleCreateProfile = (displayName, role) => {
     setProfileError(null);
 
@@ -754,6 +866,9 @@ export function App() {
                 sendError={sendError}
                 onSpeak={handleSpeak}
                 speakError={speakError}
+                isRecording={isRecording}
+                onToggleRecording={handleToggleRecording}
+                transcribeError={transcribeError}
               />
             </div>
             <div className="side-column">
