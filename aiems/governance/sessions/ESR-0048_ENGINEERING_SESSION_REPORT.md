@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0048 |
 | Title | Engineering Session Report |
-| Version | 1.2 |
-| Status | Open |
+| Version | 1.3 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0048 |
 | Date Opened | 4 August 2026 |
-| Date Closed | - |
-| Closure Status | Open |
+| Date Closed | 4 August 2026 |
+| Closure Status | Closed - WP1-WP2 complete, session-wide WP6 (Pass) and WP7 (Retain RBL-0029) complete |
 
 ---
 
@@ -103,6 +103,22 @@ Files: `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`, `aiems/governance
 
 ---
 
+# 6C. Session-Wide WP6 - Independent Repository Verification
+
+Following WP2's implementation commit (`98f0973`), the Programme Sponsor selected closing the session over adding a further Work Package. Session-wide Independent Repository Verification (WP6) and Repository Baseline Determination (WP7) follow.
+
+Ran a genuine independent Codex review (`codex exec -s read-only`, background invocation, real inspection of `git diff 7dbb2b0..98f0973` - both `--stat`/`--name-status` and full content, plus the specific REG-0001 version-row diff) covering both WP1 and WP2's committed changes against the current baseline [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] (commit `7dbb2b0`, established at ESR-0047 WP7). Verified independently: (1) both commits touch only Markdown governance/architecture artefacts - `--name-status` confirmed no code, test, or config file anywhere in the diff; (2) MOD-0001's new Agent Framework subsection is internally consistent with [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A's permanent hard-`DENY` boundary - it explicitly states `LOCAL_AGENT_ACTION` remains hard `DENY`, no agent is implemented/wired/authorised, and no path to autonomous local-agent-action approval exists; (3) REG-0001's version rows exactly match the touched artefacts' own file versions (MOD-0001 1.6/1.6, EBR-0001 1.156/1.156, EIP-ESR0048-001 1.0/1.0, ESR-0048 report 1.2/1.2, REG-0001 itself 3.455/3.455); (4) no unrelated or scope-creeping change found in either commit - the one extra correction (MOD-0001's stale RBL-0015 reference) is disclosed in-document as a Whole-Document Staleness Sweep finding, consistent with the same Documentation Debt Discipline WP1 applied elsewhere, not undisclosed scope creep.
+
+**Verdict: Pass, no findings.**
+
+---
+
+# 6D. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Retain [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]]** (established at [[ESR-0047_ENGINEERING_SESSION_REPORT|ESR-0047]] WP7). This session was documentation/architecture-only across both Work Packages - a Documentation Debt Discipline sync (WP1) and a new MOD-0001 architecture subsection plus backlog/register closure (WP2), none of which changed what the live running product does. WP6's independent review confirmed no code, test, or config file (`jarvis/`, `sentinel/`, `src/`, `src-tauri/`, `scripts/`) was touched anywhere in this session's diff - matching the standing convention applied at ESR-0041, ESR-0042 and ESR-0045 (baseline determination turns on live product behaviour change, not documentation volume) rather than the Establish threshold applied at ESR-0044/ESR-0046/ESR-0047 (each a genuine live product-capability delivery). No new RBL is created.
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0047_ENGINEERING_SESSION_REPORT|ESR-0047]] - prior closed session, immediate predecessor; WP4's Repository Engineering Health Review is the source of this session's objective.
@@ -111,7 +127,7 @@ Files: `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`, `aiems/governance
 * [[EIP-ESR0048-001_AGENT_FRAMEWORK_ARCHITECTURE_SCOPE|EIP-ESR0048-001]] - approved Engineering Implementation Package for WP2.
 * [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] - WP2 target artefact, new Agent Framework subsection.
 * [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8A, the permission boundary WP2's contract must obey.
-* [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] - repository baseline at session open.
+* [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] - repository baseline retained at this session's WP7 closure (no code changed across either Work Package).
 
 ---
 
@@ -119,6 +135,7 @@ Files: `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`, `aiems/governance
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 4 August 2026 | Claude Engineering Implementer | **ESR-0048 formally closed.** Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `7dbb2b0..98f0973` diff - **Pass, no findings**. Session-wide WP7 (Repository Baseline Determination): **Retain [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]]** - documentation/architecture-only session, no code/test/config file touched. Two Work Packages complete: WP1 Documentation Debt Discipline sync; WP2 EBG-0042 (Agent Framework Architecture) resolved. |
 | 1.2 | 4 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0042 (Agent Framework Architecture) resolved per [[EIP-ESR0048-001_AGENT_FRAMEWORK_ARCHITECTURE_SCOPE|EIP-ESR0048-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). New MOD-0001 "Agent Framework" subsection - contract shape, mandatory Sentinel gate, ROUTINE_INTERACTION/LOCAL_AGENT_ACTION split - architecture only, no code. |
 | 1.1 | 4 August 2026 | Claude Engineering Implementer | WP1 Complete: Documentation Debt Discipline sync across PBK-0001, RSC-0001, PCB-0001, JARVIS_CAPABILITY_READINESS_MATRIX, JRM-0001, EBR-0001 (Section 5A regenerated) and PST-0001, following ESR-0047 WP4's handover. RSC-0001's score corrected 5/1/2 to 7/1/0 (Pass/Partial/Fail) - both prior Fail items now Pass. |
 | 1.0 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 opened at WP0B, before WP1 began. WP0A found PBK-0001 one baseline stale (RBL-0028, should be RBL-0029). Objective: WP1 follows ESR-0047 WP4's Documentation Debt sync handover; WP2 onward scopes EBG-0042 (Agent Framework Architecture). Selected by the Programme Sponsor via explicit objective-selection question. |
