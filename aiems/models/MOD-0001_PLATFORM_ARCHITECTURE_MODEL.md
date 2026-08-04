@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.5
+**Version:** 1.6
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -547,6 +547,24 @@ Potential responsibilities include:
 
 ---
 
+## Agent Framework
+
+Added at ESR-0048 WP2, per [[EIP-ESR0048-001_AGENT_FRAMEWORK_ARCHITECTURE_SCOPE|EIP-ESR0048-001]], resolving [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0042 ("define specialist agent contracts, including Engineering Agent, while preserving Guardian as the singular user-facing identity"). This section is architecture only - it defines the contract shape a future implementation package would build against; it does not implement, wire, or authorise any agent or capability. [[ADR-0011_AGENT_FRAMEWORK|ADR-0011]] already decided agents are capabilities, not identities, and explicitly reserved detailed contract definition for a future package - this is that package.
+
+**What a specialist agent is.** A bounded, named provider of one specific domain capability, invoked only by Guardian's Action faculty ([[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] Guardian Faculties: "Requests authorised execution through automation, agents or platform services") - never directly by the user or the User Experience Platform. An agent is not a conversation participant and is not itself user-facing; it performs or reports on a named task and returns a structured result to Guardian, which alone composes any response to the household, consistent with AAM-0001's Agent Relationship principle: "Specialist agents provide domain capability to Guardian. They are not separate AI identities. Guardian asks agents how to accomplish specialist tasks and remains the user-facing entity."
+
+**Proposed contract shape.** A `SpecialistAgent` Protocol - `name: str` (property) and `execute(request: AgentRequest) -> AgentResult` (method) - mirroring the Protocol-based provider contract pattern already proven three times in this codebase (`sentinel/providers.py`'s `ExecutionProvider`, `sentinel/speech_providers.py`'s `SpeechSynthesisProvider`, `sentinel/transcription_providers.py`'s `TranscriptionProvider`), not a new interface shape. `AgentRequest`/`AgentResult` are named as future frozen dataclasses (task description, structured parameters, a result payload and a status field); exact fields are left to the future implementation package, since no agent exists yet to validate the shape against. This is an architecture-level placeholder, not a settled final contract - a genuinely longer-running or partially-failing agent may need lifecycle/status semantics beyond a single synchronous `execute()` call, which a future package should confirm or revise.
+
+**The mandatory Sentinel gate.** Every specialist agent invocation, without exception, is evaluated through `SentinelTrustGateway.evaluate()` before executing - the same pattern conversation, memory, speech and transcription already use, reusing the same shared gateway instance those capabilities already share, not a freshly constructed one. This distinction matters concretely: `SentinelTrustGateway` defaults to `SimpleApprovalPolicy` when constructed bare; `TrustCategory.LOCAL_AGENT_ACTION`'s hard `DENY` is `TrustTierPolicy`'s behaviour specifically - the policy engine `build_default_runtime()` already wires as the production default and every other capability already relies on. A future implementation must reuse that existing shared gateway/policy wiring.
+
+An agent capability that only reads or reports information, touching no local device or system state, may classify `ROUTINE_INTERACTION`. An agent capability that would control, configure or modify local device or system state must classify [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A.1's `TrustCategory.LOCAL_AGENT_ACTION`, and therefore remains hard `DENY` until a future, separately-approved package names that specific action under Section 8A.3's Action Tiers and defines its reversal path per Section 8A.2. This section does not decide which agents fall into which category - it states the rule a future package must apply, cross-referencing GAM-0001 Section 8A as the authority rather than restating its Action Tiers table here.
+
+**Where the Engineering Agent fits.** Named in EBG-0042's own text as the first illustrative specialist agent. GIA-BOOT (`jarvis/gia/`, a Proof of Concept since ESR-0012) is a read-only observability capability, not an action-taking agent - it would classify `ROUTINE_INTERACTION` under the rule above if and when it is formally wired as a specialist agent, a future decision not made here. No other specific agent (Home Assistant, smart-home, or otherwise) is named or authorised by this section.
+
+**Explicit non-authorisation.** Mirroring GAM-0001 Section 8A.5's own pattern: this section does not implement the Agent Framework, does not wire any agent into `GuardianRuntime`, does not change `sentinel/policy.py`'s existing hard `DENY` for `LOCAL_AGENT_ACTION`, and does not authorise any specific agent or capability - all remain future, separately-approved implementation packages.
+
+---
+
 ## User Experience Platform
 
 The User Experience Platform provides consistent interaction across all supported interfaces.
@@ -931,13 +949,14 @@ This relationship provides architectural traceability throughout the AI Engineer
 | [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Traceability model that references MOD-0001 as the platform and architectural domain authority. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned with MOD-0001 during ESR-0008. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
-| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+| [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] | Current accepted repository baseline. |
 
 ---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|-----------------------------------------|--------------------------------------------------------------------------|
+| 1.6 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP2, resolving EBG-0042 (Agent Framework Architecture) per [[EIP-ESR0048-001_AGENT_FRAMEWORK_ARCHITECTURE_SCOPE|EIP-ESR0048-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service): new "Agent Framework" subsection under Core Architectural Domains defines a specialist-agent contract shape, the mandatory Sentinel gate (reusing the shared gateway/`TrustTierPolicy` wiring), and the `ROUTINE_INTERACTION`/`LOCAL_AGENT_ACTION` classification split governed by GAM-0001 Section 8A - architecture only, no code, no agent authorised. Also corrected a stale RBL-0015 "current accepted repository baseline" reference (Related Artefacts) to RBL-0029, found on opening this document (Documentation Debt Discipline, Whole-Document Staleness Sweep on Edit). |
 | 1.5 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 housekeeping (informational, Programme Sponsor confirmed): promoted Status from In Review to Approved, reflecting ESR-0011's validation of this model for implementation readiness, which had never been written back into the document itself; corrected two stale RBL-0009 "current accepted repository baseline" references (Related Artefacts, OSE Relationships) to RBL-0015, retaining RBL-0009/RBL-0008 as historical lineage. Content unchanged - reviewed in full, found still architecturally accurate, no rewrite needed. |
 | 1.4 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described in this model's Sentinel sections. Original content unchanged. |
 | 0.1 | 23 June 2026 | Project Sponsor & Chief Architect | Initial JARVIS OS Foundation Specification. |
