@@ -8,10 +8,24 @@ import { test, expect } from "@playwright/test";
 // in this test - it drives the Vite dev server's React app directly.
 async function mockTauriIpc(
   page,
-  { speakResult, transcribeResult, profiles = [], activeProfile = null } = {},
+  {
+    speakResult,
+    transcribeResult,
+    transcriptionAvailable = false,
+    profiles = [],
+    activeProfile = null,
+  } = {},
 ) {
   await page.addInitScript(
-    ({ platformStatus, knowledgeGraph, speakResult, transcribeResult, profiles, activeProfile }) => {
+    ({
+      platformStatus,
+      knowledgeGraph,
+      speakResult,
+      transcribeResult,
+      transcriptionAvailable,
+      profiles,
+      activeProfile,
+    }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
       // before ever reaching the mocked Tauri invoke() below - stubbed here
@@ -52,7 +66,7 @@ async function mockTauriIpc(
 
       window.__TAURI_INTERNALS__ = {
         invoke: (cmd, args) => {
-          if (cmd === "platform_status") return Promise.resolve(platformStatus);
+          if (cmd === "platform_status") return Promise.resolve({ ...platformStatus, transcriptionAvailable });
           if (cmd === "knowledge_graph") return Promise.resolve(knowledgeGraph);
           if (cmd === "send_message") {
             const message = args && args.message ? args.message : "";
@@ -112,6 +126,7 @@ async function mockTauriIpc(
       },
       speakResult,
       transcribeResult,
+      transcriptionAvailable,
       profiles,
       activeProfile,
     },
@@ -183,14 +198,27 @@ test("speak button plays synthesized audio without showing an error note", async
 });
 
 // EIP-ESR0047-001 (EBG-0117): the mic button is a new, additive affordance
-// on the message composer - these two tests cover guardian.transcribe's two
-// observable outcome shapes, mirroring the speak button's own pattern.
-// getUserMedia/MediaRecorder are stubbed in mockTauriIpc (no real
-// microphone hardware, matching Increment A's own disclosed limitation).
+// on the message composer - these tests cover guardian.transcribe's two
+// observable outcome shapes, mirroring the speak button's own pattern, plus
+// the capability-gating fix from session-wide WP6 (Engineering Reviewer
+// finding): the button must not render - never mind activate a real
+// microphone permission prompt - unless platform.status reports
+// transcriptionAvailable. getUserMedia/MediaRecorder are stubbed in
+// mockTauriIpc (no real microphone hardware, matching Increment A's own
+// disclosed limitation).
+test("mic button does not render when transcription is not available", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Speak a message" })).toHaveCount(0);
+});
+
 test("mic button shows an inline note when Guardian has no transcription provider connected", async ({
   page,
 }) => {
   await mockTauriIpc(page, {
+    transcriptionAvailable: true,
     transcribeResult: {
       status: "not_connected",
       text: null,
@@ -211,6 +239,7 @@ test("mic button populates the composer with the transcript without auto-sending
   page,
 }) => {
   await mockTauriIpc(page, {
+    transcriptionAvailable: true,
     transcribeResult: { status: "transcribed", text: "hello Guardian", message: null },
   });
   await page.goto("/");

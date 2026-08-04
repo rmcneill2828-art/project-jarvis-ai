@@ -119,6 +119,21 @@ class GuardianRuntime:
 
         return self._config
 
+    @property
+    def transcription_available(self) -> bool:
+        """Return whether a transcription provider is connected.
+
+        Lets a caller (the `platform.status` RPC method) check capability
+        availability before offering speech input at all, rather than only
+        after attempting it - unlike speech output, activating a
+        microphone is itself a privacy-relevant act this codebase's own
+        EIP-ESR0047-001 Section 5.2 design requires the capability to be
+        genuinely absent, not merely fail after the fact, when
+        unconfigured (Engineering Reviewer finding, WP6).
+        """
+
+        return self._transcription_provider is not None
+
     def start(self) -> GuardianRuntimeState:
         """Start the Guardian runtime foundation without enabling future intelligence."""
 

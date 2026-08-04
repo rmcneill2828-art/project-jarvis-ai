@@ -826,8 +826,8 @@ button {
 }
 
 .input-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 46px 46px;
+  display: flex;
+  align-items: center;
   gap: 10px;
   align-items: center;
   min-height: 50px;
@@ -838,6 +838,7 @@ button {
 }
 
 .input-shell input {
+  flex: 1 1 auto;
   min-width: 0;
   border: 0;
   color: #dbe3e7;
@@ -855,6 +856,7 @@ button {
 
 .input-shell button {
   display: grid;
+  flex: 0 0 auto;
   width: 42px;
   height: 42px;
   place-items: center;

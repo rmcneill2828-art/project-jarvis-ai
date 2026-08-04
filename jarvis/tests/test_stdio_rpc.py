@@ -302,6 +302,29 @@ def test_build_default_runtime_reuses_the_same_gateway_for_transcription_and_con
     assert transcription_gateway is runtime.sentinel_gateway()
 
 
+def test_platform_status_reports_transcription_available_when_whisper_path_present(tmp_path):
+    """Engineering Reviewer WP6 finding: the frontend must be able to learn
+    transcription availability *before* offering the microphone button at
+    all, not only after a failed attempt - unlike speech output, activating
+    a microphone is itself privacy-relevant (EIP-ESR0047-001 Section 5.2)."""
+
+    with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
+        server = StdioRpcServer(
+            build_default_runtime(
+                environ={
+                    "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+                    "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                    "JARVIS_WHISPER_MODEL_PATH": "base.en",
+                }
+            ),
+            identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+        )
+
+    result = server._methods["platform.status"]({})
+
+    assert result["transcriptionAvailable"] is True
+
+
 def test_guardian_transcribe_rpc_returns_transcribed_shape(tmp_path):
     with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
         server = StdioRpcServer(
@@ -424,6 +447,7 @@ def test_platform_status_reflects_real_runtime_state(tmp_path):
         "runtimeHealth": "Healthy",
         "providerConnected": "Online",
         "memoryConnected": "Online",
+        "transcriptionAvailable": False,
         "providers": ["ollama", "local-echo"],
         "policyEngine": "TrustTierPolicy",
     }

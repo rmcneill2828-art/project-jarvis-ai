@@ -9,7 +9,7 @@
 | Package ID | EIP-ESR0047-001 |
 | Artefact ID | EIP-ESR0047-001 |
 | Title | Voice Faculty Phase 6 Increment B: Speech Input Scope |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -205,7 +205,7 @@ Draft v0.1 submitted to Codex via direct `codex exec -s read-only` invocation. *
 
 **Programme Sponsor approved.** Verified via `submit-response` directly against the real Sponsor Approval Service (ESR-0047/WP3) before implementation began.
 
-**Implemented as scoped.** Full detail, evidence and validation results recorded in [[ESR-0047_ENGINEERING_SESSION_REPORT|ESR-0047]] Section 6C.
+**Implemented as scoped, with one post-commit correction** - see Version History v1.1 below. Full detail, evidence and validation results recorded in [[ESR-0047_ENGINEERING_SESSION_REPORT|ESR-0047]] Section 6C/6E.
 
 ---
 
@@ -228,6 +228,7 @@ Draft v0.1 submitted to Codex via direct `codex exec -s read-only` invocation. *
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 4 August 2026 | Claude Engineering Implementer | **Session-wide WP6 (Engineering Reviewer, Codex) finding, addressed.** The initial implementation never actually satisfied Section 5.5 item 12: the microphone button always rendered and `getUserMedia`/`MediaRecorder` always started before the backend's `not_connected` outcome was known - a real scope/privacy-gating mismatch, not merely wording, since Increment A's speech output never activates local hardware the way an unconfigured microphone button would. Fixed: `GuardianRuntime.transcription_available` (new property) and a new `transcriptionAvailable` field on `platform.status` let the frontend learn availability in advance; the mic button now conditionally renders only when true. 2 new tests (`test_guardian_runtime.py`, `test_stdio_rpc.py`) plus a new Playwright test asserting the button's absence by default. Full suite: 485 passed/1 skipped (was 483/1); Playwright 12/12 (was 11). |
 | 1.0 | 4 August 2026 | Claude Engineering Implementer | **Implemented as scoped**, Programme Sponsor approval verified via the real Sponsor Approval Service (ESR-0047/WP3). Backend (`sentinel/transcription_providers.py`, `sentinel/whisper_provider.py`, `jarvis/interfaces/voice.py`, `jarvis/guardian/runtime.py`, `jarvis/interfaces/stdio_rpc.py`), Tauri (`transcribe_audio` command) and frontend (push-to-talk mic button, `src/App.jsx`/`styles.css`) delivered exactly as scoped. One disclosed implementation refinement: push-to-talk implemented as click-to-start/click-to-stop rather than literal mouse-down/mouse-up hold (Section 5.5 item 9), for reliability - true hold-based capture risks losing the stop event if the cursor leaves the button before release; both remain a single, deliberate, bounded (30s max) user action, not continuous/wake-word listening. Full validation clean: 483 Python tests passed/1 skipped (was 453/1, 30 new), ruff clean; Rust build/clippy/fmt/test clean; frontend build clean; Playwright 11/11 passed (2 new). |
 | 0.2 | 4 August 2026 | Claude Engineering Implementer | Engineering Reviewer (Codex) design review via direct `codex exec -s read-only` invocation: **Pass with non-blocking findings.** Every Repository Context claim independently verified against live cited files; scope confirmed within EBG-0117's authority; Section 5.1 STT proposal and Section 8 exclusions assessed as reasonable. Folded three non-blocking findings: softened Section 5.2's GAM-0001 Section 8.4 analogy from "follows that same shape" to an explicit by-analogy/operational-assumption framing, added an explicit statement that the enablement gate does not satisfy Household Role Model enforcement, and tightened Section 4's "no live mechanism exists anywhere" to "no generic live Sentinel REVIEW-resolution mechanism exists" (distinguishing the Personal Memory consent workflow). Awaiting Programme Sponsor approval. |
 | 0.1 | 4 August 2026 | Claude Engineering Implementer | Initial draft, produced at ESR-0047 WP3. Scopes Voice Faculty Phase 6 Increment B (push-to-talk speech input via a self-hosted `faster-whisper` provider), with an explicit Sentinel-gating design decision (Section 5.2) grounded in GAM-0001 Section 8.1/8.4 rather than mechanically copying Increment A's pattern. Not yet reviewed or approved. |

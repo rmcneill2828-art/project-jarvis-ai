@@ -478,6 +478,7 @@ function CommandPanel({
   isRecording,
   onToggleRecording,
   transcribeError,
+  transcriptionAvailable,
 }) {
   return (
     <section className="command-panel" aria-labelledby="command-heading">
@@ -530,16 +531,18 @@ function CommandPanel({
           placeholder="Ask Guardian anything..."
           disabled={sending}
         />
-        <button
-          type="button"
-          className={`mic-button${isRecording ? " recording" : ""}`}
-          aria-label={isRecording ? "Stop recording and transcribe" : "Speak a message"}
-          aria-pressed={isRecording}
-          disabled={sending}
-          onClick={onToggleRecording}
-        >
-          <Mic size={20} />
-        </button>
+        {transcriptionAvailable && (
+          <button
+            type="button"
+            className={`mic-button${isRecording ? " recording" : ""}`}
+            aria-label={isRecording ? "Stop recording and transcribe" : "Speak a message"}
+            aria-pressed={isRecording}
+            disabled={sending}
+            onClick={onToggleRecording}
+          >
+            <Mic size={20} />
+          </button>
+        )}
         <button type="submit" disabled={sending || inputValue.trim().length === 0} aria-label="Send">
           <SendHorizontal size={24} />
         </button>
@@ -869,6 +872,7 @@ export function App() {
                 isRecording={isRecording}
                 onToggleRecording={handleToggleRecording}
                 transcribeError={transcribeError}
+                transcriptionAvailable={Boolean(platformState?.transcriptionAvailable)}
               />
             </div>
             <div className="side-column">

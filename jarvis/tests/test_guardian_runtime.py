@@ -684,6 +684,11 @@ def test_guardian_runtime_transcribe_after_stop_returns_not_running_outcome() ->
     assert outcome.status == STATUS_NOT_RUNNING
 
 
+def test_guardian_runtime_transcription_available_reflects_provider_presence() -> None:
+    assert GuardianRuntime().transcription_available is False
+    assert GuardianRuntime(transcription_provider=_StubTranscriptionProvider()).transcription_available is True
+
+
 def test_guardian_runtime_transcribe_delegates_to_connected_provider() -> None:
     provider = _StubTranscriptionProvider()
     runtime = GuardianRuntime(transcription_provider=provider)

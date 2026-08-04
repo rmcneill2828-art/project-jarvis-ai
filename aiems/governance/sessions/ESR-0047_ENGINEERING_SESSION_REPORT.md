@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0047 |
 | Title | Engineering Session Report |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -194,6 +194,26 @@ All handover, backlog progression and JARVIS readiness recommendations above are
 
 ---
 
+# 6E. Session-Wide WP6 - Independent Repository Verification
+
+Covering the full session range `f36a465..1866b08` (4 commits: `9936702` WP1, `3d1fcf5` WP2, `c9ecc19` WP3, `1866b08` WP4).
+
+Submitted to Codex for independent review via direct `codex exec -s read-only` invocation, focused on WP3 (the substantive code change) with a spot-check of WP1/WP2/WP4. **Result: Fail, one blocking finding, on first pass.** Codex confirmed WP3 touched only its EIP-authorised files, that `sentinel/transcription_providers.py`/`whisper_provider.py` genuinely mirror the established speech-output pattern, that backend env-var gating (`_build_transcription_provider()`) correctly mirrors Piper's, that governance artefacts were updated consistently with the code (not just claimed to be), and that WP1/WP2/WP4 each matched their commit messages - but found a real defect: **`src/App.jsx` always rendered the microphone button and started `getUserMedia`/`MediaRecorder` before learning whether a transcription provider was even connected**, directly contradicting EIP-ESR0047-001 Section 5.5 item 12's explicit design ("the microphone button does not render at all" when unconfigured) and Section 5.2's capability-enablement gating rationale - a genuine scope/privacy-gating mismatch, not a wording nitpick, since activating a household member's microphone is exactly the privacy-relevant act Section 5.2 exists to gate.
+
+**Fixed directly, same WP6 pass**: `GuardianRuntime.transcription_available` (new property, mirrors how `configured_providers()`/`sentinel_gateway()` already expose runtime state to the RPC layer) and a new `transcriptionAvailable` field on the `platform.status` RPC response let the frontend learn availability before rendering anything; `src/App.jsx`'s mic button now conditionally renders only when true, and `src/styles.css`'s `.input-shell` was changed from a fixed 3-column grid to a flex layout so it degrades cleanly to 2 visible controls when the button is absent. 2 new Python tests (`test_guardian_runtime.py`, `test_stdio_rpc.py`) plus a new Playwright test asserting the button's absence by default; the two existing mic-button tests updated to opt in via `transcriptionAvailable: true`. Full re-validation: `pytest` 485 passed/1 skipped (was 483/1); `ruff check` clean; `cargo build`/`clippy -D warnings`/`fmt --check` clean (unaffected, confirmed anyway); `npm run build` clean; `npx playwright test` 12/12 passed (was 11). Live-reconfirmed directly: `platform.status`'s `transcriptionAvailable` correctly reads `False` with `JARVIS_WHISPER_MODEL_PATH` absent and `True` when present, via direct Python invocation against the real `build_default_runtime()`/`StdioRpcServer` path.
+
+This is disclosed honestly as a genuine defect WP6 caught, not retroactively minimised - the original implementation's own self-review (Section 6C) missed it entirely, having disclosed a different, cosmetic refinement (click-to-toggle vs. hold) while missing the substantive gating requirement its own approved EIP already specified. [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] updated to v1.1 recording the finding and fix. Committed and pushed as a fifth session commit (WP6 fix round, matching the established "post-implementation fix round (Codex-caught)" pattern from prior sessions).
+
+**Independent verification re-run after the fix**: [pending - see updated Version History entry once complete].
+
+---
+
+# 6F. Session-Wide WP7 - Repository Baseline Determination
+
+[pending]
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] - prior closed session, immediate predecessor.
@@ -208,6 +228,7 @@ All handover, backlog progression and JARVIS readiness recommendations above are
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 4 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): Codex found a genuine blocking defect on first pass - the mic button rendered and activated the microphone before knowing whether transcription was configured, contradicting EIP-ESR0047-001 Section 5.5 item 12. Fixed directly: `GuardianRuntime.transcription_available`, new `platform.status` field, conditional mic-button rendering. Full re-validation clean (pytest 485/1, Playwright 12/12). EIP-ESR0047-001 updated to v1.1. |
 | 1.4 | 4 August 2026 | Claude Engineering Implementer | WP4 Complete: Repository Engineering Health Review per PBK-0001 guidance. Backlog Validation: 31 open EBR-0001 items reviewed, all confirmed valid, 0 stale/duplicate/superseded. Six documentation-staleness findings disclosed (RSC-0001, PCB-0001, JARVIS_CAPABILITY_READINESS_MATRIX, README.md, PST-0001, JRM-0001 all stale re: EBG-0116/EBG-0117 closure; EBR-0001 Section 5A snapshot internally inconsistent). Handover recommends a batched Documentation Debt sync as next session's WP1, then scoping EBG-0042 (Agent Framework Architecture, JRM-0001 Phase 3). JARVIS Development Readiness Assessment: AIEMS sufficiently mature for full JARVIS Engineering. All findings advisory only, no EBR-0001 or other artefact modified by this WP. |
 | 1.3 | 4 August 2026 | Claude Engineering Implementer | WP3 Complete: EBG-0117 (Voice Faculty Increment B: Speech Input) resolved per [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). New `sentinel/transcription_providers.py`/`whisper_provider.py`, `GuardianRuntime.transcribe()`, `guardian.transcribe` RPC, `transcribe_audio` Tauri command, push-to-talk mic button in the UXP. Full validation clean across Python/Rust/frontend/Playwright; live smoke check performed a genuine real Piper-speak-to-Whisper-transcribe round trip, exact text match. |
 | 1.2 | 4 August 2026 | Claude Engineering Implementer | WP2 Complete: investigated EBG-0118 via four live `codex exec` tests (7.6s-46s each, none reproduced the disclosed 30+ minute hang). Found and disclosed a related `CreateProcessAsUserW` sandbox spawn failure on parallel `git grep` calls; removed `[windows] sandbox = "elevated"` from `~/.codex/config.toml` (backed up) per Programme Sponsor direction, which changed that failure mode without a hang recurring. One test run delivered a genuine, evidence-based Codex Pass review of the real WP1 commit. Net outcome disclosed as inconclusive on EBG-0118's actual stall; EBR-0001 updated (1.152 to 1.153), left open. |

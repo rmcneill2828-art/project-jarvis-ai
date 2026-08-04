@@ -412,6 +412,7 @@ class StdioRpcServer:
             "runtimeHealth": snapshot.runtime_health.value,
             "providerConnected": provider_boundary.status.value if provider_boundary else "Unknown",
             "memoryConnected": memory_boundary.status.value if memory_boundary else "Unknown",
+            "transcriptionAvailable": self._runtime.transcription_available,
             "providers": list(self._runtime.configured_providers()),
             "policyEngine": type(gateway.policy_engine).__name__ if gateway is not None else None,
         }
