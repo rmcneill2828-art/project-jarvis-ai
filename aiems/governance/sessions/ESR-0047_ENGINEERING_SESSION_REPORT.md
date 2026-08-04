@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0047 |
 | Title | Engineering Session Report |
-| Version | 1.5 |
-| Status | Open |
+| Version | 1.6 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0047 |
 | Date Opened | 4 August 2026 |
-| Date Closed | - |
-| Closure Status | Open |
+| Date Closed | 4 August 2026 |
+| Closure Status | Closed - WP1-WP4 complete, session-wide WP6 (Fail then Pass after fix) and WP7 (Establish RBL-0029) complete |
 
 ---
 
@@ -204,13 +204,17 @@ Submitted to Codex for independent review via direct `codex exec -s read-only` i
 
 This is disclosed honestly as a genuine defect WP6 caught, not retroactively minimised - the original implementation's own self-review (Section 6C) missed it entirely, having disclosed a different, cosmetic refinement (click-to-toggle vs. hold) while missing the substantive gating requirement its own approved EIP already specified. [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] updated to v1.1 recording the finding and fix. Committed and pushed as a fifth session commit (WP6 fix round, matching the established "post-implementation fix round (Codex-caught)" pattern from prior sessions).
 
-**Independent verification re-run after the fix**: [pending - see updated Version History entry once complete].
+**Independent verification re-run after the fix**: submitted to Codex again via direct `codex exec -s read-only` invocation against the full range `f36a465..5c02d3d`, focused on confirming the fix. **Result: Pass, no findings.** Codex confirmed `GuardianRuntime.transcription_available` correctly returns `False`/`True`, `platform.status` correctly exposes it, `src/App.jsx` renders the mic button only under that flag with no other code path capable of calling `getUserMedia`, the fix commit contains no unrelated changes, and the new/modified tests genuinely exercise the gating rather than being cosmetic. One non-blocking observation noted (the Playwright absence test checks render-gating rather than directly spying on `getUserMedia` call count) - accepted as sufficient given no other call path exists.
+
+This is disclosed as WP6 working as designed: a real defect found on first pass, fixed, and independently re-verified before baseline acceptance - not a review that rubber-stamped either pass.
 
 ---
 
 # 6F. Session-Wide WP7 - Repository Baseline Determination
 
-[pending]
+This session's WP3 (and its WP6 fix round) touched `jarvis/`, `sentinel/`, `src-tauri/` and `src/` with a genuine, live-verified product-capability change (real, working push-to-talk speech input, not merely architecture or documentation) - matching the Establish threshold applied at [[RBL-0025_REPOSITORY_BASELINE|RBL-0025]], [[RBL-0027_REPOSITORY_BASELINE|RBL-0027]] and [[RBL-0028_REPOSITORY_BASELINE|RBL-0028]] (each a real product-capability delivery), not the Retain threshold applied at architecture/documentation-only sessions.
+
+**Programme Sponsor determination: Establish RBL-0029**, superseding [[RBL-0028_REPOSITORY_BASELINE|RBL-0028]]. Full rationale, deliverables and verification evidence recorded in RBL-0029 itself.
 
 ---
 
@@ -219,8 +223,10 @@ This is disclosed honestly as a genuine defect WP6 caught, not retroactively min
 * [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] - prior closed session, immediate predecessor.
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Session Initialisation, Engineering Session Lifecycle and Documentation Debt Discipline guidance followed; WP1 target artefact.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] - WP1 target artefact.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0118 (this session's WP2 objective).
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0117 (WP3 objective, Completed); EBG-0118 (WP2 objective, investigated, remains open).
+* [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] - approved Engineering Implementation Package for WP3, updated to v1.1 after the WP6-caught fix.
 * [[RBL-0028_REPOSITORY_BASELINE|RBL-0028]] - repository baseline at session open.
+* [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] - repository baseline established at this session's WP7 closure.
 
 ---
 
@@ -228,6 +234,7 @@ This is disclosed honestly as a genuine defect WP6 caught, not retroactively min
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 4 August 2026 | Claude Engineering Implementer | **ESR-0047 formally closed.** Session-wide WP6 re-review after the fix: **Pass, no findings.** Session-wide WP7: **Establish [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]]**, superseding RBL-0028 - genuine live product-capability delivery (Voice Faculty Increment B). Four Work Packages plus one WP6-caught fix round complete; both LGB-0001 Must-Ship items now resolved. |
 | 1.5 | 4 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): Codex found a genuine blocking defect on first pass - the mic button rendered and activated the microphone before knowing whether transcription was configured, contradicting EIP-ESR0047-001 Section 5.5 item 12. Fixed directly: `GuardianRuntime.transcription_available`, new `platform.status` field, conditional mic-button rendering. Full re-validation clean (pytest 485/1, Playwright 12/12). EIP-ESR0047-001 updated to v1.1. |
 | 1.4 | 4 August 2026 | Claude Engineering Implementer | WP4 Complete: Repository Engineering Health Review per PBK-0001 guidance. Backlog Validation: 31 open EBR-0001 items reviewed, all confirmed valid, 0 stale/duplicate/superseded. Six documentation-staleness findings disclosed (RSC-0001, PCB-0001, JARVIS_CAPABILITY_READINESS_MATRIX, README.md, PST-0001, JRM-0001 all stale re: EBG-0116/EBG-0117 closure; EBR-0001 Section 5A snapshot internally inconsistent). Handover recommends a batched Documentation Debt sync as next session's WP1, then scoping EBG-0042 (Agent Framework Architecture, JRM-0001 Phase 3). JARVIS Development Readiness Assessment: AIEMS sufficiently mature for full JARVIS Engineering. All findings advisory only, no EBR-0001 or other artefact modified by this WP. |
 | 1.3 | 4 August 2026 | Claude Engineering Implementer | WP3 Complete: EBG-0117 (Voice Faculty Increment B: Speech Input) resolved per [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). New `sentinel/transcription_providers.py`/`whisper_provider.py`, `GuardianRuntime.transcribe()`, `guardian.transcribe` RPC, `transcribe_audio` Tauri command, push-to-talk mic button in the UXP. Full validation clean across Python/Rust/frontend/Playwright; live smoke check performed a genuine real Piper-speak-to-Whisper-transcribe round trip, exact text match. |
