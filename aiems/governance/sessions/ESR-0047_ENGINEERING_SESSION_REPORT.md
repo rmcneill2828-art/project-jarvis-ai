@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0047 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -60,8 +60,9 @@ WP2: investigate [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0118 (lo
 | WP1 | Documentation Debt Discipline: correct stale RBL-0021 references in PBK-0001 and COC-0001 to RBL-0028 | Complete |
 | WP2 | Investigate and, if possible, resolve EBG-0118 (Codex CLI tooling stall) | Complete |
 | WP3 | EBG-0117: scope and draft Voice Faculty Increment B (Speech Input); Codex design review; Programme Sponsor approval; implement | Complete |
+| WP4 | Repository Engineering Health Review, per PBK-0001 guidance | Complete |
 
-Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP3.
+Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP4.
 
 ---
 
@@ -129,6 +130,70 @@ Full validation: `python -m pytest` 483 passed, 1 skipped (was 453/1, 30 new); `
 
 ---
 
+# 6D. WP4 - Repository Engineering Health Review
+
+Per [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]]'s Repository Engineering Health Review Guidance. All findings and recommendations below are **advisory only** - no [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] entry was modified and no Engineering Implementation Package was created or executed from this WP, per PBK-0001's own constraint that the Reviewer function shall not modify EBR-0001 during a Health Review and that Programme Sponsor approval is required before acting on any recommendation here.
+
+## Backlog Validation (mandatory)
+
+* **Total Approved/Candidate Backlog Items Reviewed**: 31 (every open `EBG-####` entry in EBR-0001 Section 5, both Approved and Candidate status).
+* **Confirmed Valid Backlog Items**: 31 - every individual Section 5 entry was checked directly against current repository state; none found stale, contradicted or already resolved by undisclosed work.
+* **Completed Backlog Items**: 0 newly found this review (EBG-0116 and EBG-0117 were already correctly marked Completed before this WP began, at ESR-0046 WP1 and ESR-0047 WP3 respectively).
+* **Superseded Backlog Items**: 0.
+* **Duplicate Backlog Items**: 0.
+* **New Candidate Backlog Items**: 0 registered this WP (see New Findings below - the documentation-staleness cluster found is recommended as a future WP's own registration decision, not registered directly here, consistent with the Reviewer-function EBR-0001-modification constraint above).
+* **Recommendation on whether EBR-0001 requires updating**: Yes, but not by this WP - see Section 5A finding below.
+
+## New Findings
+
+1. **[[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] (v1.0, 30 July 2026) is stale.** Its own Section 7 maintenance rule triggers "whenever a Work Package changes the score of any MLP 0.1 item" - both of its two scored Fail items (Basic Voice Input, User Profiles) have since been resolved (EBG-0117 this session, EBG-0116 at ESR-0046), and that refresh has not yet happened.
+2. **[[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (v2.3, 30 July 2026) is stale.** Still states "speech input is not implemented" and contains no mention of User Identity/`jarvis/identity/` at all - both postdate its last refresh (ESR-0045 WP3).
+3. **`jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md` (v2.2, "Last Refreshed ESR-0028 WP2") is severely stale** - already self-disclosed as such in RSC-0001 Section 8. Voice row still reads "Not Started" despite both Increments A and B now Complete; also predates the Local Agent Permission Boundary, Cognitive Core, persona refinement and User Identity.
+4. **README.md and [[PST-0001_PROGRAMME_STATUS|PST-0001]] both still describe ESR-0046 as the latest session with no session currently open**, not reflecting that ESR-0047 is open with three commits landed (WP1-WP3) and EBG-0117 closed. PST-0001 additionally still describes PCB-0001 as "no longer stale," which finding 2 above now contradicts.
+5. **[[JRM-0001_PROJECT_ROADMAP|JRM-0001]] (v1.23, ESR-0045 WP1) is stale.** Phase 6's row still reads "Speech input (Increment B)... remain not started, deliberately deferred" - incorrect since EBG-0117's closure this session. Its Version History has no entry at all for ESR-0045 WP4/WP5, ESR-0046, or ESR-0047, despite its own Section 10 maintenance rule requiring review "whenever a backlog item it references changes status."
+6. **EBR-0001's own Section 5A "Active Backlog View" manual snapshot has drifted from Section 5's authoritative entries**, in direct violation of the snapshot's own stated rule ("shall not be manually updated in place... if it goes stale, either regenerate it fresh... or remove it"): EBG-0081 is listed as open in the snapshot despite its own Section 5 entry stating "Both questions of this item are now closed"; EBG-0110 and EBG-0111 (both genuine open Candidate Backlog items) are absent from every theme table despite the snapshot having been hand-edited more recently than either was registered. The running open-item count in the header/Version History (31) is coincidentally correct despite the underlying table being wrong in both directions.
+
+**Confirmed Existing Backlog**: all 31 open EBR-0001 items reviewed and found to accurately describe genuinely open, non-duplicate gaps - no changes recommended to any individual Section 5 entry.
+
+## Engineering Handover to Next Session
+
+* **Recommended first Engineering Implementation Package**: a Documentation Debt Discipline sweep across the six New Findings above (RSC-0001, PCB-0001, JARVIS_CAPABILITY_READINESS_MATRIX, README.md, PST-0001, JRM-0001, plus EBR-0001 Section 5A's snapshot regeneration or removal) - all six share the same root cause (EBG-0116/EBG-0117 closing without a corresponding documentation sync pass) and are natural to batch into one WP per PBK-0001's Backlog Acceleration guidance below.
+* **Alternative engineering priorities**: EBG-0042 (Agent Framework Architecture, Candidate Backlog, High) - JRM-0001 Track B Phase 3 (Action faculty) is the next item in the roadmap's own dependency chain and currently has no backlog item authorising its build, per JRM-0001's own text; or EBG-0059 (Engineering Assurance Capability Implementation, Candidate Backlog, High).
+* **Dependencies**: Phase 3 (Action faculty / EBG-0042) has no unmet prerequisite - Phase 1 (Cognitive Core) and Phase 2 (Local Agent Permission Boundary, GAM-0001 Section 8A) are both already Delivered per JRM-0001.
+* **Risks**: continuing to defer the documentation sync compounds the same staleness pattern this project's own Documentation Debt Discipline was written to correct (PBK-0001, directed at ESR-0031) - each additional session without a sync makes the eventual catch-up sweep larger.
+* **Items explicitly not recommended**: further EBG-0118 (Codex CLI stall) investigation without a fresh, live reproduction of the actual hang - this session's WP2 already spent significant effort and could not force reproduction; further speculative debugging without new evidence has diminishing returns.
+* **Suggested Engineering Session objective**: WP1 - Documentation Debt Discipline sync (the six findings above); WP2 onward - scope EBG-0042 (Agent Framework Architecture) against GAM-0001 Section 8A's already-defined Local Agent Permission Boundary.
+
+## Backlog Progression Analysis
+
+| Item | Priority | Benefit | Effort | Dependencies | Recommended Session | Rationale |
+|------|----------|---------|--------|---------------|---------------------|-----------|
+| Documentation Debt sync (6 findings above) | High (governance accuracy) | High - restores README/PST-0001/RSC-0001/PCB-0001/JRM-0001/Capability Matrix as trustworthy session-start reading | Low-Medium (no code, six batched edits) | None | Next session, WP1 | Matches PBK-0001's own Documentation-Debt Priority Until Backlog Cleared rule; batching reduces repeated verification per PBK-0001's Backlog Acceleration guidance |
+| EBG-0042 Agent Framework Architecture | High | High - unblocks JRM-0001 Phase 3 (Action faculty), the roadmap's own next-named item | Medium (architecture/scoping only, no implementation) | None (Phases 1-2 already Delivered) | Next session, WP2+ | Roadmap-sequenced next step; GAM-0001 Section 8A already defines the permission boundary it must obey |
+| EBG-0059 Engineering Assurance Capability | High | Medium - governance/QA maturity, not product-facing | Unscoped (no prior EIP drafted) | None known | Future session | Lower urgency than Action faculty since it does not unblock further product delivery |
+
+## Backlog Acceleration Opportunities
+
+The six Documentation Debt findings above should be delivered as a single batched WP rather than six separate future sessions' WP1s - they share one root cause (EBG-0116/EBG-0117 closing without a sync pass), touch no code, and batching avoids six separate rounds of `validate_repository.py`/commit/WP6 verification overhead for what is fundamentally one coherent fix.
+
+## JARVIS Development Readiness Assessment (mandatory)
+
+**Question**: "Based on the current repository baseline, engineering maturity, and approved backlog, when should development of Project JARVIS AI commence, and what evidence supports that recommendation?"
+
+**This question is substantially overtaken by events.** JARVIS development has not merely "commenced" but is well into active delivery: Sentinel (trust gateway, `TrustTierPolicy`, audit trail, multi-provider failover) is implemented; Guardian Cognitive Core Phase 1 (memory/history-informed reasoning) is implemented; Personal Memory tier is implemented; both Voice Increments (output and, as of this session, input) are implemented; User Identity/profiles is implemented; GIA Phase 1 local observability is implemented; the UXP-backend bridge is live and reachable through the real running Tauri shell, not a mock. Governance workflow itself has proven repeatable across 47 sessions, most of them delivering real product capability under the real Sponsor Approval Service gate.
+
+**Recommendation: AIEMS sufficiently mature for full JARVIS Engineering.** The governance workflow (WP0-WP7, Codex design review, real Sponsor Approval Service gating, disclosed live smoke checks) has been exercised repeatedly and survived a genuine tooling failure (EBG-0118) without silently degrading its own standards. The recurring documentation-staleness pattern (six findings above) is a real, disclosed maturity gap, but it is a lagging-indicator/synchronisation problem, not a governance-capability gap - the underlying engineering discipline (design review, approval gating, validation, disclosed limitations) has held throughout.
+
+* **Recommended Engineering Session to begin the next JARVIS increment**: the next session (ESR-0048 or whichever session number is next), continuing the current trajectory rather than a distinct "begin JARVIS" milestone.
+* **Proposed objective**: scope EBG-0042 (Agent Framework Architecture) - JRM-0001 Track B Phase 3, the Action faculty - once the Documentation Debt sync above clears.
+* **Prerequisite backlog items**: none blocking; EBG-0042 itself needs to be scoped and drafted into an Engineering Implementation Package before any Action-faculty implementation could be authorised.
+* **Governance work that can continue in parallel**: the Documentation Debt sync (above); further EBG-0118 investigation only if a real hang recurs with fresh evidence to examine.
+* **Recommended first JARVIS engineering activity**: draft an Engineering Implementation Package scoping the Action faculty's architecture against GAM-0001 Section 8A's already-defined Local Agent Permission Boundary - architecture/scoping only, matching this project's established pattern of a design-only package before any implementation package.
+
+All handover, backlog progression and JARVIS readiness recommendations above are advisory only. The Programme Sponsor determines engineering priorities; no Engineering Implementation Package shall be created or executed from these recommendations without separate Programme Sponsor approval.
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0046_ENGINEERING_SESSION_REPORT|ESR-0046]] - prior closed session, immediate predecessor.
@@ -143,6 +208,7 @@ Full validation: `python -m pytest` 483 passed, 1 skipped (was 453/1, 30 new); `
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 4 August 2026 | Claude Engineering Implementer | WP4 Complete: Repository Engineering Health Review per PBK-0001 guidance. Backlog Validation: 31 open EBR-0001 items reviewed, all confirmed valid, 0 stale/duplicate/superseded. Six documentation-staleness findings disclosed (RSC-0001, PCB-0001, JARVIS_CAPABILITY_READINESS_MATRIX, README.md, PST-0001, JRM-0001 all stale re: EBG-0116/EBG-0117 closure; EBR-0001 Section 5A snapshot internally inconsistent). Handover recommends a batched Documentation Debt sync as next session's WP1, then scoping EBG-0042 (Agent Framework Architecture, JRM-0001 Phase 3). JARVIS Development Readiness Assessment: AIEMS sufficiently mature for full JARVIS Engineering. All findings advisory only, no EBR-0001 or other artefact modified by this WP. |
 | 1.3 | 4 August 2026 | Claude Engineering Implementer | WP3 Complete: EBG-0117 (Voice Faculty Increment B: Speech Input) resolved per [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). New `sentinel/transcription_providers.py`/`whisper_provider.py`, `GuardianRuntime.transcribe()`, `guardian.transcribe` RPC, `transcribe_audio` Tauri command, push-to-talk mic button in the UXP. Full validation clean across Python/Rust/frontend/Playwright; live smoke check performed a genuine real Piper-speak-to-Whisper-transcribe round trip, exact text match. |
 | 1.2 | 4 August 2026 | Claude Engineering Implementer | WP2 Complete: investigated EBG-0118 via four live `codex exec` tests (7.6s-46s each, none reproduced the disclosed 30+ minute hang). Found and disclosed a related `CreateProcessAsUserW` sandbox spawn failure on parallel `git grep` calls; removed `[windows] sandbox = "elevated"` from `~/.codex/config.toml` (backed up) per Programme Sponsor direction, which changed that failure mode without a hang recurring. One test run delivered a genuine, evidence-based Codex Pass review of the real WP1 commit. Net outcome disclosed as inconclusive on EBG-0118's actual stall; EBR-0001 updated (1.152 to 1.153), left open. |
 | 1.1 | 4 August 2026 | Claude Engineering Implementer | WP1 Complete: corrected PBK-0001 (1.34 to 1.35) and COC-0001 (1.16 to 1.17) stale RBL-0021 current-baseline references to RBL-0028, registered in REG-0001 (3.444 to 3.445). `validate_repository.py --governance-only` 0 errors, 268 warnings (unchanged pre-existing count). |
