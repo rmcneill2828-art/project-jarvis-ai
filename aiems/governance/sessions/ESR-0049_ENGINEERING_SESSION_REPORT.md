@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0049 |
 | Title | Engineering Session Report |
-| Version | 1.4 |
+| Version | 1.6 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0049 |
 | Date Opened | 5 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1-WP2 complete |
+| Closure Status | Open - WP1-WP2 complete, session-wide WP6 (Pass) and WP7 (Establish RBL-0030) complete |
 
 ---
 
@@ -102,6 +102,28 @@ Files: `jarvis/agents/__init__.py` (new), `jarvis/agents/contracts.py` (new), `j
 
 ---
 
+# 6C. Session-Wide WP6 - Independent Repository Verification
+
+Following WP2's implementation and push, the Programme Sponsor selected moving to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s read-only`, background invocation, real inspection of `git diff 7928626..e9d2929` - both `--stat`/`--name-status` and full content) covering both WP1 and WP2's committed changes against the current baseline [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] (commit `7928626`, established at ESR-0047 WP7, retained at ESR-0048 WP7). Verified independently: (1) `--name-status` shows exactly the expected 18 files changed across both Work Packages, no unexpected path; (2) [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A and `sentinel/policy.py` are byte-identical/untouched across the whole session; (3) 27 new `def test_` cases confirmed by direct diff count across the five test files, matching the 485-to-512 test-count claim; (4) REG-0001's version rows match every touched artefact's own current file version exactly; (5) every governance claim (EIP-ESR0049-001 "Implemented as scoped", EBR-0001 EBG-0119 Completed, MOD-0001 version history) matches the actual code diff.
+
+**Verdict: Pass, no findings.**
+
+Codex's own baseline assessment (advisory, not a determination): this is a genuine live product-capability change - WP2 adds a new backend specialist-agent capability exposed through runtime and JSON-RPC - not documentation-only, and recommends WP7 Establish a new baseline. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6D. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Establish [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]]**, superseding [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]]. WP2 delivered a genuine, live product-capability change - Guardian's Agent Framework moved from architecture-only (MOD-0001's subsection, ESR-0048) to a real, Sentinel-gated, JSON-RPC-reachable specialist-agent capability (GIA's read-only observability, classified `ROUTINE_INTERACTION`) - matching the Establish threshold applied at RBL-0025/RBL-0027/RBL-0028/RBL-0029 rather than the Retain threshold applied at architecture/documentation-only sessions such as ESR-0048. WP1's documentation fix alone would not have crossed this threshold; WP2's real code does.
+
+[[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] created (HEAD at baseline creation: `e9d2929`), registered in REG-0001. Every controlled artefact citing the "current accepted repository baseline" propagated from RBL-0029 to RBL-0030: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (1.18 to 1.19), [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.36 to 1.37), [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] (1.7 to 1.8), [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (2.4 to 2.5, pointer only), [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] (2.3 to 2.4, pointer only), README.md (3.28 to 3.29) and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.27 to 3.28). README and PST-0001 also corrected their stale "no session currently open" framing (both had remained keyed to ESR-0048's closure throughout ESR-0049's WP1/WP2, per the Whole-Document Staleness Sweep on Edit discipline triggered by opening these documents for the baseline-pointer fix). PCB-0001's and the Capability Matrix's own capability-content refresh for the new Agent Framework capability is disclosed as not yet done, deferred to a future Documentation Debt sync.
+
+Files: `aiems/governance/baselines/RBL-0030_REPOSITORY_BASELINE.md` (new), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md`, `aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md`, `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `README.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`.
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0048_ENGINEERING_SESSION_REPORT|ESR-0048]] - prior closed session, immediate predecessor.
@@ -110,8 +132,8 @@ Files: `jarvis/agents/__init__.py` (new), `jarvis/agents/contracts.py` (new), `j
 * [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] - Track B Phase 3, WP2 objective source.
 * [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8A, the permission boundary WP2's scoping must obey.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0119, WP2's registered backlog item.
-* [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]] - WP2's draft Engineering Implementation Package.
-* [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] - current accepted repository baseline.
+* [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]] - approved, implemented Engineering Implementation Package for WP2.
+* [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] - repository baseline established at this session's WP7, superseding RBL-0029.
 
 ---
 
@@ -119,6 +141,8 @@ Files: `jarvis/agents/__init__.py` (new), `jarvis/agents/contracts.py` (new), `j
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP7 (Repository Baseline Determination): **Establish [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]]**, superseding RBL-0029 - WP2's Agent Framework Phase 3 delivery is a genuine live product-capability change. Every controlled artefact's "current accepted repository baseline" reference propagated to RBL-0030 (COC-0001, PBK-0001, MOD-0001, PCB-0001, JARVIS Capability Readiness Matrix, README, PST-0001); README/PST-0001's stale "no session currently open" framing also corrected. |
+| 1.5 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `7928626..e9d2929` diff (WP1 + WP2) - **Pass, no findings**. Codex's own advisory baseline assessment: genuine live product-capability change, recommends WP7 Establish. WP7 determination pending. |
 | 1.4 | 5 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation) resolved per EIP-ESR0049-001 (Codex design review Pass with findings folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). New `jarvis/agents/` module, `SentinelGatedAgentService`, GuardianRuntime/stdio_rpc wiring, two new `guardian.agent.*` RPC methods, honest `platform.status` correction. GIA wired as first live `ROUTINE_INTERACTION` specialist agent - `LOCAL_AGENT_ACTION` untouched. 27 new tests (512 passed/1 skipped, up from 485/1). `validate_repository.py` 0 errors. |
 | 1.3 | 5 August 2026 | Claude Engineering Implementer | WP2 reviewed: EIP-ESR0049-001 v0.1 Codex design review Pass with non-blocking findings, folded into v0.2. Awaiting Programme Sponsor approval before implementation. |
 | 1.2 | 5 August 2026 | Claude Engineering Implementer | WP2 in progress: registered EBG-0119, produced draft EIP-ESR0049-001 (v0.1, Agent Framework Phase 3 - real `SpecialistAgent` implementation, GIA-BOOT wired as the first `ROUTINE_INTERACTION` agent). Submitted for Codex design review. Not yet approved or implemented. |

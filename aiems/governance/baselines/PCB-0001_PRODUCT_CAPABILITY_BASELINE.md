@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 2.4 |
+| Version | 2.5 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -36,7 +36,7 @@ The v2.3 refresh ([[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] WP3) incorpor
 Repository validation confirmed that the following evidence artefacts exist:
 
 - [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT]]
-- [[RBL-0029_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0047; superseded RBL-0007 through RBL-0028 since PCB-0001 v1.0)
+- [[RBL-0030_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0049; superseded RBL-0007 through RBL-0029 since PCB-0001 v1.0)
 - [[JARVIS_PRODUCT_ARCHITECTURE]]
 - [[JARVIS_CAPABILITY_READINESS_MATRIX]]
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER]]
@@ -132,6 +132,7 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.5 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the Section 3 current-baseline reference from RBL-0029 to RBL-0030, established at ESR-0049 WP7 (Agent Framework Phase 3, First Specialist Agent). Pointer fix only - the new Agent Framework capability itself is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.4 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline): refreshed for ESR-0046 (User Identity and Profile Foundation, `jarvis/identity/`) and ESR-0047 (Voice faculty Increment B, speech input, self-hosted `faster-whisper`). Section 4 gains a new User Identity and Profiles row; Voice faculty row updated to cover both directions. Section 6 constraints updated. Section 3's current-baseline reference corrected RBL-0027 to RBL-0029. |
 | 2.3 | 30 July 2026 | Claude Engineering Implementer | ESR-0045 WP3: refreshed for ESR-0040 (Voice faculty, speech output, self-hosted Piper), ESR-0041 (Local Agent Permission Boundary, GAM-0001 Section 8A), ESR-0043 (Guardian Persona refinement) and ESR-0044 (Voice faculty wired into the live JSON-RPC bridge and UXP speak button) - prompted by an independent Codex governance/v1.0-readiness gap analysis flagging PCB-0001 as not refreshed for the live Voice wiring. Also caught and corrected staleness the triggering review itself missed: Section 4's Provider abstraction framework row and Section 6's first constraint both still claimed no external provider was wired into the default runtime conversation path, despite EBG-0070 (ESR-0022) having wired one over a month earlier - corrected, and Ollama's fallback registration (EBG-0075, ESR-0026) added. Removed a duplicate "Local agent capability is not implemented" bullet, merged into the GAM-0001 Section 8A constraint. |
 | 2.2 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 repository synchronisation: corrected Section 6's blanket "Persistent memory is not implemented" constraint, stale since ESR-0027 WP1 delivered Personal Memory (EBG-0080) - now correctly distinguishes the implemented Personal tier from the still-unbuilt Session and Shared Family tiers. |
