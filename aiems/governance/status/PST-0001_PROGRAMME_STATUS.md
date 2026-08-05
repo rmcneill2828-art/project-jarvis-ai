@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 3.28
+**Version:** 3.29
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 3.28 |
+| Version | 3.29 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0048_ENGINEERING_SESSION_REPORT|ESR-0048]] is the latest **closed** session (4 August 2026). [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] is currently **Open** (5 August 2026, not yet formally closed - PST-0001's Current Mode reference intentionally continues to name the latest closed session per PBK-0001 WP0B, while this narrative records ESR-0049's in-progress state), run under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating every step). Two Work Packages delivered so far: **WP1** Documentation Debt Discipline fix (COC-0001's stale RBL-0028 reference, found at this session's own WP0A); **WP2** resolved [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation) per [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]]: real `jarvis/agents/` module, GIA's read-only observability wired as the first live `ROUTINE_INTERACTION` specialist agent through the shared Sentinel gate. Session-wide **WP6** (Independent Repository Verification): genuine background Codex review of the full session diff - **Pass, no findings**. Session-wide **WP7**: **Establish** [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] - a genuine live product-capability change. Full detail in [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]]. |
+| Current Mode | [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] is the latest **closed** session (5 August 2026). No session is currently open. ESR-0049 delivered two Work Packages, run under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating every step): **WP1** Documentation Debt Discipline fix (COC-0001's stale RBL-0028 reference, found at this session's own WP0A); **WP2** resolved [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation) per [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]]: real `jarvis/agents/` module, GIA's read-only observability wired as the first live `ROUTINE_INTERACTION` specialist agent through the shared Sentinel gate. Session-wide **WP6** (Independent Repository Verification): genuine background Codex review of the full session diff - **Pass, no findings**. Session-wide **WP7**: **Establish** [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] - a genuine live product-capability change. Full detail in [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]]. |
 | Current Repository Baseline | [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]], accepted at ESR-0049 WP7, superseding RBL-0029. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.5 - baseline-pointer sync only at ESR-0049 WP7; the new Agent Framework Phase 3 capability itself is not yet reflected in its content, flagged for a future Documentation Debt sync. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] similarly pointer-synced to v2.4, capability rows not re-audited this pass. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] open (5 August 2026) - two Work Packages delivered so far under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating). |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. `codex exec` remained usable throughout ESR-0049, including a genuine background session-wide WP6 review with no findings - the standing template's post-commit review step remains repeatable, twenty-four sessions in (ESR-0026 through ESR-0049). Every commit this session was gated through the real AIEMS Exchange Bridge/Sponsor Approval Service, including a correct first-attempt refusal of a chat-only "approved" before a genuine decision existed, at both the WP2 implementation and push gates. |
-| Current Engineering Objective | [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] open: WP2 resolved EBG-0119 (Agent Framework Phase 3). RBL-0030 established. Further Work Packages may follow at the Programme Sponsor's direction. See [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] for full detail. |
+| Current Phase | No session currently open. [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] closed (5 August 2026) / two Work Packages delivered under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. `codex exec` remained usable throughout ESR-0049, including a genuine background session-wide WP6 review with no findings - the standing template's post-commit review step remains repeatable, twenty-four sessions in (ESR-0026 through ESR-0049). Every commit this session was gated through the real AIEMS Exchange Bridge/Sponsor Approval Service, including two correct first-attempt refusals of a chat-only "approved" before a genuine recorded decision existed. |
+| Current Engineering Objective | No session currently open. [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] closed: WP2 resolved EBG-0119 (Agent Framework Phase 3). RBL-0030 established. See [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] for full detail. |
 
 ---
 
@@ -100,7 +100,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] is **Open** (5 August 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
+[[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] is **Closed** (5 August 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
 
 **WP1** (Complete): Documentation Debt Discipline fix. Corrected COC-0001's stale RBL-0028 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0029 (found at this session's own WP0A - ESR-0048 WP1's Documentation Debt sync had corrected the equivalent PBK-0001 reference but missed COC-0001, an identical-pattern artefact).
 
@@ -118,7 +118,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 ---
 
-PST-0001 records ESR-0049 as open, with WP1-WP2 complete and RBL-0030 established at WP7. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0049 as closed, with no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -723,6 +723,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.29 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 formally closed. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect no session currently open; ESR-0049's Current Mode reference flips from ESR-0048 (latest closed, held during ESR-0049's own open period per PBK-0001 WP0B) to ESR-0049 itself, now the latest closed session. Prior Session block (ESR-0048) unchanged - already correct. |
 | 3.28 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: Establish RBL-0030 (Agent Framework Phase 3, First Specialist Agent - a genuine live product-capability change), superseding RBL-0029. Session-wide WP6 Pass, no findings, covering the full `7928626..e9d2929` diff. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect ESR-0049 open with WP1-WP2 complete; ESR-0048 becomes Prior Session, replacing ESR-0047. |
 | 3.27 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 formally closed. Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `7dbb2b0..98f0973` diff - Pass, no findings. Session-wide WP7 (Repository Baseline Determination): Retain RBL-0029 - documentation/architecture-only session, no code/test/config touched. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect no session currently open; ESR-0047 becomes Prior Session, replacing ESR-0046. Section 8's Next Work Package Candidate row corrected - Theme 3 (Guardian Action/Local Agent Boundary) fully delivered at ESR-0048 WP2, no longer a candidate. |
 | 3.26 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline sync, following ESR-0047 WP4's handover): JARVIS Product Capability Baseline and JARVIS Capability Maturity rows (Section 5) and Current Product Baseline row corrected to reflect PCB-0001 (2.3 to 2.4) and JARVIS_CAPABILITY_READINESS_MATRIX (2.2 to 2.3) refreshes for ESR-0039/0046/0047 - both "Stale"/pre-refresh version references corrected to "Current". |

@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0049 |
 | Title | Engineering Session Report |
-| Version | 1.6 |
-| Status | Open |
+| Version | 1.7 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0049 |
 | Date Opened | 5 August 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1-WP2 complete, session-wide WP6 (Pass) and WP7 (Establish RBL-0030) complete |
+| Date Closed | 5 August 2026 |
+| Closure Status | Closed - WP1-WP2 complete, session-wide WP6 (Pass) and WP7 (Establish RBL-0030) complete |
 
 ---
 
@@ -141,6 +141,7 @@ Files: `aiems/governance/baselines/RBL-0030_REPOSITORY_BASELINE.md` (new), `aiem
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.7 | 5 August 2026 | Claude Engineering Implementer | **ESR-0049 formally closed.** Two Work Packages: WP1 Documentation Debt Discipline fix (COC-0001); WP2 EBG-0119 (Agent Framework Phase 3: First Specialist Agent) resolved - real code, not architecture-only. Session-wide WP6 (genuine background Codex review of the full session diff) Pass, no findings. Session-wide WP7: Establish RBL-0030, superseding RBL-0029 - a genuine live product-capability change. Every commit this session gated through the real AIEMS Exchange Bridge/Sponsor Approval Service, including two correct first-attempt refusals of chat-only "approved" before a genuine recorded decision existed. |
 | 1.6 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP7 (Repository Baseline Determination): **Establish [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]]**, superseding RBL-0029 - WP2's Agent Framework Phase 3 delivery is a genuine live product-capability change. Every controlled artefact's "current accepted repository baseline" reference propagated to RBL-0030 (COC-0001, PBK-0001, MOD-0001, PCB-0001, JARVIS Capability Readiness Matrix, README, PST-0001); README/PST-0001's stale "no session currently open" framing also corrected. |
 | 1.5 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `7928626..e9d2929` diff (WP1 + WP2) - **Pass, no findings**. Codex's own advisory baseline assessment: genuine live product-capability change, recommends WP7 Establish. WP7 determination pending. |
 | 1.4 | 5 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation) resolved per EIP-ESR0049-001 (Codex design review Pass with findings folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). New `jarvis/agents/` module, `SentinelGatedAgentService`, GuardianRuntime/stdio_rpc wiring, two new `guardian.agent.*` RPC methods, honest `platform.status` correction. GIA wired as first live `ROUTINE_INTERACTION` specialist agent - `LOCAL_AGENT_ACTION` untouched. 27 new tests (512 passed/1 skipped, up from 485/1). `validate_repository.py` 0 errors. |
