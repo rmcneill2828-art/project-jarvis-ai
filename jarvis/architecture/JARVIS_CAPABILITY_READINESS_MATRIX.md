@@ -8,11 +8,11 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.4 |
+| Version | 2.5 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
-| Last Refreshed | ESR-0048 WP1 (4 August 2026) |
+| Last Refreshed | ESR-0050 WP1 (5 August 2026) |
 
 ---
 
@@ -40,7 +40,7 @@ It supports product capability prioritisation without approving implementation b
 | User Experience Platform | Complete | Complete | Implemented (Foundation) | Implemented | Implemented (Foundation) |
 | Home Automation | Complete | Planned | Not Started | Not Started | Planned |
 | Productivity | Complete | Planned | Not Started | Not Started | Planned |
-| Engineering Agent (JARVIS-internal specialist agent) | Complete | Partial | Proof of Concept only (GIA-BOOT) | Not Started | Planned |
+| Agent Framework (specialist agents serving Guardian) | Complete | Complete | GIA's read-only local-resource observability wired as the first live specialist agent (`jarvis/agents/`, `GiaObservabilityAgent`), Sentinel-gated `ROUTINE_INTERACTION`, reachable via `guardian.agent.*` RPC - ESR-0049, EBG-0119. No UXP surface yet; `LOCAL_AGENT_ACTION` (the Action faculty) remains a hard `DENY`, not implemented. | Implemented (unit- and RPC-tested, 27 new tests) | Implemented (Foundation) |
 | Knowledge | Complete | Complete | Implemented (Phase 1-2 of 4) | Implemented | Partial |
 | Multi-device | Complete | Planned | Not Started | Not Started | Planned |
 | Provider Architecture | Complete | Complete | Implemented (live-validated, wired into production runtime per EBG-0070) | Implemented | Implemented (Foundation) |
@@ -60,10 +60,11 @@ JARVIS has moved well past the early executable foundation this matrix described
 - **Intelligence** moved from Draft/Planned to Implemented (Phase 1): the Guardian Cognitive Core now composes persona, retained Personal Memory and bounded recent history before every provider call, delivered at ESR-0039. Full cognition beyond this remains architecturally Draft, per AAM-0001.
 - **Identity** is newly implemented at foundation level: local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's four household roles, delivered at ESR-0046. Credentialed authentication, memory scoping by profile and role-authority enforcement remain not implemented.
 - **Voice** is now implemented at foundation level for both directions: speech output (ESR-0040/ESR-0044) and speech input (ESR-0047), both self-hosted, Sentinel-gated and reachable through the live UXP.
+- **Agent Framework** moved from Proof of Concept (GIA-BOOT) to Implemented (Foundation): GIA's read-only local-resource observability is now a real, Sentinel-gated `ROUTINE_INTERACTION` specialist agent, reachable via `guardian.agent.*` RPC (ESR-0049, EBG-0119). It has no UXP surface yet, and `LOCAL_AGENT_ACTION` (the Action faculty, local device/system control) remains a hard `DENY` under GAM-0001 Section 8A - not implemented, not approached.
 
-**Vision, Home Automation, Productivity, Multi-device and a JARVIS-internal specialist Engineering Agent remain not implemented**, consistent with PST-0001's "Outstanding Observations" - these are deliberately deferred, not overlooked.
+**Vision, Home Automation, Productivity and Multi-device remain not implemented**, consistent with PST-0001's "Outstanding Observations" - these are deliberately deferred, not overlooked.
 
-JARVIS implementation maturity is now foundation-level-and-live across its core platform capabilities plus Memory, Intelligence Phase 1, Identity and Voice, with product-depth capabilities (vision, automation, multi-device, and Session/Shared Family memory) still ahead.
+JARVIS implementation maturity is now foundation-level-and-live across its core platform capabilities plus Memory, Intelligence Phase 1, Identity, Voice and the Agent Framework, with product-depth capabilities (vision, automation, multi-device, and Session/Shared Family memory) still ahead.
 
 ---
 
@@ -85,6 +86,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.5 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP1 (content refresh disclosed as deferred at ESR-0049 WP7): renamed the "Engineering Agent (JARVIS-internal specialist agent)" row to "Agent Framework (specialist agents serving Guardian)" and updated it from Proof of Concept (GIA-BOOT) to Implemented (Foundation) - GIA's read-only observability is now the first live specialist agent, Sentinel-gated `ROUTINE_INTERACTION`, `guardian.agent.*` RPC-reachable (ESR-0049, EBG-0119); no UXP surface yet, `LOCAL_AGENT_ACTION` untouched. Overall Programme Capability Summary updated to match; the stale "JARVIS-internal specialist Engineering Agent remain not implemented" claim removed. |
 | 2.4 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the Related Artefacts current-baseline reference from RBL-0029 to RBL-0030, established at ESR-0049 WP7 (Agent Framework Phase 3, First Specialist Agent). Pointer fix only - capability rows not re-audited this pass; the new Agent Framework capability is not yet reflected here, remains open for a future content refresh. |
 | 2.3 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline): refreshed for ESR-0039 (Guardian Cognitive Core Phase 1), ESR-0046 (User Identity) and ESR-0047 (Voice Increment B) - flagged stale since ESR-0028 at ESR-0047 WP4's Repository Engineering Health Review. Intelligence row updated Draft/Planned to Implemented (Phase 1); new Identity row added; Voice row updated Not Started to Implemented (Foundation) for both directions. Overall Programme Capability Summary and Related Artefacts (`RBL-0015` to `RBL-0029`) updated to match. |
 | 2.2 | 18 July 2026 | Claude Engineering Implementer | Post-commit fix per Engineering Reviewer (Codex) finding on the ESR-0028 WP2 committed diff: the Related Artefacts EBR-0001 relationship note still said "this refresh closes EBG-0069", true of the prior v2.0 refresh but not this one. Corrected to disclose both - the v2.0 refresh closed EBG-0069, this v2.1 (now v2.2) refresh closes EBG-0017. |
