@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 3.31
+**Version:** 3.32
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 3.31 |
+| Version | 3.32 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] is the latest **closed** session (5 August 2026). [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] is **open**, run under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating every step). **WP1** content-refreshed [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] and [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] for the Agent Framework Phase 3 capability delivered at ESR-0049; **WP2** resolved [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0120 (Agent Framework UXP Wiring) - `gia-observability` now invokable live through the UXP; **WP3** resolved EBG-0047 (Sentinel Gate of Durin Architecture Specification) - `CURRENT_ARCHITECTURE.md` registered as a controlled artefact for the first time. Session-wide **WP6** (Independent Repository Verification): genuine background Codex review of the full session diff - **Pass, no findings**. Session-wide **WP7**: **Establish** [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] - a genuine live product-capability change. Full detail in [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]]. |
+| Current Mode | [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] is the latest **closed** session (5 August 2026). No session is currently open. ESR-0050 delivered three Work Packages, run under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating every step): **WP1** content-refreshed [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] and [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] for the Agent Framework Phase 3 capability delivered at ESR-0049; **WP2** resolved [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0120 (Agent Framework UXP Wiring) - `gia-observability` now invokable live through the UXP; **WP3** resolved EBG-0047 (Sentinel Gate of Durin Architecture Specification) - `CURRENT_ARCHITECTURE.md` registered as a controlled artefact for the first time. Session-wide **WP6** (Independent Repository Verification): genuine background Codex review of the full session diff - **Pass, no findings**. Session-wide **WP7**: **Establish** [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] - a genuine live product-capability change. Full detail in [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]]. |
 | Current Repository Baseline | [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]], accepted at ESR-0050 WP7, superseding RBL-0030. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.7 - baseline-pointer sync only at ESR-0050 WP7; the new Agent Framework UXP Wiring capability itself is not yet reflected in its content, flagged for a future Documentation Debt sync. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] similarly pointer-synced to v2.6, capability rows not re-audited this pass. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] open (5 August 2026) / three Work Packages delivered under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Phase | No session currently open. [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] closed (5 August 2026) / three Work Packages delivered under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating). |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. `codex exec` remained usable throughout ESR-0050, including a genuine background session-wide WP6 review with no findings - the standing template's post-commit review step remains repeatable, twenty-five sessions in (ESR-0026 through ESR-0050). Every commit this session was gated through the real AIEMS Exchange Bridge/Sponsor Approval Service, including one WP2 post-commit review that returned a false Fail on a review-prompt wording flaw (not a code defect), caught, corrected and re-verified Pass before push. |
-| Current Engineering Objective | [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] open: WP2 resolved EBG-0120 (Agent Framework UXP Wiring); WP3 resolved EBG-0047 (Sentinel Gate of Durin). RBL-0031 established. See [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] for full detail. |
+| Current Engineering Objective | No session currently open. [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] closed: WP2 resolved EBG-0120 (Agent Framework UXP Wiring); WP3 resolved EBG-0047 (Sentinel Gate of Durin). RBL-0031 established. See [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] for full detail. |
 
 ---
 
@@ -100,7 +100,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] is **Open** (5 August 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
+[[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] is **Closed** (5 August 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step.
 
 WP0A repository synchronisation found no stale baseline references anywhere checked (PBK-0001, COC-0001, README, PST-0001 all already correctly pointed to RBL-0030) - the first clean WP0A pass in some time.
 
@@ -122,7 +122,7 @@ WP0A repository synchronisation found no stale baseline references anywhere chec
 
 ---
 
-PST-0001 records ESR-0050 as open, with WP1-WP3 complete and session-wide WP6/WP7 complete (RBL-0031 established). It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0050 as closed, with no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -727,6 +727,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.32 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 formally closed. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect no session currently open; ESR-0050's Current Mode reference flips from ESR-0049 (latest closed, held during ESR-0050's own open period per PBK-0001 WP0B) to ESR-0050 itself, now the latest closed session. Prior Session block (ESR-0049) unchanged - already correct. |
 | 3.31 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 session-wide WP7: Establish RBL-0031 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification - a genuine live product-capability change), superseding RBL-0030. Session-wide WP6 Pass, no findings, covering the full `0d614e0..a7eabb0` diff. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect ESR-0050 open with WP1-WP3 complete, WP6/WP7 complete - Current Mode's leading WikiLink correctly stays on ESR-0049 (the latest *closed* session) throughout, per validate_repository.py's own rule, with ESR-0050's in-progress detail carried in the same cell's narrative text. Section 5's JARVIS Product/Capability Maturity rows and Section 8's Current Product Baseline row updated for PCB-0001 (2.6 to 2.7) and JARVIS_CAPABILITY_READINESS_MATRIX (2.5 to 2.6) baseline-pointer syncs. |
 | 3.30 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 opened at WP0B (WP0A found no stale baseline references - first clean pass in some time); WP1 in progress. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect ESR-0050 open; ESR-0049 becomes Prior Session, replacing ESR-0048. Whole-Document Staleness Sweep on Edit found further drift beyond WP1's own PCB-0001/Matrix scope: Section 5's JARVIS Product Capability Baseline and JARVIS Capability Maturity rows, Section 8's Current Product Baseline row and Section 9's Repository Health block (Repository Acceptance still cited RBL-0023, seven baselines stale; Product Capability Baseline still cited v2.3/v2.2; Current Activity test/validation figures still cited 382/382 passing and 177 warnings, both many sessions out of date) all corrected to PCB-0001 v2.6/Matrix v2.5/RBL-0030/512 passed 1 skipped/283 warnings - the "JARVIS-internal Engineering Agent... Not Started" claim corrected to reflect its real implemented state throughout. |
 | 3.29 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 formally closed. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect no session currently open; ESR-0049's Current Mode reference flips from ESR-0048 (latest closed, held during ESR-0049's own open period per PBK-0001 WP0B) to ESR-0049 itself, now the latest closed session. Prior Session block (ESR-0048) unchanged - already correct. |

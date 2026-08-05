@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0050 |
 | Title | Engineering Session Report |
-| Version | 1.7 |
-| Status | Open |
+| Version | 1.8 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0050 |
 | Date Opened | 5 August 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1-WP3 complete, session-wide WP6 (Pass) and WP7 (Establish RBL-0031) complete |
+| Date Closed | 5 August 2026 |
+| Closure Status | Closed - WP1-WP3 complete, session-wide WP6 (Pass) and WP7 (Establish RBL-0031) complete |
 
 ---
 
@@ -175,6 +175,7 @@ Files: `aiems/governance/baselines/RBL-0031_REPOSITORY_BASELINE.md` (new), `aiem
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.8 | 5 August 2026 | Claude Engineering Implementer | **ESR-0050 formally closed.** Three Work Packages: WP1 PCB-0001/Capability Matrix content refresh for Agent Framework Phase 3; WP2 EBG-0120 (Agent Framework UXP Wiring) resolved - real UXP code, not backend-only; WP3 EBG-0047 (Sentinel Gate of Durin Architecture Specification) resolved - CURRENT_ARCHITECTURE.md registered as a controlled artefact for the first time. Session-wide WP6 (genuine background Codex review of the full session diff) Pass, no findings. Session-wide WP7: Establish RBL-0031, superseding RBL-0030 - a genuine live product-capability change. Every commit this session gated through the real AIEMS Exchange Bridge/Sponsor Approval Service, including one WP2 post-commit review that returned a false Fail on a review-prompt wording flaw (not a code defect) - caught, corrected, and re-verified Pass before push. |
 | 1.7 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP7 (Repository Baseline Determination): **Establish [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]]**, superseding RBL-0030 - WP2's Agent Framework UXP Wiring delivery is a genuine live product-capability change. Every controlled artefact's "current accepted repository baseline" reference propagated to RBL-0031 (COC-0001, PBK-0001, MOD-0001, PCB-0001, JARVIS Capability Readiness Matrix, README, PST-0001); README/PST-0001's "current session" framing updated to reflect ESR-0050 open with WP1-WP3 complete. |
 | 1.6 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `0d614e0..a7eabb0` diff (WP1+WP2+WP3) - **Pass, no findings**. Codex's own advisory baseline assessment: genuine live product-capability change (WP2's UXP wiring), recommends WP7 Establish. WP7 determination pending. |
 | 1.5 | 5 August 2026 | Claude Engineering Implementer | WP3 Complete: EBG-0047 (Sentinel Gate of Durin Architecture Specification) resolved per EIP-ESR0050-002 (Codex design review Pass with 1 non-blocking finding folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). CURRENT_ARCHITECTURE.md registered as a controlled artefact for the first time (v1.0), refreshed broadly (Programme Sponsor's explicit scope-boundary choice), one factual error corrected (wrong production policy-engine default), new Sentinel Gate of Durin subsection added. `validate_repository.py` 0 errors, no code touched. |
