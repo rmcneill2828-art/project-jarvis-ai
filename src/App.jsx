@@ -35,6 +35,7 @@ import {
 } from "./platformStatus.js";
 import { GuardianOrbGraph } from "./GuardianOrbGraph.jsx";
 import { ActiveClustersPanel, KnowledgeMetricsPanel } from "./KnowledgeGraphPanels.jsx";
+import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -49,7 +50,7 @@ function derivePlatformIndicator(platformState, platformError) {
     : { label: platformState.state.toUpperCase(), status: STATUS.OFFLINE };
 }
 
-function deriveCapabilityStatuses(platformState, platformError) {
+function deriveCapabilityStatuses(platformState, platformError, agents, agentsError) {
   const connected = platformState?.providerConnected === "Online";
   const memoryConnected = platformState?.memoryConnected === "Online";
 
@@ -65,6 +66,24 @@ function deriveCapabilityStatuses(platformState, platformError) {
         ...capability,
         state: memoryConnected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
         detail: memoryConnected ? "Personal Memory service connected" : "No memory service connected",
+      };
+    }
+
+    // Agent Framework (EIP-ESR0050-001): derived from a real guardian.agent.list
+    // call, not platform.status - a separate live channel, matching the
+    // memory/sentinel/providers connecting/offline/live pattern above.
+    if (capability.id === "agent-framework") {
+      if (agentsError) {
+        return { ...capability, state: STATUS.OFFLINE, detail: "Agent Framework is unavailable" };
+      }
+      if (!agents) {
+        return { ...capability, state: STATUS.CONNECTING, detail: "Connecting to the Agent Framework..." };
+      }
+      if (agents.length === 0) return capability;
+      return {
+        ...capability,
+        state: STATUS.AVAILABLE,
+        detail: `${agents.length} specialist agent${agents.length === 1 ? "" : "s"} available (${agents.join(", ")})`,
       };
     }
 
@@ -614,6 +633,14 @@ export function App() {
   const [activeProfile, setActiveProfile] = useState(null);
   const [profileError, setProfileError] = useState(null);
 
+  // Agent Framework (EIP-ESR0050-001): agents null = connecting, [] = empty,
+  // otherwise the real registered agent name list from guardian.agent.list.
+  const [agents, setAgents] = useState(null);
+  const [agentsError, setAgentsError] = useState(null);
+  const [agentBusy, setAgentBusy] = useState(false);
+  const [agentResult, setAgentResult] = useState(null);
+  const [agentInvokeError, setAgentInvokeError] = useState(null);
+
   // EIP-ESR0031-002 (Streaming Notifications MVP): the UXP's first live-push
   // channel. platform_status/knowledge_graph above remain one-time mount
   // fetches, unchanged - this is a second, independent channel proving the
@@ -653,6 +680,14 @@ export function App() {
       })
       .catch((error) => {
         if (!cancelled) setProfileError(String(error));
+      });
+
+    invoke("list_agents")
+      .then((result) => {
+        if (!cancelled) setAgents(result.agents ?? []);
+      })
+      .catch((error) => {
+        if (!cancelled) setAgentsError(String(error));
       });
 
     return () => {
@@ -840,12 +875,40 @@ export function App() {
       });
   };
 
+  // Agent Framework (EIP-ESR0050-001): task is a fixed, non-empty string -
+  // GiaObservabilityAgent (the only registered agent) ignores it and always
+  // returns the same real snapshot; no UI for arbitrary task/parameter input
+  // is in this package's scope. A denied/unknown-agent/other non-success
+  // status is a valid, honestly-reported AgentOutcome (not a transport
+  // failure) and is shown via its own message, mirroring handleSpeak's
+  // result.status !== "synthesized" check exactly.
+  const handleInvokeAgent = (agentName) => {
+    setAgentBusy(true);
+    setAgentInvokeError(null);
+
+    invoke("invoke_agent", { agent: agentName, task: "status" })
+      .then((result) => {
+        if (result.status === "denied" || result.status === "unknown_agent") {
+          setAgentInvokeError(result.message || `Guardian could not run ${agentName}.`);
+          setAgentResult(null);
+          return;
+        }
+        setAgentResult({ agent: agentName, status: result.status, payload: result.payload ?? {} });
+      })
+      .catch((error) => {
+        setAgentInvokeError(`Could not run ${agentName}: ${error}`);
+      })
+      .finally(() => {
+        setAgentBusy(false);
+      });
+  };
+
   return (
     <main className="jarvis-shell">
       <AppHeader platformIndicator={derivePlatformIndicator(platformState, platformError)} />
       <div className="shell-grid">
         <CapabilitySidebar
-          capabilityStatuses={deriveCapabilityStatuses(platformState, platformError)}
+          capabilityStatuses={deriveCapabilityStatuses(platformState, platformError, agents, agentsError)}
           profiles={profiles}
           activeProfile={activeProfile}
           profileError={profileError}
@@ -883,6 +946,14 @@ export function App() {
               />
               <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
               <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} />
+              <AgentFrameworkPanel
+                agents={agents}
+                agentsError={agentsError}
+                agentBusy={agentBusy}
+                agentResult={agentResult}
+                agentInvokeError={agentInvokeError}
+                onInvokeAgent={handleInvokeAgent}
+              />
               <DiagnosticsPanel diagnostics={diagnostics} />
             </div>
           </div>

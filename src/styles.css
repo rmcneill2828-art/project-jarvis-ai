@@ -165,6 +165,7 @@ button {
 .system-health-panel,
 .knowledge-metrics-panel,
 .active-clusters-panel,
+.agent-framework-panel,
 .command-panel {
   border: 1px solid rgba(0, 239, 255, 0.17);
   border-radius: 10px;
@@ -185,7 +186,8 @@ button {
 .diagnostics-panel > h2,
 .system-health-panel > h2,
 .knowledge-metrics-panel > h2,
-.active-clusters-panel > h2 {
+.active-clusters-panel > h2,
+.agent-framework-panel > h2 {
   margin: 0;
   color: #16f7ff;
   font-size: 0.94rem;
@@ -569,13 +571,15 @@ button {
 
 .system-health-panel,
 .knowledge-metrics-panel,
-.active-clusters-panel {
+.active-clusters-panel,
+.agent-framework-panel {
   padding: 18px 18px 16px;
 }
 
 .system-health-panel > h2,
 .knowledge-metrics-panel > h2,
-.active-clusters-panel > h2 {
+.active-clusters-panel > h2,
+.agent-framework-panel > h2 {
   padding: 0 0 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
 }
@@ -694,6 +698,37 @@ button {
 .diagnostics-panel > h2 {
   padding: 4px 2px 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.agent-list {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+}
+
+.agent-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.agent-name {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.agent-invoke-button {
+  padding: 5px 14px;
+  font-size: 0.82rem;
+}
+
+.agent-result-list {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .diagnostics-list {

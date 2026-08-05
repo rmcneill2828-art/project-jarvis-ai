@@ -561,6 +561,26 @@ fn active_profile(state: State<BackendState>, app_handle: AppHandle) -> Result<V
     call_backend(&state, &app_handle, "profile.active", json!({}))
 }
 
+#[tauri::command]
+fn list_agents(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
+    call_backend(&state, &app_handle, "guardian.agent.list", json!({}))
+}
+
+#[tauri::command]
+fn invoke_agent(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    agent: String,
+    task: String,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "guardian.agent.invoke",
+        json!({ "agent": agent, "task": task, "parameters": {} }),
+    )
+}
+
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -574,7 +594,9 @@ pub fn run() {
             list_profiles,
             create_profile,
             select_profile,
-            active_profile
+            active_profile,
+            list_agents,
+            invoke_agent
         ])
         .build(tauri::generate_context!())
         .expect("error while building JARVIS Guardian desktop shell")

@@ -14,6 +14,8 @@ async function mockTauriIpc(
     transcriptionAvailable = false,
     profiles = [],
     activeProfile = null,
+    agents = [],
+    invokeAgentResult,
   } = {},
 ) {
   await page.addInitScript(
@@ -25,6 +27,8 @@ async function mockTauriIpc(
       transcriptionAvailable,
       profiles,
       activeProfile,
+      agents,
+      invokeAgentResult,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -104,6 +108,16 @@ async function mockTauriIpc(
             state.active = selected;
             return Promise.resolve(selected);
           }
+          if (cmd === "list_agents") return Promise.resolve({ agents });
+          if (cmd === "invoke_agent") {
+            return Promise.resolve(
+              invokeAgentResult || {
+                status: "reported",
+                message: null,
+                payload: { cpuPercent: "12.5", memoryPercent: "40.0" },
+              },
+            );
+          }
           return Promise.reject(new Error(`Unmocked Tauri command: ${cmd}`));
         },
       };
@@ -129,6 +143,8 @@ async function mockTauriIpc(
       transcriptionAvailable,
       profiles,
       activeProfile,
+      agents,
+      invokeAgentResult,
     },
   );
 }
@@ -292,4 +308,62 @@ test("selecting a profile from the picker switches the active profile", async ({
 
   await expect(summary).toContainText("Alex");
   await expect(summary).toContainText("Child");
+});
+
+// EIP-ESR0050-001 (EBG-0120): wires the ESR-0049 Agent Framework backend
+// into the live UXP. These tests cover the four observable states -
+// registered agent shown live in both the sidebar row and the panel,
+// clicking "Run" rendering the real returned payload, and a denied/error
+// outcome rendering inline rather than silently failing - mirroring the
+// speak/transcribe buttons' own established outcome-status test pattern.
+test("agent framework sidebar row and panel show no agents when none are registered", async ({
+  page,
+}) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  await expect(page.locator(".agent-framework-panel")).toContainText(
+    "No specialist agents are registered.",
+  );
+});
+
+test("agent framework sidebar row and panel reflect a real registered agent", async ({ page }) => {
+  await mockTauriIpc(page, { agents: ["gia-observability"] });
+  await page.goto("/");
+
+  await expect(page.locator(".capability-row", { hasText: "Agent Framework" })).toContainText(
+    "gia-observability",
+  );
+  await expect(page.locator(".agent-framework-panel")).toContainText("gia-observability");
+});
+
+test("running an agent renders its real returned payload", async ({ page }) => {
+  await mockTauriIpc(page, {
+    agents: ["gia-observability"],
+    invokeAgentResult: {
+      status: "reported",
+      message: null,
+      payload: { cpuPercent: "12.5", memoryPercent: "40.0" },
+    },
+  });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Run gia-observability" }).click();
+
+  await expect(page.locator(".agent-result-list")).toContainText("cpuPercent");
+  await expect(page.locator(".agent-result-list")).toContainText("12.5");
+});
+
+test("a denied agent outcome renders inline rather than silently failing", async ({ page }) => {
+  await mockTauriIpc(page, {
+    agents: ["gia-observability"],
+    invokeAgentResult: { status: "denied", message: "Guardian declined this request." },
+  });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Run gia-observability" }).click();
+
+  await expect(page.locator(".agent-framework-panel .conversation-error")).toContainText(
+    "Guardian declined this request.",
+  );
 });

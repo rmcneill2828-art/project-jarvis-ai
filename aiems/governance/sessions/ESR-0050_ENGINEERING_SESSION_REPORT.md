@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0050 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
+| Version | 1.3 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0050 |
 | Date Opened | 5 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 complete, WP2 not yet started |
+| Closure Status | Open - WP1-WP2 complete |
 
 ---
 
@@ -58,7 +58,7 @@ WP2 onward: wire the Agent Framework into the live UXP - a `src/` surface invoki
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | PCB-0001 + Capability Readiness Matrix content refresh for Agent Framework | Complete |
-| WP2 | Wire Agent Framework into the UXP | Not started |
+| WP2 | Wire Agent Framework into the UXP | Complete |
 
 Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP2.
 
@@ -80,6 +80,30 @@ Files: `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `ja
 
 ---
 
+# 6B. WP2 - EBG-0120: Agent Framework UXP Wiring
+
+Programme Sponsor selected wiring the Agent Framework into the live UXP as WP2's objective, per the two-part objective-selection question at session open - closing the gap EBG-0119's own EIP-ESR0049-001 disclosed as excluded ("any UXP surface for triggering agents") and README/PCB-0001 disclose as still open.
+
+Registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0120 (Agent Framework UXP Wiring, Draft Backlog, High).
+
+Investigated the existing architecture and code before drafting scope: `jarvis/interfaces/stdio_rpc.py`'s `guardian.agent.list`/`guardian.agent.invoke` handlers (the exact param/response shape to wire against), `jarvis/agents/gia_agent.py`'s `GiaObservabilityAgent.execute()` (confirms task/parameters are accepted but ignored), `src-tauri/src/lib.rs`'s existing `#[tauri::command]` pattern (`list_profiles`, `speak_message` et al., all thin `call_backend()` wrappers), `src/App.jsx`'s `deriveCapabilityStatuses()` and existing side-column panel components, `src/KnowledgeGraphPanels.jsx`'s dedicated-panel-file pattern, `src/styles.css`'s shared panel/metric-row classes, and `tests/e2e/app.spec.js`'s `mockTauriIpc()` Tauri IPC mock pattern.
+
+Produced [[EIP-ESR0050-001_AGENT_FRAMEWORK_UXP_WIRING|EIP-ESR0050-001]] (v0.1, Draft): two new Tauri commands (`list_agents`/`invoke_agent`, thin `call_backend()` wrappers, no new backend logic), a live `agent-framework` capability-sidebar row (`deriveCapabilityStatuses()`), a new `src/AgentFrameworkPanel.jsx` side-column panel (list agents, Run button per agent, real returned payload rendered via the existing `.metrics-list`/`.metric-row` classes), `App()` state/handlers mirroring `handleSpeak`'s outcome-status pattern, and Playwright test coverage. Explicitly excludes: arbitrary task/parameter UI input, any new specialist agent, any backend Agent Framework code change, and any approach to `GAM-0001` Section 8A's `LOCAL_AGENT_ACTION`.
+
+Submitted for Codex design review via direct `codex exec -s read-only` invocation - **v0.1: Pass with 3 non-blocking findings.** Codex independently confirmed every Repository Context claim against the real cited source files and found the scope achievable, UXP/Tauri-side only, not requiring backend Agent Framework changes. Findings folded into v0.2: Section 8's exclusion wording narrowed from "does not reference LOCAL_AGENT_ACTION" (contradicted by the section's own necessary use of the term) to "does not implement, expose, or modify behaviour related to" it; Section 5.2 made explicit that `deriveCapabilityStatuses()` gains two new parameters; the new panel's placement moved from after to before `DiagnosticsPanel`, grouping it with the other live-data panels; Section 5.5 now explicitly lists the empty-agent-list test case.
+
+**Approval-to-implement requested and granted via the AIEMS Exchange Bridge, verified against the real Sponsor Approval Service** (`submit-response`, ESR-0050/WP2) before any code was written.
+
+**Implemented exactly as scoped in v0.2.** Two new Tauri commands (`list_agents`/`invoke_agent`, `src-tauri/src/lib.rs`, thin `call_backend()` wrappers). `deriveCapabilityStatuses()` (`src/App.jsx`) gains `agents`/`agentsError` parameters and an `agent-framework` branch - the first live use of the existing `STATUS.AVAILABLE` enum value. New `src/AgentFrameworkPanel.jsx` (list agents, "Run" button, real returned payload rendered via the existing `.metrics-list`/`.metric-row` classes, denied/error outcomes shown inline via `.conversation-error`), rendered before `DiagnosticsPanel`. New `App()` state, mount-effect `list_agents` call, and `handleInvokeAgent` handler mirroring `handleSpeak`'s outcome-status pattern exactly. `src/styles.css` gains the new panel's classes, reusing the existing shared panel/metric-row base styles. `tests/e2e/app.spec.js`'s `mockTauriIpc()` gains `agents`/`invokeAgentResult` parameters (defaulting to values that keep every existing test passing unchanged) plus 4 new tests.
+
+Validation: `npm run build` clean; `npx playwright test tests/e2e/app.spec.js` - 13/13 passed (9 existing unchanged, 4 new); `cargo check` (`src-tauri/`) clean; `python -m pytest jarvis/tests sentinel scripts/tests` - 512 passed, 1 skipped (unchanged, no backend file touched); `python scripts/validate_repository.py` (full mode) - 0 errors, 285 warnings.
+
+`GAM-0001` Section 8A's `LOCAL_AGENT_ACTION` hard `DENY` is untouched throughout; `sentinel/policy.py` not modified; no backend Agent Framework code changed.
+
+Files: `src-tauri/src/lib.rs`, `src/App.jsx`, `src/AgentFrameworkPanel.jsx` (new), `src/styles.css`, `tests/e2e/app.spec.js`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/sessions/ESR-0050_ENGINEERING_SESSION_REPORT.md` (this report), [[EIP-ESR0050-001_AGENT_FRAMEWORK_UXP_WIRING|EIP-ESR0050-001]].
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] - prior closed session, immediate predecessor; source of both WP1's disclosed deferred content-refresh and WP2's Agent Framework capability.
@@ -88,6 +112,8 @@ Files: `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `ja
 * [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] - WP1 target artefact.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] - swept for further staleness while open for WP1's own sync.
 * [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] - current accepted repository baseline at session open.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0120, WP2's registered backlog item.
+* [[EIP-ESR0050-001_AGENT_FRAMEWORK_UXP_WIRING|EIP-ESR0050-001]] - draft Engineering Implementation Package for WP2.
 
 ---
 
@@ -95,5 +121,7 @@ Files: `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `ja
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 5 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0120 (Agent Framework UXP Wiring) resolved per EIP-ESR0050-001 (Codex design review Pass with 3 non-blocking findings folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). Two new Tauri commands, live capability-sidebar row, new AgentFrameworkPanel, App() state/handlers, 4 new Playwright tests (13/13 passed). `cargo check` clean, `npm run build` clean, `python -m pytest` 512/1 unchanged, `validate_repository.py` 0 errors. GIA's specialist agent is now invokable live through the UXP. `LOCAL_AGENT_ACTION` untouched. |
+| 1.2 | 5 August 2026 | Claude Engineering Implementer | WP2 in progress: registered EBG-0120, produced draft EIP-ESR0050-001 (v0.1, Agent Framework UXP Wiring - two new Tauri commands, live capability-sidebar row, new AgentFrameworkPanel, App() state/handlers, Playwright coverage). Submitted for Codex design review. Not yet approved or implemented. |
 | 1.1 | 5 August 2026 | Claude Engineering Implementer | WP1 Complete: PCB-0001 (2.5 to 2.6) and JARVIS Capability Readiness Matrix (2.4 to 2.5) content-refreshed for the Agent Framework Phase 3 capability delivered at ESR-0049. Whole-Document Staleness Sweep on Edit found further PST-0001 drift beyond this WP's own scope (Repository Acceptance still cited RBL-0023, Product Capability Baseline still cited v2.3/v2.2, test/validation figures many sessions stale) - corrected in the same pass. |
 | 1.0 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 opened at WP0B, before WP1 began. WP0A found no stale baseline references anywhere checked - first clean WP0A pass in some time. Objective: WP1 content-refreshes PCB-0001/Capability Readiness Matrix for Agent Framework Phase 3; WP2 onward wires the Agent Framework into the live UXP. Selected by the Programme Sponsor via explicit two-part objective-selection question. |
