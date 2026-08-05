@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0050 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
+| Version | 1.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0050 |
 | Date Opened | 5 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1-WP2 complete |
+| Closure Status | Open - WP1-WP3 complete |
 
 ---
 
@@ -59,8 +59,9 @@ WP2 onward: wire the Agent Framework into the live UXP - a `src/` surface invoki
 |----|-------------|--------|
 | WP1 | PCB-0001 + Capability Readiness Matrix content refresh for Agent Framework | Complete |
 | WP2 | Wire Agent Framework into the UXP | Complete |
+| WP3 | EBG-0047: CURRENT_ARCHITECTURE.md refresh and Sentinel Gate of Durin detail | Complete |
 
-Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP2.
+Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP3.
 
 ---
 
@@ -104,6 +105,28 @@ Files: `src-tauri/src/lib.rs`, `src/App.jsx`, `src/AgentFrameworkPanel.jsx` (new
 
 ---
 
+# 6C. WP3 - EBG-0047: Sentinel Gate of Durin Architecture Specification
+
+Programme Sponsor selected EBG-0047 as WP3's objective from a curated candidate list presented via an explicit selection question at WP2's closure.
+
+Investigated before drafting scope: two candidate target artefacts, [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] (Draft, pre-implementation, explicitly disclaims defining executable policy logic) and `aiems/architecture/CURRENT_ARCHITECTURE.md` (self-designated "the authoritative architecture snapshot," the actual target of ESR-0016 WP2A's own trust-tier update, and the document whose own existing text already names EBG-0047 as its extension point). `CURRENT_ARCHITECTURE.md` was confirmed as the real target - but found 34 sessions stale (last substantively touched ESR-0016, despite its own "Status" line claiming ESR-0014) and carrying one confirmed factual error: it claims `SimpleApprovalPolicy` remains the production default, when direct code inspection (`jarvis/interfaces/stdio_rpc.py`'s `build_default_runtime()`) confirms `TrustTierPolicy` has been the real production default since ESR-0024 WP1 (EBG-0074).
+
+Presented this scope-boundary judgement call to the Programme Sponsor directly (per the standing "flag scope creep" discipline) rather than deciding unilaterally: narrow refresh (Sentinel section only) versus broad refresh (the whole document, 34 sessions of accumulated drift beyond EBG-0047's own narrow ask). **Programme Sponsor selected the broad refresh.**
+
+Produced [[EIP-ESR0050-002_CURRENT_ARCHITECTURE_REFRESH_AND_GATE_OF_DURIN_DETAIL|EIP-ESR0050-002]] (v0.1, Draft): registers `CURRENT_ARCHITECTURE.md` as a controlled artefact for the first time (mirroring the `JARVIS_CAPABILITY_READINESS_MATRIX` precedent), corrects the Status section and the wrong production-default claim, refreshes Guardian's and Sentinel's implemented-capability lists against real current evidence, adds a new Sentinel Gate of Durin subsection directly resolving EBG-0047 (grounded in `SentinelTrustGateway.evaluate()`, `TrustTierPolicy.classify()`, and `build_default_runtime()`'s single shared gateway instance evidence), refreshes the Provider Ecosystem section's implemented-versus-planned distinction, and replaces the long-completed "ESR-0015 Starting Architecture" section with a historical note redirecting to JRM-0001/EBR-0001.
+
+Submitted for Codex design review via direct `codex exec -s read-only` invocation - **v0.1: Pass with 1 non-blocking finding.** Codex independently confirmed every Repository Context claim against the real cited source files (`CURRENT_ARCHITECTURE.md`'s stale Status/missing Document Control, the wrong production-default claim against `stdio_rpc.py:255` and EBR-0001's EBG-0074 record, SAM-0001's Section 3 scope disclaimer, CURRENT_ARCHITECTURE's absence from REG-0001, ESR-0016 WP2A as the real last edit). One finding folded into v0.2: the draft overstated that all five cross-referencing artefacts "each carry a Subsequent Architectural Update note" - four do (AAM-0001/MOD-0001/SAM-0001/UAM-0001); GAM-0001 references `CURRENT_ARCHITECTURE.md` differently, via its own Related Artefacts table.
+
+**Approval-to-implement requested and granted via the AIEMS Exchange Bridge, verified against the real Sponsor Approval Service** (`submit-response`, ESR-0050/WP3) before any content was written.
+
+**Implemented exactly as scoped in v0.2.** `CURRENT_ARCHITECTURE.md` registered as a controlled artefact for the first time (Document Control block, Version 1.0). Status section corrected (was "close of ESR-0014," actually last substantively edited ESR-0016 WP2A). The wrong `SimpleApprovalPolicy`-is-production-default claim corrected to `TrustTierPolicy` (real since ESR-0024 WP1/EBG-0074), with the bare-construction-default distinction preserved accurately. Guardian gained a "Faculties Delivered Since ESR-0014" note (Cognitive Core, Personal Memory, Orb, Identity, Voice, Agent Framework). Sentinel's implemented-capabilities list gained audit logging, self-hosted speech/transcription providers, Agent Framework gating and real provider wiring, all previously undocumented here. New **Sentinel Gate of Durin: Trust Gateway and Platform-Entry Validation** subsection directly resolves EBG-0047, grounded in `SentinelTrustGateway.evaluate()`'s real flow, `TrustTierPolicy.classify()`'s real precedence rules, and `build_default_runtime()`'s single shared gateway instance (evidence that platform-entry validation is real and shared, not per-capability). Provider Ecosystem's implemented-versus-planned distinction clarified per category. The long-completed "ESR-0015 Starting Architecture" section replaced with a historical note redirecting to JRM-0001/EBR-0001. Related Artefacts and Version History sections added, neither of which existed before.
+
+Validation: `python scripts/validate_repository.py` (full mode) - 0 errors. No code touched.
+
+Files: `aiems/architecture/CURRENT_ARCHITECTURE.md`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/sessions/ESR-0050_ENGINEERING_SESSION_REPORT.md` (this report), [[EIP-ESR0050-002_CURRENT_ARCHITECTURE_REFRESH_AND_GATE_OF_DURIN_DETAIL|EIP-ESR0050-002]].
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] - prior closed session, immediate predecessor; source of both WP1's disclosed deferred content-refresh and WP2's Agent Framework capability.
@@ -112,8 +135,12 @@ Files: `src-tauri/src/lib.rs`, `src/App.jsx`, `src/AgentFrameworkPanel.jsx` (new
 * [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] - WP1 target artefact.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] - swept for further staleness while open for WP1's own sync.
 * [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] - current accepted repository baseline at session open.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0120, WP2's registered backlog item.
-* [[EIP-ESR0050-001_AGENT_FRAMEWORK_UXP_WIRING|EIP-ESR0050-001]] - draft Engineering Implementation Package for WP2.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0120, WP2's registered backlog item; EBG-0047, WP3's.
+* [[EIP-ESR0050-001_AGENT_FRAMEWORK_UXP_WIRING|EIP-ESR0050-001]] - approved, implemented Engineering Implementation Package for WP2.
+* [[EIP-ESR0050-002_CURRENT_ARCHITECTURE_REFRESH_AND_GATE_OF_DURIN_DETAIL|EIP-ESR0050-002]] - approved, implemented Engineering Implementation Package for WP3.
+* [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] - investigated as a candidate WP3 target, not selected.
+* [[ADR-0009_SENTINEL_GATE_OF_DURIN_PATTERN|ADR-0009]] - the architecture decision WP3 documents the real implementation of.
+* [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] - WP3's refreshed and newly-registered target artefact.
 
 ---
 
@@ -121,6 +148,8 @@ Files: `src-tauri/src/lib.rs`, `src/App.jsx`, `src/AgentFrameworkPanel.jsx` (new
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 5 August 2026 | Claude Engineering Implementer | WP3 Complete: EBG-0047 (Sentinel Gate of Durin Architecture Specification) resolved per EIP-ESR0050-002 (Codex design review Pass with 1 non-blocking finding folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). CURRENT_ARCHITECTURE.md registered as a controlled artefact for the first time (v1.0), refreshed broadly (Programme Sponsor's explicit scope-boundary choice), one factual error corrected (wrong production policy-engine default), new Sentinel Gate of Durin subsection added. `validate_repository.py` 0 errors, no code touched. |
+| 1.4 | 5 August 2026 | Claude Engineering Implementer | WP3 in progress: registered EBG-0047 (Candidate Backlog to Draft), produced draft EIP-ESR0050-002 (v0.1, CURRENT_ARCHITECTURE.md Refresh and Sentinel Gate of Durin Detail). Investigation found CURRENT_ARCHITECTURE.md, not SAM-0001, is the real target - 34 sessions stale, one factual error (wrong production policy-engine default). Programme Sponsor selected the broad (whole-document) refresh over a narrower Sentinel-section-only option, presented as an explicit scope-boundary decision. Submitted for Codex design review. Not yet approved or implemented. |
 | 1.3 | 5 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0120 (Agent Framework UXP Wiring) resolved per EIP-ESR0050-001 (Codex design review Pass with 3 non-blocking findings folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). Two new Tauri commands, live capability-sidebar row, new AgentFrameworkPanel, App() state/handlers, 4 new Playwright tests (13/13 passed). `cargo check` clean, `npm run build` clean, `python -m pytest` 512/1 unchanged, `validate_repository.py` 0 errors. GIA's specialist agent is now invokable live through the UXP. `LOCAL_AGENT_ACTION` untouched. |
 | 1.2 | 5 August 2026 | Claude Engineering Implementer | WP2 in progress: registered EBG-0120, produced draft EIP-ESR0050-001 (v0.1, Agent Framework UXP Wiring - two new Tauri commands, live capability-sidebar row, new AgentFrameworkPanel, App() state/handlers, Playwright coverage). Submitted for Codex design review. Not yet approved or implemented. |
 | 1.1 | 5 August 2026 | Claude Engineering Implementer | WP1 Complete: PCB-0001 (2.5 to 2.6) and JARVIS Capability Readiness Matrix (2.4 to 2.5) content-refreshed for the Agent Framework Phase 3 capability delivered at ESR-0049. Whole-Document Staleness Sweep on Edit found further PST-0001 drift beyond this WP's own scope (Repository Acceptance still cited RBL-0023, Product Capability Baseline still cited v2.3/v2.2, test/validation figures many sessions stale) - corrected in the same pass. |
