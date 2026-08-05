@@ -4,6 +4,7 @@ import logging
 from collections.abc import Mapping
 from types import MappingProxyType
 
+from jarvis.agents.contracts import AgentRequest
 from jarvis.guardian.cognitive_core import GuardianCognitiveCore
 from jarvis.guardian.config import GuardianRuntimeConfig
 from jarvis.guardian.diagnostics import GuardianDiagnosticEvent
@@ -14,6 +15,7 @@ from jarvis.interfaces.conversation import (
     ConversationRequest,
     ConversationResponse,
 )
+from jarvis.interfaces.sentinel_agent import AgentOutcome, SentinelGatedAgentService
 from jarvis.interfaces.voice import (
     NOT_CONNECTED_MESSAGE as SPEECH_NOT_CONNECTED_MESSAGE,
 )
@@ -38,6 +40,8 @@ logger = logging.getLogger(__name__)
 NOT_CONNECTED_RESPONSE = "Guardian has no conversation provider connected."
 NOT_RUNNING_RESPONSE = "Guardian runtime is not running."
 NO_MEMORY_SERVICE_RESPONSE = "Guardian has no memory service connected."
+AGENT_NOT_CONNECTED_MESSAGE = "Guardian has no agent service connected."
+AGENT_NOT_RUNNING_MESSAGE = "Guardian runtime is not running."
 
 # Must match SentinelGatedConversationProvider's own literal response text
 # (jarvis/interfaces/sentinel_conversation.py) exactly. Duplicated here
@@ -71,12 +75,14 @@ class GuardianRuntime:
         memory_service: PersonalMemoryService | None = None,
         speech_provider: GuardianSpeechProvider | None = None,
         transcription_provider: GuardianTranscriptionProvider | None = None,
+        agent_service: SentinelGatedAgentService | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
         self._conversation_provider = conversation_provider
         self._memory_service = memory_service
         self._speech_provider = speech_provider
         self._transcription_provider = transcription_provider
+        self._agent_service = agent_service
         self._cognitive_core = GuardianCognitiveCore()
         self._state = GuardianRuntimeState.STOPPED
         provider_capabilities = (
@@ -254,6 +260,33 @@ class GuardianRuntime:
         if self._state is not GuardianRuntimeState.RUNNING:
             return TranscriptionOutcome(status=STATUS_NOT_RUNNING, message=SPEECH_NOT_RUNNING_MESSAGE)
         return self._transcription_provider.transcribe(audio_bytes, mime_type)
+
+    def invoke_agent(self, agent_name: str, request: AgentRequest) -> AgentOutcome:
+        """Invoke a specialist agent via the connected, Sentinel-gated agent service.
+
+        Agent Framework Phase 3 (EIP-ESR0049-001): returns a named-status
+        `AgentOutcome` for every case - no agent service connected, runtime
+        not running, unknown agent name, Sentinel denial - mirroring
+        `speak()`/`transcribe()`'s honest-boundary-response discipline
+        exactly. `SentinelGatedAgentService.invoke()` already returns
+        `unknown_agent`/`denied` outcomes itself; this method adds the two
+        runtime-level boundary checks every other gated capability already
+        has.
+        """
+
+        if self._agent_service is None:
+            return AgentOutcome(status=STATUS_NOT_CONNECTED, message=AGENT_NOT_CONNECTED_MESSAGE)
+        if self._state is not GuardianRuntimeState.RUNNING:
+            return AgentOutcome(status=STATUS_NOT_RUNNING, message=AGENT_NOT_RUNNING_MESSAGE)
+        return self._agent_service.invoke(agent_name, request)
+
+    def available_agents(self) -> tuple[str, ...]:
+        """Return the names of specialist agents available via the connected
+        agent service; empty when none is connected."""
+
+        if self._agent_service is None:
+            return ()
+        return self._agent_service.available_agents()
 
     def propose_memory(self, content: str) -> PendingMemoryRequest:
         """Propose retaining `content` as a Personal Memory item.

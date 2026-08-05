@@ -20,7 +20,15 @@ def test_guardian_shell_marks_future_capabilities_as_placeholders_or_unavailable
     assert states["Platform Services"] == GuardianShellState.PLACEHOLDER
     assert states["Memory"] == GuardianShellState.PLACEHOLDER
     assert states["Providers"] == GuardianShellState.OFFLINE
-    assert states["Agent Framework"] == GuardianShellState.PLACEHOLDER
+
+
+def test_agent_framework_reflects_the_real_implemented_gia_agent() -> None:
+    # Agent Framework Phase 3 (EIP-ESR0049-001): no longer a placeholder -
+    # gia-observability is a real, live specialist agent.
+    status = build_guardian_shell_status()
+    states = {capability.name: capability.state for capability in status.capabilities}
+
+    assert states["Agent Framework"] == GuardianShellState.AVAILABLE
 
 
 def test_agents_are_modelled_as_guardian_extensions_not_identities() -> None:
@@ -30,7 +38,7 @@ def test_agents_are_modelled_as_guardian_extensions_not_identities() -> None:
     )
 
     assert agent_framework.extends_guardian is True
-    assert "separate AI identities" in agent_framework.summary
+    assert "separate AI identity" in agent_framework.summary
 
 
 def test_existing_python_public_api_and_conversation_behaviour_are_preserved() -> None:

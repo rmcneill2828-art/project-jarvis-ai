@@ -11,6 +11,7 @@ from jarvis import (
     ServiceHealth,
     ServiceStatus,
 )
+from jarvis.agents.contracts import AgentRequest, AgentResult
 from jarvis.guardian.config import DEFAULT_GUARDIAN_PERSONA
 from jarvis.guardian.runtime import (
     NO_MEMORY_SERVICE_RESPONSE,
@@ -18,6 +19,7 @@ from jarvis.guardian.runtime import (
     NOT_RUNNING_RESPONSE,
 )
 from jarvis.interfaces.conversation import ConversationRequest, ConversationResponse
+from jarvis.interfaces.sentinel_agent import STATUS_UNKNOWN_AGENT, SentinelGatedAgentService
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.interfaces.voice import (
     STATUS_NOT_CONNECTED,
@@ -87,6 +89,19 @@ class _StubTranscriptionProvider:
     def transcribe(self, audio_bytes: bytes, mime_type: str) -> TranscriptionOutcome:
         self.received.append((audio_bytes, mime_type))
         return TranscriptionOutcome(status=STATUS_TRANSCRIBED, text=f"transcript:{len(audio_bytes)}")
+
+
+class _StubSpecialistAgent:
+    """Minimal SpecialistAgent double for boundary-behaviour tests."""
+
+    name = "stub-agent"
+
+    def __init__(self) -> None:
+        self.received: list[AgentRequest] = []
+
+    def execute(self, request: AgentRequest) -> AgentResult:
+        self.received.append(request)
+        return AgentResult(status="reported", payload={"task": request.task})
 
 
 class _StubSentinelProvider:
@@ -699,3 +714,67 @@ def test_guardian_runtime_transcribe_delegates_to_connected_provider() -> None:
     assert outcome.status == STATUS_TRANSCRIBED
     assert outcome.text == "transcript:10"
     assert provider.received == [(b"fake-audio", "audio/webm")]
+
+
+def _agent_service(agent: _StubSpecialistAgent) -> SentinelGatedAgentService:
+    return SentinelGatedAgentService(gateway=SentinelTrustGateway(), agents={agent.name: agent})
+
+
+def test_guardian_runtime_invoke_agent_without_service_returns_not_connected_outcome() -> None:
+    runtime = GuardianRuntime()
+    runtime.start()
+
+    outcome = runtime.invoke_agent("stub-agent", AgentRequest(task="snapshot"))
+
+    assert outcome.status == STATUS_NOT_CONNECTED
+    assert outcome.result is None
+
+
+def test_guardian_runtime_invoke_agent_before_start_returns_not_running_outcome() -> None:
+    agent = _StubSpecialistAgent()
+    runtime = GuardianRuntime(agent_service=_agent_service(agent))
+
+    outcome = runtime.invoke_agent(agent.name, AgentRequest(task="snapshot"))
+
+    assert outcome.status == STATUS_NOT_RUNNING
+    assert agent.received == []
+
+
+def test_guardian_runtime_invoke_agent_after_stop_returns_not_running_outcome() -> None:
+    agent = _StubSpecialistAgent()
+    runtime = GuardianRuntime(agent_service=_agent_service(agent))
+    runtime.start()
+    runtime.stop()
+
+    outcome = runtime.invoke_agent(agent.name, AgentRequest(task="snapshot"))
+
+    assert outcome.status == STATUS_NOT_RUNNING
+
+
+def test_guardian_runtime_invoke_agent_delegates_to_connected_service() -> None:
+    agent = _StubSpecialistAgent()
+    runtime = GuardianRuntime(agent_service=_agent_service(agent))
+    runtime.start()
+
+    outcome = runtime.invoke_agent(agent.name, AgentRequest(task="snapshot"))
+
+    assert outcome.status == "reported"
+    assert outcome.result.payload["task"] == "snapshot"
+    assert agent.received[0].task == "snapshot"
+
+
+def test_guardian_runtime_invoke_agent_unknown_name_returns_unknown_agent_outcome() -> None:
+    agent = _StubSpecialistAgent()
+    runtime = GuardianRuntime(agent_service=_agent_service(agent))
+    runtime.start()
+
+    outcome = runtime.invoke_agent("does-not-exist", AgentRequest(task="snapshot"))
+
+    assert outcome.status == STATUS_UNKNOWN_AGENT
+
+
+def test_guardian_runtime_available_agents_reflects_service_presence() -> None:
+    agent = _StubSpecialistAgent()
+
+    assert GuardianRuntime().available_agents() == ()
+    assert GuardianRuntime(agent_service=_agent_service(agent)).available_agents() == ("stub-agent",)

@@ -34,11 +34,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, TextIO
 
+from jarvis.agents.contracts import AgentRequest
+from jarvis.agents.gia_agent import GiaObservabilityAgent
 from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
 from jarvis.interfaces import knowledge_graph
+from jarvis.interfaces.sentinel_agent import SentinelGatedAgentService
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.interfaces.voice import (
     GuardianSpeechProvider,
@@ -288,11 +291,22 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     speech_provider = _build_speech_provider(gateway, environ)
     transcription_provider = _build_transcription_provider(gateway, environ)
 
+    # Agent Framework Phase 3 (EIP-ESR0049-001): unlike speech/transcription,
+    # the GIA observability agent has no external credential or model
+    # dependency, so it is always registered, reusing the same shared
+    # `gateway` every other capability above already shares - not a freshly
+    # constructed one (MOD-0001's mandatory-shared-gateway requirement).
+    agent_service = SentinelGatedAgentService(
+        gateway=gateway,
+        agents={GiaObservabilityAgent.name: GiaObservabilityAgent(LocalResourceObserver())},
+    )
+
     runtime = GuardianRuntime(
         conversation_provider=conversation_provider,
         memory_service=memory_service,
         speech_provider=speech_provider,
         transcription_provider=transcription_provider,
+        agent_service=agent_service,
     )
     runtime.start()
     return runtime
@@ -352,6 +366,8 @@ class StdioRpcServer:
             "guardian.converse": self._guardian_converse,
             "guardian.speak": self._guardian_speak,
             "guardian.transcribe": self._guardian_transcribe,
+            "guardian.agent.list": self._guardian_agent_list,
+            "guardian.agent.invoke": self._guardian_agent_invoke,
             "platform.status": self._platform_status,
             "knowledge.graph": self._knowledge_graph,
             "memory.propose": self._memory_propose,
@@ -401,6 +417,28 @@ class StdioRpcServer:
             raise ValueError(msg) from exc
         outcome = self._runtime.transcribe(audio_bytes, mime_type)
         return {"status": outcome.status, "text": outcome.text, "message": outcome.message}
+
+    def _guardian_agent_list(self, params: dict[str, Any]) -> dict[str, Any]:
+        return {"agents": list(self._runtime.available_agents())}
+
+    def _guardian_agent_invoke(self, params: dict[str, Any]) -> dict[str, Any]:
+        agent_name = params.get("agent")
+        task = params.get("task")
+        parameters = params.get("parameters", {})
+        if not isinstance(agent_name, str):
+            msg = "params.agent must be a string."
+            raise TypeError(msg)
+        if not isinstance(task, str):
+            msg = "params.task must be a string."
+            raise TypeError(msg)
+        if not isinstance(parameters, dict):
+            msg = "params.parameters must be an object."
+            raise TypeError(msg)
+        outcome = self._runtime.invoke_agent(agent_name, AgentRequest(task=task, parameters=parameters))
+        result: dict[str, Any] = {"status": outcome.status, "message": outcome.message}
+        if outcome.result is not None:
+            result["payload"] = dict(outcome.result.payload)
+        return result
 
     def _platform_status(self, params: dict[str, Any]) -> dict[str, Any]:
         snapshot = self._runtime.status_snapshot()

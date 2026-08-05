@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.6
+**Version:** 1.7
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -956,6 +956,7 @@ This relationship provides architectural traceability throughout the AI Engineer
 
 | Version | Date | Author | Summary |
 |---------|------------|-----------------------------------------|--------------------------------------------------------------------------|
+| 1.7 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP2, resolving EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation) per [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service): the "Agent Framework" subsection's contract is now implemented as real code - `jarvis/agents/` (`SpecialistAgent`/`AgentRequest`/`AgentResult`, `GiaObservabilityAgent`), a `SentinelGatedAgentService` reusing the shared gateway, two new `guardian.agent.*` RPC methods, and an honest `platform.status` correction. GIA's existing read-only observability is now the first live specialist agent, classified `ROUTINE_INTERACTION`. `GAM-0001` Section 8A's `LOCAL_AGENT_ACTION` hard `DENY` remains completely untouched - this section's own text is unchanged, only its implementation status. |
 | 1.6 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP2, resolving EBG-0042 (Agent Framework Architecture) per [[EIP-ESR0048-001_AGENT_FRAMEWORK_ARCHITECTURE_SCOPE|EIP-ESR0048-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service): new "Agent Framework" subsection under Core Architectural Domains defines a specialist-agent contract shape, the mandatory Sentinel gate (reusing the shared gateway/`TrustTierPolicy` wiring), and the `ROUTINE_INTERACTION`/`LOCAL_AGENT_ACTION` classification split governed by GAM-0001 Section 8A - architecture only, no code, no agent authorised. Also corrected a stale RBL-0015 "current accepted repository baseline" reference (Related Artefacts) to RBL-0029, found on opening this document (Documentation Debt Discipline, Whole-Document Staleness Sweep on Edit). |
 | 1.5 | 16 July 2026 | Claude Engineering Implementer | ESR-0023 WP2 housekeeping (informational, Programme Sponsor confirmed): promoted Status from In Review to Approved, reflecting ESR-0011's validation of this model for implementation readiness, which had never been written back into the document itself; corrected two stale RBL-0009 "current accepted repository baseline" references (Related Artefacts, OSE Relationships) to RBL-0015, retaining RBL-0009/RBL-0008 as historical lineage. Content unchanged - reviewed in full, found still architecturally accurate, no rewrite needed. |
 | 1.4 | 8 July 2026 | Claude Engineering Implementer | Added Subsequent Architectural Update note pointing to ADR-0018 and CURRENT_ARCHITECTURE.md, since ADR-0018 broadened Sentinel's role beyond the trust-gateway-only framing described in this model's Sentinel sections. Original content unchanged. |

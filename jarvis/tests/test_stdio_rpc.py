@@ -211,6 +211,20 @@ def test_build_default_runtime_reuses_the_same_gateway_for_speech_and_conversati
     assert speech_gateway is runtime.sentinel_gateway()
 
 
+def test_build_default_runtime_reuses_the_same_gateway_for_agent_service(tmp_path):
+    """EIP-ESR0049-001: the agent service must share build_default_runtime()'s
+    single SentinelTrustGateway instance too, not construct a second one -
+    matching the same shared-gateway requirement already enforced for
+    speech/transcription/memory."""
+
+    runtime = build_default_runtime(
+        environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db")}
+    )
+
+    assert runtime._agent_service.gateway is runtime.sentinel_gateway()
+    assert runtime.available_agents() == ("gia-observability",)
+
+
 def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
     with patch("jarvis.interfaces.stdio_rpc.PiperProvider", _FakePiperProvider):
         server = StdioRpcServer(
@@ -393,6 +407,57 @@ def test_guardian_transcribe_rpc_rejects_invalid_base64(tmp_path):
         pass
     else:
         raise AssertionError("Expected ValueError for invalid params.audioBase64")
+
+
+def test_guardian_agent_list_rpc_includes_gia_observability(tmp_path):
+    server = _server(tmp_path)
+
+    result = server._methods["guardian.agent.list"]({})
+
+    assert result["agents"] == ["gia-observability"]
+
+
+def test_guardian_agent_invoke_rpc_returns_real_gia_snapshot(tmp_path):
+    server = _server(tmp_path)
+
+    result = server._methods["guardian.agent.invoke"](
+        {"agent": "gia-observability", "task": "snapshot"}
+    )
+
+    assert result["status"] == "reported"
+    assert "cpuPercent" in result["payload"]
+    assert "capturedAt" in result["payload"]
+
+
+def test_guardian_agent_invoke_rpc_unknown_agent_returns_unknown_agent_shape(tmp_path):
+    server = _server(tmp_path)
+
+    result = server._methods["guardian.agent.invoke"]({"agent": "does-not-exist", "task": "snapshot"})
+
+    assert result["status"] == "unknown_agent"
+    assert "payload" not in result
+
+
+def test_guardian_agent_invoke_rpc_rejects_non_string_agent(tmp_path):
+    server = _server(tmp_path)
+
+    try:
+        server._methods["guardian.agent.invoke"]({"agent": 123, "task": "snapshot"})
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("Expected TypeError for non-string params.agent")
+
+
+def test_guardian_agent_invoke_rpc_rejects_non_string_task(tmp_path):
+    server = _server(tmp_path)
+
+    try:
+        server._methods["guardian.agent.invoke"]({"agent": "gia-observability", "task": 123})
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("Expected TypeError for non-string params.task")
 
 
 def test_guardian_converse_request_shape_classified_routine_under_trust_tier_policy(tmp_path):

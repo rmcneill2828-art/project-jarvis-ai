@@ -72,8 +72,12 @@ def build_guardian_shell_status() -> GuardianShellStatus:
             ),
             GuardianShellCapability(
                 name="Agent Framework",
-                state=GuardianShellState.PLACEHOLDER,
-                summary="Future specialists extend Guardian without separate AI identities.",
+                state=GuardianShellState.AVAILABLE,
+                summary=(
+                    "One specialist agent available (gia-observability, read-only local "
+                    "resource reporting), extending Guardian without becoming a separate "
+                    "AI identity. No local-agent action capability."
+                ),
                 extends_guardian=True,
             ),
             GuardianShellCapability(

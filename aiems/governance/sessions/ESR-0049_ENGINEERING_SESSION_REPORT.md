@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0049 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
+| Version | 1.4 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0049 |
 | Date Opened | 5 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 complete, WP2 pending |
+| Closure Status | Open - WP1-WP2 complete |
 
 ---
 
@@ -58,7 +58,7 @@ WP2 onward: scope [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B Phase 3 (Action 
 | WP | Description | Status |
 |----|-------------|--------|
 | WP1 | Documentation Debt Discipline fix: COC-0001 stale RBL-0028 references | Complete |
-| WP2 | Scope Track B Phase 3 (Action faculty implementation) | Pending |
+| WP2 | Scope and implement Track B Phase 3 (Action faculty implementation) | Complete |
 
 Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP2.
 
@@ -78,6 +78,30 @@ Files: `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md
 
 ---
 
+# 6B. WP2 - EBG-0119: Agent Framework Phase 3, First Specialist Agent
+
+Programme Sponsor selected Track B Phase 3 (Action faculty implementation) as WP2's objective, per the two-part objective-selection question at session open - the next item in the roadmap's dependency chain, now that Phase 1 (Guardian Cognitive Core), Phase 2 (Local Agent Permission Boundary) and the Agent Framework's contract architecture ([[EIP-ESR0048-001_AGENT_FRAMEWORK_ARCHITECTURE_SCOPE|EIP-ESR0048-001]], ESR-0048) are all delivered.
+
+Registered [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation, Approved Backlog, High).
+
+Investigated the existing architecture and code before drafting scope: [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]]'s Agent Framework subsection (the contract to implement), `jarvis/gia/observability.py` (`LocalResourceObserver.snapshot()`, the read-only capability to wire as the first agent), `sentinel/policy.py`'s `TrustTierPolicy.classify()` (confirming a non-`local_agent`/`device_control` request classifies `ROUTINE_INTERACTION`), the existing `SentinelGatedConversationProvider` and `SpeechOutcome`/`TranscriptionOutcome` patterns (the concrete templates this package's service/outcome types mirror), `build_default_runtime()`'s shared-gateway construction, `GuardianRuntime`'s optional-capability pattern, and `jarvis/platform/shell.py`'s stale `PLACEHOLDER` Agent Framework status entry.
+
+Produced [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]] (v0.1, Draft) - real code this time, not architecture-only: a new `jarvis/agents/` module (`SpecialistAgent`/`AgentRequest`/`AgentResult`, `GiaObservabilityAgent`), a `SentinelGatedAgentService` (`jarvis/interfaces/sentinel_agent.py`) evaluated through the same shared Sentinel gateway every other capability uses, `GuardianRuntime`/`build_default_runtime()` wiring, two new `guardian.agent.*` RPC methods, and an honest `platform.status` capability-state correction. `GAM-0001` Section 8A's `LOCAL_AGENT_ACTION` hard `DENY` is untouched throughout - the wired agent is read-only and classifies `ROUTINE_INTERACTION` only.
+
+Submitted for Codex design review via direct `codex exec -s read-only` invocation - **v0.1: Pass with non-blocking findings.** Codex independently verified every Repository Context claim against the live code and confirmed the scope "soundly bounded... does not authorise or approach LOCAL_AGENT_ACTION." Two non-blocking findings folded into v0.2: `AgentOutcome`'s success status now echoes the agent's own reported status rather than hardcoding `"reported"` as a universal contract value; the `platform.status` capability-state summary narrowed to explicitly state one read-only agent only.
+
+**Approval-to-implement requested and granted via the AIEMS Exchange Bridge, verified against the real Sponsor Approval Service** (`submit-response`, ESR-0049/WP2) before any code was written - the first chat-only "approved" was correctly refused by the gate (no recorded decision yet); the second succeeded once a real decision existed.
+
+**Implemented exactly as scoped.** New `jarvis/agents/` module (`contracts.py`: `AgentRequest`/`AgentResult`/`SpecialistAgent`; `gia_agent.py`: `GiaObservabilityAgent`, wrapping `jarvis/gia/observability.py`'s existing read-only `LocalResourceObserver.snapshot()`). New `jarvis/interfaces/sentinel_agent.py` (`AgentOutcome`, `SentinelGatedAgentService`) mirroring `SentinelGatedConversationProvider`'s gateway-evaluate-then-proceed flow and `SpeechOutcome`/`TranscriptionOutcome`'s named-status envelope pattern exactly. `GuardianRuntime` gains an `agent_service` constructor parameter and `invoke_agent()`/`available_agents()` methods, mirroring `speak()`/`transcribe()`'s boundary-response discipline. `build_default_runtime()` (`jarvis/interfaces/stdio_rpc.py`) constructs `SentinelGatedAgentService` reusing the same shared `gateway` every other capability already uses, registering `gia-observability` unconditionally (no external credential dependency, unlike Piper/Whisper). Two new JSON-RPC methods, `guardian.agent.list` and `guardian.agent.invoke`. `jarvis/platform/shell.py`'s "Agent Framework" capability entry corrected `PLACEHOLDER` to `AVAILABLE`, narrowly worded per Codex's finding. GAM-0001 Section 8A's `LOCAL_AGENT_ACTION` hard `DENY` untouched throughout; `sentinel/policy.py` not modified.
+
+27 new tests added: `jarvis/tests/test_agents.py` (contract validation, `GiaObservabilityAgent`), `jarvis/tests/test_sentinel_agent.py` (`SentinelGatedAgentService` - unknown-agent short-circuit, `ALLOW` path against the real `TrustTierPolicy` confirming genuine `ROUTINE_INTERACTION` classification, Sentinel-denial path hiding internal reason), new cases added to `jarvis/tests/test_guardian_runtime.py` (`invoke_agent()` boundary behaviour) and `jarvis/tests/test_stdio_rpc.py` (RPC-level shape, including the shared-gateway regression the existing speech/transcription tests already have). `jarvis/tests/test_guardian_shell.py` updated for the real `AVAILABLE` state.
+
+Validation: `python -m pytest jarvis/tests sentinel scripts/tests` - 512 passed, 1 skipped (was 485 passed, 1 skipped before this package). `python scripts/validate_repository.py` (full mode) - 0 errors.
+
+Files: `jarvis/agents/__init__.py` (new), `jarvis/agents/contracts.py` (new), `jarvis/agents/gia_agent.py` (new), `jarvis/interfaces/sentinel_agent.py` (new), `jarvis/guardian/runtime.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/platform/shell.py`, `jarvis/tests/test_agents.py` (new), `jarvis/tests/test_sentinel_agent.py` (new), `jarvis/tests/test_guardian_runtime.py`, `jarvis/tests/test_stdio_rpc.py`, `jarvis/tests/test_guardian_shell.py`, `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]].
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0048_ENGINEERING_SESSION_REPORT|ESR-0048]] - prior closed session, immediate predecessor.
@@ -85,6 +109,8 @@ Files: `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] - WP1 target artefact.
 * [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] - Track B Phase 3, WP2 objective source.
 * [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8A, the permission boundary WP2's scoping must obey.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0119, WP2's registered backlog item.
+* [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]] - WP2's draft Engineering Implementation Package.
 * [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]] - current accepted repository baseline.
 
 ---
@@ -93,5 +119,8 @@ Files: `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 5 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation) resolved per EIP-ESR0049-001 (Codex design review Pass with findings folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). New `jarvis/agents/` module, `SentinelGatedAgentService`, GuardianRuntime/stdio_rpc wiring, two new `guardian.agent.*` RPC methods, honest `platform.status` correction. GIA wired as first live `ROUTINE_INTERACTION` specialist agent - `LOCAL_AGENT_ACTION` untouched. 27 new tests (512 passed/1 skipped, up from 485/1). `validate_repository.py` 0 errors. |
+| 1.3 | 5 August 2026 | Claude Engineering Implementer | WP2 reviewed: EIP-ESR0049-001 v0.1 Codex design review Pass with non-blocking findings, folded into v0.2. Awaiting Programme Sponsor approval before implementation. |
+| 1.2 | 5 August 2026 | Claude Engineering Implementer | WP2 in progress: registered EBG-0119, produced draft EIP-ESR0049-001 (v0.1, Agent Framework Phase 3 - real `SpecialistAgent` implementation, GIA-BOOT wired as the first `ROUTINE_INTERACTION` agent). Submitted for Codex design review. Not yet approved or implemented. |
 | 1.1 | 5 August 2026 | Claude Engineering Implementer | WP1 Complete: corrected COC-0001's stale RBL-0028 references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0029. Whole-Document Staleness Sweep found no further staleness. |
 | 1.0 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 opened at WP0B, before WP1 began. WP0A found COC-0001 one baseline stale (RBL-0028, should be RBL-0029) in three places. Objective: WP1 corrects COC-0001; WP2 onward scopes JRM-0001 Track B Phase 3 (Action faculty implementation). Selected by the Programme Sponsor via explicit two-part objective-selection question. |
