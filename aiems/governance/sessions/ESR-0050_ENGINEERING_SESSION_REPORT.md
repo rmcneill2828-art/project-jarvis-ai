@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0050 |
 | Title | Engineering Session Report |
-| Version | 1.5 |
+| Version | 1.7 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0050 |
 | Date Opened | 5 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1-WP3 complete |
+| Closure Status | Open - WP1-WP3 complete, session-wide WP6 (Pass) and WP7 (Establish RBL-0031) complete |
 
 ---
 
@@ -60,8 +60,10 @@ WP2 onward: wire the Agent Framework into the live UXP - a `src/` surface invoki
 | WP1 | PCB-0001 + Capability Readiness Matrix content refresh for Agent Framework | Complete |
 | WP2 | Wire Agent Framework into the UXP | Complete |
 | WP3 | EBG-0047: CURRENT_ARCHITECTURE.md refresh and Sentinel Gate of Durin detail | Complete |
+| WP6 | Session-wide Independent Repository Verification | Complete |
+| WP7 | Session-wide Repository Baseline Determination | Complete - Establish RBL-0031 |
 
-Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP3.
+Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP7.
 
 ---
 
@@ -127,6 +129,30 @@ Files: `aiems/architecture/CURRENT_ARCHITECTURE.md`, `aiems/governance/registers
 
 ---
 
+# 6D. Session-Wide WP6 - Independent Repository Verification
+
+Following WP3's implementation and push, the Programme Sponsor selected moving to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s read-only`, background invocation, real inspection of `git diff 0d614e0..a7eabb0` - both `--stat`/`--name-status` and full content) covering WP1, WP2 and WP3's committed changes against the current baseline [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] (commit `0d614e0`, established at ESR-0049 WP7). Verified independently: (1) exactly the expected 14 files changed, no unexpected path; (2) [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] and `sentinel/policy.py` byte-identical/untouched across the whole session; (3) no backend Agent Framework code (`jarvis/agents/`, `sentinel_agent.py`, `runtime.py`, `stdio_rpc.py`) touched; (4) `list_agents`/`invoke_agent` Tauri commands and `App.jsx`'s Agent Framework wiring confirmed present at cited lines; (5) `CURRENT_ARCHITECTURE.md`'s Document Control block and Sentinel Gate of Durin subsection confirmed genuinely new, absent at the session's opening commit; (6) EBG-0047/EBG-0120 "Completed" governance claims backed by real corresponding evidence; (7) REG-0001's version rows match every touched artefact's own current file version exactly (8 artefacts checked); (8) ESR-0050 Open with WP1-WP3 Complete confirmed.
+
+Directly re-ran validation before requesting this review: `python -m pytest jarvis/tests sentinel scripts/tests` - 512 passed, 1 skipped (unchanged all session, no backend file touched); `npm run build` clean; `python scripts/validate_repository.py` (full mode) - 0 errors, 289 warnings.
+
+**Verdict: Pass, no findings.**
+
+Codex's own baseline assessment (advisory, not a determination): this is a genuine live product-capability change - WP2 adds real user-facing UXP functionality for invoking existing agents (new Tauri commands, new React state/handlers, a new panel, styling, test coverage) - not documentation-only, and recommends WP7 Establish a new baseline. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6E. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Establish [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]]**, superseding [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]]. WP2 delivered a genuine, live product-capability change - the Agent Framework moved from RPC/backend-reachable only (RBL-0030) to genuinely invokable through the live UXP - matching the Establish threshold applied at RBL-0025/RBL-0027/RBL-0028/RBL-0029/RBL-0030 rather than the Retain threshold applied at architecture/documentation-only sessions such as ESR-0048. WP1's documentation refresh and WP3's architecture documentation refresh alone would not have crossed this threshold; WP2's real UXP wiring does.
+
+[[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] created (HEAD at baseline creation: `a7eabb0`), registered in REG-0001. Every controlled artefact citing the "current accepted repository baseline" propagated from RBL-0030 to RBL-0031: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (1.19 to 1.20), [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.37 to 1.38), [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] (1.8 to 1.9), [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (2.6 to 2.7, pointer only), [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] (2.5 to 2.6, pointer only), README.md and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.30 to 3.31). README and PST-0001 also updated their "current session" framing to reflect ESR-0050 open with WP1-WP3 complete (rather than left describing ESR-0049 as latest closed, which had gone stale the moment ESR-0050 opened) - including README's stale "no UXP surface for it yet" claim, superseded by this same session's own WP2 delivery, caught in the same Whole-Document Staleness Sweep on Edit pass. PCB-0001's and the Capability Matrix's own capability-content refresh for WP2's Agent Framework UXP Wiring delivery is disclosed as not yet done, deferred to a future Documentation Debt sync.
+
+Files: `aiems/governance/baselines/RBL-0031_REPOSITORY_BASELINE.md` (new), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md`, `aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md`, `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `README.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`.
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0049_ENGINEERING_SESSION_REPORT|ESR-0049]] - prior closed session, immediate predecessor; source of both WP1's disclosed deferred content-refresh and WP2's Agent Framework capability.
@@ -141,6 +167,7 @@ Files: `aiems/architecture/CURRENT_ARCHITECTURE.md`, `aiems/governance/registers
 * [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] - investigated as a candidate WP3 target, not selected.
 * [[ADR-0009_SENTINEL_GATE_OF_DURIN_PATTERN|ADR-0009]] - the architecture decision WP3 documents the real implementation of.
 * [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] - WP3's refreshed and newly-registered target artefact.
+* [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] - repository baseline established at this session's WP7, superseding RBL-0030.
 
 ---
 
@@ -148,6 +175,8 @@ Files: `aiems/architecture/CURRENT_ARCHITECTURE.md`, `aiems/governance/registers
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.7 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP7 (Repository Baseline Determination): **Establish [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]]**, superseding RBL-0030 - WP2's Agent Framework UXP Wiring delivery is a genuine live product-capability change. Every controlled artefact's "current accepted repository baseline" reference propagated to RBL-0031 (COC-0001, PBK-0001, MOD-0001, PCB-0001, JARVIS Capability Readiness Matrix, README, PST-0001); README/PST-0001's "current session" framing updated to reflect ESR-0050 open with WP1-WP3 complete. |
+| 1.6 | 5 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `0d614e0..a7eabb0` diff (WP1+WP2+WP3) - **Pass, no findings**. Codex's own advisory baseline assessment: genuine live product-capability change (WP2's UXP wiring), recommends WP7 Establish. WP7 determination pending. |
 | 1.5 | 5 August 2026 | Claude Engineering Implementer | WP3 Complete: EBG-0047 (Sentinel Gate of Durin Architecture Specification) resolved per EIP-ESR0050-002 (Codex design review Pass with 1 non-blocking finding folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). CURRENT_ARCHITECTURE.md registered as a controlled artefact for the first time (v1.0), refreshed broadly (Programme Sponsor's explicit scope-boundary choice), one factual error corrected (wrong production policy-engine default), new Sentinel Gate of Durin subsection added. `validate_repository.py` 0 errors, no code touched. |
 | 1.4 | 5 August 2026 | Claude Engineering Implementer | WP3 in progress: registered EBG-0047 (Candidate Backlog to Draft), produced draft EIP-ESR0050-002 (v0.1, CURRENT_ARCHITECTURE.md Refresh and Sentinel Gate of Durin Detail). Investigation found CURRENT_ARCHITECTURE.md, not SAM-0001, is the real target - 34 sessions stale, one factual error (wrong production policy-engine default). Programme Sponsor selected the broad (whole-document) refresh over a narrower Sentinel-section-only option, presented as an explicit scope-boundary decision. Submitted for Codex design review. Not yet approved or implemented. |
 | 1.3 | 5 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0120 (Agent Framework UXP Wiring) resolved per EIP-ESR0050-001 (Codex design review Pass with 3 non-blocking findings folded in; Programme Sponsor approval verified via the real Sponsor Approval Service). Two new Tauri commands, live capability-sidebar row, new AgentFrameworkPanel, App() state/handlers, 4 new Playwright tests (13/13 passed). `cargo check` clean, `npm run build` clean, `python -m pytest` 512/1 unchanged, `validate_repository.py` 0 errors. GIA's specialist agent is now invokable live through the UXP. `LOCAL_AGENT_ACTION` untouched. |

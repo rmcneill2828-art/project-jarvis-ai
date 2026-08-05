@@ -8,7 +8,7 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.5 |
+| Version | 2.6 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -74,7 +74,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 |----------|--------------|
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture source for capability intent and hierarchy. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture context for JARVIS as flagship implementation. |
-| [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] | Current accepted repository baseline. |
+| [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] | Current accepted repository baseline. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Sibling document (Product Capability Baseline) refreshed via the same pattern at ESR-0020 (EBG-0056) - this refresh follows that precedent. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture source; still Draft, underlying the Intelligence row's Planned status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register for candidate package selection; the v2.0 refresh closed EBG-0069, this v2.1 refresh closes EBG-0017. |
@@ -86,6 +86,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.6 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the Related Artefacts current-baseline reference from RBL-0030 to RBL-0031, established at ESR-0050 WP7 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification). Pointer fix only - capability rows not re-audited this pass. |
 | 2.5 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP1 (content refresh disclosed as deferred at ESR-0049 WP7): renamed the "Engineering Agent (JARVIS-internal specialist agent)" row to "Agent Framework (specialist agents serving Guardian)" and updated it from Proof of Concept (GIA-BOOT) to Implemented (Foundation) - GIA's read-only observability is now the first live specialist agent, Sentinel-gated `ROUTINE_INTERACTION`, `guardian.agent.*` RPC-reachable (ESR-0049, EBG-0119); no UXP surface yet, `LOCAL_AGENT_ACTION` untouched. Overall Programme Capability Summary updated to match; the stale "JARVIS-internal specialist Engineering Agent remain not implemented" claim removed. |
 | 2.4 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the Related Artefacts current-baseline reference from RBL-0029 to RBL-0030, established at ESR-0049 WP7 (Agent Framework Phase 3, First Specialist Agent). Pointer fix only - capability rows not re-audited this pass; the new Agent Framework capability is not yet reflected here, remains open for a future content refresh. |
 | 2.3 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline): refreshed for ESR-0039 (Guardian Cognitive Core Phase 1), ESR-0046 (User Identity) and ESR-0047 (Voice Increment B) - flagged stale since ESR-0028 at ESR-0047 WP4's Repository Engineering Health Review. Intelligence row updated Draft/Planned to Implemented (Phase 1); new Identity row added; Voice row updated Not Started to Implemented (Foundation) for both directions. Overall Programme Capability Summary and Related Artefacts (`RBL-0015` to `RBL-0029`) updated to match. |

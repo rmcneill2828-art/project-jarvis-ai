@@ -2,7 +2,7 @@
 
 **Status:** Approved
 
-**Version:** 1.19
+**Version:** 1.20
 
 ---
 
@@ -247,7 +247,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]], the current accepted repository baseline.
+* Review [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]], the current accepted repository baseline.
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -263,7 +263,7 @@ Before beginning engineering activities:
 
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
-* [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0049 WP7 on 5 August 2026, superseding [[RBL-0029_REPOSITORY_BASELINE|RBL-0029]].
+* [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0050 WP7 on 5 August 2026, superseding [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]].
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
@@ -279,7 +279,7 @@ Before beginning engineering activities:
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing Engineering Implementer behaviour that complements COC-0001. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used for session reload and synchronisation. |
-| [[RBL-0030_REPOSITORY_BASELINE|RBL-0030]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0049 WP7 on 5 August 2026, superseding RBL-0029. |
+| [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0050 WP7 on 5 August 2026, superseding RBL-0030. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed session report that hands over to ESR-0009 validation readiness. |
 
 ---
@@ -287,6 +287,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.20 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the RBL-0030 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0031, established at ESR-0050 WP7 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification, a genuine live product-capability change), superseding RBL-0030. |
 | 1.19 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the RBL-0029 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0030, established at ESR-0049 WP7 (Agent Framework Phase 3, First Specialist Agent, a genuine live product-capability change) - the same reference this document's own WP1 fix corrected earlier this session, now naturally superseded within the same session by the Programme Sponsor's Establish determination. |
 | 1.18 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP1 (Documentation Debt Discipline): corrected the stale RBL-0028 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0029, accepted at ESR-0047 WP7 and retained at ESR-0048 WP7 - one baseline stale. Found during ESR-0049 WP0A repository synchronisation: ESR-0048 WP1's Documentation Debt sync corrected the equivalent reference in PBK-0001 but did not include COC-0001, an identical-pattern artefact. |
 | 1.17 | 4 August 2026 | Claude Engineering Implementer | ESR-0047 WP1 (Documentation Debt Discipline): corrected the stale RBL-0021 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0028, accepted at ESR-0046 WP7 - seven baselines stale (RBL-0022 through RBL-0028), the longest drift found for this reference since GDE-0001 moved COC-0001/PBK-0001 outside the mandatory per-session reading set. Found during ESR-0047 WP0A repository synchronisation alongside equivalent staleness in PBK-0001. |

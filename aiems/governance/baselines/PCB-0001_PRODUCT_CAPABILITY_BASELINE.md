@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 2.6 |
+| Version | 2.7 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -36,7 +36,7 @@ The v2.3 refresh ([[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] WP3) incorpor
 Repository validation confirmed that the following evidence artefacts exist:
 
 - [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT]]
-- [[RBL-0030_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0049; superseded RBL-0007 through RBL-0029 since PCB-0001 v1.0)
+- [[RBL-0031_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0050; superseded RBL-0007 through RBL-0030 since PCB-0001 v1.0)
 - [[JARVIS_PRODUCT_ARCHITECTURE]]
 - [[JARVIS_CAPABILITY_READINESS_MATRIX]]
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER]]
@@ -133,6 +133,7 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.7 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the Section 3 current-baseline reference from RBL-0030 to RBL-0031, established at ESR-0050 WP7 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification). Pointer fix only - WP2's own Agent Framework UXP Wiring delivery is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.6 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP1 (content refresh disclosed as deferred at ESR-0049 WP7): Section 4 gains a new Agent Framework row - `jarvis/agents/` contract, GIA's read-only observability wired as the first live `ROUTINE_INTERACTION` specialist agent, reachable via `guardian.agent.*` RPC, no UXP surface yet. Section 6's "Local agent capability is not implemented" constraint reworded to distinguish the now-implemented Agent Framework (one read-only specialist agent) from the still-untouched `LOCAL_AGENT_ACTION`/Action faculty hard `DENY` boundary. |
 | 2.5 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the Section 3 current-baseline reference from RBL-0029 to RBL-0030, established at ESR-0049 WP7 (Agent Framework Phase 3, First Specialist Agent). Pointer fix only - the new Agent Framework capability itself is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.4 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline): refreshed for ESR-0046 (User Identity and Profile Foundation, `jarvis/identity/`) and ESR-0047 (Voice faculty Increment B, speech input, self-hosted `faster-whisper`). Section 4 gains a new User Identity and Profiles row; Voice faculty row updated to cover both directions. Section 6 constraints updated. Section 3's current-baseline reference corrected RBL-0027 to RBL-0029. |
