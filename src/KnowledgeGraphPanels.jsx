@@ -72,7 +72,7 @@ export function KnowledgeMetricsPanel({ graph, error }) {
   );
 }
 
-export function ActiveClustersPanel({ graph, error }) {
+export function ActiveClustersPanel({ graph, error, activeClusters = [] }) {
   if (!graph) {
     return (
       <aside className="active-clusters-panel" aria-labelledby="active-clusters-heading">
@@ -90,13 +90,17 @@ export function ActiveClustersPanel({ graph, error }) {
   const clusters = clusterOrder
     .map((cluster) => ({ cluster, count: counts.get(cluster) ?? 0 }))
     .sort((a, b) => b.count - a.count);
+  // Guardian Orb Phase 2 (EBG-0121): real, currently-observed access, not a
+  // decorative default - activeClusters is only ever populated from genuine
+  // backend activity (App.jsx's knowledge.cluster_activity handling).
+  const activeClusterSet = new Set(activeClusters);
 
   return (
     <aside className="active-clusters-panel" aria-labelledby="active-clusters-heading">
       <h2 id="active-clusters-heading">Active Clusters</h2>
       <ul className="cluster-list">
         {clusters.map(({ cluster, count }) => (
-          <li className="cluster-row" key={cluster}>
+          <li className={`cluster-row${activeClusterSet.has(cluster) ? " is-active" : ""}`} key={cluster}>
             <ClusterSwatch color={colorForCluster(cluster, clusterOrder)} />
             <span className="cluster-name">{cluster}</span>
             <span className="cluster-count">{count.toLocaleString()}</span>

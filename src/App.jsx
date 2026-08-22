@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
@@ -441,7 +441,14 @@ function StatusCards({ platformSignals }) {
   );
 }
 
-function GuardianOrbit({ knowledgeGraph, knowledgeGraphError }) {
+// Guardian Orb Phase 2 (EBG-0121): a cluster counts as "active" for this
+// long after its most recent recorded RPC activity before illumination
+// fades. Deliberately short - this reflects genuinely current access, not a
+// lingering decorative state. Pruned on a plain interval, checked this often.
+const CLUSTER_ACTIVE_WINDOW_MS = 10000;
+const CLUSTER_PRUNE_INTERVAL_MS = 2000;
+
+function GuardianOrbit({ knowledgeGraph, knowledgeGraphError, activeClusters }) {
   return (
     <section className="guardian-stage" aria-label="Guardian">
       <div className="guardian-orb" role="img" aria-label="Guardian visual presence: live repository knowledge graph">
@@ -449,6 +456,7 @@ function GuardianOrbit({ knowledgeGraph, knowledgeGraphError }) {
           graph={knowledgeGraph}
           loading={!knowledgeGraph && !knowledgeGraphError}
           error={knowledgeGraphError}
+          activeClusters={activeClusters}
         />
       </div>
     </section>
@@ -613,6 +621,14 @@ export function App() {
   const [knowledgeGraph, setKnowledgeGraph] = useState(null);
   const [knowledgeGraphError, setKnowledgeGraphError] = useState(null);
 
+  // Guardian Orb Phase 2 (EBG-0121, UAM-0001 Section 8.1): cluster
+  // illumination. Map<cluster, lastActiveAtMs> - a cluster is "active" if it
+  // has a recent enough entry (see CLUSTER_ACTIVE_WINDOW_MS below), never a
+  // decorative default. Seeded from knowledge_graph's own active_clusters
+  // pull field (real prior activity) once it loads, then kept live by
+  // knowledge.cluster_activity notifications.
+  const [activeClusterTimestamps, setActiveClusterTimestamps] = useState(() => new Map());
+
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [sending, setSending] = useState(false);
@@ -660,7 +676,21 @@ export function App() {
 
     invoke("knowledge_graph")
       .then((graph) => {
-        if (!cancelled) setKnowledgeGraph(graph);
+        if (!cancelled) {
+          setKnowledgeGraph(graph);
+          // Seed from real prior activity (EBG-0121) so a cluster active in
+          // the moments just before the UXP mounted is not shown as falsely
+          // idle - the same "now" all subsequent notification timestamps use.
+          const activeAtMount = graph.active_clusters ?? [];
+          if (activeAtMount.length > 0) {
+            const now = Date.now();
+            setActiveClusterTimestamps((current) => {
+              const next = new Map(current);
+              activeAtMount.forEach((cluster) => next.set(cluster, now));
+              return next;
+            });
+          }
+        }
       })
       .catch((error) => {
         if (!cancelled) setKnowledgeGraphError(String(error));
@@ -703,6 +733,16 @@ export function App() {
       if (event.payload?.method === "system.heartbeat") {
         setLastHeartbeatAt(new Date());
       }
+      if (event.payload?.method === "knowledge.cluster_activity") {
+        const cluster = event.payload?.params?.cluster;
+        if (cluster) {
+          setActiveClusterTimestamps((current) => {
+            const next = new Map(current);
+            next.set(cluster, Date.now());
+            return next;
+          });
+        }
+      }
     }).then((fn) => {
       if (cancelled) {
         fn();
@@ -716,6 +756,33 @@ export function App() {
       if (unlisten) unlisten();
     };
   }, []);
+
+  // Illumination fades rather than sticking on forever - a plain interval,
+  // not the shared animation clock (GuardianOrbGraph's own concern), since
+  // this only needs to run a few times a second, not every frame.
+  useEffect(() => {
+    const pruneInterval = setInterval(() => {
+      const cutoff = Date.now() - CLUSTER_ACTIVE_WINDOW_MS;
+      setActiveClusterTimestamps((current) => {
+        let changed = false;
+        const next = new Map();
+        current.forEach((timestamp, cluster) => {
+          if (timestamp >= cutoff) {
+            next.set(cluster, timestamp);
+          } else {
+            changed = true;
+          }
+        });
+        return changed ? next : current;
+      });
+    }, CLUSTER_PRUNE_INTERVAL_MS);
+    return () => clearInterval(pruneInterval);
+  }, []);
+
+  const activeClusters = useMemo(
+    () => [...activeClusterTimestamps.keys()],
+    [activeClusterTimestamps],
+  );
 
   const handleSubmit = () => {
     const message = inputValue.trim();
@@ -922,6 +989,7 @@ export function App() {
               <GuardianOrbit
                 knowledgeGraph={knowledgeGraph}
                 knowledgeGraphError={knowledgeGraphError}
+                activeClusters={activeClusters}
               />
               <CommandPanel
                 messages={messages}
@@ -945,7 +1013,7 @@ export function App() {
                 lastHeartbeatAt={lastHeartbeatAt}
               />
               <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
-              <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} />
+              <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} activeClusters={activeClusters} />
               <AgentFrameworkPanel
                 agents={agents}
                 agentsError={agentsError}

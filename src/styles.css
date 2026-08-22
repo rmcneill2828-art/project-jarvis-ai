@@ -695,6 +695,24 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+/* Guardian Orb Phase 2 (EBG-0121, UAM-0001 Section 8.1): a real,
+   currently-observed cluster access reads as a subtle pulsing highlight -
+   only ever applied from genuine backend activity, never decoration. */
+.cluster-row.is-active {
+  border-radius: 6px;
+  animation: cluster-active-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes cluster-active-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px rgba(0, 239, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(0, 239, 255, 0.45);
+  }
+}
+
 .diagnostics-panel > h2 {
   padding: 4px 2px 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);

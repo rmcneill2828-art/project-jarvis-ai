@@ -764,9 +764,15 @@ def test_serve_forever_processes_multiple_lines_and_skips_blank_lines(tmp_path):
 
     server.serve_forever(in_stream=in_stream, out_stream=out_stream)
 
-    lines = [line for line in out_stream.getvalue().splitlines() if line]
-    assert len(lines) == 2
-    first, second = (json.loads(line) for line in lines)
+    # Both requested methods map to the "jarvis" cluster (EBG-0121), so each
+    # response is now followed by a knowledge.cluster_activity notification -
+    # filter to responses (always carry "id") to keep this test's original
+    # assertion about request/response handling itself, not the new
+    # notification stream, which the tests below cover directly.
+    all_messages = [json.loads(line) for line in out_stream.getvalue().splitlines() if line]
+    responses = [message for message in all_messages if "id" in message]
+    assert len(responses) == 2
+    first, second = responses
     assert first["id"] == 1
     assert second["result"]["message"] == "local-echo: hi"
 
@@ -835,6 +841,81 @@ def test_heartbeat_loop_writes_nothing_after_stop_event_set_before_first_interva
     assert out_stream.getvalue() == ""
 
 
+def test_serve_forever_emits_cluster_activity_notification_with_no_id_key(tmp_path):
+    """EBG-0121: a knowledge.cluster_activity notification is a JSON-RPC
+    object with no `id` key, mirroring system.heartbeat's own shape
+    (test_heartbeat_loop_emits_notification_with_no_id_key above), emitted
+    for a real dispatched method that maps to a cluster."""
+
+    server = StdioRpcServer(
+        build_default_runtime(environ={
+            "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+        }),
+        heartbeat_interval_seconds=9999.0,
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
+    in_stream = io.StringIO(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.speak", "params": {"text": "hi"}}) + "\n"
+    )
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=in_stream, out_stream=out_stream)
+
+    messages = [json.loads(line) for line in out_stream.getvalue().splitlines() if line]
+    notifications = [message for message in messages if "id" not in message]
+    assert len(notifications) == 1
+    notification = notifications[0]
+    assert notification["jsonrpc"] == "2.0"
+    assert notification["method"] == "knowledge.cluster_activity"
+    assert notification["params"]["cluster"] == "sentinel"
+    assert notification["params"]["method"] == "guardian.speak"
+    assert "timestamp" in notification["params"]
+
+
+def test_serve_forever_emits_no_cluster_activity_notification_for_a_failed_request(tmp_path):
+    """Only a successful dispatch counts as genuine cluster access - a
+    request that never reaches a real handler (invalid params) must not
+    illuminate anything."""
+
+    server = _server(tmp_path)
+    in_stream = io.StringIO(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.speak", "params": {}}) + "\n"
+    )
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=in_stream, out_stream=out_stream)
+
+    messages = [json.loads(line) for line in out_stream.getvalue().splitlines() if line]
+    assert len(messages) == 1
+    assert "error" in messages[0]
+
+
+def test_knowledge_graph_response_includes_active_clusters_pull_field(tmp_path):
+    """EBG-0121: knowledge.graph's response gains a real active_clusters
+    field reflecting activity already observed before this fetch - the
+    pull-interface half of cluster illumination."""
+
+    server = _server(tmp_path)
+
+    server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.speak", "params": {"text": "hi"}}))
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "knowledge.graph", "params": {}}))
+
+    assert response["result"]["active_clusters"] == ["sentinel"]
+
+
+def test_knowledge_graph_response_active_clusters_empty_with_no_prior_activity(tmp_path):
+    """No-mock-fallback rule (ESR-0017 WP9): a fresh server with no prior
+    dispatch activity must report an empty active_clusters list, never a
+    placeholder or decorative default."""
+
+    server = _server(tmp_path)
+
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "knowledge.graph", "params": {}}))
+
+    assert response["result"]["active_clusters"] == []
+
+
 def test_serve_forever_still_processes_requests_correctly_with_heartbeat_thread_running(tmp_path):
     """Regression check: serve_forever's existing request/response behaviour
     (EIP-ESR0031-002 Implementation Requirement 4) must be unaffected by the
@@ -861,9 +942,12 @@ def test_serve_forever_still_processes_requests_correctly_with_heartbeat_thread_
 
     server.serve_forever(in_stream=in_stream, out_stream=out_stream)
 
-    lines = [line for line in out_stream.getvalue().splitlines() if line]
-    assert len(lines) == 2
-    first, second = (json.loads(line) for line in lines)
+    # Same filtering rationale as
+    # test_serve_forever_processes_multiple_lines_and_skips_blank_lines above.
+    all_messages = [json.loads(line) for line in out_stream.getvalue().splitlines() if line]
+    responses = [message for message in all_messages if "id" in message]
+    assert len(responses) == 2
+    first, second = responses
     assert first["id"] == 1
     assert second["result"]["message"] == "local-echo: hi"
 
@@ -913,7 +997,16 @@ def test_serve_forever_interleaves_heartbeats_without_corrupting_any_line(tmp_pa
     responses = [obj for obj in parsed if "id" in obj]
     notifications = [obj for obj in parsed if "id" not in obj]
     assert len(responses) == 5
-    assert all(notification["method"] == "system.heartbeat" for notification in notifications)
+    # Two independent notification sources now interleave with responses on
+    # this shared stream: the heartbeat thread (system.heartbeat) and
+    # serve_forever's own knowledge.cluster_activity emission (EBG-0121) -
+    # each platform.status call maps to the "jarvis" cluster. Every line
+    # already parsed cleanly above (the actual interleaving-safety
+    # assertion); this just confirms no unexpected third notification type.
+    assert all(notification["method"] in ("system.heartbeat", "knowledge.cluster_activity") for notification in notifications)
+    cluster_activity_notifications = [n for n in notifications if n["method"] == "knowledge.cluster_activity"]
+    assert len(cluster_activity_notifications) == 5
+    assert all(n["params"]["cluster"] == "jarvis" for n in cluster_activity_notifications)
 
 
 def test_memory_propose_approve_list_round_trip(tmp_path):

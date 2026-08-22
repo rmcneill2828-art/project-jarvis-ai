@@ -16,6 +16,7 @@ async function mockTauriIpc(
     activeProfile = null,
     agents = [],
     invokeAgentResult,
+    knowledgeGraphOverrides = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -137,6 +138,8 @@ async function mockTauriIpc(
           { id: "n2", label: "Test Node 2" },
         ],
         edges: [{ source: "n1", target: "n2" }],
+        active_clusters: [],
+        ...knowledgeGraphOverrides,
       },
       speakResult,
       transcribeResult,
@@ -366,4 +369,43 @@ test("a denied agent outcome renders inline rather than silently failing", async
   await expect(page.locator(".agent-framework-panel .conversation-error")).toContainText(
     "Guardian declined this request.",
   );
+});
+
+test("a cluster reported active by knowledge.graph's pull field renders as illuminated", async ({ page }) => {
+  // EBG-0121 (Guardian Orb Phase 2): exercises the pull-interface seed path
+  // (App.jsx's knowledge_graph mount-fetch handling) - the live
+  // knowledge.cluster_activity push-notification path is not covered here,
+  // since this suite has no existing mock for @tauri-apps/api/event's
+  // listen() (system.heartbeat is likewise untested at this layer) -
+  // disclosed rather than silently assumed covered.
+  await mockTauriIpc(page, {
+    knowledgeGraphOverrides: {
+      nodes: [
+        { id: "n1", label: "Test Node 1", cluster: "jarvis" },
+        { id: "n2", label: "Test Node 2", cluster: "sentinel" },
+      ],
+      edges: [{ source: "n1", target: "n2" }],
+      active_clusters: ["jarvis"],
+    },
+  });
+  await page.goto("/");
+
+  const activeRow = page.locator(".cluster-row", { hasText: "jarvis" });
+  const idleRow = page.locator(".cluster-row", { hasText: "sentinel" });
+
+  await expect(activeRow).toHaveClass(/is-active/);
+  await expect(idleRow).not.toHaveClass(/is-active/);
+});
+
+test("a cluster with no reported activity renders without the illumination class", async ({ page }) => {
+  await mockTauriIpc(page, {
+    knowledgeGraphOverrides: {
+      nodes: [{ id: "n1", label: "Test Node 1", cluster: "jarvis" }],
+      edges: [],
+      active_clusters: [],
+    },
+  });
+  await page.goto("/");
+
+  await expect(page.locator(".cluster-row", { hasText: "jarvis" })).not.toHaveClass(/is-active/);
 });

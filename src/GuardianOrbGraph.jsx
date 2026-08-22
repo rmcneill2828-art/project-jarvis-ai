@@ -328,7 +328,15 @@ function rotateNode(node, cos, sin) {
   return { x: CENTER + rx, y: CENTER + node.by, z: rz, depth };
 }
 
-export function GuardianOrbGraph({ graph, loading, error }) {
+// Guardian Orb Phase 2 (EBG-0121, UAM-0001 Section 8.1): a fixed additional
+// glow-alpha boost for nodes in a currently-active cluster - deliberately a
+// simple alpha increment on the existing glow-sprite draw, not a second
+// sprite pass or new animation loop, to avoid adding meaningful per-frame
+// cost to this component's already carefully-tuned draw loop (see the
+// module-level notes on Canvas migration cost above).
+const ACTIVE_CLUSTER_GLOW_BOOST = 0.35;
+
+export function GuardianOrbGraph({ graph, loading, error, activeClusters = [] }) {
   const baseNodes = useMemo(() => {
     if (!graph || graph.nodes.length === 0) return [];
     return layoutSphere(graph.nodes, graph.edges);
@@ -343,6 +351,14 @@ export function GuardianOrbGraph({ graph, loading, error }) {
   // Latest drawn node screen positions + hit radius, kept for manual
   // hit-testing (Canvas has no free per-shape hit-testing the way SVG did).
   const hitTestRef = useRef([]);
+
+  // A plain "latest value" ref, not effect state: activeClusters can change
+  // every few seconds as real activity is observed, and the draw loop below
+  // must read the current set every frame without tearing down/rebuilding
+  // the whole rAF subscription (edgeCacheRef, sortOrderRef, etc.) each time -
+  // only baseNodes/clusterOrder/graph identity changes warrant that.
+  const activeClustersRef = useRef(new Set());
+  activeClustersRef.current = useMemo(() => new Set(activeClusters), [activeClusters]);
 
   const labelById = useMemo(() => {
     const map = new Map();
@@ -457,8 +473,12 @@ export function GuardianOrbGraph({ graph, loading, error }) {
         const depthAlpha = 0.45 + projected.depth * 0.55;
         const color = colorForCluster(node.cluster, clusterOrder);
         const sprite = glowSprites.get(color);
+        // Guardian Orb Phase 2 (EBG-0121): real, currently-observed cluster
+        // access reads as a brighter glow, not a new shape or animation -
+        // driven by observed data, per UAM-0001 8.1's own principle.
+        const isClusterActive = activeClustersRef.current.has(node.cluster);
 
-        ctx.globalAlpha = depthAlpha;
+        ctx.globalAlpha = isClusterActive ? Math.min(1, depthAlpha + ACTIVE_CLUSTER_GLOW_BOOST) : depthAlpha;
         if (sprite) {
           const glowRadius = coreRadius * GLOW_RADIUS_MULTIPLIER;
           ctx.drawImage(sprite, projected.x - glowRadius, projected.y - glowRadius, glowRadius * 2, glowRadius * 2);

@@ -41,6 +41,7 @@ from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
 from jarvis.interfaces import knowledge_graph
+from jarvis.interfaces.activity_tracker import ActivityTracker
 from jarvis.interfaces.sentinel_agent import SentinelGatedAgentService
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.interfaces.voice import (
@@ -321,8 +322,15 @@ class StdioRpcServer:
         gia_observer: LocalResourceObserver | None = None,
         heartbeat_interval_seconds: float | None = None,
         identity_service: ProfileService | None = None,
+        activity_tracker: ActivityTracker | None = None,
     ) -> None:
         self._runtime = runtime
+        # Guardian Orb Phase 2 (EBG-0121, UAM-0001 Section 8.1): records
+        # genuinely-dispatched RPC activity so the Orb/Active Clusters panel
+        # can illuminate clusters as they are actually accessed. Injectable
+        # (mirroring gia_observer/identity_service) so RPC-layer tests can
+        # assert exact recorded activity from a deterministic instance.
+        self._activity_tracker = activity_tracker if activity_tracker is not None else ActivityTracker()
         # Streaming Notifications MVP (EIP-ESR0031-002): shared between the
         # main loop's response writes (serve_forever) and the heartbeat
         # thread's notification writes (_heartbeat_loop) so the two can never
@@ -456,7 +464,14 @@ class StdioRpcServer:
         }
 
     def _knowledge_graph(self, params: dict[str, Any]) -> dict[str, Any]:
-        return knowledge_graph.build_graph()
+        graph = knowledge_graph.build_graph()
+        # Guardian Orb Phase 2 (EBG-0121): the pull-interface half of cluster
+        # illumination - real activity already observed by the time this is
+        # fetched, so a session mounting mid-activity is not shown a falsely
+        # idle Orb. The push-interface half is serve_forever's
+        # knowledge.cluster_activity notification, below.
+        graph["active_clusters"] = self._activity_tracker.recent_clusters()
+        return graph
 
     def _gia_status(self, params: dict[str, Any]) -> dict[str, Any]:
         snapshot = self._gia_observer.snapshot()
@@ -595,6 +610,11 @@ class StdioRpcServer:
             # channel, while still being diagnostically useful.
             return self._error(request_id, INTERNAL_ERROR, f"{type(exc).__name__}: {exc}")
 
+        # Guardian Orb Phase 2 (EBG-0121): only a successful dispatch counts as
+        # genuine access to that cluster's capability - an errored or
+        # malformed request never reaches this line.
+        self._activity_tracker.record(method)
+
         return {"jsonrpc": JSONRPC_VERSION, "id": request_id, "result": result}
 
     def _error(self, request_id: Any, code: int, message: str) -> dict[str, Any]:
@@ -647,6 +667,24 @@ class StdioRpcServer:
                 response = self.handle_line(line)
                 if response is not None:
                     self._write_line(out_stream, response)
+                # Guardian Orb Phase 2 (EBG-0121): emit one
+                # knowledge.cluster_activity notification per genuinely
+                # recorded dispatch since the last line - drained after the
+                # response write, mirroring _heartbeat_loop's own no-`id`-key
+                # notification shape and using the same _write_line/lock.
+                for method, cluster in self._activity_tracker.pop_pending():
+                    self._write_line(
+                        out_stream,
+                        {
+                            "jsonrpc": JSONRPC_VERSION,
+                            "method": "knowledge.cluster_activity",
+                            "params": {
+                                "cluster": cluster,
+                                "method": method,
+                                "timestamp": datetime.now(UTC).isoformat(),
+                            },
+                        },
+                    )
         finally:
             stop_heartbeat.set()
 
