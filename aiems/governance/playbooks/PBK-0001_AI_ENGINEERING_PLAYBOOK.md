@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.38 |
+| Version | 1.39 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -197,6 +197,7 @@ WP0B shall confirm:
 * Initial session objective.
 * Planned engineering activities.
 * Programme Sponsor approval before engineering activity begins.
+* Updating `~/.current_session` (a Sponsor-side file kept outside the repository, per EBG-0091, ESR-0051) to the newly active Engineering Session identifier, so the Sponsor's own `~/approve`/`~/reject` approval commands can infer it rather than requiring it to be retyped at every approval.
 
 A new Engineering Session Report shall be created during WP0B only after Repository Synchronisation confirms that the previous Engineering Session has been formally closed.
 
@@ -436,6 +437,16 @@ This is an additive discipline alongside the UXP progress requirement above, not
 
 ---
 
+# Scope-Creep and Cross-WP-Dependency Flagging Discipline
+
+Directed by the Programme Sponsor at ESR-0034 WP1 registration (EBG-0092), following the Programme Sponsor's own self-diagnosed recurring pattern: authorising a Work Package, then mid-session folding in an unrelated backlog item, which grows that Work Package's scope, produces multi-hour sessions, and pushes the original objective's remaining ground to a future backlog rather than finishing it. This section formalises a practice already adopted and applied as a standing behavioural instruction since that observation - most recently applied live during ESR-0051 WP1's own scoping, when a home-directory/credential-persistence question was surfaced and gated through explicit Programme Sponsor decisions rather than silently absorbed.
+
+Keeping Work Packages genuinely independent of one another - no Work Package depending on another still-pending Work Package - serves two purposes: it is a prerequisite for any future asynchronous or batched approval workflow, and it is a direct countermeasure to scope growing unnoticed mid-session.
+
+The Engineering Implementer shall flag, plainly and by name, any proposed addition that would expand an approved Work Package's scope beyond what was approved, or that would create a dependency on another still-pending Work Package, before proceeding with it. This is a named checkpoint, not a hard veto: per Principle 5 (Human Accountability), the Programme Sponsor may explicitly override it and direct the addition to proceed - but the addition shall never be silently accommodated without that explicit override being sought first.
+
+---
+
 # Documentation Debt Discipline
 
 Directed by the Programme Sponsor at ESR-0031, following an observation that disclosed documentation staleness (for example EBG-0056, correctly tracked as open across ESR-0027 through ESR-0030 before being incidentally resolved rather than deliberately prioritised) can be correctly recorded as backlog and still age indefinitely, because it is never more urgent than new capability work when a session's objective is chosen.
@@ -604,6 +615,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.39 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP1 (EIP-ESR0051-001, Codex design-reviewed): added Scope-Creep and Cross-WP-Dependency Flagging Discipline (EBG-0092), formalising an already-adopted practice; added a WP0B step to update the Sponsor-side `~/.current_session` file (EBG-0091), supporting the streamlined `~/approve`/`~/reject` commands. |
 | 1.38 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the stale RBL-0030 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0031, established at ESR-0050 WP7 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification, a genuine live product-capability change) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict. |
 | 1.37 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the stale RBL-0029 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0030, established at ESR-0049 WP7 (Agent Framework Phase 3, First Specialist Agent, a genuine live product-capability change) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict. |
 | 1.36 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline): corrected the stale RBL-0028 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0029, accepted at ESR-0047 WP7 - one baseline stale. Found during ESR-0048 WP0A repository synchronisation, the same recurring pattern caught at the start of nearly every prior session. |
