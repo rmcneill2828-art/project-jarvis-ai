@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 3.33
+**Version:** 3.34
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 3.33 |
+| Version | 3.34 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] is the latest **closed** session (5 August 2026). [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] is now **open** (22 August 2026), run under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment: a full project health review ([[WR-ESR0051-001_FULL_PROJECT_HEALTH_REVIEW|WR-ESR0051-001]], Codex cross-reviewed) preceded WP1 at the Programme Sponsor's request following a ~2-week gap. **WP1** resolved [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0090 through EBG-0096 (process/tooling backlog cluster) - a real Claude↔Codex automated review round trip proven end to end, streamlined Sponsor approval, installer/status-check/auto-start scripts; **WP2** resolved EBG-0121 (Guardian Orb Phase 2: Cluster Illumination) - real backend RPC activity now illuminates the Orb and Active Clusters panel. Session-wide **WP6** (Independent Repository Verification): genuine background Codex review of the full session diff - **Pass, no blocking findings**. Session-wide **WP7**: **Establish** [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] - a genuine live product-capability change. Full detail in [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]]. |
+| Current Mode | [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] is the latest **closed** session (22 August 2026). No session is currently open. ESR-0051 was run under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment: a full project health review ([[WR-ESR0051-001_FULL_PROJECT_HEALTH_REVIEW|WR-ESR0051-001]], Codex cross-reviewed) preceded WP1 at the Programme Sponsor's request following a ~2-week gap. **WP1** resolved [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0090 through EBG-0096 (process/tooling backlog cluster) - a real Claude↔Codex automated review round trip proven end to end, streamlined Sponsor approval, installer/status-check/auto-start scripts; **WP2** resolved EBG-0121 (Guardian Orb Phase 2: Cluster Illumination) - real backend RPC activity now illuminates the Orb and Active Clusters panel. Session-wide **WP6** (Independent Repository Verification): genuine background Codex review of the full session diff - **Pass, no blocking findings**. Session-wide **WP7**: **Establish** [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] - a genuine live product-capability change. Full detail in [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]]. |
 | Current Repository Baseline | [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]], accepted at ESR-0051 WP7, superseding RBL-0031. |
 | Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.7 - baseline-pointer sync only at ESR-0050 WP7; the new Agent Framework UXP Wiring capability itself is not yet reflected in its content, flagged for a future Documentation Debt sync. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] similarly pointer-synced to v2.6, capability rows not re-audited this pass. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] open (22 August 2026) / two Work Packages delivered so far under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating). |
+| Current Phase | No session currently open. [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] closed (22 August 2026) / two Work Packages delivered under the permanent [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (Claude Engineering Implementer, Codex Engineering Reviewer, Programme Sponsor gating). |
 | Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. `codex exec` remained usable throughout ESR-0051, including a genuine background session-wide WP6 review with no blocking findings - the standing template's post-commit review step remains repeatable, twenty-six sessions in (ESR-0026 through ESR-0051). A `~/.codex/rules/default.rules` execpolicy misconfiguration (forward-slash vs backslash path patterns) was root-caused and fixed at WP0/WP1, achieving a genuinely unattended `return-findings` round trip for the first time - previously this required a read-only-plus-Claude-relay fallback. Every commit this session was gated through the real AIEMS Exchange Bridge/Sponsor Approval Service. |
-| Current Engineering Objective | [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] open: WP1 resolved EBG-0090-0096 (process/tooling backlog cluster); WP2 resolved EBG-0121 (Guardian Orb Phase 2: Cluster Illumination). RBL-0032 established. See [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] for full detail. |
+| Current Engineering Objective | No session currently open. [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] closed: WP1 resolved EBG-0090-0096 (process/tooling backlog cluster); WP2 resolved EBG-0121 (Guardian Orb Phase 2: Cluster Illumination). RBL-0032 established. See [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] for full detail. |
 
 ---
 
@@ -100,7 +100,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] is **Open** (22 August 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step. Opened following a ~2-week gap since ESR-0050 closed, at the Programme Sponsor's direct request for a full project review on return.
+[[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] is **Closed** (22 August 2026), run under the permanent Lead/Reviewer appointment: Claude as Engineering Implementer, Codex as Engineering Reviewer, Programme Sponsor gating every step. Opened following a ~2-week gap since ESR-0050 closed, at the Programme Sponsor's direct request for a full project review on return.
 
 **WP0** (Complete): a full project health review ([[WR-ESR0051-001_FULL_PROJECT_HEALTH_REVIEW|WR-ESR0051-001]]) was produced ahead of formally opening the session, independently Codex cross-reviewed (Conditional Pass with corrections, both folded in). One real gap found and fixed: ESR-0050's own closure commit (`e586eca`) had been committed locally but never pushed - pushed during WP0, restoring GitHub as the accurate authoritative baseline. Along the way, a `~/.codex/rules/default.rules` execpolicy misconfiguration (backslash-only path patterns never matching the forward-slash form every real invocation uses) was root-caused and fixed with the Programme Sponsor's explicit authorisation, achieving a genuinely unattended Codex `return-findings` round trip for the first time.
 
@@ -120,7 +120,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 ---
 
-PST-0001 records ESR-0051 as open, with WP1/WP2/WP6/WP7 complete. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0051 as closed, with no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -725,6 +725,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.34 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 formally closed. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect no session currently open; ESR-0051's Current Mode reference flips from ESR-0050 (latest closed, held during ESR-0051's own open period per PBK-0001 WP0B) to ESR-0051 itself, now the latest closed session. Prior Session block (ESR-0050) unchanged - already correct. |
 | 3.33 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 session-wide WP7: Establish RBL-0032 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination - a genuine live product-capability change), superseding RBL-0031. Session-wide WP6 Pass, no blocking findings, covering the full `e586eca..b5fa582` diff. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect ESR-0051 open with WP1/WP2 complete, WP6/WP7 complete; ESR-0050 becomes Prior Session, replacing ESR-0049. Section 5's JARVIS Product/Capability Maturity and Guardian Experience Architecture rows, Section 8's Current Product Baseline row and Section 9's Repository Health block updated for PCB-0001 (2.7 to 2.8) and JARVIS_CAPABILITY_READINESS_MATRIX (2.6 to 2.7) baseline-pointer syncs, and current test/validation figures (523 passed/1 skipped, 291 warnings, 15 Playwright). |
 | 3.32 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 formally closed. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect no session currently open; ESR-0050's Current Mode reference flips from ESR-0049 (latest closed, held during ESR-0050's own open period per PBK-0001 WP0B) to ESR-0050 itself, now the latest closed session. Prior Session block (ESR-0049) unchanged - already correct. |
 | 3.31 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 session-wide WP7: Establish RBL-0031 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification - a genuine live product-capability change), superseding RBL-0030. Session-wide WP6 Pass, no findings, covering the full `0d614e0..a7eabb0` diff. Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect ESR-0050 open with WP1-WP3 complete, WP6/WP7 complete - Current Mode's leading WikiLink correctly stays on ESR-0049 (the latest *closed* session) throughout, per validate_repository.py's own rule, with ESR-0050's in-progress detail carried in the same cell's narrative text. Section 5's JARVIS Product/Capability Maturity rows and Section 8's Current Product Baseline row updated for PCB-0001 (2.6 to 2.7) and JARVIS_CAPABILITY_READINESS_MATRIX (2.5 to 2.6) baseline-pointer syncs. |

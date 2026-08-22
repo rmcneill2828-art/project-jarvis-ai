@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0051 |
 | Title | Engineering Session Report |
-| Version | 1.4 |
-| Status | Open |
+| Version | 1.5 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0051 |
 | Date Opened | 22 August 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP0/WP1/WP2/WP6 complete, WP7 complete (Establish RBL-0032) |
+| Date Closed | 22 August 2026 |
+| Closure Status | Closed - WP1/WP2 complete, session-wide WP6 (Pass) and WP7 (Establish RBL-0032) complete |
 
 ---
 
@@ -155,6 +155,7 @@ Files: `aiems/governance/baselines/RBL-0032_REPOSITORY_BASELINE.md` (new), `aiem
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 22 August 2026 | Claude Engineering Implementer | **ESR-0051 formally closed.** Two Work Packages: WP1 EBG-0090-0096 process/tooling backlog cluster cleared - a real Claude↔Codex automated review round trip proven end to end, streamlined Sponsor approval, installer/status-check/auto-start scripts; WP2 EBG-0121 (Guardian Orb Phase 2: Cluster Illumination) resolved - real backend RPC activity now illuminates the Orb and Active Clusters panel. Session-wide WP6 (genuine background Codex review of the full session diff) Pass, no blocking findings. Session-wide WP7: Establish RBL-0032, superseding RBL-0031 - a genuine live product-capability change. Every commit this session gated through the real AIEMS Exchange Bridge/Sponsor Approval Service. |
 | 1.4 | 22 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `e586eca..b5fa582` diff (WP1+WP2) - **Pass, no blocking findings**. Codex's own advisory baseline assessment: genuine and baseline-worthy, recommends Establish. Session-wide WP7 (Repository Baseline Determination): **Establish [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]]**, superseding RBL-0031 - WP2's Guardian Orb Phase 2 delivery is a genuine live product-capability change. Every controlled artefact's "current accepted repository baseline" reference propagated to RBL-0032 (COC-0001, PBK-0001, MOD-0001, PCB-0001, JARVIS Capability Readiness Matrix, README, PST-0001). |
 | 1.3 | 22 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0121 (Guardian Orb Phase 2: Cluster Illumination) resolved per [[EIP-ESR0051-002_GUARDIAN_ORB_PHASE2_CLUSTER_ILLUMINATION|EIP-ESR0051-002]] - real backend RPC-activity tracker feeding both a `knowledge.graph` pull field and a new `knowledge.cluster_activity` push notification, frontend illumination rendering. Codex design review Approve with one required correction folded in. 523/1 tests (up from 512/1), 15/15 Playwright, live-verified against the real backend process. |
 | 1.2 | 22 August 2026 | Claude Engineering Implementer | WP1 addendum: recorded the Programme Sponsor's own live end-to-end verification of all three home-directory scripts (`~/approve`/`~/reject`/`~/bridge-status`, all Pass) and the real bug found/fixed/re-reviewed/pushed in `start_sponsor_approval_service_autostart.ps1` during the Sponsor's first live `-Setup` attempt, plus the subsequent successful `-Setup` run confirmed via `cmdkey /list`. WP1 now fully closed, live-verified end-to-end. |
