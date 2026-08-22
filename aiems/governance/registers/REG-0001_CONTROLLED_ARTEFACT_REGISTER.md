@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.474
+**Version:** 3.475
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.474 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.475 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -285,7 +285,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0048 | Engineering Session Report | Engineering Session Report | 1.3 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0049 | Engineering Session Report | Engineering Session Report | 1.7 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0050 | Engineering Session Report | Engineering Session Report | 1.8 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0051 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0051 | Engineering Session Report | Engineering Session Report | 1.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -400,6 +400,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.475 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP1 addendum: synced ESR-0051 row (1.1 to 1.2) - Programme Sponsor's live end-to-end verification of all three home-directory scripts recorded, plus the real bug found/fixed/re-reviewed/pushed in start_sponsor_approval_service_autostart.ps1 during the Sponsor's own first -Setup attempt. |
 | 3.474 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP1 post-commit fix (Codex-caught, non-blocking): corrected version-history entry 3.473's own prose, which said ESR-0051 was registered at 1.0 when the actual row/file is 1.1 - the row itself was already correct, only this entry's narrative text was stale by one version. |
 | 3.473 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP1: registered ESR-0051 (1.1, Open, WP1 Complete) and EIP-ESR0051-001 (1.0, Approved - implemented, Codex design-reviewed Pass with governance note folded in). Synced PBK-0001 (1.38 to 1.39) and EBR-0001 (1.162 to 1.163) rows - EBG-0090 through EBG-0096 process/tooling cluster cleared per the Programme Sponsor's approved objective. Corrects a non-blocking staleness Codex's post-commit review caught: this entry's own prose still said ESR-0051 was registered at 1.0, one version behind the row/file's real 1.1. |
 | 3.472 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 formally closed: Status Open to Closed, Date Closed 5 August 2026. Synced ESR-0050 (1.7 to 1.8, Closed) and PST-0001 (3.31 to 3.32, Current Mode flipped to lead with ESR-0050 as latest closed) rows. |
