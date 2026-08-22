@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0051 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0051 |
 | Date Opened | 22 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP0 complete, WP1/WP2 planned |
+| Closure Status | Open - WP0/WP1/WP2/WP6 complete, WP7 complete (Establish RBL-0032) |
 
 ---
 
@@ -62,6 +62,8 @@ WP2: register and deliver Guardian Orb Phase 2 (cluster illumination), the next 
 | WP0 | Repository Synchronisation and Full Project Health Review (WR-ESR0051-001, Codex cross-reviewed) | Complete |
 | WP1 | Clear EBG-0090-0096 process/tooling backlog cluster | Complete |
 | WP2 | Guardian Orb Phase 2 (cluster illumination) | Complete |
+| WP6 | Session-wide Independent Repository Verification | Complete |
+| WP7 | Session-wide Repository Baseline Determination | Complete - Establish RBL-0032 |
 
 Further Work Packages will be added if the Programme Sponsor directs the session remain open beyond WP2.
 
@@ -113,6 +115,28 @@ Files: `jarvis/interfaces/activity_tracker.py` (new), `jarvis/interfaces/stdio_r
 
 ---
 
+# 6C. Session-Wide WP6 - Independent Repository Verification
+
+Following WP2's implementation and push, the Programme Sponsor selected moving to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s workspace-write`, background invocation) covering the full session diff `e586eca..b5fa582` (all 5 commits: WP1's four, WP2's one) against the prior baseline [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] (commit `e586eca`, established at ESR-0050 WP7). Both WP1 and WP2 already had their own individual post-commit reviews during implementation; this is a holistic check across the combined diff. Codex independently re-ran the full validation itself rather than trusting prior results: `pytest` (523 passed, 1 skipped, matching), `validate_repository.py` (0 errors, 291 warnings, matching); confirmed `git show --stat` shows exactly the 18 expected changed paths across WP1/WP2 scope only; confirmed `GAM-0001`/`sentinel/policy.py` produce an empty diff across the whole session (byte-identical, untouched); spot-checked EBR-0001's EBG-0091 through EBG-0096 and EBG-0121 "Completed" claims against real files/wiring; found no leftover scratch/temporary artefacts committed.
+
+**Verdict: Pass, no blocking findings.**
+
+Codex's own advisory baseline assessment: this session's changes are genuine and baseline-worthy, recommending **Establish** rather than merely Retain against RBL-0031. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6D. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Establish [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]]**, superseding [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] - WP2 delivered a genuine, live product-capability change (Guardian's Orb and Active Clusters panel now illuminate in response to real, observed backend activity, verified against the real running backend process), matching the Establish threshold applied at RBL-0025/RBL-0027/RBL-0028/RBL-0029/RBL-0030/RBL-0031 rather than the Retain threshold applied at architecture/documentation-only sessions such as ESR-0048. WP1's process/tooling delivery alone would not necessarily have crossed this threshold; WP2's real Orb illumination does.
+
+[[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] created (HEAD at baseline creation: `b5fa582`), registered in REG-0001. Every controlled artefact citing the "current accepted repository baseline" propagated from RBL-0031 to RBL-0032: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (1.20 to 1.21), [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.39 to 1.40), [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] (1.9 to 1.10), [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (2.7 to 2.8, pointer only), [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] (2.6 to 2.7, pointer only), README.md and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.32 to 3.33). README and PST-0001 also updated their "current session" framing to reflect ESR-0051 open with WP1/WP2/WP6/WP7 complete, and their Guardian Experience Architecture/Orb capability descriptions to reflect Phase 2 (cluster illumination) now implemented alongside Phase 1. PCB-0001's and the Capability Matrix's own capability-content refresh for this session's deliveries is disclosed as not yet done, deferred to a future Documentation Debt sync.
+
+Files: `aiems/governance/baselines/RBL-0032_REPOSITORY_BASELINE.md` (new), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md`, `aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md`, `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `README.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`.
+
+---
+
 # 7. Related Artefacts
 
 * [[ESR-0050_ENGINEERING_SESSION_REPORT|ESR-0050]] - prior closed session, immediate predecessor.
@@ -123,6 +147,7 @@ Files: `jarvis/interfaces/activity_tracker.py` (new), `jarvis/interfaces/stdio_r
 * [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] - Guardian Orb vision, Section 8, WP2's target.
 * [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8A, the boundary reason the Local Agent/Action faculty was deliberately not selected this session.
 * [[EIP-ESR0051-002_GUARDIAN_ORB_PHASE2_CLUSTER_ILLUMINATION|EIP-ESR0051-002]] - approved, implemented Engineering Implementation Package for WP2.
+* [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] - repository baseline established at this session's WP7, superseding RBL-0031.
 
 ---
 
@@ -130,6 +155,7 @@ Files: `jarvis/interfaces/activity_tracker.py` (new), `jarvis/interfaces/stdio_r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 22 August 2026 | Claude Engineering Implementer | Session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full `e586eca..b5fa582` diff (WP1+WP2) - **Pass, no blocking findings**. Codex's own advisory baseline assessment: genuine and baseline-worthy, recommends Establish. Session-wide WP7 (Repository Baseline Determination): **Establish [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]]**, superseding RBL-0031 - WP2's Guardian Orb Phase 2 delivery is a genuine live product-capability change. Every controlled artefact's "current accepted repository baseline" reference propagated to RBL-0032 (COC-0001, PBK-0001, MOD-0001, PCB-0001, JARVIS Capability Readiness Matrix, README, PST-0001). |
 | 1.3 | 22 August 2026 | Claude Engineering Implementer | WP2 Complete: EBG-0121 (Guardian Orb Phase 2: Cluster Illumination) resolved per [[EIP-ESR0051-002_GUARDIAN_ORB_PHASE2_CLUSTER_ILLUMINATION|EIP-ESR0051-002]] - real backend RPC-activity tracker feeding both a `knowledge.graph` pull field and a new `knowledge.cluster_activity` push notification, frontend illumination rendering. Codex design review Approve with one required correction folded in. 523/1 tests (up from 512/1), 15/15 Playwright, live-verified against the real backend process. |
 | 1.2 | 22 August 2026 | Claude Engineering Implementer | WP1 addendum: recorded the Programme Sponsor's own live end-to-end verification of all three home-directory scripts (`~/approve`/`~/reject`/`~/bridge-status`, all Pass) and the real bug found/fixed/re-reviewed/pushed in `start_sponsor_approval_service_autostart.ps1` during the Sponsor's first live `-Setup` attempt, plus the subsequent successful `-Setup` run confirmed via `cmdkey /list`. WP1 now fully closed, live-verified end-to-end. |
 | 1.1 | 22 August 2026 | Claude Engineering Implementer | WP1 Complete: EBG-0090 through EBG-0096 process/tooling cluster cleared per [[EIP-ESR0051-001_PROCESS_TOOLING_BACKLOG_CLUSTER|EIP-ESR0051-001]] v0.2 (Codex design review Pass with one non-blocking governance note folded in; Programme Sponsor approval-to-implement verified via the real Sponsor Approval Service). Six items Completed, one (EBG-0090) Investigated only, no implementation authorised. `pytest` 512/1 unchanged, `validate_repository.py` 0 errors/289 warnings. |

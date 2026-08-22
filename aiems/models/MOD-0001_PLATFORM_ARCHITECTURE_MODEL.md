@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.9
+**Version:** 1.10
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.9 |
+| Version | 1.10 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -949,13 +949,14 @@ This relationship provides architectural traceability throughout the AI Engineer
 | [[PVTM-0001_PRODUCT_VISION_TRACEABILITY_MODEL|PVTM-0001]] | Traceability model that references MOD-0001 as the platform and architectural domain authority. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture aligned with MOD-0001 during ESR-0008. |
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture implementing the platform direction through JARVIS. |
-| [[RBL-0031_REPOSITORY_BASELINE|RBL-0031]] | Current accepted repository baseline, established at ESR-0050 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification, a genuine live product-capability change). |
+| [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] | Current accepted repository baseline, established at ESR-0051 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination, a genuine live product-capability change). |
 
 ---
 # Version History
 
 | Version | Date | Author | Summary |
 |---------|------------|-----------------------------------------|--------------------------------------------------------------------------|
+| 1.10 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP7: corrected the "current accepted repository baseline" reference (Related Artefacts) from RBL-0031 to RBL-0032, established at ESR-0051 WP7 following the Programme Sponsor's Establish determination (WP2's Guardian Orb Phase 2 Cluster Illumination delivery is a genuine live product-capability change). |
 | 1.9 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the "current accepted repository baseline" reference (Related Artefacts) from RBL-0030 to RBL-0031, established at ESR-0050 WP7 following the Programme Sponsor's Establish determination (WP2's Agent Framework UXP Wiring delivery is a genuine live product-capability change). |
 | 1.8 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the "current accepted repository baseline" reference (Related Artefacts) from RBL-0029 to RBL-0030, established at ESR-0049 WP7 following the Programme Sponsor's Establish determination (WP2's Agent Framework Phase 3 delivery is a genuine live product-capability change). |
 | 1.7 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP2, resolving EBG-0119 (Agent Framework Phase 3: First Specialist Agent Implementation) per [[EIP-ESR0049-001_AGENT_FRAMEWORK_PHASE3_FIRST_SPECIALIST_AGENT|EIP-ESR0049-001]] (Codex design review: Pass with non-blocking findings, folded in; Programme Sponsor approval verified via the real Sponsor Approval Service): the "Agent Framework" subsection's contract is now implemented as real code - `jarvis/agents/` (`SpecialistAgent`/`AgentRequest`/`AgentResult`, `GiaObservabilityAgent`), a `SentinelGatedAgentService` reusing the shared gateway, two new `guardian.agent.*` RPC methods, and an honest `platform.status` correction. GIA's existing read-only observability is now the first live specialist agent, classified `ROUTINE_INTERACTION`. `GAM-0001` Section 8A's `LOCAL_AGENT_ACTION` hard `DENY` remains completely untouched - this section's own text is unchanged, only its implementation status. |
