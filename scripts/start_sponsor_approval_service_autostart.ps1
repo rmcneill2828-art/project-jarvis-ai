@@ -53,35 +53,43 @@ $ErrorActionPreference = "Stop"
 $credTargetSponsor = "AIEMS_SPONSOR_TOKEN"
 $credTargetAgent = "AIEMS_AGENT_TOKEN"
 
-Add-Type -Namespace AiemsCred -Name Native -MemberDefinition @'
+# Add-Type -MemberDefinition wraps its string inside a generated class body,
+# where top-level `using` directives and a sibling struct declaration are not
+# legal C# - -TypeDefinition takes a complete, standalone source file instead
+# and avoids that wrapping pitfall entirely.
+Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 
-[StructLayout(LayoutKind.Sequential)]
-public struct CREDENTIAL {
-    public int Flags;
-    public int Type;
-    public IntPtr TargetName;
-    public IntPtr Comment;
-    public long LastWritten;
-    public int CredentialBlobSize;
-    public IntPtr CredentialBlob;
-    public int Persist;
-    public int AttributeCount;
-    public IntPtr Attributes;
-    public IntPtr TargetAlias;
-    public IntPtr UserName;
+namespace AiemsCred {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CREDENTIAL {
+        public int Flags;
+        public int Type;
+        public IntPtr TargetName;
+        public IntPtr Comment;
+        public long LastWritten;
+        public int CredentialBlobSize;
+        public IntPtr CredentialBlob;
+        public int Persist;
+        public int AttributeCount;
+        public IntPtr Attributes;
+        public IntPtr TargetAlias;
+        public IntPtr UserName;
+    }
+
+    public static class Native {
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool CredRead(string target, int type, int reservedFlag, out IntPtr credentialPtr);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool CredWrite(ref CREDENTIAL credential, int flags);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern void CredFree(IntPtr cred);
+    }
 }
-
-[DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-public static extern bool CredRead(string target, int type, int reservedFlag, out IntPtr credentialPtr);
-
-[DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-public static extern bool CredWrite(ref CREDENTIAL credential, int flags);
-
-[DllImport("advapi32.dll", SetLastError = true)]
-public static extern void CredFree(IntPtr cred);
-'@ -PassThru | Out-Null
+'@
 
 function Read-GenericCredentialSecret {
     param([string]$Target)
@@ -91,7 +99,7 @@ function Read-GenericCredentialSecret {
         throw "No Credential Manager entry found for '$Target'. Run this script with -Setup first."
     }
     try {
-        $cred = [System.Runtime.InteropServices.Marshal]::PtrToStructure($credPtr, [type][AiemsCred.Native+CREDENTIAL])
+        $cred = [System.Runtime.InteropServices.Marshal]::PtrToStructure($credPtr, [type][AiemsCred.CREDENTIAL])
         if ($cred.CredentialBlobSize -eq 0) { return "" }
         $bytes = New-Object byte[] $cred.CredentialBlobSize
         [System.Runtime.InteropServices.Marshal]::Copy($cred.CredentialBlob, $bytes, 0, $cred.CredentialBlobSize)
@@ -107,7 +115,7 @@ function Write-GenericCredentialSecret {
     $blobPtr = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($bytes.Length)
     try {
         [System.Runtime.InteropServices.Marshal]::Copy($bytes, 0, $blobPtr, $bytes.Length)
-        $cred = New-Object AiemsCred.Native+CREDENTIAL
+        $cred = New-Object AiemsCred.CREDENTIAL
         $cred.Type = 1 # CRED_TYPE_GENERIC
         $cred.TargetName = [System.Runtime.InteropServices.Marshal]::StringToCoTaskMemUni($Target)
         $cred.CredentialBlobSize = $bytes.Length
