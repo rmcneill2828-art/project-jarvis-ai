@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0052 |
 | Title | Engineering Session Report |
-| Version | 1.7 |
-| Status | Open |
+| Version | 1.9 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0052 |
 | Date Opened | 26 August 2026 |
-| Date Closed | (not yet closed) |
-| Closure Status | Open - WP1, WP2 and WP3 all complete; EBG-0125 registered for future Kokoro production wiring |
+| Date Closed | 26 August 2026 |
+| Closure Status | Closed - WP1/WP2/WP3 complete, session-wide WP6 (Conditional Pass with correction) and WP7 (Retain RBL-0032) complete |
 
 ---
 
@@ -86,8 +86,28 @@ WP3 (drafted, not yet approved-to-implement): EBG-0115 - a live Kokoro-versus-Pi
 | WP1 | Clear EBG-0122-0124 process/tooling currency cluster | Complete |
 | WP2 | Investigate and decide EBG-0111 (Composio assessment) | Complete - Deferred, not adopted |
 | WP3 | EBG-0115 Kokoro TTS live comparison | Complete - Kokoro preferred, EBG-0125 registered for follow-on production wiring |
+| WP6 | Session-wide Independent Repository Verification | Complete - Conditional Pass with correction |
+| WP7 | Session-wide Repository Baseline Determination | Pending Programme Sponsor determination |
 
-Further Work Packages will be added if the Programme Sponsor directs the session to proceed beyond WP1/WP3.
+---
+
+# 6A. Session-Wide WP6 - Independent Repository Verification
+
+Following WP3's implementation, push and the Programme Sponsor's listening verdict, the Programme Sponsor selected moving to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s workspace-write`, background invocation) intended to cover the full session diff against the prior accepted baseline [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]]. **The review request itself specified an incorrect diff boundary** (`b5fa582`, the commit where RBL-0032's baseline content was created within ESR-0051 WP7, rather than `6793015`, ESR-0051's actual final closure commit one commit later) - Codex correctly caught this, since the resulting `b5fa582..e1015b0` range spuriously included ESR-0051's own already-reviewed closure-sync files (README.md, PCB-0001, COC-0001, PBK-0001, MOD-0001, the Capability Matrix, PST-0001) as if they were new ESR-0052 content. **Verdict: Conditional Pass with correction** - the one correction was this scope-boundary mistake in the review request, not a defect in ESR-0052's actual work. Re-verified directly against the corrected range (`6793015..e1015b0`): exactly 12 files changed, precisely the expected WP0/WP1/WP3 scope (`.github/dependabot.yml`, `.github/workflows/ci.yml`, `package-lock.json`, `pyproject.toml`, `sentinel/kokoro_provider.py`, `jarvis/tests/test_kokoro_provider.py`, `EBR-0001`, `REG-0001`, `EIP-ESR0052-001`, `EIP-ESR0052-002`, `WR-ESR0052-001`, `ESR-0052`'s own report) - no scope creep, matching precedent's WP1/WP1 pattern exactly.
+
+Codex's substantive checks, independently confirmed regardless of the boundary mistake: `pytest jarvis/tests sentinel scripts/tests` (530 passed, 1 skipped, matching); `validate_repository.py` (0 errors, 297 warnings, matching); no `src/`/`src-tauri/` file changed; `sentinel/kokoro_provider.py` confirmed adapter-only - not registered in `sentinel/provider_config.py`, no new RPC method added to `jarvis/interfaces/stdio_rpc.py` (confirmed by direct search, zero hits); `GAM-0001` and `sentinel/policy.py` confirmed byte-identical/untouched across the whole session; EBR-0001's EBG-0122 through EBG-0125 entries and REG-0001's version-history rows spot-checked and matching the observed diff.
+
+Codex's own advisory baseline assessment: **Retain RBL-0032** - this session improves tooling/process, documents a real Composio non-adoption decision, and proves Kokoro via a tested adapter plus a genuine listening comparison, but Kokoro is not registered, RPC/UXP-reachable, or live production capability yet (that remains EBG-0125's separately-scoped follow-on work). The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6B. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Retain [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]]** (established at [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] WP7), matching Codex's own advisory assessment. This session's code changes (`sentinel/kokoro_provider.py`, `.github/dependabot.yml`, `.github/workflows/ci.yml`'s hardened `pip-audit` gate, `package-lock.json`) are real, tested and validated, but none change what the live running product does: `KokoroProvider` is not registered in `sentinel/provider_config.py`, has no RPC method, and no UXP surface - Guardian's actual speech output remains Piper, exactly as before this session. This matches the standing convention (baseline determination turns on live product behaviour change, not code volume or process improvement) applied at ESR-0041, ESR-0042, ESR-0045 and ESR-0048, rather than the Establish threshold applied at ESR-0049/ESR-0050/ESR-0051 (each a genuine live product-capability delivery). No new RBL is created; RBL-0032 remains the current accepted repository baseline.
+
+Files: `README.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`, `aiems/governance/sessions/ESR-0052_ENGINEERING_SESSION_REPORT.md` (this report, closure), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
 
 ---
 
@@ -96,10 +116,10 @@ Further Work Packages will be added if the Programme Sponsor directs the session
 * [[ESR-0051_ENGINEERING_SESSION_REPORT|ESR-0051]] - prior closed session, immediate predecessor.
 * [[WR-ESR0052-001_TECHNOLOGY_AND_AI_LANDSCAPE_REVIEW|WR-ESR0052-001]] - Working Report produced ahead of this session's opening; source of WP1's objective.
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Session Initialisation, Engineering Session Lifecycle and Feature-First Delivery Discipline guidance followed; re-reviewed in full at the Programme Sponsor's explicit request opening this session.
-* [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] - current accepted repository baseline at session open.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0122 through EBG-0124 (WP1's target items), EBG-0111 (WP2's investigated and Deferred item) and EBG-0115 (WP3's target item).
-* [[EIP-ESR0052-001_PROCESS_TOOLING_CURRENCY_CLUSTER|EIP-ESR0052-001]] - draft Engineering Implementation Package for WP1, not yet reviewed or approved.
-* [[EIP-ESR0052-002_KOKORO_TTS_LIVE_COMPARISON|EIP-ESR0052-002]] - draft Engineering Implementation Package for WP3, not yet reviewed or approved.
+* [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] - current accepted repository baseline, retained at this session's WP7 (no new baseline created).
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0122 through EBG-0124 (WP1, Completed), EBG-0111 (WP2, Deferred), EBG-0115 (WP3, Completed) and EBG-0125 (new, Candidate Backlog - Kokoro production wiring, this session's follow-on).
+* [[EIP-ESR0052-001_PROCESS_TOOLING_CURRENCY_CLUSTER|EIP-ESR0052-001]] - Engineering Implementation Package for WP1, approved and implemented.
+* [[EIP-ESR0052-002_KOKORO_TTS_LIVE_COMPARISON|EIP-ESR0052-002]] - Engineering Implementation Package for WP3, approved and implemented.
 * [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8A, the boundary-coverage gap WP2's Composio assessment identified for third-party-cloud-relayed external-service actions.
 * [[EIP-ESR0042-001_HIGHER_QUALITY_GUARDIAN_VOICE_MODEL|EIP-ESR0042-001]] - EBG-0113's live-comparison methodology, mirrored exactly by WP3.
 
@@ -109,6 +129,8 @@ Further Work Packages will be added if the Programme Sponsor directs the session
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.9 | 26 August 2026 | Claude Engineering Implementer | **ESR-0052 formally closed.** Session-wide WP7 (Repository Baseline Determination): **Programme Sponsor determination: Retain RBL-0032**, matching Codex's own advisory - this session's real, tested code changes (`KokoroProvider`, CI/dependency hygiene) do not change live product behaviour (Kokoro is not registered, RPC-reachable or UXP-visible). No new RBL created. Three Work Packages delivered: WP1 (EBG-0122-0124 process/tooling currency cluster), WP2 (EBG-0111 Composio, investigated and Deferred), WP3 (EBG-0115 Kokoro TTS, Completed - Programme Sponsor preferred it over Piper, EBG-0125 registered for follow-on production wiring with a British voice). Every commit this session gated through the real AIEMS Exchange Bridge/Sponsor Approval Service. |
+| 1.8 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 session-wide WP6 (Independent Repository Verification): genuine background Codex review - **Conditional Pass with correction** (the review request specified an incorrect diff boundary, spuriously including ESR-0051's own already-closed content; corrected and re-verified directly - exactly 12 files changed, precisely the expected WP0/WP1/WP3 scope, no scope creep). Substantive checks independently confirmed: pytest 530/1, validate_repository.py 0 errors, no src/src-tauri change, Kokoro adapter genuinely unregistered/unreachable, GAM-0001/sentinel/policy.py untouched. Codex's own advisory: Retain RBL-0032. WP7 determination pending Programme Sponsor decision. |
 | 1.7 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP3 closed: Programme Sponsor's live listening verdict recorded verbatim - Kokoro (`af_sarah`) "much more natural and less robotic" than Piper, preferred. EBG-0115 marked Completed. UK English voice request explicitly deferred by the Programme Sponsor ("further down the line") - captured as new EBG-0125 (Candidate Backlog: production wiring plus a choice among Kokoro's four confirmed British voices), not actioned now. WP1, WP2 and WP3 all now complete. |
 | 1.6 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP3 Implemented: EBG-0115 (Kokoro TTS) per [[EIP-ESR0052-002_KOKORO_TTS_LIVE_COMPARISON|EIP-ESR0052-002]] v1.0. New `sentinel/kokoro_provider.py` (7 tests) and `voice-eval` optional dependency group; genuine live comparison performed (real audio, both providers, two `.wav` files delivered to the Programme Sponsor's Desktop); models/script deleted, never entered the repository. `pytest` 530/1 (up from 523/1), `validate_repository.py` 0 errors/297 warnings. EBG-0115 remains In Progress pending the Programme Sponsor's listening verdict. |
 | 1.5 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP1 post-commit independent review: genuine `codex exec -s workspace-write` review of the real pushed commit `28dbf29` (diff `7b8b3d5..28dbf29`) - **Conditional Pass with limitation**. All inspectable scope/governance/pytest/validation checks independently re-run and matched; the only limitation is Codex's own environment blocking `npm audit` execution, verified instead via the lockfile diff. No corrections required. |
