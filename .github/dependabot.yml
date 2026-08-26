@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Python (jarvis/, sentinel/, scripts/) - pyproject.toml at repository root.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Frontend Guardian Desktop Platform Shell (src/) - package.json at repository root.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Tauri/Rust shell (src-tauri/).
+  - package-ecosystem: "cargo"
+    directory: "/src-tauri"
+    schedule:
+      interval: "weekly"
+
+  # CI workflow definitions (.github/workflows/).
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "weekly"

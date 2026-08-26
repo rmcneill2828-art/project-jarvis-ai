@@ -22,10 +22,10 @@ jobs:
       - run: python scripts/sync_product_version.py --check
       - run: pytest -q
       - run: python scripts/validate_repository.py
-      # Advisory only until an initial findings baseline has been triaged -
-      # see the "gap analysis" review that introduced this step.
+      # Hard gate (EBG-0124, ESR-0052 WP1): the initial findings baseline this
+      # step was waiting on has since been triaged (WR-ESR0052-001) - a real
+      # pip-itself advisory (PYSEC-2026-3721), not a project dependency.
       - run: pip-audit
-        continue-on-error: true
 
   frontend-build:
     runs-on: ubuntu-latest

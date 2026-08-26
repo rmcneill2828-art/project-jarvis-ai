@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.481
+**Version:** 3.490
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.481 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.490 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.165 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.169 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -216,6 +216,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0050-002 | Engineering Implementation Package | CURRENT_ARCHITECTURE.md Refresh and Sentinel Gate of Durin Detail | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0045-002 | Engineering Implementation Package | v1.0 Readiness Scorecard | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/reviews/` |
 | EIP-ESR0045-003 | Engineering Implementation Package | Launch Gap Backlog | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0052-001 | Engineering Implementation Package | Process/Tooling Currency Cluster | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0052-002 | Engineering Implementation Package | Kokoro TTS Live Comparison | 0.2 | Draft - Codex design-reviewed (Conditional Pass with corrections, folded in), not yet approved or implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -288,6 +290,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0049 | Engineering Session Report | Engineering Session Report | 1.7 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0050 | Engineering Session Report | Engineering Session Report | 1.8 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0051 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0052 | Engineering Session Report | Engineering Session Report | 1.4 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -402,6 +405,15 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.490 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP1 Complete: synced ESR-0052 row (1.3 to 1.4). |
+| 3.489 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP1 Complete: EIP-ESR0052-001 (0.2 to 1.0, Approved - implemented) - EBG-0122 through EBG-0124 (process/tooling currency cluster) resolved. Synced EBR-0001 row (1.168 to 1.169). |
+| 3.488 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP1/WP3: synced ESR-0052 row (1.2 to 1.3) - both draft EIPs' Codex design-review outcomes recorded, pending Programme Sponsor approval-to-implement. |
+| 3.487 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP1/WP3: both draft EIPs Codex design-reviewed via the AIEMS Exchange Bridge. EIP-ESR0052-001 (0.1 to 0.2) - Conditional Pass with correction (stale "Section 10" plain-text reference, folded in). EIP-ESR0052-002 (0.1 to 0.2) - Conditional Pass with corrections (Section 6 exclusion wording narrowed to Kokoro-specific RPC/UXP scope; Section 4B's KokoroProvider contract spelled out explicitly). Neither yet approved or implemented. |
+| 3.486 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP3: synced ESR-0052 row (1.1 to 1.2) - WP3 (EBG-0115 Kokoro TTS live comparison) drafted, resolving the Feature-First Delivery Discipline gap flagged at WP1/WP2. |
+| 3.485 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP3 (draft): registered draft [[EIP-ESR0052-002_KOKORO_TTS_LIVE_COMPARISON|EIP-ESR0052-002]] (0.1, Draft) - Kokoro TTS Live Comparison, not yet reviewed, approved or implemented. Synced EBR-0001 row (1.167 to 1.168) - EBG-0115 (Candidate Backlog to Draft Backlog), Programme Sponsor-selected as the paired product-moving objective. |
+| 3.484 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP2: synced ESR-0052 row (1.0 to 1.1) - WP2 (EBG-0111 Composio assessment) recorded complete, Deferred; Feature-First Delivery Discipline note flagged. |
+| 3.483 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP2: synced EBR-0001 row (1.166 to 1.167) - EBG-0111 (Composio) investigated and closed Deferred, not adopted (self-hosted-first/no-discretionary-budget conflict, verified via web search rather than assumed). |
+| 3.482 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 opened at WP0B: registered ESR-0052 (1.0, Open) and draft [[EIP-ESR0052-001_PROCESS_TOOLING_CURRENCY_CLUSTER|EIP-ESR0052-001]] (0.1, Draft) - WP1 Process/Tooling Currency Cluster, not yet reviewed, approved or implemented. Synced EBR-0001 row (1.165 to 1.166) - new EBG-0122/0123/0124 registered, Draft Backlog, sourced from [[WR-ESR0052-001_TECHNOLOGY_AND_AI_LANDSCAPE_REVIEW|WR-ESR0052-001]]. |
 | 3.481 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 formally closed: Status Open to Closed, Date Closed 22 August 2026. Synced ESR-0051 (1.4 to 1.5, Closed) and PST-0001 (3.33 to 3.34, Current Mode flipped to lead with ESR-0051 as latest closed) rows. |
 | 3.480 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 session-wide WP7: registered [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] (1.0, Accepted) - Establish, superseding RBL-0031, following the Programme Sponsor's determination that WP2's Guardian Orb Phase 2 Cluster Illumination delivery is a genuine live product-capability change. Synced COC-0001 (1.20 to 1.21), PBK-0001 (1.39 to 1.40), MOD-0001 (1.9 to 1.10), PCB-0001 (2.7 to 2.8), JARVIS_CAPABILITY_READINESS_MATRIX (2.6 to 2.7) and PST-0001 (3.32 to 3.33) rows - every controlled artefact's "current accepted repository baseline" reference now points to RBL-0032. |
 | 3.479 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP2 addendum: synced ESR-0051 row (1.2 to 1.3) - WP2 implementation narrative, validation evidence and live smoke check recorded. |
