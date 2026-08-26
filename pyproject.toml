@@ -24,6 +24,16 @@ dev = [
     "pip-audit",
     "pyinstaller>=6.21",
 ]
+# Evaluation-only, EBG-0115/EIP-ESR0052-002: enables the live Kokoro-versus-
+# Piper comparison. Deliberately not in `dependencies` or `dev` - these exist
+# to make the comparison possible, not to become a permanent runtime
+# dependency unless the comparison favours adoption (no repository wiring
+# or provider_config.py registration authorised by this group's presence).
+voice-eval = [
+    "kokoro-onnx>=0.6.1,<1.0",
+    "espeakng-loader>=0.2.4,<1.0",
+    "phonemizer-fork>=3.3.2,<4.0",
+]
 
 [project.scripts]
 jarvis = "jarvis.app:main"
