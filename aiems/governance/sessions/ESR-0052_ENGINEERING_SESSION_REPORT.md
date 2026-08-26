@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0052 |
 | Title | Engineering Session Report |
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0052 |
 | Date Opened | 26 August 2026 |
 | Date Closed | (not yet closed) |
-| Closure Status | Open - WP1 complete and implemented; WP2 investigation complete; WP3 implemented, EBG-0115 disposition awaits Programme Sponsor listening verdict |
+| Closure Status | Open - WP1, WP2 and WP3 all complete; EBG-0125 registered for future Kokoro production wiring |
 
 ---
 
@@ -52,7 +52,7 @@ Per PBK-0001's Feature-First Delivery Discipline, WP1 alone (process/tooling onl
 * New optional `voice-eval` dependency group in `pyproject.toml` (`kokoro-onnx`, `espeakng-loader`, `phonemizer-fork`) - not in the base install.
 * New `sentinel/kokoro_provider.py` (`KokoroProvider`), built to the explicit contract Codex's design review required, plus one disclosed implementation-time addition: `_load_synthesizer()` wires `espeakng_loader`'s bundled `espeak-ng` binary/data into `kokoro_onnx` via `EspeakConfig` - without it, synthesis would fail on this self-hosted-first machine's lack of a system `espeak-ng` install. New `jarvis/tests/test_kokoro_provider.py` (7 tests, mirroring `test_piper_provider.py` exactly, no real `kokoro_onnx` import in tests).
 * **Live comparison performed for real, not simulated**, mirroring EBG-0113's exact precedent methodology ([[EIP-ESR0042-001_HIGHER_QUALITY_GUARDIAN_VOICE_MODEL|EIP-ESR0042-001]]): `en_US-lessac-medium` (current production Piper voice) and Kokoro's model files (`kokoro-v1.0.int8.onnx`, 88 MB quantized; `voices-v1.0.bin`) downloaded to an uncommitted `.voice-models-local/` directory; an uncommitted comparison script synthesized the identical fixed test utterance ("Hello Robert. This is Guardian. If you can hear this, speech output is working correctly.") through the real `PiperProvider` and the real `KokoroProvider` - both succeeded (Piper 223,788 bytes; Kokoro 255,020 bytes, voice `af_sarah`) - writing two genuine `.wav` files to the Programme Sponsor's actual Desktop (OneDrive-redirected path). Models and script deleted after the comparison, confirmed via `git status` to have never entered the repository.
-* **No adoption decision made by this package.** EBG-0115 remains **In Progress**, not Completed, in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - its final disposition awaits the Programme Sponsor's own listening verdict on the two delivered files, honest either way, matching EBG-0113's own accepted negative result.
+* **Programme Sponsor Validation, verbatim**: "guardian-voice-kokoro-af_sarah.wav is much more natural and less robotic" than Piper - Kokoro preferred. EBG-0115 is now **Completed** in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]. The Programme Sponsor separately asked for a UK English voice specifically, explicitly deferred ("something further down the line") - captured as new candidate item **EBG-0125** (production wiring plus British-voice selection among Kokoro's four confirmed UK voices - `bf_emma`, `bf_isabella`, `bm_george`, `bm_lewis`) rather than actioned now. This positive verdict does not itself make Kokoro Guardian's live production voice - that remains EBG-0125's separately-scoped follow-on work.
 
 Validation: `python -m pytest jarvis/tests sentinel scripts/tests` - **530 passed, 1 skipped** (up from 523/1 - the 7 new `KokoroProvider` tests, no other production code touched); `python scripts/validate_repository.py` (full mode) - 0 errors, 297 warnings.
 
@@ -85,7 +85,7 @@ WP3 (drafted, not yet approved-to-implement): EBG-0115 - a live Kokoro-versus-Pi
 | WP0 | Technology, Code and AI-Landscape Review (WR-ESR0052-001, Codex cross-reviewed, ad hoc second opinion reconciled) | Complete |
 | WP1 | Clear EBG-0122-0124 process/tooling currency cluster | Complete |
 | WP2 | Investigate and decide EBG-0111 (Composio assessment) | Complete - Deferred, not adopted |
-| WP3 | EBG-0115 Kokoro TTS live comparison | Implemented - EBG-0115 disposition awaits Programme Sponsor listening verdict |
+| WP3 | EBG-0115 Kokoro TTS live comparison | Complete - Kokoro preferred, EBG-0125 registered for follow-on production wiring |
 
 Further Work Packages will be added if the Programme Sponsor directs the session to proceed beyond WP1/WP3.
 
@@ -109,6 +109,7 @@ Further Work Packages will be added if the Programme Sponsor directs the session
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.7 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP3 closed: Programme Sponsor's live listening verdict recorded verbatim - Kokoro (`af_sarah`) "much more natural and less robotic" than Piper, preferred. EBG-0115 marked Completed. UK English voice request explicitly deferred by the Programme Sponsor ("further down the line") - captured as new EBG-0125 (Candidate Backlog: production wiring plus a choice among Kokoro's four confirmed British voices), not actioned now. WP1, WP2 and WP3 all now complete. |
 | 1.6 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP3 Implemented: EBG-0115 (Kokoro TTS) per [[EIP-ESR0052-002_KOKORO_TTS_LIVE_COMPARISON|EIP-ESR0052-002]] v1.0. New `sentinel/kokoro_provider.py` (7 tests) and `voice-eval` optional dependency group; genuine live comparison performed (real audio, both providers, two `.wav` files delivered to the Programme Sponsor's Desktop); models/script deleted, never entered the repository. `pytest` 530/1 (up from 523/1), `validate_repository.py` 0 errors/297 warnings. EBG-0115 remains In Progress pending the Programme Sponsor's listening verdict. |
 | 1.5 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP1 post-commit independent review: genuine `codex exec -s workspace-write` review of the real pushed commit `28dbf29` (diff `7b8b3d5..28dbf29`) - **Conditional Pass with limitation**. All inspectable scope/governance/pytest/validation checks independently re-run and matched; the only limitation is Codex's own environment blocking `npm audit` execution, verified instead via the lockfile diff. No corrections required. |
 | 1.4 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP1 Complete: EBG-0122 through EBG-0124 resolved per [[EIP-ESR0052-001_PROCESS_TOOLING_CURRENCY_CLUSTER|EIP-ESR0052-001]] v1.0. `npm audit fix` cleared nanoid/postcss (package-lock.json only); new `.github/dependabot.yml`; `pip-audit` CI gate hardened. Approval-to-implement verified via the real Sponsor Approval Service (`submit-response`, ESR-0052/WP1) before any code was written. `pytest` 523/1 unchanged, `validate_repository.py` 0 errors/297 warnings, `npm run build` clean. |
