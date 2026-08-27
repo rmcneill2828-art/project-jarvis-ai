@@ -12,10 +12,11 @@ import pytest
 from scripts.session_launcher import (
     SessionLauncherError,
     build_report,
-    read_active_backlog_snapshot,
+    generate_active_backlog_view,
     read_current_state,
     read_high_priority_backlog,
     read_near_term_roadmap,
+    read_open_backlog,
 )
 
 _PST_FIXTURE = """\
@@ -107,39 +108,13 @@ _JRM_FIXTURE = """\
 ---
 """
 
-_EBR_FIXTURE_WITH_5A = _EBR_FIXTURE + """
-# 5A. Active Backlog View - Manual Snapshot (regenerated 25 July 2026)
+_EBR_FIXTURE_MIXED_PRIORITY = """\
+# EBR-0001 - Engineering Backlog Register
 
-**This section is a dated, manually-produced snapshot.**
-
-## Theme 1 - Deployment & Release Engineering
-
-Fully delivered - no open items remain in this theme.
-
-## Theme 2 - Product Data Trust (Personal Memory Era)
-
-| ID | Priority | Item |
-|---|---|---|
-| EBG-0023 | Medium | Backup, Recovery and Data Protection |
-
-## Theme 7 - Dormant AIEMS Governance/Standards Debt
-
-| ID | Priority | Item |
-|---|---|---|
-| EBG-0008 | Medium | Create Engineering Implementation Package Standard |
-| EBG-0011 | Medium | See [[EIP-ESR0031-001_SESSION_OPENING_LAUNCHER|EIP-ESR0031-001]] - the pipe here must not shift columns |
-
-# 6. Candidate Backlog Intake
-"""
-
-_EBR_FIXTURE_NO_5A_HEADING = _EBR_FIXTURE
-
-_EBR_FIXTURE_5A_NO_THEMES = _EBR_FIXTURE + """
-# 5A. Active Backlog View - Manual Snapshot (regenerated 25 July 2026)
-
-Nothing here yet.
-
-# 6. Candidate Backlog Intake
+| EBG-ID | Title | Source | Status | Priority | Owner | Description |
+|--------|-------|--------|--------|----------|-------|--------------|
+| EBG-0001 | Low Item | Source A | Approved Backlog | Low | Programme Sponsor | Should land in the Low group. |
+| EBG-0002 | Unusual Priority Item | Source B | Candidate Backlog | Critical | Programme Sponsor | No standard-priority group - should land in Other, not be dropped. |
 """
 
 _JRM_FIXTURE_MISSING_TRACK = """\
@@ -257,31 +232,101 @@ def test_read_near_term_roadmap_raises_on_missing_track(tmp_path) -> None:
         read_near_term_roadmap(jrm_path)
 
 
+def test_read_open_backlog_returns_every_open_priority(tmp_path) -> None:
+    """EBG-0106: with no `priority` filter, every open row is returned
+    regardless of Priority - not just High, unlike `read_high_priority_backlog`."""
+
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE, encoding="utf-8")
+
+    items = read_open_backlog(ebr_path)
+    ids = [item.id for item in items]
+
+    assert "EBG-0001" in ids  # High, Approved Backlog
+    assert "EBG-0002" in ids  # High, Candidate Backlog
+    assert "EBG-0003" in ids  # Medium - included here, unlike read_high_priority_backlog
+    assert "EBG-0004" not in ids  # Complete - excluded regardless of priority
+    assert "EBG-0005" in ids
+
+
+def test_read_open_backlog_filters_by_given_priority(tmp_path) -> None:
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE, encoding="utf-8")
+
+    items = read_open_backlog(ebr_path, priority="Medium")
+
+    assert [item.id for item in items] == ["EBG-0003"]
+
+
+def test_read_high_priority_backlog_is_a_read_open_backlog_wrapper(tmp_path) -> None:
+    """Backward-compatibility check (Codex Finding 1, EIP-ESR0053-001 v0.2):
+    read_high_priority_backlog's own behaviour is unchanged by the refactor."""
+
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE, encoding="utf-8")
+
+    assert read_high_priority_backlog(ebr_path) == read_open_backlog(ebr_path, priority="High")
+
+
+def test_generate_active_backlog_view_groups_by_priority_in_order(tmp_path) -> None:
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE, encoding="utf-8")
+
+    view = generate_active_backlog_view(read_open_backlog(ebr_path))
+    groups = dict(view)
+
+    assert [priority for priority, _ in view] == ["High", "Medium"]  # order preserved, Low omitted (empty)
+    assert {item.id for item in groups["High"]} == {"EBG-0001", "EBG-0002", "EBG-0005"}
+    assert {item.id for item in groups["Medium"]} == {"EBG-0003"}
+
+
+def test_generate_active_backlog_view_omits_empty_priority_groups(tmp_path) -> None:
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE_MIXED_PRIORITY, encoding="utf-8")
+
+    view = generate_active_backlog_view(read_open_backlog(ebr_path, priority="Low"))
+
+    assert [priority for priority, _ in view] == ["Low"]
+
+
+def test_generate_active_backlog_view_groups_unrecognised_priority_as_other(tmp_path) -> None:
+    """A Priority value outside the standard three must not be silently
+    dropped - it is grouped last, under "Other"."""
+
+    ebr_path = tmp_path / "EBR-0001.md"
+    ebr_path.write_text(_EBR_FIXTURE_MIXED_PRIORITY, encoding="utf-8")
+
+    view = generate_active_backlog_view(read_open_backlog(ebr_path))
+    groups = dict(view)
+
+    assert [priority for priority, _ in view] == ["Low", "Other"]
+    assert [item.id for item in groups["Other"]] == ["EBG-0002"]
+
+
 def test_build_report_includes_all_sections(tmp_path) -> None:
     pst_path = tmp_path / "PST-0001.md"
     pst_path.write_text(_PST_FIXTURE, encoding="utf-8")
     ebr_path = tmp_path / "EBR-0001.md"
-    ebr_path.write_text(_EBR_FIXTURE_WITH_5A, encoding="utf-8")
+    ebr_path.write_text(_EBR_FIXTURE, encoding="utf-8")
     jrm_path = tmp_path / "JRM-0001.md"
     jrm_path.write_text(_JRM_FIXTURE, encoding="utf-8")
 
     state = read_current_state(pst_path)
     backlog_items = read_high_priority_backlog(ebr_path)
     roadmap_items = read_near_term_roadmap(jrm_path)
-    active_backlog_items = read_active_backlog_snapshot(ebr_path)
-    report = build_report(state, backlog_items, roadmap_items, active_backlog_items)
+    active_backlog_view = generate_active_backlog_view(read_open_backlog(ebr_path))
+    report = build_report(state, backlog_items, roadmap_items, active_backlog_view)
 
     assert "## Current State" in report
     assert "## High-Priority Open Backlog (EBR-0001)" in report
     assert "## Near-Term Roadmap Candidates (JRM-0001)" in report
-    assert "## Active Backlog Snapshot (EBR-0001 Section 5A)" in report
+    assert "## Active Backlog View (mechanically generated from EBR-0001 Section 5 - EBG-0106)" in report
     assert "**Next Work Package Candidate:**" in report
     assert "EBG-0001" in report
     assert "Open Track A Item" in report
-    assert "### Theme 2 - Product Data Trust (Personal Memory Era)" in report
-    assert "### Theme 7 - Dormant AIEMS Governance/Standards Debt" in report
-    assert "EBG-0023" in report
-    assert "EBG-0008" in report
+    assert "### High" in report
+    assert "### Medium" in report
+    assert "EBG-0003" in report
 
 
 def test_build_report_handles_empty_results() -> None:
@@ -296,44 +341,4 @@ def test_build_report_handles_empty_results() -> None:
 
     assert "_No High-priority Approved/Candidate Backlog items found._" in report
     assert "_No open Near-term roadmap items found._" in report
-    assert "_No active-backlog items found in Section 5A._" in report
-
-
-def test_read_active_backlog_snapshot_groups_by_theme(tmp_path) -> None:
-    ebr_path = tmp_path / "EBR-0001.md"
-    ebr_path.write_text(_EBR_FIXTURE_WITH_5A, encoding="utf-8")
-
-    items = read_active_backlog_snapshot(ebr_path)
-    by_id = {item.id: item for item in items}
-
-    assert by_id["EBG-0023"].theme == "Theme 2 - Product Data Trust (Personal Memory Era)"
-    assert by_id["EBG-0023"].priority == "Medium"
-    assert by_id["EBG-0008"].theme == "Theme 7 - Dormant AIEMS Governance/Standards Debt"
-    # Theme 1 has no table (fully delivered) - contributes zero items, not an error.
-    assert all(item.theme != "Theme 1 - Deployment & Release Engineering" for item in items)
-
-
-def test_read_active_backlog_snapshot_wikilink_pipe_does_not_shift_columns(tmp_path) -> None:
-    ebr_path = tmp_path / "EBR-0001.md"
-    ebr_path.write_text(_EBR_FIXTURE_WITH_5A, encoding="utf-8")
-
-    items = {item.id: item for item in read_active_backlog_snapshot(ebr_path)}
-
-    assert items["EBG-0011"].priority == "Medium"
-    assert "the pipe here must not shift columns" in items["EBG-0011"].item
-
-
-def test_read_active_backlog_snapshot_raises_on_missing_section(tmp_path) -> None:
-    ebr_path = tmp_path / "EBR-0001.md"
-    ebr_path.write_text(_EBR_FIXTURE_NO_5A_HEADING, encoding="utf-8")
-
-    with pytest.raises(SessionLauncherError, match="Section 5A heading"):
-        read_active_backlog_snapshot(ebr_path)
-
-
-def test_read_active_backlog_snapshot_raises_on_no_theme_headings(tmp_path) -> None:
-    ebr_path = tmp_path / "EBR-0001.md"
-    ebr_path.write_text(_EBR_FIXTURE_5A_NO_THEMES, encoding="utf-8")
-
-    with pytest.raises(SessionLauncherError, match="No Theme headings found"):
-        read_active_backlog_snapshot(ebr_path)
+    assert "_No open Approved/Candidate Backlog items found in EBR-0001 Section 5._" in report

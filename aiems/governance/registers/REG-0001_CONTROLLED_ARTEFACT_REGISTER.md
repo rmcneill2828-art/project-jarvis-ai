@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.497
+**Version:** 3.501
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.497 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.501 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.171 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.172 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -218,6 +218,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0045-003 | Engineering Implementation Package | Launch Gap Backlog | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0052-001 | Engineering Implementation Package | Process/Tooling Currency Cluster | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0052-002 | Engineering Implementation Package | Kokoro TTS Live Comparison | 1.0 | Approved - implemented; EBG-0115 closed Complete on Programme Sponsor's positive listening verdict | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0053-001 | Engineering Implementation Package | Active Backlog View Generation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -291,6 +292,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0050 | Engineering Session Report | Engineering Session Report | 1.8 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0051 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0052 | Engineering Session Report | Engineering Session Report | 1.9 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0053 | Engineering Session Report | Engineering Session Report | 1.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -405,6 +407,10 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.501 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1 Complete: EIP-ESR0053-001 (0.2 to 1.0, Approved - implemented) - EBG-0106 resolved, EBR-0001 Section 5A retired in favour of `scripts/session_launcher.py`'s on-demand Priority-grouped Active Backlog View. Synced EBR-0001 row (1.171 to 1.172). Approved by the Programme Sponsor via direct chat instruction ("Approved"); implementation gated for commit through `submit-response`/the real Sponsor Approval Service. |
+| 3.500 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 row (1.0 to 1.1) synced to match the report's own version-history entry recording the WP1 Codex design review - missed in the same edit that produced 3.499, caught by `validate_repository.py`'s own version-mismatch check rather than a second manual pass. |
+| 3.499 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1: EIP-ESR0053-001 Codex design-reviewed via the AIEMS Exchange Bridge - Conditional Pass with corrections (0.1 to 0.2), both folded in: Section 4A reworded to state only the `read_high_priority_backlog`/`read_open_backlog` half of the refactor is backward-compatible, not the whole change; Section 5 validation wording corrected to distinguish unchanged test behaviour from necessarily-changed test wiring. Not yet approved or implemented. |
+| 3.498 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 opened at WP0B: registered ESR-0053 (1.0, Open) and draft [[EIP-ESR0053-001_ACTIVE_BACKLOG_VIEW_GENERATION|EIP-ESR0053-001]] (0.1, Draft) - WP1 Active Backlog View Generation, resolving EBG-0106, not yet reviewed, approved or implemented. Selected per PBK-0001's Documentation-Debt Priority discipline, following a WP0A finding that EBR-0001 Section 5A is currently stale (still lists EBG-0115/EBG-0111 as open, though resolved at ESR-0052). |
 | 3.497 | 26 August 2026 | Claude Engineering Implementer | **ESR-0052 formally closed.** ESR-0052 row (1.8 to 1.9, Open to Closed). Synced PST-0001 (3.34 to 3.35) - Current Mode/Baseline/Phase/Workflow/Objective/Section 4A updated to reflect ESR-0052 closed, RBL-0032 retained. README also updated (not separately registered) to match. |
 | 3.496 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 session-wide WP6: synced ESR-0052 row (1.7 to 1.8) - Conditional Pass with correction (review-request diff-boundary mistake, no actual scope creep), Codex's advisory Retain RBL-0032, WP7 pending Programme Sponsor determination. |
 | 3.495 | 26 August 2026 | Claude Engineering Implementer | ESR-0052 WP3 closed: synced ESR-0052 row (1.6 to 1.7). All three of this session's Work Packages now complete. |

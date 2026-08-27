@@ -1,21 +1,26 @@
-"""AIEMS Session-Opening Launcher (EIP-ESR0031-001, extended EBG-0107).
+"""AIEMS Session-Opening Launcher (EIP-ESR0031-001, extended EBG-0107, EBG-0106).
 
 Read-only reporting script gathering PST-0001's current state (including
 its Next Work Package Candidate row), EBR-0001's open High-priority
-backlog and Section 5A active-backlog snapshot, and JRM-0001's Near-term
-roadmap candidates into one report, for WP0B objective discussion. Never
-writes, stages, commits or pushes anything - the Programme Sponsor still
-decides the session objective; this only reduces the manual reading
-required to get there.
+backlog and mechanically-generated Active Backlog View, and JRM-0001's
+Near-term roadmap candidates into one report, for WP0B objective
+discussion. Never writes, stages, commits or pushes anything - the
+Programme Sponsor still decides the session objective; this only reduces
+the manual reading required to get there.
 
 EBG-0107 (ESR-0033 WP5): the two additions below - Next Work Package
-Candidate and the Section 5A snapshot - were the exact gap that made
-this script show nothing useful for WP0B selection even after PST-0001
-and EBR-0001 had already been updated to name real candidates. Reads
-Section 5A directly (its 3-column theme tables), not Section 5's own
-Status/Priority fields - EBG-0106's own generation-mechanism scope,
-which would let this reader be simplified or removed, remains separately
-unimplemented.
+Candidate and an active-backlog view - were the exact gap that made this
+script show nothing useful for WP0B selection even after PST-0001 and
+EBR-0001 had already been updated to name real candidates.
+
+EBG-0106 (ESR-0053 WP1): the active-backlog view is now generated
+directly from Section 5's own Status/Priority columns (`read_open_backlog`
+grouped by `generate_active_backlog_view`), not parsed from a hand-
+maintained EBR-0001 Section 5A snapshot table - that table drifted stale
+twice (most recently, still listing items resolved at ESR-0052) despite
+its own "do not edit in place" warning, and has been retired in favour of
+this on-demand generation. There is no longer a Section 5A table shape to
+read; Section 5 is this script's only EBR-0001 source now.
 """
 
 from __future__ import annotations
@@ -34,6 +39,7 @@ DEFAULT_JRM_PATH = REPO_ROOT / "aiems/governance/roadmap/JRM-0001_PROJECT_ROADMA
 
 _RESOLVED_MARKERS = ("resolved", "complete", "delivered", "closed", "superseded")
 _OPEN_BACKLOG_STATUSES = ("Approved Backlog", "Candidate Backlog")
+_PRIORITY_ORDER = ("High", "Medium", "Low")
 
 _TRACK_HEADINGS = {
     "Track A": re.compile(r"(?m)^##\s*6\.1\s+Near-term\s*$"),
@@ -43,9 +49,6 @@ _TRACK_HEADINGS = {
 _SECTION_END_PATTERN = re.compile(r"(?m)^(?:---\s*$|##\s)")
 _WIKILINK_PATTERN = re.compile(r"^\[\[[^\]|]+(?:\|([^\]]+))?\]\]$")
 _EBG_ID_PATTERN = re.compile(r"^EBG-\d{4}$")
-_SECTION_5A_HEADING_PATTERN = re.compile(r"(?m)^#\s*5A\.\s+Active Backlog View")
-_TOP_LEVEL_HEADING_PATTERN = re.compile(r"(?m)^#\s+\d")
-_THEME_HEADING_PATTERN = re.compile(r"(?m)^##\s+(Theme\s+\d+\s*-\s*.+?)\s*$")
 
 
 class SessionLauncherError(Exception):
@@ -73,14 +76,6 @@ class RoadmapItem:
     track: str
     item: str
     rationale: str
-
-
-@dataclass(frozen=True)
-class ActiveBacklogItem:
-    theme: str
-    id: str
-    priority: str
-    item: str
 
 
 def _display_path(path: Path) -> str:
@@ -186,8 +181,13 @@ def read_current_state(pst_path: Path) -> CurrentState:
     )
 
 
-def read_high_priority_backlog(ebr_path: Path) -> tuple[BacklogItem, ...]:
-    """Return EBR-0001 rows with Priority High and Status Approved/Candidate Backlog."""
+def read_open_backlog(ebr_path: Path, priority: str | None = None) -> tuple[BacklogItem, ...]:
+    """Return EBR-0001 Section 5 rows with Status Approved/Candidate Backlog.
+
+    `priority`, if given, filters to that single Priority value (e.g. "High").
+    Left as `None`, every open row is returned regardless of Priority - the
+    basis for `generate_active_backlog_view()` (EBG-0106).
+    """
 
     text = ebr_path.read_text(encoding="utf-8", errors="replace")
     items: list[BacklogItem] = []
@@ -203,11 +203,14 @@ def read_high_priority_backlog(ebr_path: Path) -> tuple[BacklogItem, ...]:
         if not _EBG_ID_PATTERN.match(item_id):
             continue  # The header row ("| EBG-ID | ...") also starts with "| EBG-" but is not a data row.
         found_any_row = True
-        title, status, priority, description = cells[1], cells[3], cells[4], cells[6]
-        if priority == "High" and status in _OPEN_BACKLOG_STATUSES:
-            items.append(
-                BacklogItem(id=item_id, title=title, status=status, priority=priority, description=description)
-            )
+        title, status, item_priority, description = cells[1], cells[3], cells[4], cells[6]
+        if status not in _OPEN_BACKLOG_STATUSES:
+            continue
+        if priority is not None and item_priority != priority:
+            continue
+        items.append(
+            BacklogItem(id=item_id, title=title, status=status, priority=item_priority, description=description)
+        )
 
     if not found_any_row:
         raise SessionLauncherError(
@@ -217,52 +220,40 @@ def read_high_priority_backlog(ebr_path: Path) -> tuple[BacklogItem, ...]:
     return tuple(items)
 
 
-def read_active_backlog_snapshot(ebr_path: Path) -> tuple[ActiveBacklogItem, ...]:
-    """Return EBR-0001 Section 5A's active-backlog snapshot, grouped by theme.
+def read_high_priority_backlog(ebr_path: Path) -> tuple[BacklogItem, ...]:
+    """Return EBR-0001 rows with Priority High and Status Approved/Candidate Backlog.
 
-    Reads Section 5A's own 3-column `| ID | Priority | Item |` theme tables
-    directly - not Section 5's Status/Priority fields (EBG-0106's own
-    separate, still-unimplemented generation-mechanism scope). A theme with
-    no open items (e.g. "fully delivered, no open items remain") legitimately
-    has no table at all and contributes zero items, not an error.
+    A thin, backward-compatible wrapper over `read_open_backlog()`.
     """
 
-    text = ebr_path.read_text(encoding="utf-8", errors="replace")
-    section_match = _SECTION_5A_HEADING_PATTERN.search(text)
-    if section_match is None:
-        raise SessionLauncherError(
-            f"Could not find Section 5A heading in {_display_path(ebr_path)} - refusing to produce a partial report."
-        )
+    return read_open_backlog(ebr_path, priority="High")
 
-    remainder = text[section_match.end():]
-    next_heading_match = _TOP_LEVEL_HEADING_PATTERN.search(remainder)
-    section_text = remainder[: next_heading_match.start()] if next_heading_match else remainder
 
-    theme_headings = list(_THEME_HEADING_PATTERN.finditer(section_text))
-    if not theme_headings:
-        raise SessionLauncherError(
-            f"No Theme headings found in Section 5A of {_display_path(ebr_path)} - refusing to produce a partial report."
-        )
+def generate_active_backlog_view(items: tuple[BacklogItem, ...]) -> tuple[tuple[str, tuple[BacklogItem, ...]], ...]:
+    """Group open backlog items by Priority, High -> Medium -> Low (EBG-0106).
 
-    items: list[ActiveBacklogItem] = []
-    for index, heading_match in enumerate(theme_headings):
-        theme_name = heading_match.group(1).strip()
-        start = heading_match.end()
-        end = theme_headings[index + 1].start() if index + 1 < len(theme_headings) else len(section_text)
-        theme_body = section_text[start:end]
+    Mechanically derived from `read_open_backlog()`'s own Status/Priority
+    fields - not a second, hand-maintained view. Replaces the retired
+    EBR-0001 Section 5A theme-grouped snapshot, which drifted stale twice
+    despite its own "do not edit in place" warning. Section 5 carries no
+    `Theme` column, so thematic grouping is not reproduced here - only
+    Priority, which is genuinely present on every row. A `Priority` value
+    outside the standard three is grouped last, under "Other", rather than
+    silently dropped.
+    """
 
-        for line in theme_body.splitlines():
-            if not line.startswith("|") or line.startswith(("|---", "|-")):
-                continue
-            cells = _split_table_row(line)
-            if len(cells) < 3:
-                continue
-            item_id = _strip_wikilink(cells[0])
-            if not _EBG_ID_PATTERN.match(item_id):
-                continue  # Skips the "| ID | Priority | Item |" header row too.
-            items.append(ActiveBacklogItem(theme=theme_name, id=item_id, priority=cells[1], item=cells[2]))
+    by_priority: dict[str, list[BacklogItem]] = {priority: [] for priority in _PRIORITY_ORDER}
+    other: list[BacklogItem] = []
+    for item in items:
+        if item.priority in by_priority:
+            by_priority[item.priority].append(item)
+        else:
+            other.append(item)
 
-    return tuple(items)
+    groups = [(priority, tuple(by_priority[priority])) for priority in _PRIORITY_ORDER if by_priority[priority]]
+    if other:
+        groups.append(("Other", tuple(other)))
+    return tuple(groups)
 
 
 def _is_resolved(rationale: str) -> bool:
@@ -312,7 +303,7 @@ def build_report(
     current_state: CurrentState,
     backlog_items: tuple[BacklogItem, ...],
     roadmap_items: tuple[RoadmapItem, ...],
-    active_backlog_items: tuple[ActiveBacklogItem, ...],
+    active_backlog_view: tuple[tuple[str, tuple[BacklogItem, ...]], ...],
 ) -> str:
     lines = ["# Session-Opening Report", ""]
 
@@ -343,24 +334,17 @@ def build_report(
         lines.append("_No open Near-term roadmap items found._")
     lines.append("")
 
-    lines.append("## Active Backlog Snapshot (EBR-0001 Section 5A)")
+    lines.append("## Active Backlog View (mechanically generated from EBR-0001 Section 5 - EBG-0106)")
     lines.append("")
-    if active_backlog_items:
-        themes_in_order: list[str] = []
-        by_theme: dict[str, list[ActiveBacklogItem]] = {}
-        for item in active_backlog_items:
-            if item.theme not in by_theme:
-                themes_in_order.append(item.theme)
-                by_theme[item.theme] = []
-            by_theme[item.theme].append(item)
-        for theme in themes_in_order:
-            lines.append(f"### {theme}")
+    if active_backlog_view:
+        for priority, items in active_backlog_view:
+            lines.append(f"### {priority}")
             lines.append("")
-            for item in by_theme[theme]:
-                lines.append(f"- **{item.id}** ({item.priority}): {item.item}")
+            for item in items:
+                lines.append(f"- **{item.id}** ({item.status}): {item.title} - {item.description}")
             lines.append("")
     else:
-        lines.append("_No active-backlog items found in Section 5A._")
+        lines.append("_No open Approved/Candidate Backlog items found in EBR-0001 Section 5._")
         lines.append("")
 
     return "\n".join(lines)
@@ -378,8 +362,8 @@ def main() -> int:
         current_state = read_current_state(args.pst_path)
         backlog_items = read_high_priority_backlog(args.ebr_path)
         roadmap_items = read_near_term_roadmap(args.jrm_path)
-        active_backlog_items = read_active_backlog_snapshot(args.ebr_path)
-        report = build_report(current_state, backlog_items, roadmap_items, active_backlog_items)
+        active_backlog_view = generate_active_backlog_view(read_open_backlog(args.ebr_path))
+        report = build_report(current_state, backlog_items, roadmap_items, active_backlog_view)
     except SessionLauncherError as exc:
         print(f"ERROR: {exc}")
         return 1
