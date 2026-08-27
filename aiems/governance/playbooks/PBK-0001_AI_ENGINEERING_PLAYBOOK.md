@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.40 |
+| Version | 1.41 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -580,7 +580,7 @@ This is a documentation architecture principle, not a software design principle.
 
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current programme status used during implementation session initialisation.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines the lightweight collaboration context that complements this playbook.
-* [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] records the current accepted repository baseline, established at ESR-0051 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination, a genuine live product-capability change). [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
+* [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]] records the current accepted repository baseline, established at ESR-0053 (Active Backlog View Generation; Kokoro Production Voice Wiring, a genuine live product-capability change). [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
 * [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] is the forward-looking sequencing artefact referenced by Backlog Progression Analysis.
@@ -601,7 +601,7 @@ This is a documentation architecture principle, not a software design principle.
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact; its horizon placements inform Backlog Progression Analysis recommendations. |
-| [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] | Current accepted repository baseline, established at ESR-0051 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination, a genuine live product-capability change). |
+| [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]] | Current accepted repository baseline, established at ESR-0053 (Active Backlog View Generation; Kokoro Production Voice Wiring, a genuine live product-capability change). |
 | [[HST-0023_CLAUDE_CHAT_SUMMARY|HST-0023]] | Final historical session record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[FCH-0023_CLAUDE_FULL_CHAT_HISTORY|FCH-0023]] | Final full chat historical evidence record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Historical session record retained for lineage; no longer the latest archive entry. |
@@ -615,6 +615,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.41 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP7: corrected the stale RBL-0032 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0033, established at ESR-0053 WP7 (Active Backlog View Generation; Kokoro Production Voice Wiring, a genuine live product-capability change) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict. |
 | 1.40 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP7: corrected the stale RBL-0031 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0032, established at ESR-0051 WP7 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination, a genuine live product-capability change) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict. |
 | 1.39 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP1 (EIP-ESR0051-001, Codex design-reviewed): added Scope-Creep and Cross-WP-Dependency Flagging Discipline (EBG-0092), formalising an already-adopted practice; added a WP0B step to update the Sponsor-side `~/.current_session` file (EBG-0091), supporting the streamlined `~/approve`/`~/reject` commands. |
 | 1.38 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the stale RBL-0030 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0031, established at ESR-0050 WP7 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification, a genuine live product-capability change) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict. |

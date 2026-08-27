@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 2.8 |
+| Version | 2.9 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -36,7 +36,7 @@ The v2.3 refresh ([[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] WP3) incorpor
 Repository validation confirmed that the following evidence artefacts exist:
 
 - [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT]]
-- [[RBL-0032_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0051; superseded RBL-0007 through RBL-0031 since PCB-0001 v1.0)
+- [[RBL-0033_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0053; superseded RBL-0007 through RBL-0032 since PCB-0001 v1.0)
 - [[JARVIS_PRODUCT_ARCHITECTURE]]
 - [[JARVIS_CAPABILITY_READINESS_MATRIX]]
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER]]
@@ -133,6 +133,7 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.9 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP7: corrected the Section 3 current-baseline reference from RBL-0032 to RBL-0033, established at ESR-0053 WP7 (Active Backlog View Generation; Kokoro Production Voice Wiring). Pointer fix only - WP2's own Kokoro production-voice delivery is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.8 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP7: corrected the Section 3 current-baseline reference from RBL-0031 to RBL-0032, established at ESR-0051 WP7 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination). Pointer fix only - WP2's own Guardian Orb Phase 2 delivery is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.7 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the Section 3 current-baseline reference from RBL-0030 to RBL-0031, established at ESR-0050 WP7 (Agent Framework UXP Wiring; Sentinel Gate of Durin Architecture Specification). Pointer fix only - WP2's own Agent Framework UXP Wiring delivery is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.6 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP1 (content refresh disclosed as deferred at ESR-0049 WP7): Section 4 gains a new Agent Framework row - `jarvis/agents/` contract, GIA's read-only observability wired as the first live `ROUTINE_INTERACTION` specialist agent, reachable via `guardian.agent.*` RPC, no UXP surface yet. Section 6's "Local agent capability is not implemented" constraint reworded to distinguish the now-implemented Agent Framework (one read-only specialist agent) from the still-untouched `LOCAL_AGENT_ACTION`/Action faculty hard `DENY` boundary. |

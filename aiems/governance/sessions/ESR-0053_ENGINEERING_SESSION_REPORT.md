@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0053 |
 | Title | Engineering Session Report |
-| Version | 1.7 |
-| Status | Open |
+| Version | 1.9 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0053 |
 | Date Opened | 27 August 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 and WP2 complete, committed, pushed and independently post-commit reviewed (both Pass) |
+| Date Closed | 27 August 2026 |
+| Closure Status | Closed - WP1/WP2 complete, session-wide WP6 (Pass, no findings) and WP7 (Establish RBL-0033) complete |
 
 ---
 
@@ -49,7 +49,7 @@ Validation: `python -m pytest scripts/tests/test_session_launcher.py` - 16 passe
 
 ---
 
-**WP2 - EBG-0125: Kokoro Production Voice Wiring (Drafted, not yet reviewed or approved):** following the Programme Sponsor's selection of a product-moving WP2, per PBK-0001's Feature-First Delivery Discipline (WP1 alone was process/tooling-only). A live UK-voice comparison was performed first: the real `KokoroProvider` synthesized the same fixed test utterance used at EBG-0113/EBG-0115 through each of Kokoro's four confirmed British voices (`bf_emma`, `bf_isabella`, `bm_george`, `bm_lewis`), writing four genuine `.wav` files to the Programme Sponsor's Desktop; the comparison script and downloaded model files were never committed, deleted immediately after use (confirmed via `git status`). **Programme Sponsor's verdict**: `bm_george` (primary), `bf_isabella` (automatic fallback if primary synthesis fails at runtime); **Kokoro replaces Piper outright** as Guardian's sole production speech-synthesis provider - not a second selectable option. Drafted in [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]], submitted to Codex Engineering Reviewer via the AIEMS Exchange Bridge (`ESR-0053`/`WP2`) - **Conditional Pass with correction**, folded into v0.2: EBG-0125's own `EBR-0001` row still read "no implementation, provider selection or voice choice is authorised," stale relative to the Programme Sponsor's actual decision recorded above - corrected with a dated authorisation note. Scoping: a dual-voice fallback extension to `sentinel/kokoro_provider.py` (a disclosed breaking change to its internal `VoiceSynthesizer` seam, from a single fixed voice to a `(text, voice)`-parameterised one, so a single loaded engine can serve both voices); `jarvis/interfaces/stdio_rpc.py`'s `_build_speech_provider()` rewritten to construct `KokoroProvider` instead of `PiperProvider`, gated on two new required env vars (`JARVIS_KOKORO_MODEL_PATH`/`JARVIS_KOKORO_VOICES_PATH`); `pyproject.toml`'s `voice-eval` optional dependency group promoted to base `dependencies`; corresponding test updates. `sentinel/piper_provider.py` itself is explicitly left untouched - unregistered from production, not deleted. No `src/`/`src-tauri/` change - `guardian.speak`'s UXP call site confirmed already provider-agnostic (Codex independently verified this too). **Programme Sponsor approved via direct chat instruction ("Approved")**, and **implemented exactly as scoped in v0.2** (v1.0):
+**WP2 - EBG-0125: Kokoro Production Voice Wiring (Complete):** following the Programme Sponsor's selection of a product-moving WP2, per PBK-0001's Feature-First Delivery Discipline (WP1 alone was process/tooling-only). A live UK-voice comparison was performed first: the real `KokoroProvider` synthesized the same fixed test utterance used at EBG-0113/EBG-0115 through each of Kokoro's four confirmed British voices (`bf_emma`, `bf_isabella`, `bm_george`, `bm_lewis`), writing four genuine `.wav` files to the Programme Sponsor's Desktop; the comparison script and downloaded model files were never committed, deleted immediately after use (confirmed via `git status`). **Programme Sponsor's verdict**: `bm_george` (primary), `bf_isabella` (automatic fallback if primary synthesis fails at runtime); **Kokoro replaces Piper outright** as Guardian's sole production speech-synthesis provider - not a second selectable option. Drafted in [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]], submitted to Codex Engineering Reviewer via the AIEMS Exchange Bridge (`ESR-0053`/`WP2`) - **Conditional Pass with correction**, folded into v0.2: EBG-0125's own `EBR-0001` row still read "no implementation, provider selection or voice choice is authorised," stale relative to the Programme Sponsor's actual decision recorded above - corrected with a dated authorisation note. Scoping: a dual-voice fallback extension to `sentinel/kokoro_provider.py` (a disclosed breaking change to its internal `VoiceSynthesizer` seam, from a single fixed voice to a `(text, voice)`-parameterised one, so a single loaded engine can serve both voices); `jarvis/interfaces/stdio_rpc.py`'s `_build_speech_provider()` rewritten to construct `KokoroProvider` instead of `PiperProvider`, gated on two new required env vars (`JARVIS_KOKORO_MODEL_PATH`/`JARVIS_KOKORO_VOICES_PATH`); `pyproject.toml`'s `voice-eval` optional dependency group promoted to base `dependencies`; corresponding test updates. `sentinel/piper_provider.py` itself is explicitly left untouched - unregistered from production, not deleted. No `src/`/`src-tauri/` change - `guardian.speak`'s UXP call site confirmed already provider-agnostic (Codex independently verified this too). **Programme Sponsor approved via direct chat instruction ("Approved")**, and **implemented exactly as scoped in v0.2** (v1.0):
 
 * `sentinel/kokoro_provider.py`: `VoiceSynthesizer` changed from a single fixed voice bound at construction (`Callable[[str], bytes]`) to a voice-parameterised callable (`Callable[[str, str], bytes]`) - one loaded Kokoro engine now serves both voices without a second ~90 MB model load. New optional `fallback_voice` metadata key; `synthesize()` retries once with the fallback on a primary-voice failure, raising only if both fail; response metadata gains `voice_used` for audit traceability.
 * `jarvis/interfaces/stdio_rpc.py`: `PiperProvider` import/wiring removed from `_build_speech_provider()`; `KokoroProvider` constructed instead, gated on two new required env vars (`JARVIS_KOKORO_MODEL_PATH`/`JARVIS_KOKORO_VOICES_PATH`), with `bm_george`/`bf_isabella`/`en-gb` as hardcoded module constants.
@@ -75,7 +75,9 @@ GitHub and the repository remain the authoritative source of truth.
 
 # 5. Session Objective
 
-WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-0001 Section 5A's manually-maintained snapshot with a mechanically-generated Priority-grouped view, per PBK-0001's Documentation-Debt Priority discipline.
+WP1 (complete): resolve EBG-0106 by replacing EBR-0001 Section 5A's manually-maintained snapshot with a mechanically-generated Priority-grouped view, per PBK-0001's Documentation-Debt Priority discipline.
+
+WP2 (complete): resolve EBG-0125 by wiring Kokoro into Guardian's production speech-output path, replacing Piper, per the Programme Sponsor's decision following a live UK-voice listening comparison.
 
 ---
 
@@ -87,6 +89,28 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0106: Active Backlog View Generation | Complete (EIP-ESR0053-001 v1.0) - committed `274a6b9`, pushed, post-commit reviewed (Pass) |
 | WP2 | EBG-0125: Kokoro Production Voice Wiring | Complete (EIP-ESR0053-002 v1.0) - committed `061c914`, pushed, post-commit reviewed (Pass) |
+| WP6 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP7 | Session-wide Repository Baseline Determination | Pending Programme Sponsor determination |
+
+---
+
+# 6A. Session-Wide WP6 - Independent Repository Verification
+
+Following WP2's implementation, push and post-commit review, the Programme Sponsor selected moving to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s workspace-write`, background invocation) against the full session diff, `b46c296..HEAD` (`b46c296`, ESR-0052's own final closure commit - independently confirmed by Codex itself via `git log --oneline b46c296..HEAD` before reviewing, rather than trusted blindly, learning directly from ESR-0052 WP6's own diff-boundary mistake). Confirmed exactly ESR-0053's four commits (`274a6b9`, `248924a`, `061c914`, `1db5547`) and 12 changed files across both Work Packages, no scope creep, no unexpected `src/`/`src-tauri/`/`jarvis/`/`sentinel/` path beyond WP2's legitimate Kokoro wiring. Independently re-ran `pytest jarvis/tests sentinel scripts/tests` (537 passed, 1 skipped, matching) and `validate_repository.py` (0 errors, 298 warnings, matching); confirmed EBG-0106 and EBG-0125 both genuinely `Completed` in EBR-0001; confirmed Section 5A no longer holds a stale static snapshot; confirmed the Piper-to-Kokoro production substitution and fallback logic directly against source; confirmed `sentinel/piper_provider.py`, `sentinel/policy.py` and `GAM-0001` untouched across the whole session; confirmed REG-0001/EBR-0001/ESR-0053 version-history entries internally consistent with the actual diff.
+
+**Verdict: Pass, no findings.**
+
+Codex's own advisory baseline assessment: **Establish** a new RBL, superseding [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]] - WP2 is a genuine live product-capability change (Guardian's actual production speech-synthesis provider changed from Piper to Kokoro, with new runtime dependency/wiring and primary/fallback UK voice behaviour); retaining RBL-0032 would understate the accepted repository state. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6B. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Establish [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]]** (superseding [[RBL-0032_REPOSITORY_BASELINE|RBL-0032]]), matching Codex's own advisory assessment. WP2's real, live-verified Kokoro production-voice delivery changes Guardian's actual live product behaviour: the production speech-synthesis provider is now Kokoro (`bm_george` primary, `bf_isabella` automatic fallback), not Piper - live-verified against the real engine, not merely unit-tested. This matches the Establish threshold applied at ESR-0049/ESR-0050/ESR-0051 rather than the Retain threshold applied at ESR-0041/ESR-0042/ESR-0045/ESR-0048/ESR-0052.
+
+Files: `README.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`, `aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md`, `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `aiems/governance/baselines/RBL-0033_REPOSITORY_BASELINE.md` (new), `aiems/governance/sessions/ESR-0053_ENGINEERING_SESSION_REPORT.md` (this report, closure), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
 
 ---
 
@@ -100,6 +124,7 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 * `scripts/session_launcher.py` / `scripts/tests/test_session_launcher.py` - modified by WP1.
 * [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]] - Engineering Implementation Package for WP2, drafted.
 * [[EIP-ESR0052-002_KOKORO_TTS_LIVE_COMPARISON|EIP-ESR0052-002]] - built and tested the `KokoroProvider` adapter WP2 wires into production.
+* [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]] - repository baseline established at this session's WP7.
 
 ---
 
@@ -107,6 +132,8 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.9 | 27 August 2026 | Claude Engineering Implementer | **ESR-0053 formally closed.** Session-wide WP7 (Repository Baseline Determination): **Programme Sponsor determination: Establish RBL-0033**, matching Codex's own advisory - WP2's real, live-verified Kokoro production-voice delivery changes Guardian's actual live product behaviour. RBL-0033 created; README.md, PST-0001, PBK-0001, COC-0001, PCB-0001 and JARVIS_CAPABILITY_READINESS_MATRIX all updated to reference it as the current accepted baseline. |
+| 1.8 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full session diff (`b46c296..HEAD`) - **Pass, no findings**. Diff boundary independently self-confirmed by Codex before reviewing (learning directly from ESR-0052 WP6's own diff-boundary mistake). Codex's own advisory: **Establish** a new RBL, superseding RBL-0032 - WP2 is a genuine live product-capability change. WP7 determination pending Programme Sponsor decision. Whole-document staleness sweep: two stale "not yet approved/drafted" headers (WP2's own heading, Section 5's objective) corrected to reflect completion, found while editing for this WP6 recording. |
 | 1.7 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2 post-commit review: genuine `codex exec -s workspace-write` review of the real pushed commit `061c914` (diff `248924a..061c914`) - **Pass, no findings**. All inspectable scope/registration/pytest/validation checks independently re-run and matched, including a direct read of the fallback logic and the Piper-to-Kokoro wiring substitution. |
 | 1.6 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2 Complete: EIP-ESR0053-002 (0.2 to 1.0, Approved - implemented) - EBG-0125 resolved, Kokoro wired into production replacing Piper. Programme Sponsor approved via direct chat instruction ("Approved"). `pytest` 537 passed/1 skipped (up from 532/1), `validate_repository.py` 0 errors/298 warnings. Live-verified against the real Kokoro engine (both primary voice and genuine fallback trigger), not merely unit-tested. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
 | 1.5 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2: EIP-ESR0053-002 Codex design-reviewed via the AIEMS Exchange Bridge - Conditional Pass with correction (0.1 to 0.2), folded in: EBG-0125's stale authorisation wording corrected with a dated Sponsor-decision note. Not yet approved by the Programme Sponsor or implemented. |
