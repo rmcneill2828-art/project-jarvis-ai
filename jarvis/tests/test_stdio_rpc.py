@@ -27,21 +27,21 @@ from sentinel.speech_providers import SpeechSynthesisResponse
 from sentinel.transcription_providers import TranscriptionResponse
 
 
-class _FakePiperProvider:
-    """Stands in for a real `PiperProvider` without ever loading a model or
-    importing `piper` - `jarvis.interfaces.stdio_rpc.PiperProvider` is patched
-    to return this, so wiring tests exercise real branching logic
+class _FakeKokoroProvider:
+    """Stands in for a real `KokoroProvider` without ever loading a model or
+    importing `kokoro_onnx` - `jarvis.interfaces.stdio_rpc.KokoroProvider` is
+    patched to return this, so wiring tests exercise real branching logic
     (env var present/absent, gateway reuse, RPC serialization) without the
     ML dependency cost a real construction would pay."""
 
-    name = "piper"
+    name = "kokoro"
 
     def __init__(self, configuration) -> None:
         self.configuration = configuration
 
     def synthesize(self, request):
         return SpeechSynthesisResponse(
-            provider_name="piper",
+            provider_name="kokoro",
             audio_bytes=b"fake-wav-bytes",
             mime_type="audio/wav",
         )
@@ -50,7 +50,7 @@ class _FakePiperProvider:
 class _FakeWhisperProvider:
     """Stands in for a real `WhisperProvider` without ever loading a model or
     importing `faster_whisper` - `jarvis.interfaces.stdio_rpc.WhisperProvider`
-    is patched to return this, mirroring `_FakePiperProvider`'s pattern
+    is patched to return this, mirroring `_FakeKokoroProvider`'s pattern
     exactly for the opposite data direction."""
 
     name = "whisper"
@@ -162,10 +162,11 @@ def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_
     assert isinstance(runtime.sentinel_gateway().policy_engine, TrustTierPolicy)
 
 
-def test_build_default_runtime_leaves_speech_unavailable_without_piper_path(tmp_path):
-    """EBG-0114: an absent JARVIS_PIPER_VOICE_PATH must mean speak() returns
-    the honest not_connected outcome, mirroring an absent provider credential -
-    never a startup failure and never a fabricated result."""
+def test_build_default_runtime_leaves_speech_unavailable_without_kokoro_paths(tmp_path):
+    """EBG-0125: an absent JARVIS_KOKORO_MODEL_PATH/JARVIS_KOKORO_VOICES_PATH
+    must mean speak() returns the honest not_connected outcome, mirroring an
+    absent provider credential - never a startup failure and never a
+    fabricated result."""
 
     runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
@@ -175,16 +176,35 @@ def test_build_default_runtime_leaves_speech_unavailable_without_piper_path(tmp_
     assert outcome.audio is None
 
 
-def test_build_default_runtime_wires_speech_provider_when_piper_path_present(tmp_path):
-    """EBG-0114: a present JARVIS_PIPER_VOICE_PATH must wire a real,
-    reachable speech provider into the runtime build_default_runtime()
-    actually produces - not merely that PiperProvider is importable."""
+def test_build_default_runtime_leaves_speech_unavailable_with_only_one_kokoro_path(tmp_path):
+    """EBG-0125: Kokoro requires both files - a present model path with a
+    missing/blank voices path (or vice versa) must still degrade honestly,
+    not attempt a construction that would fail."""
 
-    with patch("jarvis.interfaces.stdio_rpc.PiperProvider", _FakePiperProvider):
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "JARVIS_KOKORO_MODEL_PATH": "/fake/voices/kokoro-v1.0.onnx",
+        }
+    )
+
+    outcome = runtime.speak("hello")
+
+    assert outcome.status == "not_connected"
+
+
+def test_build_default_runtime_wires_speech_provider_when_kokoro_paths_present(tmp_path):
+    """EBG-0125: present JARVIS_KOKORO_MODEL_PATH/JARVIS_KOKORO_VOICES_PATH
+    must wire a real, reachable speech provider into the runtime
+    build_default_runtime() actually produces - not merely that
+    KokoroProvider is importable."""
+
+    with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
         runtime = build_default_runtime(
             environ={
                 "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-                "JARVIS_PIPER_VOICE_PATH": "/fake/voices/en_US-lessac-medium.onnx",
+                "JARVIS_KOKORO_MODEL_PATH": "/fake/voices/kokoro-v1.0.onnx",
+                "JARVIS_KOKORO_VOICES_PATH": "/fake/voices/voices-v1.0.bin",
             }
         )
 
@@ -195,15 +215,16 @@ def test_build_default_runtime_wires_speech_provider_when_piper_path_present(tmp
 
 
 def test_build_default_runtime_reuses_the_same_gateway_for_speech_and_conversation(tmp_path):
-    """EBG-0114: speech must share build_default_runtime()'s single
+    """EBG-0114/EBG-0125: speech must share build_default_runtime()'s single
     SentinelTrustGateway instance, not construct a second one - one trust
     boundary and audit trail, matching how memory_service already reuses it."""
 
-    with patch("jarvis.interfaces.stdio_rpc.PiperProvider", _FakePiperProvider):
+    with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
         runtime = build_default_runtime(
             environ={
                 "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-                "JARVIS_PIPER_VOICE_PATH": "/fake/voices/en_US-lessac-medium.onnx",
+                "JARVIS_KOKORO_MODEL_PATH": "/fake/voices/kokoro-v1.0.onnx",
+                "JARVIS_KOKORO_VOICES_PATH": "/fake/voices/voices-v1.0.bin",
             }
         )
 
@@ -226,13 +247,14 @@ def test_build_default_runtime_reuses_the_same_gateway_for_agent_service(tmp_pat
 
 
 def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
-    with patch("jarvis.interfaces.stdio_rpc.PiperProvider", _FakePiperProvider):
+    with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
         server = StdioRpcServer(
             build_default_runtime(
                 environ={
                     "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
                     "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-                    "JARVIS_PIPER_VOICE_PATH": "/fake/voices/en_US-lessac-medium.onnx",
+                    "JARVIS_KOKORO_MODEL_PATH": "/fake/voices/kokoro-v1.0.onnx",
+                    "JARVIS_KOKORO_VOICES_PATH": "/fake/voices/voices-v1.0.bin",
                 }
             ),
             identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
@@ -269,7 +291,7 @@ def test_guardian_speak_rpc_rejects_non_string_text(tmp_path):
 def test_build_default_runtime_leaves_transcription_unavailable_without_whisper_path(tmp_path):
     """EIP-ESR0047-001: an absent JARVIS_WHISPER_MODEL_PATH must mean
     transcribe() returns the honest not_connected outcome, mirroring an
-    absent Piper voice path - never a startup failure and never a
+    absent Kokoro voice path - never a startup failure and never a
     fabricated result."""
 
     runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })

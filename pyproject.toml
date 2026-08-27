@@ -7,6 +7,15 @@ dependencies = [
     "psutil>=6.0",
     "piper-tts>=1.6.0,<2.0",
     "faster-whisper>=1.0,<2.0",
+    # Kokoro (EBG-0125, EIP-ESR0053-002): Guardian's production speech-output
+    # provider as of this addition, replacing Piper. Promoted here from the
+    # now-removed evaluation-only `voice-eval` optional group once the live
+    # listening comparison it existed for favoured adoption. `piper-tts`
+    # above remains a base dependency unchanged - sentinel/piper_provider.py
+    # is unregistered from production, not removed, so it stays buildable.
+    "kokoro-onnx>=0.6.1,<1.0",
+    "espeakng-loader>=0.2.4,<1.0",
+    "phonemizer-fork>=3.3.2,<4.0",
 ]
 
 [tool.ruff]
@@ -23,16 +32,6 @@ dev = [
     "pytest",
     "pip-audit",
     "pyinstaller>=6.21",
-]
-# Evaluation-only, EBG-0115/EIP-ESR0052-002: enables the live Kokoro-versus-
-# Piper comparison. Deliberately not in `dependencies` or `dev` - these exist
-# to make the comparison possible, not to become a permanent runtime
-# dependency unless the comparison favours adoption (no repository wiring
-# or provider_config.py registration authorised by this group's presence).
-voice-eval = [
-    "kokoro-onnx>=0.6.1,<1.0",
-    "espeakng-loader>=0.2.4,<1.0",
-    "phonemizer-fork>=3.3.2,<4.0",
 ]
 
 [project.scripts]

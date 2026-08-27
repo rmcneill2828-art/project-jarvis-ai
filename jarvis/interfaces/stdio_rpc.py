@@ -54,11 +54,11 @@ from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
 from sentinel.gemini_provider import GeminiProvider
+from sentinel.kokoro_provider import KokoroProvider
 from sentinel.local_provider import LocalEchoProvider
 from sentinel.ollama_provider import OllamaProvider
 from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
-from sentinel.piper_provider import PiperProvider
 from sentinel.policy import TrustTierPolicy
 from sentinel.provider_config import CredentialReference, ProviderConfiguration
 from sentinel.whisper_provider import WhisperProvider
@@ -99,16 +99,36 @@ OLLAMA_ENDPOINT_ENV_VAR = "JARVIS_OLLAMA_ENDPOINT"
 DEFAULT_OLLAMA_MODEL = "qwen3.5:2b"
 OLLAMA_TIMEOUT_SECONDS = 90.0
 
-# Piper voice model path (EIP-ESR0044-001, EBG-0114): unlike
-# OLLAMA_MODEL_ENV_VAR above, this has no sensible default - no voice model
-# file is ever committed to the repository or auto-downloaded (a disclosed,
-# one-time manual step, EIP-ESR0040-001 Section 6 item 9). Absent or blank
-# means no speech provider is wired, mirroring _build_real_provider()'s
-# absent-credential handling exactly, not Ollama's has-a-default pattern.
-PIPER_VOICE_PATH_ENV_VAR = "JARVIS_PIPER_VOICE_PATH"
+# Kokoro voice model paths (EIP-ESR0053-002, EBG-0125): replaces Piper as
+# Guardian's production speech-synthesis provider, per the Programme
+# Sponsor's decision following a real live listening comparison among
+# Kokoro's four confirmed UK English voices. Unlike OLLAMA_MODEL_ENV_VAR
+# above, neither has a sensible default - no voice model file is ever
+# committed to the repository or auto-downloaded (a disclosed, one-time
+# manual step, mirroring EIP-ESR0040-001 Section 6 item 9's original Piper
+# precedent). Both must be present and non-blank for the capability to be
+# available - absent either means no speech provider is wired, mirroring
+# _build_real_provider()'s absent-credential handling exactly, not Ollama's
+# has-a-default pattern. Kokoro's two-file requirement (a `.onnx` model plus
+# a companion `voices` `.bin` file) is `sentinel/kokoro_provider.py`'s own
+# disclosed deviation from Piper's single-file shape.
+KOKORO_MODEL_PATH_ENV_VAR = "JARVIS_KOKORO_MODEL_PATH"
+KOKORO_VOICES_PATH_ENV_VAR = "JARVIS_KOKORO_VOICES_PATH"
+
+# Guardian's production voice choice (EIP-ESR0053-002): a genuine Programme
+# Sponsor listening verdict, not a default guessed from names alone - four
+# real .wav samples of Kokoro's confirmed UK voices were synthesized and
+# delivered for comparison before this choice was made. bf_isabella is an
+# automatic runtime fallback if bm_george's synthesis fails, not a second
+# user-selectable option; language is fixed at British English. None of the
+# three is env-var-configurable in this package - a future backlog item, not
+# this one, if per-deployment voice configurability is wanted.
+KOKORO_VOICE = "bm_george"
+KOKORO_FALLBACK_VOICE = "bf_isabella"
+KOKORO_LANG = "en-gb"
 
 # Whisper model size or local path (EIP-ESR0047-001, EBG-0117): mirrors
-# PIPER_VOICE_PATH_ENV_VAR's absent-means-invisible pattern exactly, and is
+# KOKORO_MODEL_PATH_ENV_VAR's absent-means-invisible pattern exactly, and is
 # this capability's own approval gate per EIP-ESR0047-001 Section 5.2 -
 # capability availability itself, not a per-request live approval this
 # codebase has no mechanism to satisfy. No model is ever auto-downloaded
@@ -176,26 +196,39 @@ def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvide
 def _build_speech_provider(
     gateway: SentinelTrustGateway, environ: Mapping[str, str]
 ) -> GuardianSpeechProvider | None:
-    """Build a Sentinel-gated Piper speech provider, or None if unconfigured.
+    """Build a Sentinel-gated Kokoro speech provider, or None if unconfigured.
 
     Mirrors `_build_real_provider()`'s absent-credential handling: an absent
-    or blank `JARVIS_PIPER_VOICE_PATH` means the capability is not available
-    on this machine, not a startup failure - `GuardianRuntime.speak()`
-    already returns the honest `not_connected` outcome for a None provider.
-    A present-but-invalid path is a deliberate exception, not softened here
-    (EIP-ESR0044-001 Section 8 item 2) - `PiperProvider`'s own constructor
-    already raises `RuntimeError` on an unloadable model.
+    or blank `JARVIS_KOKORO_MODEL_PATH` or `JARVIS_KOKORO_VOICES_PATH` means
+    the capability is not available on this machine, not a startup failure -
+    `GuardianRuntime.speak()` already returns the honest `not_connected`
+    outcome for a None provider. A present-but-invalid path is a deliberate
+    exception, not softened here (EIP-ESR0044-001 Section 8 item 2, carried
+    over unchanged from Piper) - `KokoroProvider`'s own constructor already
+    raises `RuntimeError` on an unloadable model.
 
     Reuses the caller's `gateway` instance rather than constructing a second
     one, so conversation, memory and speech all share one trust boundary and
     audit trail (matching how `memory_service` already reuses it).
     """
 
-    voice_path = environ.get(PIPER_VOICE_PATH_ENV_VAR)
-    if not voice_path:
+    model_path = environ.get(KOKORO_MODEL_PATH_ENV_VAR)
+    voices_path = environ.get(KOKORO_VOICES_PATH_ENV_VAR)
+    if not model_path or not voices_path:
         return None
-    piper_provider = PiperProvider(ProviderConfiguration(provider_name="piper", endpoint=voice_path))
-    return SentinelGatedSpeechProvider(gateway=gateway, provider=piper_provider)
+    kokoro_provider = KokoroProvider(
+        ProviderConfiguration(
+            provider_name="kokoro",
+            endpoint=model_path,
+            metadata={
+                "voices_path": voices_path,
+                "voice": KOKORO_VOICE,
+                "fallback_voice": KOKORO_FALLBACK_VOICE,
+                "lang": KOKORO_LANG,
+            },
+        )
+    )
+    return SentinelGatedSpeechProvider(gateway=gateway, provider=kokoro_provider)
 
 
 def _build_transcription_provider(
@@ -232,9 +265,11 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     configured - or a real provider call that fails at runtime - still has a
     working conversation path (EBG-0070, ESR-0022).
 
-    Also wires Guardian's Voice faculty (EIP-ESR0044-001, EBG-0114) - a
-    Sentinel-gated Piper speech provider is constructed only when
-    `JARVIS_PIPER_VOICE_PATH` is present and non-blank; otherwise
+    Also wires Guardian's Voice faculty (EIP-ESR0044-001, EBG-0114; Kokoro
+    replacing Piper as of EIP-ESR0053-002, EBG-0125) - a Sentinel-gated
+    Kokoro speech provider (`bm_george` primary voice, `bf_isabella`
+    automatic fallback) is constructed only when both `JARVIS_KOKORO_MODEL_PATH`
+    and `JARVIS_KOKORO_VOICES_PATH` are present and non-blank; otherwise
     `GuardianRuntime.speak()` honestly reports `not_connected`, exactly like
     an absent OpenAI/Gemini credential already degrades the conversation
     path. No voice model is ever auto-downloaded.

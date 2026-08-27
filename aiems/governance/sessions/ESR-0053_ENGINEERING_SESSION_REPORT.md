@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0053 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
+| Version | 1.6 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0053 |
 | Date Opened | 27 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 complete, committed, pushed and independently post-commit reviewed (Pass) |
+| Closure Status | Open - WP1 and WP2 complete, pending WP2 commit/push |
 
 ---
 
@@ -49,6 +49,18 @@ Validation: `python -m pytest scripts/tests/test_session_launcher.py` - 16 passe
 
 ---
 
+**WP2 - EBG-0125: Kokoro Production Voice Wiring (Drafted, not yet reviewed or approved):** following the Programme Sponsor's selection of a product-moving WP2, per PBK-0001's Feature-First Delivery Discipline (WP1 alone was process/tooling-only). A live UK-voice comparison was performed first: the real `KokoroProvider` synthesized the same fixed test utterance used at EBG-0113/EBG-0115 through each of Kokoro's four confirmed British voices (`bf_emma`, `bf_isabella`, `bm_george`, `bm_lewis`), writing four genuine `.wav` files to the Programme Sponsor's Desktop; the comparison script and downloaded model files were never committed, deleted immediately after use (confirmed via `git status`). **Programme Sponsor's verdict**: `bm_george` (primary), `bf_isabella` (automatic fallback if primary synthesis fails at runtime); **Kokoro replaces Piper outright** as Guardian's sole production speech-synthesis provider - not a second selectable option. Drafted in [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]], submitted to Codex Engineering Reviewer via the AIEMS Exchange Bridge (`ESR-0053`/`WP2`) - **Conditional Pass with correction**, folded into v0.2: EBG-0125's own `EBR-0001` row still read "no implementation, provider selection or voice choice is authorised," stale relative to the Programme Sponsor's actual decision recorded above - corrected with a dated authorisation note. Scoping: a dual-voice fallback extension to `sentinel/kokoro_provider.py` (a disclosed breaking change to its internal `VoiceSynthesizer` seam, from a single fixed voice to a `(text, voice)`-parameterised one, so a single loaded engine can serve both voices); `jarvis/interfaces/stdio_rpc.py`'s `_build_speech_provider()` rewritten to construct `KokoroProvider` instead of `PiperProvider`, gated on two new required env vars (`JARVIS_KOKORO_MODEL_PATH`/`JARVIS_KOKORO_VOICES_PATH`); `pyproject.toml`'s `voice-eval` optional dependency group promoted to base `dependencies`; corresponding test updates. `sentinel/piper_provider.py` itself is explicitly left untouched - unregistered from production, not deleted. No `src/`/`src-tauri/` change - `guardian.speak`'s UXP call site confirmed already provider-agnostic (Codex independently verified this too). **Programme Sponsor approved via direct chat instruction ("Approved")**, and **implemented exactly as scoped in v0.2** (v1.0):
+
+* `sentinel/kokoro_provider.py`: `VoiceSynthesizer` changed from a single fixed voice bound at construction (`Callable[[str], bytes]`) to a voice-parameterised callable (`Callable[[str, str], bytes]`) - one loaded Kokoro engine now serves both voices without a second ~90 MB model load. New optional `fallback_voice` metadata key; `synthesize()` retries once with the fallback on a primary-voice failure, raising only if both fail; response metadata gains `voice_used` for audit traceability.
+* `jarvis/interfaces/stdio_rpc.py`: `PiperProvider` import/wiring removed from `_build_speech_provider()`; `KokoroProvider` constructed instead, gated on two new required env vars (`JARVIS_KOKORO_MODEL_PATH`/`JARVIS_KOKORO_VOICES_PATH`), with `bm_george`/`bf_isabella`/`en-gb` as hardcoded module constants.
+* `pyproject.toml`: `kokoro-onnx`/`espeakng-loader`/`phonemizer-fork` moved from the `voice-eval` optional group (now removed) into base `dependencies`. `piper-tts` untouched.
+* `jarvis/tests/test_kokoro_provider.py`/`test_stdio_rpc.py`: seam/wiring tests updated; 5 new tests added covering fallback behaviour and both-paths-required gating.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]: EBG-0125 closed `Completed`.
+
+Validation: `pytest jarvis/tests/test_stdio_rpc.py jarvis/tests/test_kokoro_provider.py` - 79 passed. Full suite - **537 passed, 1 skipped** (up from 532/1, +5). `validate_repository.py` - 0 errors, 298 warnings (unchanged). **Live end-to-end verification against the real engine, not fake seams**: a genuine `build_default_runtime()` + `runtime.speak()` call (real downloaded model files) returned synthesized `bm_george` audio (229,420 bytes); a second real call with a deliberately invalid primary voice confirmed the automatic fallback genuinely engages, producing real `bf_isabella` audio (65,580 bytes). Model files never committed, deleted after verification.
+
+---
+
 # 4. Engineering Authority
 
 ESR-0053 opening was authorised by direct Programme Sponsor instruction on 27 August 2026, following ESR-0052's formal closure.
@@ -70,6 +82,7 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0106: Active Backlog View Generation | Complete (EIP-ESR0053-001 v1.0) - committed `274a6b9`, pushed, post-commit reviewed (Pass) |
+| WP2 | EBG-0125: Kokoro Production Voice Wiring | Complete (EIP-ESR0053-002 v1.0) - live-verified against the real engine, pending commit/push |
 
 ---
 
@@ -81,6 +94,8 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0106 (WP1 scope), Section 5A (currently stale, the finding that selected WP1).
 * [[EIP-ESR0053-001_ACTIVE_BACKLOG_VIEW_GENERATION|EIP-ESR0053-001]] - Engineering Implementation Package for WP1, approved and implemented.
 * `scripts/session_launcher.py` / `scripts/tests/test_session_launcher.py` - modified by WP1.
+* [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]] - Engineering Implementation Package for WP2, drafted.
+* [[EIP-ESR0052-002_KOKORO_TTS_LIVE_COMPARISON|EIP-ESR0052-002]] - built and tested the `KokoroProvider` adapter WP2 wires into production.
 
 ---
 
@@ -88,6 +103,9 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2 Complete: EIP-ESR0053-002 (0.2 to 1.0, Approved - implemented) - EBG-0125 resolved, Kokoro wired into production replacing Piper. Programme Sponsor approved via direct chat instruction ("Approved"). `pytest` 537 passed/1 skipped (up from 532/1), `validate_repository.py` 0 errors/298 warnings. Live-verified against the real Kokoro engine (both primary voice and genuine fallback trigger), not merely unit-tested. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
+| 1.5 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2: EIP-ESR0053-002 Codex design-reviewed via the AIEMS Exchange Bridge - Conditional Pass with correction (0.1 to 0.2), folded in: EBG-0125's stale authorisation wording corrected with a dated Sponsor-decision note. Not yet approved by the Programme Sponsor or implemented. |
+| 1.4 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2: live UK-voice comparison performed (four real `.wav` samples, never committed); Programme Sponsor selected `bm_george` primary/`bf_isabella` automatic fallback, Kokoro replacing Piper outright. Drafted [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]] v0.1. Not yet reviewed, approved or implemented. |
 | 1.3 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1 post-commit review: genuine `codex exec -s workspace-write` review of the real pushed commit `274a6b9` (diff `b46c296..274a6b9`) - **Pass, no findings**. All inspectable scope/registration/pytest/validation checks independently re-run and matched. |
 | 1.2 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1 Complete: EIP-ESR0053-001 (0.2 to 1.0, Approved - implemented) - EBG-0106 resolved. Programme Sponsor approved via direct chat instruction ("Approved"). `pytest` 532 passed/1 skipped (up from 530/1), `validate_repository.py` 0 errors/298 warnings. Committed and pushed (`274a6b9`) through `submit-response` and the real Sponsor Approval Service. |
 | 1.1 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1: EIP-ESR0053-001 Codex design-reviewed via the AIEMS Exchange Bridge - Conditional Pass with corrections (0.1 to 0.2), both folded in. Not yet approved by the Programme Sponsor or implemented. |
