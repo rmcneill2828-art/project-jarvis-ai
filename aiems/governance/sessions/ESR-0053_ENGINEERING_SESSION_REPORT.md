@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0053 |
 | Title | Engineering Session Report |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0053 |
 | Date Opened | 27 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 implemented, pending commit and independent verification |
+| Closure Status | Open - WP1 complete, committed, pushed and independently post-commit reviewed (Pass) |
 
 ---
 
@@ -43,6 +43,10 @@ Opened at the Programme Sponsor's direct request. WP0A/WP0B session initialisati
 
 Validation: `python -m pytest scripts/tests/test_session_launcher.py` - 16 passed (was 14; a net +2 test-wiring gain, disclosed as a deviation from the pre-implementation "unchanged" prediction). Full suite `python -m pytest jarvis/tests sentinel scripts/tests` - **532 passed, 1 skipped** (up from ESR-0052's closing 530/1, matching). `python scripts/validate_repository.py` (full mode) - 0 errors, 298 warnings (unchanged, none newly introduced). Live `python scripts/session_launcher.py` run against the real repository confirmed the new Active Backlog View correctly Priority-groups the real open Section 5 rows.
 
+**Committed and pushed** (`274a6b9`, `b46c296..274a6b9`), gated through the real Sponsor Approval Service via `submit-response` (`AIEMS_AGENT_TOKEN`/`AIEMS_SPONSOR_URL` supplied directly by the Programme Sponsor for this call).
+
+**Post-commit independent review** (direct `codex exec -s workspace-write` invocation against the real pushed commit `274a6b9`, diff `b46c296..274a6b9`): **Pass, no findings.** Codex independently re-ran `git show --stat`/`git diff` and confirmed exactly the six expected files changed, no unexpected `jarvis/`/`sentinel/`/`src/` path touched; independently re-ran `pytest` (532 passed, 1 skipped, matching) and `validate_repository.py` (0 errors, 298 warnings, matching); spot-checked EBG-0106 marked `Completed` and Section 5A no longer holding a static per-theme table; confirmed REG-0001's version-history/row entries internally consistent with the actual diff.
+
 ---
 
 # 4. Engineering Authority
@@ -65,7 +69,7 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1 | EBG-0106: Active Backlog View Generation | Implemented (EIP-ESR0053-001 v1.0) - pending commit/push and WP6 independent verification |
+| WP1 | EBG-0106: Active Backlog View Generation | Complete (EIP-ESR0053-001 v1.0) - committed `274a6b9`, pushed, post-commit reviewed (Pass) |
 
 ---
 
@@ -84,6 +88,7 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| 1.2 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1 Complete: EIP-ESR0053-001 (0.2 to 1.0, Approved - implemented) - EBG-0106 resolved. Programme Sponsor approved via direct chat instruction ("Approved"). `pytest` 532 passed/1 skipped (up from 530/1), `validate_repository.py` 0 errors/298 warnings. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
+| 1.3 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1 post-commit review: genuine `codex exec -s workspace-write` review of the real pushed commit `274a6b9` (diff `b46c296..274a6b9`) - **Pass, no findings**. All inspectable scope/registration/pytest/validation checks independently re-run and matched. |
+| 1.2 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1 Complete: EIP-ESR0053-001 (0.2 to 1.0, Approved - implemented) - EBG-0106 resolved. Programme Sponsor approved via direct chat instruction ("Approved"). `pytest` 532 passed/1 skipped (up from 530/1), `validate_repository.py` 0 errors/298 warnings. Committed and pushed (`274a6b9`) through `submit-response` and the real Sponsor Approval Service. |
 | 1.1 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP1: EIP-ESR0053-001 Codex design-reviewed via the AIEMS Exchange Bridge - Conditional Pass with corrections (0.1 to 0.2), both folded in. Not yet approved by the Programme Sponsor or implemented. |
 | 1.0 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 opened at WP0B. WP0A/WP0B complete. Documentation-Debt Priority check found EBR-0001 Section 5A stale (a live second instance of the drift EBG-0106 exists to fix) - flagged to the Programme Sponsor, who selected clearing EBG-0106 as WP1. WP1 drafted per [[EIP-ESR0053-001_ACTIVE_BACKLOG_VIEW_GENERATION|EIP-ESR0053-001]] v0.1 - not yet reviewed, approved or implemented. |
