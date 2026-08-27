@@ -31,7 +31,7 @@ dev = [
     "ruff",
     "pytest",
     "pip-audit",
-    "pyinstaller>=6.21",
+    "pyinstaller>=6.22.2",
 ]
 
 [project.scripts]
