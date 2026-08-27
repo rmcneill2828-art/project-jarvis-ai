@@ -6,7 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "psutil>=6.0",
     "piper-tts>=1.6.0,<2.0",
-    "faster-whisper>=1.0,<2.0",
+    "faster-whisper>=1.2.1,<2.0",
     # Kokoro (EBG-0125, EIP-ESR0053-002): Guardian's production speech-output
     # provider as of this addition, replacing Piper. Promoted here from the
     # now-removed evaluation-only `voice-eval` optional group once the live
