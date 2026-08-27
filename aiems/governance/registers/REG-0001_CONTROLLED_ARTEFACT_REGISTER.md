@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.505
+**Version:** 3.506
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.505 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.506 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -293,7 +293,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0050 | Engineering Session Report | Engineering Session Report | 1.8 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0051 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0052 | Engineering Session Report | Engineering Session Report | 1.9 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0053 | Engineering Session Report | Engineering Session Report | 1.6 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0053 | Engineering Session Report | Engineering Session Report | 1.7 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -408,6 +408,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.506 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2 post-commit review: synced ESR-0053 row (1.6 to 1.7) - genuine background Codex review of the real pushed commit `061c914`, Pass, no findings. |
 | 3.505 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2 Complete: EIP-ESR0053-002 (0.2 to 1.0, Approved - implemented) - EBG-0125 resolved (Kokoro production voice wiring). Synced EBR-0001 row (1.173 to 1.174). Approved by the Programme Sponsor via direct chat instruction ("Approved"), implementation gated for commit through `submit-response`/the real Sponsor Approval Service. |
 | 3.504 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2: EIP-ESR0053-002 Codex design-reviewed via the AIEMS Exchange Bridge - Conditional Pass with correction (0.1 to 0.2): EBG-0125's stale "no implementation/selection authorised" wording corrected with a dated Sponsor-authorisation note (EBR-0001 1.172 to 1.173). Not yet approved or implemented. |
 | 3.503 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2: registered draft [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]] (0.1, Draft) - EBG-0125 Kokoro production voice wiring. A live UK-voice comparison (four real `.wav` samples, Kokoro's four confirmed British voices) was performed and delivered to the Programme Sponsor's Desktop ahead of this package; the Programme Sponsor selected `bm_george` as primary voice with `bf_isabella` as an automatic runtime fallback, and confirmed Kokoro replaces Piper outright as Guardian's sole production speech-synthesis provider. Not yet reviewed, approved or implemented. |

@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0053 |
 | Title | Engineering Session Report |
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0053 |
 | Date Opened | 27 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 and WP2 complete, pending WP2 commit/push |
+| Closure Status | Open - WP1 and WP2 complete, committed, pushed and independently post-commit reviewed (both Pass) |
 
 ---
 
@@ -59,6 +59,10 @@ Validation: `python -m pytest scripts/tests/test_session_launcher.py` - 16 passe
 
 Validation: `pytest jarvis/tests/test_stdio_rpc.py jarvis/tests/test_kokoro_provider.py` - 79 passed. Full suite - **537 passed, 1 skipped** (up from 532/1, +5). `validate_repository.py` - 0 errors, 298 warnings (unchanged). **Live end-to-end verification against the real engine, not fake seams**: a genuine `build_default_runtime()` + `runtime.speak()` call (real downloaded model files) returned synthesized `bm_george` audio (229,420 bytes); a second real call with a deliberately invalid primary voice confirmed the automatic fallback genuinely engages, producing real `bf_isabella` audio (65,580 bytes). Model files never committed, deleted after verification.
 
+**Committed and pushed** (`061c914`, `248924a..061c914`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review** (direct `codex exec -s workspace-write` invocation against the real pushed commit `061c914`, diff `248924a..061c914`): **Pass, no findings.** Codex independently re-ran `git show --stat`/`git diff` and confirmed exactly the nine expected files changed, no unexpected `src/`/`src-tauri/` path touched; independently re-ran `pytest` (537 passed, 1 skipped, matching) and `validate_repository.py` (0 errors, 298 warnings, matching); read `sentinel/kokoro_provider.py` directly and confirmed the fallback logic genuinely matches the claim (primary tried first, fallback only on exception, raises if both fail, exception chaining preserved); read `jarvis/interfaces/stdio_rpc.py` directly and confirmed `PiperProvider` is genuinely no longer imported/wired and both Kokoro env vars are required; confirmed `sentinel/piper_provider.py` untouched by the diff; spot-checked EBG-0125 marked `Completed`; confirmed REG-0001 internally consistent.
+
 ---
 
 # 4. Engineering Authority
@@ -82,7 +86,7 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0106: Active Backlog View Generation | Complete (EIP-ESR0053-001 v1.0) - committed `274a6b9`, pushed, post-commit reviewed (Pass) |
-| WP2 | EBG-0125: Kokoro Production Voice Wiring | Complete (EIP-ESR0053-002 v1.0) - live-verified against the real engine, pending commit/push |
+| WP2 | EBG-0125: Kokoro Production Voice Wiring | Complete (EIP-ESR0053-002 v1.0) - committed `061c914`, pushed, post-commit reviewed (Pass) |
 
 ---
 
@@ -103,6 +107,7 @@ WP1 (drafted, not yet approved-to-implement): resolve EBG-0106 by replacing EBR-
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.7 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2 post-commit review: genuine `codex exec -s workspace-write` review of the real pushed commit `061c914` (diff `248924a..061c914`) - **Pass, no findings**. All inspectable scope/registration/pytest/validation checks independently re-run and matched, including a direct read of the fallback logic and the Piper-to-Kokoro wiring substitution. |
 | 1.6 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2 Complete: EIP-ESR0053-002 (0.2 to 1.0, Approved - implemented) - EBG-0125 resolved, Kokoro wired into production replacing Piper. Programme Sponsor approved via direct chat instruction ("Approved"). `pytest` 537 passed/1 skipped (up from 532/1), `validate_repository.py` 0 errors/298 warnings. Live-verified against the real Kokoro engine (both primary voice and genuine fallback trigger), not merely unit-tested. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
 | 1.5 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2: EIP-ESR0053-002 Codex design-reviewed via the AIEMS Exchange Bridge - Conditional Pass with correction (0.1 to 0.2), folded in: EBG-0125's stale authorisation wording corrected with a dated Sponsor-decision note. Not yet approved by the Programme Sponsor or implemented. |
 | 1.4 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP2: live UK-voice comparison performed (four real `.wav` samples, never committed); Programme Sponsor selected `bm_george` primary/`bf_isabella` automatic fallback, Kokoro replacing Piper outright. Drafted [[EIP-ESR0053-002_KOKORO_PRODUCTION_VOICE_WIRING|EIP-ESR0053-002]] v0.1. Not yet reviewed, approved or implemented. |
