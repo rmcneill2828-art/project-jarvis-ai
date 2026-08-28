@@ -2,7 +2,7 @@
 
 **Status:** Approved
 
-**Version:** 1.23
+**Version:** 1.24
 
 ---
 
@@ -247,7 +247,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]], the current accepted repository baseline.
+* Review [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]], the current accepted repository baseline.
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -263,7 +263,7 @@ Before beginning engineering activities:
 
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
-* [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0054 WP7 on 28 August 2026, superseding [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]].
+* [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0055 WP7 on 28 August 2026, superseding [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]].
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
@@ -279,7 +279,7 @@ Before beginning engineering activities:
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing Engineering Implementer behaviour that complements COC-0001. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used for session reload and synchronisation. |
-| [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0054 WP7 on 28 August 2026, superseding RBL-0033. |
+| [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0055 WP7 on 28 August 2026, superseding RBL-0034. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed session report that hands over to ESR-0009 validation readiness. |
 
 ---
@@ -287,6 +287,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.24 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP7: corrected the RBL-0034 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0035, established at ESR-0055 WP7 (GIA Phase 3b/3c: Repository Health and Register State Observability, completing EBG-0083 Phase 3 in full), superseding RBL-0034. |
 | 1.23 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP7: corrected the RBL-0033 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0034, established at ESR-0054 WP7 (EBG-0038 Relevance Check; GIA Phase 3a Git State Observability, a genuine new capability), superseding RBL-0033. |
 | 1.22 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP7: corrected the RBL-0032 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0033, established at ESR-0053 WP7 (Active Backlog View Generation; Kokoro Production Voice Wiring, a genuine live product-capability change), superseding RBL-0032. |
 | 1.21 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP7: corrected the RBL-0031 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0032, established at ESR-0051 WP7 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination, a genuine live product-capability change), superseding RBL-0031. |

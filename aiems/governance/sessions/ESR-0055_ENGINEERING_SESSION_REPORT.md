@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0055 |
 | Title | Engineering Session Report |
-| Version | 1.4 |
-| Status | Open |
+| Version | 1.5 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0055 |
 | Date Opened | 28 August 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1 complete (committed, pushed, post-commit reviewed) |
+| Date Closed | 28 August 2026 |
+| Closure Status | Closed - WP1 complete, session-wide WP6 Pass, no corrective findings, WP7 Establish RBL-0035 |
 
 ---
 
@@ -73,6 +73,28 @@ WP1 (complete): resolve the remainder of EBG-0083 Phase 3 - repository health (v
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0083 Phase 3b/3c: GIA Repository Health and Register State Observability | Complete (EIP-ESR0055-001 v1.0) - committed `10f080a`, pushed, post-commit reviewed (Pass) |
+| WP6 | Session-wide Independent Repository Verification | Complete - Pass, no corrective findings |
+| WP7 | Session-wide Repository Baseline Determination | Complete - Establish RBL-0035 |
+
+---
+
+# 6A. Session-Wide WP6 - Independent Repository Verification
+
+Following WP1's implementation, push and post-commit review, the Programme Sponsor directed proceeding to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s workspace-write`, background invocation) against the full session diff, `2d74cc0..HEAD` (`2d74cc0`, ESR-0054's own final closure commit - independently confirmed by Codex itself via `git log --oneline 2d74cc0..HEAD` before reviewing, rather than trusted blindly). Confirmed exactly ESR-0055's two commits (`10f080a`, `5254641`) and the expected changed files, no scope creep, no unexpected `src/`/`src-tauri/`/`sentinel/policy.py`/`GAM-0001` path. Independently re-ran `pytest jarvis/tests sentinel scripts/tests` (553 passed, 1 skipped, matching) and `validate_repository.py` (0 errors, 298 warnings, matching); confirmed EBG-0083 Phase 3b/3c genuinely reflected in EBR-0001; confirmed EBR-0001/REG-0001/ESR-0055 internally consistent with the actual diff and with each other.
+
+**Verdict: Pass, no corrective findings.**
+
+Codex's own advisory baseline assessment: **Establish** a new RBL, superseding [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]] - WP1 delivers a genuine new, real, invokable backend capability (repository health and register-state observability), matching the Establish threshold applied at ESR-0049/ESR-0050/ESR-0051/ESR-0053/ESR-0054. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6B. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Establish [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]]** (superseding [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]]), agreeing with Codex's own advisory assessment. WP1's real, live-verified GIA Repository Health and Register State Observability delivery adds a genuine new backend capability - completing EBG-0083 Phase 3 (engineering instrumentation) in full, the direct continuation of ESR-0054's own Phase 3a delivery. This matches the Establish threshold applied at ESR-0049/ESR-0050/ESR-0051/ESR-0053/ESR-0054 rather than the Retain threshold applied at ESR-0041/ESR-0042/ESR-0045/ESR-0048/ESR-0052.
+
+Files: `README.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`, `aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md`, `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `aiems/governance/baselines/RBL-0035_REPOSITORY_BASELINE.md` (new), `aiems/governance/sessions/ESR-0055_ENGINEERING_SESSION_REPORT.md` (this report, closure), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
 
 ---
 
@@ -81,7 +103,8 @@ WP1 (complete): resolve the remainder of EBG-0083 Phase 3 - repository health (v
 * [[ESR-0054_ENGINEERING_SESSION_REPORT|ESR-0054]] - prior closed session, immediate predecessor; WP2 delivered EBG-0083 Phase 3a, the direct basis for this session's WP1.
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Session Initialisation, Engineering Session Lifecycle and Scope-Creep/Cross-WP-Dependency Flagging Discipline followed; re-read in full at the Programme Sponsor's explicit request opening this session.
 * [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]] - repository baseline at session start.
-* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0083 (Phase 3 scope, this session's WP1).
+* [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]] - repository baseline established at this session's WP7.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - EBG-0083 (Phase 3 scope, this session's WP1, closed in full).
 * [[EIP-ESR0055-001_GIA_PHASE3BC_REPOSITORY_HEALTH_AND_REGISTER_STATE|EIP-ESR0055-001]] - Engineering Implementation Package for WP1, approved and implemented.
 * [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8A's `LOCAL_AGENT_ACTION` boundary; unaffected by this session's read-only observability scope.
 
@@ -91,6 +114,7 @@ WP1 (complete): resolve the remainder of EBG-0083 Phase 3 - repository health (v
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 28 August 2026 | Claude Engineering Implementer | **ESR-0055 formally closed.** Session-wide WP7 (Repository Baseline Determination): **Programme Sponsor determination: Establish RBL-0035**, agreeing with Codex's own advisory - WP1's real, live-verified GIA Repository Health and Register State Observability delivery adds a genuine new backend capability, completing EBG-0083 Phase 3 in full. RBL-0035 created; README.md, PST-0001, PBK-0001, COC-0001, PCB-0001 and JARVIS_CAPABILITY_READINESS_MATRIX all updated to reference it as the current accepted baseline. Session-wide WP6 (genuine background Codex review of the full session diff `2d74cc0..HEAD`) recorded: Pass, no corrective findings; Codex's own advisory was Establish. |
 | 1.4 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP1 post-commit review: genuine `codex exec -s workspace-write` review of the real pushed commit `10f080a` (diff `2d74cc0..10f080a`) - **Pass, no corrective findings**. All inspectable scope/design/pytest/validation checks independently re-run and matched, including confirming the unfiltered-by-status `register_state()` correction and the subprocess (not import) `repository_validation()` boundary. Whole-document staleness sweep (PBK-0001): corrected stale "Drafting"/"drafting" WP1 status references (Closure Status, Section 3, Section 5, Section 7) left over from earlier in this same session, found while making this edit. |
 | 1.3 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP1: committed and pushed (`10f080a`, `2d74cc0..10f080a`), gated through the real Sponsor Approval Service via `submit-response`. |
 | 1.2 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP1 Complete: EIP-ESR0055-001 (0.2 to 1.0, Programme Sponsor approved) - EBG-0083 Phase 3b/3c (GIA Repository Health and Register State Observability) implemented, completing Phase 3 in full. `pytest` 553 passed/1 skipped (up from 549/1), `validate_repository.py` 0 errors/298 warnings. Live-verified against this repository's real git/validation/register state. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |

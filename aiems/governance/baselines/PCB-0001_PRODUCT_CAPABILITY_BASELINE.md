@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 2.10 |
+| Version | 2.11 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -36,7 +36,7 @@ The v2.3 refresh ([[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] WP3) incorpor
 Repository validation confirmed that the following evidence artefacts exist:
 
 - [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT]]
-- [[RBL-0034_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0054; superseded RBL-0007 through RBL-0033 since PCB-0001 v1.0)
+- [[RBL-0035_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0055; superseded RBL-0007 through RBL-0034 since PCB-0001 v1.0)
 - [[JARVIS_PRODUCT_ARCHITECTURE]]
 - [[JARVIS_CAPABILITY_READINESS_MATRIX]]
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER]]
@@ -133,6 +133,7 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.11 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP7: corrected the Section 3 current-baseline reference from RBL-0034 to RBL-0035, established at ESR-0055 WP7 (GIA Phase 3b/3c: Repository Health and Register State Observability, completing EBG-0083 Phase 3 in full). Pointer fix only - WP1's own new GIA capability is not yet reflected in this baseline's content, remains open for a future refresh (now two sessions of GIA capability, Phase 3a and 3b/3c, both unreflected here). |
 | 2.10 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP7: corrected the Section 3 current-baseline reference from RBL-0033 to RBL-0034, established at ESR-0054 WP7 (EBG-0038 Relevance Check; GIA Phase 3a Git State Observability). Pointer fix only - WP2's own new GIA capability is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.9 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP7: corrected the Section 3 current-baseline reference from RBL-0032 to RBL-0033, established at ESR-0053 WP7 (Active Backlog View Generation; Kokoro Production Voice Wiring). Pointer fix only - WP2's own Kokoro production-voice delivery is not yet reflected in this baseline's content, remains open for a future refresh. |
 | 2.8 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP7: corrected the Section 3 current-baseline reference from RBL-0031 to RBL-0032, established at ESR-0051 WP7 (Process/Tooling Backlog Cluster; Guardian Orb Phase 2 Cluster Illumination). Pointer fix only - WP2's own Guardian Orb Phase 2 delivery is not yet reflected in this baseline's content, remains open for a future refresh. |
