@@ -100,6 +100,11 @@ def _engineering_snapshot() -> EngineeringSnapshot:
         git_uncommitted_files=1,
         git_last_commit_sha="abc123def456",
         git_last_commit_message="ESR-0054 WP2: GIA Phase 3a",
+        repository_validation_errors=0,
+        repository_validation_warnings=298,
+        current_repository_baseline="RBL-0034",
+        latest_registered_session="ESR-0055",
+        latest_registered_session_status="Open",
         captured_at=datetime(2026, 8, 28, tzinfo=UTC),
     )
 
@@ -118,6 +123,11 @@ def test_gia_engineering_agent_reports_real_snapshot_fields() -> None:
     assert result.payload["gitUncommittedFiles"] == "1"
     assert result.payload["gitLastCommitSha"] == "abc123def456"
     assert result.payload["gitLastCommitMessage"] == "ESR-0054 WP2: GIA Phase 3a"
+    assert result.payload["repositoryValidationErrors"] == "0"
+    assert result.payload["repositoryValidationWarnings"] == "298"
+    assert result.payload["currentRepositoryBaseline"] == "RBL-0034"
+    assert result.payload["latestRegisteredSession"] == "ESR-0055"
+    assert result.payload["latestRegisteredSessionStatus"] == "Open"
     assert result.payload["capturedAt"] == "2026-08-28T00:00:00+00:00"
 
 

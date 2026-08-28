@@ -726,6 +726,11 @@ def test_gia_engineering_status_serializes_an_injected_fake_snapshot_to_exact_ca
         git_uncommitted_files=3,
         git_last_commit_sha="abc123def456",
         git_last_commit_message="ESR-0054 WP2: GIA Phase 3a",
+        repository_validation_errors=0,
+        repository_validation_warnings=298,
+        current_repository_baseline="RBL-0034",
+        latest_registered_session="ESR-0055",
+        latest_registered_session_status="Open",
         captured_at=captured_at,
     )
     server = StdioRpcServer(
@@ -743,6 +748,11 @@ def test_gia_engineering_status_serializes_an_injected_fake_snapshot_to_exact_ca
         "gitUncommittedFiles": 3,
         "gitLastCommitSha": "abc123def456",
         "gitLastCommitMessage": "ESR-0054 WP2: GIA Phase 3a",
+        "repositoryValidationErrors": 0,
+        "repositoryValidationWarnings": 298,
+        "currentRepositoryBaseline": "RBL-0034",
+        "latestRegisteredSession": "ESR-0055",
+        "latestRegisteredSessionStatus": "Open",
         "capturedAt": "2026-08-28T10:00:00+00:00",
     }
 
@@ -757,6 +767,11 @@ def test_gia_engineering_status_does_not_require_a_started_or_connected_runtime(
         git_uncommitted_files=0,
         git_last_commit_sha="deadbeef",
         git_last_commit_message="example commit",
+        repository_validation_errors=0,
+        repository_validation_warnings=298,
+        current_repository_baseline="RBL-0034",
+        latest_registered_session="ESR-0055",
+        latest_registered_session_status="Open",
         captured_at=datetime(2026, 8, 28, 10, 0, 0, tzinfo=UTC),
     )
     server = StdioRpcServer(
@@ -792,6 +807,15 @@ def test_gia_engineering_status_defaults_to_the_real_git_backed_observer(tmp_pat
     assert isinstance(result["gitUncommittedFiles"], int) and result["gitUncommittedFiles"] >= 0
     assert isinstance(result["gitLastCommitSha"], str) and len(result["gitLastCommitSha"]) == 40
     assert isinstance(result["gitLastCommitMessage"], str) and result["gitLastCommitMessage"]
+    assert isinstance(result["repositoryValidationErrors"], int) and result["repositoryValidationErrors"] >= 0
+    assert isinstance(result["repositoryValidationWarnings"], int) and result["repositoryValidationWarnings"] >= 0
+    assert isinstance(result["currentRepositoryBaseline"], str) and result["currentRepositoryBaseline"].startswith(
+        "RBL-"
+    )
+    assert isinstance(result["latestRegisteredSession"], str) and result["latestRegisteredSession"].startswith(
+        "ESR-"
+    )
+    assert isinstance(result["latestRegisteredSessionStatus"], str) and result["latestRegisteredSessionStatus"]
 
 
 def test_missing_params_defaults_to_empty_object(tmp_path):

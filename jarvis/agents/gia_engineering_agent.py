@@ -1,10 +1,12 @@
-"""`GiaEngineeringAgent`: the second real `SpecialistAgent` (EIP-ESR0054-002).
+"""`GiaEngineeringAgent`: the second real `SpecialistAgent` (EIP-ESR0054-002;
+extended by EIP-ESR0055-001).
 
 Wraps `jarvis.gia.engineering_observability.EngineeringStateObserver`'s
-read-only git-state snapshot as a `SpecialistAgent`, mirroring
+read-only engineering-state snapshot (git state, repository health,
+register state) as a `SpecialistAgent`, mirroring
 `jarvis.agents.gia_agent.GiaObservabilityAgent`'s own shape exactly.
 Classifies `ROUTINE_INTERACTION` under MOD-0001's Agent Framework rule -
-it only reads and reports repository git state, touching no local device
+it only reads and reports repository state, touching no local device
 or system state, exactly the "observation is not control" distinction
 `aiems/models/GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL.md` Section
 8A.1 already draws for GIA. This agent never approaches
@@ -51,6 +53,11 @@ class GiaEngineeringAgent:
             "gitUncommittedFiles": str(snapshot.git_uncommitted_files),
             "gitLastCommitSha": snapshot.git_last_commit_sha,
             "gitLastCommitMessage": snapshot.git_last_commit_message,
+            "repositoryValidationErrors": str(snapshot.repository_validation_errors),
+            "repositoryValidationWarnings": str(snapshot.repository_validation_warnings),
+            "currentRepositoryBaseline": snapshot.current_repository_baseline,
+            "latestRegisteredSession": snapshot.latest_registered_session,
+            "latestRegisteredSessionStatus": snapshot.latest_registered_session_status,
             "capturedAt": snapshot.captured_at.isoformat(),
         }
         return AgentResult(status=STATUS_REPORTED, payload=payload)

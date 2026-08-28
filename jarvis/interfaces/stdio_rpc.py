@@ -548,6 +548,11 @@ class StdioRpcServer:
             "gitUncommittedFiles": snapshot.git_uncommitted_files,
             "gitLastCommitSha": snapshot.git_last_commit_sha,
             "gitLastCommitMessage": snapshot.git_last_commit_message,
+            "repositoryValidationErrors": snapshot.repository_validation_errors,
+            "repositoryValidationWarnings": snapshot.repository_validation_warnings,
+            "currentRepositoryBaseline": snapshot.current_repository_baseline,
+            "latestRegisteredSession": snapshot.latest_registered_session,
+            "latestRegisteredSessionStatus": snapshot.latest_registered_session_status,
             "capturedAt": snapshot.captured_at.isoformat(),
         }
 
