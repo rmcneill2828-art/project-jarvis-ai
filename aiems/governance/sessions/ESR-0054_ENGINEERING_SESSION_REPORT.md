@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0054 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0054 |
 | Date Opened | 28 August 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1 complete |
+| Closure Status | Open - WP0A/WP0B/WP1/WP2 complete |
 
 ---
 
@@ -52,6 +52,25 @@ Documentation-only - no code, architecture, or new standard created. No separate
 
 Validation: `python scripts/validate_repository.py --governance-only` - 0 errors, 298 warnings (unchanged, none newly introduced).
 
+**Committed and pushed** (`187fd0a`, `59f9f2a..187fd0a`), gated through the real Sponsor Approval Service via `submit-response`.
+
+---
+
+**WP2 - EBG-0083 Phase 3a: GIA Git State Observability (Complete):** following a Programme Sponsor question about getting JARVIS/Guardian/Sentinel to a position where it can become aware of its own code, recommend improvements, and eventually assist with engineering work. Discussed and agreed as a staged, three-layer path: **Layer 1** (awareness - JARVIS can read its own repository/code state), **Layer 2** (recommendation - feeding that awareness into Guardian's Cognitive Core to produce read-only advisory output, `ROUTINE_INTERACTION`, no governance change needed), **Layer 3** (assistance - JARVIS actually acting on the repository, which crosses GAM-0001 Section 8A's `LOCAL_AGENT_ACTION` hard `DENY` and needs an explicit future Programme Sponsor governance decision before any code is written for it). The Programme Sponsor selected starting at Layer 1, specifically **GIA Phase 3a (Git State Observability)** - the cheapest, fastest-to-verify first slice of [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0083 Phase 3 ("engineering instrumentation"), matching the staged-increment discipline EBG-0083's own Phase 1 (1a/1b/1c/1d) already established.
+
+Drafted in [[EIP-ESR0054-002_GIA_PHASE3A_GIT_STATE_OBSERVABILITY|EIP-ESR0054-002]] v0.1, submitted to Codex Engineering Reviewer via the AIEMS Exchange Bridge (`ESR-0054`/`WP2`) - **Conditional Pass with correction**, folded into v0.2: repository-root resolution changed from eager (at `RealGitStateReader` construction) to lazy (on first git-command invocation, cached after success), so a missing `git` executable or transient failure cannot break unrelated runtime/RPC construction; also added a construction-is-side-effect-free test requirement and documented the detached-`HEAD` literal-observation behaviour (non-blocking note). **Programme Sponsor approved via direct chat instruction ("Approved")**, and **implemented exactly as scoped in v0.2** (v1.0):
+
+* `jarvis/gia/engineering_observability.py` (new): `EngineeringSnapshot` (frozen dataclass), `GitStateReader` Protocol, `RealGitStateReader` (real `git` CLI, lazy cached root resolution), `EngineeringStateObserver` (observe-only, no thresholds/decisions).
+* `jarvis/agents/gia_engineering_agent.py` (new): `GiaEngineeringAgent` (`gia-engineering`), `ROUTINE_INTERACTION`, mirroring `GiaObservabilityAgent`'s shape exactly.
+* `jarvis/interfaces/stdio_rpc.py`: new ungated `gia.engineeringStatus` RPC method (independently injectable observer, exact camelCase serialization mirroring `gia.status`); `gia-engineering` registered in `build_default_runtime()`'s `agents` dict, reusing the same shared `SentinelTrustGateway`.
+* `jarvis/interfaces/activity_tracker.py`: `gia.engineeringStatus` added to `METHOD_CLUSTERS` (caught by an existing coverage test).
+* `jarvis/gia/__init__.py`/`jarvis/__init__.py`: new names exported, matching the existing `GiaSnapshot`/`LocalResourceObserver` export pattern.
+* [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]: EBG-0083's row updated with the Phase 3a delivery note; status label extended to "Complete (Phase 1 in full; Phase 3a delivered)".
+
+Repository health (`validate_repository.py`) and session/baseline state (REG-0001) remain explicitly deferred to future Phase 3b/3c slices. No Sentinel policy, GAM-0001, or UXP change.
+
+Validation: 11 new tests (5 observer/reader, 4 RPC wiring, 2 agent). Full suite `pytest jarvis/tests sentinel scripts/tests` - **549 passed, 1 skipped** (up from 538/1). `python scripts/validate_repository.py` - 0 errors, 298 warnings (unchanged). **Live end-to-end verification against this repository's real git state, not fake-reader coverage alone**: both a real `gia.engineeringStatus` RPC call and a real `guardian.agent.invoke` call for `gia-engineering` returned `main`/10 uncommitted files/commit `187fd0a` (WP1's own commit), independently confirmed to match `git rev-parse --abbrev-ref HEAD`/`git status --porcelain`/`git log -1` run directly.
+
 Pending commit/push through `submit-response` and the real Sponsor Approval Service.
 
 ---
@@ -68,6 +87,8 @@ GitHub and the repository remain the authoritative source of truth.
 
 WP1 (complete): resolve EBG-0038 by checking whether the "Formal AIEMS Standards Review" it scoped was still relevant, ahead of committing to that review - per the Programme Sponsor's direction.
 
+WP2 (complete): begin a staged path toward JARVIS/Guardian/Sentinel self-awareness and future engineering assistance, starting with EBG-0083 Phase 3a (Git State Observability) - per the Programme Sponsor's direction.
+
 ---
 
 # 6. Work Package Plan
@@ -76,7 +97,8 @@ WP1 (complete): resolve EBG-0038 by checking whether the "Formal AIEMS Standards
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1 | EBG-0038: Formal AIEMS Standards Review Relevance Check | Complete - EBG-0038 closed `Complete`, pending commit |
+| WP1 | EBG-0038: Formal AIEMS Standards Review Relevance Check | Complete (direct closure, no EIP drafted) - committed `187fd0a`, pushed |
+| WP2 | EBG-0083 Phase 3a: GIA Git State Observability | Complete (EIP-ESR0054-002 v1.0) - pending commit |
 
 ---
 
@@ -88,6 +110,9 @@ WP1 (complete): resolve EBG-0038 by checking whether the "Formal AIEMS Standards
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - authoritative backlog reviewed for the Documentation-Debt Priority check; no open documentation-debt item found. EBG-0038 (WP1 scope) closed `Complete`.
 * [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] - cited as CI-0001's already-formalised successor.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] - cited as CI-0006's already-absorbed successor.
+* [[EIP-ESR0054-002_GIA_PHASE3A_GIT_STATE_OBSERVABILITY|EIP-ESR0054-002]] - Engineering Implementation Package for WP2, approved and implemented.
+* `jarvis/gia/engineering_observability.py` / `jarvis/agents/gia_engineering_agent.py` - new modules delivered by WP2.
+* [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] - Section 8A's `LOCAL_AGENT_ACTION` boundary, named as the governance gate any future Layer 3 (engineering-assistance action) capability would need to cross.
 
 ---
 
@@ -95,5 +120,6 @@ WP1 (complete): resolve EBG-0038 by checking whether the "Formal AIEMS Standards
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP2 Complete: EIP-ESR0054-002 (0.2 to 1.0, Codex Conditional-Pass-with-correction, Programme Sponsor approved - implemented) - EBG-0083 Phase 3a (GIA Git State Observability) resolved. New `jarvis/gia/engineering_observability.py`, new `gia-engineering` specialist agent, new `gia.engineeringStatus` RPC method. `pytest` 549 passed/1 skipped (up from 538/1), `validate_repository.py` 0 errors/298 warnings. Live-verified against this repository's real git state via both the RPC method and the Agent Framework path. First concrete step of a staged Layer 1/2/3 path toward JARVIS self-awareness and future engineering assistance, discussed with the Programme Sponsor this session. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
 | 1.1 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP1 Complete: EBG-0038 (Formal AIEMS Standards Review) closed `Complete` following a Programme Sponsor-directed relevance check ahead of the review as originally scoped. All seven CI-0001 through CI-0007 checked against current live practice; conclusion: no new formal AIEMS standard warranted, the underlying need already met organically by other artefacts (OSE-0001, WP6, STD-0004/PBK-0001's WP6/WP7 split) or never having taken hold. Programme Sponsor approved via direct chat instruction ("Approved"). Documentation-only. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
 | 1.0 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 opened at WP0B, following the Programme Sponsor's direct instruction to read PBK-0001. WP0A/WP0B complete. Documentation-Debt Priority check found no open EBR-0001 item concerning governance-documentation staleness. WP1 not yet selected - pending Programme Sponsor direction. |

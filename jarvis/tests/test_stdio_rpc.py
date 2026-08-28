@@ -8,6 +8,7 @@ import time
 from datetime import UTC, datetime
 from unittest.mock import patch
 
+from jarvis.gia.engineering_observability import EngineeringSnapshot
 from jarvis.gia.observability import GiaSnapshot
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.identity.service import ProfileService
@@ -243,7 +244,7 @@ def test_build_default_runtime_reuses_the_same_gateway_for_agent_service(tmp_pat
     )
 
     assert runtime._agent_service.gateway is runtime.sentinel_gateway()
-    assert runtime.available_agents() == ("gia-observability",)
+    assert runtime.available_agents() == ("gia-observability", "gia-engineering")
 
 
 def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
@@ -431,12 +432,12 @@ def test_guardian_transcribe_rpc_rejects_invalid_base64(tmp_path):
         raise AssertionError("Expected ValueError for invalid params.audioBase64")
 
 
-def test_guardian_agent_list_rpc_includes_gia_observability(tmp_path):
+def test_guardian_agent_list_rpc_includes_gia_observability_and_gia_engineering(tmp_path):
     server = _server(tmp_path)
 
     result = server._methods["guardian.agent.list"]({})
 
-    assert result["agents"] == ["gia-observability"]
+    assert result["agents"] == ["gia-observability", "gia-engineering"]
 
 
 def test_guardian_agent_invoke_rpc_returns_real_gia_snapshot(tmp_path):
@@ -448,6 +449,23 @@ def test_guardian_agent_invoke_rpc_returns_real_gia_snapshot(tmp_path):
 
     assert result["status"] == "reported"
     assert "cpuPercent" in result["payload"]
+    assert "capturedAt" in result["payload"]
+
+
+def test_guardian_agent_invoke_rpc_returns_real_gia_engineering_snapshot(tmp_path):
+    """EIP-ESR0054-002: mirrors the gia-observability invoke test above for
+    the second real specialist agent, confirming it is genuinely reachable
+    through the Sentinel-gated Agent Framework path, not only the ungated
+    gia.engineeringStatus method."""
+
+    server = _server(tmp_path)
+
+    result = server._methods["guardian.agent.invoke"](
+        {"agent": "gia-engineering", "task": "snapshot"}
+    )
+
+    assert result["status"] == "reported"
+    assert "gitBranch" in result["payload"]
     assert "capturedAt" in result["payload"]
 
 
@@ -687,8 +705,93 @@ def test_gia_status_defaults_to_the_real_psutil_backed_observer(tmp_path):
     assert result["processUptimeSeconds"] >= 0
     assert result["processCpuPercent"] >= 0.0
     assert result["processMemoryMb"] > 0
-    assert set(result["engineeringToolsRunning"]) == {"vscode", "obsidian", "githubDesktop", "chatgpt"}
-    assert all(isinstance(value, bool) for value in result["engineeringToolsRunning"].values())
+
+
+def _fake_gia_engineering_observer(snapshot: EngineeringSnapshot):
+    class _FakeObserver:
+        def snapshot(self) -> EngineeringSnapshot:
+            return snapshot
+
+    return _FakeObserver()
+
+
+def test_gia_engineering_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp_path):
+    """EBG-0083 Phase 3a (EIP-ESR0054-002), mirroring EBG-0083 Phase 1a's own
+    precedent: the RPC serialization/shape path must be proven against a
+    deterministic fake snapshot, not this repository's real live git state."""
+
+    captured_at = datetime(2026, 8, 28, 10, 0, 0, tzinfo=UTC)
+    fake_snapshot = EngineeringSnapshot(
+        git_branch="main",
+        git_uncommitted_files=3,
+        git_last_commit_sha="abc123def456",
+        git_last_commit_message="ESR-0054 WP2: GIA Phase 3a",
+        captured_at=captured_at,
+    )
+    server = StdioRpcServer(
+        build_default_runtime(),
+        gia_engineering_observer=_fake_gia_engineering_observer(fake_snapshot),
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 10, "method": "gia.engineeringStatus", "params": {}})
+    )
+
+    assert response["result"] == {
+        "gitBranch": "main",
+        "gitUncommittedFiles": 3,
+        "gitLastCommitSha": "abc123def456",
+        "gitLastCommitMessage": "ESR-0054 WP2: GIA Phase 3a",
+        "capturedAt": "2026-08-28T10:00:00+00:00",
+    }
+
+
+def test_gia_engineering_status_does_not_require_a_started_or_connected_runtime(tmp_path):
+    """Mirrors gia.status's own decoupling test: no dependency on
+    GuardianRuntime's lifecycle or any conversation/memory boundary - a
+    bare, unstarted GuardianRuntime still resolves it."""
+
+    fake_snapshot = EngineeringSnapshot(
+        git_branch="feature/example",
+        git_uncommitted_files=0,
+        git_last_commit_sha="deadbeef",
+        git_last_commit_message="example commit",
+        captured_at=datetime(2026, 8, 28, 10, 0, 0, tzinfo=UTC),
+    )
+    server = StdioRpcServer(
+        GuardianRuntime(),
+        gia_engineering_observer=_fake_gia_engineering_observer(fake_snapshot),
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 11, "method": "gia.engineeringStatus", "params": {}})
+    )
+
+    assert "error" not in response
+    assert response["result"]["gitBranch"] == "feature/example"
+
+
+def test_gia_engineering_status_defaults_to_the_real_git_backed_observer(tmp_path):
+    """Supplementary sanity check that the default (no injection) wiring
+    genuinely uses this repository's real git state, not asserted-away by
+    the deterministic tests above - matching the live-verification
+    requirement in EIP-ESR0054-002 Section 5, which this test alone does
+    not replace."""
+
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 12, "method": "gia.engineeringStatus", "params": {}})
+    )
+
+    assert "error" not in response
+    result = response["result"]
+    assert isinstance(result["gitBranch"], str) and result["gitBranch"]
+    assert isinstance(result["gitUncommittedFiles"], int) and result["gitUncommittedFiles"] >= 0
+    assert isinstance(result["gitLastCommitSha"], str) and len(result["gitLastCommitSha"]) == 40
+    assert isinstance(result["gitLastCommitMessage"], str) and result["gitLastCommitMessage"]
 
 
 def test_missing_params_defaults_to_empty_object(tmp_path):

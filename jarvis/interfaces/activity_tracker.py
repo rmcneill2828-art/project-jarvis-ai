@@ -45,6 +45,7 @@ METHOD_CLUSTERS: dict[str, str] = {
     "profile.select": "jarvis",
     "profile.active": "jarvis",
     "gia.status": "jarvis",
+    "gia.engineeringStatus": "jarvis",
 }
 
 

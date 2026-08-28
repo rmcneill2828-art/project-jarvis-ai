@@ -6,6 +6,9 @@ import pytest
 
 from jarvis.agents.contracts import AgentRequest, AgentResult
 from jarvis.agents.gia_agent import STATUS_REPORTED, GiaObservabilityAgent
+from jarvis.agents.gia_engineering_agent import STATUS_REPORTED as ENGINEERING_STATUS_REPORTED
+from jarvis.agents.gia_engineering_agent import GiaEngineeringAgent
+from jarvis.gia.engineering_observability import EngineeringSnapshot
 from jarvis.gia.observability import GiaSnapshot
 
 
@@ -81,3 +84,46 @@ def test_gia_observability_agent_ignores_request_parameters() -> None:
     result = agent.execute(AgentRequest(task="anything", parameters={"unused": "value"}))
 
     assert result.status == STATUS_REPORTED
+
+
+class _FakeEngineeringObserver:
+    def __init__(self, snapshot: EngineeringSnapshot) -> None:
+        self._snapshot = snapshot
+
+    def snapshot(self) -> EngineeringSnapshot:
+        return self._snapshot
+
+
+def _engineering_snapshot() -> EngineeringSnapshot:
+    return EngineeringSnapshot(
+        git_branch="main",
+        git_uncommitted_files=1,
+        git_last_commit_sha="abc123def456",
+        git_last_commit_message="ESR-0054 WP2: GIA Phase 3a",
+        captured_at=datetime(2026, 8, 28, tzinfo=UTC),
+    )
+
+
+def test_gia_engineering_agent_name() -> None:
+    assert GiaEngineeringAgent.name == "gia-engineering"
+
+
+def test_gia_engineering_agent_reports_real_snapshot_fields() -> None:
+    agent = GiaEngineeringAgent(_FakeEngineeringObserver(_engineering_snapshot()))
+
+    result = agent.execute(AgentRequest(task="snapshot"))
+
+    assert result.status == ENGINEERING_STATUS_REPORTED
+    assert result.payload["gitBranch"] == "main"
+    assert result.payload["gitUncommittedFiles"] == "1"
+    assert result.payload["gitLastCommitSha"] == "abc123def456"
+    assert result.payload["gitLastCommitMessage"] == "ESR-0054 WP2: GIA Phase 3a"
+    assert result.payload["capturedAt"] == "2026-08-28T00:00:00+00:00"
+
+
+def test_gia_engineering_agent_ignores_request_parameters() -> None:
+    agent = GiaEngineeringAgent(_FakeEngineeringObserver(_engineering_snapshot()))
+
+    result = agent.execute(AgentRequest(task="anything", parameters={"unused": "value"}))
+
+    assert result.status == ENGINEERING_STATUS_REPORTED

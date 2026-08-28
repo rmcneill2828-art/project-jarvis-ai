@@ -36,6 +36,8 @@ from typing import Any, TextIO
 
 from jarvis.agents.contracts import AgentRequest
 from jarvis.agents.gia_agent import GiaObservabilityAgent
+from jarvis.agents.gia_engineering_agent import GiaEngineeringAgent
+from jarvis.gia.engineering_observability import EngineeringStateObserver
 from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.identity.service import ProfileService
@@ -334,7 +336,13 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     # constructed one (MOD-0001's mandatory-shared-gateway requirement).
     agent_service = SentinelGatedAgentService(
         gateway=gateway,
-        agents={GiaObservabilityAgent.name: GiaObservabilityAgent(LocalResourceObserver())},
+        agents={
+            GiaObservabilityAgent.name: GiaObservabilityAgent(LocalResourceObserver()),
+            # GIA Phase 3a (EIP-ESR0054-002): reuses the same shared `gateway`
+            # instance every other capability above already shares, matching
+            # `GiaObservabilityAgent`'s own precedent immediately above.
+            GiaEngineeringAgent.name: GiaEngineeringAgent(EngineeringStateObserver()),
+        },
     )
 
     runtime = GuardianRuntime(
@@ -355,6 +363,7 @@ class StdioRpcServer:
         self,
         runtime: GuardianRuntime,
         gia_observer: LocalResourceObserver | None = None,
+        gia_engineering_observer: EngineeringStateObserver | None = None,
         heartbeat_interval_seconds: float | None = None,
         identity_service: ProfileService | None = None,
         activity_tracker: ActivityTracker | None = None,
@@ -388,6 +397,11 @@ class StdioRpcServer:
         # deterministic fake snapshot, per EIP-ESR0029-002 Section 4.6/5.5,
         # rather than depending on the actual host machine's live values.
         self._gia_observer = gia_observer or LocalResourceObserver()
+        # GIA Phase 3a (EIP-ESR0054-002): identical decoupling/injection
+        # rationale as `_gia_observer` immediately above - a distinct data
+        # domain (git state, not psutil), so a separate observer instance
+        # rather than folding into `GiaSnapshot`.
+        self._gia_engineering_observer = gia_engineering_observer or EngineeringStateObserver()
         # Identity/profile storage (EIP-ESR0046-001) is likewise decoupled
         # from `runtime`/`build_default_runtime()`, mirroring the GIA
         # precedent immediately above: profile identity is local-device state
@@ -422,6 +436,7 @@ class StdioRpcServer:
             "profile.select": self._profile_select,
             "profile.active": self._profile_active,
             "gia.status": self._gia_status,
+            "gia.engineeringStatus": self._gia_engineering_status,
         }
 
     def _guardian_converse(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -523,6 +538,16 @@ class StdioRpcServer:
             "processCpuPercent": snapshot.process_cpu_percent,
             "processMemoryMb": snapshot.process_memory_mb,
             "engineeringToolsRunning": dict(snapshot.engineering_tools_running),
+            "capturedAt": snapshot.captured_at.isoformat(),
+        }
+
+    def _gia_engineering_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        snapshot = self._gia_engineering_observer.snapshot()
+        return {
+            "gitBranch": snapshot.git_branch,
+            "gitUncommittedFiles": snapshot.git_uncommitted_files,
+            "gitLastCommitSha": snapshot.git_last_commit_sha,
+            "gitLastCommitMessage": snapshot.git_last_commit_message,
             "capturedAt": snapshot.captured_at.isoformat(),
         }
 
