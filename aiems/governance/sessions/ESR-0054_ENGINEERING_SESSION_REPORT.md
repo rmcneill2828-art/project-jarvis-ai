@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0054 |
 | Title | Engineering Session Report |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -71,7 +71,9 @@ Repository health (`validate_repository.py`) and session/baseline state (REG-000
 
 Validation: 11 new tests (5 observer/reader, 4 RPC wiring, 2 agent). Full suite `pytest jarvis/tests sentinel scripts/tests` - **549 passed, 1 skipped** (up from 538/1). `python scripts/validate_repository.py` - 0 errors, 298 warnings (unchanged). **Live end-to-end verification against this repository's real git state, not fake-reader coverage alone**: both a real `gia.engineeringStatus` RPC call and a real `guardian.agent.invoke` call for `gia-engineering` returned `main`/10 uncommitted files/commit `187fd0a` (WP1's own commit), independently confirmed to match `git rev-parse --abbrev-ref HEAD`/`git status --porcelain`/`git log -1` run directly.
 
-Pending commit/push through `submit-response` and the real Sponsor Approval Service.
+**Committed and pushed** (`d454eb5`, `187fd0a..d454eb5`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review** (direct `codex exec -s workspace-write` invocation against the real pushed commit `d454eb5`, diff `187fd0a..d454eb5`): **Pass, no findings.** Codex independently re-ran `git show --stat`/`git diff` and confirmed exactly the 13 expected files changed, no unexpected `src/`/`src-tauri/`/`sentinel/policy.py`/`GAM-0001` path touched (direct protected-path diff empty); read `jarvis/gia/engineering_observability.py` directly and confirmed `RealGitStateReader` is genuinely side-effect-free at construction, resolves the repo root lazily on first use, caches it after success, and every `subprocess.run` call uses `check=True` with no fabricated fallback; read the `gia.engineeringStatus` RPC wiring and confirmed it mirrors `gia.status`'s injectable-observer pattern exactly; independently re-ran `pytest` (549 passed, 1 skipped, matching) and `validate_repository.py` (0 errors, 298 warnings, matching); confirmed EBR-0001's EBG-0083 row and REG-0001 internally consistent with the actual diff.
 
 ---
 
@@ -98,7 +100,7 @@ WP2 (complete): begin a staged path toward JARVIS/Guardian/Sentinel self-awarene
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0038: Formal AIEMS Standards Review Relevance Check | Complete (direct closure, no EIP drafted) - committed `187fd0a`, pushed |
-| WP2 | EBG-0083 Phase 3a: GIA Git State Observability | Complete (EIP-ESR0054-002 v1.0) - pending commit |
+| WP2 | EBG-0083 Phase 3a: GIA Git State Observability | Complete (EIP-ESR0054-002 v1.0) - committed `d454eb5`, pushed, post-commit reviewed (Pass) |
 
 ---
 
@@ -120,6 +122,7 @@ WP2 (complete): begin a staged path toward JARVIS/Guardian/Sentinel self-awarene
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP2 post-commit review: genuine `codex exec -s workspace-write` review of the real pushed commit `d454eb5` (diff `187fd0a..d454eb5`) - **Pass, no findings**. All inspectable scope/wiring/pytest/validation checks independently re-run and matched, including a direct read of `RealGitStateReader`'s lazy-resolution behaviour and the `gia.engineeringStatus` wiring against `gia.status`'s established pattern. |
 | 1.2 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP2 Complete: EIP-ESR0054-002 (0.2 to 1.0, Codex Conditional-Pass-with-correction, Programme Sponsor approved - implemented) - EBG-0083 Phase 3a (GIA Git State Observability) resolved. New `jarvis/gia/engineering_observability.py`, new `gia-engineering` specialist agent, new `gia.engineeringStatus` RPC method. `pytest` 549 passed/1 skipped (up from 538/1), `validate_repository.py` 0 errors/298 warnings. Live-verified against this repository's real git state via both the RPC method and the Agent Framework path. First concrete step of a staged Layer 1/2/3 path toward JARVIS self-awareness and future engineering assistance, discussed with the Programme Sponsor this session. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
 | 1.1 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP1 Complete: EBG-0038 (Formal AIEMS Standards Review) closed `Complete` following a Programme Sponsor-directed relevance check ahead of the review as originally scoped. All seven CI-0001 through CI-0007 checked against current live practice; conclusion: no new formal AIEMS standard warranted, the underlying need already met organically by other artefacts (OSE-0001, WP6, STD-0004/PBK-0001's WP6/WP7 split) or never having taken hold. Programme Sponsor approved via direct chat instruction ("Approved"). Documentation-only. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
 | 1.0 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 opened at WP0B, following the Programme Sponsor's direct instruction to read PBK-0001. WP0A/WP0B complete. Documentation-Debt Priority check found no open EBR-0001 item concerning governance-documentation staleness. WP1 not yet selected - pending Programme Sponsor direction. |
