@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0054 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
-| Status | Open |
+| Version | 1.5 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0054 |
 | Date Opened | 28 August 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1/WP2 complete |
+| Date Closed | 28 August 2026 |
+| Closure Status | Closed - WP1/WP2 complete, session-wide WP6 (Pass, no findings) and WP7 (Establish RBL-0034) complete |
 
 ---
 
@@ -101,6 +101,28 @@ WP2 (complete): begin a staged path toward JARVIS/Guardian/Sentinel self-awarene
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0038: Formal AIEMS Standards Review Relevance Check | Complete (direct closure, no EIP drafted) - committed `187fd0a`, pushed |
 | WP2 | EBG-0083 Phase 3a: GIA Git State Observability | Complete (EIP-ESR0054-002 v1.0) - committed `d454eb5`, pushed, post-commit reviewed (Pass) |
+| WP6 | Session-wide Independent Repository Verification | Complete - Pass, no findings |
+| WP7 | Session-wide Repository Baseline Determination | Complete - Establish RBL-0034 |
+
+---
+
+# 6A. Session-Wide WP6 - Independent Repository Verification
+
+Following WP2's implementation, push and post-commit review, the Programme Sponsor directed proceeding to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s workspace-write`, background invocation) against the full session diff, `59f9f2a..HEAD` (`59f9f2a`, ESR-0053's own final closure commit - independently confirmed by Codex itself via `git log --oneline 59f9f2a..HEAD` before reviewing, rather than trusted blindly). Confirmed exactly ESR-0054's three commits (`187fd0a`, `d454eb5`, `7bbd85c`) and the expected changed files across both Work Packages, no scope creep, no unexpected `src/`/`src-tauri/`/`sentinel/policy.py`/`GAM-0001` path. Independently re-ran `pytest jarvis/tests sentinel scripts/tests` (549 passed, 1 skipped, matching) and `validate_repository.py` (0 errors, 298 warnings, matching); confirmed EBG-0038 and EBG-0083 Phase 3a both genuinely reflected in EBR-0001; spot-checked `jarvis/gia/engineering_observability.py` and the `gia.engineeringStatus`/`gia-engineering` wiring directly against source; confirmed REG-0001/EBR-0001/ESR-0054 version-history entries internally consistent with the actual diff.
+
+**Verdict: Pass, no findings.**
+
+Codex's own advisory baseline assessment: **Establish** a new RBL, superseding [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]] - WP1 alone would support Retain (documentation-only), but WP2 adds a real, invokable backend capability (`gia.engineeringStatus`, `gia-engineering` agent), even though read-only and non-disruptive to existing live behaviour. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6B. Session-Wide WP7 - Repository Baseline Determination
+
+**Programme Sponsor determination: Establish [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]]** (superseding [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]]), agreeing with Codex's own advisory assessment. WP2's real, live-verified GIA Git State Observability delivery adds a genuine new backend capability - JARVIS's first real, invokable read access to its own repository git state - the first concrete step of the staged Layer 1/2/3 path toward JARVIS/Guardian/Sentinel self-awareness and future engineering assistance discussed this session. This matches the Establish threshold applied at ESR-0049/ESR-0050/ESR-0051/ESR-0053 rather than the Retain threshold applied at ESR-0041/ESR-0042/ESR-0045/ESR-0048/ESR-0052.
+
+Files: `README.md`, `aiems/governance/status/PST-0001_PROGRAMME_STATUS.md`, `aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md`, `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `aiems/governance/baselines/RBL-0034_REPOSITORY_BASELINE.md` (new), `aiems/governance/sessions/ESR-0054_ENGINEERING_SESSION_REPORT.md` (this report, closure), `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
 
 ---
 
@@ -108,7 +130,8 @@ WP2 (complete): begin a staged path toward JARVIS/Guardian/Sentinel self-awarene
 
 * [[ESR-0053_ENGINEERING_SESSION_REPORT|ESR-0053]] - prior closed session, immediate predecessor.
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] - Session Initialisation, Engineering Session Lifecycle and Documentation-Debt Priority guidance followed; re-read in full at the Programme Sponsor's explicit request opening this session.
-* [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]] - current accepted repository baseline.
+* [[RBL-0033_REPOSITORY_BASELINE|RBL-0033]] - repository baseline at session start.
+* [[RBL-0034_REPOSITORY_BASELINE|RBL-0034]] - repository baseline established at this session's WP7.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] - authoritative backlog reviewed for the Documentation-Debt Priority check; no open documentation-debt item found. EBG-0038 (WP1 scope) closed `Complete`.
 * [[OSE-0001_ORGANIC_SEMANTIC_ENHANCEMENT_UPDATE_RULE|OSE-0001]] - cited as CI-0001's already-formalised successor.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] - cited as CI-0006's already-absorbed successor.
@@ -122,6 +145,8 @@ WP2 (complete): begin a staged path toward JARVIS/Guardian/Sentinel self-awarene
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 28 August 2026 | Claude Engineering Implementer | **ESR-0054 formally closed.** Session-wide WP7 (Repository Baseline Determination): **Programme Sponsor determination: Establish RBL-0034**, agreeing with Codex's own advisory - WP2's real, live-verified GIA Git State Observability delivery adds a genuine new backend capability. RBL-0034 created; README.md, PST-0001, PBK-0001, COC-0001, PCB-0001 and JARVIS_CAPABILITY_READINESS_MATRIX all updated to reference it as the current accepted baseline. |
+| 1.4 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 session-wide WP6 (Independent Repository Verification): genuine background Codex review of the full session diff (`59f9f2a..HEAD`) - **Pass, no findings**. Diff boundary independently self-confirmed by Codex before reviewing. Codex's own advisory: **Establish** a new RBL, superseding RBL-0033 - WP2 adds a real, invokable backend capability. WP7 determination pending Programme Sponsor decision. |
 | 1.3 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP2 post-commit review: genuine `codex exec -s workspace-write` review of the real pushed commit `d454eb5` (diff `187fd0a..d454eb5`) - **Pass, no findings**. All inspectable scope/wiring/pytest/validation checks independently re-run and matched, including a direct read of `RealGitStateReader`'s lazy-resolution behaviour and the `gia.engineeringStatus` wiring against `gia.status`'s established pattern. |
 | 1.2 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP2 Complete: EIP-ESR0054-002 (0.2 to 1.0, Codex Conditional-Pass-with-correction, Programme Sponsor approved - implemented) - EBG-0083 Phase 3a (GIA Git State Observability) resolved. New `jarvis/gia/engineering_observability.py`, new `gia-engineering` specialist agent, new `gia.engineeringStatus` RPC method. `pytest` 549 passed/1 skipped (up from 538/1), `validate_repository.py` 0 errors/298 warnings. Live-verified against this repository's real git state via both the RPC method and the Agent Framework path. First concrete step of a staged Layer 1/2/3 path toward JARVIS self-awareness and future engineering assistance, discussed with the Programme Sponsor this session. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
 | 1.1 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP1 Complete: EBG-0038 (Formal AIEMS Standards Review) closed `Complete` following a Programme Sponsor-directed relevance check ahead of the review as originally scoped. All seven CI-0001 through CI-0007 checked against current live practice; conclusion: no new formal AIEMS standard warranted, the underlying need already met organically by other artefacts (OSE-0001, WP6, STD-0004/PBK-0001's WP6/WP7 split) or never having taken hold. Programme Sponsor approved via direct chat instruction ("Approved"). Documentation-only. Pending commit/push through `submit-response` and the real Sponsor Approval Service. |
