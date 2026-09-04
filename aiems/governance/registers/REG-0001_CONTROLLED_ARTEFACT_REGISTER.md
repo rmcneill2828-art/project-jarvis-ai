@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.527
+**Version:** 3.530
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.527 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.530 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.178 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.179 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -172,7 +172,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
-| JRM-0001 | Roadmap | Project Roadmap | 1.24 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
+| JRM-0001 | Roadmap | Project Roadmap | 1.25 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | ERR-0001 | Review | Engineering Recovery Report | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
 | EIR-0001 | Review | Engineering Implementation Recommendation | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/reviews/` |
@@ -226,6 +226,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0054-002 | Engineering Implementation Package | GIA Phase 3a Git State Observability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0055-001 | Engineering Implementation Package | GIA Phase 3b/3c Repository Health and Register State Observability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0056-001 | Engineering Implementation Package | esbuild/vite Dev-Server Vulnerability Upgrade | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0056-002 | Engineering Implementation Package | PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -417,6 +418,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.530 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: implemented - synced EIP-ESR0056-002 (0.2 to 1.0, Approved - implemented), EBR-0001 (1.178 to 1.179, EBG-0058 re-verified) and JRM-0001 (1.24 to 1.25, two stale references fixed) rows. No PBK-0001 content changed. Pending commit/push through submit-response and the real Sponsor Approval Service. |
+| 3.529 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: synced EIP-ESR0056-002 row (0.1 to 0.2) - Codex Engineering Reviewer design review, Pass, no corrections needed. Not yet approved or implemented. |
+| 3.528 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: registered EIP-ESR0056-002 (0.1, Draft) - PBK-0001 accretion re-check plus JRM-0001 staleness fix, retargeted from PBK-0001 clause consolidation (EBG-0058, already Complete since ESR-0028) per Programme Sponsor direction. Not yet reviewed, approved or implemented. |
 | 3.527 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1 post-commit review round 2: synced ESR-0056 row (1.2 to 1.3) - genuine background Codex review of the real pushed fix commit `add350f`, Pass, no findings. Also diagnosed and resolved a genuine `~/approve` (Sponsor-side, host-local) argument-mapping defect discovered while chasing round-1's approval: invoking it with `sponsor_client.py`-style flags silently mis-mapped session/work_package/note into the wrong DB columns; resolved once the Sponsor used its actual two-argument form. WP1 closed. |
 | 3.526 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1 post-commit review round 1 fix (Codex-caught): synced ESR-0056 row (1.1 to 1.2) - genuine background Codex review of the real pushed commit `366c4a8` returned Fail, correctly identifying that ESR-0056's own Document Control Closure Status and WP1 row still read as pre-commit within the pushed commit itself (the "Committed and pushed" narrative was staged after `366c4a8` had already been created, so never actually part of it). Fixed. Codex's Node-side re-verification (npm ci/build/playwright/audit) was separately blocked by its own exec-sandbox policy this round - disclosed as a review-environment limitation, not a refutation of this WP's own direct evidence. |
 | 3.525 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1: implemented and validated - synced EIP-ESR0056-001 (0.2 to 1.0, Approved - implemented), EBR-0001 (1.177 to 1.178, EBG-0085 closed Complete) and ESR-0056 (1.0 to 1.1) rows. vite/@vitejs/plugin-react bumped to 8.2.2/6.1.1; npm ci/build/full Playwright suite/both npm audit variants all clean; esbuild<=0.24.2 finding confirmed gone. Sponsor-approved scope extension: scripts/validate_repository.py gained a node_modules IGNORED_DIRS entry. Pending commit/push through submit-response and the real Sponsor Approval Service. |
