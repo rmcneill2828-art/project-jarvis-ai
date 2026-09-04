@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0056 |
 | Title | Engineering Session Report |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0056 |
 | Date Opened | 4 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP0A/WP0B complete, WP1-WP4 planned, none yet implemented |
+| Closure Status | Open - WP0A/WP0B/WP1 complete (WP1 committed `366c4a8`, pushed; post-commit review in progress), WP2-WP4 planned |
 
 ---
 
@@ -48,6 +48,10 @@ WP0A/WP0B session initialisation followed PBK-0001 and [[GDE-0001_PROJECT_KNOWLE
 
 Validation: `npm install`/`npm ci` both clean; `npm run build` succeeds under Vite 8.2.2; `npx playwright test` 18/18 passed across two confirmatory runs after an initial flaky run (14/18 failed on 30s navigation timeouts immediately after `npm ci`) - disclosed as a probable one-off environmental flake rather than a Vite 8 regression, not further root-caused; `npm audit --omit=dev` and full `npm audit` both 0 vulnerabilities, confirming the `esbuild <=0.24.2` finding is gone; `python scripts/validate_repository.py` 0 errors, 297 warnings (was 298); `pytest jarvis/tests sentinel scripts/tests` 553 passed, 1 skipped, unaffected as expected. CI Node-version compatibility confirmed via the live Node release index (latest Node 20.x = `v20.20.2`, satisfying Vite 8's `^20.19.0` floor) rather than an actual CI run, disclosed as the one check this Work Package could not perform locally. EBG-0085 closed Complete in EBR-0001.
 
+**Committed and pushed** (`366c4a8`, `f39ff37..366c4a8`), gated through the real Sponsor Approval Service via `submit-response` - the Programme Sponsor's chat "Approved" was not treated as sufficient; `submit-response` was actually invoked and succeeded only once the Sponsor separately ran `sponsor_client.py` on their own host to record a real `approve` decision, confirming the gate functioned as designed rather than being assumed.
+
+**Post-commit independent review, round 1** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `366c4a8`, diff `f39ff37..366c4a8`): **Fail.** Codex independently re-ran `git log`/`git show --stat`/`git diff` and confirmed the changed-path set matched exactly (no `src/`, `src-tauri/`, `sentinel/policy.py` or `GAM-0001` touched); independently re-ran `python scripts/validate_repository.py` (0 errors, 297 warnings, matching) and `pytest jarvis/tests sentinel scripts/tests` (553 passed, 1 skipped, matching). Two findings: (1) **genuine documentation-consistency defect** - this report's own Document Control Closure Status and the WP1 Work Package Plan row still read as pre-commit ("planned, none yet implemented" / "pending commit/push") within the pushed commit itself, because the "Committed and pushed" narrative paragraph above was written and staged only *after* `366c4a8` had already been created, so it was never actually part of that commit - fixed this round (this Document Control/WP1-row correction, to be included in the round-2 commit); (2) `npm ci`/`npm run build`/`npx playwright test`/`npm audit --omit=dev`/`npm audit` were all rejected by Codex's own exec-sandbox policy in this invocation, so Codex could not independently reproduce the Node-side build/test/audit evidence this WP's own direct implementation runs already produced (Section 3 above) - disclosed as a review-environment limitation, not a refutation of that evidence.
+
 ---
 
 # 4. Engineering Authority
@@ -75,7 +79,7 @@ Four Work Packages, in sequence:
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1 | EBG-0085: esbuild/vite Dev-Server Vulnerability Upgrade | Complete (EIP-ESR0056-001 v1.0) - implemented, validated; pending commit/push |
+| WP1 | EBG-0085: esbuild/vite Dev-Server Vulnerability Upgrade | Complete (EIP-ESR0056-001 v1.0) - committed `366c4a8`, pushed; post-commit review round 1: Fail (documentation-consistency defect, fixed this round; Node-side re-verification blocked by Codex's own sandbox policy) |
 | WP2 | EBG-0058: PBK-0001 Clause Consolidation | Not started |
 | WP3 | EBG-0046: Device Independence and Restore Architecture (requirements definition) | Not started |
 | WP4 | JRM-0001 Section 9 REG-0001 HST/FCH Registration Gap Closure | Not started |
