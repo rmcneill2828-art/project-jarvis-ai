@@ -8,7 +8,7 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.10 |
+| Version | 2.11 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -74,7 +74,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 |----------|--------------|
 | [[JARVIS_PRODUCT_ARCHITECTURE|JARVIS Product Architecture]] | Product architecture source for capability intent and hierarchy. |
 | [[MOD-0001_PLATFORM_ARCHITECTURE_MODEL|MOD-0001]] | Platform architecture context for JARVIS as flagship implementation. |
-| [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]] | Current accepted repository baseline. |
+| [[RBL-0036_REPOSITORY_BASELINE|RBL-0036]] | Current accepted repository baseline. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Sibling document (Product Capability Baseline) refreshed via the same pattern at ESR-0020 (EBG-0056) - this refresh follows that precedent. |
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Guardian identity and cognitive architecture source; still Draft, underlying the Intelligence row's Planned status. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Backlog register for candidate package selection; the v2.0 refresh closed EBG-0069, this v2.1 refresh closes EBG-0017. |
@@ -86,6 +86,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.11 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP7: corrected the Related Artefacts current-baseline reference from RBL-0035 to RBL-0036, established at ESR-0056 WP7 (esbuild/vite Security Upgrade; DRA-0001 Device Bootstrap and Restore Architecture). Pointer fix only - capability rows not re-audited this pass. |
 | 2.10 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP7: corrected the Related Artefacts current-baseline reference from RBL-0034 to RBL-0035, established at ESR-0055 WP7 (GIA Phase 3b/3c: Repository Health and Register State Observability, completing EBG-0083 Phase 3 in full). Pointer fix only - capability rows not re-audited this pass; the new GIA capability is not yet reflected here, remains open for a future content refresh. |
 | 2.9 | 28 August 2026 | Claude Engineering Implementer | ESR-0054 WP7: corrected the Related Artefacts current-baseline reference from RBL-0033 to RBL-0034, established at ESR-0054 WP7 (EBG-0038 Relevance Check; GIA Phase 3a Git State Observability). Pointer fix only - capability rows not re-audited this pass; the new GIA engineering-instrumentation capability is not yet reflected here, remains open for a future content refresh. |
 | 2.8 | 27 August 2026 | Claude Engineering Implementer | ESR-0053 WP7: corrected the Related Artefacts current-baseline reference from RBL-0032 to RBL-0033, established at ESR-0053 WP7 (Active Backlog View Generation; Kokoro Production Voice Wiring). Pointer fix only - capability rows not re-audited this pass; Guardian's production voice-provider change is not yet reflected here, remains open for a future content refresh. |

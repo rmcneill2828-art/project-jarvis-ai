@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0056 |
 | Title | Engineering Session Report |
-| Version | 1.6 |
-| Status | Open |
+| Version | 1.8 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0056 |
 | Date Opened | 4 September 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1/WP2/WP3/WP4 all complete (WP1 `366c4a8`/`add350f`, WP2 `a62f56d`, WP3 `f7788f0`, WP4 `68fc51a`, all pushed and post-commit Pass), WP6/WP7 pending |
+| Date Closed | 4 September 2026 |
+| Closure Status | Closed - WP1-WP4 complete, session-wide WP6 Pass, WP7 Establish RBL-0036 |
 
 ---
 
@@ -125,7 +125,31 @@ Four Work Packages, in sequence:
 | WP2 | EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix | Complete (EIP-ESR0056-002 v1.0) - committed `a62f56d`, pushed, post-commit review Pass |
 | WP3 | EBG-0046: Device Bootstrap and Restore Architecture (DRA-0001) | Complete (EIP-ESR0056-003 v1.0) - committed `f7788f0`, pushed, post-commit review Pass |
 | WP4 | JRM-0001 Section 9 REG-0001 HST/FCH Registration Gap Closure | Complete (EIP-ESR0056-004 v1.0) - committed `68fc51a`, pushed, post-commit review Pass |
-| WP6 | Session-wide Independent Repository Verification | Pending |
-| WP7 | Session-wide Repository Baseline Determination | Pending |
+| WP6 | Session-wide Independent Repository Verification | Complete - Pass, no blocking findings |
+| WP7 | Session-wide Repository Baseline Determination | Complete - Establish RBL-0036 |
+
+---
+
+# 6A. Session-Wide WP6 - Independent Repository Verification
+
+Following WP4's implementation, push and post-commit review, the Programme Sponsor directed proceeding to session-wide Independent Repository Verification.
+
+Ran a genuine independent Codex review (`codex exec -s workspace-write`, background invocation) against the full session diff, `f39ff37..HEAD` (`f39ff37`, ESR-0055's own final closure commit - independently confirmed by Codex itself via `git log --oneline f39ff37..HEAD` before reviewing, rather than trusted blindly). Confirmed exactly ESR-0056's nine commits and the expected changed-file set (`EBR-0001`, `REG-0001`, four EIPs, `JRM-0001`, this session report, the new `DRA-0001`, `MDS-0001`, `package.json`/`package-lock.json`, `scripts/validate_repository.py`) - no `src/`, `src-tauri/`, `sentinel/policy.py` or `GAM-0001` path touched. Independently re-ran `python scripts/validate_repository.py` (0 errors, 312 warnings, matching) and `python -m pytest jarvis/tests sentinel scripts/tests -q` (553 passed, 1 skipped, matching); confirmed EBR-0001/REG-0001/JRM-0001/MDS-0001/DRA-0001 internally consistent with each other and the real repository state. Node-side commands (`npm ci`/`build`/`playwright`/`audit`) were attempted against the real committed state but blocked by Codex's own exec-sandbox policy, consistent with the same disclosed environment limitation from WP1's and WP3's post-commit reviews.
+
+**Non-blocking observation**: MDS-0001 Section 3's scope-overview still carries older, broader wording describing EBG-0046 as "reserved," while the operative sections (8/10/11, updated at WP3) now correctly point to the real DRA-0001 artefact. Codex judged this non-blocking - not a contradiction, since the updated sections and version history make the handoff explicit - but disclosed here as a minor future documentation-debt candidate rather than silently left unrecorded.
+
+**Verdict: Pass, no blocking findings.**
+
+Codex's own advisory baseline assessment: **Establish** a new RBL, superseding [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]] - the session delivered a genuine new backend/platform architecture artefact (DRA-0001) and a real dependency security remediation (Vite/esbuild), matching the Establish threshold applied at ESR-0049 through ESR-0055. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6B. Session-Wide WP7 - Repository Baseline Determination
+
+**The Programme Sponsor's determination**: **establish a new baseline**, agreeing with Codex's advisory. [[RBL-0036_REPOSITORY_BASELINE|RBL-0036]] created and accepted, superseding RBL-0035.
+
+Every controlled artefact's "current accepted repository baseline" pointer updated to RBL-0036: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (1.24 to 1.25), [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.43 to 1.44), [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (2.11 to 2.12, pointer-only - content not refreshed for this session's delivery, flagged for a future Documentation Debt sync), [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] (2.10 to 2.11, pointer-only) and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.38 to 3.39, full closure sweep - Current Mode/Baseline/Phase/Workflow/Objective, the Prior Session rolling window shifted, JARVIS Capability Maturity and Product Baseline rows). README.md (uncontrolled, no REG-0001 row) updated to match.
+
+**ESR-0056 formally closed.**
 
 ---
