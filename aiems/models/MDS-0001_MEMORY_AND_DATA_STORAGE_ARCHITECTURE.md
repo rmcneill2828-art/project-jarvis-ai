@@ -2,7 +2,7 @@
 
 > *"Guardian remembers what it has been trusted to keep, structured so that trust can be revoked as cleanly as it was given."*
 
-**Version:** 1.3
+**Version:** 1.4
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | MDS-0001 |
 | Title | Memory and Data Storage Architecture |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -145,7 +145,7 @@ GAM-0001 Section 9.2 explicitly reserves "technical retention duration" as this 
 
 Per [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]]'s decision that "devices host JARVIS but do not define JARVIS" and require "portable memory... restore and sync require encryption and policy controls":
 
-- Memory records (Section 6) shall be structured so they can be synchronised across a household member's devices - the sync *protocol*, bootstrap and device-registry mechanics belong to Platform Services per ADR-0012 and remain EBG-0046's scope, not redefined here;
+- Memory records (Section 6) shall be structured so they can be synchronised across a household member's devices - the sync *protocol*, bootstrap and device-registry mechanics belong to Platform Services per ADR-0012 and are defined in [[DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|DRA-0001]] (drafted ESR-0056 WP3), not redefined here;
 - any memory record leaving a single device (for sync, backup, or restore) shall be encrypted, per ADR-0012 Section 6's consequence that "restore and sync require encryption and policy controls" - this artefact does not specify the encryption mechanism itself, which is a Platform Services concern, but requires that no memory record is ever synchronised or backed up in plaintext;
 - a new device's progressive restore (ADR-0012) of memory data is itself subject to the same personal/shared-family partitioning (Section 7.2) and consent traceability (Section 7.4) as the originating device - portability does not create a second path around GAM-0001's consent gate.
 
@@ -163,7 +163,7 @@ MDS-0001 does not:
 
 - implement Guardian's consent gate or retention-authorisation decision - defined in GAM-0001 Sections 9.1/9.2;
 - implement Guardian's cognitive Memory faculty itself - defined in AAM-0001;
-- implement device bootstrap, the sync protocol, or device registry - reserved for EBG-0046 under ADR-0012;
+- implement device bootstrap, the sync protocol, or device registry - defined in [[DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|DRA-0001]] under ADR-0012 (EBG-0046);
 - implement backup, recovery, or data-protection operational policy - reserved for EBG-0023;
 - select or evaluate a production-grade hosted database - Section 7.3 names an initial embedded-engine recommendation only, not a final technology decision;
 - implement the AIEMS Knowledge Capability's storage (already implemented separately under EBG-0055);
@@ -177,7 +177,7 @@ MDS-0001 does not:
 Future implementation packages may use MDS-0001 to guide Memory development. Anticipated follow-on work, already sequenced in [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]:
 
 - an Engineering Implementation Package implementing Session Memory (Section 6.1) and Shared Family Memory (Section 6.3) against Sections 6-7, extending the Personal Memory (Section 6.2) foundation already delivered at ESR-0027 WP1;
-- EBG-0046 - Device Independence and Restore Architecture (implements the sync/restore protocol Section 8 assumes);
+- [[DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|DRA-0001]] (EBG-0046, Draft as of ESR-0056 WP3) - implements the sync/restore protocol Section 8 assumes, pending formal acceptance;
 - EBG-0023 - Backup, Recovery and Data Protection (implements the backup/recovery mechanics Section 9 requires be preserved, once actioned).
 
 Any such evolution shall require separately approved engineering packages.
@@ -211,6 +211,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP3: Section 8/10/11's forward references to EBG-0046 repointed to the real artefact - [[DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|DRA-0001]], drafted this session, which now defines the bootstrap/device-registry/sync-protocol mechanics these sections had been assuming by name only. No boundary or requirement text changed - only the forward-reference target. |
 | 1.3 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 second fix round (Codex Low finding on v1.2/commit 52edf8c): Section 5's "Evidence check" still cited `JARVIS_CAPABILITY_READINESS_MATRIX.md` as v2.1 - stale, actual current version is v2.2 (confirmed against the matrix's own Document Control and REG-0001). Corrected. |
 | 1.2 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 fix round (Codex Medium finding on v1.1/commit 7393a03): Section 11's Future Evolution bullet still said a future package would implement `jarvis/memory/` "currently an empty stub" - reworded to reflect that Personal Memory is already delivered and only Session/Shared-Family remain. Section 12's OSE Relationships row for PCB-0001 still said it "records Memory's current not implemented baseline state" - corrected to describe the Personal/Session/Shared-Family split. |
 | 1.1 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 repository synchronisation: corrected Section 5's "Evidence check" paragraph, which still said no persistence implementation existed and `jarvis/memory/` was an empty stub - stale since ESR-0027 WP1 delivered Personal Memory (EBG-0080, `PersonalMemoryStore`/`PersonalMemoryService`). Now correctly states Personal Memory is implemented while Session and Shared Family Memory remain unbuilt. |

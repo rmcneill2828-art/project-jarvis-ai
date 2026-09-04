@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.531
+**Version:** 3.534
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.531 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.534 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.179 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.180 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -169,7 +169,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | CURRENT_ARCHITECTURE | Architecture Snapshot | AIEMS Current Architecture | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/architecture/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.9 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
 | GAM-0001 | Model | Guardian Authority and Boundary Model | 1.5 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
-| MDS-0001 | Model | Memory and Data Storage Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
+| MDS-0001 | Model | Memory and Data Storage Architecture | 1.4 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
+| DRA-0001 | Model | Device Bootstrap and Restore Architecture | 1.0 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0012 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
 | JRM-0001 | Roadmap | Project Roadmap | 1.25 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
@@ -227,6 +228,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0055-001 | Engineering Implementation Package | GIA Phase 3b/3c Repository Health and Register State Observability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0056-001 | Engineering Implementation Package | esbuild/vite Dev-Server Vulnerability Upgrade | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0056-002 | Engineering Implementation Package | PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0056-003 | Engineering Implementation Package | Device Bootstrap and Restore Architecture | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -418,6 +420,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.534 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP3: implemented - registered DRA-0001 (1.0, Draft) - Device Bootstrap and Restore Architecture; synced EIP-ESR0056-003 (0.2 to 1.0, Approved - implemented), EBR-0001 (1.179 to 1.180, EBG-0046 Drafted) and MDS-0001 (1.3 to 1.4, forward references repointed to DRA-0001) rows. Pending commit/push through submit-response and the real Sponsor Approval Service. |
+| 3.533 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP3: synced EIP-ESR0056-003 row (0.1 to 0.2) - Codex Engineering Reviewer design review, Conditional Pass, one required fix folded in (non-memory encryption/policy-control coverage) plus one non-blocking tightening (device trust does not grant memory-tier access). Not yet approved or implemented. |
+| 3.532 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP3: registered EIP-ESR0056-003 (0.1, Draft) - Device Bootstrap and Restore Architecture (EBG-0046), scope narrowed to the genuine remaining gap (bootstrap/device-registry/sync-protocol/progressive-restore/configuration-portability) once MDS-0001 Section 8's own reservation is accounted for. Not yet reviewed, approved or implemented. |
 | 3.531 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2 post-commit review: synced ESR-0056 row (1.3 to 1.4) - genuine background Codex review of the real pushed commit `a62f56d`, Pass, no findings. WP2 closed. |
 | 3.530 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: implemented - synced EIP-ESR0056-002 (0.2 to 1.0, Approved - implemented), EBR-0001 (1.178 to 1.179, EBG-0058 re-verified) and JRM-0001 (1.24 to 1.25, two stale references fixed) rows. No PBK-0001 content changed. Pending commit/push through submit-response and the real Sponsor Approval Service. |
 | 3.529 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: synced EIP-ESR0056-002 row (0.1 to 0.2) - Codex Engineering Reviewer design review, Pass, no corrections needed. Not yet approved or implemented. |
