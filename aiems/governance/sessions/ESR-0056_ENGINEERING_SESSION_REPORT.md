@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0056 |
 | Title | Engineering Session Report |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0056 |
 | Date Opened | 4 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1/WP2 complete (WP1 `366c4a8`/`add350f`, WP2 `a62f56d`, all pushed and post-commit Pass), WP3-WP4 planned |
+| Closure Status | Open - WP0A/WP0B/WP1/WP2/WP3 complete (WP1 `366c4a8`/`add350f`, WP2 `a62f56d`, WP3 `f7788f0`, all pushed and post-commit Pass), WP4 planned |
 
 ---
 
@@ -69,6 +69,18 @@ Validation: `python scripts/validate_repository.py` 0 errors, 301 warnings; manu
 
 **Post-commit independent review** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `a62f56d`, diff `935a0c8..a62f56d`): **Pass, no findings.** Codex independently confirmed the changed-file set was exactly EBR-0001/REG-0001/JRM-0001/the new EIP, with `PBK-0001_AI_ENGINEERING_PLAYBOOK.md` genuinely absent from the diff; independently re-ran `validate_repository.py` (0 errors, 301 warnings, matching) and `pytest` (553 passed, 1 skipped, matching); independently spot-checked PBK-0001's real v1.29-v1.43 Version History against the EIP's claim and confirmed it materially accurate (noting one immaterial omission - v1.39 also added a small WP0B `~/.current_session` step, not itself a clause-restatement candidate). **WP2 closed.**
 
+**WP3 - EBG-0046: Device Bootstrap and Restore Architecture (Complete):** the WP0A candidate list named EBG-0046 (Device Independence and Restore Architecture) as High priority, genuinely open, unlike WP2/WP4's stale candidates - confirmed against EBR-0001 before drafting. Scope-narrowing finding: [[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] Section 8 (accepted ESR-0026, after EBG-0046 was written but before its ESR-0034 promotion) already owns portable-memory and encryption requirements, and explicitly reserves "device bootstrap, the sync protocol, or device registry" for EBG-0046. Programme Sponsor directed narrowing WP3 to that genuine remaining gap plus general configuration portability, rather than EBG-0046's full literal description. [[EIP-ESR0056-003_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|EIP-ESR0056-003]] drafted (v0.1) with the full planned artefact content in its own Section 4A, submitted to Codex Engineering Reviewer via the AIEMS Exchange Bridge - **Conditional Pass**, one required fix folded in (v0.2): the encryption/policy-control requirement had been scoped to memory records only (via MDS-0001), but ADR-0012 states it generally - extended explicitly to identity-scoped configuration and Device Registry/restore metadata. One non-blocking tightening also folded in: device-registry trust authorises sync participation only, never memory-tier access on its own. **Programme Sponsor approved via direct chat instruction ("Approved"), implemented exactly as scoped in v0.2** (v1.0):
+
+* `aiems/models/DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE.md` created (Draft, 15 sections) - a new domain-specific architecture model, matching the project's precedent of splitting depth out of MOD-0001's high-level summary (MDS-0001/GAM-0001/AAM-0001). Covers Device Registry, Bootstrap, Sync Protocol, Progressive Restore and Configuration Portability, cross-referencing rather than restating MDS-0001's owned areas.
+* EBR-0001's EBG-0046 row updated to **Drafted** (not Complete - formal DRA-0001 acceptance remains a separate future Programme Sponsor decision).
+* MDS-0001 Sections 8/10/11 forward references repointed from the bare "EBG-0046" name to the real DRA-0001 artefact - no requirement or boundary text changed.
+
+Validation: `python scripts/validate_repository.py` 0 errors, 303 warnings; manual cross-check confirmed every MDS-0001/GAM-0001/AAM-0001/ADR-0012 reference matches those artefacts' real current text.
+
+**Committed and pushed** (`f7788f0`, `490bed0..f7788f0`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `f7788f0`, diff `490bed0..f7788f0`): **Pass, no findings.** Codex independently confirmed the changed-file set was exactly EBR-0001/REG-0001/the new EIP/the new DRA-0001/MDS-0001, with no `src/`, `src-tauri/`, `sentinel/policy.py`, `jarvis/` or `scripts/` path touched; read DRA-0001 in full and confirmed it does not redefine MDS-0001's owned areas; independently confirmed both design-review corrections actually landed in the committed text (Section 8.4's non-memory encryption extension; Section 6's device-trust-does-not-grant-memory-access tightening); confirmed MDS-0001's diff only repoints references with no substantive requirement change; independently re-ran `validate_repository.py` (0 errors, 303 warnings, matching). **WP3 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -85,7 +97,7 @@ Four Work Packages, in sequence:
 
 * **WP1** - EBG-0085: esbuild/vite dev-server vulnerability upgrade (Vite 8), verified via build/dev-server smoke test. Product-moving Work Package added to satisfy the Feature-First Delivery Discipline.
 * **WP2** - EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix - retargeted at WP0B/WP2 opening once EBG-0058 was found already Complete (ESR-0028): fresh re-check of PBK-0001's growth since that consolidation for new duplication, plus fixing JRM-0001's stale references to it.
-* **WP3** - EBG-0046: Device Independence and Restore Architecture - define bootstrap, progressive restore, portable memory, configuration and encrypted sync requirements. No implementation authorised by the backlog entry; this Work Package is a requirements/architecture-definition deliverable.
+* **WP3** - EBG-0046: Device Bootstrap and Restore Architecture - scope narrowed at WP3 opening once MDS-0001 Section 8 was found to already own the portable-memory/encryption piece: defines bootstrap, device registry, sync protocol, progressive restore and configuration portability (the genuine remaining gap) as a new architecture model, DRA-0001. No implementation authorised by the backlog entry; this Work Package is a requirements/architecture-definition deliverable.
 * **WP4** - Close the stale JRM-0001 Section 9 "REG-0001 HST/FCH registration gap" roadmap line, evidenced by the WP0B cross-check (all 24 HST and 24 FCH files on disk confirmed present in REG-0001).
 
 ---
@@ -98,7 +110,7 @@ Four Work Packages, in sequence:
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0085: esbuild/vite Dev-Server Vulnerability Upgrade | Complete (EIP-ESR0056-001 v1.0) - committed `366c4a8`, fix round `add350f`, both pushed; post-commit review round 1 Fail (fixed), round 2 **Pass** |
 | WP2 | EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix | Complete (EIP-ESR0056-002 v1.0) - committed `a62f56d`, pushed, post-commit review Pass |
-| WP3 | EBG-0046: Device Independence and Restore Architecture (requirements definition) | Not started |
+| WP3 | EBG-0046: Device Bootstrap and Restore Architecture (DRA-0001) | Complete (EIP-ESR0056-003 v1.0) - committed `f7788f0`, pushed, post-commit review Pass |
 | WP4 | JRM-0001 Section 9 REG-0001 HST/FCH Registration Gap Closure | Not started |
 | WP6 | Session-wide Independent Repository Verification | Pending |
 | WP7 | Session-wide Repository Baseline Determination | Pending |
