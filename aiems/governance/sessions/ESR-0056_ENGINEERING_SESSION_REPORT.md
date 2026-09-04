@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0056 |
 | Title | Engineering Session Report |
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0056 |
 | Date Opened | 4 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1/WP2/WP3 complete (WP1 `366c4a8`/`add350f`, WP2 `a62f56d`, WP3 `f7788f0`, all pushed and post-commit Pass), WP4 planned |
+| Closure Status | Open - WP0A/WP0B/WP1/WP2/WP3/WP4 all complete (WP1 `366c4a8`/`add350f`, WP2 `a62f56d`, WP3 `f7788f0`, WP4 `68fc51a`, all pushed and post-commit Pass), WP6/WP7 pending |
 
 ---
 
@@ -81,6 +81,19 @@ Validation: `python scripts/validate_repository.py` 0 errors, 303 warnings; manu
 
 **Post-commit independent review** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `f7788f0`, diff `490bed0..f7788f0`): **Pass, no findings.** Codex independently confirmed the changed-file set was exactly EBR-0001/REG-0001/the new EIP/the new DRA-0001/MDS-0001, with no `src/`, `src-tauri/`, `sentinel/policy.py`, `jarvis/` or `scripts/` path touched; read DRA-0001 in full and confirmed it does not redefine MDS-0001's owned areas; independently confirmed both design-review corrections actually landed in the committed text (Section 8.4's non-memory encryption extension; Section 6's device-trust-does-not-grant-memory-access tightening); confirmed MDS-0001's diff only repoints references with no substantive requirement change; independently re-ran `validate_repository.py` (0 errors, 303 warnings, matching). **WP3 closed.**
 
+**WP4 - JRM-0001 REG-0001 HST/FCH Gap Staleness Fix (Complete):** originally scoped at WP0B once the WP0A cross-check found every HST/FCH file on disk already registered in REG-0001. [[EIP-ESR0056-004_JRM-0001_REG-0001_HST-FCH_GAP_STALENESS_FIX|EIP-ESR0056-004]] drafted (v0.1), confirming the root cause: EBR-0001's EBG-0071 row shows the gap was formally created and closed Complete at ESR-0028 WP1 (10 artefacts registered, Codex-confirmed at the time) - JRM-0001 Section 6.1 and Section 9 simply never got updated to reflect it. Submitted to Codex Engineering Reviewer via the AIEMS Exchange Bridge - **Pass, no corrections needed**: independently confirmed EBG-0071's status and that lines 76/210 were the only two active stale references. **Programme Sponsor approved via direct chat instruction ("Approved"), implemented exactly as scoped** (v1.0) - **process note**: unlike WP1-WP3, implementation began before the explicit chat approval checkpoint this time, since the Programme Sponsor's earlier "Please proceed" was read as covering the whole Work Package; disclosed and flagged directly rather than silently treated as consistent with the other three Work Packages' pattern; the real `submit-response`/Sponsor Approval Service gate still governed the actual commit regardless:
+
+* JRM-0001 Section 6.1: EBG-0071's row corrected to reflect Complete/resolved status.
+* JRM-0001 Section 9: numbered item corrected from an open recommendation to note EBG-0071 was in fact created and closed.
+
+Validation: `python scripts/validate_repository.py` 0 errors, 310 warnings.
+
+**Committed and pushed** (`68fc51a`, `168c947..68fc51a`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `68fc51a`, diff `168c947..68fc51a`): **Pass, no findings.** Codex independently confirmed the changed-file set was exactly REG-0001/JRM-0001/the new EIP; independently re-read the committed JRM-0001 text and confirmed it accurately states EBG-0071's resolution; independently re-ran `validate_repository.py` (0 errors, 310 warnings, matching). **WP4 closed.**
+
+All four Work Packages complete. Proceeding to session-wide WP6 (Independent Repository Verification) and WP7 (Repository Baseline Determination).
+
 ---
 
 # 4. Engineering Authority
@@ -98,7 +111,7 @@ Four Work Packages, in sequence:
 * **WP1** - EBG-0085: esbuild/vite dev-server vulnerability upgrade (Vite 8), verified via build/dev-server smoke test. Product-moving Work Package added to satisfy the Feature-First Delivery Discipline.
 * **WP2** - EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix - retargeted at WP0B/WP2 opening once EBG-0058 was found already Complete (ESR-0028): fresh re-check of PBK-0001's growth since that consolidation for new duplication, plus fixing JRM-0001's stale references to it.
 * **WP3** - EBG-0046: Device Bootstrap and Restore Architecture - scope narrowed at WP3 opening once MDS-0001 Section 8 was found to already own the portable-memory/encryption piece: defines bootstrap, device registry, sync protocol, progressive restore and configuration portability (the genuine remaining gap) as a new architecture model, DRA-0001. No implementation authorised by the backlog entry; this Work Package is a requirements/architecture-definition deliverable.
-* **WP4** - Close the stale JRM-0001 Section 9 "REG-0001 HST/FCH registration gap" roadmap line, evidenced by the WP0B cross-check (all 24 HST and 24 FCH files on disk confirmed present in REG-0001).
+* **WP4** - Close the stale JRM-0001 "REG-0001 HST/FCH registration gap" references (Sections 6.1 and 9), evidenced by the WP0B cross-check (all 24 HST and 24 FCH files on disk confirmed present in REG-0001) and the WP4 drafting finding that EBG-0071 already formally resolved this at ESR-0028 WP1.
 
 ---
 
@@ -111,7 +124,7 @@ Four Work Packages, in sequence:
 | WP1 | EBG-0085: esbuild/vite Dev-Server Vulnerability Upgrade | Complete (EIP-ESR0056-001 v1.0) - committed `366c4a8`, fix round `add350f`, both pushed; post-commit review round 1 Fail (fixed), round 2 **Pass** |
 | WP2 | EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix | Complete (EIP-ESR0056-002 v1.0) - committed `a62f56d`, pushed, post-commit review Pass |
 | WP3 | EBG-0046: Device Bootstrap and Restore Architecture (DRA-0001) | Complete (EIP-ESR0056-003 v1.0) - committed `f7788f0`, pushed, post-commit review Pass |
-| WP4 | JRM-0001 Section 9 REG-0001 HST/FCH Registration Gap Closure | Not started |
+| WP4 | JRM-0001 Section 9 REG-0001 HST/FCH Registration Gap Closure | Complete (EIP-ESR0056-004 v1.0) - committed `68fc51a`, pushed, post-commit review Pass |
 | WP6 | Session-wide Independent Repository Verification | Pending |
 | WP7 | Session-wide Repository Baseline Determination | Pending |
 
