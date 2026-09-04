@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.526
+**Version:** 3.527
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.526 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.527 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -302,7 +302,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0053 | Engineering Session Report | Engineering Session Report | 1.9 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0054 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0055 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0056 | Engineering Session Report | Engineering Session Report | 1.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0056 | Engineering Session Report | Engineering Session Report | 1.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -417,6 +417,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.527 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1 post-commit review round 2: synced ESR-0056 row (1.2 to 1.3) - genuine background Codex review of the real pushed fix commit `add350f`, Pass, no findings. Also diagnosed and resolved a genuine `~/approve` (Sponsor-side, host-local) argument-mapping defect discovered while chasing round-1's approval: invoking it with `sponsor_client.py`-style flags silently mis-mapped session/work_package/note into the wrong DB columns; resolved once the Sponsor used its actual two-argument form. WP1 closed. |
 | 3.526 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1 post-commit review round 1 fix (Codex-caught): synced ESR-0056 row (1.1 to 1.2) - genuine background Codex review of the real pushed commit `366c4a8` returned Fail, correctly identifying that ESR-0056's own Document Control Closure Status and WP1 row still read as pre-commit within the pushed commit itself (the "Committed and pushed" narrative was staged after `366c4a8` had already been created, so never actually part of it). Fixed. Codex's Node-side re-verification (npm ci/build/playwright/audit) was separately blocked by its own exec-sandbox policy this round - disclosed as a review-environment limitation, not a refutation of this WP's own direct evidence. |
 | 3.525 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1: implemented and validated - synced EIP-ESR0056-001 (0.2 to 1.0, Approved - implemented), EBR-0001 (1.177 to 1.178, EBG-0085 closed Complete) and ESR-0056 (1.0 to 1.1) rows. vite/@vitejs/plugin-react bumped to 8.2.2/6.1.1; npm ci/build/full Playwright suite/both npm audit variants all clean; esbuild<=0.24.2 finding confirmed gone. Sponsor-approved scope extension: scripts/validate_repository.py gained a node_modules IGNORED_DIRS entry. Pending commit/push through submit-response and the real Sponsor Approval Service. |
 | 3.524 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1: synced EIP-ESR0056-001 row (0.1 to 0.2) - Codex Engineering Reviewer design review via the AIEMS Exchange Bridge, Conditional Pass, no Fail-level design gap, folded in (Node >=20.19.0 check extended to both frontend-build and playwright CI jobs; npm ci added as its own explicit validation step alongside npm install). Not yet approved or implemented. |

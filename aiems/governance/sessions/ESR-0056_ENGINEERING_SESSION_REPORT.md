@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0056 |
 | Title | Engineering Session Report |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0056 |
 | Date Opened | 4 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1 complete (WP1 committed `366c4a8`, pushed; post-commit review in progress), WP2-WP4 planned |
+| Closure Status | Open - WP0A/WP0B/WP1 complete (WP1 committed `366c4a8`/`add350f`, pushed, post-commit review round 2 Pass), WP2-WP4 planned |
 
 ---
 
@@ -52,6 +52,10 @@ Validation: `npm install`/`npm ci` both clean; `npm run build` succeeds under Vi
 
 **Post-commit independent review, round 1** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `366c4a8`, diff `f39ff37..366c4a8`): **Fail.** Codex independently re-ran `git log`/`git show --stat`/`git diff` and confirmed the changed-path set matched exactly (no `src/`, `src-tauri/`, `sentinel/policy.py` or `GAM-0001` touched); independently re-ran `python scripts/validate_repository.py` (0 errors, 297 warnings, matching) and `pytest jarvis/tests sentinel scripts/tests` (553 passed, 1 skipped, matching). Two findings: (1) **genuine documentation-consistency defect** - this report's own Document Control Closure Status and the WP1 Work Package Plan row still read as pre-commit ("planned, none yet implemented" / "pending commit/push") within the pushed commit itself, because the "Committed and pushed" narrative paragraph above was written and staged only *after* `366c4a8` had already been created, so it was never actually part of that commit - fixed this round (this Document Control/WP1-row correction, to be included in the round-2 commit); (2) `npm ci`/`npm run build`/`npx playwright test`/`npm audit --omit=dev`/`npm audit` were all rejected by Codex's own exec-sandbox policy in this invocation, so Codex could not independently reproduce the Node-side build/test/audit evidence this WP's own direct implementation runs already produced (Section 3 above) - disclosed as a review-environment limitation, not a refutation of that evidence.
 
+**Fix round 1 committed and pushed** (`add350f`, `366c4a8..add350f`), gated through the real Sponsor Approval Service via `submit-response`. Getting this approval recorded surfaced and resolved a genuine tooling defect: the Programme Sponsor's `~/approve` shortcut (host-side, outside this repository) was silently mis-mapping its arguments when invoked with the full `sponsor_client.py`-style syntax - `~/approve` hardcodes `--decision approve` and expects only `<work_package> <note>`, but when called as `~/approve ESR-0056 WP1 --decision approve --note "..."`, `"ESR-0056"` landed in the `work_package` field and `"WP1"` in the `note` field, producing a well-formed but wrongly-addressed row in `.aiems-exchange/sponsor_decisions.db` that `submit-response`'s `work_package=WP1` lookup correctly did not match. Diagnosed by reading the SQLite database directly (read-only; `AIEMS_SPONSOR_TOKEN` was never used or possessed) after the HTTP `/decisions/latest` endpoint kept returning a stale decision across a retry and a service restart. Resolved once the Programme Sponsor re-ran `~/approve` with its actual two-argument form (`~/approve WP1 "..."`).
+
+**Post-commit independent review, round 2** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `add350f`, diff `366c4a8..add350f`): **Pass, no findings.** Codex independently confirmed `add350f` touches only this report and REG-0001; confirmed Document Control and the WP1 row now accurately state the real pushed/reviewed state; confirmed REG-0001's ESR-0056 row version matches this file's own; independently re-ran `python scripts/validate_repository.py` (0 errors, 297 warnings) and `pytest jarvis/tests sentinel scripts/tests` (553 passed, 1 skipped); did not re-attempt the Node-side commands, consistent with the disclosed sandbox-network limitation rather than holding it against the commit. **WP1 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -79,7 +83,7 @@ Four Work Packages, in sequence:
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1 | EBG-0085: esbuild/vite Dev-Server Vulnerability Upgrade | Complete (EIP-ESR0056-001 v1.0) - committed `366c4a8`, pushed; post-commit review round 1: Fail (documentation-consistency defect, fixed this round; Node-side re-verification blocked by Codex's own sandbox policy) |
+| WP1 | EBG-0085: esbuild/vite Dev-Server Vulnerability Upgrade | Complete (EIP-ESR0056-001 v1.0) - committed `366c4a8`, fix round `add350f`, both pushed; post-commit review round 1 Fail (fixed), round 2 **Pass** |
 | WP2 | EBG-0058: PBK-0001 Clause Consolidation | Not started |
 | WP3 | EBG-0046: Device Independence and Restore Architecture (requirements definition) | Not started |
 | WP4 | JRM-0001 Section 9 REG-0001 HST/FCH Registration Gap Closure | Not started |
