@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.521
+**Version:** 3.525
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.521 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.525 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.177 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.178 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -225,6 +225,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0053-002 | Engineering Implementation Package | Kokoro Production Voice Wiring | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0054-002 | Engineering Implementation Package | GIA Phase 3a Git State Observability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0055-001 | Engineering Implementation Package | GIA Phase 3b/3c Repository Health and Register State Observability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0056-001 | Engineering Implementation Package | esbuild/vite Dev-Server Vulnerability Upgrade | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | OSE-0001 | Engineering Assessment | Organic Semantic Enhancement Update Rule | 0.1 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0013 | `aiems/governance/reviews/` |
 | SAR-0001 | Strategic Alignment Review | Phase 1 Strategic Alignment Review | 1.0 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | AIE-0001 | Review | AI Engineering Workflow Evaluation | Unversioned Draft | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -301,6 +302,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0053 | Engineering Session Report | Engineering Session Report | 1.9 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0054 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0055 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0056 | Engineering Session Report | Engineering Session Report | 1.1 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -415,6 +417,10 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.525 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1: implemented and validated - synced EIP-ESR0056-001 (0.2 to 1.0, Approved - implemented), EBR-0001 (1.177 to 1.178, EBG-0085 closed Complete) and ESR-0056 (1.0 to 1.1) rows. vite/@vitejs/plugin-react bumped to 8.2.2/6.1.1; npm ci/build/full Playwright suite/both npm audit variants all clean; esbuild<=0.24.2 finding confirmed gone. Sponsor-approved scope extension: scripts/validate_repository.py gained a node_modules IGNORED_DIRS entry. Pending commit/push through submit-response and the real Sponsor Approval Service. |
+| 3.524 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1: synced EIP-ESR0056-001 row (0.1 to 0.2) - Codex Engineering Reviewer design review via the AIEMS Exchange Bridge, Conditional Pass, no Fail-level design gap, folded in (Node >=20.19.0 check extended to both frontend-build and playwright CI jobs; npm ci added as its own explicit validation step alongside npm install). Not yet approved or implemented. |
+| 3.523 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP1: registered EIP-ESR0056-001 (0.1, Draft) - esbuild/vite dev-server vulnerability upgrade (EBG-0085), scoping a `vite` `^5.4.11`→`^8.2.2` / `@vitejs/plugin-react` `^4.3.4`→`^6.1.1` bump with build/dev-server smoke-test verification. Not yet reviewed, approved or implemented. |
+| 3.522 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP0B: registered ESR-0056 (1.0, Open) - Programme Sponsor-directed four-Work-Package plan (EBG-0085, EBG-0058, EBG-0046, JRM-0001 REG-0001 HST/FCH gap closure). EBG-0085 added and sequenced first following a Feature-First Delivery Discipline flag (the other three items are governance/documentation-only). WP4 retargeted at WP0B: the WP0A cross-check found the JRM-0001 "REG-0001 HST/FCH registration gap" already fully resolved (all 24 HST and 24 FCH files on disk present in this register) - WP4 is now closing that stale roadmap line, not registering anything. Not yet reviewed, approved or implemented. |
 | 3.521 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 session-wide WP7: registered [[RBL-0035_REPOSITORY_BASELINE|RBL-0035]] (1.0, Accepted) - Establish, superseding RBL-0034, following the Programme Sponsor's determination that WP1's GIA Repository Health and Register State Observability delivery is a genuine new backend capability, completing EBG-0083 Phase 3 in full. Synced COC-0001 (1.23 to 1.24), PBK-0001 (1.42 to 1.43), PCB-0001 (2.10 to 2.11), JARVIS_CAPABILITY_READINESS_MATRIX (2.9 to 2.10) and PST-0001 (3.37 to 3.38) rows - every controlled artefact's "current accepted repository baseline" reference now points to RBL-0035. ESR-0055 formally closed (1.4 to 1.5, Open to Closed). |
 | 3.520 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP1 post-commit review: synced ESR-0055 row (1.2 to 1.4) - genuine background Codex review of the real pushed commit `10f080a`, Pass, no corrective findings. |
 | 3.519 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP1: synced ESR-0055 row (1.1 to 1.2) - WP1 Complete, EIP-ESR0055-001 v1.0 implemented, validated, live-verified; pending commit/push. |

@@ -23,6 +23,7 @@ IGNORED_DIRS = {
     ".venv",
     "venv",
     ".aiems-exchange",
+    "node_modules",
 }
 
 
