@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0056 |
 | Title | Engineering Session Report |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0056 |
 | Date Opened | 4 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP0A/WP0B/WP1 complete (WP1 committed `366c4a8`/`add350f`, pushed, post-commit review round 2 Pass), WP2-WP4 planned |
+| Closure Status | Open - WP0A/WP0B/WP1/WP2 complete (WP1 `366c4a8`/`add350f`, WP2 `a62f56d`, all pushed and post-commit Pass), WP3-WP4 planned |
 
 ---
 
@@ -56,6 +56,19 @@ Validation: `npm install`/`npm ci` both clean; `npm run build` succeeds under Vi
 
 **Post-commit independent review, round 2** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `add350f`, diff `366c4a8..add350f`): **Pass, no findings.** Codex independently confirmed `add350f` touches only this report and REG-0001; confirmed Document Control and the WP1 row now accurately state the real pushed/reviewed state; confirmed REG-0001's ESR-0056 row version matches this file's own; independently re-ran `python scripts/validate_repository.py` (0 errors, 297 warnings) and `pytest jarvis/tests sentinel scripts/tests` (553 passed, 1 skipped); did not re-attempt the Node-side commands, consistent with the disclosed sandbox-network limitation rather than holding it against the commit. **WP1 closed.**
 
+**WP2 - EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix (Complete):** the WP0A candidate list surfaced EBG-0058 as the "highest process-hygiene value of anything currently open," sourced from [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Section 6.1 - flagged and found stale before proceeding: EBR-0001 already showed EBG-0058 Complete, closed at ESR-0028 WP1. Programme Sponsor directed retargeting WP2 to a fresh accretion re-check of PBK-0001's growth since that original consolidation (v1.28 through v1.43, 15 versions), applying the same "near-verbatim, zero added content" bar the original review used. [[EIP-ESR0056-002_PBK-0001_ACCRETION_RECHECK_AND_JRM-0001_STALENESS_FIX|EIP-ESR0056-002]] drafted (v0.1), submitted to Codex Engineering Reviewer via the AIEMS Exchange Bridge - **Pass, no corrections needed** (v0.2): Codex independently re-read the real Documentation Debt Discipline, Scope-Creep and Cross-WP-Dependency Flagging Discipline, Engineering Scope Control, Engineering Self-Review and Backlog Progression Analysis text, independently re-verified the Version History claim (only v1.30 and v1.39 carry new substantive prose since v1.28; everything else is RBL baseline-pointer sync), and confirmed the "no PBK-0001 edit" outcome is a legitimate null result. **Programme Sponsor approved via direct chat instruction ("Approved"), implemented exactly as scoped in v0.2** (v1.0):
+
+* EBR-0001's EBG-0058 row: gained a re-verification note (status unchanged, Complete) documenting the fresh accretion check and its finding.
+* JRM-0001 Section 6.1: EBG-0058 line corrected from "open/highest process-hygiene value" to reflect Complete, re-verified this session.
+* JRM-0001 Section 6.3: EBG-0052 line corrected to drop the stale "resolve together with EBG-0058" framing - it remains its own independent open item.
+* No PBK-0001 content changed - the genuine finding of this Work Package.
+
+Validation: `python scripts/validate_repository.py` 0 errors, 301 warnings; manual re-read confirmed internal consistency across EBR-0001/JRM-0001/REG-0001.
+
+**Committed and pushed** (`a62f56d`, `935a0c8..a62f56d`), gated through the real Sponsor Approval Service via `submit-response` - required a fresh `~/approve` invocation since HEAD had moved since the prior WP's decision; the corrected two-argument form worked cleanly this time.
+
+**Post-commit independent review** (genuine `codex exec -s workspace-write` invocation against the real pushed commit `a62f56d`, diff `935a0c8..a62f56d`): **Pass, no findings.** Codex independently confirmed the changed-file set was exactly EBR-0001/REG-0001/JRM-0001/the new EIP, with `PBK-0001_AI_ENGINEERING_PLAYBOOK.md` genuinely absent from the diff; independently re-ran `validate_repository.py` (0 errors, 301 warnings, matching) and `pytest` (553 passed, 1 skipped, matching); independently spot-checked PBK-0001's real v1.29-v1.43 Version History against the EIP's claim and confirmed it materially accurate (noting one immaterial omission - v1.39 also added a small WP0B `~/.current_session` step, not itself a clause-restatement candidate). **WP2 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -71,7 +84,7 @@ GitHub and the repository remain the authoritative source of truth.
 Four Work Packages, in sequence:
 
 * **WP1** - EBG-0085: esbuild/vite dev-server vulnerability upgrade (Vite 8), verified via build/dev-server smoke test. Product-moving Work Package added to satisfy the Feature-First Delivery Discipline.
-* **WP2** - EBG-0058: PBK-0001 Clause Consolidation - identify and merge PBK-0001's overlapping restatements of the same underlying principles into fewer, clearer statements.
+* **WP2** - EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix - retargeted at WP0B/WP2 opening once EBG-0058 was found already Complete (ESR-0028): fresh re-check of PBK-0001's growth since that consolidation for new duplication, plus fixing JRM-0001's stale references to it.
 * **WP3** - EBG-0046: Device Independence and Restore Architecture - define bootstrap, progressive restore, portable memory, configuration and encrypted sync requirements. No implementation authorised by the backlog entry; this Work Package is a requirements/architecture-definition deliverable.
 * **WP4** - Close the stale JRM-0001 Section 9 "REG-0001 HST/FCH registration gap" roadmap line, evidenced by the WP0B cross-check (all 24 HST and 24 FCH files on disk confirmed present in REG-0001).
 
@@ -84,7 +97,7 @@ Four Work Packages, in sequence:
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0085: esbuild/vite Dev-Server Vulnerability Upgrade | Complete (EIP-ESR0056-001 v1.0) - committed `366c4a8`, fix round `add350f`, both pushed; post-commit review round 1 Fail (fixed), round 2 **Pass** |
-| WP2 | EBG-0058: PBK-0001 Clause Consolidation | Not started |
+| WP2 | EBG-0058: PBK-0001 Accretion Re-check and JRM-0001 Staleness Fix | Complete (EIP-ESR0056-002 v1.0) - committed `a62f56d`, pushed, post-commit review Pass |
 | WP3 | EBG-0046: Device Independence and Restore Architecture (requirements definition) | Not started |
 | WP4 | JRM-0001 Section 9 REG-0001 HST/FCH Registration Gap Closure | Not started |
 | WP6 | Session-wide Independent Repository Verification | Pending |

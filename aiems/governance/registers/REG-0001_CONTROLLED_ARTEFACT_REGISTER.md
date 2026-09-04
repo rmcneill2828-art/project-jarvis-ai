@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.530
+**Version:** 3.531
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.530 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.531 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -303,7 +303,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0053 | Engineering Session Report | Engineering Session Report | 1.9 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0054 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0055 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0056 | Engineering Session Report | Engineering Session Report | 1.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0056 | Engineering Session Report | Engineering Session Report | 1.4 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -418,6 +418,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.531 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2 post-commit review: synced ESR-0056 row (1.3 to 1.4) - genuine background Codex review of the real pushed commit `a62f56d`, Pass, no findings. WP2 closed. |
 | 3.530 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: implemented - synced EIP-ESR0056-002 (0.2 to 1.0, Approved - implemented), EBR-0001 (1.178 to 1.179, EBG-0058 re-verified) and JRM-0001 (1.24 to 1.25, two stale references fixed) rows. No PBK-0001 content changed. Pending commit/push through submit-response and the real Sponsor Approval Service. |
 | 3.529 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: synced EIP-ESR0056-002 row (0.1 to 0.2) - Codex Engineering Reviewer design review, Pass, no corrections needed. Not yet approved or implemented. |
 | 3.528 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP2: registered EIP-ESR0056-002 (0.1, Draft) - PBK-0001 accretion re-check plus JRM-0001 staleness fix, retargeted from PBK-0001 clause consolidation (EBG-0058, already Complete since ESR-0028) per Programme Sponsor direction. Not yet reviewed, approved or implemented. |
