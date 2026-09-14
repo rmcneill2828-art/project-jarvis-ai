@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0057 |
 | Title | Engineering Session Report |
-| Version | 0.7 |
+| Version | 0.8 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -85,7 +85,11 @@ Presented to the Programme Sponsor with three decisions: close EBG-0025, registe
 * EBG-0128 registered (Track B Phase 3 - Local Agent Action Faculty Implementation, Candidate Backlog) - closes JRM-0001's own flagged gap; explicitly does not authorise implementation, a `LOCAL_AGENT_ACTION` policy change, or any specific first action-capability selection (smart-home device control surfaced as one candidate, not pre-selected).
 * JRM-0001 Section 7.1/7.3 Phase 3, Section 7.3 Phase 8 (EBG-0025) and Section 7.5 Parallel (new EBG-0127 row) updated to reflect all of the above.
 
-Validation: `python scripts/validate_repository.py` - to be confirmed at commit (no code touched this Work Package). No independent AI review available (Codex retired, Antigravity blocked); this report and WR-ESR0057-001 have not been independently cross-checked - disclosed in WR-ESR0057-001's own header.
+Validation: `python scripts/validate_repository.py` - 0 errors, 329 warnings. No independent AI review available (Codex retired, Antigravity blocked); this report and WR-ESR0057-001 have not been independently cross-checked - disclosed in WR-ESR0057-001's own header.
+
+**Committed and pushed** (`2c0dfb9`, `8efbd0e..2c0dfb9`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Self-verification** (Claude Engineering Implementer, not independent): confirmed via `git show --stat 2c0dfb9` that the changed-file set is exactly the 5 expected files (EBR-0001, REG-0001, JRM-0001, ESR-0057, the new WR-ESR0057-001) - no code path touched. Re-ran `python scripts/validate_repository.py` against the committed state - 0 errors, 329 warnings, matching. **Verdict: Pass**, disclosed as self-review. **WP3 closed.**
 
 ---
 
@@ -113,7 +117,7 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | JRM-0001 Whole-Document Staleness Sweep | Complete (EIP-ESR0057-001 v1.0) - committed `bba8970`, pushed; Codex/Antigravity independent review unobtainable (both disclosed), closed on Programme Sponsor direct approval plus Engineering Implementer self-verification. EBG-0126 registered (retire Codex, adopt Gemini/Antigravity - future WP). |
 | WP2 | EBG-0023: BRD-0001 Guidance and Personal Memory Export | Complete (EIP-ESR0057-002 v1.0) - committed `23b4ed1`, pushed; self-verified (Pass, disclosed as self-review) |
-| WP3 | EBG-0025: Home Assistant and Smart Home Integration Assessment | Complete (WR-ESR0057-001, Working Report) - EBG-0025 closed, EBG-0127/EBG-0128 registered per Programme Sponsor direction |
+| WP3 | EBG-0025: Home Assistant and Smart Home Integration Assessment | Complete (WR-ESR0057-001, Working Report) - committed `2c0dfb9`, pushed; self-verified (Pass) |
 
 ---
 
@@ -121,6 +125,7 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.8 | 14 September 2026 | Claude Engineering Implementer | WP3 closed: committed `2c0dfb9`, pushed; self-verified (Pass) against the real committed state. |
 | 0.7 | 14 September 2026 | Claude Engineering Implementer | WP3 complete: WR-ESR0057-001 (Home Assistant assessment) produced; EBG-0025 closed, EBG-0127/EBG-0128 registered per Programme Sponsor direction. JRM-0001 Phase 3/8/7.5 updated. No code touched - assessment-only, matching EBG-0025's own registered scope. |
 | 0.6 | 14 September 2026 | Claude Engineering Implementer | WP2 closed: committed `23b4ed1`, pushed; self-verified (Pass) against the real committed state - changed-file set, validate_repository.py and pytest all re-confirmed. |
 | 0.5 | 14 September 2026 | Claude Engineering Implementer | WP2 approved via Programme Sponsor direct chat instruction ("Approved") in place of independent AI review. EIP-ESR0057-002 synced to v1.0. Pending commit/push through submit-response. |
