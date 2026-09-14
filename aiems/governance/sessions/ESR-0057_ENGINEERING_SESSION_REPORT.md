@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0057 |
 | Title | Engineering Session Report |
-| Version | 0.8 |
-| Status | Open |
+| Version | 1.0 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0057 |
 | Date Opened | 14 September 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP0A/WP0B complete, WP1 in progress (drafted, not yet reviewed/approved/implemented) |
+| Date Closed | 14 September 2026 |
+| Closure Status | Closed - WP1-WP3 complete, session-wide WP6 self-verified Pass (no independent AI review available), WP7 Establish RBL-0037 |
 
 ---
 
@@ -118,6 +118,38 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 | WP1 | JRM-0001 Whole-Document Staleness Sweep | Complete (EIP-ESR0057-001 v1.0) - committed `bba8970`, pushed; Codex/Antigravity independent review unobtainable (both disclosed), closed on Programme Sponsor direct approval plus Engineering Implementer self-verification. EBG-0126 registered (retire Codex, adopt Gemini/Antigravity - future WP). |
 | WP2 | EBG-0023: BRD-0001 Guidance and Personal Memory Export | Complete (EIP-ESR0057-002 v1.0) - committed `23b4ed1`, pushed; self-verified (Pass, disclosed as self-review) |
 | WP3 | EBG-0025: Home Assistant and Smart Home Integration Assessment | Complete (WR-ESR0057-001, Working Report) - committed `2c0dfb9`, pushed; self-verified (Pass) |
+| WP6 | Session-wide Independent Repository Verification | Complete - self-verified Pass (disclosed substitution for independent review; Codex retired, Antigravity blocked) |
+| WP7 | Session-wide Repository Baseline Determination | Pending Programme Sponsor determination |
+
+---
+
+# 6A. Session-Wide WP6 - Independent Repository Verification
+
+Following WP3's implementation, push and self-verification, the Programme Sponsor directed proceeding to session-wide Independent Repository Verification.
+
+**No independent AI review was available for this step.** Codex is retired on cost grounds (EBG-0126); a genuine Antigravity CLI substitute was attempted twice this session (WP1's design and post-commit review stages) and blocked both times by Claude Code's own harness (`Create Unsafe Agents`; `Self-Modification`). Unlike every prior session's WP6 (a genuine background `codex exec` review of the full session diff by a second AI), this WP6 is the Engineering Implementer's own self-verification of the full session diff - the same disclosed substitution used for every per-Work-Package review this session, now applied at session scope. This is a **materially weaker verification** than the standing template calls for: no second AI independently re-derived these findings.
+
+Performed directly against `c30b703..HEAD` (`c30b703`, ESR-0056's own final closure commit):
+
+* `git log --oneline c30b703..HEAD` - confirmed exactly six commits, two per Work Package (draft+implement, then closure/self-verification record), matching the session narrative above.
+* `git diff --stat c30b703..HEAD` - confirmed exactly 18 changed files: four governance artefacts (EBR-0001, REG-0001, JRM-0001, this report), three new EIPs, one new Working Report (WR-ESR0057-001, correctly *not* registered in REG-0001 per its own uncontrolled status), two architecture models (new BRD-0001, modified MDS-0001), five `jarvis/` code files and four test files. No `src/`, `src-tauri/`, `sentinel/policy.py` or `GAM-0001` path touched - confirmed by absence from this diff, not merely by not having intended to touch them.
+* `python scripts/validate_repository.py` - 0 errors, 329 warnings.
+* `python -m pytest jarvis/tests scripts/tests -q` - 561 passed, 1 skipped.
+* Cross-checked that WP2's scope extension (guidance plus a first implementation slice, beyond EBG-0023's original guidance-only registration) and WP3's Programme Sponsor-directed additions (EBG-0127/EBG-0128, beyond what EBG-0025's own assessment scope named) were each disclosed and approved before implementation, per the Scope-Creep and Cross-WP-Dependency Flagging Discipline, rather than silently absorbed - re-read against the actual chat record, not merely trusted from memory.
+
+**Verdict: Pass**, disclosed throughout as self-review rather than independent verification.
+
+Advisory baseline assessment (self-assessed, no second AI cross-check): **Establish** a new RBL, superseding [[RBL-0036_REPOSITORY_BASELINE|RBL-0036]] - WP2 delivered a genuine new backend capability (Personal Memory export/backup, a real `memory.backup` RPC method, tested and wired into the runtime), matching the Establish threshold applied at ESR-0049 through ESR-0055 for sessions with live product-capability change, rather than the Retain threshold applied at sessions delivering architecture/documentation only. The Programme Sponsor makes the actual WP7 determination.
+
+---
+
+# 6B. Session-Wide WP7 - Repository Baseline Determination
+
+**The Programme Sponsor's determination**: **establish a new baseline**, agreeing with the Engineering Implementer's own advisory. [[RBL-0037_REPOSITORY_BASELINE|RBL-0037]] created and accepted, superseding RBL-0036.
+
+Every controlled artefact's "current accepted repository baseline" pointer updated to RBL-0037: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (1.25 to 1.26), [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.44 to 1.45), [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (2.12 to 2.13, pointer-only - the Personal Memory export/backup capability not yet reflected, flagged for a future Documentation Debt sync), [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] (2.11 to 2.12, pointer-only) and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.39 to 3.40, full closure sweep - Current Mode/Baseline/Phase/Workflow/Objective, the Prior Session rolling window shifted, JARVIS Capability Maturity and Product Baseline rows). README.md (uncontrolled, no REG-0001 row) updated to match.
+
+**ESR-0057 formally closed.**
 
 ---
 
@@ -125,6 +157,8 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 14 September 2026 | Claude Engineering Implementer | ESR-0057 WP7: Establish RBL-0037, superseding RBL-0036 - the Programme Sponsor's determination, agreeing with the Engineering Implementer's own advisory. COC-0001/PBK-0001/PCB-0001/JARVIS_CAPABILITY_READINESS_MATRIX/PST-0001 baseline pointers all synced; README.md updated to match. **ESR-0057 formally closed** - the first Engineering Session since EE-0001's Section 7 appointment (10 July 2026) with zero genuine independent-AI-review coverage throughout, disclosed at every step rather than silently substituted. |
+| 0.9 | 14 September 2026 | Claude Engineering Implementer | Session-wide WP6 performed: self-verification (Pass) of the full session diff `c30b703..HEAD`, disclosed as a materially weaker substitution for the standing genuine-Codex-review template (Codex retired, Antigravity blocked). Advisory recommendation: Establish a new RBL. Awaiting Programme Sponsor WP7 determination. |
 | 0.8 | 14 September 2026 | Claude Engineering Implementer | WP3 closed: committed `2c0dfb9`, pushed; self-verified (Pass) against the real committed state. |
 | 0.7 | 14 September 2026 | Claude Engineering Implementer | WP3 complete: WR-ESR0057-001 (Home Assistant assessment) produced; EBG-0025 closed, EBG-0127/EBG-0128 registered per Programme Sponsor direction. JRM-0001 Phase 3/8/7.5 updated. No code touched - assessment-only, matching EBG-0025's own registered scope. |
 | 0.6 | 14 September 2026 | Claude Engineering Implementer | WP2 closed: committed `23b4ed1`, pushed; self-verified (Pass) against the real committed state - changed-file set, validate_repository.py and pytest all re-confirmed. |
