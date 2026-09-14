@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0057 |
 | Title | Engineering Session Report |
-| Version | 0.5 |
+| Version | 0.6 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -68,7 +68,11 @@ The Programme Sponsor then selected EBG-0023 for WP2. EBG-0023 as registered aut
 
 New tests added across `test_memory_store.py` (3), `test_memory_service.py` (3), `test_guardian_runtime.py` (5 call sites in existing tests), `test_stdio_rpc.py` (2). Full suite: `python -m pytest jarvis/tests scripts/tests -q` - 561 passed, 1 skipped. `python scripts/validate_repository.py` - 0 errors, warning count to be confirmed at commit.
 
-**Disclosed process note** (same pattern as WP1): drafted and implemented directly against the working tree before Programme Sponsor review of this specific content, since the Programme Sponsor's "please proceed with EBG-0023" was read as covering drafting - the real `submit-response`/Sponsor Approval Service gate still governs the actual commit. **No independent AI review available**: Codex is retired (EBG-0126); a genuine Antigravity CLI substitute remains blocked by Claude Code's own harness. **Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0057-002_BRD-0001_GUIDANCE_AND_MEMORY_EXPORT|EIP-ESR0057-002]] synced to v1.0 (Approved - implemented). Pending commit/push through `submit-response` and the real Sponsor Approval Service.
+**Disclosed process note** (same pattern as WP1): drafted and implemented directly against the working tree before Programme Sponsor review of this specific content, since the Programme Sponsor's "please proceed with EBG-0023" was read as covering drafting - the real `submit-response`/Sponsor Approval Service gate still governs the actual commit. **No independent AI review available**: Codex is retired (EBG-0126); a genuine Antigravity CLI substitute remains blocked by Claude Code's own harness. **Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0057-002_BRD-0001_GUIDANCE_AND_MEMORY_EXPORT|EIP-ESR0057-002]] synced to v1.0 (Approved - implemented). `submit-response` succeeded immediately (11:03 UTC) - a real approving decision was already recorded for this Work Package at the current HEAD.
+
+**Committed and pushed** (`23b4ed1`, `fcfd0fc..23b4ed1`).
+
+**Self-verification** (Claude Engineering Implementer, not independent - no second AI checked this pass): confirmed via `git show --stat 23b4ed1` that the changed-file set is exactly the 15 files staged (governance: EBR-0001, REG-0001, ESR-0057, the new EIP; architecture: the new BRD-0001, MDS-0001; code: `store.py`, `service.py`, `runtime.py`, `stdio_rpc.py`, `activity_tracker.py`; tests: 4 files) - no unrelated path touched. Re-ran `python scripts/validate_repository.py` against the committed state - 0 errors, 326 warnings, matching. Re-ran `python -m pytest jarvis/tests scripts/tests -q` against the committed state - 561 passed, 1 skipped, matching. **Verdict: Pass**, disclosed as self-review rather than independent verification. **WP2 closed.**
 
 ---
 
@@ -95,7 +99,7 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | JRM-0001 Whole-Document Staleness Sweep | Complete (EIP-ESR0057-001 v1.0) - committed `bba8970`, pushed; Codex/Antigravity independent review unobtainable (both disclosed), closed on Programme Sponsor direct approval plus Engineering Implementer self-verification. EBG-0126 registered (retire Codex, adopt Gemini/Antigravity - future WP). |
-| WP2 | EBG-0023: BRD-0001 Guidance and Personal Memory Export | Approved (EIP-ESR0057-002 v1.0) - BRD-0001 created, first implementation slice complete and tested (561 passed/1 skipped); Programme Sponsor approved directly; pending commit/push through `submit-response` |
+| WP2 | EBG-0023: BRD-0001 Guidance and Personal Memory Export | Complete (EIP-ESR0057-002 v1.0) - committed `23b4ed1`, pushed; self-verified (Pass, disclosed as self-review) |
 
 ---
 
@@ -103,6 +107,7 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.6 | 14 September 2026 | Claude Engineering Implementer | WP2 closed: committed `23b4ed1`, pushed; self-verified (Pass) against the real committed state - changed-file set, validate_repository.py and pytest all re-confirmed. |
 | 0.5 | 14 September 2026 | Claude Engineering Implementer | WP2 approved via Programme Sponsor direct chat instruction ("Approved") in place of independent AI review. EIP-ESR0057-002 synced to v1.0. Pending commit/push through submit-response. |
 | 0.4 | 14 September 2026 | Claude Engineering Implementer | WP2 drafted: BRD-0001 (Backup, Recovery and Data Protection Guidance, EBG-0023) created plus a Programme Sponsor-approved scope extension delivering a first Personal Memory export/backup implementation slice (`memory.backup` RPC method, full test coverage). MDS-0001 EBG-0023 forward references repointed to BRD-0001; RBL-0015 staleness fix caught via Whole-Document Staleness Sweep on Edit. Full suite 561 passed/1 skipped. Not yet reviewed, approved or committed - awaiting Programme Sponsor direct review given no independent AI reviewer is currently available. |
 | 0.3 | 14 September 2026 | Claude Engineering Implementer | WP1 closed. Programme Sponsor disclosed Codex/ChatGPT is retired on cost grounds, not a temporary outage; Antigravity CLI (`agy`, covered by the Programme Sponsor's existing AI Pro Plan) attempted as a same-session substitute post-commit reviewer but blocked twice by Claude Code's own harness (`Create Unsafe Agents`; `Self-Modification`) - disclosed rather than routed around. Programme Sponsor directed Engineering Implementer self-verification in place of independent review for this Work Package: changed-file set, `validate_repository.py` and a 5-row EBR-0001 cross-check all independently re-confirmed against the real pushed commit. EBG-0126 registered (retire Codex, adopt Gemini/Antigravity as permanent Engineering Reviewer) - a real governance and bridge-engineering change scoped to a future Work Package, not decided here. |
