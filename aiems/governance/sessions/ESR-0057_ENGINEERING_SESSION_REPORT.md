@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0057 |
 | Title | Engineering Session Report |
-| Version | 0.6 |
+| Version | 0.7 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -74,6 +74,19 @@ New tests added across `test_memory_store.py` (3), `test_memory_service.py` (3),
 
 **Self-verification** (Claude Engineering Implementer, not independent - no second AI checked this pass): confirmed via `git show --stat 23b4ed1` that the changed-file set is exactly the 15 files staged (governance: EBR-0001, REG-0001, ESR-0057, the new EIP; architecture: the new BRD-0001, MDS-0001; code: `store.py`, `service.py`, `runtime.py`, `stdio_rpc.py`, `activity_tracker.py`; tests: 4 files) - no unrelated path touched. Re-ran `python scripts/validate_repository.py` against the committed state - 0 errors, 326 warnings, matching. Re-ran `python -m pytest jarvis/tests scripts/tests -q` against the committed state - 561 passed, 1 skipped, matching. **Verdict: Pass**, disclosed as self-review rather than independent verification. **WP2 closed.**
 
+**WP3 - EBG-0025: Home Assistant and Smart Home Integration Assessment (Complete):** EBG-0025's own registered text authorises assessment only ("No implementation is authorised by this backlog entry"), matching the session's second choice presented at closure (alongside DRA-0001 follow-through, not selected). [[WR-ESR0057-001_HOME_ASSISTANT_SMART_HOME_INTEGRATION_ASSESSMENT|WR-ESR0057-001]] produced (Working Report, per PBK-0001's Working Report Lifecycle - not a controlled artefact, not registered in REG-0001). Web research conducted directly (Codex unavailable for delegation, EBG-0126): Home Assistant's local-first REST/WebSocket/MQTT integration surfaces and long-lived-token authentication, compared against Apple HomeKit, Google Home and Samsung SmartThings on privacy/local-control/device-compatibility grounds.
+
+**Substantive finding**: Home Assistant is the right platform on architectural fit alone - the only major ecosystem matching this project's self-hosted/no-cloud/no-discretionary-budget defaults - but the real gate on any device-control integration is [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]]'s `LOCAL_AGENT_ACTION` boundary (confirmed still `DENY` for every request, re-read directly rather than assumed from memory), independent of platform choice, and unblocked only by [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] Track B Phase 3 (Action faculty) - which had no backlog item authorising its build at all before this Work Package. A narrower, genuinely different possibility was identified: a read-only Home Assistant state-query agent (not device control), mirroring the Agent Framework's existing GIA `ROUTINE_INTERACTION` precedent, which does not depend on Phase 3.
+
+Presented to the Programme Sponsor with three decisions: close EBG-0025, register the read-only candidate, and (Programme Sponsor's own addition, not originally offered as an option) register Phase 3 itself as a backlog item, closing the gap WR-ESR0057-001's own finding had surfaced. **Programme Sponsor directed all three.** Implemented:
+
+* EBG-0025 closed Complete in EBR-0001, citing WR-ESR0057-001's findings.
+* EBG-0127 registered (Home Assistant Read-Only Smart-Home State Query Agent, Candidate Backlog) - explicitly not gated on Phase 3, per GAM-0001 Section 8.3's observation/monitoring exclusion from `LOCAL_AGENT_ACTION`.
+* EBG-0128 registered (Track B Phase 3 - Local Agent Action Faculty Implementation, Candidate Backlog) - closes JRM-0001's own flagged gap; explicitly does not authorise implementation, a `LOCAL_AGENT_ACTION` policy change, or any specific first action-capability selection (smart-home device control surfaced as one candidate, not pre-selected).
+* JRM-0001 Section 7.1/7.3 Phase 3, Section 7.3 Phase 8 (EBG-0025) and Section 7.5 Parallel (new EBG-0127 row) updated to reflect all of the above.
+
+Validation: `python scripts/validate_repository.py` - to be confirmed at commit (no code touched this Work Package). No independent AI review available (Codex retired, Antigravity blocked); this report and WR-ESR0057-001 have not been independently cross-checked - disclosed in WR-ESR0057-001's own header.
+
 ---
 
 # 4. Engineering Authority
@@ -100,6 +113,7 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | JRM-0001 Whole-Document Staleness Sweep | Complete (EIP-ESR0057-001 v1.0) - committed `bba8970`, pushed; Codex/Antigravity independent review unobtainable (both disclosed), closed on Programme Sponsor direct approval plus Engineering Implementer self-verification. EBG-0126 registered (retire Codex, adopt Gemini/Antigravity - future WP). |
 | WP2 | EBG-0023: BRD-0001 Guidance and Personal Memory Export | Complete (EIP-ESR0057-002 v1.0) - committed `23b4ed1`, pushed; self-verified (Pass, disclosed as self-review) |
+| WP3 | EBG-0025: Home Assistant and Smart Home Integration Assessment | Complete (WR-ESR0057-001, Working Report) - EBG-0025 closed, EBG-0127/EBG-0128 registered per Programme Sponsor direction |
 
 ---
 
@@ -107,6 +121,7 @@ WP1 confirmed by Programme Sponsor direction; WP2 onward to be selected once WP1
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.7 | 14 September 2026 | Claude Engineering Implementer | WP3 complete: WR-ESR0057-001 (Home Assistant assessment) produced; EBG-0025 closed, EBG-0127/EBG-0128 registered per Programme Sponsor direction. JRM-0001 Phase 3/8/7.5 updated. No code touched - assessment-only, matching EBG-0025's own registered scope. |
 | 0.6 | 14 September 2026 | Claude Engineering Implementer | WP2 closed: committed `23b4ed1`, pushed; self-verified (Pass) against the real committed state - changed-file set, validate_repository.py and pytest all re-confirmed. |
 | 0.5 | 14 September 2026 | Claude Engineering Implementer | WP2 approved via Programme Sponsor direct chat instruction ("Approved") in place of independent AI review. EIP-ESR0057-002 synced to v1.0. Pending commit/push through submit-response. |
 | 0.4 | 14 September 2026 | Claude Engineering Implementer | WP2 drafted: BRD-0001 (Backup, Recovery and Data Protection Guidance, EBG-0023) created plus a Programme Sponsor-approved scope extension delivering a first Personal Memory export/backup implementation slice (`memory.backup` RPC method, full test coverage). MDS-0001 EBG-0023 forward references repointed to BRD-0001; RBL-0015 staleness fix caught via Whole-Document Staleness Sweep on Edit. Full suite 561 passed/1 skipped. Not yet reviewed, approved or committed - awaiting Programme Sponsor direct review given no independent AI reviewer is currently available. |
