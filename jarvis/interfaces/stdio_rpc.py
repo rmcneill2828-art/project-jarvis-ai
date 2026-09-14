@@ -145,6 +145,14 @@ WHISPER_MODEL_PATH_ENV_VAR = "JARVIS_WHISPER_MODEL_PATH"
 MEMORY_DB_PATH_ENV_VAR = "JARVIS_MEMORY_DB_PATH"
 DEFAULT_MEMORY_DB_PATH = Path.home() / ".jarvis" / "memory" / "personal.db"
 
+# Personal Memory backup destination (BRD-0001, EBG-0023). Same env-var/
+# default/test-isolation convention as MEMORY_DB_PATH_ENV_VAR above - kept
+# as a sibling directory of the database itself rather than inside it, so a
+# backup file is never mistaken for a second live database on directory
+# listing.
+MEMORY_BACKUP_DIR_ENV_VAR = "JARVIS_MEMORY_BACKUP_DIR"
+DEFAULT_MEMORY_BACKUP_DIR = Path.home() / ".jarvis" / "memory" / "backups"
+
 # Identity/profile store location (EIP-ESR0046-001), mirroring the Personal
 # Memory store's env-var/default/test-isolation convention exactly.
 IDENTITY_DB_PATH_ENV_VAR = "JARVIS_IDENTITY_DB_PATH"
@@ -431,6 +439,7 @@ class StdioRpcServer:
             "memory.approve": self._memory_approve,
             "memory.deny": self._memory_deny,
             "memory.list": self._memory_list,
+            "memory.backup": self._memory_backup,
             "profile.list": self._profile_list,
             "profile.create": self._profile_create,
             "profile.select": self._profile_select,
@@ -592,6 +601,26 @@ class StdioRpcServer:
                 for record in records
             ]
         }
+
+    def _memory_backup(self, params: dict[str, Any]) -> dict[str, Any]:
+        """BRD-0001 (EBG-0023): write a full point-in-time Personal Memory
+        backup file. `params.backupDir` may override the default backup
+        location for this one call; otherwise `JARVIS_MEMORY_BACKUP_DIR`
+        (or its own default) is used, read at call time so tests that set
+        the environment variable per-case are respected without needing a
+        constructor parameter."""
+
+        backup_dir_param = params.get("backupDir")
+        if backup_dir_param is not None and not isinstance(backup_dir_param, str):
+            msg = "params.backupDir must be a string when provided."
+            raise TypeError(msg)
+        if backup_dir_param:
+            backup_dir = Path(backup_dir_param)
+        else:
+            env_value = os.environ.get(MEMORY_BACKUP_DIR_ENV_VAR)
+            backup_dir = Path(env_value) if env_value else DEFAULT_MEMORY_BACKUP_DIR
+        path = self._runtime.backup_memory(backup_dir)
+        return {"path": str(path)}
 
     @staticmethod
     def _require_pending_id(params: dict[str, Any]) -> str:

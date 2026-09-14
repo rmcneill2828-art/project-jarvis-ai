@@ -109,6 +109,36 @@ def test_denied_decision_recorded_without_personal_memory_row(store):
     assert store.get_decision("decision-1").decision == "denied"
 
 
+def test_export_snapshot_includes_both_tables(store):
+    store.record_decision(_decision())
+    store.add(_record())
+
+    snapshot = store.export_snapshot()
+
+    assert len(snapshot["personal_memory"]) == 1
+    assert snapshot["personal_memory"][0]["id"] == "record-1"
+    assert snapshot["personal_memory"][0]["content"] == "Robert prefers dark mode."
+    assert len(snapshot["consent_decisions"]) == 1
+    assert snapshot["consent_decisions"][0]["id"] == "decision-1"
+    assert snapshot["consent_decisions"][0]["decision"] == "approved"
+
+
+def test_export_snapshot_includes_denied_decisions_with_no_memory_row(store):
+    store.record_decision(_decision(decision="denied"))
+
+    snapshot = store.export_snapshot()
+
+    assert snapshot["personal_memory"] == ()
+    assert len(snapshot["consent_decisions"]) == 1
+    assert snapshot["consent_decisions"][0]["decision"] == "denied"
+
+
+def test_export_snapshot_empty_store(store):
+    snapshot = store.export_snapshot()
+
+    assert snapshot == {"personal_memory": (), "consent_decisions": ()}
+
+
 def test_persists_across_new_store_instance(tmp_path):
     db_path = tmp_path / "personal.db"
     first = PersonalMemoryStore(db_path)

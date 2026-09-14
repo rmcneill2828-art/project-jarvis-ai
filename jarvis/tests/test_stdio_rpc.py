@@ -6,6 +6,7 @@ import json
 import threading
 import time
 from datetime import UTC, datetime
+from pathlib import Path
 from unittest.mock import patch
 
 from jarvis.gia.engineering_observability import EngineeringSnapshot
@@ -1204,6 +1205,45 @@ def test_memory_propose_deny_list_round_trip_confirms_denied_item_never_appears(
     list_response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.list", "params": {}}))
 
     assert list_response["result"]["records"] == []
+
+
+def test_memory_backup_writes_file_with_both_tables(tmp_path):
+    """BRD-0001 (EBG-0023): memory.backup through the real StdioRpcServer,
+    a full point-in-time export - not merely the store/service unit level
+    (jarvis/tests/test_memory_store.py, test_memory_service.py)."""
+
+    server = _server(tmp_path)
+    propose_response = server.handle_line(
+        json.dumps(
+            {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
+        )
+    )
+    pending_id = propose_response["result"]["pendingId"]
+    server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.approve", "params": {"pendingId": pending_id}})
+    )
+    backup_dir = tmp_path / "backups"
+
+    backup_response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.backup", "params": {"backupDir": str(backup_dir)}})
+    )
+
+    backup_path = Path(backup_response["result"]["path"])
+    assert backup_path.exists()
+    payload = json.loads(backup_path.read_text(encoding="utf-8"))
+    assert len(payload["personal_memory"]) == 1
+    assert len(payload["consent_decisions"]) == 1
+
+
+def test_memory_backup_rejects_non_string_backup_dir(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.backup", "params": {"backupDir": 12345}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("TypeError:")
 
 
 def test_memory_propose_rejects_non_string_content(tmp_path):

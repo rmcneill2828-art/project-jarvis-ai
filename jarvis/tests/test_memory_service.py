@@ -1,5 +1,7 @@
 """Tests for the Personal Memory consent-gated service."""
 
+import json
+
 import pytest
 
 from jarvis.memory.service import PersonalMemoryService
@@ -111,3 +113,40 @@ def test_list_records_delegates_to_store(store):
     service.approve(pending.id)
 
     assert service.list_records() == store.list_all()
+
+
+def test_export_backup_writes_json_file_with_both_tables(store, tmp_path):
+    service = _service(store)
+    pending = service.propose("Robert prefers dark mode.")
+    service.approve(pending.id)
+    backup_dir = tmp_path / "backups"
+
+    backup_path = service.export_backup(backup_dir)
+
+    assert backup_path.parent == backup_dir
+    assert backup_path.exists()
+    payload = json.loads(backup_path.read_text(encoding="utf-8"))
+    assert "exported_at" in payload
+    assert len(payload["personal_memory"]) == 1
+    assert payload["personal_memory"][0]["content"] == "Robert prefers dark mode."
+    assert len(payload["consent_decisions"]) == 1
+    assert payload["consent_decisions"][0]["decision"] == "approved"
+
+
+def test_export_backup_creates_backup_dir_if_missing(store, tmp_path):
+    service = _service(store)
+    backup_dir = tmp_path / "nested" / "backups"
+
+    service.export_backup(backup_dir)
+
+    assert backup_dir.exists()
+
+
+def test_export_backup_empty_store_writes_empty_lists(store, tmp_path):
+    service = _service(store)
+
+    backup_path = service.export_backup(tmp_path / "backups")
+
+    payload = json.loads(backup_path.read_text(encoding="utf-8"))
+    assert payload["personal_memory"] == []
+    assert payload["consent_decisions"] == []

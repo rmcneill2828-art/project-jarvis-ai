@@ -9,10 +9,12 @@ a proposal store itself.
 
 from __future__ import annotations
 
+import json
 import logging
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
 
 from jarvis.memory.store import (
     ConsentDecisionRecord,
@@ -121,6 +123,37 @@ class PersonalMemoryService:
         """Return all stored Personal Memory records."""
 
         return self._store.list_all()
+
+    def export_backup(self, backup_dir: Path) -> Path:
+        """Write a full, timestamped point-in-time backup file and return its path.
+
+        BRD-0001 (Backup, Recovery and Data Protection Guidance, EBG-0023):
+        first concrete increment - a human-triggered, local-filesystem-only
+        export. Deliberately does not: encrypt the file (plaintext content,
+        same as the source SQLite database - flagged as an explicit open
+        gap in BRD-0001, not silently assumed safe); schedule itself
+        (invoked only when `memory.backup` is called); or write anywhere
+        but `backup_dir` (no network transmission - there is no Sentinel
+        Network Exposure surface for this to route through yet, per
+        ADR-0020's still-unbuilt status). Restore/import from a backup file
+        is explicitly out of scope for this increment - see BRD-0001.
+
+        `backup_dir` is created if it does not already exist, mirroring
+        `PersonalMemoryStore.__init__`'s own parent-directory creation for
+        the primary database file.
+        """
+
+        backup_dir.mkdir(parents=True, exist_ok=True)
+        snapshot = self._store.export_snapshot()
+        exported_at = utc_now()
+        backup_path = backup_dir / f"personal_memory_backup_{exported_at.strftime('%Y%m%dT%H%M%S%fZ')}.json"
+        payload = {
+            "exported_at": exported_at.isoformat(),
+            "personal_memory": list(snapshot["personal_memory"]),
+            "consent_decisions": list(snapshot["consent_decisions"]),
+        }
+        backup_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        return backup_path
 
     def _pop_pending(self, pending_id: str) -> PendingMemoryRequest:
         try:

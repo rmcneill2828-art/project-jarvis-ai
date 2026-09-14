@@ -2,6 +2,7 @@
 
 import logging
 from collections.abc import Mapping
+from pathlib import Path
 from types import MappingProxyType
 
 from jarvis.agents.contracts import AgentRequest
@@ -326,6 +327,17 @@ class GuardianRuntime:
 
         self._require_memory_service()
         return self._memory_service.list_records()
+
+    def backup_memory(self, backup_dir: Path) -> Path:
+        """Write a full point-in-time Personal Memory backup file and return its path.
+
+        See `PersonalMemoryService.export_backup()` (BRD-0001, EBG-0023) for
+        what this does and does not cover - a local export snapshot, not a
+        restore/import capability.
+        """
+
+        self._require_memory_service()
+        return self._memory_service.export_backup(backup_dir)
 
     def _require_memory_service(self) -> None:
         if self._memory_service is None:

@@ -2,7 +2,7 @@
 
 > *"Guardian remembers what it has been trusted to keep, structured so that trust can be revoked as cleanly as it was given."*
 
-**Version:** 1.4
+**Version:** 1.5
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | MDS-0001 |
 | Title | Memory and Data Storage Architecture |
-| Version | 1.4 |
+| Version | 1.5 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -153,7 +153,7 @@ Per [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]]'s decision th
 
 # 9. Relationship to EBG-0023 (Backup, Recovery and Data Protection)
 
-[[JRM-0001_PROJECT_ROADMAP|JRM-0001]] explicitly gates EBG-0023 on this artefact existing first. MDS-0001 does not define backup schedules, recovery procedures, or data-protection operational policy - it defines the data architecture (Sections 6-8) that a future EBG-0023 implementation package would need to back up and recover correctly, in particular the personal/shared-family partitioning (Section 7.2) and per-item consent traceability (Section 7.4) that any backup/recovery mechanism must preserve, not flatten.
+[[JRM-0001_PROJECT_ROADMAP|JRM-0001]] explicitly gated EBG-0023 on this artefact existing first. MDS-0001 does not itself define backup schedules, recovery procedures, or data-protection operational policy - it defines the data architecture (Sections 6-8) that [[BRD-0001_BACKUP_RECOVERY_AND_DATA_PROTECTION_GUIDANCE|BRD-0001]] (created ESR-0057 WP2, resolving EBG-0023) backs up and recovers correctly, in particular the personal/shared-family partitioning (Section 7.2) and per-item consent traceability (Section 7.4) that any backup/recovery mechanism must preserve, not flatten.
 
 ---
 
@@ -164,7 +164,7 @@ MDS-0001 does not:
 - implement Guardian's consent gate or retention-authorisation decision - defined in GAM-0001 Sections 9.1/9.2;
 - implement Guardian's cognitive Memory faculty itself - defined in AAM-0001;
 - implement device bootstrap, the sync protocol, or device registry - defined in [[DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|DRA-0001]] under ADR-0012 (EBG-0046);
-- implement backup, recovery, or data-protection operational policy - reserved for EBG-0023;
+- implement backup, recovery, or data-protection operational policy - reserved for [[BRD-0001_BACKUP_RECOVERY_AND_DATA_PROTECTION_GUIDANCE|BRD-0001]] (EBG-0023);
 - select or evaluate a production-grade hosted database - Section 7.3 names an initial embedded-engine recommendation only, not a final technology decision;
 - implement the AIEMS Knowledge Capability's storage (already implemented separately under EBG-0055);
 - write schema, migration, or runtime persistence code;
@@ -178,7 +178,7 @@ Future implementation packages may use MDS-0001 to guide Memory development. Ant
 
 - an Engineering Implementation Package implementing Session Memory (Section 6.1) and Shared Family Memory (Section 6.3) against Sections 6-7, extending the Personal Memory (Section 6.2) foundation already delivered at ESR-0027 WP1;
 - [[DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|DRA-0001]] (EBG-0046, Draft as of ESR-0056 WP3) - implements the sync/restore protocol Section 8 assumes, pending formal acceptance;
-- EBG-0023 - Backup, Recovery and Data Protection (implements the backup/recovery mechanics Section 9 requires be preserved, once actioned).
+- [[BRD-0001_BACKUP_RECOVERY_AND_DATA_PROTECTION_GUIDANCE|BRD-0001]] (EBG-0023, created ESR-0057 WP2) - defines the backup/recovery mechanics Section 9 requires be preserved, and delivers a first Personal Memory export/backup slice; recovery/restore remains BRD-0001's own future work, not yet delivered.
 
 Any such evolution shall require separately approved engineering packages.
 
@@ -192,7 +192,7 @@ Any such evolution shall require separately approved engineering packages.
 | [[AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE|AAM-0001]] | Defines the Memory faculty this model's taxonomy (Section 6) implements. |
 | [[ADR-0012_DEVICE_INDEPENDENCE_AND_PORTABLE_RESTORE|ADR-0012]] | Decision this model's portability content (Section 8) is bound by, not a redefinition of. |
 | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | Records Memory's current baseline state (Personal tier implemented, Session and Shared Family tiers not yet implemented), confirmed by this artefact's evidence check. |
-| [[RBL-0015_REPOSITORY_BASELINE|RBL-0015]] | Current accepted repository baseline. |
+| [[RBL-0036_REPOSITORY_BASELINE|RBL-0036]] | Current accepted repository baseline, established at ESR-0056 WP7 (esbuild/vite Security Upgrade; DRA-0001 Device Bootstrap and Restore Architecture). |
 
 ---
 
@@ -200,7 +200,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Artefact | Relationship |
 |----------|--------------|
-| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0019 (resolved by this artefact), EBG-0046 and EBG-0023 (sequenced follow-on work referenced in Section 11), EBG-0015 (overlapping/adjacent investigative scope, distinct from this artefact's architecture-definition scope). |
+| [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | EBG-0019 (resolved by this artefact), EBG-0046 (sequenced follow-on work referenced in Section 11) and EBG-0023 (resolved by [[BRD-0001_BACKUP_RECOVERY_AND_DATA_PROTECTION_GUIDANCE|BRD-0001]], ESR-0057 WP2), EBG-0015 (overlapping/adjacent investigative scope, distinct from this artefact's architecture-definition scope). |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Track B sequencing for EBG-0019 and its dependent follow-on items (EBG-0023 explicitly gated on this artefact). |
 | [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] | Section 9.2's pre-drawn boundary this artefact fills. |
 | [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]] | Registers MDS-0001 as a controlled architecture model. |
@@ -211,6 +211,7 @@ Any such evolution shall require separately approved engineering packages.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.5 | 14 September 2026 | Claude Engineering Implementer | ESR-0057 WP2: Section 9/10/11's forward references to EBG-0023 repointed to the real artefact - [[BRD-0001_BACKUP_RECOVERY_AND_DATA_PROTECTION_GUIDANCE|BRD-0001]], created this session, which now defines the backup/recovery/data-protection guidance these sections had been assuming by name only, plus a first Personal Memory export/backup implementation slice. Related Artefacts table updated to match. Whole-Document Staleness Sweep on Edit (PBK-0001): OSE Relationships' RBL-0015 "current accepted repository baseline" reference, stale since ESR-0028, corrected to RBL-0036. No boundary or requirement text changed. |
 | 1.4 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP3: Section 8/10/11's forward references to EBG-0046 repointed to the real artefact - [[DRA-0001_DEVICE_BOOTSTRAP_AND_RESTORE_ARCHITECTURE|DRA-0001]], drafted this session, which now defines the bootstrap/device-registry/sync-protocol mechanics these sections had been assuming by name only. No boundary or requirement text changed - only the forward-reference target. |
 | 1.3 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 second fix round (Codex Low finding on v1.2/commit 52edf8c): Section 5's "Evidence check" still cited `JARVIS_CAPABILITY_READINESS_MATRIX.md` as v2.1 - stale, actual current version is v2.2 (confirmed against the matrix's own Document Control and REG-0001). Corrected. |
 | 1.2 | 20 July 2026 | Claude Engineering Implementer | ESR-0031 WP0 fix round (Codex Medium finding on v1.1/commit 7393a03): Section 11's Future Evolution bullet still said a future package would implement `jarvis/memory/` "currently an empty stub" - reworded to reflect that Personal Memory is already delivered and only Session/Shared-Family remain. Section 12's OSE Relationships row for PCB-0001 still said it "records Memory's current not implemented baseline state" - corrected to describe the Personal/Session/Shared-Family split. |

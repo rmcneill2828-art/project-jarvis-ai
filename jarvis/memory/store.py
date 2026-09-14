@@ -213,6 +213,55 @@ class PersonalMemoryStore:
             for row in rows
         )
 
+    def export_snapshot(self) -> dict[str, tuple[dict[str, str | None], ...]]:
+        """Return every row in both tables as plain, JSON-serialisable dicts.
+
+        EBG-0023 (Backup, Recovery and Data Protection): exports
+        `consent_decisions` alongside `personal_memory`, never the latter
+        alone - flattening to personal-memory content only would discard
+        MDS-0001 Section 7.4's per-item consent traceability, turning a
+        durable audit trail into an orphaned pile of text on restore. This
+        is a full point-in-time export, not a partial or incremental one;
+        BRD-0001 records why that is the deliberate scope for this
+        increment (no incremental/differential backup yet).
+        """
+
+        with self._transaction() as connection:
+            memory_rows = connection.execute(
+                "SELECT id, content, created_at, consent_decision_id FROM personal_memory ORDER BY created_at"
+            ).fetchall()
+            decision_rows = connection.execute(
+                """
+                SELECT id, capability, decision, decided_at, approver_label,
+                       sentinel_outcome, sentinel_category, sentinel_reason
+                FROM consent_decisions ORDER BY decided_at
+                """
+            ).fetchall()
+        return {
+            "personal_memory": tuple(
+                {
+                    "id": row[0],
+                    "content": row[1],
+                    "created_at": row[2],
+                    "consent_decision_id": row[3],
+                }
+                for row in memory_rows
+            ),
+            "consent_decisions": tuple(
+                {
+                    "id": row[0],
+                    "capability": row[1],
+                    "decision": row[2],
+                    "decided_at": row[3],
+                    "approver_label": row[4],
+                    "sentinel_outcome": row[5],
+                    "sentinel_category": row[6],
+                    "sentinel_reason": row[7],
+                }
+                for row in decision_rows
+            ),
+        }
+
     def delete(self, record_id: str) -> None:
         """Delete exactly one Personal Memory record by id.
 
