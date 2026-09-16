@@ -15,7 +15,7 @@ tauri-build = { version = "2", features = [] }
 # ever surfaces on Linux builds, since Windows never exercises this
 # schemars code path at all - found and root-caused via a real WSL
 # Ubuntu build (EIP-ESR0032-002).
-indexmap = { version = "1.9", features = ["std"] }
+indexmap = { version = "2.14", features = ["std"] }
 
 [dependencies]
 tauri = { version = "2", features = [] }
