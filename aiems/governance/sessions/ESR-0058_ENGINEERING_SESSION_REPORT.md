@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.21 |
+| Version | 0.22 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0058 |
 | Date Opened | 16 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 through WP6 complete; awaiting Programme Sponsor direction on further Work Packages or session closure |
+| Closure Status | Open - WP1 through WP7 complete (WP7 Conditional Pass, one finding fixed); WP8 baseline determination pending |
 
 ---
 
@@ -182,6 +182,29 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP4 | Home Assistant State Query Agent | Complete (EIP-ESR0058-003 v1.0) - committed `9f8923f`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP5 | Playwright E2E Reliability (EBG-0129) | Complete (EIP-ESR0058-004 v1.0) - committed `b61f984`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP6 | Memory Management UXP Surface (EBG-0131) | Complete (EIP-ESR0058-005 v1.0) - committed `9a0737b`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
+| WP7 | Session-wide Independent Repository Verification | Complete - Conditional Pass via genuine GitHub Copilot CLI invocation (one real finding, fixed) |
+| WP8 | Session-wide Repository Baseline Determination | Pending Programme Sponsor determination |
+
+---
+
+# 7A. Session-Wide WP7 - Independent Repository Verification
+
+Following WP6's closure, the Programme Sponsor directed proceeding to session-wide Independent Repository Verification. Unlike ESR-0057's own WP6 (a disclosed self-verification substitution, no independent reviewer available), a genuine GitHub Copilot CLI review was available and used - the first session-wide (not per-Work-Package) review performed under the new standing arrangement.
+
+Routed through the real bridge (`init`/`submit-to-review` for `ESR-0058`/`WP7`) against the full session range `c8999c8..HEAD` (`c8999c8`, ESR-0057's own closing commit):
+
+* `git log --oneline c8999c8..HEAD` - confirmed exactly 10 commits, two per Work Package (implementation, then closure/post-commit-review record) for WP1/WP2 (combined), WP3, WP4, WP5, WP6.
+* `git diff --stat c8999c8..HEAD` - confirmed 36 changed files, 2115 insertions/80 deletions, coherent with the session's own narrative.
+* `python -m pytest jarvis/tests scripts/tests -q` - 587 passed, 1 skipped. `python scripts/validate_repository.py` - 0 errors, 333 warnings. Both re-run fresh by the reviewer independently, matching.
+* Confirmed via `git diff c8999c8..HEAD -- '**/sentinel/policy.py'` - zero lines changed; the `LOCAL_AGENT_ACTION` boundary was untouched all session, consistent with every Work Package's own disclosure.
+
+**Real finding, disclosed rather than hidden**: EBR-0001's own EBG-0126 row was still marked "Candidate Backlog" with no closing note, despite the underlying work (GitHub Copilot CLI re-appointed as permanent Engineering Reviewer, WP1/WP2) being genuinely done and already reflected in COC-0001 v1.27. This was a real governance-register inconsistency the reviewer caught independently, not something disclosed in the submission - **fixed immediately**: EBR-0001's EBG-0126 row updated to Completed with a "Resolved at ESR-0058 WP1/WP2" note, its full original history retained verbatim.
+
+The reviewer also disclosed its own coverage gap rather than silently working around it: `cargo`/`npm` returned permission-denied in its own sandbox, so `cargo build`/`test`/`clippy`/`fmt` and `npm run build`/`npx playwright test` were not independently re-run at this session-wide step (they were independently re-run by the reviewer at every individual Work Package's own design/post-commit review this session, including WP6's, immediately prior) - the reviewer instead read the actual diffs for the affected files and judged them coherent and well-scoped.
+
+**Verdict: Conditional Pass** - the one real finding (EBG-0126's register row) fixed before this Work Package's own closure; every other check independently confirmed accurate.
+
+Advisory baseline assessment (from the reviewer's own independent judgement): **Establish** a new RBL - a governance milestone (Engineering Reviewer succession, itself verified working throughout this very review), two real product capabilities (Home Assistant read-only agent, Memory Management backup/restore UXP), and a genuine test-infrastructure reliability fix, matching the Establish threshold applied at prior delivered-capability sessions (RBL-0035 through RBL-0037). The Programme Sponsor makes the actual WP8 determination.
 
 ---
 
@@ -189,6 +212,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.22 | 16 September 2026 | Claude Engineering Implementer | WP7 (session-wide independent verification) complete: Conditional Pass via genuine GitHub Copilot CLI invocation over the full c8999c8..HEAD range (10 commits, 36 files). One real finding (EBR-0001's EBG-0126 row still Candidate Backlog despite the work being done) caught by the reviewer and fixed immediately. Reviewer's advisory: Establish a new baseline. WP8 baseline determination pending Programme Sponsor decision. |
 | 0.21 | 16 September 2026 | Claude Engineering Implementer | WP6 closed: committed `9a0737b`, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.20 | 16 September 2026 | Claude Engineering Implementer | WP6 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-005 synced to v1.0. EBG-0131 closed Complete. Pending commit/push. |
 | 0.19 | 16 September 2026 | Claude Engineering Implementer | WP6 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. Reviewer independently ran cargo build/test/clippy/fmt, npm run build, and npx playwright test (23/23) itself. Awaiting Programme Sponsor approval. |
