@@ -2,7 +2,7 @@
 
 **Status:** Approved
 
-**Version:** 1.26
+**Version:** 1.27
 
 ---
 
@@ -35,7 +35,7 @@ This document complements AIEMS. It does not replace engineering governance or r
 * Performs WP6 Independent GitHub Verification after Engineering Implementer repository push
 * Does not modify the repository directly
 
-This role has been filled historically by ChatGPT and the AIEMS Engineering Agent. The role definition, not the specific AI product, is authoritative. **ChatGPT is currently the permanent holder of this role**, per the [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment made by the Programme Sponsor on 10 July 2026, replacing the trial's four-session alternating rotation.
+This role has been filled historically by ChatGPT/Codex and the AIEMS Engineering Agent. The role definition, not the specific AI product, is authoritative. ChatGPT/Codex held this role permanently from the [[EE-0001_INDEPENDENT_AI_PEER_REVIEW_TRIAL|EE-0001]] Section 7 appointment (10 July 2026, replacing the trial's four-session alternating rotation) until it was confirmed retired on cost grounds at ESR-0057 WP1 (14 September 2026) - not a temporary outage, a deliberate discontinuation of the underlying plan. **GitHub Copilot CLI is currently the permanent holder of this role**, per the Programme Sponsor's re-appointment decision at ESR-0058 WP2 (16 September 2026, resolving [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0126), following a genuine scoped non-interactive invocation confirmed working without the harness-classifier block a same-session Antigravity CLI attempt had hit.
 
 Where the Engineering Implementer's operating environment cannot practically support incremental repository documentation, the Programme Sponsor may direct the Engineering Reviewer to maintain the Engineering Session Report on the Implementer's behalf - see Operating Rule 51.
 
@@ -287,6 +287,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.27 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP2: re-appointed the Engineering Reviewer role - ChatGPT/Codex confirmed retired on cost grounds at ESR-0057 WP1, GitHub Copilot CLI appointed as the new permanent holder per Programme Sponsor decision, resolving EBG-0126. `scripts/aiems_bridge.py` role-locking generalised from hardcoded "codex" to role-based "reviewer" identity in the same Work Package. |
 | 1.26 | 14 September 2026 | Claude Engineering Implementer | ESR-0057 WP7: corrected the RBL-0036 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0037, established at ESR-0057 WP7 (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment), superseding RBL-0036. |
 | 1.25 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP7: corrected the RBL-0035 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0036, established at ESR-0056 WP7 (esbuild/vite Security Upgrade; DRA-0001 Device Bootstrap and Restore Architecture), superseding RBL-0035. |
 | 1.24 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP7: corrected the RBL-0034 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0035, established at ESR-0055 WP7 (GIA Phase 3b/3c: Repository Health and Register State Observability, completing EBG-0083 Phase 3 in full), superseding RBL-0034. |

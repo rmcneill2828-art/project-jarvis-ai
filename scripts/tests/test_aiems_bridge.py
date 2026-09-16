@@ -1,9 +1,9 @@
 """Tests for scripts/aiems_bridge.py (EBG-0057, EIP-ESR0025-001; sponsor
 approval moved to a remote service per ADR-0022/EIP-ESR0030-001).
 
-No test invokes a real claude/codex CLI process or the real automated test
-suite recursively - capture_repository_ref, capture_evidence and
-run_preflight are monkeypatched to fast, deterministic fakes throughout.
+No test invokes a real claude/reviewer-tool CLI process or the real
+automated test suite recursively - capture_repository_ref, capture_evidence
+and run_preflight are monkeypatched to fast, deterministic fakes throughout.
 fetch_latest_decision is monkeypatched away for cmd_submit_response's own
 tests (below), so no test starts a real Sponsor Approval Service for those
 (that live integration is covered by test_sponsor_approval_service.py
@@ -82,7 +82,7 @@ def test_handover_render_parse_round_trip():
         work_package="WP1",
         type="submit-to-review",
         sender="claude",
-        recipient="codex",
+        recipient="reviewer",
         repository_ref="deadbeef",
         files_in_scope=("a.py", "b.py"),
         programme_sponsor_authorisation=None,
@@ -125,7 +125,7 @@ def test_init_creates_layout_and_empty_transcript(tmp_path):
     cmd_init(tmp_path, "ESR-0025", "WP1")
 
     root = exchange_root(tmp_path)
-    for sub in ("claude/inbox", "claude/outbox", "codex/inbox", "codex/outbox", "transcript", ".locks"):
+    for sub in ("claude/inbox", "claude/outbox", "reviewer/inbox", "reviewer/outbox", "transcript", ".locks"):
         assert (root / sub).is_dir()
     assert (root / "transcript" / "ESR-0025-WP1.md").exists()
 
@@ -147,7 +147,7 @@ def test_init_restricts_exchange_root_to_owner_on_posix(tmp_path):
 
     root = exchange_root(tmp_path)
     assert stat.S_IMODE(root.stat().st_mode) == 0o700
-    for sub in ("claude/inbox", "claude/outbox", "codex/inbox", "codex/outbox", "transcript", ".locks"):
+    for sub in ("claude/inbox", "claude/outbox", "reviewer/inbox", "reviewer/outbox", "transcript", ".locks"):
         assert stat.S_IMODE((root / sub).stat().st_mode) == 0o700
 
 
@@ -391,22 +391,23 @@ def test_work_package_lock_prevents_concurrent_reentry(tmp_path, _fake_head):
 def test_preflight_failure_blocks_submit_to_review_before_any_write(tmp_path, monkeypatch, _fake_head):
     monkeypatch.setattr(
         "scripts.aiems_bridge.run_preflight",
-        lambda: PreflightResult(ok=False, details="codex: NOT FOUND on PATH"),
+        lambda: PreflightResult(ok=False, details="reviewer: NOT FOUND on PATH"),
     )
     cmd_init(tmp_path, "ESR-0025", "WP1")
 
     with pytest.raises(BridgeError, match="Preflight failed"):
         cmd_submit_to_review(tmp_path, "ESR-0025", "WP1", ["a.py"], "please review")
 
-    assert not any((exchange_root(tmp_path) / "codex" / "inbox").glob("*"))
+    assert not any((exchange_root(tmp_path) / "reviewer" / "inbox").glob("*"))
 
 
 def test_run_preflight_invokes_subprocess_with_shell_true_on_windows(monkeypatch):
-    """On Windows, npm installs global CLI tools (claude, codex) as .CMD shim
-    files - subprocess.run([...]) without shell=True raises FileNotFoundError
-    (WinError 2) even when shutil.which finds the tool, since CreateProcess
-    cannot launch a .CMD file directly. Confirmed live: preflight crashed with
-    both tools genuinely installed and on PATH until shell=True was added."""
+    """On Windows, npm installs global CLI tools (claude, the reviewer tool)
+    as .CMD shim files - subprocess.run([...]) without shell=True raises
+    FileNotFoundError (WinError 2) even when shutil.which finds the tool,
+    since CreateProcess cannot launch a .CMD file directly. Confirmed live:
+    preflight crashed with both tools genuinely installed and on PATH until
+    shell=True was added."""
     import sys as _sys
 
     import scripts.aiems_bridge as bridge
@@ -437,8 +438,41 @@ def test_run_preflight_invokes_subprocess_with_shell_true_on_windows(monkeypatch
     expected_shell = _sys.platform == "win32"
     assert all(shell == expected_shell for _, shell in calls)
     assert ["claude", "--version"] in [args for args, _ in calls]
-    assert ["codex", "--version"] in [args for args, _ in calls]
-    assert ["codex", "login", "status"] in [args for args, _ in calls]
+    assert [bridge.DEFAULT_REVIEWER_TOOL, "--version"] in [args for args, _ in calls]
+    # EBG-0126/ESR-0058 WP2: the Codex-specific "login status" one-liner is
+    # deliberately gone - it does not generalise across reviewer tools, and
+    # no equivalent check is run for "claude" either.
+    assert not any(args[1:2] == ["login"] for args, _ in calls)
+
+
+def test_run_preflight_reviewer_tool_configurable_via_env_var(monkeypatch):
+    """AIEMS_REVIEWER_TOOL overrides which binary preflight checks for,
+    since the Engineering Reviewer's holder has already changed once
+    (Codex to GitHub Copilot CLI, EBG-0126) and may change again."""
+    import scripts.aiems_bridge as bridge
+
+    monkeypatch.setenv(bridge.REVIEWER_TOOL_ENV_VAR, "some-other-reviewer-cli")
+    checked_tools: list[str] = []
+
+    def _fake_which(tool: str) -> str:
+        checked_tools.append(tool)
+        return f"/fake/{tool}"
+
+    def _fake_run(args, **kwargs):
+        class _Result:
+            stdout = "ok"
+            stderr = ""
+
+        return _Result()
+
+    monkeypatch.setattr(bridge.shutil, "which", _fake_which)
+    monkeypatch.setattr(bridge.subprocess, "run", _fake_run)
+
+    result = _real_run_preflight()
+
+    assert result.ok is True
+    assert "some-other-reviewer-cli" in checked_tools
+    assert "copilot" not in checked_tools
 
 
 # --- fetch_latest_decision's own JSON handling, mocking only urlopen ---

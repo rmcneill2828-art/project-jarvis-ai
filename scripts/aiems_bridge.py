@@ -1,16 +1,25 @@
 """AIEMS Exchange Bridge - file-based, command-driven handover tool between
-the Engineering Implementer (Claude) and Engineering Reviewer (Codex) roles.
+the Engineering Implementer (Claude) and Engineering Reviewer roles.
+
+The Engineering Reviewer identity is role-based, not vendor-named (EBG-0126,
+ESR-0058 WP2): the `sender`/`recipient` fields and exchange directories say
+"reviewer", never a specific tool name, so which CLI actually holds the role
+can change (Codex, retired on cost grounds at ESR-0057; GitHub Copilot CLI,
+the current holder) without every historical transcript becoming misleading.
+`AIEMS_REVIEWER_TOOL` (default `copilot`) names the actual CLI binary
+`run_preflight` checks for.
 
 Implements EBG-0057 per EIP-ESR0025-001. Three properties are enforced in
 code, not only by convention (Section 9 of the EIP; the third added after an
 Engineering Reviewer post-implementation finding):
 
-1. `return-findings` (Codex's only command) has no code path capable of
-   writing outside `.aiems-exchange/` - it takes no file-path argument at
-   all, only session/work-package identifiers and a message. Those
-   identifiers are themselves validated (`_validate_identifier`) before any
-   path is built from them, closing a path-traversal gap a raw
-   `session`/`work_package` value could otherwise open.
+1. `return-findings` (the Engineering Reviewer's only command) has no code
+   path capable of writing outside `.aiems-exchange/` - it takes no
+   file-path argument at all, only session/work-package identifiers and a
+   message. Those identifiers are themselves validated
+   (`_validate_identifier`) before any path is built from them, closing a
+   path-traversal gap a raw `session`/`work_package` value could otherwise
+   open.
 2. `submit-response` (the only command that represents "proceed with the
    approved change") refuses to run - before any file write - unless the
    Sponsor Approval Service's latest decision for this Work Package approves,
@@ -46,6 +55,13 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 EXCHANGE_DIRNAME = ".aiems-exchange"
+
+# The Engineering Reviewer role's identity in transcripts/directories is
+# always "reviewer" (role-based, not vendor-named); this names the actual
+# CLI binary run_preflight checks for - configurable since the role's
+# holder has already changed once (EBG-0126).
+REVIEWER_TOOL_ENV_VAR = "AIEMS_REVIEWER_TOOL"
+DEFAULT_REVIEWER_TOOL = "copilot"
 
 # session/work_package feed directly into transcript and lock file paths
 # (_wp_key below). Restricting them to this shape closes path-traversal at
@@ -173,7 +189,7 @@ def ensure_layout(repo_root: Path) -> None:
     root = exchange_root(repo_root)
     root.mkdir(parents=True, exist_ok=True)
     _restrict_to_owner(root)
-    for sub in ("claude/inbox", "claude/outbox", "codex/inbox", "codex/outbox", "transcript", ".locks"):
+    for sub in ("claude/inbox", "claude/outbox", "reviewer/inbox", "reviewer/outbox", "transcript", ".locks"):
         path = root / sub
         path.mkdir(parents=True, exist_ok=True)
         _restrict_to_owner(path)
@@ -349,8 +365,8 @@ class EvidenceResult:
 def capture_evidence(repo_root: Path) -> EvidenceResult:
     """Run pytest and validate_repository.py and attach their raw output,
     verbatim, not interpreted beyond a pass/fail exit-code summary - the
-    evidence itself is for a human (or Codex) to read, per the architecture's
-    own design, not for this function to judge line-by-line. The leading
+    evidence itself is for a human (or the Engineering Reviewer) to read, per
+    the architecture's own design, not for this function to judge line-by-line. The leading
     VALIDATION: PASSED/FAILED marker exists so a failing run cannot be
     mistaken for a passing one at a glance (Engineering Reviewer finding,
     addressed) - callers decide what to do with `passed`; submit-to-review
@@ -388,14 +404,16 @@ class PreflightResult:
 
 
 def run_preflight() -> PreflightResult:
-    # On Windows, npm installs global CLI tools (claude, codex) as .CMD shim
-    # files, which subprocess can only launch via the shell - without
-    # shell=True here, subprocess.run raises FileNotFoundError (WinError 2)
-    # even when the tool is genuinely present and shutil.which finds it.
+    # On Windows, npm installs global CLI tools (claude, the reviewer tool)
+    # as .CMD shim files, which subprocess can only launch via the shell -
+    # without shell=True here, subprocess.run raises FileNotFoundError
+    # (WinError 2) even when the tool is genuinely present and shutil.which
+    # finds it.
     use_shell = sys.platform == "win32"
+    reviewer_tool = os.environ.get(REVIEWER_TOOL_ENV_VAR) or DEFAULT_REVIEWER_TOOL
     lines: list[str] = []
     ok = True
-    for tool in ("claude", "codex"):
+    for tool in ("claude", reviewer_tool):
         path = shutil.which(tool)
         if path is None:
             ok = False
@@ -406,12 +424,11 @@ def run_preflight() -> PreflightResult:
         )
         lines.append(f"{tool}: {path} ({(version.stdout or version.stderr).strip()})")
 
-    if shutil.which("codex") is not None:
-        status = subprocess.run(
-            ["codex", "login", "status"], capture_output=True, text=True, shell=use_shell, check=False
-        )
-        lines.append(f"codex login status: {(status.stdout or status.stderr).strip()}")
-
+    # Deliberately no reviewer-tool-specific login/auth-status check here
+    # (disclosed simplification, EBG-0126/ESR-0058 WP2): Codex's own
+    # "codex login status" one-liner does not generalise across reviewer
+    # tools, and "claude" gets no equivalent check either - presence plus a
+    # working --version call is the bar both identities are held to.
     return PreflightResult(ok=ok, details="\n".join(lines))
 
 
@@ -436,7 +453,8 @@ def cmd_submit_to_review(
     # Not gated on evidence.passed: submitting known-broken work-in-progress
     # for review is legitimate. The VALIDATION: PASSED/FAILED marker inside
     # the evidence text (capture_evidence) makes a failing run unmissable to
-    # Codex and the transcript reader, rather than silently blocking review.
+    # the Engineering Reviewer and the transcript reader, rather than
+    # silently blocking review.
     evidence = capture_evidence(repo_root)
 
     with work_package_lock(repo_root, session, work_package):
@@ -445,7 +463,7 @@ def cmd_submit_to_review(
             work_package=work_package,
             type="submit-to-review",
             sender="claude",
-            recipient="codex",
+            recipient="reviewer",
             repository_ref=capture_repository_ref(repo_root),
             files_in_scope=tuple(files),
             programme_sponsor_authorisation=None,
@@ -454,15 +472,15 @@ def cmd_submit_to_review(
             evidence=evidence.text,
         )
         ensure_layout(repo_root)
-        _write_handover_file(exchange_root(repo_root) / "codex" / "inbox", handover)
+        _write_handover_file(exchange_root(repo_root) / "reviewer" / "inbox", handover)
         _write_handover_file(exchange_root(repo_root) / "claude" / "outbox", handover)
         append_transcript(repo_root, handover)
     return handover
 
 
 def cmd_return_findings(repo_root: Path, session: str, work_package: str, message: str) -> Handover:
-    """Codex's only command. Takes no file-path argument - structurally
-    incapable of writing anything outside .aiems-exchange/."""
+    """The Engineering Reviewer's only command. Takes no file-path argument -
+    structurally incapable of writing anything outside .aiems-exchange/."""
 
     preflight = run_preflight()
     if not preflight.ok:
@@ -473,7 +491,7 @@ def cmd_return_findings(repo_root: Path, session: str, work_package: str, messag
             session=session,
             work_package=work_package,
             type="return-findings",
-            sender="codex",
+            sender="reviewer",
             recipient="claude",
             repository_ref=capture_repository_ref(repo_root),
             files_in_scope=(),
@@ -483,7 +501,7 @@ def cmd_return_findings(repo_root: Path, session: str, work_package: str, messag
         )
         ensure_layout(repo_root)
         _write_handover_file(exchange_root(repo_root) / "claude" / "inbox", handover)
-        _write_handover_file(exchange_root(repo_root) / "codex" / "outbox", handover)
+        _write_handover_file(exchange_root(repo_root) / "reviewer" / "outbox", handover)
         append_transcript(repo_root, handover)
     return handover
 
@@ -560,13 +578,13 @@ def _build_parser() -> argparse.ArgumentParser:
     p_init.add_argument("session")
     p_init.add_argument("work_package")
 
-    p_submit = sub.add_parser("submit-to-review", help="Claude submits a Work Package to Codex for review.")
+    p_submit = sub.add_parser("submit-to-review", help="Claude submits a Work Package to the Engineering Reviewer for review.")
     p_submit.add_argument("session")
     p_submit.add_argument("work_package")
     p_submit.add_argument("--files", default="", help="Comma-separated files in scope.")
     p_submit.add_argument("--message", required=True)
 
-    p_findings = sub.add_parser("return-findings", help="Codex returns findings. Never writes outside .aiems-exchange/.")
+    p_findings = sub.add_parser("return-findings", help="The Engineering Reviewer returns findings. Never writes outside .aiems-exchange/.")
     p_findings.add_argument("session")
     p_findings.add_argument("work_package")
     p_findings.add_argument("--message", required=True)
