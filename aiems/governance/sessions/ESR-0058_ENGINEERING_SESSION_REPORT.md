@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.13 |
+| Version | 0.16 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0058 |
 | Date Opened | 16 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1/WP2 complete; awaiting Programme Sponsor direction on further Work Packages or session closure |
+| Closure Status | Open - WP1 through WP4 complete; WP5 drafted, awaiting review and approval |
 
 ---
 
@@ -113,6 +113,21 @@ New tests: 7 in `test_agents.py` (client constructor validation, Bearer-header/U
 
 **Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit, complete 9-file scope from the start - **Pass**, independently verified against the transcript (`repository_ref: 9f8923f...` matching exactly, single clean entry). Confirmed the exact 9-file changed-set, no unrelated path touched, re-ran `pytest` (583 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) fresh against the committed state, both matching. **WP4 closed.**
 
+**WP5 - Playwright E2E Reliability (Drafted):** Programme Sponsor directed that the GitHub Copilot CLI gap analysis (delivered to the Claude bridge inbox at the Programme Sponsor's own request, ESR-0058's own work deliberately excluded for an unbiased read) be registered as backlog items, then selected EBG-0129 (Playwright E2E suite reliability under parallel execution) as WP5 - the first P0 the analysis surfaced. EBG-0129 through EBG-0134 registered in EBR-0001 (Candidate Backlog). [[EIP-ESR0058-004_PLAYWRIGHT_E2E_RELIABILITY|EIP-ESR0058-004]] drafted (v0.1):
+
+* Reproduced the analysis's own finding live: a clean parallel `npx playwright test` run produced 12 failed/6 passed; a single-worker sequential run produced 17 passed/1 failed, the one failure an initial `page.goto()` timeout rather than an assertion failure - a cold-start race, not a product defect.
+* **Tried the analysis's literal recommendation first, and reverted it, disclosed rather than silently dropped**: switched `webServer` to a production build+preview (`vite build && vite preview`, new `e2e:serve` script). This solved the original race, but broke `tests/e2e/animationScheduler.spec.js`'s three tests - they deliberately dynamic-import the raw `/src/animationScheduler.js` source path in-browser to test that module in isolation (EBG-0081 Question 1), and a production build does not serve raw `/src/*` paths (bundled into hashed `dist/assets/` files instead). Traded one real, reproduced failure for a different one, so reverted; `e2e:serve` removed from `package.json` again.
+* **Actual fix**: kept the Vite dev server (`npm run dev`) as `webServer.command`, and added `tests/e2e/global-setup.js` - a Playwright `globalSetup` hook that launches a real headless browser, navigates once to the app root, and closes, before any parallel worker starts. This forces Vite to pre-transform and cache the app's module graph (which already includes `animationScheduler.js`, via `GuardianOrbGraph.jsx`'s own ordinary import of it) exactly once, sequentially, removing the thundering-herd cold-start contention without changing what gets served or how the tests themselves work.
+* Kept the previously-added `use.actionTimeout`/`use.navigationTimeout` (15s each) as an independent safety margin; reverted `webServer.timeout` to its original 30s (the 120s figure only made sense for the reverted build-inside-webServer-command approach).
+
+**Real-world verification performed directly** (not just claimed): `npx playwright test` run three consecutive times at default (`fullyParallel: true`) parallelism after the fix - **18/18 passed, all three runs**, matching the original suite size with no `workers: 1` workaround. Confirmed via `netstat` that no dev-server process was left listening on port 1420 after the runs (this project's own prior leaked-port incident). Full Python suite re-run clean (583 passed, 1 skipped), `validate_repository.py` re-run clean (0 errors, 332 warnings, unchanged).
+
+**Disclosed process note** (same pattern as every prior Work Package this session): drafted and implemented directly against the working tree before Programme Sponsor review of this specific content.
+
+**Design review**: routed through the real bridge (`init`/`submit-to-review` for `ESR-0058`/`WP5`, complete 6-file `files_in_scope`) and reviewed by GitHub Copilot CLI. **Verdict: Pass**, single clean `return-findings` entry, independently verified against the transcript (`repository_ref: 3871e44...` matching HEAD exactly, since WP5 has not yet been committed). The reviewer independently built the frontend itself and confirmed `dist/` contains no `/src/` path and no `'/src/'` substring in the bundled JS - directly proving the rejected build+preview alternative's claimed incompatibility, not merely accepting the narrative; confirmed `global-setup.js`'s ordering against Playwright's own `globalSetup` semantics; ran `npx playwright test` itself twice at default parallelism (18/18 both times); confirmed `webServer.timeout` at 30s is unchanged from the pre-session baseline; confirmed the exact 6-file scope with nothing extra or missing. Re-ran `pytest` (583 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) independently, both matching.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0058-004_PLAYWRIGHT_E2E_RELIABILITY|EIP-ESR0058-004]] synced to v1.0 (Approved - implemented). `submit-response` succeeded against the real Sponsor Approval Service. EBG-0129 closed Complete in EBR-0001.
+
 ---
 
 # 4. Engineering Authority
@@ -139,6 +154,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP2 | Engineering Reviewer Re-appointment | Complete (EIP-ESR0058-001 v1.0) - committed `ab57938`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation (first under the new standing arrangement) |
 | WP3 | BRD-0001 Recovery Implementation | Complete (EIP-ESR0058-002 v1.0) - committed `0a409fd`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP4 | Home Assistant State Query Agent | Complete (EIP-ESR0058-003 v1.0) - committed `9f8923f`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
+| WP5 | Playwright E2E Reliability (EBG-0129) | Complete (EIP-ESR0058-004 v1.0) - build+preview approach tried and reverted (disclosed), global-setup warm-up fix implemented; design review Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved. Pending commit/push |
 
 ---
 
@@ -146,6 +162,9 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.16 | 16 September 2026 | Claude Engineering Implementer | WP5 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-004 synced to v1.0. submit-response succeeded. EBG-0129 closed Complete. Pending commit/push. |
+| 0.15 | 16 September 2026 | Claude Engineering Implementer | WP5 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. Reviewer independently built the frontend and confirmed dist/ output has no /src/ path, ran npx playwright test twice itself (18/18 both times). Awaiting Programme Sponsor approval. |
+| 0.14 | 16 September 2026 | Claude Engineering Implementer | WP5 drafted: EBG-0129 through EBG-0134 registered in EBR-0001 from the Programme Sponsor-requested GitHub Copilot CLI gap analysis; EBG-0129 (Playwright E2E reliability) selected as WP5 per EIP-ESR0058-004 v0.1. Build+preview approach tried and reverted (broke animationScheduler.spec.js's raw-source-import design, disclosed); global-setup warm-up fix implemented instead. Verified via 3 consecutive `npx playwright test` runs at default parallelism (18/18 each), full Python suite (583 passed/1 skipped) and validate_repository.py (0 errors) clean. Not yet reviewed, approved or committed. |
 | 0.13 | 16 September 2026 | Claude Engineering Implementer | WP4 closed: committed `9f8923f`, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.12 | 16 September 2026 | Claude Engineering Implementer | WP4 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-003 synced to v1.0. Pending commit/push through submit-response. |
 | 0.11 | 16 September 2026 | Claude Engineering Implementer | WP4 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass, traced into sentinel/policy.py's own classify logic. Awaiting Programme Sponsor approval. |
