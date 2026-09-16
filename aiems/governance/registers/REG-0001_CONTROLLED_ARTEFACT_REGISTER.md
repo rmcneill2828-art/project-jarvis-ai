@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.560
+**Version:** 3.563
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.560 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.563 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.185 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.186 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -173,7 +173,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GAM-0001 | Model | Guardian Authority and Boundary Model | 1.5 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.5 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | DRA-0001 | Model | Device Bootstrap and Restore Architecture | 1.0 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0012 | `aiems/models/` |
-| BRD-0001 | Model | Backup, Recovery and Data Protection Guidance | 1.0 | Draft | Programme Sponsor & Chief Engineering Advisor | MDS-0001 | `aiems/models/` |
+| BRD-0001 | Model | Backup, Recovery and Data Protection Guidance | 1.1 | Draft | Programme Sponsor & Chief Engineering Advisor | MDS-0001 | `aiems/models/` |
 | UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.5 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
 | JRM-0001 | Roadmap | Project Roadmap | 1.28 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
@@ -313,8 +313,9 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0055 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0056 | Engineering Session Report | Engineering Session Report | 1.8 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0057 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0058 | Engineering Session Report | Engineering Session Report | 0.5 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0058 | Engineering Session Report | Engineering Session Report | 0.8 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0058-001 | Engineering Implementation Package | Engineering Reviewer Re-appointment | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0058-002 | Engineering Implementation Package | BRD-0001 Recovery Implementation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -429,6 +430,9 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.563 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP3 approved: synced EIP-ESR0058-002 (0.2 to 1.0, Approved - implemented) and ESR-0058 (0.7 to 0.8) rows following Programme Sponsor approval via direct chat instruction ("Approved"). Pending commit/push through submit-response and the real Sponsor Approval Service. |
+| 3.562 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP3: synced EIP-ESR0058-002 row (0.1 to 0.2) - design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge, Pass. First genuine product-code review under the new arrangement; caught a real (benign) files_in_scope omission. Not yet approved or implemented. |
+| 3.561 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP3 draft: registered [[EIP-ESR0058-002_BRD-0001_RECOVERY_IMPLEMENTATION|EIP-ESR0058-002]] (0.1, Draft) - Personal Memory recovery/restore implemented and tested (574 passed/1 skipped). Synced BRD-0001 (1.0 to 1.1) and EBR-0001 (1.185 to 1.186, EBG-0023 recovery delivery noted) rows. Not yet reviewed, approved or implemented/committed. |
 | 3.560 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP1/WP2 closed: synced ESR-0058 row (0.4 to 0.5) - committed `ab57938`, pushed, genuine post-commit review Pass via GitHub Copilot CLI (first under the new standing arrangement). |
 | 3.559 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP2 approved: synced EIP-ESR0058-001 (0.2 to 1.0, Approved - implemented) and ESR-0058 (0.3 to 0.4) rows following Programme Sponsor approval via direct chat instruction ("Approved"). Pending commit/push through submit-response and the real Sponsor Approval Service. |
 | 3.558 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP2: synced EIP-ESR0058-001 row (0.1 to 0.2) - design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge, Pass. First genuine end-to-end use of the renamed `reviewer` identity - Copilot CLI's own `return-findings` call verified landed for real. Not yet approved or implemented. |

@@ -262,6 +262,107 @@ class PersonalMemoryStore:
             ),
         }
 
+    def import_snapshot(self, snapshot: dict, *, confirm_overwrite: bool = False) -> int:
+        """Restore both tables from a snapshot dict shaped like
+        `export_snapshot()`'s return value (BRD-0001 Section 6, EBG-0023).
+
+        Implements BRD-0001 Section 6's three minimum requirements:
+
+        1. Validates the snapshot's structure before writing anything - a
+           malformed or truncated backup fails closed (raises ValueError),
+           never partially imports.
+        2. Inserts `consent_decisions` rows before their dependent
+           `personal_memory` rows, in the same transaction, mirroring
+           `add()`'s own insert-order constraint.
+        3. Refuses to proceed if the store is already non-empty unless
+           `confirm_overwrite=True` is passed explicitly - recovery is
+           destructive and must never run silently.
+
+        Restore is wipe-then-replace, not merge: a non-empty store's
+        existing rows are deleted before the snapshot is written, never
+        combined with it. Returns the number of `personal_memory` records
+        restored.
+        """
+
+        if not isinstance(snapshot, dict) or "personal_memory" not in snapshot or "consent_decisions" not in snapshot:
+            msg = "Invalid backup snapshot: expected a dict with 'personal_memory' and 'consent_decisions' keys."
+            raise ValueError(msg)
+
+        memory_rows = snapshot["personal_memory"]
+        decision_rows = snapshot["consent_decisions"]
+        # Accepts both: a JSON-decoded backup file yields lists, while
+        # export_snapshot()'s own direct return value (its own tuples,
+        # deliberately immutable) is also a valid snapshot - both call
+        # paths are genuine, not just the file round trip.
+        if not isinstance(memory_rows, list | tuple) or not isinstance(decision_rows, list | tuple):
+            msg = "Invalid backup snapshot: 'personal_memory' and 'consent_decisions' must both be lists."
+            raise ValueError(msg)
+
+        decision_ids: set[str] = set()
+        for row in decision_rows:
+            required = {"id", "capability", "decision", "decided_at", "approver_label", "sentinel_outcome", "sentinel_reason"}
+            if not isinstance(row, dict) or not required.issubset(row):
+                msg = f"Invalid backup snapshot: consent_decisions row missing required fields: {row!r}"
+                raise ValueError(msg)
+            decision_ids.add(row["id"])
+
+        for row in memory_rows:
+            required = {"id", "content", "created_at", "consent_decision_id"}
+            if not isinstance(row, dict) or not required.issubset(row):
+                msg = f"Invalid backup snapshot: personal_memory row missing required fields: {row!r}"
+                raise ValueError(msg)
+            if row["consent_decision_id"] not in decision_ids:
+                msg = (
+                    f"Invalid backup snapshot: personal_memory row {row['id']!r} references "
+                    f"consent_decision_id {row['consent_decision_id']!r}, not present among the "
+                    "snapshot's own consent_decisions - refusing a partial/inconsistent import."
+                )
+                raise ValueError(msg)
+
+        with self._transaction() as connection:
+            existing = connection.execute("SELECT COUNT(*) FROM personal_memory").fetchone()[0]
+            existing += connection.execute("SELECT COUNT(*) FROM consent_decisions").fetchone()[0]
+            if existing and not confirm_overwrite:
+                msg = (
+                    "Store is not empty: restoring would overwrite existing data. "
+                    "Pass confirm_overwrite=True to proceed - recovery never runs silently."
+                )
+                raise ValueError(msg)
+
+            if existing:
+                connection.execute("DELETE FROM personal_memory")
+                connection.execute("DELETE FROM consent_decisions")
+
+            for row in decision_rows:
+                connection.execute(
+                    """
+                    INSERT INTO consent_decisions
+                        (id, capability, decision, decided_at, approver_label,
+                         sentinel_outcome, sentinel_category, sentinel_reason)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        row["id"],
+                        row["capability"],
+                        row["decision"],
+                        row["decided_at"],
+                        row["approver_label"],
+                        row["sentinel_outcome"],
+                        row.get("sentinel_category"),
+                        row["sentinel_reason"],
+                    ),
+                )
+            for row in memory_rows:
+                connection.execute(
+                    """
+                    INSERT INTO personal_memory (id, content, created_at, consent_decision_id)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (row["id"], row["content"], row["created_at"], row["consent_decision_id"]),
+                )
+
+        return len(memory_rows)
+
     def delete(self, record_id: str) -> None:
         """Delete exactly one Personal Memory record by id.
 

@@ -524,6 +524,20 @@ def test_guardian_runtime_memory_methods_delegate_to_connected_service(tmp_path)
     backup_path = runtime.backup_memory(tmp_path / "backups")
     assert backup_path.exists()
 
+    fresh_service = PersonalMemoryService(gateway=SentinelTrustGateway(), store=PersonalMemoryStore(tmp_path / "fresh.db"))
+    fresh_runtime = GuardianRuntime(memory_service=fresh_service)
+    fresh_runtime.start()
+    restored_count = fresh_runtime.restore_memory(backup_path)
+    assert restored_count == 1
+    assert fresh_runtime.list_memory()[0].content == "Robert prefers dark mode."
+
+
+def test_guardian_runtime_restore_memory_without_service_raises(tmp_path) -> None:
+    runtime = GuardianRuntime()
+
+    with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
+        runtime.restore_memory(tmp_path / "backup.json")
+
 
 def test_guardian_runtime_memory_methods_refuse_before_start_even_with_connected_service(tmp_path) -> None:
     """Engineering Reviewer post-commit finding: a connected memory_service
@@ -545,6 +559,8 @@ def test_guardian_runtime_memory_methods_refuse_before_start_even_with_connected
         runtime.list_memory()
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.backup_memory(tmp_path / "backups")
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.restore_memory(tmp_path / "backup.json")
 
 
 def test_guardian_runtime_converse_includes_retained_memory_content(tmp_path) -> None:
@@ -636,6 +652,8 @@ def test_guardian_runtime_memory_methods_refuse_after_stop(tmp_path) -> None:
         runtime.list_memory()
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.backup_memory(tmp_path / "backups")
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.restore_memory(tmp_path / "backup.json")
 
 
 def test_guardian_runtime_speak_without_provider_returns_not_connected_outcome() -> None:

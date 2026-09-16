@@ -139,6 +139,95 @@ def test_export_snapshot_empty_store(store):
     assert snapshot == {"personal_memory": (), "consent_decisions": ()}
 
 
+def test_import_snapshot_restores_both_tables(store):
+    store.record_decision(_decision())
+    store.add(_record())
+    snapshot = store.export_snapshot()
+    fresh_store = PersonalMemoryStore(store._db_path.parent / "fresh.db")
+
+    count = fresh_store.import_snapshot(snapshot)
+
+    assert count == 1
+    restored = fresh_store.list_all()
+    assert len(restored) == 1
+    assert restored[0].id == "record-1"
+    assert restored[0].content == "Robert prefers dark mode."
+    assert fresh_store.get_decision("decision-1").decision == "approved"
+
+
+def test_import_snapshot_refuses_non_empty_store_without_confirmation(store):
+    store.record_decision(_decision())
+    store.add(_record())
+    snapshot = store.export_snapshot()
+    store.record_decision(_decision("decision-2"))
+    store.add(_record("record-2", "decision-2"))
+
+    with pytest.raises(ValueError, match="not empty"):
+        store.import_snapshot(snapshot)
+
+    # Refused before any write - existing data untouched.
+    assert len(store.list_all()) == 2
+
+
+def test_import_snapshot_overwrites_when_confirmed(store):
+    store.record_decision(_decision())
+    store.add(_record())
+    snapshot = store.export_snapshot()
+    store.record_decision(_decision("decision-2"))
+    store.add(_record("record-2", "decision-2"))
+
+    count = store.import_snapshot(snapshot, confirm_overwrite=True)
+
+    assert count == 1
+    restored = store.list_all()
+    assert len(restored) == 1
+    assert restored[0].id == "record-1"
+
+
+def test_import_snapshot_rejects_malformed_snapshot_missing_keys(store):
+    with pytest.raises(ValueError, match="Invalid backup snapshot"):
+        store.import_snapshot({"personal_memory": []})
+
+    assert store.list_all() == ()
+
+
+def test_import_snapshot_rejects_memory_row_referencing_unknown_decision(store):
+    bad_snapshot = {
+        "personal_memory": [
+            {"id": "record-1", "content": "x", "created_at": "2026-01-01T00:00:00+00:00", "consent_decision_id": "missing"}
+        ],
+        "consent_decisions": [],
+    }
+
+    with pytest.raises(ValueError, match="not present among the snapshot"):
+        store.import_snapshot(bad_snapshot)
+
+    assert store.list_all() == ()
+
+
+def test_import_snapshot_into_empty_store_requires_no_confirmation(store):
+    snapshot = {
+        "personal_memory": (),
+        "consent_decisions": (
+            {
+                "id": "decision-1",
+                "capability": "memory_retention",
+                "decision": "denied",
+                "decided_at": "2026-01-01T00:00:00+00:00",
+                "approver_label": "local-user",
+                "sentinel_outcome": "Review",
+                "sentinel_category": None,
+                "sentinel_reason": "test",
+            },
+        ),
+    }
+
+    count = store.import_snapshot(snapshot)
+
+    assert count == 0
+    assert store.get_decision("decision-1").decision == "denied"
+
+
 def test_persists_across_new_store_instance(tmp_path):
     db_path = tmp_path / "personal.db"
     first = PersonalMemoryStore(db_path)

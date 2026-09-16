@@ -155,6 +155,21 @@ class PersonalMemoryService:
         backup_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         return backup_path
 
+    def restore_backup(self, backup_path: Path, *, confirm_overwrite: bool = False) -> int:
+        """Restore Personal Memory from a backup file written by `export_backup()`.
+
+        BRD-0001 Section 6 (EBG-0023): reads and JSON-parses `backup_path`
+        (a malformed/missing file fails closed with a clear exception before
+        any store write is attempted), then delegates the three minimum
+        recovery requirements - structural validation, consent-before-content
+        insert order, and the non-empty-store confirmation gate - to
+        `PersonalMemoryStore.import_snapshot()`. Returns the number of
+        records restored.
+        """
+
+        payload = json.loads(backup_path.read_text(encoding="utf-8"))
+        return self._store.import_snapshot(payload, confirm_overwrite=confirm_overwrite)
+
     def _pop_pending(self, pending_id: str) -> PendingMemoryRequest:
         try:
             return self._pending.pop(pending_id)

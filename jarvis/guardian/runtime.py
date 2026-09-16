@@ -339,6 +339,18 @@ class GuardianRuntime:
         self._require_memory_service()
         return self._memory_service.export_backup(backup_dir)
 
+    def restore_memory(self, backup_path: Path, *, confirm_overwrite: bool = False) -> int:
+        """Restore Personal Memory from a backup file and return the record count.
+
+        See `PersonalMemoryService.restore_backup()` (BRD-0001, EBG-0023) for
+        the recovery guarantees this enforces - structural validation,
+        consent-before-content insert order, and the non-empty-store
+        confirmation gate.
+        """
+
+        self._require_memory_service()
+        return self._memory_service.restore_backup(backup_path, confirm_overwrite=confirm_overwrite)
+
     def _require_memory_service(self) -> None:
         if self._memory_service is None:
             raise RuntimeError(NO_MEMORY_SERVICE_RESPONSE)

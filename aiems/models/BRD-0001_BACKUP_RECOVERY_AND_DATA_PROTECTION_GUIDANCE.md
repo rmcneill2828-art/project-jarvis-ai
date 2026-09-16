@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | BRD-0001 |
 | Title | Backup, Recovery and Data Protection Guidance |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -65,7 +65,7 @@ Any backup mechanism for MDS-0001-architected data shall:
 
 # 6. Recovery Expectations
 
-Recovery (restoring a memory tier's store from a backup file) is **not implemented** by this artefact's first increment (Section 8). Any future recovery implementation shall, at minimum:
+Recovery (restoring a memory tier's store from a backup file) was **not implemented** by this artefact's first increment (Section 8), and is now delivered by its second (Section 8A), satisfying all three minimum requirements below:
 
 - Validate a backup file's structure before writing anything to a live store - a malformed or truncated backup must fail closed, not partially import.
 - Re-establish consent-decision rows before any dependent content row, mirroring `PersonalMemoryStore.add()`'s own existing insert-order constraint (a content record already refuses to insert without a prior approved decision row present).
@@ -90,7 +90,20 @@ Delivered against this guidance in the same Work Package that created it, per Pr
 - `GuardianRuntime.backup_memory(backup_dir)` (`jarvis/guardian/runtime.py`) - delegates with the same connected-service/running-state boundary checks as every other memory method.
 - `memory.backup` JSON-RPC method (`jarvis/interfaces/stdio_rpc.py`) - `params.backupDir` optionally overrides the default location (`JARVIS_MEMORY_BACKUP_DIR` env var, else `~/.jarvis/memory/backups`); returns `{"path": "..."}`.
 
-**Explicitly not delivered by this slice**: recovery/restore/import (Section 6); encryption at rest (Section 7); a UXP surface (no `src/`/`src-tauri/` change - reachable today only via direct RPC call, matching PBK-0001's "backend capability a future UXP increment will depend on" allowance); Session/Shared-Family tier coverage (neither tier is built yet); any scheduling or automation of backup invocation.
+**Explicitly not delivered by this slice**: recovery/restore/import (Section 6, delivered by the second slice, Section 8A); encryption at rest (Section 7); a UXP surface (no `src/`/`src-tauri/` change - reachable today only via direct RPC call, matching PBK-0001's "backend capability a future UXP increment will depend on" allowance); Session/Shared-Family tier coverage (neither tier is built yet); any scheduling or automation of backup invocation.
+
+---
+
+# 8A. Second Concrete Implementation Slice - Recovery (ESR-0058 WP3)
+
+Delivers Section 6's recovery expectations in full:
+
+- `PersonalMemoryStore.import_snapshot(snapshot, confirm_overwrite=False)` (`jarvis/memory/store.py`) - validates the snapshot's structure (required keys and fields present; every `personal_memory` row's `consent_decision_id` must reference a `consent_decisions` row within the same snapshot) before writing anything; inserts `consent_decisions` rows before their dependent `personal_memory` rows, in the same transaction; refuses (raises `ValueError`) if the store already holds data unless `confirm_overwrite=True` is passed explicitly. Restore is wipe-then-replace, not merge - a non-empty store's existing rows are deleted before the snapshot is written, never combined with it (a deliberate scope limit, disclosed below).
+- `PersonalMemoryService.restore_backup(backup_path, confirm_overwrite=False)` (`jarvis/memory/service.py`) - reads and JSON-parses the backup file (a malformed/missing file fails closed before any store write), delegates to `import_snapshot()`.
+- `GuardianRuntime.restore_memory(backup_path, confirm_overwrite=False)` (`jarvis/guardian/runtime.py`) - same connected-service/running-state boundary checks as every other memory method.
+- `memory.restore` JSON-RPC method (`jarvis/interfaces/stdio_rpc.py`) - `params.backupPath` (required), `params.confirmOverwrite` (optional, defaults `false` - a caller must pass it explicitly `true` to overwrite non-empty data, matching Section 6's "never runs silently" requirement); returns `{"recordCount": N}`.
+
+**Explicitly not delivered by this slice**: merge/append semantics (restore is wipe-then-replace only - reconciling a restored snapshot against a live store's own newer data is a materially harder problem, deliberately deferred rather than attempted informally); a UXP surface (RPC-only, same allowance as Section 8); Session/Shared-Family tier coverage; cross-device restore (DRA-0001's own future scope, per Section 4 - this restores a device's own prior backup, not another device's state).
 
 ---
 
@@ -110,4 +123,5 @@ Delivered against this guidance in the same Work Package that created it, per Pr
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP3: delivers Section 6's recovery expectations in full (new Section 8A) - `PersonalMemoryStore.import_snapshot()`, `PersonalMemoryService.restore_backup()`, `GuardianRuntime.restore_memory()`, new `memory.restore` RPC method. Wipe-then-replace semantics only (merge/append explicitly deferred). Section 6 updated from "not implemented" to record delivery. |
 | 1.0 | 14 September 2026 | Claude Engineering Implementer | Initial creation, ESR-0057 WP2, resolving EBG-0023. Defines backup/recovery/data-protection guidance for MDS-0001-architected data; delivers a first concrete implementation slice (Personal Memory export/backup only, no recovery) alongside the guidance itself, per Programme Sponsor-approved scope extension. |

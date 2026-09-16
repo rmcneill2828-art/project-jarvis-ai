@@ -440,6 +440,7 @@ class StdioRpcServer:
             "memory.deny": self._memory_deny,
             "memory.list": self._memory_list,
             "memory.backup": self._memory_backup,
+            "memory.restore": self._memory_restore,
             "profile.list": self._profile_list,
             "profile.create": self._profile_create,
             "profile.select": self._profile_select,
@@ -621,6 +622,24 @@ class StdioRpcServer:
             backup_dir = Path(env_value) if env_value else DEFAULT_MEMORY_BACKUP_DIR
         path = self._runtime.backup_memory(backup_dir)
         return {"path": str(path)}
+
+    def _memory_restore(self, params: dict[str, Any]) -> dict[str, Any]:
+        """BRD-0001 (EBG-0023): restore Personal Memory from a backup file.
+        `params.confirmOverwrite` defaults to False - restoring into a
+        non-empty store without it raises, matching BRD-0001 Section 6's
+        "never runs silently" requirement; the caller (UXP/human) must pass
+        it explicitly True to proceed."""
+
+        backup_path_param = params.get("backupPath")
+        if not isinstance(backup_path_param, str):
+            msg = "params.backupPath must be a string."
+            raise TypeError(msg)
+        confirm_overwrite = params.get("confirmOverwrite", False)
+        if not isinstance(confirm_overwrite, bool):
+            msg = "params.confirmOverwrite must be a boolean when provided."
+            raise TypeError(msg)
+        count = self._runtime.restore_memory(Path(backup_path_param), confirm_overwrite=confirm_overwrite)
+        return {"recordCount": count}
 
     @staticmethod
     def _require_pending_id(params: dict[str, Any]) -> str:

@@ -150,3 +150,32 @@ def test_export_backup_empty_store_writes_empty_lists(store, tmp_path):
     payload = json.loads(backup_path.read_text(encoding="utf-8"))
     assert payload["personal_memory"] == []
     assert payload["consent_decisions"] == []
+
+
+def test_restore_backup_round_trips_through_a_real_file(store, tmp_path):
+    service = _service(store)
+    pending = service.propose("Robert prefers dark mode.")
+    service.approve(pending.id)
+    backup_path = service.export_backup(tmp_path / "backups")
+
+    fresh_store = PersonalMemoryStore(tmp_path / "fresh.db")
+    fresh_service = _service(fresh_store)
+
+    count = fresh_service.restore_backup(backup_path)
+
+    assert count == 1
+    assert fresh_service.list_records()[0].content == "Robert prefers dark mode."
+
+
+def test_restore_backup_refuses_non_empty_store_without_confirmation(store, tmp_path):
+    service = _service(store)
+    pending = service.propose("Robert prefers dark mode.")
+    service.approve(pending.id)
+    backup_path = service.export_backup(tmp_path / "backups")
+
+    with pytest.raises(ValueError, match="not empty"):
+        service.restore_backup(backup_path)
+
+    # Refused - the store's own data (the same records used to make the
+    # backup) remains, confirming nothing was touched.
+    assert len(service.list_records()) == 1

@@ -1235,6 +1235,72 @@ def test_memory_backup_writes_file_with_both_tables(tmp_path):
     assert len(payload["consent_decisions"]) == 1
 
 
+def test_memory_restore_round_trips_through_a_real_backup_file(tmp_path):
+    """BRD-0001 (EBG-0023): memory.backup -> memory.restore through the real
+    StdioRpcServer, using two separate servers (separate memory DBs) so the
+    restore target genuinely starts empty."""
+
+    source_server = _server(tmp_path / "source")
+    propose_response = source_server.handle_line(
+        json.dumps(
+            {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
+        )
+    )
+    pending_id = propose_response["result"]["pendingId"]
+    source_server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.approve", "params": {"pendingId": pending_id}})
+    )
+    backup_dir = tmp_path / "backups"
+    backup_response = source_server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.backup", "params": {"backupDir": str(backup_dir)}})
+    )
+    backup_path = backup_response["result"]["path"]
+
+    target_server = _server(tmp_path / "target")
+    restore_response = target_server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 4, "method": "memory.restore", "params": {"backupPath": backup_path}})
+    )
+
+    assert restore_response["result"]["recordCount"] == 1
+    list_response = target_server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 5, "method": "memory.list", "params": {}}))
+    assert list_response["result"]["records"][0]["content"] == "Robert prefers dark mode."
+
+
+def test_memory_restore_refuses_non_empty_store_without_confirm_overwrite(tmp_path):
+    server = _server(tmp_path)
+    propose_response = server.handle_line(
+        json.dumps(
+            {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
+        )
+    )
+    pending_id = propose_response["result"]["pendingId"]
+    server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.approve", "params": {"pendingId": pending_id}})
+    )
+    backup_response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.backup", "params": {"backupDir": str(tmp_path / "backups")}})
+    )
+    backup_path = backup_response["result"]["path"]
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 4, "method": "memory.restore", "params": {"backupPath": backup_path}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert "not empty" in response["error"]["message"]
+
+
+def test_memory_restore_rejects_non_string_backup_path(tmp_path):
+    server = _server(tmp_path)
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.restore", "params": {"backupPath": 12345}})
+    )
+
+    assert response["error"]["code"] == INTERNAL_ERROR
+    assert response["error"]["message"].startswith("TypeError:")
+
+
 def test_memory_backup_rejects_non_string_backup_dir(tmp_path):
     server = _server(tmp_path)
 
