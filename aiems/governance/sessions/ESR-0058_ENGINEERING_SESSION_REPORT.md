@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.20 |
+| Version | 0.21 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0058 |
 | Date Opened | 16 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 through WP5 complete; WP6 drafted, awaiting review and approval |
+| Closure Status | Open - WP1 through WP6 complete; awaiting Programme Sponsor direction on further Work Packages or session closure |
 
 ---
 
@@ -150,6 +150,10 @@ New tests: 2 in `test_memory_store.py`, 1 in `test_memory_service.py`, `memory_s
 
 **Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0058-005_MEMORY_MANAGEMENT_UXP_SURFACE|EIP-ESR0058-005]] synced to v1.0 (Approved - implemented). EBG-0131 closed Complete in EBR-0001.
 
+**Committed and pushed** (`9a0737b`, `636e744..9a0737b`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit, complete 24-file scope - **Pass**, independently verified against the transcript (`repository_ref: 9a0737b...` matching exactly, single clean entry). Confirmed the exact 24-file changed-set; confirmed every commit-message claim against the real diff (dedicated `COUNT(*)` query, thin Tauri passthroughs, the exact `confirm_overwrite=True` string match between backend and frontend, the dialog plugin correctly wired across `Cargo.toml`/`package.json`/`capabilities/default.json`/`lib.rs`); re-ran `pytest` (587 passed/1 skipped), `validate_repository.py` (0 errors, 333 warnings), `cargo build`/`test`/`clippy -D warnings`/`fmt --check`, `npm run build`, and `npx playwright test` (23/23) fresh against the committed state, all matching. **WP6 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -177,7 +181,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP3 | BRD-0001 Recovery Implementation | Complete (EIP-ESR0058-002 v1.0) - committed `0a409fd`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP4 | Home Assistant State Query Agent | Complete (EIP-ESR0058-003 v1.0) - committed `9f8923f`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP5 | Playwright E2E Reliability (EBG-0129) | Complete (EIP-ESR0058-004 v1.0) - committed `b61f984`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
-| WP6 | Memory Management UXP Surface (EBG-0131) | Complete (EIP-ESR0058-005 v1.0) - design review Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved. Pending commit/push |
+| WP6 | Memory Management UXP Surface (EBG-0131) | Complete (EIP-ESR0058-005 v1.0) - committed `9a0737b`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 
 ---
 
@@ -185,6 +189,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.21 | 16 September 2026 | Claude Engineering Implementer | WP6 closed: committed `9a0737b`, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.20 | 16 September 2026 | Claude Engineering Implementer | WP6 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-005 synced to v1.0. EBG-0131 closed Complete. Pending commit/push. |
 | 0.19 | 16 September 2026 | Claude Engineering Implementer | WP6 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. Reviewer independently ran cargo build/test/clippy/fmt, npm run build, and npx playwright test (23/23) itself. Awaiting Programme Sponsor approval. |
 | 0.18 | 16 September 2026 | Claude Engineering Implementer | WP6 drafted: Memory Management UXP surface implemented per EIP-ESR0058-005 v0.1 - memory.status RPC method, Tauri commands, MemoryManagementPanel.jsx. Self-caught and fixed a replace_all version-corruption mistake in EBR-0001 before proceeding. Full suite 587 passed/1 skipped, Playwright 23/23 twice, cargo/npm build all clean. Not yet reviewed, approved or committed. |
