@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.574
+**Version:** 3.575
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.574 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.575 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -313,7 +313,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0055 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0056 | Engineering Session Report | Engineering Session Report | 1.8 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0057 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0058 | Engineering Session Report | Engineering Session Report | 0.16 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0058 | Engineering Session Report | Engineering Session Report | 0.17 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0058-001 | Engineering Implementation Package | Engineering Reviewer Re-appointment | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-002 | Engineering Implementation Package | BRD-0001 Recovery Implementation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-003 | Engineering Implementation Package | Home Assistant State Query Agent | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
@@ -432,6 +432,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.575 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP5 closed: synced ESR-0058 row (0.16 to 0.17) - committed `b61f984`, pushed, genuine post-commit review Pass via GitHub Copilot CLI. |
 | 3.574 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP5 approved: synced ESR-0058 row (0.15 to 0.16) following Programme Sponsor approval via direct chat instruction ("Approved"). submit-response succeeded against the real Sponsor Approval Service. Pending commit/push. |
 | 3.573 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP5: synced EBR-0001 (1.189 to 1.190) - EBG-0129 closed Complete per EIP-ESR0058-004. |
 | 3.572 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP5 approved: synced EIP-ESR0058-004 (0.2 to 1.0, Approved - implemented) following Programme Sponsor approval via direct chat instruction ("Approved"). `submit-response` succeeded against the real Sponsor Approval Service. Pending commit/push. |

@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.16 |
+| Version | 0.17 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0058 |
 | Date Opened | 16 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 through WP4 complete; WP5 drafted, awaiting review and approval |
+| Closure Status | Open - WP1 through WP5 complete; awaiting Programme Sponsor direction on further Work Packages or session closure |
 
 ---
 
@@ -128,6 +128,10 @@ New tests: 7 in `test_agents.py` (client constructor validation, Bearer-header/U
 
 **Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0058-004_PLAYWRIGHT_E2E_RELIABILITY|EIP-ESR0058-004]] synced to v1.0 (Approved - implemented). `submit-response` succeeded against the real Sponsor Approval Service. EBG-0129 closed Complete in EBR-0001.
 
+**Committed and pushed** (`b61f984`, `3871e44..b61f984`), gated through the real Sponsor Approval Service via `submit-response`. The initial `git push` reported `[remote rejected] main -> main (cannot lock ref ...)`, a transient ref-lock error - verified via a fresh `git fetch origin main` that `origin/main` genuinely matched local HEAD (`b61f984`) rather than trusting the surface-level error message, confirming the push had in fact succeeded server-side.
+
+**Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit, complete 6-file scope - **Pass**, independently verified against the transcript (`repository_ref: b61f984...` matching exactly, single clean entry). Confirmed the exact 6-file changed-set (190 insertions/9 deletions), no unrelated path touched; confirmed diff content matches the commit message; re-ran `npx playwright test` itself twice at default parallelism (18/18 both times), `pytest` (583 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) fresh against the committed state, all matching. **WP5 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -154,7 +158,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP2 | Engineering Reviewer Re-appointment | Complete (EIP-ESR0058-001 v1.0) - committed `ab57938`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation (first under the new standing arrangement) |
 | WP3 | BRD-0001 Recovery Implementation | Complete (EIP-ESR0058-002 v1.0) - committed `0a409fd`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP4 | Home Assistant State Query Agent | Complete (EIP-ESR0058-003 v1.0) - committed `9f8923f`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
-| WP5 | Playwright E2E Reliability (EBG-0129) | Complete (EIP-ESR0058-004 v1.0) - build+preview approach tried and reverted (disclosed), global-setup warm-up fix implemented; design review Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved. Pending commit/push |
+| WP5 | Playwright E2E Reliability (EBG-0129) | Complete (EIP-ESR0058-004 v1.0) - committed `b61f984`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 
 ---
 
@@ -162,6 +166,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.17 | 16 September 2026 | Claude Engineering Implementer | WP5 closed: committed `b61f984`, pushed (initial push transiently rejected on a ref-lock race, confirmed via git fetch that origin/main matched HEAD regardless); genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.16 | 16 September 2026 | Claude Engineering Implementer | WP5 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-004 synced to v1.0. submit-response succeeded. EBG-0129 closed Complete. Pending commit/push. |
 | 0.15 | 16 September 2026 | Claude Engineering Implementer | WP5 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. Reviewer independently built the frontend and confirmed dist/ output has no /src/ path, ran npx playwright test twice itself (18/18 both times). Awaiting Programme Sponsor approval. |
 | 0.14 | 16 September 2026 | Claude Engineering Implementer | WP5 drafted: EBG-0129 through EBG-0134 registered in EBR-0001 from the Programme Sponsor-requested GitHub Copilot CLI gap analysis; EBG-0129 (Playwright E2E reliability) selected as WP5 per EIP-ESR0058-004 v0.1. Build+preview approach tried and reverted (broke animationScheduler.spec.js's raw-source-import design, disclosed); global-setup warm-up fix implemented instead. Verified via 3 consecutive `npx playwright test` runs at default parallelism (18/18 each), full Python suite (583 passed/1 skipped) and validate_repository.py (0 errors) clean. Not yet reviewed, approved or committed. |
