@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.559
+**Version:** 3.560
 
 
 ---
@@ -118,7 +118,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.559 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.560 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -313,7 +313,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0055 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0056 | Engineering Session Report | Engineering Session Report | 1.8 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0057 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0058 | Engineering Session Report | Engineering Session Report | 0.4 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0058 | Engineering Session Report | Engineering Session Report | 0.5 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0058-001 | Engineering Implementation Package | Engineering Reviewer Re-appointment | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
@@ -429,6 +429,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.560 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP1/WP2 closed: synced ESR-0058 row (0.4 to 0.5) - committed `ab57938`, pushed, genuine post-commit review Pass via GitHub Copilot CLI (first under the new standing arrangement). |
 | 3.559 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP2 approved: synced EIP-ESR0058-001 (0.2 to 1.0, Approved - implemented) and ESR-0058 (0.3 to 0.4) rows following Programme Sponsor approval via direct chat instruction ("Approved"). Pending commit/push through submit-response and the real Sponsor Approval Service. |
 | 3.558 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP2: synced EIP-ESR0058-001 row (0.1 to 0.2) - design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge, Pass. First genuine end-to-end use of the renamed `reviewer` identity - Copilot CLI's own `return-findings` call verified landed for real. Not yet approved or implemented. |
 | 3.557 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP1/WP2: synced ESR-0058 row (0.1 to 0.2) - WP1 (scoped Copilot CLI feasibility test) Complete; registered EIP-ESR0058-001 (0.1, Draft) - COC-0001 re-appointment and scripts/aiems_bridge.py role-identity generalisation (codex to reviewer). Not yet reviewed, approved or implemented. |

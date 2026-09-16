@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.4 |
+| Version | 0.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0058 |
 | Date Opened | 16 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1/WP2 approved; WP2 pending commit/push through submit-response |
+| Closure Status | Open - WP1/WP2 complete; awaiting Programme Sponsor direction on further Work Packages or session closure |
 
 ---
 
@@ -62,6 +62,12 @@ Validation: `python -m pytest jarvis/tests scripts/tests -q` - 562 passed, 1 ski
 
 **Verdict: Pass.** Independently confirmed COC-0001's wording discloses rather than erases Codex's history; confirmed via `git diff`/`git grep` that no vendor-named `codex` string remains in any `aiems_bridge.py` code path (only the one disclosed historical comment); confirmed the test suite exercises actual renamed behaviour, not string substitution; re-ran the full test suite (562 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) independently; confirmed no scope creep (`git diff HEAD --stat` - exactly 4 files: COC-0001, REG-0001, `aiems_bridge.py`, its test file).
 
+**Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0058-001_ENGINEERING_REVIEWER_REAPPOINTMENT|EIP-ESR0058-001]] synced to v1.0 (Approved - implemented). `submit-response` succeeded (08:49 UTC).
+
+**Committed and pushed** (`ab57938`, `c8999c8..ab57938`).
+
+**Post-commit independent review** - the first genuine post-commit review performed under the new standing arrangement, not a one-off test: a further scoped `copilot` invocation against the real pushed commit, again calling `return-findings` itself. **Verdict: Pass**, independently verified against the transcript (`repository_ref: ab57938...`, matching the pushed commit exactly). Confirmed the exact 6-file changed-set, no unrelated path touched, no vendor-named `codex` string in any code path, and re-ran both `pytest` (562 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) fresh against the committed state - both matching the commit message's claims. One transient hiccup disclosed by the reviewer itself: an initial `pytest` invocation returned a spurious "Permission denied," self-resolved on retry - noted as an observation, not a defect, since the retry's result matched the expected figures exactly. **WP1 and WP2 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -85,7 +91,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | Technical Feasibility Test (scoped Copilot CLI invocation) | Complete - Pass, no classifier block |
-| WP2 | Engineering Reviewer Re-appointment | Approved (EIP-ESR0058-001 v1.0) - design-reviewed Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved; pending commit/push through `submit-response` |
+| WP2 | Engineering Reviewer Re-appointment | Complete (EIP-ESR0058-001 v1.0) - committed `ab57938`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation (first under the new standing arrangement) |
 
 ---
 
@@ -94,6 +100,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 0.3 | 16 September 2026 | Claude Engineering Implementer | WP2 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. First genuine end-to-end use of the renamed `reviewer` identity, independently verified (transcript `sender: reviewer`, real `.aiems-exchange/reviewer/outbox/` file). Awaiting Programme Sponsor approval. |
+| 0.5 | 16 September 2026 | Claude Engineering Implementer | WP1/WP2 closed: committed `ab57938`, pushed; genuine post-commit review Pass via GitHub Copilot CLI - the first post-commit review performed under the new standing arrangement, not a one-off test. |
 | 0.4 | 16 September 2026 | Claude Engineering Implementer | WP2 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-001 synced to v1.0. Pending commit/push through submit-response. |
 | 0.2 | 16 September 2026 | Claude Engineering Implementer | WP1 complete: scoped `copilot` invocation confirmed working, no classifier block - resolves EBG-0126's open technical question. WP2 drafted per EIP-ESR0058-001 v0.1: COC-0001 re-appointment wording (GitHub Copilot CLI replaces ChatGPT/Codex) and `scripts/aiems_bridge.py` role-identity generalisation (`codex` to `reviewer`). Submitted for a genuine Copilot CLI design review. Not yet approved or committed. |
 | 0.1 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 opened. WP0A/WP0B complete. Objective confirmed: resolve EBG-0126 (retire Codex, adopt a replacement Engineering Reviewer). WP1 not yet scoped - proposed approach presented to Programme Sponsor for confirmation. |
