@@ -213,6 +213,21 @@ class PersonalMemoryStore:
             for row in rows
         )
 
+    def count(self) -> int:
+        """Return the number of stored Personal Memory records.
+
+        EBG-0131 (Memory Management UXP Surface): a dedicated `COUNT(*)`
+        query rather than `len(list_all())` - the backup/restore panel only
+        ever needs the number of records, not their content, and pulling
+        every record's real content across the RPC boundary just to display
+        a count would be a needless privacy exposure for what this surface
+        actually shows.
+        """
+
+        with self._transaction() as connection:
+            row = connection.execute("SELECT COUNT(*) FROM personal_memory").fetchone()
+        return int(row[0])
+
     def export_snapshot(self) -> dict[str, tuple[dict[str, str | None], ...]]:
         """Return every row in both tables as plain, JSON-serialisable dicts.
 

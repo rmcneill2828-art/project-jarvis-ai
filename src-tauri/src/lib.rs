@@ -581,9 +581,55 @@ fn invoke_agent(
     )
 }
 
+/// EBG-0131 (Memory Management UXP Surface): a record count only, never
+/// full record content - matches `memory.status`'s own deliberately
+/// narrow backend response shape.
+#[tauri::command]
+fn memory_status(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
+    call_backend(&state, &app_handle, "memory.status", json!({}))
+}
+
+/// `backup_dir` is a real, human-chosen directory (via the frontend's own
+/// `tauri-plugin-dialog` folder picker) - the backend's `memory.backup`
+/// always names the file itself (a timestamped filename inside whatever
+/// directory it is given, see `PersonalMemoryService.export_backup()`), so
+/// this deliberately exposes a folder picker rather than a save-file
+/// picker: offering the user an exact filename the backend would then
+/// silently ignore would be misleading. The written file's real path is
+/// returned to the caller.
+#[tauri::command]
+fn backup_memory(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    backup_dir: String,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "memory.backup",
+        json!({ "backupDir": backup_dir }),
+    )
+}
+
+#[tauri::command]
+fn restore_memory(
+    state: State<BackendState>,
+    app_handle: AppHandle,
+    backup_path: String,
+    confirm_overwrite: bool,
+) -> Result<Value, String> {
+    call_backend(
+        &state,
+        &app_handle,
+        "memory.restore",
+        json!({ "backupPath": backup_path, "confirmOverwrite": confirm_overwrite }),
+    )
+}
+
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(BackendState(Arc::new(Mutex::new(None))))
         .invoke_handler(tauri::generate_handler![
             send_message,
@@ -596,7 +642,10 @@ pub fn run() {
             select_profile,
             active_profile,
             list_agents,
-            invoke_agent
+            invoke_agent,
+            memory_status,
+            backup_memory,
+            restore_memory
         ])
         .build(tauri::generate_context!())
         .expect("error while building JARVIS Guardian desktop shell")

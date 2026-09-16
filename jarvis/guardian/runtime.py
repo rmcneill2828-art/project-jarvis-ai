@@ -328,6 +328,12 @@ class GuardianRuntime:
         self._require_memory_service()
         return self._memory_service.list_records()
 
+    def memory_status(self) -> int:
+        """Return the number of stored Personal Memory records (EBG-0131)."""
+
+        self._require_memory_service()
+        return self._memory_service.record_count()
+
     def backup_memory(self, backup_dir: Path) -> Path:
         """Write a full point-in-time Personal Memory backup file and return its path.
 

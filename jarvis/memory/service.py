@@ -124,6 +124,11 @@ class PersonalMemoryService:
 
         return self._store.list_all()
 
+    def record_count(self) -> int:
+        """Return the number of stored Personal Memory records (EBG-0131)."""
+
+        return self._store.count()
+
     def export_backup(self, backup_dir: Path) -> Path:
         """Write a full, timestamped point-in-time backup file and return its path.
 

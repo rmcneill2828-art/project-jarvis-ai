@@ -64,6 +64,17 @@ def test_add_rejects_record_with_no_matching_decision(store):
     assert store.list_all() == ()
 
 
+def test_count_empty_store(store):
+    assert store.count() == 0
+
+
+def test_count_reflects_stored_records(store):
+    store.record_decision(_decision())
+    store.add(_record())
+
+    assert store.count() == 1
+
+
 def test_add_rejects_record_referencing_denied_decision(store):
     store.record_decision(_decision(decision="denied"))
 

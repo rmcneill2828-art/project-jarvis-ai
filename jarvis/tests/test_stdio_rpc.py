@@ -1251,6 +1251,32 @@ def test_memory_propose_deny_list_round_trip_confirms_denied_item_never_appears(
     assert list_response["result"]["records"] == []
 
 
+def test_memory_status_reports_record_count(tmp_path):
+    """EBG-0131 (Memory Management UXP Surface): memory.status through the
+    real StdioRpcServer - a record count only, no record content in the
+    response, matching PersonalMemoryStore.count()'s own dedicated query."""
+
+    server = _server(tmp_path)
+
+    empty_response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.status", "params": {}}))
+    assert empty_response["result"] == {"recordCount": 0}
+
+    propose_response = server.handle_line(
+        json.dumps(
+            {"jsonrpc": "2.0", "id": 2, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
+        )
+    )
+    pending_id = propose_response["result"]["pendingId"]
+    server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.approve", "params": {"pendingId": pending_id}})
+    )
+
+    status_response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 4, "method": "memory.status", "params": {}}))
+
+    assert status_response["result"] == {"recordCount": 1}
+    assert "content" not in json.dumps(status_response["result"])
+
+
 def test_memory_backup_writes_file_with_both_tables(tmp_path):
     """BRD-0001 (EBG-0023): memory.backup through the real StdioRpcServer,
     a full point-in-time export - not merely the store/service unit level

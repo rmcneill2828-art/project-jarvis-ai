@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.17 |
+| Version | 0.20 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0058 |
 | Date Opened | 16 September 2026 |
 | Date Closed | - |
-| Closure Status | Open - WP1 through WP5 complete; awaiting Programme Sponsor direction on further Work Packages or session closure |
+| Closure Status | Open - WP1 through WP5 complete; WP6 drafted, awaiting review and approval |
 
 ---
 
@@ -132,6 +132,24 @@ New tests: 7 in `test_agents.py` (client constructor validation, Bearer-header/U
 
 **Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit, complete 6-file scope - **Pass**, independently verified against the transcript (`repository_ref: b61f984...` matching exactly, single clean entry). Confirmed the exact 6-file changed-set (190 insertions/9 deletions), no unrelated path touched; confirmed diff content matches the commit message; re-ran `npx playwright test` itself twice at default parallelism (18/18 both times), `pytest` (583 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) fresh against the committed state, all matching. **WP5 closed.**
 
+**WP6 - Memory Management UXP Surface (Drafted):** Programme Sponsor selected EBG-0131 as WP6 - closing BRD-0001's own disclosed "RPC-only, no UXP surface" gap for `memory.backup`/`memory.restore`, independently flagged by the same gap analysis. [[EIP-ESR0058-005_MEMORY_MANAGEMENT_UXP_SURFACE|EIP-ESR0058-005]] drafted (v0.1):
+
+* New `memory.status` JSON-RPC method (`PersonalMemoryStore.count()` -> `PersonalMemoryService.record_count()` -> `GuardianRuntime.memory_status()` -> `jarvis/interfaces/stdio_rpc.py`) - a dedicated record-count query, not a reuse of `memory.list()`: pulling every record's real content across the RPC boundary merely to display a count would be a needless privacy exposure for what this surface actually shows. `memory.status` added to `activity_tracker.py`'s `METHOD_CLUSTERS` proactively (an enforced completeness test would otherwise fail).
+* New `memory_status`/`backup_memory`/`restore_memory` Tauri commands (`src-tauri/src/lib.rs`), and a new `src/MemoryManagementPanel.jsx`: live record count, a "Back Up..." button (native **folder** picker, not a save-file picker - `PersonalMemoryService.export_backup()` always names the file itself, so offering an exact filename the backend would then ignore would be misleading), a "Restore..." button (native file picker, `.json` filter).
+* **Restore retains rather than works around BRD-0001 Section 6's "recovery never runs silently" guarantee**: the panel always attempts `confirmOverwrite: false` first; a non-empty store's refusal (detected via the backend's own distinctive error text) surfaces an inline confirmation naming the real record count before retrying with `confirmOverwrite: true`. An empty store restores immediately.
+* New dependency: `tauri-plugin-dialog` (Rust)/`@tauri-apps/plugin-dialog` (JS), the official Tauri v2 dialog plugin - network access to crates.io confirmed live before committing to it. `dialog:default` added to `src-tauri/capabilities/default.json`.
+* BRD-0001 Section 8B added recording this slice; Sections 8/8A's now-stale "a UXP surface" exclusion sentences corrected (Documentation Debt Discipline, Whole-Document Staleness Sweep on Edit). EBG-0131 closed Complete in EBR-0001.
+
+New tests: 2 in `test_memory_store.py`, 1 in `test_memory_service.py`, `memory_status()` added across the existing boundary-check tests plus a delegation assertion in `test_guardian_runtime.py`, 1 in `test_stdio_rpc.py` (also confirms no record content leaks into the response); 5 new Playwright tests in `tests/e2e/app.spec.js` (status display, backup success, restore-into-empty-store, restore-into-non-empty-store requiring confirmation, cancelling the confirmation), with `mockTauriIpc()` extended to mock the dialog plugin's own `plugin:dialog|open` command (confirmed to route through the same `window.__TAURI_INTERNALS__.invoke` every other mocked command already uses) and a stateful restore-refusal mirroring the real backend's exact error text. No new Rust unit tests - the three new commands are thin wrappers with no branching logic, matching every existing command's own coverage via the shared `call_backend()`/`dispatch_line()` tests.
+
+**Real-world verification performed directly**: full Python suite 587 passed/1 skipped (up from 583); `validate_repository.py` 0 errors, 333 warnings (one pre-existing cross-reference warning elsewhere, unrelated to this Work Package's own files); `npx playwright test` 23/23 passed, run twice at default parallelism; `cargo build`/`cargo test`/`cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings`/`cargo fmt --manifest-path src-tauri/Cargo.toml --check` (the exact CI commands) all clean; `npm run build` clean.
+
+**Disclosed process note** (same pattern as every prior Work Package this session): drafted and implemented directly against the working tree before Programme Sponsor review of this specific content. **Self-caught process error, disclosed rather than silently fixed**: bumping EBR-0001's version number with `Edit`'s `replace_all: true` on the bare string "1.190" also matched and corrupted an unrelated historical version-history row that happened to contain the same substring, misattributing that row's own summary text. Caught immediately via `git diff` before proceeding, and fixed by reverting the historical row and adding a genuinely new entry for the real change - the same class of mistake disclosed in this project's own prior sessions, now recurring, confirming the lesson ("use precise unique strings, never `replace_all` with a bare version number") still needs active discipline, not just a one-off note.
+
+**Design review**: routed through the real bridge (`init`/`submit-to-review` for `ESR-0058`/`WP6`, complete 24-file `files_in_scope`) and reviewed by GitHub Copilot CLI. **Verdict: Pass**, single clean `return-findings` entry, independently verified against the transcript (`repository_ref: 636e744...` matching HEAD exactly). Confirmed `memory.status` never leaks record content; confirmed the three Tauri commands are pure `call_backend()` passthroughs; traced the exact restore-refusal string match between backend and frontend, confirming a genuine mirror rather than a bypass; independently ran `cargo build`/`test`/`clippy -D warnings`/`fmt --check`, `npm run build`, and `npx playwright test` (23/23) itself; confirmed the exact 24-file scope; confirmed the self-caught `replace_all` fix left EBR-0001's version history clean. Re-ran `pytest` (587 passed/1 skipped) and `validate_repository.py` (0 errors, 333 warnings) independently, both matching.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0058-005_MEMORY_MANAGEMENT_UXP_SURFACE|EIP-ESR0058-005]] synced to v1.0 (Approved - implemented). EBG-0131 closed Complete in EBR-0001.
+
 ---
 
 # 4. Engineering Authority
@@ -159,6 +177,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP3 | BRD-0001 Recovery Implementation | Complete (EIP-ESR0058-002 v1.0) - committed `0a409fd`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP4 | Home Assistant State Query Agent | Complete (EIP-ESR0058-003 v1.0) - committed `9f8923f`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP5 | Playwright E2E Reliability (EBG-0129) | Complete (EIP-ESR0058-004 v1.0) - committed `b61f984`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
+| WP6 | Memory Management UXP Surface (EBG-0131) | Complete (EIP-ESR0058-005 v1.0) - design review Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved. Pending commit/push |
 
 ---
 
@@ -166,6 +185,9 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.20 | 16 September 2026 | Claude Engineering Implementer | WP6 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-005 synced to v1.0. EBG-0131 closed Complete. Pending commit/push. |
+| 0.19 | 16 September 2026 | Claude Engineering Implementer | WP6 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. Reviewer independently ran cargo build/test/clippy/fmt, npm run build, and npx playwright test (23/23) itself. Awaiting Programme Sponsor approval. |
+| 0.18 | 16 September 2026 | Claude Engineering Implementer | WP6 drafted: Memory Management UXP surface implemented per EIP-ESR0058-005 v0.1 - memory.status RPC method, Tauri commands, MemoryManagementPanel.jsx. Self-caught and fixed a replace_all version-corruption mistake in EBR-0001 before proceeding. Full suite 587 passed/1 skipped, Playwright 23/23 twice, cargo/npm build all clean. Not yet reviewed, approved or committed. |
 | 0.17 | 16 September 2026 | Claude Engineering Implementer | WP5 closed: committed `b61f984`, pushed (initial push transiently rejected on a ref-lock race, confirmed via git fetch that origin/main matched HEAD regardless); genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.16 | 16 September 2026 | Claude Engineering Implementer | WP5 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-004 synced to v1.0. submit-response succeeded. EBG-0129 closed Complete. Pending commit/push. |
 | 0.15 | 16 September 2026 | Claude Engineering Implementer | WP5 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. Reviewer independently built the frontend and confirmed dist/ output has no /src/ path, ran npx playwright test twice itself (18/18 both times). Awaiting Programme Sponsor approval. |

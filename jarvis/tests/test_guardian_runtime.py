@@ -501,6 +501,8 @@ def test_guardian_runtime_approve_deny_list_memory_without_service_raise(tmp_pat
     with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
         runtime.list_memory()
     with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
+        runtime.memory_status()
+    with pytest.raises(RuntimeError, match=NO_MEMORY_SERVICE_RESPONSE):
         runtime.backup_memory(tmp_path / "backups")
 
 
@@ -520,6 +522,7 @@ def test_guardian_runtime_memory_methods_delegate_to_connected_service(tmp_path)
 
     assert decision.decision == "denied"
     assert len(runtime.list_memory()) == 1
+    assert runtime.memory_status() == 1
 
     backup_path = runtime.backup_memory(tmp_path / "backups")
     assert backup_path.exists()
@@ -557,6 +560,8 @@ def test_guardian_runtime_memory_methods_refuse_before_start_even_with_connected
         runtime.deny_memory("pending-1")
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.list_memory()
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.memory_status()
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.backup_memory(tmp_path / "backups")
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
@@ -650,6 +655,8 @@ def test_guardian_runtime_memory_methods_refuse_after_stop(tmp_path) -> None:
         runtime.propose_memory("Robert prefers dark mode.")
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.list_memory()
+    with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
+        runtime.memory_status()
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):
         runtime.backup_memory(tmp_path / "backups")
     with pytest.raises(RuntimeError, match=NOT_RUNNING_RESPONSE):

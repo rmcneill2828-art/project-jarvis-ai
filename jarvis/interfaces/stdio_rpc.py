@@ -475,6 +475,7 @@ class StdioRpcServer:
             "memory.approve": self._memory_approve,
             "memory.deny": self._memory_deny,
             "memory.list": self._memory_list,
+            "memory.status": self._memory_status,
             "memory.backup": self._memory_backup,
             "memory.restore": self._memory_restore,
             "profile.list": self._profile_list,
@@ -638,6 +639,15 @@ class StdioRpcServer:
                 for record in records
             ]
         }
+
+    def _memory_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        """EBG-0131 (Memory Management UXP Surface): a lightweight status
+        query for the backup/restore panel - just the stored record count,
+        never full record content, matching PersonalMemoryStore.count()'s
+        own dedicated COUNT(*) query rather than reusing memory.list()."""
+
+        count = self._runtime.memory_status()
+        return {"recordCount": count}
 
     def _memory_backup(self, params: dict[str, Any]) -> dict[str, Any]:
         """BRD-0001 (EBG-0023): write a full point-in-time Personal Memory

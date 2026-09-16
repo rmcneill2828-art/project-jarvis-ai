@@ -40,6 +40,7 @@ METHOD_CLUSTERS: dict[str, str] = {
     "memory.approve": "jarvis",
     "memory.deny": "jarvis",
     "memory.list": "jarvis",
+    "memory.status": "jarvis",
     "memory.backup": "jarvis",
     "memory.restore": "jarvis",
     "profile.list": "jarvis",

@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | BRD-0001 |
 | Title | Backup, Recovery and Data Protection Guidance |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -90,7 +90,7 @@ Delivered against this guidance in the same Work Package that created it, per Pr
 - `GuardianRuntime.backup_memory(backup_dir)` (`jarvis/guardian/runtime.py`) - delegates with the same connected-service/running-state boundary checks as every other memory method.
 - `memory.backup` JSON-RPC method (`jarvis/interfaces/stdio_rpc.py`) - `params.backupDir` optionally overrides the default location (`JARVIS_MEMORY_BACKUP_DIR` env var, else `~/.jarvis/memory/backups`); returns `{"path": "..."}`.
 
-**Explicitly not delivered by this slice**: recovery/restore/import (Section 6, delivered by the second slice, Section 8A); encryption at rest (Section 7); a UXP surface (no `src/`/`src-tauri/` change - reachable today only via direct RPC call, matching PBK-0001's "backend capability a future UXP increment will depend on" allowance); Session/Shared-Family tier coverage (neither tier is built yet); any scheduling or automation of backup invocation.
+**Explicitly not delivered by this slice**: recovery/restore/import (Section 6, delivered by the second slice, Section 8A); encryption at rest (Section 7); a UXP surface (no `src/`/`src-tauri/` change at this slice - reachable only via direct RPC call at the time, matching PBK-0001's "backend capability a future UXP increment will depend on" allowance; a UXP surface was delivered at the third slice, Section 8B); Session/Shared-Family tier coverage (neither tier is built yet); any scheduling or automation of backup invocation.
 
 ---
 
@@ -103,7 +103,21 @@ Delivers Section 6's recovery expectations in full:
 - `GuardianRuntime.restore_memory(backup_path, confirm_overwrite=False)` (`jarvis/guardian/runtime.py`) - same connected-service/running-state boundary checks as every other memory method.
 - `memory.restore` JSON-RPC method (`jarvis/interfaces/stdio_rpc.py`) - `params.backupPath` (required), `params.confirmOverwrite` (optional, defaults `false` - a caller must pass it explicitly `true` to overwrite non-empty data, matching Section 6's "never runs silently" requirement); returns `{"recordCount": N}`.
 
-**Explicitly not delivered by this slice**: merge/append semantics (restore is wipe-then-replace only - reconciling a restored snapshot against a live store's own newer data is a materially harder problem, deliberately deferred rather than attempted informally); a UXP surface (RPC-only, same allowance as Section 8); Session/Shared-Family tier coverage; cross-device restore (DRA-0001's own future scope, per Section 4 - this restores a device's own prior backup, not another device's state).
+**Explicitly not delivered by this slice**: merge/append semantics (restore is wipe-then-replace only - reconciling a restored snapshot against a live store's own newer data is a materially harder problem, deliberately deferred rather than attempted informally); a UXP surface (RPC-only at this slice, same allowance as Section 8; delivered at the third slice, Section 8B); Session/Shared-Family tier coverage; cross-device restore (DRA-0001's own future scope, per Section 4 - this restores a device's own prior backup, not another device's state).
+
+---
+
+# 8B. Third Concrete Implementation Slice - UXP Surface (ESR-0058 WP6)
+
+Delivers a bounded Memory Management panel in the actual desktop app, closing the "RPC-only, no UXP surface" gap disclosed in Sections 8 and 8A and independently flagged by the GitHub Copilot CLI gap analysis (EBG-0131):
+
+- `memory.status` JSON-RPC method (`jarvis/interfaces/stdio_rpc.py`, backed by a new `PersonalMemoryStore.count()`/`PersonalMemoryService.record_count()`/`GuardianRuntime.memory_status()` layered chain) - returns `{"recordCount": N}` only, a dedicated `COUNT(*)` query rather than reusing `memory.list()`'s full-content response merely to display a badge.
+- `memory_status`, `backup_memory`, `restore_memory` Tauri commands (`src-tauri/src/lib.rs`) - thin wrappers over the existing `memory.status`/`memory.backup`/`memory.restore` RPC methods, following the same `call_backend()` pattern as every other command.
+- `src/MemoryManagementPanel.jsx` (new) - a sidebar panel showing the live stored-record count, a "Back Up..." button (native folder picker via the newly-added `tauri-plugin-dialog`, since the backend always names the backup file itself - offering an exact filename the backend would then ignore would be misleading), and a "Restore..." button (native file picker, `.json` filter).
+- **Restore retains the backend's "never runs silently" guarantee rather than working around it**: the panel always attempts restore with `confirmOverwrite: false` first; a non-empty store's refusal (a distinctive error string) is recognised and turned into an explicit inline confirmation step ("This will permanently overwrite N existing memories") before retrying with `confirmOverwrite: true`. An empty store restores immediately, with nothing to overwrite.
+- New dependency: `tauri-plugin-dialog` (Rust) / `@tauri-apps/plugin-dialog` (JS), the official Tauri v2 native file/folder dialog plugin; `dialog:default` added to `src-tauri/capabilities/default.json`.
+
+**Explicitly not delivered by this slice**: encryption at rest (Section 7, still open); a memory *content* browser (the panel shows a count only, never record content, a deliberate scope narrowing beyond what `memory.list()` could technically provide - see the RPC method's own docstring); scheduled/automatic backup (still human-triggered only); Session/Shared-Family tier coverage; any change to the wipe-then-replace restore semantics established at Section 8A.
 
 ---
 
@@ -123,5 +137,6 @@ Delivers Section 6's recovery expectations in full:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP6: delivers a Memory Management UXP surface (new Section 8B, EBG-0131) - memory.status RPC method, Tauri commands, and src/MemoryManagementPanel.jsx (status display, native folder-picker backup, native file-picker restore with an explicit overwrite-confirmation step). Corrects Sections 8 and 8A's now-stale "a UXP surface" exclusion claims. |
 | 1.1 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP3: delivers Section 6's recovery expectations in full (new Section 8A) - `PersonalMemoryStore.import_snapshot()`, `PersonalMemoryService.restore_backup()`, `GuardianRuntime.restore_memory()`, new `memory.restore` RPC method. Wipe-then-replace semantics only (merge/append explicitly deferred). Section 6 updated from "not implemented" to record delivery. |
 | 1.0 | 14 September 2026 | Claude Engineering Implementer | Initial creation, ESR-0057 WP2, resolving EBG-0023. Defines backup/recovery/data-protection guidance for MDS-0001-architected data; delivers a first concrete implementation slice (Personal Memory export/backup only, no recovery) alongside the guidance itself, per Programme Sponsor-approved scope extension. |

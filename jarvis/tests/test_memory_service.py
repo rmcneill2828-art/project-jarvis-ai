@@ -115,6 +115,14 @@ def test_list_records_delegates_to_store(store):
     assert service.list_records() == store.list_all()
 
 
+def test_record_count_delegates_to_store(store):
+    service = _service(store)
+    pending = service.propose("Robert prefers dark mode.")
+    service.approve(pending.id)
+
+    assert service.record_count() == store.count() == 1
+
+
 def test_export_backup_writes_json_file_with_both_tables(store, tmp_path):
     service = _service(store)
     pending = service.propose("Robert prefers dark mode.")

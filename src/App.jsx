@@ -36,6 +36,7 @@ import {
 import { GuardianOrbGraph } from "./GuardianOrbGraph.jsx";
 import { ActiveClustersPanel, KnowledgeMetricsPanel } from "./KnowledgeGraphPanels.jsx";
 import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
+import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -657,6 +658,11 @@ export function App() {
   const [agentResult, setAgentResult] = useState(null);
   const [agentInvokeError, setAgentInvokeError] = useState(null);
 
+  // Memory Management (EBG-0131, ESR-0058 WP6): recordCount null =
+  // connecting, otherwise the real memory.status count.
+  const [memoryRecordCount, setMemoryRecordCount] = useState(null);
+  const [memoryStatusError, setMemoryStatusError] = useState(null);
+
   // EIP-ESR0031-002 (Streaming Notifications MVP): the UXP's first live-push
   // channel. platform_status/knowledge_graph above remain one-time mount
   // fetches, unchanged - this is a second, independent channel proving the
@@ -720,10 +726,28 @@ export function App() {
         if (!cancelled) setAgentsError(String(error));
       });
 
+    invoke("memory_status")
+      .then((result) => {
+        if (!cancelled) setMemoryRecordCount(result.recordCount ?? 0);
+      })
+      .catch((error) => {
+        if (!cancelled) setMemoryStatusError(String(error));
+      });
+
     return () => {
       cancelled = true;
     };
   }, []);
+
+  // Re-reads the real count after a restore, rather than trusting the
+  // restore response's own recordCount as a proxy for the store's new
+  // total - restoring into a non-empty store (once ever allowed) would
+  // make those two numbers genuinely different.
+  const refreshMemoryStatus = () => {
+    invoke("memory_status")
+      .then((result) => setMemoryRecordCount(result.recordCount ?? 0))
+      .catch((error) => setMemoryStatusError(String(error)));
+  };
 
   useEffect(() => {
     let unlisten;
@@ -1021,6 +1045,11 @@ export function App() {
                 agentResult={agentResult}
                 agentInvokeError={agentInvokeError}
                 onInvokeAgent={handleInvokeAgent}
+              />
+              <MemoryManagementPanel
+                recordCount={memoryRecordCount}
+                statusError={memoryStatusError}
+                onStatusChange={refreshMemoryStatus}
               />
               <DiagnosticsPanel diagnostics={diagnostics} />
             </div>

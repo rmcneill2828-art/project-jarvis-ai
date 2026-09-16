@@ -166,6 +166,7 @@ button {
 .knowledge-metrics-panel,
 .active-clusters-panel,
 .agent-framework-panel,
+.memory-management-panel,
 .command-panel {
   border: 1px solid rgba(0, 239, 255, 0.17);
   border-radius: 10px;
@@ -187,7 +188,8 @@ button {
 .system-health-panel > h2,
 .knowledge-metrics-panel > h2,
 .active-clusters-panel > h2,
-.agent-framework-panel > h2 {
+.agent-framework-panel > h2,
+.memory-management-panel > h2 {
   margin: 0;
   color: #16f7ff;
   font-size: 0.94rem;
@@ -572,14 +574,16 @@ button {
 .system-health-panel,
 .knowledge-metrics-panel,
 .active-clusters-panel,
-.agent-framework-panel {
+.agent-framework-panel,
+.memory-management-panel {
   padding: 18px 18px 16px;
 }
 
 .system-health-panel > h2,
 .knowledge-metrics-panel > h2,
 .active-clusters-panel > h2,
-.agent-framework-panel > h2 {
+.agent-framework-panel > h2,
+.memory-management-panel > h2 {
   padding: 0 0 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
 }
@@ -747,6 +751,30 @@ button {
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.memory-action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.memory-action-row .outline-action {
+  flex: 1;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+}
+
+.memory-overwrite-confirm {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 99, 99, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 99, 99, 0.06);
+}
+
+.memory-overwrite-confirm .conversation-error {
+  margin: 0;
 }
 
 .diagnostics-list {

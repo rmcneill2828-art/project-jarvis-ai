@@ -17,6 +17,10 @@ async function mockTauriIpc(
     agents = [],
     invokeAgentResult,
     knowledgeGraphOverrides = {},
+    memoryRecordCount = 0,
+    dialogOpenResult = null,
+    backupMemoryResult,
+    restoreMemoryResult,
   } = {},
 ) {
   await page.addInitScript(
@@ -30,6 +34,10 @@ async function mockTauriIpc(
       activeProfile,
       agents,
       invokeAgentResult,
+      memoryRecordCount,
+      dialogOpenResult,
+      backupMemoryResult,
+      restoreMemoryResult,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -66,7 +74,7 @@ async function mockTauriIpc(
       // read this state, create_profile/select_profile mutate it - a real
       // Tauri backend behaves the same way, just persisted to SQLite instead
       // of an in-memory closure.
-      const state = { profiles: [...profiles], active: activeProfile };
+      const state = { profiles: [...profiles], active: activeProfile, memoryRecordCount };
       let nextId = state.profiles.length + 1;
 
       window.__TAURI_INTERNALS__ = {
@@ -119,6 +127,34 @@ async function mockTauriIpc(
               },
             );
           }
+          if (cmd === "memory_status") return Promise.resolve({ recordCount: state.memoryRecordCount });
+          if (cmd === "plugin:dialog|open") return Promise.resolve(dialogOpenResult);
+          if (cmd === "backup_memory") {
+            if (backupMemoryResult && backupMemoryResult.error) {
+              return Promise.reject(new Error(backupMemoryResult.error));
+            }
+            return Promise.resolve(backupMemoryResult || { path: "C:\\fake\\personal_memory_backup_test.json" });
+          }
+          if (cmd === "restore_memory") {
+            if (restoreMemoryResult && restoreMemoryResult.error) {
+              return Promise.reject(new Error(restoreMemoryResult.error));
+            }
+            // A real backend refuses a non-empty store without
+            // confirmOverwrite - mirrored here so the panel's own
+            // detect-refusal-then-confirm flow has something genuine to
+            // react to, not just a canned success.
+            if (state.memoryRecordCount > 0 && !args.confirmOverwrite) {
+              return Promise.reject(
+                new Error(
+                  "Store is not empty: restoring would overwrite existing data. " +
+                    "Pass confirm_overwrite=True to proceed - recovery never runs silently.",
+                ),
+              );
+            }
+            const restoredCount = restoreMemoryResult?.recordCount ?? 1;
+            state.memoryRecordCount = restoredCount;
+            return Promise.resolve({ recordCount: restoredCount });
+          }
           return Promise.reject(new Error(`Unmocked Tauri command: ${cmd}`));
         },
       };
@@ -148,6 +184,10 @@ async function mockTauriIpc(
       activeProfile,
       agents,
       invokeAgentResult,
+      memoryRecordCount,
+      dialogOpenResult,
+      backupMemoryResult,
+      restoreMemoryResult,
     },
   );
 }
@@ -408,4 +448,76 @@ test("a cluster with no reported activity renders without the illumination class
   await page.goto("/");
 
   await expect(page.locator(".cluster-row", { hasText: "jarvis" })).not.toHaveClass(/is-active/);
+});
+
+// Memory Management UXP surface (EBG-0131, ESR-0058 WP6): the first frontend
+// coverage of memory.backup/memory.restore, previously RPC-only.
+test("memory management panel shows the real stored record count", async ({ page }) => {
+  await mockTauriIpc(page, { memoryRecordCount: 3 });
+  await page.goto("/");
+
+  await expect(page.locator(".memory-management-panel")).toContainText("Stored memories");
+  await expect(page.locator(".memory-management-panel .metric-row")).toContainText("3");
+});
+
+test("backing up memory shows the real returned backup path", async ({ page }) => {
+  await mockTauriIpc(page, {
+    memoryRecordCount: 2,
+    dialogOpenResult: "C:\\Users\\test\\Backups",
+    backupMemoryResult: { path: "C:\\Users\\test\\Backups\\personal_memory_backup_20260916T120000000000Z.json" },
+  });
+  await page.goto("/");
+
+  await page.locator(".memory-management-panel").getByRole("button", { name: "Back Up..." }).click();
+
+  await expect(page.locator(".memory-management-panel")).toContainText(
+    "personal_memory_backup_20260916T120000000000Z.json",
+  );
+});
+
+test("restoring into an empty store succeeds immediately without an overwrite prompt", async ({ page }) => {
+  await mockTauriIpc(page, {
+    memoryRecordCount: 0,
+    dialogOpenResult: "C:\\Users\\test\\backup.json",
+    restoreMemoryResult: { recordCount: 5 },
+  });
+  await page.goto("/");
+
+  await page.locator(".memory-management-panel").getByRole("button", { name: "Restore..." }).click();
+
+  await expect(page.locator(".memory-management-panel")).toContainText("Restored 5 records.");
+  await expect(page.locator(".memory-overwrite-confirm")).toHaveCount(0);
+});
+
+test("restoring into a non-empty store requires an explicit overwrite confirmation", async ({ page }) => {
+  await mockTauriIpc(page, {
+    memoryRecordCount: 4,
+    dialogOpenResult: "C:\\Users\\test\\backup.json",
+  });
+  await page.goto("/");
+
+  await page.locator(".memory-management-panel").getByRole("button", { name: "Restore..." }).click();
+
+  await expect(page.locator(".memory-overwrite-confirm")).toContainText("permanently overwrite 4 existing memories");
+
+  await page.getByRole("button", { name: "Overwrite and Restore" }).click();
+
+  await expect(page.locator(".memory-management-panel")).toContainText("Restored 1 record.");
+  await expect(page.locator(".memory-overwrite-confirm")).toHaveCount(0);
+});
+
+test("cancelling the overwrite confirmation leaves stored memory untouched", async ({ page }) => {
+  await mockTauriIpc(page, {
+    memoryRecordCount: 4,
+    dialogOpenResult: "C:\\Users\\test\\backup.json",
+  });
+  await page.goto("/");
+
+  await page.locator(".memory-management-panel").getByRole("button", { name: "Restore..." }).click();
+  await expect(page.locator(".memory-overwrite-confirm")).toBeVisible();
+
+  await page.getByRole("button", { name: "Cancel" }).click();
+
+  await expect(page.locator(".memory-overwrite-confirm")).toHaveCount(0);
+  await expect(page.locator(".memory-management-panel .metric-row")).toContainText("4");
 });
