@@ -2,7 +2,7 @@
 
 > *"Architecture is the bridge between vision and implementation. A strong foundation enables sustainable innovation."*
 
-**Version:** 1.10
+**Version:** 1.11
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | MOD-0001 |
 | Title | Platform Architecture Model |
-| Version | 1.10 |
+| Version | 1.11 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -559,7 +559,7 @@ Added at ESR-0048 WP2, per [[EIP-ESR0048-001_AGENT_FRAMEWORK_ARCHITECTURE_SCOPE|
 
 An agent capability that only reads or reports information, touching no local device or system state, may classify `ROUTINE_INTERACTION`. An agent capability that would control, configure or modify local device or system state must classify [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8A.1's `TrustCategory.LOCAL_AGENT_ACTION`, and therefore remains hard `DENY` until a future, separately-approved package names that specific action under Section 8A.3's Action Tiers and defines its reversal path per Section 8A.2. This section does not decide which agents fall into which category - it states the rule a future package must apply, cross-referencing GAM-0001 Section 8A as the authority rather than restating its Action Tiers table here.
 
-**Where the Engineering Agent fits.** Named in EBG-0042's own text as the first illustrative specialist agent. GIA-BOOT (`jarvis/gia/`, a Proof of Concept since ESR-0012) is a read-only observability capability, not an action-taking agent - it would classify `ROUTINE_INTERACTION` under the rule above if and when it is formally wired as a specialist agent, a future decision not made here. No other specific agent (Home Assistant, smart-home, or otherwise) is named or authorised by this section.
+**Where the Engineering Agent fits.** Named in EBG-0042's own text as the first illustrative specialist agent. GIA-BOOT (`jarvis/gia/`, a Proof of Concept since ESR-0012) is a read-only observability capability, not an action-taking agent - it was formally wired as a specialist agent at ESR-0049 (`gia-observability`), classified `ROUTINE_INTERACTION` exactly as this section anticipated. A second GIA-derived agent (`gia-engineering`, engineering self-observability) followed at ESR-0054/ESR-0055. A third, non-GIA specialist agent was delivered at ESR-0058 WP4: `home-assistant-state-query` (EBG-0127), a read-only Home Assistant entity-state query capability, also classified `ROUTINE_INTERACTION` under this same rule - it reads and reports a single named entity's state, never controlling or configuring a device, and therefore does not approach `LOCAL_AGENT_ACTION`. This corrects this section's own text, which previously and explicitly named "Home Assistant" as an example of an agent not yet authorised - stale since ESR-0058 WP4's delivery, found while updating this section for that same delivery (Documentation Debt Discipline, Whole-Document Staleness Sweep on Edit).
 
 **Explicit non-authorisation.** Mirroring GAM-0001 Section 8A.5's own pattern: this section does not implement the Agent Framework, does not wire any agent into `GuardianRuntime`, does not change `sentinel/policy.py`'s existing hard `DENY` for `LOCAL_AGENT_ACTION`, and does not authorise any specific agent or capability - all remain future, separately-approved implementation packages.
 
@@ -956,6 +956,7 @@ This relationship provides architectural traceability throughout the AI Engineer
 
 | Version | Date | Author | Summary |
 |---------|------------|-----------------------------------------|--------------------------------------------------------------------------|
+| 1.11 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP4, resolving EBG-0127 (Home Assistant Read-Only Smart-Home State Query Agent): a third specialist agent, `home-assistant-state-query`, delivered - `jarvis/agents/home_assistant_agent.py`, `ROUTINE_INTERACTION` classification, optionally registered in `build_default_runtime()` only when a Home Assistant instance is genuinely configured. "Where the Engineering Agent fits" corrected - it previously and explicitly named "Home Assistant" as an example of an agent not yet authorised, stale since this same delivery (Documentation Debt Discipline, Whole-Document Staleness Sweep on Edit). `GAM-0001` Section 8A's `LOCAL_AGENT_ACTION` hard `DENY` remains completely untouched - this agent only reads and reports state, never controls a device. |
 | 1.10 | 22 August 2026 | Claude Engineering Implementer | ESR-0051 WP7: corrected the "current accepted repository baseline" reference (Related Artefacts) from RBL-0031 to RBL-0032, established at ESR-0051 WP7 following the Programme Sponsor's Establish determination (WP2's Guardian Orb Phase 2 Cluster Illumination delivery is a genuine live product-capability change). |
 | 1.9 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP7: corrected the "current accepted repository baseline" reference (Related Artefacts) from RBL-0030 to RBL-0031, established at ESR-0050 WP7 following the Programme Sponsor's Establish determination (WP2's Agent Framework UXP Wiring delivery is a genuine live product-capability change). |
 | 1.8 | 5 August 2026 | Claude Engineering Implementer | ESR-0049 WP7: corrected the "current accepted repository baseline" reference (Related Artefacts) from RBL-0029 to RBL-0030, established at ESR-0049 WP7 following the Programme Sponsor's Establish determination (WP2's Agent Framework Phase 3 delivery is a genuine live product-capability change). |

@@ -34,9 +34,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, TextIO
 
-from jarvis.agents.contracts import AgentRequest
+from jarvis.agents.contracts import AgentRequest, SpecialistAgent
 from jarvis.agents.gia_agent import GiaObservabilityAgent
 from jarvis.agents.gia_engineering_agent import GiaEngineeringAgent
+from jarvis.agents.home_assistant_agent import HomeAssistantClient, HomeAssistantStateQueryAgent
 from jarvis.gia.engineering_observability import EngineeringStateObserver
 from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
@@ -136,6 +137,17 @@ KOKORO_LANG = "en-gb"
 # codebase has no mechanism to satisfy. No model is ever auto-downloaded
 # without this variable being set first.
 WHISPER_MODEL_PATH_ENV_VAR = "JARVIS_WHISPER_MODEL_PATH"
+
+# Home Assistant read-only state-query agent (EBG-0127, WR-ESR0057-001
+# Section 5): mirrors KOKORO_MODEL_PATH_ENV_VAR's absent-means-invisible
+# pattern - both must be present for the agent to register at all; a
+# missing base URL or token means the capability is not available on this
+# machine, not a startup failure. The token is a genuine bearer credential
+# (STD-0006 named-env-var indirection), read directly rather than wrapped
+# in CredentialReference, matching how KOKORO_MODEL_PATH_ENV_VAR's own
+# non-ProviderConfiguration-shaped capability reads its env vars directly.
+HOME_ASSISTANT_URL_ENV_VAR = "JARVIS_HOME_ASSISTANT_URL"
+HOME_ASSISTANT_TOKEN_ENV_VAR = "JARVIS_HOME_ASSISTANT_TOKEN"
 
 # Personal Memory store location (EIP-ESR0027-001). Overridable so tests never
 # touch the real store - the exact lesson learned from ESR-0026 WP1's Ollama
@@ -264,6 +276,23 @@ def _build_transcription_provider(
     return SentinelGatedTranscriptionProvider(gateway=gateway, provider=whisper_provider)
 
 
+def _build_home_assistant_agent(environ: Mapping[str, str]) -> HomeAssistantStateQueryAgent | None:
+    """Build the Home Assistant read-only state-query agent, or None if unconfigured.
+
+    Mirrors `_build_speech_provider()`'s absent-credential handling: an
+    absent or blank base URL or token means the capability is not
+    available on this deployment, not a startup failure - it simply does
+    not appear in `available_agents()`. No network call is made here;
+    `HomeAssistantClient` only calls out when an actual query is executed.
+    """
+
+    base_url = environ.get(HOME_ASSISTANT_URL_ENV_VAR)
+    token = environ.get(HOME_ASSISTANT_TOKEN_ENV_VAR)
+    if not base_url or not token:
+        return None
+    return HomeAssistantStateQueryAgent(HomeAssistantClient(base_url=base_url, token=token))
+
+
 def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianRuntime:
     """Build and start the production Guardian+Sentinel stack.
 
@@ -342,16 +371,23 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     # dependency, so it is always registered, reusing the same shared
     # `gateway` every other capability above already shares - not a freshly
     # constructed one (MOD-0001's mandatory-shared-gateway requirement).
-    agent_service = SentinelGatedAgentService(
-        gateway=gateway,
-        agents={
-            GiaObservabilityAgent.name: GiaObservabilityAgent(LocalResourceObserver()),
-            # GIA Phase 3a (EIP-ESR0054-002): reuses the same shared `gateway`
-            # instance every other capability above already shares, matching
-            # `GiaObservabilityAgent`'s own precedent immediately above.
-            GiaEngineeringAgent.name: GiaEngineeringAgent(EngineeringStateObserver()),
-        },
-    )
+    agents: dict[str, SpecialistAgent] = {
+        GiaObservabilityAgent.name: GiaObservabilityAgent(LocalResourceObserver()),
+        # GIA Phase 3a (EIP-ESR0054-002): reuses the same shared `gateway`
+        # instance every other capability above already shares, matching
+        # `GiaObservabilityAgent`'s own precedent immediately above.
+        GiaEngineeringAgent.name: GiaEngineeringAgent(EngineeringStateObserver()),
+    }
+    # EBG-0127 (ESR-0058 WP4): unlike the two GIA agents above, this one has
+    # a genuine external dependency (a configured Home Assistant instance)
+    # and is therefore optional, mirroring speech/transcription's own
+    # absent-credential-means-invisible pattern rather than GIA's
+    # always-registered one.
+    home_assistant_agent = _build_home_assistant_agent(environ)
+    if home_assistant_agent is not None:
+        agents[home_assistant_agent.name] = home_assistant_agent
+
+    agent_service = SentinelGatedAgentService(gateway=gateway, agents=agents)
 
     runtime = GuardianRuntime(
         conversation_provider=conversation_provider,

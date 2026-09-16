@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.9 |
+| Version | 0.12 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -94,6 +94,19 @@ New tests: 6 in `test_memory_store.py`, 2 in `test_memory_service.py`, 1 new plu
 
 **Post-commit independent review**: `submit-to-review`'s `--files` argument corrected to list all 14 actually-touched files, per the design review's own flagged gap. A further genuine scoped `copilot` invocation against the real pushed commit - **Pass**, independently verified against the transcript (single clean `return-findings` entry this time, `repository_ref: 0a409fd...` matching exactly - no repeat of WP2/WP3's earlier quoting-retry pattern). Confirmed the exact 14-file changed-set, no unrelated path touched, re-ran `pytest` (574 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) fresh against the committed state, both matching. **WP3 closed.**
 
+**WP4 - Home Assistant State Query Agent (Drafted):** Programme Sponsor selected EBG-0127 (the read-only state-query candidate WR-ESR0057-001 identified) as WP4. [[EIP-ESR0058-003_HOME_ASSISTANT_STATE_QUERY_AGENT|EIP-ESR0058-003]] drafted (v0.1):
+
+* `jarvis/agents/home_assistant_agent.py` (new file): `HomeAssistantClient` (a thin, real `urllib`-based REST wrapper for Home Assistant's `GET /api/states/<entity_id>`, Bearer long-lived-token auth - no new third-party HTTP dependency) and `HomeAssistantStateQueryAgent` (the third `SpecialistAgent`, classified `ROUTINE_INTERACTION`, requiring `parameters["entityId"]` - reports exactly the entity asked for, never a guessed one).
+* `jarvis/interfaces/stdio_rpc.py`: new `JARVIS_HOME_ASSISTANT_URL`/`JARVIS_HOME_ASSISTANT_TOKEN` env vars, a `_build_home_assistant_agent()` helper mirroring Kokoro/Whisper's absent-credential-means-invisible pattern (optional, unlike GIA's always-registered agents, since this has a genuine external dependency), `build_default_runtime()`'s `agents` dict changed from a literal to mutable so the agent can be conditionally added. **No new RPC method** - reachable through the existing `guardian.agent.invoke`/`guardian.agent.list`, unlike WP2/WP3's each needing a new method.
+* **Real finding caught while updating documentation, not by review**: `aiems/models/MOD-0001_PLATFORM_ARCHITECTURE_MODEL.md`'s "Agent Framework" section explicitly named "Home Assistant" as an example of an agent *not yet* authorised - directly contradicted by this Work Package's own delivery. Corrected in the same edit (Documentation Debt Discipline, Whole-Document Staleness Sweep on Edit), recording all three specialist agents now delivered (`gia-observability`, `gia-engineering`, `home-assistant-state-query`).
+* EBG-0127 closed Complete in EBR-0001.
+
+New tests: 7 in `test_agents.py` (client constructor validation, Bearer-header/URL confirmation via a fake `urlopen`, connection-failure handling, agent name/behaviour/parameter-validation), 2 in `test_stdio_rpc.py` (absent-configuration invisibility, present-configuration registration-and-invocation through the real RPC path). Full suite: 583 passed, 1 skipped (up from 574). `validate_repository.py`: 0 errors, 332 warnings.
+
+**Disclosed process note** (same pattern as every prior Work Package this session): drafted and implemented directly against the working tree before Programme Sponsor review of this specific content.
+
+**Design review**: routed through the real bridge (`init`/`submit-to-review` for `ESR-0058`/`WP4`, complete 9-file `files_in_scope` this time) and reviewed by GitHub Copilot CLI. **Verdict: Pass**, single clean `return-findings` entry, independently verified against the transcript (`repository_ref: 59e9ea3...` matching HEAD exactly). Traced further than requested - into `sentinel/policy.py`'s actual `TrustTierPolicy.classify()` logic itself, not merely the request construction - confirming no `payload_type`/`capability` value this agent sets can reach `LOCAL_AGENT_ACTION`. Confirmed `_build_home_assistant_agent()`'s `None`-on-absent-credential behaviour and `available_agents()`'s correct omission/inclusion; confirmed `HomeAssistantClient.get_state()` raises rather than fabricates on failure; confirmed all 9 files (7 modified, 2 new/untracked) match exactly, correctly noting `git diff --stat` alone omits untracked files (why it showed only 7) rather than treating that as a discrepancy. Re-ran `pytest` (583 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) independently, both matching.
+
 ---
 
 # 4. Engineering Authority
@@ -119,6 +132,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP1 | Technical Feasibility Test (scoped Copilot CLI invocation) | Complete - Pass, no classifier block |
 | WP2 | Engineering Reviewer Re-appointment | Complete (EIP-ESR0058-001 v1.0) - committed `ab57938`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation (first under the new standing arrangement) |
 | WP3 | BRD-0001 Recovery Implementation | Complete (EIP-ESR0058-002 v1.0) - committed `0a409fd`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
+| WP4 | Home Assistant State Query Agent | Approved (EIP-ESR0058-003 v1.0) - design-reviewed Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved; pending commit/push through `submit-response` |
 
 ---
 
@@ -126,6 +140,9 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.12 | 16 September 2026 | Claude Engineering Implementer | WP4 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-003 synced to v1.0. Pending commit/push through submit-response. |
+| 0.11 | 16 September 2026 | Claude Engineering Implementer | WP4 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass, traced into sentinel/policy.py's own classify logic. Awaiting Programme Sponsor approval. |
+| 0.10 | 16 September 2026 | Claude Engineering Implementer | WP4 drafted: Home Assistant read-only state-query agent implemented per EIP-ESR0058-003 v0.1 - HomeAssistantClient, HomeAssistantStateQueryAgent (third specialist agent, ROUTINE_INTERACTION), optionally registered only when configured. Real finding caught while updating MOD-0001: its own text explicitly named Home Assistant as not-yet-authorised, now stale, corrected. Full suite 583 passed/1 skipped. Not yet reviewed, approved or committed. |
 | 0.3 | 16 September 2026 | Claude Engineering Implementer | WP2 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. First genuine end-to-end use of the renamed `reviewer` identity, independently verified (transcript `sender: reviewer`, real `.aiems-exchange/reviewer/outbox/` file). Awaiting Programme Sponsor approval. |
 | 0.9 | 16 September 2026 | Claude Engineering Implementer | WP3 closed: committed `0a409fd`, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry (the files_in_scope correction worked). |
 | 0.8 | 16 September 2026 | Claude Engineering Implementer | WP3 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-002 synced to v1.0. Pending commit/push through submit-response. |

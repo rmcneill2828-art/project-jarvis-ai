@@ -1,6 +1,8 @@
 """Tests for the Agent Framework contract and GiaObservabilityAgent."""
 
+import json
 from datetime import UTC, datetime
+from typing import Self
 
 import pytest
 
@@ -8,6 +10,10 @@ from jarvis.agents.contracts import AgentRequest, AgentResult
 from jarvis.agents.gia_agent import STATUS_REPORTED, GiaObservabilityAgent
 from jarvis.agents.gia_engineering_agent import STATUS_REPORTED as ENGINEERING_STATUS_REPORTED
 from jarvis.agents.gia_engineering_agent import GiaEngineeringAgent
+from jarvis.agents.home_assistant_agent import (
+    STATUS_REPORTED as HOME_ASSISTANT_STATUS_REPORTED,
+)
+from jarvis.agents.home_assistant_agent import HomeAssistantClient, HomeAssistantStateQueryAgent
 from jarvis.gia.engineering_observability import EngineeringSnapshot
 from jarvis.gia.observability import GiaSnapshot
 
@@ -137,3 +143,93 @@ def test_gia_engineering_agent_ignores_request_parameters() -> None:
     result = agent.execute(AgentRequest(task="anything", parameters={"unused": "value"}))
 
     assert result.status == ENGINEERING_STATUS_REPORTED
+
+
+class _FakeUrlopenResponse:
+    def __init__(self, payload_bytes: bytes) -> None:
+        self._payload_bytes = payload_bytes
+
+    def read(self) -> bytes:
+        return self._payload_bytes
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        return None
+
+
+def test_home_assistant_client_rejects_empty_base_url() -> None:
+    with pytest.raises(ValueError, match="base_url"):
+        HomeAssistantClient(base_url="  ", token="secret")
+
+
+def test_home_assistant_client_rejects_empty_token() -> None:
+    with pytest.raises(ValueError, match="token"):
+        HomeAssistantClient(base_url="http://homeassistant.local:8123", token="  ")
+
+
+def test_home_assistant_client_get_state_sends_bearer_auth_header(monkeypatch) -> None:
+    captured_requests = []
+
+    def _fake_urlopen(request, timeout):
+        captured_requests.append(request)
+        return _FakeUrlopenResponse(json.dumps({"state": "21.5", "last_changed": "2026-09-16T08:00:00+00:00"}).encode())
+
+    monkeypatch.setattr("jarvis.agents.home_assistant_agent.urllib.request.urlopen", _fake_urlopen)
+    client = HomeAssistantClient(base_url="http://homeassistant.local:8123/", token="secret-token")
+
+    state = client.get_state("sensor.living_room_temperature")
+
+    assert state == {"state": "21.5", "last_changed": "2026-09-16T08:00:00+00:00"}
+    assert len(captured_requests) == 1
+    sent = captured_requests[0]
+    assert sent.full_url == "http://homeassistant.local:8123/api/states/sensor.living_room_temperature"
+    assert sent.get_header("Authorization") == "Bearer secret-token"
+
+
+def test_home_assistant_client_get_state_raises_on_connection_failure(monkeypatch) -> None:
+    import urllib.error
+
+    def _fake_urlopen(request, timeout):
+        raise urllib.error.URLError("connection refused")
+
+    monkeypatch.setattr("jarvis.agents.home_assistant_agent.urllib.request.urlopen", _fake_urlopen)
+    client = HomeAssistantClient(base_url="http://homeassistant.local:8123", token="secret-token")
+
+    with pytest.raises(RuntimeError, match="sensor.front_door"):
+        client.get_state("sensor.front_door")
+
+
+class _FakeHomeAssistantClient:
+    def __init__(self, state: dict[str, object]) -> None:
+        self._state = state
+        self.requested_entity_id: str | None = None
+
+    def get_state(self, entity_id: str) -> dict[str, object]:
+        self.requested_entity_id = entity_id
+        return self._state
+
+
+def test_home_assistant_state_query_agent_name() -> None:
+    assert HomeAssistantStateQueryAgent.name == "home-assistant-state-query"
+
+
+def test_home_assistant_state_query_agent_reports_requested_entity_state() -> None:
+    client = _FakeHomeAssistantClient({"state": "locked", "last_changed": "2026-09-16T07:00:00+00:00"})
+    agent = HomeAssistantStateQueryAgent(client)
+
+    result = agent.execute(AgentRequest(task="query", parameters={"entityId": "lock.front_door"}))
+
+    assert result.status == HOME_ASSISTANT_STATUS_REPORTED
+    assert result.payload["entityId"] == "lock.front_door"
+    assert result.payload["state"] == "locked"
+    assert result.payload["lastChanged"] == "2026-09-16T07:00:00+00:00"
+    assert client.requested_entity_id == "lock.front_door"
+
+
+def test_home_assistant_state_query_agent_requires_entity_id_parameter() -> None:
+    agent = HomeAssistantStateQueryAgent(_FakeHomeAssistantClient({"state": "x"}))
+
+    with pytest.raises(ValueError, match="entityId"):
+        agent.execute(AgentRequest(task="query"))

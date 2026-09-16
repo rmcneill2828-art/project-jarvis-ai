@@ -470,6 +470,50 @@ def test_guardian_agent_invoke_rpc_returns_real_gia_engineering_snapshot(tmp_pat
     assert "capturedAt" in result["payload"]
 
 
+def test_home_assistant_agent_absent_when_unconfigured(tmp_path):
+    """EBG-0127: mirrors speech/transcription's own absent-credential
+    pattern - no JARVIS_HOME_ASSISTANT_URL/TOKEN means the agent simply
+    does not appear, not a startup failure."""
+
+    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db")})
+
+    assert "home-assistant-state-query" not in runtime.available_agents()
+
+
+def test_home_assistant_agent_registered_and_invokable_when_configured(tmp_path, monkeypatch):
+    def _fake_urlopen(request, timeout):
+        class _FakeResponse:
+            def read(self) -> bytes:
+                return json.dumps({"state": "21.5", "last_changed": "2026-09-16T08:00:00+00:00"}).encode()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc_info):
+                return None
+
+        return _FakeResponse()
+
+    monkeypatch.setattr("jarvis.agents.home_assistant_agent.urllib.request.urlopen", _fake_urlopen)
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "JARVIS_HOME_ASSISTANT_URL": "http://homeassistant.local:8123",
+            "JARVIS_HOME_ASSISTANT_TOKEN": "secret-token",
+        }
+    )
+    server = StdioRpcServer(runtime)
+
+    assert "home-assistant-state-query" in runtime.available_agents()
+    result = server._methods["guardian.agent.invoke"](
+        {"agent": "home-assistant-state-query", "task": "query", "parameters": {"entityId": "sensor.living_room_temperature"}}
+    )
+
+    assert result["status"] == "reported"
+    assert result["payload"]["state"] == "21.5"
+    assert result["payload"]["entityId"] == "sensor.living_room_temperature"
+
+
 def test_guardian_agent_invoke_rpc_unknown_agent_returns_unknown_agent_shape(tmp_path):
     server = _server(tmp_path)
 
