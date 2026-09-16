@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.8 |
+| Version | 0.9 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -88,6 +88,12 @@ New tests: 6 in `test_memory_store.py`, 2 in `test_memory_service.py`, 1 new plu
 * Confirmed `confirmOverwrite` defaults `False` at the RPC handler itself (`stdio_rpc.py`), independent of the store/service layers' own defaults - not merely relying on a single point of the default being correct.
 * Re-ran `pytest` (574 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) independently, both matching.
 
+**Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0058-002_BRD-0001_RECOVERY_IMPLEMENTATION|EIP-ESR0058-002]] synced to v1.0 (Approved - implemented).
+
+**Committed and pushed** (`0a409fd`, `9289232..0a409fd`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review**: `submit-to-review`'s `--files` argument corrected to list all 14 actually-touched files, per the design review's own flagged gap. A further genuine scoped `copilot` invocation against the real pushed commit - **Pass**, independently verified against the transcript (single clean `return-findings` entry this time, `repository_ref: 0a409fd...` matching exactly - no repeat of WP2/WP3's earlier quoting-retry pattern). Confirmed the exact 14-file changed-set, no unrelated path touched, re-ran `pytest` (574 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) fresh against the committed state, both matching. **WP3 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -112,7 +118,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | Technical Feasibility Test (scoped Copilot CLI invocation) | Complete - Pass, no classifier block |
 | WP2 | Engineering Reviewer Re-appointment | Complete (EIP-ESR0058-001 v1.0) - committed `ab57938`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation (first under the new standing arrangement) |
-| WP3 | BRD-0001 Recovery Implementation | Approved (EIP-ESR0058-002 v1.0) - design-reviewed Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved; pending commit/push through `submit-response` |
+| WP3 | BRD-0001 Recovery Implementation | Complete (EIP-ESR0058-002 v1.0) - committed `0a409fd`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 
 ---
 
@@ -121,6 +127,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 0.3 | 16 September 2026 | Claude Engineering Implementer | WP2 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass. First genuine end-to-end use of the renamed `reviewer` identity, independently verified (transcript `sender: reviewer`, real `.aiems-exchange/reviewer/outbox/` file). Awaiting Programme Sponsor approval. |
+| 0.9 | 16 September 2026 | Claude Engineering Implementer | WP3 closed: committed `0a409fd`, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry (the files_in_scope correction worked). |
 | 0.8 | 16 September 2026 | Claude Engineering Implementer | WP3 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-002 synced to v1.0. Pending commit/push through submit-response. |
 | 0.7 | 16 September 2026 | Claude Engineering Implementer | WP3 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass, first genuine product-code review under the new arrangement. Caught a real (benign) files_in_scope omission in the submit-to-review call. Awaiting Programme Sponsor approval. |
 | 0.6 | 16 September 2026 | Claude Engineering Implementer | WP3 drafted: BRD-0001 recovery implemented per EIP-ESR0058-002 v0.1 - PersonalMemoryStore.import_snapshot(), PersonalMemoryService.restore_backup(), GuardianRuntime.restore_memory(), new memory.restore RPC method. A real gap caught during implementation: import_snapshot() initially rejected export_snapshot()'s own tuple output, fixed before testing. Full suite 574 passed/1 skipped. Not yet reviewed, approved or committed. |
