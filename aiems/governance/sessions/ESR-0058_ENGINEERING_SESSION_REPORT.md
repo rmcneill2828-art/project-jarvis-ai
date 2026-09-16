@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.12 |
+| Version | 0.13 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -107,6 +107,12 @@ New tests: 7 in `test_agents.py` (client constructor validation, Bearer-header/U
 
 **Design review**: routed through the real bridge (`init`/`submit-to-review` for `ESR-0058`/`WP4`, complete 9-file `files_in_scope` this time) and reviewed by GitHub Copilot CLI. **Verdict: Pass**, single clean `return-findings` entry, independently verified against the transcript (`repository_ref: 59e9ea3...` matching HEAD exactly). Traced further than requested - into `sentinel/policy.py`'s actual `TrustTierPolicy.classify()` logic itself, not merely the request construction - confirming no `payload_type`/`capability` value this agent sets can reach `LOCAL_AGENT_ACTION`. Confirmed `_build_home_assistant_agent()`'s `None`-on-absent-credential behaviour and `available_agents()`'s correct omission/inclusion; confirmed `HomeAssistantClient.get_state()` raises rather than fabricates on failure; confirmed all 9 files (7 modified, 2 new/untracked) match exactly, correctly noting `git diff --stat` alone omits untracked files (why it showed only 7) rather than treating that as a discrepancy. Re-ran `pytest` (583 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) independently, both matching.
 
+**Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0058-003_HOME_ASSISTANT_STATE_QUERY_AGENT|EIP-ESR0058-003]] synced to v1.0 (Approved - implemented).
+
+**Committed and pushed** (`9f8923f`, `59e9ea3..9f8923f`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit, complete 9-file scope from the start - **Pass**, independently verified against the transcript (`repository_ref: 9f8923f...` matching exactly, single clean entry). Confirmed the exact 9-file changed-set, no unrelated path touched, re-ran `pytest` (583 passed/1 skipped) and `validate_repository.py` (0 errors, 332 warnings) fresh against the committed state, both matching. **WP4 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -132,7 +138,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP1 | Technical Feasibility Test (scoped Copilot CLI invocation) | Complete - Pass, no classifier block |
 | WP2 | Engineering Reviewer Re-appointment | Complete (EIP-ESR0058-001 v1.0) - committed `ab57938`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation (first under the new standing arrangement) |
 | WP3 | BRD-0001 Recovery Implementation | Complete (EIP-ESR0058-002 v1.0) - committed `0a409fd`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
-| WP4 | Home Assistant State Query Agent | Approved (EIP-ESR0058-003 v1.0) - design-reviewed Pass via genuine GitHub Copilot CLI invocation; Programme Sponsor approved; pending commit/push through `submit-response` |
+| WP4 | Home Assistant State Query Agent | Complete (EIP-ESR0058-003 v1.0) - committed `9f8923f`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 
 ---
 
@@ -140,6 +146,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.13 | 16 September 2026 | Claude Engineering Implementer | WP4 closed: committed `9f8923f`, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.12 | 16 September 2026 | Claude Engineering Implementer | WP4 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-003 synced to v1.0. Pending commit/push through submit-response. |
 | 0.11 | 16 September 2026 | Claude Engineering Implementer | WP4 design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge - Pass, traced into sentinel/policy.py's own classify logic. Awaiting Programme Sponsor approval. |
 | 0.10 | 16 September 2026 | Claude Engineering Implementer | WP4 drafted: Home Assistant read-only state-query agent implemented per EIP-ESR0058-003 v0.1 - HomeAssistantClient, HomeAssistantStateQueryAgent (third specialist agent, ROUTINE_INTERACTION), optionally registered only when configured. Real finding caught while updating MOD-0001: its own text explicitly named Home Assistant as not-yet-authorised, now stale, corrected. Full suite 583 passed/1 skipped. Not yet reviewed, approved or committed. |
