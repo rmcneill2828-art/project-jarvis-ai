@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.45 |
+| Version | 1.46 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -580,7 +580,7 @@ This is a documentation architecture principle, not a software design principle.
 
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current programme status used during implementation session initialisation.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines the lightweight collaboration context that complements this playbook.
-* [[RBL-0037_REPOSITORY_BASELINE|RBL-0037]] records the current accepted repository baseline, established at ESR-0057 (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment). [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
+* [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]] records the current accepted repository baseline, established at ESR-0058 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP). [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
 * [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] is the forward-looking sequencing artefact referenced by Backlog Progression Analysis.
@@ -601,7 +601,7 @@ This is a documentation architecture principle, not a software design principle.
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact; its horizon placements inform Backlog Progression Analysis recommendations. |
-| [[RBL-0037_REPOSITORY_BASELINE|RBL-0037]] | Current accepted repository baseline, established at ESR-0057 (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment). |
+| [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]] | Current accepted repository baseline, established at ESR-0058 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP). |
 | [[HST-0023_CLAUDE_CHAT_SUMMARY|HST-0023]] | Final historical session record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[FCH-0023_CLAUDE_FULL_CHAT_HISTORY|FCH-0023]] | Final full chat historical evidence record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Historical session record retained for lineage; no longer the latest archive entry. |
@@ -615,6 +615,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.46 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP8: corrected the stale RBL-0037 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0038, established at ESR-0058 WP8 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP) - the Programme Sponsor's Establish determination following session-wide WP7's genuine GitHub Copilot CLI Conditional Pass verdict. |
 | 1.45 | 14 September 2026 | Claude Engineering Implementer | ESR-0057 WP7: corrected the stale RBL-0036 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0037, established at ESR-0057 WP7 (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict, self-verified only this session (no independent AI review available). |
 | 1.44 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP7: corrected the stale RBL-0035 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0036, established at ESR-0056 WP7 (esbuild/vite Security Upgrade; DRA-0001 Device Bootstrap and Restore Architecture) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict. |
 | 1.43 | 28 August 2026 | Claude Engineering Implementer | ESR-0055 WP7: corrected the stale RBL-0034 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0035, established at ESR-0055 WP7 (GIA Phase 3b/3c: Repository Health and Register State Observability, completing EBG-0083 Phase 3 in full) - the Programme Sponsor's Establish determination following session-wide WP6's Pass verdict. |

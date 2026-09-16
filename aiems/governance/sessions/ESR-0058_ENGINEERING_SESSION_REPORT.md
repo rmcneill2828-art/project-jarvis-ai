@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0058 |
 | Title | Engineering Session Report |
-| Version | 0.22 |
-| Status | Open |
+| Version | 1.0 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0058 |
 | Date Opened | 16 September 2026 |
-| Date Closed | - |
-| Closure Status | Open - WP1 through WP7 complete (WP7 Conditional Pass, one finding fixed); WP8 baseline determination pending |
+| Date Closed | 16 September 2026 |
+| Closure Status | Closed - all eight Work Packages complete; RBL-0038 established, superseding RBL-0037 |
 
 ---
 
@@ -183,7 +183,7 @@ Resolve EBG-0126. Work Package plan to be confirmed with the Programme Sponsor b
 | WP5 | Playwright E2E Reliability (EBG-0129) | Complete (EIP-ESR0058-004 v1.0) - committed `b61f984`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP6 | Memory Management UXP Surface (EBG-0131) | Complete (EIP-ESR0058-005 v1.0) - committed `9a0737b`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP7 | Session-wide Independent Repository Verification | Complete - Conditional Pass via genuine GitHub Copilot CLI invocation (one real finding, fixed) |
-| WP8 | Session-wide Repository Baseline Determination | Pending Programme Sponsor determination |
+| WP8 | Session-wide Repository Baseline Determination | Complete - Establish RBL-0038, superseding RBL-0037 |
 
 ---
 
@@ -208,10 +208,21 @@ Advisory baseline assessment (from the reviewer's own independent judgement): **
 
 ---
 
+# 7B. Session-Wide WP8 - Repository Baseline Determination
+
+**The Programme Sponsor's determination**: **establish a new baseline**, agreeing with both the Engineering Implementer's and the newly-restored Engineering Reviewer's own advisory. [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]] created and accepted, superseding RBL-0037.
+
+Every controlled artefact's "current accepted repository baseline" pointer updated to RBL-0038: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] (1.27 to 1.28), [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (1.45 to 1.46), [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] (2.13 to 2.14, pointer-only - the Home Assistant agent and Memory Management UXP capabilities not yet reflected, flagged as EBG-0134), [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] (2.12 to 2.13, pointer-only) and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (3.40 to 3.41, full closure sweep - Current Mode/Baseline/Phase/Workflow/Objective, the Prior Session rolling window shifted (ESR-0057 added, ESR-0054 dropped), JARVIS Capability Maturity and Product Baseline rows, current test/validation figures). README.md (uncontrolled, no REG-0001 row) updated to match.
+
+**ESR-0058 formally closed.**
+
+---
+
 # 8. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 16 September 2026 | Programme Sponsor | ESR-0058 formally closed. WP8: Establish [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]], superseding RBL-0037, agreeing with both the Engineering Implementer's and the newly-restored GitHub Copilot CLI Engineering Reviewer's own advisory. Every controlled artefact's baseline pointer synced to RBL-0038. Eight Work Packages complete: Engineering Reviewer succession (WP1/WP2), BRD-0001 recovery (WP3), Home Assistant agent (WP4), Playwright reliability fix (WP5), Memory Management UXP (WP6), session-wide independent verification (WP7, Conditional Pass, one finding fixed), session-wide baseline determination (WP8). |
 | 0.22 | 16 September 2026 | Claude Engineering Implementer | WP7 (session-wide independent verification) complete: Conditional Pass via genuine GitHub Copilot CLI invocation over the full c8999c8..HEAD range (10 commits, 36 files). One real finding (EBR-0001's EBG-0126 row still Candidate Backlog despite the work being done) caught by the reviewer and fixed immediately. Reviewer's advisory: Establish a new baseline. WP8 baseline determination pending Programme Sponsor decision. |
 | 0.21 | 16 September 2026 | Claude Engineering Implementer | WP6 closed: committed `9a0737b`, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.20 | 16 September 2026 | Claude Engineering Implementer | WP6 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0058-005 synced to v1.0. EBG-0131 closed Complete. Pending commit/push. |

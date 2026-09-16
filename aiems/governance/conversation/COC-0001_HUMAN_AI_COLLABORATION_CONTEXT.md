@@ -2,7 +2,7 @@
 
 **Status:** Approved
 
-**Version:** 1.27
+**Version:** 1.28
 
 ---
 
@@ -247,7 +247,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review [[RBL-0037_REPOSITORY_BASELINE|RBL-0037]], the current accepted repository baseline.
+* Review [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]], the current accepted repository baseline.
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -263,7 +263,7 @@ Before beginning engineering activities:
 
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
-* [[RBL-0037_REPOSITORY_BASELINE|RBL-0037]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0057 WP7 on 14 September 2026, superseding [[RBL-0036_REPOSITORY_BASELINE|RBL-0036]].
+* [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0058 WP8 on 16 September 2026, superseding [[RBL-0037_REPOSITORY_BASELINE|RBL-0037]].
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
@@ -279,7 +279,7 @@ Before beginning engineering activities:
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing Engineering Implementer behaviour that complements COC-0001. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used for session reload and synchronisation. |
-| [[RBL-0037_REPOSITORY_BASELINE|RBL-0037]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0057 WP7 on 14 September 2026, superseding RBL-0036. |
+| [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0058 WP8 on 16 September 2026, superseding RBL-0037. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed session report that hands over to ESR-0009 validation readiness. |
 
 ---
@@ -287,6 +287,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.28 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP8: corrected the RBL-0037 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0038, established at ESR-0058 WP8 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP), superseding RBL-0037. |
 | 1.27 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP2: re-appointed the Engineering Reviewer role - ChatGPT/Codex confirmed retired on cost grounds at ESR-0057 WP1, GitHub Copilot CLI appointed as the new permanent holder per Programme Sponsor decision, resolving EBG-0126. `scripts/aiems_bridge.py` role-locking generalised from hardcoded "codex" to role-based "reviewer" identity in the same Work Package. |
 | 1.26 | 14 September 2026 | Claude Engineering Implementer | ESR-0057 WP7: corrected the RBL-0036 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0037, established at ESR-0057 WP7 (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment), superseding RBL-0036. |
 | 1.25 | 4 September 2026 | Claude Engineering Implementer | ESR-0056 WP7: corrected the RBL-0035 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0036, established at ESR-0056 WP7 (esbuild/vite Security Upgrade; DRA-0001 Device Bootstrap and Restore Architecture), superseding RBL-0035. |
