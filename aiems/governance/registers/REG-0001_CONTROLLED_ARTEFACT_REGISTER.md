@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.611
+**Version:** 3.619
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.611 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.619 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.196 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.197 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -162,14 +162,14 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0036 | Repository Baseline | ESR-0056 Repository Baseline (esbuild/vite Security Upgrade; DRA-0001 Device Bootstrap and Restore Architecture) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0056 | `aiems/governance/baselines/` |
 | RBL-0037 | Repository Baseline | ESR-0057 Repository Baseline (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0057 | `aiems/governance/baselines/` |
 | RBL-0038 | Repository Baseline | ESR-0058 Repository Baseline (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0058 | `aiems/governance/baselines/` |
-| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.15 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.16 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | RSC-0001 | v1.0 Readiness Scorecard | v1.0 Readiness Scorecard | 1.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | LGB-0001 | Launch Gap Backlog | Launch Gap Backlog | 1.2 | Accepted | Programme Sponsor | RSC-0001 | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
-| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.14 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
+| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.15 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.11 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
-| CURRENT_ARCHITECTURE | Architecture Snapshot | AIEMS Current Architecture | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/architecture/` |
+| CURRENT_ARCHITECTURE | Architecture Snapshot | AIEMS Current Architecture | 1.2 | Approved | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/architecture/` |
 | AAM-0001 | Model | Guardian Identity and Cognitive Architecture | 0.9 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/models/` |
 | GAM-0001 | Model | Guardian Authority and Boundary Model | 1.5 | Approved | Programme Sponsor & Chief Engineering Advisor | SAM-0001 | `aiems/models/` |
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.5 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
@@ -251,7 +251,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.3 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 3.42 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 3.43 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -320,10 +320,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0058-003 | Engineering Implementation Package | Home Assistant State Query Agent | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-004 | Engineering Implementation Package | Playwright E2E Reliability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-005 | Engineering Implementation Package | Memory Management UXP Surface | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0059 | Engineering Session Report | Engineering Session Report | 0.12 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0059 | Engineering Session Report | Engineering Session Report | 0.15 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0059-001 | Engineering Implementation Package | Critical Runtime Safety Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-002 | Engineering Implementation Package | Restore the CI Python Gate | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-003 | Engineering Implementation Package | Honest Provider-Failure Replies | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0059-004 | Engineering Implementation Package | Gemini Secondary Provider | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -438,6 +439,14 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.619 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4 approved: synced EIP-ESR0059-004 row (0.1 to 1.0, Approved - implemented) by hand. |
+| 3.618 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.14 to 0.15) following: WP4 approved via Programme Sponsor direct chat instruction ("Approved"); disclosed self-verification accepted while Copilot quota is exhausted, retrospective review owed. EIP-ESR0059-004 synced to v1.0. |
+| 3.617 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.13 to 0.14) following: WP4 design review Conditional Pass (one documentation finding, fixed). Re-review blocked: GitHub Copilot CLI monthly quota exhausted mid-review; disclosed self-verification substituted. Awaiting Programme Sponsor approval and decision on review coverage. |
+| 3.616 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: registered EIP-ESR0059-004 (0.1, Draft - Gemini Secondary Provider); CURRENT_ARCHITECTURE (1.1 to 1.2) and JARVIS Capability Readiness Matrix (2.14 to 2.15) rows synced by hand. |
+| 3.615 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.12 to 0.13) following: WP4 drafted per EIP-ESR0059-004 v0.1: Gemini as credential-gated secondary provider. Not yet reviewed, approved or committed. |
+| 3.614 | 29 September 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.196 to 1.197) following: ESR-0059 WP4: EBG-0051 records the Gemini production-route decision as authorised and delivered (EIP-ESR0059-004); EBG-0140 records the routing part delivered, retry/backoff/circuit-breaker scope still open. |
+| 3.613 | 29 September 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.42 to 3.43) following: ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). |
+| 3.612 | 29 September 2026 | Claude Engineering Implementer | Aligned PCB-0001 version (2.15 to 2.16) following: ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). Also corrected the Current Constraints and Conversation Workspace claims that the deterministic local provider is a production fallback - both missed by ESR-0059 WP3; the second caught by the WP4 design review. |
 | 3.611 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.11 to 0.12) following: WP3 closed: committed 0790ea9, pushed; CI green on all four jobs; genuine post-commit review Pass via GitHub Copilot CLI, no findings. |
 | 3.610 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP3 approved: synced EIP-ESR0059-003 row (0.2 to 1.0, Approved - implemented) by hand. |
 | 3.609 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.10 to 0.11) following: WP3 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-003 synced to v1.0. Pending commit/push. |

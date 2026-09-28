@@ -74,6 +74,15 @@ JSONRPC_VERSION = "2.0"
 PRIMARY_PROVIDER_ENV_VAR = "JARVIS_PRIMARY_PROVIDER"
 DEFAULT_PRIMARY_PROVIDER = "openai"
 
+# Secondary cloud provider (EBG-0140/EBG-0051, ESR-0059 WP4, on the
+# Programme Sponsor's decision to add Gemini between OpenAI and Ollama).
+# Unset, the secondary is whichever of openai/gemini is not primary -
+# registered only when its own credential is present, like the primary.
+# "none" disables it: every failover call to a cloud provider is billed, so
+# a deployment can opt out without removing its key.
+SECONDARY_PROVIDER_ENV_VAR = "JARVIS_SECONDARY_PROVIDER"
+NO_SECONDARY_PROVIDER = "none"
+
 # Per-provider credential/model env var names and default models, matching the
 # established convention from scripts/wp5_first_conversation_demo.py (OpenAI)
 # and scripts/gemini_provider_smoke_test.py (Gemini).
@@ -200,7 +209,10 @@ def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvide
     spec = _REAL_PROVIDER_SPECS.get(name)
     if spec is None:
         return None
-    if not environ.get(spec["credential_env_var"]):
+    # A whitespace-only credential is absent, not present (found at ESR-0059
+    # WP4): treating it as present registered a provider that then failed
+    # with an authentication error on every call, costing its timeout.
+    if not (environ.get(spec["credential_env_var"]) or "").strip():
         return None
     # A present-but-blank model env var must fall through to the default model,
     # same as an absent one - environ.get(key, default) alone would let a blank
@@ -296,6 +308,25 @@ def _build_home_assistant_agent(environ: Mapping[str, str]) -> HomeAssistantStat
     return HomeAssistantStateQueryAgent(HomeAssistantClient(base_url=base_url, token=token))
 
 
+def _secondary_provider_name(primary_name: str, environ: Mapping[str, str]) -> str | None:
+    """Return the secondary cloud provider's name, or None when there is none.
+
+    Unset or blank `JARVIS_SECONDARY_PROVIDER` means "the other one" of
+    openai/gemini; `none` disables the secondary; any other value names it
+    directly (an unknown name, like an unknown primary, simply builds
+    nothing in `_build_real_provider()`). Returning the primary's own name
+    is harmless - `build_default_runtime()` never registers a provider twice.
+    """
+
+    configured = (environ.get(SECONDARY_PROVIDER_ENV_VAR) or "").strip().lower()
+    if configured == NO_SECONDARY_PROVIDER:
+        return None
+    if configured:
+        return configured
+    others = [name for name in _REAL_PROVIDER_SPECS if name != primary_name]
+    return others[0] if len(others) == 1 else None
+
+
 def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianRuntime:
     """Build and start the production Guardian+Sentinel stack.
 
@@ -303,7 +334,11 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     JARVIS_PRIMARY_PROVIDER, default "openai" per PEM-001's Primary
     designation) as the primary text-generation route provider only when its
     credential env var is present and non-blank in `environ` (EBG-0070,
-    ESR-0022), followed by the local Ollama fallback (EBG-0075). There is no
+    ESR-0022). The other cloud provider follows as secondary when its own
+    credential is present (ESR-0059 WP4; `JARVIS_SECONDARY_PROVIDER` names it
+    explicitly, or `none` disables it), then the local Ollama fallback
+    (EBG-0075). A selected primary without a credential is skipped, not
+    fatal - a credentialled secondary still serves. There is no
     further failover: until ESR-0059 WP3 (EBG-0141) a deterministic
     LocalEchoProvider ended the route, but it echoed the user's own message
     back as Guardian's answer and that echo was recorded into conversation
@@ -339,10 +374,13 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
 
     route_providers: list[str] = []
     primary_name = environ.get(PRIMARY_PROVIDER_ENV_VAR, DEFAULT_PRIMARY_PROVIDER)
-    real_provider = _build_real_provider(primary_name, environ)
-    if real_provider is not None:
-        orchestrator.register_provider(real_provider)
-        route_providers.append(real_provider.name)
+    for cloud_name in (primary_name, _secondary_provider_name(primary_name, environ)):
+        if cloud_name is None or cloud_name in route_providers:
+            continue
+        real_provider = _build_real_provider(cloud_name, environ)
+        if real_provider is not None:
+            orchestrator.register_provider(real_provider)
+            route_providers.append(real_provider.name)
 
     ollama_model = environ.get(OLLAMA_MODEL_ENV_VAR) or DEFAULT_OLLAMA_MODEL
     ollama_configuration = ProviderConfiguration(

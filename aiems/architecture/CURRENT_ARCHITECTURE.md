@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | CURRENT_ARCHITECTURE |
 | Title | AIEMS Current Architecture |
-| Version | 1.1 |
+| Version | 1.2 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -126,7 +126,7 @@ Implemented since ESR-0016, previously undocumented here:
 - **Audit logging** (`sentinel/audit.py`): every `SentinelTrustGateway.evaluate()` call records an `AuditEvent` (outcome, summary, source, intent, reason) via an injectable `AuditRecorder` (`MemoryAuditRecorder` for tests, `JsonAuditRecorder` for persistence).
 - **Self-hosted speech providers**: Piper (text-to-speech, ESR-0040) and `faster-whisper` (speech-to-text, ESR-0047), both Sentinel-gated, credential/path-gated with no auto-download and an honest `not_connected` degrade path.
 - **Agent Framework's `SentinelGatedAgentService`** (ESR-0049): every specialist-agent invocation evaluated through the same shared gateway every other capability uses, before executing.
-- **Real external-provider wiring**: OpenAI and Gemini both live-validated against their real APIs; one is wired as the default production text-generation route (configurable, credential-gated, EBG-0070 ESR-0022); Ollama registered as a further local fallback (EBG-0075, ESR-0026); No deterministic echo fallback since ESR-0059 WP3 (EBG-0141) - when no provider can answer, Guardian returns an honest "could not reach an AI provider" reply instead of echoing the user's message.
+- **Real external-provider wiring**: OpenAI and Gemini both live-validated against their real APIs; one is wired as the default production text-generation route (configurable, credential-gated, EBG-0070 ESR-0022), and the other one follows as a credential-gated secondary since ESR-0059 WP4 (`JARVIS_SECONDARY_PROVIDER`, `none` to disable); Ollama registered as a further local fallback (EBG-0075, ESR-0026); No deterministic echo fallback since ESR-0059 WP3 (EBG-0141) - when no provider can answer, Guardian returns an honest "could not reach an AI provider" reply instead of echoing the user's message.
 
 The trust-tier model provides extension points for [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] (which used them, ESR-0023) and the Agent Framework (which reuses them, ESR-0048/ESR-0049). It does not implement Guardian family-safety behaviour, emergency control execution, automation, or Guardian's wider UI behaviour beyond what is documented above.
 
@@ -300,6 +300,7 @@ Forward-looking sequencing is no longer this document's responsibility. [[JRM-00
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.2 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). |
 | 1.1 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP3 (EBG-0141, Documentation Debt Discipline): corrected the claim that the deterministic LocalEchoProvider is the production final failover - removed from the production route by EIP-ESR0059-003; when no provider can answer, Guardian now returns an honest provider-unavailable reply. |
 | 1.0 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP3, per EIP-ESR0050-002, resolving EBG-0047 (Sentinel Gate of Durin Architecture Specification). First registration as a controlled artefact (Document Control block, version field added). Corrected the stale Status line (claimed close of ESR-0014; last real edit was ESR-0016 WP2A) and one factual error (claimed `SimpleApprovalPolicy` remains the production default; `TrustTierPolicy` has been the real default since ESR-0024 WP1/EBG-0074). Added Guardian's "Faculties Delivered Since ESR-0014" and Sentinel's post-ESR-0016 implemented-capabilities detail (audit logging, speech/transcription providers, Agent Framework gating, real provider wiring). Added the new Sentinel Gate of Durin subsection directly resolving EBG-0047, grounded in `SentinelTrustGateway.evaluate()`, `TrustTierPolicy.classify()` and `build_default_runtime()`'s single shared gateway evidence. Refreshed Provider Ecosystem's implemented-versus-planned distinction. Replaced the long-completed "ESR-0015 Starting Architecture" forward-look with a historical note, redirecting to JRM-0001/EBR-0001. Added Related Artefacts and this Version History section, neither of which existed before. |
 | 0.14 | 9 July 2026 | Claude Engineering Reviewer | ESR-0016 WP2A: landed and independently verified (commit `d6eb854`) - added the Sentinel trust-tier policy model (trust tiers, classification categories, decision outcomes, `SimpleApprovalPolicy` as the then-accurate production default, extension points for EBG-0047/EBG-0020/EBG-0021). Informal version marker only - this document carried no real Document Control or version field until the 1.0 refresh above. |

@@ -8,7 +8,7 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.14 |
+| Version | 2.15 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -55,7 +55,7 @@ JARVIS has moved well past the early executable foundation this matrix described
 - **Sentinel** has a working trust gateway, provider abstraction, audit, policy and trust-tier model, with both OpenAI and Gemini live-validated as real external providers (real billed calls, real generated responses).
 - **User Experience Platform** is live and interactive (Tauri + React, real backend bridge), not a disconnected static shell - matching PST-0001's own "Live, Foundation Scope" characterisation.
 - **Knowledge** has a real backend graph builder and live-rendered Guardian Orb (Phase 1 complete, Phase 2 partially delivered).
-- **Provider Architecture** has two live-validated adapters, and one is now wired into the default production runtime conversation path (EBG-0070, Complete, ESR-0022 WP1) - Ollama is the local fallback; the `LocalEchoProvider` echo fallback was removed from the production route at ESR-0059 WP3 (EBG-0141).
+- **Provider Architecture** has two live-validated adapters, and one is now wired into the default production runtime conversation path (EBG-0070, Complete, ESR-0022 WP1), and the other one follows as a credential-gated secondary since ESR-0059 WP4 (`JARVIS_SECONDARY_PROVIDER`, `none` to disable) - Ollama is the local fallback; the `LocalEchoProvider` echo fallback was removed from the production route at ESR-0059 WP3 (EBG-0141).
 - **Memory** has a Personal Memory foundation (`PersonalMemoryStore`/`PersonalMemoryService`), consent-gated and wired into `GuardianRuntime`, delivered at ESR-0027 WP1. Session and Shared Family memory remain not implemented.
 - **Intelligence** moved from Draft/Planned to Implemented (Phase 1): the Guardian Cognitive Core now composes persona, retained Personal Memory and bounded recent history before every provider call, delivered at ESR-0039. Full cognition beyond this remains architecturally Draft, per AAM-0001.
 - **Identity** is newly implemented at foundation level: local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's four household roles, delivered at ESR-0046. Credentialed authentication, memory scoping by profile and role-authority enforcement remain not implemented.
@@ -86,6 +86,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.15 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). |
 | 2.14 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP3 (EBG-0141, Documentation Debt Discipline): corrected the claim that the deterministic LocalEchoProvider is the production final failover - removed from the production route by EIP-ESR0059-003; when no provider can answer, Guardian now returns an honest provider-unavailable reply. |
 | 2.13 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP8: corrected the Related Artefacts current-baseline reference from RBL-0037 to RBL-0038, established at ESR-0058 WP8 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP). Pointer fix only - capability rows not re-audited this pass; the Home Assistant agent and Memory Management UXP are not yet reflected as their own rows, flagged for a future refresh (EBG-0134). |
 | 2.12 | 14 September 2026 | Claude Engineering Implementer | ESR-0057 WP7: corrected the Related Artefacts current-baseline reference from RBL-0036 to RBL-0037, established at ESR-0057 WP7 (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment). Pointer fix only - capability rows not re-audited this pass; Personal Memory export/backup not yet reflected as its own row. |

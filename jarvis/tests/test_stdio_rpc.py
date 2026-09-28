@@ -133,14 +133,83 @@ def test_build_default_runtime_respects_primary_provider_selection(tmp_path):
     assert runtime.configured_providers() == ("gemini", "ollama")
 
 
-def test_build_default_runtime_ignores_unselected_provider_credential(tmp_path):
-    # OPENAI_API_KEY being set should not matter when gemini is selected but
-    # has no credential of its own - ollama remains the only route provider.
+def test_build_default_runtime_uses_credentialled_secondary_when_selected_primary_has_no_credential(tmp_path):
+    # ESR-0059 WP4: replaces the former "ignores unselected provider
+    # credential" rule. With gemini selected as primary but only an OpenAI
+    # key set, OpenAI now serves as the secondary rather than being ignored.
     runtime = build_default_runtime(
         environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "JARVIS_PRIMARY_PROVIDER": "gemini", "OPENAI_API_KEY": "test-key-not-a-real-credential"}
     )
 
-    assert runtime.configured_providers() == ("ollama",)
+    assert runtime.configured_providers() == ("openai", "ollama")
+
+
+def test_build_default_runtime_wires_gemini_as_secondary_between_openai_and_ollama(tmp_path):
+    """ESR-0059 WP4 (EBG-0140/EBG-0051): with both cloud keys present, the
+    route is primary, then the other cloud provider, then local Ollama."""
+
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+        }
+    )
+
+    assert runtime.configured_providers() == ("openai", "gemini", "ollama")
+
+
+def test_build_default_runtime_secondary_is_symmetric_when_gemini_is_primary(tmp_path):
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "JARVIS_PRIMARY_PROVIDER": "gemini",
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+        }
+    )
+
+    assert runtime.configured_providers() == ("gemini", "openai", "ollama")
+
+
+def test_build_default_runtime_secondary_can_be_disabled(tmp_path):
+    """`JARVIS_SECONDARY_PROVIDER=none` opts out of the billed cloud
+    failover without removing the key - case-insensitive."""
+
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+            "JARVIS_SECONDARY_PROVIDER": "None",
+        }
+    )
+
+    assert runtime.configured_providers() == ("openai", "ollama")
+
+
+def test_build_default_runtime_secondary_needs_its_own_credential(tmp_path):
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "GEMINI_API_KEY": "   ",
+        }
+    )
+
+    assert runtime.configured_providers() == ("openai", "ollama")
+
+
+def test_build_default_runtime_never_registers_a_provider_twice(tmp_path):
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "JARVIS_SECONDARY_PROVIDER": "openai",
+        }
+    )
+
+    assert runtime.configured_providers() == ("openai", "ollama")
 
 
 def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_blank(tmp_path):
@@ -1544,3 +1613,58 @@ def test_profile_active_persists_across_new_server_instance_against_same_db(tmp_
     )
 
     assert response["result"] == {"profile": created}
+
+
+def test_guardian_converse_fails_over_from_openai_to_gemini(tmp_path, monkeypatch):
+    """ESR-0059 WP4: end to end through the real runtime and RPC path - when
+    the OpenAI primary fails, the Gemini secondary answers, the reply is a
+    genuine model reply, and it names the provider that actually served it.
+    Network calls are faked at urlopen; nothing leaves the machine."""
+
+    import urllib.error
+
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key-not-a-real-credential")
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key-not-a-real-credential")
+    called: list[str] = []
+
+    class _Body:
+        def __init__(self, payload: bytes) -> None:
+            self._payload = payload
+
+        def read(self) -> bytes:
+            return self._payload
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info) -> None:
+            return None
+
+    def _fake_urlopen(request, timeout):
+        url = request.full_url
+        called.append(url)
+        if "api.openai.com" in url:
+            raise urllib.error.HTTPError(url, 503, "Service Unavailable", None, None)
+        if "generativelanguage.googleapis.com" in url:
+            return _Body(json.dumps({"candidates": [{"content": {"parts": [{"text": "Gemini here."}]}}]}).encode())
+        raise urllib.error.URLError("unexpected endpoint in test")
+
+    monkeypatch.setattr("urllib.request.urlopen", _fake_urlopen)
+    runtime = build_default_runtime(
+        environ={
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+            "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+        }
+    )
+    server = StdioRpcServer(runtime, identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")))
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.converse", "params": {"message": "hello"}})
+    )
+
+    assert response["result"] == {"message": "Gemini here.", "provider": "gemini"}
+    assert "api.openai.com" in called[0]
+    assert "generativelanguage.googleapis.com" in called[1]
+    assert len(called) == 2  # Ollama never reached - Gemini answered first

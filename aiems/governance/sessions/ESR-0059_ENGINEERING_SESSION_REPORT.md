@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.12 |
+| Version | 0.15 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -104,6 +104,23 @@ Validation: pytest 618 passed/1 skipped (two new runtime tests), ruff clean, val
 
 ---
 
+**WP4 - Gemini Secondary Provider (Drafted):** [[EIP-ESR0059-004_GEMINI_SECONDARY_PROVIDER|EIP-ESR0059-004]] drafted (v0.1) and implemented, on the Programme Sponsor's decision to add Gemini between OpenAI and Ollama:
+
+* Route is primary, then the other cloud provider as a credential-gated secondary, then Ollama. Symmetric when Gemini is primary; `JARVIS_SECONDARY_PROVIDER=none` disables it, since every failover call is billed.
+* **Real pre-existing defect found while writing tests**: a whitespace-only key counted as present, registering a provider that fails authentication on every call. Fixed for primary and secondary alike.
+* **Real WP3 miss found while updating documentation**: PCB-0001's Current Constraints section still named "the deterministic local provider" as a production fallback - wording WP3's search did not match and neither WP3 review caught. Corrected here. A second copy in PCB-0001's Conversation Workspace row was missed by WP4 as well and caught by WP4's own design review (Conditional Pass), then corrected.
+* End-to-end failover test through the real runtime and RPC path (network faked at `urlopen`): OpenAI 503, Gemini answers, Ollama never reached.
+
+Validation: pytest 624 passed/1 skipped, ruff clean, validator 0 errors/333 warnings. No live check possible - no provider key is set in this environment. **Disclosed consequence**: with both cloud providers timing out (30s each) plus Ollama (90s), the worst-case turn now exceeds the 120s Tauri-side timeout, which makes EBG-0139's per-turn deadline more pressing.
+
+**Design review** (WP4): routed through the real bridge (`ESR-0059`/`WP4`, complete 10-file scope) and reviewed by GitHub Copilot CLI - **Conditional Pass**. Independently confirmed the route order both ways round, every `JARVIS_SECONDARY_PROVIDER` case, no double registration, whitespace-key handling, that the failover test makes no real network call, the 150s-versus-120s timeout arithmetic against `src-tauri/src/lib.rs`, the EBR-0001 rows and every document/REG-0001 version match; re-ran pytest (624 passed/1 skipped), the validator (0 errors) and ruff (clean). **One real finding**: PCB-0001's Conversation Workspace row still named the deterministic local provider as a production fallback - a third copy of the stale claim. Corrected.
+
+**Engineering Reviewer unavailable - disclosed**: the re-review of that correction stopped mid-way with GitHub Copilot CLI reporting "You have exceeded your monthly quota". Before stopping it had confirmed the unchanged 10-file scope; it returned no verdict. In its place, a disclosed self-verification (the substitute pattern used at ESR-0057 WP6): every mention of "deterministic", "echo" or "local provider" outside the version-history tables of README, CURRENT_ARCHITECTURE, PCB-0001, PST-0001 and the Capability Readiness Matrix was read in context. All remaining mentions are the legacy Tkinter First Light chat (genuinely deterministic), a component inventory, historical outcome lists, or the corrected wording - none presents an echo or deterministic provider as a current production fallback. Validator 0 errors/333 warnings. How reviews proceed while the quota is exhausted is a Programme Sponsor decision. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**, read as choosing the recommended option: disclosed self-verification while the quota is exhausted, and a retrospective GitHub Copilot CLI review of every self-verified step once it resets. [[EIP-ESR0059-004_GEMINI_SECONDARY_PROVIDER|EIP-ESR0059-004]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -127,7 +144,8 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Complete (EIP-ESR0059-001 v1.0) - committed `f2ffaa5`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
 | Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
-| Planned | Provider resilience: retry, backoff, circuit breaking (EBG-0140) | Not started - Gemini routing needs a Programme Sponsor decision |
+| WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Approved (EIP-ESR0059-004 v1.0) - pending commit/push; retrospective Copilot review owed |
+| Planned | Provider resilience: retry, backoff, circuit breaking (rest of EBG-0140) | Not started |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
 | Planned | Prompt structure and token budgets (EBG-0142, EBG-0143) | Not started |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
@@ -138,6 +156,9 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.15 | 29 September 2026 | Claude Engineering Implementer | WP4 approved via Programme Sponsor direct chat instruction ("Approved"); disclosed self-verification accepted while Copilot quota is exhausted, retrospective review owed. EIP-ESR0059-004 synced to v1.0. |
+| 0.14 | 29 September 2026 | Claude Engineering Implementer | WP4 design review Conditional Pass (one documentation finding, fixed). Re-review blocked: GitHub Copilot CLI monthly quota exhausted mid-review; disclosed self-verification substituted. Awaiting Programme Sponsor approval and decision on review coverage. |
+| 0.13 | 29 September 2026 | Claude Engineering Implementer | WP4 drafted per EIP-ESR0059-004 v0.1: Gemini as credential-gated secondary provider. Not yet reviewed, approved or committed. |
 | 0.12 | 29 September 2026 | Claude Engineering Implementer | WP3 closed: committed 0790ea9, pushed; CI green on all four jobs; genuine post-commit review Pass via GitHub Copilot CLI, no findings. |
 | 0.11 | 28 September 2026 | Claude Engineering Implementer | WP3 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-003 synced to v1.0. Pending commit/push. |
 | 0.10 | 28 September 2026 | Claude Engineering Implementer | WP3 design-reviewed via a genuine scoped GitHub Copilot CLI invocation - Pass, no findings. Awaiting Programme Sponsor approval. |
