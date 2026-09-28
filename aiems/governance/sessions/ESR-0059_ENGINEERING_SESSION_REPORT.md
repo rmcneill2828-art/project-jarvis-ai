@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.11 |
+| Version | 0.12 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -98,6 +98,10 @@ Validation: pytest 618 passed/1 skipped (two new runtime tests), ruff clean, val
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**, having been told the disclosed no-key/no-model consequence first. [[EIP-ESR0059-003_HONEST_PROVIDER_FAILURE_REPLIES|EIP-ESR0059-003]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`0790ea9`, `27cef1b..0790ea9`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36495075048 on `main`: all four jobs green.
+
+**Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit - **Pass**, no findings, independently verified against the transcript (`repository_ref: 0790ea9...`). Confirmed the exact 16-file changed-set, every commit-message claim, the matching EIP and REG-0001 rows, and the green CI run; re-ran pytest (618 passed/1 skipped), the validator (0 errors/333 warnings) and ruff (clean) fresh. **WP3 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -124,7 +128,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
 | Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
 | Planned | Provider resilience: retry, backoff, circuit breaking (EBG-0140) | Not started - Gemini routing needs a Programme Sponsor decision |
-| WP3 | Honest provider-failure replies (EBG-0141) | Approved (EIP-ESR0059-003 v1.0) - pending commit/push |
+| WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
 | Planned | Prompt structure and token budgets (EBG-0142, EBG-0143) | Not started |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
 
@@ -134,6 +138,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.12 | 29 September 2026 | Claude Engineering Implementer | WP3 closed: committed 0790ea9, pushed; CI green on all four jobs; genuine post-commit review Pass via GitHub Copilot CLI, no findings. |
 | 0.11 | 28 September 2026 | Claude Engineering Implementer | WP3 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-003 synced to v1.0. Pending commit/push. |
 | 0.10 | 28 September 2026 | Claude Engineering Implementer | WP3 design-reviewed via a genuine scoped GitHub Copilot CLI invocation - Pass, no findings. Awaiting Programme Sponsor approval. |
 | 0.9 | 28 September 2026 | Claude Engineering Implementer | WP3 drafted per EIP-ESR0059-003 v0.1: honest provider-failure replies (EBG-0141). Live success path not verifiable on this machine, disclosed. Not yet reviewed, approved or committed. |
