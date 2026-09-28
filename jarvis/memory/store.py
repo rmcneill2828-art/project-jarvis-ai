@@ -313,7 +313,7 @@ class PersonalMemoryStore:
         # paths are genuine, not just the file round trip.
         if not isinstance(memory_rows, list | tuple) or not isinstance(decision_rows, list | tuple):
             msg = "Invalid backup snapshot: 'personal_memory' and 'consent_decisions' must both be lists."
-            raise ValueError(msg)
+            raise ValueError(msg)  # noqa: TRY004 - ValueError is import_snapshot()'s established invalid-backup contract
 
         decision_ids: set[str] = set()
         approved_decision_ids: set[str] = set()

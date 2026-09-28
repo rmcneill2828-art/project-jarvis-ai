@@ -28,7 +28,11 @@ pythonpath = ["."]
 
 [project.optional-dependencies]
 dev = [
-    "ruff",
+    # Pinned (EBG-0152, ESR-0059 WP2): unpinned, a new ruff release can add
+    # rules and turn CI's first python step red with no code change - one
+    # reason main's python job went red on 29 July 2026 unnoticed. Bumped
+    # deliberately (Dependabot proposes updates), never implicitly.
+    "ruff==0.16.0",
     "pytest",
     "pip-audit",
     "pyinstaller>=6.21",

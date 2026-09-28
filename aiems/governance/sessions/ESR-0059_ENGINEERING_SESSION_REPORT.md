@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.4 |
+| Version | 0.7 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -62,6 +62,22 @@ EBG-0139 to EBG-0151 registered as Candidate Backlog (the review's High and Nice
 
 ---
 
+**WP2 - Restore the CI Python Gate (Drafted):** the Programme Sponsor answered the four outstanding decisions with "start from 1. and work your way down", selecting EBG-0152 first. [[EIP-ESR0059-002_RESTORE_CI_PYTHON_GATE|EIP-ESR0059-002]] drafted (v0.1) and implemented:
+
+* 13 ruff errors cleared. **Tried ruff's own `--fix` first and reverted it, disclosed rather than silently dropped**: its `RUF100` fix deleted each rationale comment along with the unused `noqa` marker. Replaced with a targeted edit keeping every rationale as a plain comment. `PLW1510` fixed with an explicit, commented `check=False` (no behaviour change); the one pre-existing `TRY004` suppressed with WP1's documented-`noqa` pattern.
+* `ruff==0.16.0` pinned; `python -m pip install --upgrade pip` added before the CI install.
+* **Real finding caught by running the job's later steps locally, not by review**: `pip-audit` flags PYSEC-2026-3721 against `pip` 26.1.2 itself. EBG-0124 (ESR-0052) made `pip-audit` a hard gate while CI was already red at ruff, so that gate has never executed in CI - it would have been the next failure once ruff was fixed.
+
+Validation: the whole CI `python` job reproduced in order in a fresh virtual environment - ruff clean, version sync agrees, pytest 616 passed/1 skipped, validator 0 errors/333 warnings, pip-audit no known vulnerabilities.
+
+**Design review** (WP2): Design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge (`ESR-0059`/`WP2`, complete 11-file scope) - **Pass**, single `return-findings` entry. Confirmed ruff clean with the installed ruff matching the 0.16.0 pin; all 10 `noqa` removals kept their rationale with zero test-logic change; `check=False` behaviour-identical; the `TRY004` suppression justified by tests asserting `ValueError`; the CI diff touches only the `python` job; exactly 11 files changed. Re-ran pytest (616 passed/1 skipped), the validator (0 errors/333 warnings) and the version-sync check. One caveat, correctly scoped rather than a defect: `pip-audit` still flags pip 26.1.2 in the local development environment, because the fix upgrades pip only in CI - the fresh-environment reproduction already showed `pip-audit` passing once pip is upgraded. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**, and directed applying the branch-protection recommendation. [[EIP-ESR0059-002_RESTORE_CI_PYTHON_GATE|EIP-ESR0059-002]] synced to v1.0 (Approved - implemented).
+
+The Programme Sponsor's instruction is read as accepting the recommendations on the remaining three decisions, in order: replace the local-echo fallback with an honest failure reply (EBG-0141), add Gemini as the secondary provider (EBG-0140/EBG-0051), and defer paid code signing (EBG-0146). Each follows as its own Work Package.
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -83,7 +99,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Complete (EIP-ESR0059-001 v1.0) - committed `f2ffaa5`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
-| Proposed | Restore the CI `python` gate (EBG-0152) | Not started - recommended next, pending Programme Sponsor scope decision |
+| WP2 | Restore the CI `python` gate (EBG-0152) | Approved (EIP-ESR0059-002 v1.0) - pending commit/push |
 | Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
 | Planned | Provider resilience: retry, backoff, circuit breaking (EBG-0140) | Not started - Gemini routing needs a Programme Sponsor decision |
 | Planned | Non-model replies never presented or recorded as model replies (EBG-0141) | Not started - needs a Programme Sponsor decision on the local-echo fallback |
@@ -96,6 +112,9 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.7 | 28 September 2026 | Claude Engineering Implementer | WP2 approved via Programme Sponsor direct chat instruction ("Approved"); branch-protection recommendation directed. EIP-ESR0059-002 synced to v1.0. Pending commit/push. |
+| 0.6 | 28 September 2026 | Claude Engineering Implementer | WP2 design-reviewed via a genuine scoped GitHub Copilot CLI invocation - Pass. Awaiting Programme Sponsor approval. |
+| 0.5 | 28 September 2026 | Claude Engineering Implementer | WP2 drafted: EBG-0152 CI python gate restored per EIP-ESR0059-002 v0.1. Full CI python job reproduced green in a fresh virtual environment. Not yet reviewed, approved or committed. |
 | 0.4 | 28 September 2026 | Claude Engineering Implementer | WP1 closed: committed f2ffaa5, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.3 | 28 September 2026 | Claude Engineering Implementer | WP1 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-001 synced to v1.0. Pending commit/push through submit-response. |
 | 0.2 | 28 September 2026 | Claude Engineering Implementer | WP1 live smoke check and design review recorded - Pass via genuine GitHub Copilot CLI invocation routed through the real bridge. Awaiting Programme Sponsor approval. |

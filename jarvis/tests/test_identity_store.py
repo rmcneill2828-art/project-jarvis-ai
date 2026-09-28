@@ -102,7 +102,7 @@ def test_get_active_returns_none_when_active_profile_since_deleted(store, tmp_pa
     store.create(_record())
     store.set_active("profile-1")
 
-    with store._transaction() as connection:  # noqa: SLF001 - direct row removal, no delete() API exists
+    with store._transaction() as connection:  # direct row removal, no delete() API exists
         connection.execute("DELETE FROM profiles WHERE id = ?", ("profile-1",))
 
     assert store.get_active() is None

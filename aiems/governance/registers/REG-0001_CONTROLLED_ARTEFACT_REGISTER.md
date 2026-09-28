@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.592
+**Version:** 3.599
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.592 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.599 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.193 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.194 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -320,8 +320,9 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0058-003 | Engineering Implementation Package | Home Assistant State Query Agent | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-004 | Engineering Implementation Package | Playwright E2E Reliability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-005 | Engineering Implementation Package | Memory Management UXP Surface | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0059 | Engineering Session Report | Engineering Session Report | 0.4 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0059 | Engineering Session Report | Engineering Session Report | 0.7 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0059-001 | Engineering Implementation Package | Critical Runtime Safety Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0059-002 | Engineering Implementation Package | Restore the CI Python Gate | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -436,6 +437,13 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.599 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP2 approved: synced EIP-ESR0059-002 row (0.2 to 1.0, Approved - implemented) by hand. |
+| 3.598 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.6 to 0.7) following: WP2 approved via Programme Sponsor direct chat instruction ("Approved"); branch-protection recommendation directed. EIP-ESR0059-002 synced to v1.0. Pending commit/push. |
+| 3.597 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP2 design review Pass: synced EIP-ESR0059-002 row (0.1 to 0.2) by hand. |
+| 3.596 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.5 to 0.6) following: WP2 design-reviewed via a genuine scoped GitHub Copilot CLI invocation - Pass. Awaiting Programme Sponsor approval. |
+| 3.595 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP2: registered EIP-ESR0059-002 (0.1, Draft - Restore the CI Python Gate). |
+| 3.594 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.4 to 0.5) following: WP2 drafted: EBG-0152 CI python gate restored per EIP-ESR0059-002 v0.1. Full CI python job reproduced green in a fresh virtual environment. Not yet reviewed, approved or committed. |
+| 3.593 | 28 September 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.193 to 1.194) following: ESR-0059 WP2: EBG-0152 closed Completed per EIP-ESR0059-002 (CI python gate restored: 13 ruff errors fixed, ruff pinned, pip upgraded before the hard pip-audit gate). |
 | 3.592 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.3 to 0.4) following: WP1 closed: committed f2ffaa5, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 3.591 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP1 approved: synced EIP-ESR0059-001 row (0.2 to 1.0, Approved - implemented) by hand following Programme Sponsor approval via direct chat instruction ("Approved"). Pending commit/push through submit-response. |
 | 3.590 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.2 to 0.3) following: WP1 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-001 synced to v1.0. Pending commit/push through submit-response. |

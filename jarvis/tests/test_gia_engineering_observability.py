@@ -131,7 +131,7 @@ def test_real_engineering_state_reader_construction_is_side_effect_free() -> Non
 
     reader = RealEngineeringStateReader()
 
-    assert reader._repo_root is None  # noqa: SLF001 - the exact behaviour under test
+    assert reader._repo_root is None  # the exact behaviour under test
 
 
 def test_real_engineering_state_reader_caches_the_resolved_repo_root_after_first_use() -> None:
@@ -139,12 +139,12 @@ def test_real_engineering_state_reader_caches_the_resolved_repo_root_after_first
 
     reader.branch()
 
-    assert reader._repo_root is not None  # noqa: SLF001 - the exact behaviour under test
-    resolved_once = reader._repo_root  # noqa: SLF001
+    assert reader._repo_root is not None  # the exact behaviour under test
+    resolved_once = reader._repo_root
 
     reader.uncommitted_file_count()
 
-    assert reader._repo_root == resolved_once  # noqa: SLF001 - not re-resolved on a second call
+    assert reader._repo_root == resolved_once  # not re-resolved on a second call
 
 
 def test_real_engineering_state_reader_shares_one_resolved_repo_root_across_all_methods() -> None:
@@ -156,12 +156,12 @@ def test_real_engineering_state_reader_shares_one_resolved_repo_root_across_all_
     reader = RealEngineeringStateReader()
 
     reader.branch()
-    resolved_once = reader._repo_root  # noqa: SLF001
+    resolved_once = reader._repo_root
 
     reader.repository_validation()
     reader.register_state()
 
-    assert reader._repo_root == resolved_once  # noqa: SLF001
+    assert reader._repo_root == resolved_once
 
 
 def test_engineering_state_observer_defaults_to_the_real_backed_reader() -> None:
@@ -189,7 +189,7 @@ def test_real_engineering_state_reader_repository_validation_matches_a_direct_ru
 
     errors, warnings = reader.repository_validation()
 
-    repo_root = reader._resolve_repo_root()  # noqa: SLF001 - reusing the already-resolved root directly
+    repo_root = reader._resolve_repo_root()  # reusing the already-resolved root directly
     result = subprocess.run(
         [sys.executable, "scripts/validate_repository.py"],
         cwd=repo_root,

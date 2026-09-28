@@ -85,7 +85,7 @@ def test_method_clusters_covers_every_dispatched_rpc_method(tmp_path):
     asserts METHOD_CLUSTERS' key set is exactly the server's real dispatch
     table, not a hand-maintained count that can drift."""
 
-    from jarvis.guardian.runtime import GuardianRuntime  # noqa: PLC0415 - avoids a module-level import cycle
+    from jarvis.guardian.runtime import GuardianRuntime  # avoids a module-level import cycle
     from jarvis.interfaces.stdio_rpc import build_default_runtime
 
     runtime: GuardianRuntime = build_default_runtime(
@@ -96,4 +96,4 @@ def test_method_clusters_covers_every_dispatched_rpc_method(tmp_path):
     )
     server = StdioRpcServer(runtime)
 
-    assert set(METHOD_CLUSTERS.keys()) == set(server._methods.keys())  # noqa: SLF001 - the exact coverage this test exists to enforce
+    assert set(METHOD_CLUSTERS.keys()) == set(server._methods.keys())  # the exact coverage this test exists to enforce

@@ -195,10 +195,15 @@ class RealEngineeringStateReader:
         """
 
         script_path = Path(self._resolve_repo_root()) / "scripts" / "validate_repository.py"
+        # check=False is deliberate (EBG-0152): validate_repository.py exits
+        # non-zero exactly when it finds errors, and that is a result to
+        # report, not a failure to raise - the summary line is parsed below
+        # either way, and an unparseable one still raises.
         result = subprocess.run(
             [sys.executable, str(script_path)],
             capture_output=True,
             text=True,
+            check=False,
         )
         match = _VALIDATION_SUMMARY_PATTERN.search(result.stdout)
         if not match:
