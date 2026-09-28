@@ -18,12 +18,27 @@ named-env-var credential-indirection pattern.
 """
 
 import json
+import re
 import urllib.error
 import urllib.request
 
 from jarvis.agents.contracts import AgentRequest, AgentResult
 
 STATUS_REPORTED = "reported"
+
+# Home Assistant entity ids are `<domain>.<object_id>`, both lowercase
+# letters, digits and underscores. ESR-0059 WP1: `entity_id` is interpolated
+# into the request path, so anything outside this shape (`../config`, a `?`
+# query, `%2F`) could otherwise reach a different Home Assistant GET endpoint
+# using the long-lived admin token - turning a single-entity state query into
+# read access to the whole REST API (configuration, history, error log).
+_ENTITY_ID_PATTERN = re.compile(r"[a-z0-9_]+\.[a-z0-9_]+")
+
+
+def is_valid_entity_id(entity_id: object) -> bool:
+    """Return True only for a well-formed Home Assistant entity id string."""
+
+    return isinstance(entity_id, str) and _ENTITY_ID_PATTERN.fullmatch(entity_id) is not None
 
 
 class HomeAssistantClient:
@@ -48,16 +63,31 @@ class HomeAssistantClient:
         rule.
         """
 
+        # Enforced here as well as in the agent, so no caller of the client
+        # can reach a path outside /api/states/<entity_id> (ESR-0059 WP1).
+        if not is_valid_entity_id(entity_id):
+            msg = f"Invalid Home Assistant entity id: {entity_id!r} (expected 'domain.object_id')."
+            raise ValueError(msg)
+
         request = urllib.request.Request(
             f"{self._base_url}/api/states/{entity_id}",
             headers={"Authorization": f"Bearer {self._token}"},
         )
         try:
             with urllib.request.urlopen(request, timeout=self._timeout_seconds) as response:
-                return json.loads(response.read().decode("utf-8"))
+                data = json.loads(response.read().decode("utf-8"))
         except urllib.error.URLError as exc:
             msg = f"Home Assistant request for entity {entity_id!r} failed: {exc}"
             raise RuntimeError(msg) from exc
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            msg = f"Home Assistant returned a non-JSON response for entity {entity_id!r}."
+            raise RuntimeError(msg) from exc
+        # Valid JSON is not guaranteed to be an object; the agent calls
+        # `.get()` on this value (same lesson as OllamaProvider, ESR-0026 WP1).
+        if not isinstance(data, dict):
+            msg = f"Home Assistant returned an unexpected response shape for entity {entity_id!r}."
+            raise RuntimeError(msg)  # noqa: TRY004 - RuntimeError is this client's established failure contract
+        return data
 
 
 class HomeAssistantStateQueryAgent:
@@ -83,6 +113,9 @@ class HomeAssistantStateQueryAgent:
         entity_id = request.parameters.get("entityId")
         if not entity_id:
             msg = "Home Assistant state query requires an 'entityId' parameter."
+            raise ValueError(msg)
+        if not is_valid_entity_id(entity_id):
+            msg = f"Home Assistant 'entityId' must look like 'domain.object_id', got {entity_id!r}."
             raise ValueError(msg)
 
         state = self._client.get_state(entity_id)

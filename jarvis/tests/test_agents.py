@@ -201,6 +201,53 @@ def test_home_assistant_client_get_state_raises_on_connection_failure(monkeypatc
         client.get_state("sensor.front_door")
 
 
+_UNSAFE_ENTITY_IDS = [
+    "../config",
+    "../../api/error_log",
+    "sensor.front_door/../../config",
+    "sensor.front_door?x=1",
+    "sensor.front%2Fdoor",
+    "Sensor.Front_Door",
+    "sensor",
+    "",
+    42,
+    None,
+]
+
+
+@pytest.mark.parametrize("entity_id", _UNSAFE_ENTITY_IDS)
+def test_home_assistant_client_refuses_malformed_entity_id_without_any_request(monkeypatch, entity_id) -> None:
+    """ESR-0059 WP1: entity_id is interpolated into the request path, so a
+    malformed value must be refused before any request is made - never able
+    to reach another Home Assistant endpoint with the admin token."""
+
+    captured_requests = []
+
+    def _fake_urlopen(request, timeout):
+        captured_requests.append(request)
+        return _FakeUrlopenResponse(b"{}")
+
+    monkeypatch.setattr("jarvis.agents.home_assistant_agent.urllib.request.urlopen", _fake_urlopen)
+    client = HomeAssistantClient(base_url="http://homeassistant.local:8123", token="secret-token")
+
+    with pytest.raises(ValueError, match="Invalid Home Assistant entity id"):
+        client.get_state(entity_id)
+
+    assert captured_requests == []
+
+
+@pytest.mark.parametrize("body", [b"[]", b"null", b'"text"', b"not json", b"\xff\xfe"])
+def test_home_assistant_client_raises_runtime_error_on_non_object_response(monkeypatch, body) -> None:
+    def _fake_urlopen(request, timeout):
+        return _FakeUrlopenResponse(body)
+
+    monkeypatch.setattr("jarvis.agents.home_assistant_agent.urllib.request.urlopen", _fake_urlopen)
+    client = HomeAssistantClient(base_url="http://homeassistant.local:8123", token="secret-token")
+
+    with pytest.raises(RuntimeError, match="sensor.front_door"):
+        client.get_state("sensor.front_door")
+
+
 class _FakeHomeAssistantClient:
     def __init__(self, state: dict[str, object]) -> None:
         self._state = state
@@ -233,3 +280,17 @@ def test_home_assistant_state_query_agent_requires_entity_id_parameter() -> None
 
     with pytest.raises(ValueError, match="entityId"):
         agent.execute(AgentRequest(task="query"))
+
+
+@pytest.mark.parametrize("entity_id", ["../config", "lock.front_door/../../config", 7, ["lock.front_door"]])
+def test_home_assistant_state_query_agent_refuses_malformed_entity_id(entity_id) -> None:
+    """ESR-0059 WP1: rejected at the agent boundary before the client is called."""
+
+    client = _FakeHomeAssistantClient({"state": "x"})
+    agent = HomeAssistantStateQueryAgent(client)
+
+    with pytest.raises(ValueError, match="domain.object_id"):
+        agent.execute(AgentRequest(task="query", parameters={"entityId": entity_id}))
+
+    assert client.requested_entity_id is None
+

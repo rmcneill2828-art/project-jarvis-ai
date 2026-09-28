@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.585
+**Version:** 3.591
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.585 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.591 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.192 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.193 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -320,6 +320,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0058-003 | Engineering Implementation Package | Home Assistant State Query Agent | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-004 | Engineering Implementation Package | Playwright E2E Reliability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-005 | Engineering Implementation Package | Memory Management UXP Surface | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| ESR-0059 | Engineering Session Report | Engineering Session Report | 0.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| EIP-ESR0059-001 | Engineering Implementation Package | Critical Runtime Safety Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -434,6 +436,12 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.591 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP1 approved: synced EIP-ESR0059-001 row (0.2 to 1.0, Approved - implemented) by hand following Programme Sponsor approval via direct chat instruction ("Approved"). Pending commit/push through submit-response. |
+| 3.590 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.2 to 0.3) following: WP1 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-001 synced to v1.0. Pending commit/push through submit-response. |
+| 3.589 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP1 design review Pass via genuine scoped GitHub Copilot CLI invocation: synced EIP-ESR0059-001 row (0.1 to 0.2). EIP-ESR*-style ids are not matched by bump_version.py's register parser, so this row is synced by hand, as at ESR-0058. |
+| 3.588 | 28 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.1 to 0.2) following: WP1 live smoke check and design review recorded - Pass via genuine GitHub Copilot CLI invocation routed through the real bridge. Awaiting Programme Sponsor approval. |
+| 3.587 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 opened (WP0A/WP0B): registered ESR-0059 (0.1, Open) and EIP-ESR0059-001 (0.1, Draft - WP1 Critical Runtime Safety Fixes). |
+| 3.586 | 28 September 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.192 to 1.193) following: ESR-0059 WP1: registered EBG-0135 to EBG-0151 from the Claude Engineering Implementer production code review (28 September 2026). EBG-0135 to EBG-0138 closed Completed by EIP-ESR0059-001 (Tauri main-thread blocking, backend orphan/stale-teardown race, memory restore consent bypass, Home Assistant entity id path injection); EBG-0139 to EBG-0151 Candidate Backlog, cross-referenced to EBG-0050/0051/0070/0110/0132 where they overlap. EBG-0152 registered (Candidate Backlog, High): CI `python` job red on `main` since 29 July 2026, found during WP1's own validation. |
 | 3.585 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP8: registered [[RBL-0038_REPOSITORY_BASELINE|RBL-0038]] (1.0, Accepted) - Establish, superseding RBL-0037, following the Programme Sponsor's determination agreeing with both the Engineering Implementer's and the newly-restored GitHub Copilot CLI Engineering Reviewer's own advisory (a permanent Reviewer succession plus two real product capabilities warrant a new baseline). Synced COC-0001 (1.27 to 1.28), PBK-0001 (1.45 to 1.46), PCB-0001 (2.13 to 2.14), JARVIS_CAPABILITY_READINESS_MATRIX (2.12 to 2.13) and PST-0001 (3.40 to 3.41) rows - every controlled artefact's "current accepted repository baseline" reference now points to RBL-0038. README.md (uncontrolled, no REG-0001 row) updated to match. ESR-0058 formally closed (0.22 to 1.0, Open to Closed) - the first Engineering Session to both lose and then fully restore genuine independent-AI-review coverage within the same session. |
 | 3.584 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP7 complete: synced ESR-0058 row (0.21 to 0.22) - session-wide independent verification Conditional Pass via genuine GitHub Copilot CLI, one real finding (EBG-0126 register row) fixed. Advisory: Establish new baseline. |
 | 3.583 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP7 (session-wide independent verification): synced EBR-0001 (1.191 to 1.192) - EBG-0126 row corrected from Candidate Backlog to Completed, a genuine gap caught by GitHub Copilot CLI's own session-wide review (the underlying WP1/WP2 work was done and reflected in COC-0001, but this register's row was never updated). |

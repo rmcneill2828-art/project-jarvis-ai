@@ -42,6 +42,7 @@ use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 use std::time::Duration;
@@ -91,6 +92,10 @@ impl BackendHandle {
         match self {
             BackendHandle::Dev { mut child, .. } => {
                 let _ = child.kill();
+                // Reap the terminated process so it does not linger as a
+                // zombie on Unix-like platforms (ESR-0059 WP1). Returns
+                // promptly once kill() has taken effect.
+                let _ = child.wait();
             }
             BackendHandle::Sidecar { child } => {
                 let _ = child.kill();
@@ -103,6 +108,46 @@ struct BackendProcess {
     handle: BackendHandle,
     next_id: u64,
     pending: PendingMap,
+    /// Identifies which spawned process this is (ESR-0059 WP1). A reader
+    /// thread or a failed call only ever tears down the process it belongs
+    /// to - never a newer one spawned after it, which a stale reader's EOF
+    /// handling would otherwise silently drop (and orphan).
+    generation: u64,
+}
+
+static NEXT_GENERATION: AtomicU64 = AtomicU64::new(1);
+
+fn next_generation() -> u64 {
+    NEXT_GENERATION.fetch_add(1, Ordering::Relaxed)
+}
+
+/// True only when the currently-held backend is the one identified by
+/// `generation` - the pure decision behind `tear_down_if_current()`, kept
+/// separate so it is unit-testable without spawning a real process.
+fn is_current_generation(current: Option<u64>, generation: u64) -> bool {
+    current == Some(generation)
+}
+
+/// Tears down the shared backend state, and terminates its process, only if
+/// it is still the process identified by `generation` (ESR-0059 WP1).
+///
+/// Previously every teardown path set the shared state to `None` without
+/// killing the child: `std::process::Child` does not terminate on drop, so a
+/// malformed-output teardown left the old Python process running (holding
+/// the SQLite stores and possibly mid-provider-call) while the next call
+/// spawned a second one. It also never checked which process it was tearing
+/// down, so a stale reader reaching EOF after a respawn could drop the new,
+/// healthy backend instead of its own.
+fn tear_down_if_current(shared_state: &SharedBackend, generation: u64) {
+    let Ok(mut guard) = shared_state.lock() else {
+        return;
+    };
+    let current = guard.as_ref().map(|backend| backend.generation);
+    if is_current_generation(current, generation) {
+        if let Some(backend) = guard.take() {
+            backend.handle.kill();
+        }
+    }
 }
 
 struct BackendState(SharedBackend);
@@ -226,6 +271,7 @@ fn run_dev_reader(
     pending: PendingMap,
     shared_state: SharedBackend,
     app_handle: AppHandle,
+    generation: u64,
 ) {
     let mut reader = BufReader::new(stdout);
     loop {
@@ -233,16 +279,12 @@ fn run_dev_reader(
         match reader.read_line(&mut line) {
             Ok(0) => {
                 fail_all_pending(&pending, CONNECTION_CLOSED_MESSAGE);
-                if let Ok(mut guard) = shared_state.lock() {
-                    *guard = None;
-                }
+                tear_down_if_current(&shared_state, generation);
                 break;
             }
             Err(_) => {
                 fail_all_pending(&pending, CONNECTION_CLOSED_MESSAGE);
-                if let Ok(mut guard) = shared_state.lock() {
-                    *guard = None;
-                }
+                tear_down_if_current(&shared_state, generation);
                 break;
             }
             Ok(_) => {
@@ -251,9 +293,7 @@ fn run_dev_reader(
                     continue;
                 }
                 if let LineOutcome::TearDown = dispatch_line(trimmed, &pending, &app_handle) {
-                    if let Ok(mut guard) = shared_state.lock() {
-                        *guard = None;
-                    }
+                    tear_down_if_current(&shared_state, generation);
                     break;
                 }
             }
@@ -272,14 +312,13 @@ fn run_sidecar_reader(
     pending: PendingMap,
     shared_state: SharedBackend,
     app_handle: AppHandle,
+    generation: u64,
 ) {
     loop {
         match receiver.blocking_recv() {
             None => {
                 fail_all_pending(&pending, CONNECTION_CLOSED_MESSAGE);
-                if let Ok(mut guard) = shared_state.lock() {
-                    *guard = None;
-                }
+                tear_down_if_current(&shared_state, generation);
                 break;
             }
             Some(CommandEvent::Stdout(bytes)) => {
@@ -289,17 +328,13 @@ fn run_sidecar_reader(
                     continue;
                 }
                 if let LineOutcome::TearDown = dispatch_line(trimmed, &pending, &app_handle) {
-                    if let Ok(mut guard) = shared_state.lock() {
-                        *guard = None;
-                    }
+                    tear_down_if_current(&shared_state, generation);
                     break;
                 }
             }
             Some(CommandEvent::Error(_)) | Some(CommandEvent::Terminated(_)) => {
                 fail_all_pending(&pending, CONNECTION_CLOSED_MESSAGE);
-                if let Ok(mut guard) = shared_state.lock() {
-                    *guard = None;
-                }
+                tear_down_if_current(&shared_state, generation);
                 break;
             }
             Some(CommandEvent::Stderr(_)) => {
@@ -359,14 +394,24 @@ fn spawn_dev_backend(
 
     let pending: PendingMap = Arc::new(Mutex::new(HashMap::new()));
 
+    let generation = next_generation();
     let reader_pending = Arc::clone(&pending);
     let reader_app_handle = app_handle.clone();
-    thread::spawn(move || run_dev_reader(stdout, reader_pending, shared_state, reader_app_handle));
+    thread::spawn(move || {
+        run_dev_reader(
+            stdout,
+            reader_pending,
+            shared_state,
+            reader_app_handle,
+            generation,
+        )
+    });
 
     Ok(BackendProcess {
         handle: BackendHandle::Dev { child, stdin },
         next_id: 1,
         pending,
+        generation,
     })
 }
 
@@ -385,33 +430,43 @@ fn spawn_sidecar_backend(
 
     let pending: PendingMap = Arc::new(Mutex::new(HashMap::new()));
 
+    let generation = next_generation();
     let reader_pending = Arc::clone(&pending);
     let reader_app_handle = app_handle.clone();
     thread::spawn(move || {
-        run_sidecar_reader(receiver, reader_pending, shared_state, reader_app_handle)
+        run_sidecar_reader(
+            receiver,
+            reader_pending,
+            shared_state,
+            reader_app_handle,
+            generation,
+        )
     });
 
     Ok(BackendProcess {
         handle: BackendHandle::Sidecar { child },
         next_id: 1,
         pending,
+        generation,
     })
 }
 
+/// Blocking JSON-RPC round trip to the backend. Must never run on Tauri's
+/// main thread - every command reaches it through
+/// `call_backend_off_main_thread()` (ESR-0059 WP1).
 fn call_backend(
-    state: &BackendState,
+    shared_state: &SharedBackend,
     app_handle: &AppHandle,
     method: &str,
     params: Value,
 ) -> Result<Value, String> {
-    let (id, write_result, receiver) = {
-        let mut guard = state
-            .0
+    let (id, generation, pending, write_result, receiver) = {
+        let mut guard = shared_state
             .lock()
             .map_err(|_| "JARVIS backend state lock was poisoned by a prior panic.".to_string())?;
 
         if guard.is_none() {
-            *guard = Some(spawn_backend(app_handle, Arc::clone(&state.0))?);
+            *guard = Some(spawn_backend(app_handle, Arc::clone(shared_state))?);
         }
 
         let backend = guard.as_mut().expect("just ensured Some above");
@@ -429,20 +484,27 @@ fn call_backend(
         let line = format!("{request}\n");
         let write_result = backend.handle.write_line(&line);
 
-        (id, write_result, rx)
+        // Captured while the lock is held, so every cleanup path below acts
+        // on *this* call's own process and pending map (ESR-0059 WP1) - never
+        // on whichever process happens to be current by the time it runs.
+        // Request ids restart at 1 per process, so re-reading the current
+        // backend's pending map later could remove a newer process's live
+        // entry with the same id.
+        (
+            id,
+            backend.generation,
+            Arc::clone(&backend.pending),
+            write_result,
+            rx,
+        )
     };
 
     if write_result.is_err() {
         // The write itself failed - no response will ever arrive for this id.
-        // Remove our own pending entry and reset state so the next call
-        // attempts a fresh spawn, matching the pre-existing write-failure
-        // semantics.
-        if let Ok(mut guard) = state.0.lock() {
-            if let Some(backend) = guard.as_ref() {
-                remove_pending(&backend.pending, id);
-            }
-            *guard = None;
-        }
+        // Remove our own pending entry and tear down (and terminate) this
+        // process so the next call attempts a fresh spawn.
+        remove_pending(&pending, id);
+        tear_down_if_current(shared_state, generation);
         return Err(
             "JARVIS backend is unavailable (write failed). The next request will attempt to restart it."
                 .to_string(),
@@ -456,11 +518,7 @@ fn call_backend(
             // process may still be genuinely working (e.g. a slow model), and
             // a late response arriving after this cleanup is already handled
             // safely by dispatch_line()'s "no pending call for this id" branch.
-            if let Ok(guard) = state.0.lock() {
-                if let Some(backend) = guard.as_ref() {
-                    remove_pending(&backend.pending, id);
-                }
-            }
+            remove_pending(&pending, id);
             Err(BACKEND_TIMEOUT_MESSAGE.to_string())
         }
         Err(mpsc::RecvTimeoutError::Disconnected) => {
@@ -469,124 +527,163 @@ fn call_backend(
     }
 }
 
+/// Runs `call_backend()` on Tauri's blocking thread pool (ESR-0059 WP1).
+///
+/// Every command below was previously a plain synchronous `fn`, which Tauri 2
+/// executes on the main thread - so `call_backend()`'s up-to-120s
+/// `recv_timeout` froze the whole window (the OS's own "Not Responding"
+/// state) for as long as a slow provider call or failover took. EBG-0109's
+/// timeout bounded that freeze; this removes it.
+async fn call_backend_off_main_thread(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    method: &'static str,
+    params: Value,
+) -> Result<Value, String> {
+    let shared_state = Arc::clone(&state.0);
+    tauri::async_runtime::spawn_blocking(move || {
+        call_backend(&shared_state, &app_handle, method, params)
+    })
+    .await
+    .map_err(|e| format!("JARVIS backend call could not be scheduled: {e}"))?
+}
+
 #[tauri::command]
-fn send_message(
-    state: State<BackendState>,
+async fn send_message(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     message: String,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
+    call_backend_off_main_thread(
+        state,
+        app_handle,
         "guardian.converse",
         json!({ "message": message }),
     )
+    .await
 }
 
 #[tauri::command]
-fn speak_message(
-    state: State<BackendState>,
+async fn speak_message(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     text: String,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
-        "guardian.speak",
-        json!({ "text": text }),
-    )
+    call_backend_off_main_thread(state, app_handle, "guardian.speak", json!({ "text": text })).await
 }
 
 #[tauri::command]
-fn transcribe_audio(
-    state: State<BackendState>,
+async fn transcribe_audio(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     audio_base64: String,
     mime_type: String,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
+    call_backend_off_main_thread(
+        state,
+        app_handle,
         "guardian.transcribe",
         json!({ "audioBase64": audio_base64, "mimeType": mime_type }),
     )
+    .await
 }
 
 #[tauri::command]
-fn platform_status(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
-    call_backend(&state, &app_handle, "platform.status", json!({}))
+async fn platform_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "platform.status", json!({})).await
 }
 
 #[tauri::command]
-fn knowledge_graph(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
-    call_backend(&state, &app_handle, "knowledge.graph", json!({}))
+async fn knowledge_graph(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "knowledge.graph", json!({})).await
 }
 
 #[tauri::command]
-fn list_profiles(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
-    call_backend(&state, &app_handle, "profile.list", json!({}))
+async fn list_profiles(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "profile.list", json!({})).await
 }
 
 #[tauri::command]
-fn create_profile(
-    state: State<BackendState>,
+async fn create_profile(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     display_name: String,
     role: String,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
+    call_backend_off_main_thread(
+        state,
+        app_handle,
         "profile.create",
         json!({ "displayName": display_name, "role": role }),
     )
+    .await
 }
 
 #[tauri::command]
-fn select_profile(
-    state: State<BackendState>,
+async fn select_profile(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     profile_id: String,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
+    call_backend_off_main_thread(
+        state,
+        app_handle,
         "profile.select",
         json!({ "profileId": profile_id }),
     )
+    .await
 }
 
 #[tauri::command]
-fn active_profile(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
-    call_backend(&state, &app_handle, "profile.active", json!({}))
+async fn active_profile(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "profile.active", json!({})).await
 }
 
 #[tauri::command]
-fn list_agents(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
-    call_backend(&state, &app_handle, "guardian.agent.list", json!({}))
+async fn list_agents(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "guardian.agent.list", json!({})).await
 }
 
 #[tauri::command]
-fn invoke_agent(
-    state: State<BackendState>,
+async fn invoke_agent(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     agent: String,
     task: String,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
+    call_backend_off_main_thread(
+        state,
+        app_handle,
         "guardian.agent.invoke",
         json!({ "agent": agent, "task": task, "parameters": {} }),
     )
+    .await
 }
 
 /// EBG-0131 (Memory Management UXP Surface): a record count only, never
 /// full record content - matches `memory.status`'s own deliberately
 /// narrow backend response shape.
 #[tauri::command]
-fn memory_status(state: State<BackendState>, app_handle: AppHandle) -> Result<Value, String> {
-    call_backend(&state, &app_handle, "memory.status", json!({}))
+async fn memory_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "memory.status", json!({})).await
 }
 
 /// `backup_dir` is a real, human-chosen directory (via the frontend's own
@@ -598,32 +695,34 @@ fn memory_status(state: State<BackendState>, app_handle: AppHandle) -> Result<Va
 /// silently ignore would be misleading. The written file's real path is
 /// returned to the caller.
 #[tauri::command]
-fn backup_memory(
-    state: State<BackendState>,
+async fn backup_memory(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     backup_dir: String,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
+    call_backend_off_main_thread(
+        state,
+        app_handle,
         "memory.backup",
         json!({ "backupDir": backup_dir }),
     )
+    .await
 }
 
 #[tauri::command]
-fn restore_memory(
-    state: State<BackendState>,
+async fn restore_memory(
+    state: State<'_, BackendState>,
     app_handle: AppHandle,
     backup_path: String,
     confirm_overwrite: bool,
 ) -> Result<Value, String> {
-    call_backend(
-        &state,
-        &app_handle,
+    call_backend_off_main_thread(
+        state,
+        app_handle,
         "memory.restore",
         json!({ "backupPath": backup_path, "confirmOverwrite": confirm_overwrite }),
     )
+    .await
 }
 
 pub fn run() {
@@ -736,5 +835,55 @@ mod tests {
         route_response(1, &parsed, &pending);
 
         assert!(pending.lock().unwrap().is_empty());
+    }
+
+    #[test]
+    fn is_current_generation_matches_only_the_same_process() {
+        assert!(is_current_generation(Some(3), 3));
+        assert!(!is_current_generation(Some(4), 3));
+        assert!(!is_current_generation(None, 3));
+    }
+
+    /// Spawns a real, idle child (it blocks reading stdin) so teardown is
+    /// exercised against a genuine `BackendHandle::Dev`, not a stand-in.
+    /// Requires `python` on PATH - true on every CI job that runs these
+    /// tests (the `rust` job installs it to build the sidecar).
+    fn backend_with_generation(generation: u64) -> BackendProcess {
+        let mut child = Command::new("python")
+            .args(["-c", "import sys; sys.stdin.read()"])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .expect("python must be on PATH for this test");
+        let stdin = child.stdin.take().expect("stdin was piped");
+        BackendProcess {
+            handle: BackendHandle::Dev { child, stdin },
+            next_id: 1,
+            pending: empty_pending(),
+            generation,
+        }
+    }
+
+    /// ESR-0059 WP1: a stale reader (or failed call) belonging to an older
+    /// process must never tear down a newer backend spawned after it.
+    #[test]
+    fn tear_down_leaves_a_newer_backend_in_place() {
+        let shared: SharedBackend = Arc::new(Mutex::new(Some(backend_with_generation(7))));
+
+        tear_down_if_current(&shared, 6);
+        assert!(shared.lock().unwrap().is_some());
+
+        tear_down_if_current(&shared, 7);
+        assert!(shared.lock().unwrap().is_none());
+    }
+
+    #[test]
+    fn tear_down_with_no_backend_is_a_no_op() {
+        let shared: SharedBackend = Arc::new(Mutex::new(None));
+
+        tear_down_if_current(&shared, 1);
+
+        assert!(shared.lock().unwrap().is_none());
     }
 }

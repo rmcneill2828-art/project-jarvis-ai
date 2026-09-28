@@ -239,6 +239,116 @@ def test_import_snapshot_into_empty_store_requires_no_confirmation(store):
     assert store.get_decision("decision-1").decision == "denied"
 
 
+def _snapshot_decision(decision_id="decision-1", decision="approved", **overrides):
+    row = {
+        "id": decision_id,
+        "capability": "memory_retention",
+        "decision": decision,
+        "decided_at": "2026-01-01T00:00:00+00:00",
+        "approver_label": "local-user",
+        "sentinel_outcome": "Review",
+        "sentinel_category": None,
+        "sentinel_reason": "test",
+    }
+    row.update(overrides)
+    return row
+
+
+def _snapshot_memory(record_id="record-1", consent_decision_id="decision-1", **overrides):
+    row = {
+        "id": record_id,
+        "content": "Robert prefers dark mode.",
+        "created_at": "2026-01-01T00:00:00+00:00",
+        "consent_decision_id": consent_decision_id,
+    }
+    row.update(overrides)
+    return row
+
+
+def test_import_snapshot_rejects_memory_backed_by_a_denied_decision(store):
+    """ESR-0059 WP1: presence of a decision id is not consent - a backup must
+    never restore content the user explicitly denied."""
+
+    snapshot = {
+        "personal_memory": [_snapshot_memory()],
+        "consent_decisions": [_snapshot_decision(decision="denied")],
+    }
+
+    with pytest.raises(ValueError, match="not an approved decision"):
+        store.import_snapshot(snapshot)
+
+    assert store.list_all() == ()
+    assert store.get_decision("decision-1") is None
+
+
+def test_import_snapshot_rejects_unparseable_created_at(store):
+    """ESR-0059 WP1: a bad timestamp must be refused at restore time - once
+    stored, every later list_all() (read on every conversation turn) failed."""
+
+    snapshot = {
+        "personal_memory": [_snapshot_memory(created_at="not-a-date")],
+        "consent_decisions": [_snapshot_decision()],
+    }
+
+    with pytest.raises(ValueError, match="created_at"):
+        store.import_snapshot(snapshot)
+
+    assert store.list_all() == ()
+
+
+def test_import_snapshot_rejects_unparseable_decided_at(store):
+    snapshot = {
+        "personal_memory": [],
+        "consent_decisions": [_snapshot_decision(decided_at=12345)],
+    }
+
+    with pytest.raises(ValueError, match="decided_at"):
+        store.import_snapshot(snapshot)
+
+    assert store.get_decision("decision-1") is None
+
+
+@pytest.mark.parametrize("content", [None, 42, "", "   ", ["list"]])
+def test_import_snapshot_rejects_non_text_or_blank_content(store, content):
+    snapshot = {
+        "personal_memory": [_snapshot_memory(content=content)],
+        "consent_decisions": [_snapshot_decision()],
+    }
+
+    with pytest.raises(ValueError, match="'content' must be non-empty text"):
+        store.import_snapshot(snapshot)
+
+    assert store.list_all() == ()
+
+
+def test_import_snapshot_rejects_unknown_decision_value(store):
+    snapshot = {
+        "personal_memory": [],
+        "consent_decisions": [_snapshot_decision(decision="maybe")],
+    }
+
+    with pytest.raises(ValueError, match="expected 'approved' or 'denied'"):
+        store.import_snapshot(snapshot)
+
+
+def test_import_snapshot_refusal_leaves_existing_store_intact(store):
+    """A rejected backup must not wipe a non-empty store even when overwrite
+    was confirmed - validation completes before the transaction opens."""
+
+    store.record_decision(_decision())
+    store.add(_record())
+    snapshot = {
+        "personal_memory": [_snapshot_memory(record_id="record-9", created_at="bad")],
+        "consent_decisions": [_snapshot_decision()],
+    }
+
+    with pytest.raises(ValueError):
+        store.import_snapshot(snapshot, confirm_overwrite=True)
+
+    restored = store.list_all()
+    assert [record.id for record in restored] == ["record-1"]
+
+
 def test_persists_across_new_store_instance(tmp_path):
     db_path = tmp_path / "personal.db"
     first = PersonalMemoryStore(db_path)

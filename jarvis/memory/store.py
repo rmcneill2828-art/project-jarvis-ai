@@ -285,7 +285,9 @@ class PersonalMemoryStore:
 
         1. Validates the snapshot's structure before writing anything - a
            malformed or truncated backup fails closed (raises ValueError),
-           never partially imports.
+           never partially imports. Since ESR-0059 WP1 this includes field
+           types, parseable timestamps, and that every content row is
+           backed by an *approved* (not merely present) consent decision.
         2. Inserts `consent_decisions` rows before their dependent
            `personal_memory` rows, in the same transaction, mirroring
            `add()`'s own insert-order constraint.
@@ -314,23 +316,54 @@ class PersonalMemoryStore:
             raise ValueError(msg)
 
         decision_ids: set[str] = set()
+        approved_decision_ids: set[str] = set()
         for row in decision_rows:
             required = {"id", "capability", "decision", "decided_at", "approver_label", "sentinel_outcome", "sentinel_reason"}
             if not isinstance(row, dict) or not required.issubset(row):
                 msg = f"Invalid backup snapshot: consent_decisions row missing required fields: {row!r}"
                 raise ValueError(msg)
+            _require_text_fields(row, ("id", "capability", "decision", "approver_label", "sentinel_outcome"), "consent_decisions")
+            if not isinstance(row["sentinel_reason"], str):
+                msg = f"Invalid backup snapshot: consent_decisions row {row['id']!r} has a non-text sentinel_reason."
+                raise ValueError(msg)  # noqa: TRY004 - ValueError is import_snapshot()'s established invalid-backup contract
+            if row.get("sentinel_category") is not None and not isinstance(row["sentinel_category"], str):
+                msg = f"Invalid backup snapshot: consent_decisions row {row['id']!r} has a non-text sentinel_category."
+                raise ValueError(msg)
+            if row["decision"] not in ("approved", "denied"):
+                msg = (
+                    f"Invalid backup snapshot: consent_decisions row {row['id']!r} has decision "
+                    f"{row['decision']!r} (expected 'approved' or 'denied')."
+                )
+                raise ValueError(msg)
+            _require_timestamp(row, "decided_at", "consent_decisions")
             decision_ids.add(row["id"])
+            if row["decision"] == "approved":
+                approved_decision_ids.add(row["id"])
 
         for row in memory_rows:
             required = {"id", "content", "created_at", "consent_decision_id"}
             if not isinstance(row, dict) or not required.issubset(row):
                 msg = f"Invalid backup snapshot: personal_memory row missing required fields: {row!r}"
                 raise ValueError(msg)
+            _require_text_fields(row, ("id", "content", "consent_decision_id"), "personal_memory")
+            _require_timestamp(row, "created_at", "personal_memory")
             if row["consent_decision_id"] not in decision_ids:
                 msg = (
                     f"Invalid backup snapshot: personal_memory row {row['id']!r} references "
                     f"consent_decision_id {row['consent_decision_id']!r}, not present among the "
                     "snapshot's own consent_decisions - refusing a partial/inconsistent import."
+                )
+                raise ValueError(msg)
+            # ESR-0059 WP1: the same guarantee `add()` enforces for live
+            # writes - content is only ever retained against an *approved*
+            # decision. Checking presence alone let a backup restore content
+            # the user had explicitly denied, which then reached every
+            # conversation turn's system prompt via the Cognitive Core.
+            if row["consent_decision_id"] not in approved_decision_ids:
+                msg = (
+                    f"Invalid backup snapshot: personal_memory row {row['id']!r} references "
+                    f"consent_decision_id {row['consent_decision_id']!r}, which is not an approved "
+                    "decision - refusing to restore content without recorded consent."
                 )
                 raise ValueError(msg)
 
@@ -396,3 +429,40 @@ def utc_now() -> datetime:
     """Return the current UTC time, timezone-aware."""
 
     return datetime.now(UTC)
+
+
+def _require_text_fields(row: dict, fields: tuple[str, ...], table: str) -> None:
+    """Reject a snapshot row whose named fields are not non-blank strings.
+
+    ESR-0059 WP1: `import_snapshot()` previously checked only that required
+    keys were present, so a restored row could carry any JSON type - and the
+    first read of a malformed row failed only later, on every subsequent
+    call, rather than at restore time where the backup can still be refused.
+    """
+
+    for field in fields:
+        value = row[field]
+        if not isinstance(value, str) or not value.strip():
+            msg = f"Invalid backup snapshot: {table} row field {field!r} must be non-empty text, got {value!r}."
+            raise ValueError(msg)
+
+
+def _require_timestamp(row: dict, field: str, table: str) -> None:
+    """Reject a snapshot row whose timestamp field would not parse on read.
+
+    ESR-0059 WP1: `list_all()` parses `created_at` with
+    `datetime.fromisoformat()` on every read, and `GuardianRuntime.converse()`
+    reads memory on every turn - so a single unparseable timestamp restored
+    from a backup made every later conversation request fail. Validated
+    here, before any write, so a bad backup is refused instead.
+    """
+
+    value = row[field]
+    if not isinstance(value, str):
+        msg = f"Invalid backup snapshot: {table} row field {field!r} must be an ISO 8601 timestamp, got {value!r}."
+        raise ValueError(msg)  # noqa: TRY004 - ValueError is import_snapshot()'s established invalid-backup contract
+    try:
+        datetime.fromisoformat(value)
+    except ValueError as exc:
+        msg = f"Invalid backup snapshot: {table} row field {field!r} is not a valid ISO 8601 timestamp: {value!r}."
+        raise ValueError(msg) from exc
