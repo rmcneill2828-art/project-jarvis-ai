@@ -13,6 +13,13 @@ from sentinel.providers import ProviderRequest
 
 logger = logging.getLogger(__name__)
 
+# User-facing responses for the two non-model outcomes. Promoted to named
+# constants (EBG-0141, ESR-0059 WP3), as GuardianRuntime's former duplicated
+# copies of these literals asked. Callers no longer need to match on this
+# text: both responses carry `is_model_reply=False`.
+SENTINEL_DENIED_RESPONSE = "Sentinel did not allow this request to proceed."
+PROVIDER_UNAVAILABLE_RESPONSE = "JARVIS could not reach an AI provider right now. Please try again."
+
 
 class SentinelGatedConversationProvider:
     """Conversation provider that routes requests through Sentinel for trust,
@@ -58,10 +65,7 @@ class SentinelGatedConversationProvider:
             # shouldn't be echoed into a live user-facing response. The full
             # reason is already captured in Sentinel's audit trail via
             # SentinelTrustGateway.evaluate().
-            return ConversationResponse(
-                message="Sentinel did not allow this request to proceed.",
-                provider=self.name,
-            )
+            return ConversationResponse(message=SENTINEL_DENIED_RESPONSE, provider=self.name)
 
         provider_request = ProviderRequest(
             prompt=request.message,
@@ -73,14 +77,12 @@ class SentinelGatedConversationProvider:
             orchestrated = self._orchestrator.execute(sentinel_response, provider_request)
         except RuntimeError as exc:
             logger.warning("Sentinel provider execution failed: %s", type(exc).__name__)
-            return ConversationResponse(
-                message="JARVIS could not reach an AI provider right now. Please try again.",
-                provider=self.name,
-            )
+            return ConversationResponse(message=PROVIDER_UNAVAILABLE_RESPONSE, provider=self.name)
 
         return ConversationResponse(
             message=orchestrated.provider_response.content,
             provider=orchestrated.execution_record.selected_provider or self.name,
+            is_model_reply=True,
         )
 
     def configured_providers(self) -> tuple[str, ...]:

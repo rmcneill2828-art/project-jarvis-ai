@@ -24,10 +24,18 @@ class ConversationRequest:
 
 @dataclass(frozen=True)
 class ConversationResponse:
-    """Response returned by the conversation framework."""
+    """Response returned by the conversation framework.
+
+    `is_model_reply` is True only for text an AI provider actually generated
+    (EBG-0141, ESR-0059 WP3). Boundary, denial, failure and canned responses
+    leave it False - the default, so a response nobody explicitly marked is
+    never mistaken for a model reply. `GuardianRuntime` records conversation
+    history from this flag alone, rather than by matching message text.
+    """
 
     message: str
     provider: str
+    is_model_reply: bool = False
 
 
 @dataclass(frozen=True)

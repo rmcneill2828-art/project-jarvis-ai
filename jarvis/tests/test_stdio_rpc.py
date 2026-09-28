@@ -14,6 +14,7 @@ from jarvis.gia.observability import GiaSnapshot
 from jarvis.guardian.runtime import GuardianRuntime
 from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
+from jarvis.interfaces.sentinel_conversation import PROVIDER_UNAVAILABLE_RESPONSE
 from jarvis.interfaces.stdio_rpc import (
     INTERNAL_ERROR,
     INVALID_PARAMS,
@@ -75,7 +76,8 @@ def _server(tmp_path) -> StdioRpcServer:
     # would make a genuine, non-deterministic network call during automated
     # tests. Pointing JARVIS_OLLAMA_ENDPOINT at a reserved, never-listening
     # port forces a fast connection failure, exercising the same real
-    # exception-driven failover to local-echo the suite already relies on,
+    # exception-driven failover path - since ESR-0059 WP3 (EBG-0141) ending in
+    # the honest provider-unavailable reply rather than a local-echo fallback,
     # without depending on whether Ollama happens to be running locally.
     #
     # JARVIS_MEMORY_DB_PATH (EBG-0080) is pointed at a pytest tmp_path for the
@@ -104,18 +106,19 @@ def test_build_default_runtime_is_started_and_connected(tmp_path):
     assert runtime.services()["Guardian Provider Boundary"].status.value == "Online"
 
 
-def test_build_default_runtime_falls_back_to_local_echo_without_credential(tmp_path):
+def test_build_default_runtime_routes_to_ollama_only_without_credential(tmp_path):
     runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
-    # Ollama (EBG-0075) is registered unconditionally - no credential gate -
-    # positioned between the (absent) primary cloud provider and local-echo.
-    assert runtime.configured_providers() == ("ollama", "local-echo")
+    # Ollama (EBG-0075) is registered unconditionally - no credential gate.
+    # No local-echo after it: removed from the production route at ESR-0059
+    # WP3 (EBG-0141).
+    assert runtime.configured_providers() == ("ollama",)
 
 
 def test_build_default_runtime_wires_openai_as_default_primary_when_credential_present(tmp_path):
     runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "OPENAI_API_KEY": "test-key-not-a-real-credential"})
 
-    assert runtime.configured_providers() == ("openai", "ollama", "local-echo")
+    assert runtime.configured_providers() == ("openai", "ollama")
 
 
 def test_build_default_runtime_respects_primary_provider_selection(tmp_path):
@@ -127,17 +130,17 @@ def test_build_default_runtime_respects_primary_provider_selection(tmp_path):
         }
     )
 
-    assert runtime.configured_providers() == ("gemini", "ollama", "local-echo")
+    assert runtime.configured_providers() == ("gemini", "ollama")
 
 
 def test_build_default_runtime_ignores_unselected_provider_credential(tmp_path):
     # OPENAI_API_KEY being set should not matter when gemini is selected but
-    # has no credential of its own - ollama and local-echo remain the fallback.
+    # has no credential of its own - ollama remains the only route provider.
     runtime = build_default_runtime(
         environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "JARVIS_PRIMARY_PROVIDER": "gemini", "OPENAI_API_KEY": "test-key-not-a-real-credential"}
     )
 
-    assert runtime.configured_providers() == ("ollama", "local-echo")
+    assert runtime.configured_providers() == ("ollama",)
 
 
 def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_blank(tmp_path):
@@ -149,7 +152,7 @@ def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_bl
         environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "OPENAI_API_KEY": "test-key-not-a-real-credential", "OPENAI_MODEL": ""}
     )
 
-    assert runtime.configured_providers() == ("openai", "ollama", "local-echo")
+    assert runtime.configured_providers() == ("openai", "ollama")
 
 
 def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_engine(tmp_path):
@@ -573,7 +576,11 @@ def test_guardian_converse_request_shape_classified_routine_under_trust_tier_pol
     assert policy_decision.category is TrustCategory.ROUTINE_INTERACTION
 
 
-def test_guardian_converse_returns_real_response_through_sentinel(tmp_path):
+def test_guardian_converse_reports_honest_failure_when_no_provider_can_answer(tmp_path):
+    """EBG-0141 (ESR-0059 WP3): with every route provider unreachable, the
+    user gets the honest provider-unavailable reply - never their own
+    message echoed back as if Guardian had answered."""
+
     server = _server(tmp_path)
 
     response = server.handle_line(
@@ -583,8 +590,9 @@ def test_guardian_converse_returns_real_response_through_sentinel(tmp_path):
     assert response == {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {"message": "local-echo: hello", "provider": "local-echo"},
+        "result": {"message": PROVIDER_UNAVAILABLE_RESPONSE, "provider": "sentinel-gated"},
     }
+    assert "hello" not in response["result"]["message"]
 
 
 def test_platform_status_reflects_real_runtime_state(tmp_path):
@@ -598,7 +606,7 @@ def test_platform_status_reflects_real_runtime_state(tmp_path):
         "providerConnected": "Online",
         "memoryConnected": "Online",
         "transcriptionAvailable": False,
-        "providers": ["ollama", "local-echo"],
+        "providers": ["ollama"],
         "policyEngine": "TrustTierPolicy",
     }
 
@@ -968,7 +976,7 @@ def test_serve_forever_processes_multiple_lines_and_skips_blank_lines(tmp_path):
     assert len(responses) == 2
     first, second = responses
     assert first["id"] == 1
-    assert second["result"]["message"] == "local-echo: hi"
+    assert second["result"]["message"] == PROVIDER_UNAVAILABLE_RESPONSE
 
 
 def test_notification_without_id_still_returns_a_response_with_null_id(tmp_path):
@@ -1143,7 +1151,7 @@ def test_serve_forever_still_processes_requests_correctly_with_heartbeat_thread_
     assert len(responses) == 2
     first, second = responses
     assert first["id"] == 1
-    assert second["result"]["message"] == "local-echo: hi"
+    assert second["result"]["message"] == PROVIDER_UNAVAILABLE_RESPONSE
 
 
 class _SlowLineStream:

@@ -59,6 +59,7 @@ def test_empty_message_short_circuits_before_sentinel():
     response = provider.generate(ConversationRequest(message="   "))
 
     assert response.message == EMPTY_MESSAGE_RESPONSE
+    assert response.is_model_reply is False  # EBG-0141: a prompt, not a model reply
     assert gateway.decisions() == ()
 
 
@@ -71,6 +72,7 @@ def test_allow_path_calls_orchestrator_and_returns_provider_content():
 
     assert response.message == "echo: hello"
     assert response.provider == "stub"
+    assert response.is_model_reply is True  # EBG-0141: provider-generated content
     assert len(gateway.decisions()) == 1
     assert len(orchestrator.history()) == 1
 
@@ -110,6 +112,7 @@ def test_review_outcome_blocks_orchestrator_and_hides_internal_reason():
 
     assert response.message == "Sentinel did not allow this request to proceed."
     assert "Internal policy detail" not in response.message
+    assert response.is_model_reply is False
     assert orchestrator.history() == ()
 
 
@@ -122,6 +125,7 @@ def test_provider_failure_returns_generic_message():
 
     assert response.message == "JARVIS could not reach an AI provider right now. Please try again."
     assert response.provider == "sentinel-gated"
+    assert response.is_model_reply is False
 
 
 def test_conversation_service_smoke_test_with_sentinel_gated_provider():

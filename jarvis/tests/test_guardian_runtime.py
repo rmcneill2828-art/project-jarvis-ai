@@ -20,7 +20,11 @@ from jarvis.guardian.runtime import (
 )
 from jarvis.interfaces.conversation import ConversationRequest, ConversationResponse
 from jarvis.interfaces.sentinel_agent import STATUS_UNKNOWN_AGENT, SentinelGatedAgentService
-from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
+from jarvis.interfaces.sentinel_conversation import (
+    PROVIDER_UNAVAILABLE_RESPONSE,
+    SENTINEL_DENIED_RESPONSE,
+    SentinelGatedConversationProvider,
+)
 from jarvis.interfaces.voice import (
     STATUS_NOT_CONNECTED,
     STATUS_NOT_RUNNING,
@@ -47,23 +51,25 @@ class _StubConversationProvider:
 
     def generate(self, request: ConversationRequest) -> ConversationResponse:
         self.received.append(request)
-        return ConversationResponse(message=f"stub: {request.message}", provider=self.name)
+        return ConversationResponse(message=f"stub: {request.message}", provider=self.name, is_model_reply=True)
 
 
 class _ScriptedConversationProvider:
-    """ConversationProvider double returning a fixed sequence of response
-    messages, one per call - used to test the Guardian Cognitive Core's
-    history-exclusion and history-threading behaviour."""
+    """ConversationProvider double returning a fixed sequence of
+    (message, is_model_reply) responses, one per call - used to test the
+    Guardian Cognitive Core's history-exclusion and history-threading
+    behaviour."""
 
     name = "scripted-conversation"
 
-    def __init__(self, responses: list[str]) -> None:
+    def __init__(self, responses: list[tuple[str, bool]]) -> None:
         self._responses = list(responses)
         self.received: list[ConversationRequest] = []
 
     def generate(self, request: ConversationRequest) -> ConversationResponse:
         self.received.append(request)
-        return ConversationResponse(message=self._responses.pop(0), provider=self.name)
+        message, is_model_reply = self._responses.pop(0)
+        return ConversationResponse(message=message, provider=self.name, is_model_reply=is_model_reply)
 
 
 class _StubSpeechProvider:
@@ -630,9 +636,9 @@ def test_guardian_runtime_converse_does_not_record_boundary_errors_into_history(
 def test_guardian_runtime_converse_does_not_record_sentinel_or_provider_failure_responses_into_history() -> None:
     provider = _ScriptedConversationProvider(
         [
-            "Sentinel did not allow this request to proceed.",
-            "JARVIS could not reach an AI provider right now. Please try again.",
-            "a genuine reply",
+            (SENTINEL_DENIED_RESPONSE, False),
+            (PROVIDER_UNAVAILABLE_RESPONSE, False),
+            ("a genuine reply", True),
         ]
     )
     runtime = GuardianRuntime(conversation_provider=provider)
@@ -643,6 +649,49 @@ def test_guardian_runtime_converse_does_not_record_sentinel_or_provider_failure_
     runtime.converse("third message")
 
     assert "Recent Conversation:" not in provider.received[2].persona
+
+
+def test_guardian_runtime_converse_never_records_a_non_model_reply_whatever_its_text() -> None:
+    """EBG-0141 (ESR-0059 WP3): history is decided by the typed flag, not by
+    matching message text. The former local-echo fallback's reply - the
+    user's own message echoed back - was not on the old text list and was
+    recorded as if Guardian had said it."""
+
+    provider = _ScriptedConversationProvider(
+        [
+            ("local-echo: my secret plan", False),
+            ("JARVIS is listening. Type a message when you are ready.", False),
+            ("a genuine reply", True),
+        ]
+    )
+    runtime = GuardianRuntime(conversation_provider=provider)
+    runtime.start()
+
+    runtime.converse("my secret plan")
+    runtime.converse("   ")
+    runtime.converse("third message")
+
+    assert "Recent Conversation:" not in provider.received[2].persona
+
+
+def test_guardian_runtime_converse_records_a_model_reply_even_if_its_text_matches_a_failure_message() -> None:
+    """The converse of the test above: a genuine model reply is recorded
+    even when its text happens to equal a failure message, because the text
+    is no longer what decides."""
+
+    provider = _ScriptedConversationProvider(
+        [
+            (PROVIDER_UNAVAILABLE_RESPONSE, True),
+            ("second reply", True),
+        ]
+    )
+    runtime = GuardianRuntime(conversation_provider=provider)
+    runtime.start()
+
+    runtime.converse("quote the error message back to me")
+    runtime.converse("thanks")
+
+    assert f"Guardian: {PROVIDER_UNAVAILABLE_RESPONSE}" in provider.received[1].persona
 
 
 def test_guardian_runtime_memory_methods_refuse_after_stop(tmp_path) -> None:

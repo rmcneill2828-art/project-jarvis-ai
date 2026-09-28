@@ -4,10 +4,12 @@ Foundation scope only (ESR-0017 WP9): a persistent, newline-delimited
 JSON-RPC 2.0 loop over stdin/stdout, intended to be spawned as a long-lived
 child process by the Tauri shell. Wires a zero-config Guardian+Sentinel stack
 (SentinelTrustGateway, wired with TrustTierPolicy per EBG-0074/ESR-0024, +
-ProviderOrchestrator + LocalEchoProvider) by default - proving the
-UXP-to-Guardian-to-Sentinel path, not external model quality (deferred to
-EBG-0051/a later provider toggle, per ChatGPT Engineering Reviewer's WP9
-design-review finding 2).
+ProviderOrchestrator) by default. The route originally ended in a
+deterministic LocalEchoProvider to prove the UXP-to-Guardian-to-Sentinel
+path; that fallback was removed from the production route at ESR-0059 WP3
+(EBG-0141) because it echoed the user's own message back as if Guardian
+had answered. When no provider can answer, the user now gets an honest
+failure reply instead.
 
 The JSON-RPC 2.0 envelope is adopted now, even though only synchronous
 request/response is implemented, specifically so EBG-0050's later streaming
@@ -58,7 +60,6 @@ from jarvis.memory.store import PersonalMemoryStore
 from sentinel.core import SentinelTrustGateway
 from sentinel.gemini_provider import GeminiProvider
 from sentinel.kokoro_provider import KokoroProvider
-from sentinel.local_provider import LocalEchoProvider
 from sentinel.ollama_provider import OllamaProvider
 from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
@@ -189,9 +190,11 @@ def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvide
     """Build the named real provider adapter, or None if its credential is absent or blank.
 
     An absent or blank credential is treated as "not available on this machine",
-    not a startup failure - build_default_runtime() always keeps LocalEchoProvider
-    as the route's final fallback, matching this codebase's existing
-    honest-degradation pattern (ESR-0017 WP9's no-mock-fallback rule).
+    not a startup failure - build_default_runtime() still registers Ollama, and
+    when no route provider can answer, `SentinelGatedConversationProvider`
+    returns its honest "could not reach an AI provider" reply, matching this
+    codebase's honest-degradation pattern (ESR-0017 WP9's no-mock-fallback
+    rule; EBG-0141, ESR-0059 WP3).
     """
 
     spec = _REAL_PROVIDER_SPECS.get(name)
@@ -299,10 +302,14 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     Registers a real provider (OpenAI or Gemini, selected by
     JARVIS_PRIMARY_PROVIDER, default "openai" per PEM-001's Primary
     designation) as the primary text-generation route provider only when its
-    credential env var is present and non-blank in `environ`; LocalEchoProvider
-    is always registered as the final failover, so a machine with no key
-    configured - or a real provider call that fails at runtime - still has a
-    working conversation path (EBG-0070, ESR-0022).
+    credential env var is present and non-blank in `environ` (EBG-0070,
+    ESR-0022), followed by the local Ollama fallback (EBG-0075). There is no
+    further failover: until ESR-0059 WP3 (EBG-0141) a deterministic
+    LocalEchoProvider ended the route, but it echoed the user's own message
+    back as Guardian's answer and that echo was recorded into conversation
+    history as a real turn. When every route provider fails, the user now
+    gets `PROVIDER_UNAVAILABLE_RESPONSE`, marked `is_model_reply=False`.
+    `LocalEchoProvider` itself remains in `sentinel/` for tests and tooling.
 
     Also wires Guardian's Voice faculty (EIP-ESR0044-001, EBG-0114; Kokoro
     replacing Piper as of EIP-ESR0053-002, EBG-0125) - a Sentinel-gated
@@ -347,10 +354,6 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     ollama_provider = OllamaProvider(ollama_configuration)
     orchestrator.register_provider(ollama_provider)
     route_providers.append(ollama_provider.name)
-
-    local_provider = LocalEchoProvider()
-    orchestrator.register_provider(local_provider)
-    route_providers.append(local_provider.name)
 
     orchestrator.register_route(
         ProviderRoute(capability="text-generation", providers=tuple(route_providers))

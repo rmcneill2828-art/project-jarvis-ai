@@ -44,27 +44,6 @@ NO_MEMORY_SERVICE_RESPONSE = "Guardian has no memory service connected."
 AGENT_NOT_CONNECTED_MESSAGE = "Guardian has no agent service connected."
 AGENT_NOT_RUNNING_MESSAGE = "Guardian runtime is not running."
 
-# Must match SentinelGatedConversationProvider's own literal response text
-# (jarvis/interfaces/sentinel_conversation.py) exactly. Duplicated here
-# rather than imported/promoted to a shared constant there because that file
-# is outside this package's authorised scope (EIP-ESR0039-001 Section 6) - a
-# future change should promote these to shared named constants in
-# sentinel_conversation.py instead of duplicating them.
-_SENTINEL_DENIED_RESPONSE = "Sentinel did not allow this request to proceed."
-_PROVIDER_UNAVAILABLE_RESPONSE = "JARVIS could not reach an AI provider right now. Please try again."
-
-# Responses that must never be recorded into Guardian Cognitive Core history
-# (EIP-ESR0039-001 Implementation Requirement 6) - boundary errors and
-# Sentinel-denial/provider-failure responses are not genuine model replies.
-_NON_RECORDABLE_RESPONSES = frozenset(
-    {
-        NOT_CONNECTED_RESPONSE,
-        NOT_RUNNING_RESPONSE,
-        _SENTINEL_DENIED_RESPONSE,
-        _PROVIDER_UNAVAILABLE_RESPONSE,
-    }
-)
-
 
 class GuardianRuntime:
     """Minimum executable runtime boundary for Guardian."""
@@ -213,7 +192,13 @@ class GuardianRuntime:
         response = self._conversation_provider.generate(
             ConversationRequest(message=message, persona=composed_persona)
         )
-        if response.message not in _NON_RECORDABLE_RESPONSES:
+        # Only genuine model replies enter Cognitive Core history
+        # (EIP-ESR0039-001 Implementation Requirement 6). Decided by the
+        # typed flag, not by matching message text (EBG-0141, ESR-0059 WP3):
+        # text matching let any unlisted non-model reply - the former
+        # local-echo fallback's echo of the user's own message, or the
+        # empty-message prompt - be recorded as if Guardian had said it.
+        if response.is_model_reply:
             self._cognitive_core.record_exchange(message, response.message)
         return response
 

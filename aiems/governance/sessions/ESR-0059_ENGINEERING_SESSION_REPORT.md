@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.8 |
+| Version | 0.11 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -84,6 +84,22 @@ The Programme Sponsor's instruction is read as accepting the recommendations on 
 
 ---
 
+**WP3 - Honest Provider-Failure Replies (Drafted):** [[EIP-ESR0059-003_HONEST_PROVIDER_FAILURE_REPLIES|EIP-ESR0059-003]] drafted (v0.1) and implemented, on the Programme Sponsor's decision to replace the local-echo fallback (EBG-0141):
+
+* `ConversationResponse.is_model_reply` (default `False`), set `True` only on the Sentinel-gated provider's success path; `GuardianRuntime` records Cognitive Core history from this flag alone, and its duplicated error-string list is deleted.
+* `LocalEchoProvider` removed from the production route; when every provider fails, the user gets the honest provider-unavailable reply. RPC shape unchanged.
+* Six stale "echo is the production final failover" claims corrected across README, CURRENT_ARCHITECTURE, PCB-0001, PST-0001 and the Capability Readiness Matrix.
+
+Validation: pytest 618 passed/1 skipped (two new runtime tests), ruff clean, validator 0 errors/333 warnings, Playwright 23/23.
+
+**Live check, with a disclosed gap**: the failure path was verified live against the real runtime (honest reply, `is_model_reply=False`, nothing recorded). The success path could not be verified live on this machine - no provider key is set in this environment, and the local Ollama installation, started temporarily and stopped afterwards, has no models installed. No model was downloaded unasked. **Consequence for the Programme Sponsor**: the desktop app now needs a provider key or an installed Ollama model to converse; without either, every turn returns the honest failure reply rather than an echo.
+
+**Design review** (WP3): Design-reviewed via a genuine scoped GitHub Copilot CLI invocation routed through the real bridge (`ESR-0059`/`WP3`, complete 16-file scope) - **Pass**, no findings. Confirmed by search that the provider's orchestrator success path is the only place `is_model_reply=True` is set; the string list fully deleted; `LocalEchoProvider` out of the production route but intact for tests; RPC shape unchanged; all five documents corrected with REG-0001 rows matching and no placeholder history entries; the new tests prove the flag decides history in both directions; exactly 16 files changed. Re-ran pytest (618 passed/1 skipped), ruff (clean) and the validator (0 errors/333 warnings). Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**, having been told the disclosed no-key/no-model consequence first. [[EIP-ESR0059-003_HONEST_PROVIDER_FAILURE_REPLIES|EIP-ESR0059-003]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -108,7 +124,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
 | Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
 | Planned | Provider resilience: retry, backoff, circuit breaking (EBG-0140) | Not started - Gemini routing needs a Programme Sponsor decision |
-| Planned | Non-model replies never presented or recorded as model replies (EBG-0141) | Not started - needs a Programme Sponsor decision on the local-echo fallback |
+| WP3 | Honest provider-failure replies (EBG-0141) | Approved (EIP-ESR0059-003 v1.0) - pending commit/push |
 | Planned | Prompt structure and token budgets (EBG-0142, EBG-0143) | Not started |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
 
@@ -118,6 +134,9 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.11 | 28 September 2026 | Claude Engineering Implementer | WP3 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-003 synced to v1.0. Pending commit/push. |
+| 0.10 | 28 September 2026 | Claude Engineering Implementer | WP3 design-reviewed via a genuine scoped GitHub Copilot CLI invocation - Pass, no findings. Awaiting Programme Sponsor approval. |
+| 0.9 | 28 September 2026 | Claude Engineering Implementer | WP3 drafted per EIP-ESR0059-003 v0.1: honest provider-failure replies (EBG-0141). Live success path not verifiable on this machine, disclosed. Not yet reviewed, approved or committed. |
 | 0.8 | 28 September 2026 | Claude Engineering Implementer | WP2 closed: committed ae358f4, pushed; real CI green on all four jobs; branch protection applied (enforce_admins false, disclosed); genuine post-commit review Pass via GitHub Copilot CLI. |
 | 0.7 | 28 September 2026 | Claude Engineering Implementer | WP2 approved via Programme Sponsor direct chat instruction ("Approved"); branch-protection recommendation directed. EIP-ESR0059-002 synced to v1.0. Pending commit/push. |
 | 0.6 | 28 September 2026 | Claude Engineering Implementer | WP2 design-reviewed via a genuine scoped GitHub Copilot CLI invocation - Pass. Awaiting Programme Sponsor approval. |
