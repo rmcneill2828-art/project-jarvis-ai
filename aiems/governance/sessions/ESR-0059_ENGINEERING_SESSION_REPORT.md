@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.3 |
+| Version | 0.4 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -56,6 +56,10 @@ EBG-0139 to EBG-0151 registered as Candidate Backlog (the review's High and Nice
 
 **Programme Sponsor approved via direct chat instruction ("Approved")** after reviewing the change summary directly. [[EIP-ESR0059-001_CRITICAL_RUNTIME_SAFETY_FIXES|EIP-ESR0059-001]] synced to v1.0 (Approved - implemented). The Programme Sponsor's decisions on EBG-0152 scope, the local-echo fallback, Gemini routing and code signing remain outstanding.
 
+**Committed and pushed** (`f2ffaa5`, `85068ed..f2ffaa5`), gated through the real Sponsor Approval Service via `submit-response`.
+
+**Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit, complete 9-file scope - **Pass**, independently verified against the transcript (`repository_ref: f2ffaa5...` matching exactly, single clean entry). Confirmed the exact 9-file changed-set with no unrelated path, confirmed every commit-message claim against the committed diff, confirmed EIP-ESR0059-001 v1.0 and its REG-0001 row, and re-ran `pytest` (616 passed/1 skipped), `validate_repository.py` (0 errors, 333 warnings), ruff (13 pre-existing only), `cargo test` (8 passed) and clippy (clean) fresh against the committed state, all matching. The reviewer disclosed that it did not re-run Playwright or the live smoke check at this step. **WP1 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -78,7 +82,7 @@ Implement the production code review's action plan, one Work Package at a time t
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Approved (EIP-ESR0059-001 v1.0) - pending commit/push |
+| WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Complete (EIP-ESR0059-001 v1.0) - committed `f2ffaa5`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | Proposed | Restore the CI `python` gate (EBG-0152) | Not started - recommended next, pending Programme Sponsor scope decision |
 | Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
 | Planned | Provider resilience: retry, backoff, circuit breaking (EBG-0140) | Not started - Gemini routing needs a Programme Sponsor decision |
@@ -92,6 +96,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.4 | 28 September 2026 | Claude Engineering Implementer | WP1 closed: committed f2ffaa5, pushed; genuine post-commit review Pass via GitHub Copilot CLI, clean single return-findings entry. |
 | 0.3 | 28 September 2026 | Claude Engineering Implementer | WP1 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-001 synced to v1.0. Pending commit/push through submit-response. |
 | 0.2 | 28 September 2026 | Claude Engineering Implementer | WP1 live smoke check and design review recorded - Pass via genuine GitHub Copilot CLI invocation routed through the real bridge. Awaiting Programme Sponsor approval. |
 | 0.1 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 opened. WP0A/WP0B complete. Objective set by direct Programme Sponsor instruction: implement the production code review's action plan. WP1 drafted per EIP-ESR0059-001 v0.1 - four Critical-tier fixes (EBG-0135 to EBG-0138) implemented and tested, EBG-0139 to EBG-0151 registered; EBG-0152 (CI `python` job red since 29 July 2026) found during WP1 validation and registered. Not yet reviewed, approved or committed. |
