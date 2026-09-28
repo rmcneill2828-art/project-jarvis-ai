@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.7 |
+| Version | 0.8 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -74,6 +74,12 @@ Validation: the whole CI `python` job reproduced in order in a fresh virtual env
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**, and directed applying the branch-protection recommendation. [[EIP-ESR0059-002_RESTORE_CI_PYTHON_GATE|EIP-ESR0059-002]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`ae358f4`, `b37ea4c..ae358f4`), gated through the real Sponsor Approval Service via `submit-response`. **The real CI run on `main` (run 36492093971) passed on all four jobs** - `python`, `frontend-build`, `playwright`, `rust` - the first fully green `main` run since 29 July 2026.
+
+**Branch protection applied (Programme Sponsor direction)**: `main` now requires the `python`, `frontend-build`, `playwright` and `rust` checks, and blocks force-pushes and branch deletion. **Disclosed design choice**: `enforce_admins` is deliberately `false`. This project commits directly to `main` through `submit-response`, and a required check cannot pass before a commit is pushed, so enforcing it on administrators would reject every commit in the standing workflow. The protection therefore makes a failing or missing check visible on `main` (and GitHub reports each direct push as bypassing the required checks) rather than blocking the push. The standing post-commit review now also confirms the real CI result, as it did for this Work Package.
+
+**Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit - **Pass**, independently verified against the transcript (`repository_ref: ae358f4...`). Confirmed the exact 11-file changed-set, every commit-message claim, all four CI jobs green on run 36492093971, and the branch protection settings (read only); re-ran pytest (616 passed/1 skipped), the validator (0 errors/333 warnings) and ruff (clean). **WP2 closed.**
+
 The Programme Sponsor's instruction is read as accepting the recommendations on the remaining three decisions, in order: replace the local-echo fallback with an honest failure reply (EBG-0141), add Gemini as the secondary provider (EBG-0140/EBG-0051), and defer paid code signing (EBG-0146). Each follows as its own Work Package.
 
 ---
@@ -99,7 +105,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Complete (EIP-ESR0059-001 v1.0) - committed `f2ffaa5`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
-| WP2 | Restore the CI `python` gate (EBG-0152) | Approved (EIP-ESR0059-002 v1.0) - pending commit/push |
+| WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
 | Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
 | Planned | Provider resilience: retry, backoff, circuit breaking (EBG-0140) | Not started - Gemini routing needs a Programme Sponsor decision |
 | Planned | Non-model replies never presented or recorded as model replies (EBG-0141) | Not started - needs a Programme Sponsor decision on the local-echo fallback |
@@ -112,6 +118,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.8 | 28 September 2026 | Claude Engineering Implementer | WP2 closed: committed ae358f4, pushed; real CI green on all four jobs; branch protection applied (enforce_admins false, disclosed); genuine post-commit review Pass via GitHub Copilot CLI. |
 | 0.7 | 28 September 2026 | Claude Engineering Implementer | WP2 approved via Programme Sponsor direct chat instruction ("Approved"); branch-protection recommendation directed. EIP-ESR0059-002 synced to v1.0. Pending commit/push. |
 | 0.6 | 28 September 2026 | Claude Engineering Implementer | WP2 design-reviewed via a genuine scoped GitHub Copilot CLI invocation - Pass. Awaiting Programme Sponsor approval. |
 | 0.5 | 28 September 2026 | Claude Engineering Implementer | WP2 drafted: EBG-0152 CI python gate restored per EIP-ESR0059-002 v0.1. Full CI python job reproduced green in a fresh virtual environment. Not yet reviewed, approved or committed. |
