@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.197
+**Version:** 1.198
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.197 |
+| Version | 1.198 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -260,6 +260,7 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 | EBG-0150 | Structural Refactors: Composition Root and GuardianRuntime Growth | ESR-0059, Claude Engineering Implementer production code review (28 September 2026, delivered in chat at the Programme Sponsor's request) | Candidate Backlog | Low | Programme Sponsor | `build_default_runtime()` (the composition root) lives inside the 860-line transport module `stdio_rpc.py`; `GuardianRuntime` gains a method pair with duplicated connected/running checks for every new faculty. Proposed: move wiring to its own module and introduce a small capability registry. Maintainability only - no behaviour change. No implementation authorised by this entry. |
 | EBG-0151 | No Test Coverage Measurement | ESR-0059, Claude Engineering Implementer production code review (28 September 2026, delivered in chat at the Programme Sponsor's request) | Candidate Backlog | Low | Programme Sponsor | CI runs pytest, cargo test and Playwright but measures coverage for none of them, so untested paths (such as the restore and entity-id gaps closed by EBG-0137/EBG-0138) are not visible until found by review. Proposed: `pytest-cov` reporting in CI, advisory first. No implementation authorised by this entry. |
 | EBG-0152 | CI `python` Job Red on `main` Since 29 July 2026 - Ruff Failure Masks pytest, Validator and pip-audit | ESR-0059 WP1, found while running WP1's own validation (28 September 2026), confirmed against the real GitHub Actions history via `gh run list`/`gh run view` | Completed | High | Programme Sponsor | `ruff check .` is the `python` job's first step and has failed on every push to `main` since ESR-0040 WP1 (29 July 2026) - 161 failed CI runs against 39 successes in the last 200. Because the step fails first, `pytest`, `validate_repository.py`, `sync_product_version.py --check` and `pip-audit` have **not run in CI at all** for two months; the `frontend-build`, `rust` and `playwright` jobs stay green, which is likely why the red status went unnoticed. Every session report since has recorded local validation, which was genuine, but the CI gate EBG-0103/EBG-0124 established has not been enforcing it. Currently 13 errors: 10 `RUF100` unused-`noqa` and 1 `I001` in tests (auto-fixable), 1 `PLW1510` in `jarvis/gia/engineering_observability.py`, 1 `TRY004` in `jarvis/memory/store.py`. `ruff` is unpinned in the `dev` extra, so a new ruff release can also turn CI red with no code change. Proposed: fix the 13 errors, pin ruff to a known version, and consider a required-status-check branch protection on `main`. **Resolved at ESR-0059 WP2** per [[EIP-ESR0059-002_RESTORE_CI_PYTHON_GATE|EIP-ESR0059-002]]: the 13 errors cleared with every rationale comment kept; `ruff==0.16.0` pinned; `pip` upgraded before the hard `pip-audit` gate, which would otherwise have failed next on PYSEC-2026-3721 against pip itself - EBG-0124 made that gate hard while CI was already red, so it had never executed. Branch protection is a GitHub settings change left to the Programme Sponsor - **subsequently applied at the Programme Sponsor's direction** (four required checks, force-push and deletion blocked, `enforce_admins` false so the direct-to-`main` `submit-response` workflow still works; see ESR-0059 WP2). First fully green `main` CI run since 29 July 2026: `ae358f4`, run 36492093971. |
+| EBG-0153 | Retrospective Engineering Reviewer Coverage Owed for ESR-0059 WP4 (Copilot CLI Quota Exhausted) | ESR-0059 WP4, 29 September 2026 - GitHub Copilot CLI reported "You have exceeded your monthly quota" mid-way through the WP4 re-review, and again on a probe before the post-commit review | Candidate Backlog | High | Programme Sponsor | The WP4 design review completed (Conditional Pass, one finding fixed), but the re-review of that fix and the post-commit review of `f33286a` were replaced by disclosed self-verification, on the Programme Sponsor's decision. Owed once the quota resets: a genuine scoped Copilot CLI review of `f33286a` and of any later Work Package that is self-verified while the quota remains exhausted. Also to consider then: `JARVIS_PRIMARY_PROVIDER` is matched case-sensitively while WP4's `JARVIS_SECONDARY_PROVIDER` is not, so `Gemini` as a primary silently builds nothing. The quota exhaustion also means the standing review template depends on a single free-tier tool with a monthly cap, the same single-point risk EBG-0126 resolved once already. No implementation authorised by this entry. |
 
 ---
 
@@ -391,6 +392,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.198 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4 closure: registered EBG-0153 (retrospective Engineering Reviewer coverage owed - GitHub Copilot CLI monthly quota exhausted; primary-provider case-sensitivity observation). |
 | 1.197 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: EBG-0051 records the Gemini production-route decision as authorised and delivered (EIP-ESR0059-004); EBG-0140 records the routing part delivered, retry/backoff/circuit-breaker scope still open. |
 | 1.196 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP3: EBG-0141 closed Completed per EIP-ESR0059-003 (typed model-reply flag; local-echo removed from the production route). |
 | 1.195 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP2 closure: EBG-0152 row records branch protection applied at Programme Sponsor direction and the first green main CI run since 29 July 2026 (ae358f4). |

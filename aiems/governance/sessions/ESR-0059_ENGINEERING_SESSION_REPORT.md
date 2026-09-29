@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.15 |
+| Version | 0.16 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -119,6 +119,10 @@ Validation: pytest 624 passed/1 skipped, ruff clean, validator 0 errors/333 warn
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**, read as choosing the recommended option: disclosed self-verification while the quota is exhausted, and a retrospective GitHub Copilot CLI review of every self-verified step once it resets. [[EIP-ESR0059-004_GEMINI_SECONDARY_PROVIDER|EIP-ESR0059-004]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`f33286a`, `aadb6ec..f33286a`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36498837287 on `main`: all four jobs green.
+
+**Post-commit review - disclosed self-verification**: a one-line probe confirmed GitHub Copilot CLI's monthly quota was still exhausted. Self-verified against the real pushed commit instead: exactly the 10 declared files; the committed `stdio_rpc.py` diff matches the design-reviewed code; the working tree equals the commit; pytest (624 passed/1 skipped), the validator (0 errors/333 warnings) and ruff (clean) re-run fresh. **Observation, not fixed here**: `JARVIS_SECONDARY_PROVIDER` is matched case-insensitively, but `JARVIS_PRIMARY_PROVIDER` never was - `Gemini` as a primary builds nothing. Pre-existing for the primary, but an inconsistency WP4 made visible; recorded in EBG-0153. A retrospective Copilot review of WP4 is owed once the quota resets (EBG-0153). **WP4 closed, subject to that retrospective review.**
+
 ---
 
 # 4. Engineering Authority
@@ -144,7 +148,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Complete (EIP-ESR0059-001 v1.0) - committed `f2ffaa5`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
 | Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
-| WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Approved (EIP-ESR0059-004 v1.0) - pending commit/push; retrospective Copilot review owed |
+| WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Complete (EIP-ESR0059-004 v1.0) - committed `f33286a`, pushed; CI green; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153) |
 | Planned | Provider resilience: retry, backoff, circuit breaking (rest of EBG-0140) | Not started |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
 | Planned | Prompt structure and token budgets (EBG-0142, EBG-0143) | Not started |
@@ -156,6 +160,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.16 | 29 September 2026 | Claude Engineering Implementer | WP4 closed: committed f33286a, pushed; CI green; post-commit review self-verified (Copilot quota exhausted, disclosed); retrospective review owed, EBG-0153 registered. |
 | 0.15 | 29 September 2026 | Claude Engineering Implementer | WP4 approved via Programme Sponsor direct chat instruction ("Approved"); disclosed self-verification accepted while Copilot quota is exhausted, retrospective review owed. EIP-ESR0059-004 synced to v1.0. |
 | 0.14 | 29 September 2026 | Claude Engineering Implementer | WP4 design review Conditional Pass (one documentation finding, fixed). Re-review blocked: GitHub Copilot CLI monthly quota exhausted mid-review; disclosed self-verification substituted. Awaiting Programme Sponsor approval and decision on review coverage. |
 | 0.13 | 29 September 2026 | Claude Engineering Implementer | WP4 drafted per EIP-ESR0059-004 v0.1: Gemini as credential-gated secondary provider. Not yet reviewed, approved or committed. |
