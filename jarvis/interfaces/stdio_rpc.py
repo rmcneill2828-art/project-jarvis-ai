@@ -660,7 +660,7 @@ class StdioRpcServer:
             msg = "params.message must be a string."
             raise TypeError(msg)
         _require_max_length(message, MAX_MESSAGE_CHARS, "params.message")
-        response = self._runtime.converse(message)
+        response = self._runtime.converse(message, self._active_profile_id())
         return {"message": response.message, "provider": response.provider}
 
     def _guardian_speak(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -783,7 +783,13 @@ class StdioRpcServer:
             msg = "params.content must not be blank."
             raise ValueError(msg)
         _require_max_length(content, MAX_MEMORY_CHARS, "params.content")
-        pending = self._runtime.propose_memory(content)
+        # EBG-0132 (ESR-0059 WP13), Programme Sponsor's decision: a memory
+        # always belongs to a profile, so saving one needs a selected profile.
+        profile_id = self._active_profile_id()
+        if profile_id is None:
+            msg = "Select a profile before saving a memory."
+            raise ValueError(msg)
+        pending = self._runtime.propose_memory(content, profile_id)
         return {"pendingId": pending.id, "content": pending.content}
 
     def _memory_approve(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -802,7 +808,7 @@ class StdioRpcServer:
         return {"decisionId": decision.id, "decision": decision.decision}
 
     def _memory_list(self, params: dict[str, Any]) -> dict[str, Any]:
-        records = self._runtime.list_memory()
+        records = self._runtime.list_memory(self._active_profile_id())
         return {
             "records": [
                 {
@@ -810,6 +816,8 @@ class StdioRpcServer:
                     "content": record.content,
                     "createdAt": record.created_at.isoformat(),
                     "consentDecisionId": record.consent_decision_id,
+                    # null marks a shared household note (EBG-0132).
+                    "profileId": record.profile_id,
                 }
                 for record in records
             ]
@@ -823,7 +831,12 @@ class StdioRpcServer:
         if not isinstance(record_id, str) or not record_id.strip():
             msg = "params.recordId must be a non-empty string."
             raise TypeError(msg)
-        self._runtime.delete_memory(record_id)
+        active = self._identity_service.active_profile()
+        self._runtime.delete_memory(
+            record_id,
+            active.id if active is not None else None,
+            is_administrator=active is not None and active.role == "Administrator",
+        )
         return {"recordId": record_id, "deleted": True}
 
     def _memory_status(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -832,7 +845,7 @@ class StdioRpcServer:
         never full record content, matching PersonalMemoryStore.count()'s
         own dedicated COUNT(*) query rather than reusing memory.list()."""
 
-        count = self._runtime.memory_status()
+        count = self._runtime.memory_status(self._active_profile_id())
         return {"recordCount": count}
 
     def _memory_backup(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -870,8 +883,25 @@ class StdioRpcServer:
         if not isinstance(confirm_overwrite, bool):
             msg = "params.confirmOverwrite must be a boolean when provided."
             raise TypeError(msg)
+        # EBG-0132 (ESR-0059 WP13): backups hold memories but not profiles,
+        # so on another installation a restored memory's owner may not exist
+        # and nobody could see it. Such memories go to the profile doing the
+        # restore - kept private, never turned into shared household notes -
+        # so a restore needs a selected profile, like saving a memory does.
+        active_profile_id = self._active_profile_id()
+        if active_profile_id is None:
+            msg = "Select a profile before restoring memory."
+            raise ValueError(msg)
         count = self._runtime.restore_memory(Path(backup_path_param), confirm_overwrite=confirm_overwrite)
-        return {"recordCount": count}
+        known_profile_ids = {profile.id for profile in self._identity_service.list_profiles()}
+        reassigned = self._runtime.reassign_unknown_memory_owners(known_profile_ids, active_profile_id)
+        return {"recordCount": count, "reassignedToActiveProfile": reassigned}
+
+    def _active_profile_id(self) -> str | None:
+        """The selected profile's id, or None (EBG-0132, ESR-0059 WP13)."""
+
+        active = self._identity_service.active_profile()
+        return active.id if active is not None else None
 
     @staticmethod
     def _require_pending_id(params: dict[str, Any]) -> str:

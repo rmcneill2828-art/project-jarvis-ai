@@ -53,6 +53,9 @@ class PendingMemoryRequest:
     content: str
     sentinel_response: SentinelResponse
     created_at: datetime = field(default_factory=utc_now)
+    # The profile the memory will belong to; None for a shared household
+    # note (EBG-0132, ESR-0059 WP13).
+    profile_id: str | None = None
 
 
 class PersonalMemoryService:
@@ -69,7 +72,7 @@ class PersonalMemoryService:
         self._source = source
         self._pending: dict[str, PendingMemoryRequest] = {}
 
-    def propose(self, content: str) -> PendingMemoryRequest:
+    def propose(self, content: str, profile_id: str | None = None) -> PendingMemoryRequest:
         """Propose retaining `content`, evaluating it through Sentinel.
 
         Requires the resulting decision to be REVIEW before creating a
@@ -98,7 +101,9 @@ class PersonalMemoryService:
             raise RuntimeError(msg)
 
         pending_id = str(uuid.uuid4())
-        pending = PendingMemoryRequest(id=pending_id, content=content, sentinel_response=sentinel_response)
+        pending = PendingMemoryRequest(
+            id=pending_id, content=content, sentinel_response=sentinel_response, profile_id=profile_id
+        )
         self._pending[pending_id] = pending
         while len(self._pending) > MAX_PENDING_PROPOSALS:
             oldest_id = next(iter(self._pending))
@@ -116,6 +121,7 @@ class PersonalMemoryService:
             content=pending.content,
             created_at=utc_now(),
             consent_decision_id=decision.id,
+            profile_id=pending.profile_id,
         )
         self._store.add(record)
         return record
@@ -133,7 +139,19 @@ class PersonalMemoryService:
 
         return self._store.list_all()
 
-    def delete(self, record_id: str) -> None:
+    def reassign_unknown_owners(self, known_profile_ids: set[str], new_owner: str) -> int:
+        return self._store.reassign_unknown_owners(known_profile_ids, new_owner)
+
+    def list_visible(self, profile_id: str | None) -> tuple[PersonalMemoryRecord, ...]:
+        """Return the memories `profile_id` may see: its own plus shared
+        household notes (EBG-0132)."""
+
+        return self._store.list_visible(profile_id)
+
+    def count_visible(self, profile_id: str | None) -> int:
+        return self._store.count_visible(profile_id)
+
+    def delete(self, record_id: str, profile_id: str | None = None, *, is_administrator: bool = False) -> None:
         """Revoke one retained memory (EBG-0145, ESR-0059 WP10).
 
         Deliberately not gated by Sentinel policy: revocation only removes
@@ -144,9 +162,19 @@ class PersonalMemoryService:
         KeyError for an unknown id rather than reporting a false success.
         """
 
+        # EBG-0132 (ESR-0059 WP13): a profile may delete only its own
+        # memories; a shared household note only by an Administrator, by the
+        # Programme Sponsor's decision. Another profile's memory is reported
+        # exactly like a missing one, so its existence is never revealed.
+        record = self._store.get(record_id)
+        not_found = f"No stored memory found for id: {record_id!r}."
+        if record is None or (record.profile_id is not None and record.profile_id != profile_id):
+            raise KeyError(not_found)
+        if record.profile_id is None and not is_administrator:
+            msg = "Only an Administrator can delete a shared household note."
+            raise PermissionError(msg)
         if not self._store.delete(record_id):
-            msg = f"No stored memory found for id: {record_id!r}."
-            raise KeyError(msg)
+            raise KeyError(not_found)
         logger.info("Memory record revoked: record_id=%s", record_id)
 
     def record_count(self) -> int:

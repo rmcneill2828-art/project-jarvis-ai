@@ -15,7 +15,7 @@ from sentinel.core import SentinelTrustGateway
 def test_a_new_memory_store_is_created_at_the_latest_version(tmp_path):
     PersonalMemoryStore(tmp_path / "m.db")
 
-    assert schema_version(tmp_path / "m.db") == len(PERSONAL_MEMORY_MIGRATIONS) == 1
+    assert schema_version(tmp_path / "m.db") == len(PERSONAL_MEMORY_MIGRATIONS) == 2
 
 
 def test_a_new_profile_store_is_created_at_the_latest_version(tmp_path):
@@ -48,9 +48,13 @@ def test_an_existing_unversioned_database_is_upgraded_without_losing_data(tmp_pa
 
     store = PersonalMemoryStore(path)
 
-    assert schema_version(path) == 1
+    assert schema_version(path) == 2
     assert [r.content for r in store.list_all()] == ["Robert prefers dark mode."]
     assert store.get_decision("d1").decision == "approved"
+    # EBG-0132: a pre-existing memory becomes a shared household note,
+    # visible to every profile.
+    assert store.list_all()[0].profile_id is None
+    assert [r.content for r in store.list_visible("any-profile")] == ["Robert prefers dark mode."]
 
 
 def test_reopening_a_current_database_changes_nothing(tmp_path):
@@ -60,7 +64,7 @@ def test_reopening_a_current_database_changes_nothing(tmp_path):
 
     reopened = PersonalMemoryStore(path)
 
-    assert schema_version(path) == 1
+    assert schema_version(path) == 2
     assert [r.content for r in reopened.list_all()] == ["Tea, no sugar."]
 
 

@@ -63,7 +63,10 @@ class GuardianRuntime:
         self._speech_provider = speech_provider
         self._transcription_provider = transcription_provider
         self._agent_service = agent_service
-        self._cognitive_core = GuardianCognitiveCore()
+        # One Cognitive Core per profile (EBG-0132, ESR-0059 WP13), keyed by
+        # profile id (None when no profile is selected), so one profile's
+        # recent conversation never reaches another profile's turns.
+        self._cognitive_cores: dict[str | None, GuardianCognitiveCore] = {}
         self._state = GuardianRuntimeState.STOPPED
         provider_capabilities = (
             ("guardian.conversation",)
@@ -167,7 +170,13 @@ class GuardianRuntime:
 
         return self._state
 
-    def converse(self, message: str) -> ConversationResponse:
+    def _cognitive_core_for(self, profile_id: str | None) -> GuardianCognitiveCore:
+        core = self._cognitive_cores.get(profile_id)
+        if core is None:
+            core = self._cognitive_cores[profile_id] = GuardianCognitiveCore()
+        return core
+
+    def converse(self, message: str, profile_id: str | None = None) -> ConversationResponse:
         """Route a message through the connected conversation provider.
 
         Returns a boundary response, rather than raising, when no provider is
@@ -188,7 +197,10 @@ class GuardianRuntime:
         if self._state is not GuardianRuntimeState.RUNNING:
             return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
 
-        memory_records = () if self._memory_service is None else self._memory_service.list_records()
+        # EBG-0132 (ESR-0059 WP13): only this profile's memories plus shared
+        # household notes, and only this profile's own recent history.
+        memory_records = () if self._memory_service is None else self._memory_service.list_visible(profile_id)
+        cognitive_core = self._cognitive_core_for(profile_id)
         # EBG-0142 (ESR-0059 WP7): the persona goes to the provider verbatim
         # as the system prompt; history and retained memory travel separately,
         # so no user-authored text is ever given system-level authority.
@@ -196,8 +208,8 @@ class GuardianRuntime:
             ConversationRequest(
                 message=message,
                 persona=self._config.persona,
-                history=self._cognitive_core.history(),
-                memory_notes=self._cognitive_core.memory_notes(memory_records),
+                history=cognitive_core.history(),
+                memory_notes=cognitive_core.memory_notes(memory_records),
             )
         )
         # Only genuine model replies enter Cognitive Core history
@@ -207,7 +219,7 @@ class GuardianRuntime:
         # local-echo fallback's echo of the user's own message, or the
         # empty-message prompt - be recorded as if Guardian had said it.
         if response.is_model_reply:
-            self._cognitive_core.record_exchange(message, response.message)
+            cognitive_core.record_exchange(message, response.message)
         return response
 
     def speak(self, text: str) -> SpeechOutcome:
@@ -282,7 +294,7 @@ class GuardianRuntime:
             return ()
         return self._agent_service.available_agents()
 
-    def propose_memory(self, content: str) -> PendingMemoryRequest:
+    def propose_memory(self, content: str, profile_id: str | None = None) -> PendingMemoryRequest:
         """Propose retaining `content` as a Personal Memory item.
 
         Raises RuntimeError naming the unavailable boundary when no memory
@@ -301,7 +313,7 @@ class GuardianRuntime:
         """
 
         self._require_memory_service()
-        return self._memory_service.propose(content)
+        return self._memory_service.propose(content, profile_id)
 
     def approve_memory(self, pending_id: str) -> PersonalMemoryRecord:
         """Approve a pending memory-retention request."""
@@ -315,25 +327,27 @@ class GuardianRuntime:
         self._require_memory_service()
         return self._memory_service.deny(pending_id)
 
-    def list_memory(self) -> tuple[PersonalMemoryRecord, ...]:
-        """Return all stored Personal Memory records."""
+    def list_memory(self, profile_id: str | None = None) -> tuple[PersonalMemoryRecord, ...]:
+        """Return the memories `profile_id` may see: its own plus shared
+        household notes; household notes only when no profile is given
+        (EBG-0132)."""
 
         self._require_memory_service()
-        return self._memory_service.list_records()
+        return self._memory_service.list_visible(profile_id)
 
-    def delete_memory(self, record_id: str) -> None:
+    def delete_memory(self, record_id: str, profile_id: str | None = None, *, is_administrator: bool = False) -> None:
         """Revoke one retained memory (EBG-0145, ESR-0059 WP10). It stops
         reaching conversation turns immediately - memory is read fresh on
         every turn."""
 
         self._require_memory_service()
-        self._memory_service.delete(record_id)
+        self._memory_service.delete(record_id, profile_id, is_administrator=is_administrator)
 
-    def memory_status(self) -> int:
-        """Return the number of stored Personal Memory records (EBG-0131)."""
+    def memory_status(self, profile_id: str | None = None) -> int:
+        """Return how many memories `profile_id` may see (EBG-0131, EBG-0132)."""
 
         self._require_memory_service()
-        return self._memory_service.record_count()
+        return self._memory_service.count_visible(profile_id)
 
     def backup_memory(self, backup_dir: Path) -> Path:
         """Write a full point-in-time Personal Memory backup file and return its path.
@@ -357,6 +371,13 @@ class GuardianRuntime:
 
         self._require_memory_service()
         return self._memory_service.restore_backup(backup_path, confirm_overwrite=confirm_overwrite)
+
+    def reassign_unknown_memory_owners(self, known_profile_ids: set[str], new_owner: str) -> int:
+        """After a restore, give memories owned by profiles that do not exist
+        here to `new_owner` (EBG-0132, ESR-0059 WP13)."""
+
+        self._require_memory_service()
+        return self._memory_service.reassign_unknown_owners(known_profile_ids, new_owner)
 
     def _require_memory_service(self) -> None:
         if self._memory_service is None:

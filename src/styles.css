@@ -1112,3 +1112,9 @@ button {
   align-items: center;
   gap: 6px;
 }
+
+/* Shared household note label (EBG-0132, ESR-0059 WP13). */
+.memory-record-shared {
+  opacity: 0.7;
+  font-style: italic;
+}

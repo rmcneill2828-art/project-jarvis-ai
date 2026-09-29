@@ -99,6 +99,18 @@ def _server(tmp_path) -> StdioRpcServer:
     )
 
 
+def _server_with_profile(tmp_path) -> StdioRpcServer:
+    """A server with an Administrator profile selected - saving a memory
+    needs a selected profile since EBG-0132 (ESR-0059 WP13)."""
+
+    server = _server(tmp_path)
+    created = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 900, "method": "profile.create", "params": {"displayName": "Robert", "role": "Administrator"}})
+    )["result"]
+    server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 901, "method": "profile.select", "params": {"profileId": created["id"]}}))
+    return server
+
+
 def test_build_default_runtime_is_started_and_connected(tmp_path):
     runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
@@ -1289,7 +1301,7 @@ def test_memory_propose_approve_list_round_trip(tmp_path):
     real StdioRpcServer, proving the consent gate end to end, not just at the
     service-unit level (jarvis/tests/test_memory_service.py)."""
 
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
 
     propose_response = server.handle_line(
         json.dumps(
@@ -1312,7 +1324,7 @@ def test_memory_propose_approve_list_round_trip(tmp_path):
 
 
 def test_memory_propose_deny_list_round_trip_confirms_denied_item_never_appears(tmp_path):
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
 
     propose_response = server.handle_line(
         json.dumps(
@@ -1337,7 +1349,7 @@ def test_memory_status_reports_record_count(tmp_path):
     real StdioRpcServer - a record count only, no record content in the
     response, matching PersonalMemoryStore.count()'s own dedicated query."""
 
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
 
     empty_response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.status", "params": {}}))
     assert empty_response["result"] == {"recordCount": 0}
@@ -1363,7 +1375,7 @@ def test_memory_backup_writes_file_with_both_tables(tmp_path):
     a full point-in-time export - not merely the store/service unit level
     (jarvis/tests/test_memory_store.py, test_memory_service.py)."""
 
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
     propose_response = server.handle_line(
         json.dumps(
             {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
@@ -1391,7 +1403,7 @@ def test_memory_restore_round_trips_through_a_real_backup_file(tmp_path):
     StdioRpcServer, using two separate servers (separate memory DBs) so the
     restore target genuinely starts empty."""
 
-    source_server = _server(tmp_path / "source")
+    source_server = _server_with_profile(tmp_path / "source")
     propose_response = source_server.handle_line(
         json.dumps(
             {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
@@ -1407,7 +1419,7 @@ def test_memory_restore_round_trips_through_a_real_backup_file(tmp_path):
     )
     backup_path = backup_response["result"]["path"]
 
-    target_server = _server(tmp_path / "target")
+    target_server = _server_with_profile(tmp_path / "target")
     restore_response = target_server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 4, "method": "memory.restore", "params": {"backupPath": backup_path}})
     )
@@ -1418,7 +1430,7 @@ def test_memory_restore_round_trips_through_a_real_backup_file(tmp_path):
 
 
 def test_memory_restore_refuses_non_empty_store_without_confirm_overwrite(tmp_path):
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
     propose_response = server.handle_line(
         json.dumps(
             {"jsonrpc": "2.0", "id": 1, "method": "memory.propose", "params": {"content": "Robert prefers dark mode."}}
@@ -1442,7 +1454,7 @@ def test_memory_restore_refuses_non_empty_store_without_confirm_overwrite(tmp_pa
 
 
 def test_memory_restore_rejects_non_string_backup_path(tmp_path):
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
 
     response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.restore", "params": {"backupPath": 12345}})
@@ -1453,7 +1465,7 @@ def test_memory_restore_rejects_non_string_backup_path(tmp_path):
 
 
 def test_memory_backup_rejects_non_string_backup_dir(tmp_path):
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
 
     response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.backup", "params": {"backupDir": 12345}})

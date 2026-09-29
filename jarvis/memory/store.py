@@ -47,6 +47,11 @@ PERSONAL_MEMORY_MIGRATIONS: tuple[tuple[str, ...], ...] = (
         )
         """,
     ),
+    # 2 (EBG-0132, ESR-0059 WP13): the profile a memory belongs to. NULL is
+    # a shared household note, visible to every profile - which every memory
+    # saved before profile scoping becomes, by the Programme Sponsor's
+    # decision.
+    ("ALTER TABLE personal_memory ADD COLUMN profile_id TEXT",),
 )
 
 
@@ -77,6 +82,8 @@ class PersonalMemoryRecord:
     content: str
     created_at: datetime
     consent_decision_id: str
+    # The owning profile, or None for a shared household note (EBG-0132).
+    profile_id: str | None = None
 
 
 class PersonalMemoryStore:
@@ -196,29 +203,72 @@ class PersonalMemoryStore:
                 raise ValueError(msg)
             connection.execute(
                 """
-                INSERT INTO personal_memory (id, content, created_at, consent_decision_id)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO personal_memory (id, content, created_at, consent_decision_id, profile_id)
+                VALUES (?, ?, ?, ?, ?)
                 """,
-                (record.id, record.content, record.created_at.isoformat(), record.consent_decision_id),
+                (
+                    record.id,
+                    record.content,
+                    record.created_at.isoformat(),
+                    record.consent_decision_id,
+                    record.profile_id,
+                ),
             )
         return record
 
     def list_all(self) -> tuple[PersonalMemoryRecord, ...]:
-        """Return all stored Personal Memory records."""
+        """Return all stored Personal Memory records, every profile's."""
+
+        with self._transaction() as connection:
+            rows = connection.execute(f"SELECT {_RECORD_COLUMNS} FROM personal_memory ORDER BY created_at").fetchall()
+        return tuple(_record_from_row(row) for row in rows)
+
+    def list_visible(self, profile_id: str | None) -> tuple[PersonalMemoryRecord, ...]:
+        """Return the records `profile_id` may see: its own plus shared
+        household notes. With no profile, household notes only (EBG-0132)."""
 
         with self._transaction() as connection:
             rows = connection.execute(
-                "SELECT id, content, created_at, consent_decision_id FROM personal_memory ORDER BY created_at"
+                f"SELECT {_RECORD_COLUMNS} FROM personal_memory "
+                "WHERE profile_id IS NULL OR profile_id = ? ORDER BY created_at",
+                (profile_id,),
             ).fetchall()
-        return tuple(
-            PersonalMemoryRecord(
-                id=row[0],
-                content=row[1],
-                created_at=datetime.fromisoformat(row[2]),
-                consent_decision_id=row[3],
+        return tuple(_record_from_row(row) for row in rows)
+
+    def count_visible(self, profile_id: str | None) -> int:
+        """Return how many records `profile_id` may see (see list_visible)."""
+
+        with self._transaction() as connection:
+            row = connection.execute(
+                "SELECT COUNT(*) FROM personal_memory WHERE profile_id IS NULL OR profile_id = ?",
+                (profile_id,),
+            ).fetchone()
+        return int(row[0])
+
+    def reassign_unknown_owners(self, known_profile_ids: set[str], new_owner: str) -> int:
+        """Give every memory whose owning profile is not in `known_profile_ids`
+        to `new_owner`; return how many were moved. Shared household notes
+        (no owner) are untouched (EBG-0132, ESR-0059 WP13)."""
+
+        with self._transaction() as connection:
+            rows = connection.execute(
+                "SELECT id, profile_id FROM personal_memory WHERE profile_id IS NOT NULL"
+            ).fetchall()
+            orphaned = [row[0] for row in rows if row[1] not in known_profile_ids]
+            connection.executemany(
+                "UPDATE personal_memory SET profile_id = ? WHERE id = ?",
+                [(new_owner, record_id) for record_id in orphaned],
             )
-            for row in rows
-        )
+        return len(orphaned)
+
+    def get(self, record_id: str) -> PersonalMemoryRecord | None:
+        """Return one record by id, or None."""
+
+        with self._transaction() as connection:
+            row = connection.execute(
+                f"SELECT {_RECORD_COLUMNS} FROM personal_memory WHERE id = ?", (record_id,)
+            ).fetchone()
+        return None if row is None else _record_from_row(row)
 
     def count(self) -> int:
         """Return the number of stored Personal Memory records.
@@ -250,7 +300,7 @@ class PersonalMemoryStore:
 
         with self._transaction() as connection:
             memory_rows = connection.execute(
-                "SELECT id, content, created_at, consent_decision_id FROM personal_memory ORDER BY created_at"
+                f"SELECT {_RECORD_COLUMNS} FROM personal_memory ORDER BY created_at"
             ).fetchall()
             decision_rows = connection.execute(
                 """
@@ -266,6 +316,7 @@ class PersonalMemoryStore:
                     "content": row[1],
                     "created_at": row[2],
                     "consent_decision_id": row[3],
+                    "profile_id": row[4],
                 }
                 for row in memory_rows
             ),
@@ -353,6 +404,12 @@ class PersonalMemoryStore:
                 msg = f"Invalid backup snapshot: personal_memory row missing required fields: {row!r}"
                 raise ValueError(msg)
             _require_text_fields(row, ("id", "content", "consent_decision_id"), "personal_memory")
+            # Optional (EBG-0132): backups made before profile scoping have no
+            # profile_id and restore as shared household notes.
+            owner = row.get("profile_id")
+            if owner is not None and (not isinstance(owner, str) or not owner.strip()):
+                msg = f"Invalid backup snapshot: personal_memory row {row['id']!r} has an invalid profile_id."
+                raise ValueError(msg)
             _require_timestamp(row, "created_at", "personal_memory")
             if row["consent_decision_id"] not in decision_ids:
                 msg = (
@@ -410,10 +467,10 @@ class PersonalMemoryStore:
             for row in memory_rows:
                 connection.execute(
                     """
-                    INSERT INTO personal_memory (id, content, created_at, consent_decision_id)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO personal_memory (id, content, created_at, consent_decision_id, profile_id)
+                    VALUES (?, ?, ?, ?, ?)
                     """,
-                    (row["id"], row["content"], row["created_at"], row["consent_decision_id"]),
+                    (row["id"], row["content"], row["created_at"], row["consent_decision_id"], row.get("profile_id")),
                 )
 
         return len(memory_rows)
@@ -433,6 +490,19 @@ class PersonalMemoryStore:
         with self._transaction() as connection:
             cursor = connection.execute("DELETE FROM personal_memory WHERE id = ?", (record_id,))
             return cursor.rowcount > 0
+
+
+_RECORD_COLUMNS = "id, content, created_at, consent_decision_id, profile_id"
+
+
+def _record_from_row(row: tuple) -> PersonalMemoryRecord:
+    return PersonalMemoryRecord(
+        id=row[0],
+        content=row[1],
+        created_at=datetime.fromisoformat(row[2]),
+        consent_decision_id=row[3],
+        profile_id=row[4],
+    )
 
 
 def utc_now() -> datetime:

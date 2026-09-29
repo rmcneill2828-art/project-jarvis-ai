@@ -172,7 +172,12 @@ export function MemoryManagementPanel({ recordCount, statusError, onStatusChange
           {memories.length === 0 && <li className="panel-status-message">No stored memories.</li>}
           {memories.map((record) => (
             <li key={record.id} className="memory-record">
-              <span className="memory-record-content">{record.content}</span>
+              <span className="memory-record-content">
+                {record.content}
+                {/* EBG-0132 (ESR-0059 WP13): a shared household note, visible to
+                    every profile; only an Administrator can delete it. */}
+                {record.profileId === null && <span className="memory-record-shared"> (Household)</span>}
+              </span>
               {pendingDeleteId === record.id ? (
                 <span className="memory-delete-confirm" role="alertdialog" aria-label="Confirm delete">
                   <span className="conversation-error">Delete this memory? This cannot be undone.</span>

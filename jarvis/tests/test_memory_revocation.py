@@ -30,10 +30,10 @@ def test_store_delete_reports_whether_a_record_was_removed(tmp_path):
 
 def test_service_delete_removes_only_that_memory_and_keeps_its_consent_record(tmp_path):
     service = _service(tmp_path)
-    keep = service.approve(service.propose("Keep this.").id)
-    revoke = service.approve(service.propose("Revoke this.").id)
+    keep = service.approve(service.propose("Keep this.", "profile-a").id)
+    revoke = service.approve(service.propose("Revoke this.", "profile-a").id)
 
-    service.delete(revoke.id)
+    service.delete(revoke.id, "profile-a")
 
     assert [r.content for r in service.list_records()] == ["Keep this."]
     assert service._store.get_decision(revoke.consent_decision_id).decision == "approved"
@@ -60,11 +60,11 @@ def test_a_revoked_memory_stops_reaching_conversation_turns_immediately(tmp_path
     provider = _RecordingProvider()
     runtime = GuardianRuntime(conversation_provider=provider, memory_service=_service(tmp_path))
     runtime.start()
-    record = runtime.approve_memory(runtime.propose_memory("Robert dislikes cilantro.").id)
+    record = runtime.approve_memory(runtime.propose_memory("Robert dislikes cilantro.", "profile-a").id)
 
-    runtime.converse("first")
-    runtime.delete_memory(record.id)
-    runtime.converse("second")
+    runtime.converse("first", "profile-a")
+    runtime.delete_memory(record.id, "profile-a")
+    runtime.converse("second", "profile-a")
 
     assert provider.received[0].memory_notes == ("Robert dislikes cilantro.",)
     assert provider.received[1].memory_notes == ()
@@ -79,12 +79,19 @@ def _server(tmp_path) -> StdioRpcServer:
     )
 
 
+def _select_profile(server, role: str = "Adult") -> str:
+    created = _call(server, 90, "profile.create", {"displayName": role, "role": role})["result"]
+    _call(server, 91, "profile.select", {"profileId": created["id"]})
+    return created["id"]
+
+
 def _call(server, request_id, method, params):
     return server.handle_line(json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params}))
 
 
 def test_memory_delete_over_rpc(tmp_path):
     server = _server(tmp_path)
+    _select_profile(server)
     pending = _call(server, 1, "memory.propose", {"content": "Tea, no sugar."})["result"]["pendingId"]
     record_id = _call(server, 2, "memory.approve", {"pendingId": pending})["result"]["id"]
 

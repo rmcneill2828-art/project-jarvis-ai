@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.41 |
+| Version | 0.43 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -256,6 +256,18 @@ Validation: pytest 729 passed/1 skipped, ruff clean, validator 0 errors. Live ch
 
 ---
 
+**WP13 - Profile-Scoped Memory (Self-reviewed):** the isolation half of EBG-0132. **Programme Sponsor decisions**, asked before building ("go with your recommendations"): pre-existing memories become shared household notes deletable only by an Administrator; saving a memory needs a selected profile; role enforcement as a separate, following Work Package. [[EIP-ESR0059-013_PROFILE_SCOPED_MEMORY|EIP-ESR0059-013]]: memory schema migration 2 (`profile_id`, WP12's first real use); per-profile visibility, deletion rules and conversation history; the RPC layer resolves the active profile.
+
+**Real gap found during implementation, not by review**: backups hold memories but not profiles, so restoring onto another installation would have left every memory owned by a profile that does not exist there - visible to nobody. Such memories now go to the restoring profile, kept private; a restore needs a selected profile.
+
+Validation: pytest 739 passed/1 skipped, Playwright 26/26, ruff, frontend build and validator clean; the suite still creates no files in a fake home. **Live-checked through the real backend process** with a recording stand-in for Ollama: two profiles each saw only their own memory, and the model received only the active profile's memory and none of the other's conversation.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: every memory read path the product reaches goes through `list_visible`/`count_visible` - conversation, list and status - while `list_all` remains only for backup; the profile id always comes from the identity service on the backend, never from the UXP request, so the frontend cannot ask for another profile's memories; the delete path checks ownership before existence is revealed; per-profile Cognitive Cores are created lazily and only on the single slow-lane worker (WP5), so no new cross-thread state; the restore reassignment runs in one store transaction. **Disclosed limitation**: profiles are unauthenticated, so this isolates cooperating household members rather than defending against someone deliberately selecting another profile - credentialed authentication remains out of scope. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-013_PROFILE_SCOPED_MEMORY|EIP-ESR0059-013]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -285,6 +297,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
+| WP13 | Profile-scoped memory (EBG-0132, isolation half) | Approved (EIP-ESR0059-013 v1.0) - pending commit/push; retrospective review owed |
 | WP12 | SQLite schema versioning (EBG-0147) | Complete (EIP-ESR0059-012 v1.0) - committed `8ab3a81`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Complete (EIP-ESR0059-011 v1.0) - committed `dc0fae9`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP10 | Per-item memory revocation (EBG-0145) | Complete (EIP-ESR0059-010 v1.0) - committed `35c1921`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
@@ -295,6 +308,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.43 | 29 September 2026 | Claude Engineering Implementer | WP13 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-013 synced to v1.0. Pending commit/push. |
+| 0.42 | 29 September 2026 | Claude Engineering Implementer | WP13 drafted and self-reviewed per EIP-ESR0059-013 v0.2: profile-scoped memory (EBG-0132 isolation half), on the Programme Sponsor's decisions. Awaiting Programme Sponsor approval. |
 | 0.41 | 29 September 2026 | Claude Engineering Implementer | WP12 closed: committed 8ab3a81, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.40 | 29 September 2026 | Claude Engineering Implementer | WP12 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-012 synced to v1.0. Pending commit/push. |
 | 0.39 | 29 September 2026 | Claude Engineering Implementer | WP12 drafted and self-reviewed per EIP-ESR0059-012 v0.2: SQLite schema versioning (EBG-0147); test-isolation defect found and fixed. Awaiting Programme Sponsor approval. |
