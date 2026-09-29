@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.25 |
+| Version | 0.26 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -174,6 +174,10 @@ Validation: pytest 670 passed/1 skipped, ruff clean, validator 0 errors/333 warn
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-007_PROMPT_STRUCTURE|EIP-ESR0059-007]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`9070488`, `cce064e..9070488`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36543059975 on `main`: all four jobs green.
+
+**Post-commit review - disclosed self-verification** (Copilot CLI quota re-probed, still exhausted): exactly the 18 committed files; working tree equals the commit; pytest (670 passed/1 skipped) re-run fresh. Retrospective Copilot review owed (EBG-0153). **WP7 closed, subject to that retrospective review. With WP7, every Critical and High item of the production code review's action plan is delivered.**
+
 ---
 
 # 4. Engineering Authority
@@ -202,7 +206,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Complete (EIP-ESR0059-004 v1.0) - committed `f33286a`, pushed; CI green; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153) |
 | WP6 | Provider retry, backoff and circuit breaker (rest of EBG-0140) | Complete (EIP-ESR0059-006 v1.0) - committed `9e1dbbe`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
-| WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Approved (EIP-ESR0059-007 v1.0) - pending commit/push; retrospective review owed |
+| WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | Planned | Token budgets and input size limits (EBG-0143) | Not started |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
 
@@ -212,6 +216,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.26 | 29 September 2026 | Claude Engineering Implementer | WP7 closed: committed 9070488, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). Every Critical and High action-plan item now delivered. |
 | 0.25 | 29 September 2026 | Claude Engineering Implementer | WP7 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-007 synced to v1.0. Pending commit/push. |
 | 0.24 | 29 September 2026 | Claude Engineering Implementer | WP7 drafted and self-reviewed per EIP-ESR0059-007 v0.2: prompt structure (EBG-0142), live-verified end to end. Awaiting Programme Sponsor approval. |
 | 0.23 | 29 September 2026 | Claude Engineering Implementer | WP6 closed: committed 9e1dbbe, pushed; CI green on all four jobs; post-commit review self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
