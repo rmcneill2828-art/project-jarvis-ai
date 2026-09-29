@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.40 |
+| Version | 0.41 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -250,6 +250,10 @@ Validation: pytest 729 passed/1 skipped, ruff clean, validator 0 errors. Live ch
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-012_SCHEMA_VERSIONING|EIP-ESR0059-012]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`8ab3a81`, `aceb6a8..8ab3a81`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36569531880 on `main`: all four jobs green.
+
+**Post-commit review - disclosed self-verification** (Copilot CLI quota re-probed, still exhausted): exactly the 12 committed files; working tree equals the commit; pytest (729 passed/1 skipped) re-run fresh. Retrospective Copilot review owed (EBG-0153). **WP12 closed, subject to that retrospective review.**
+
 ---
 
 # 4. Engineering Authority
@@ -281,7 +285,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
-| WP12 | SQLite schema versioning (EBG-0147) | Approved (EIP-ESR0059-012 v1.0) - pending commit/push; retrospective review owed |
+| WP12 | SQLite schema versioning (EBG-0147) | Complete (EIP-ESR0059-012 v1.0) - committed `8ab3a81`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Complete (EIP-ESR0059-011 v1.0) - committed `dc0fae9`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP10 | Per-item memory revocation (EBG-0145) | Complete (EIP-ESR0059-010 v1.0) - committed `35c1921`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 
@@ -291,6 +295,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.41 | 29 September 2026 | Claude Engineering Implementer | WP12 closed: committed 8ab3a81, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.40 | 29 September 2026 | Claude Engineering Implementer | WP12 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-012 synced to v1.0. Pending commit/push. |
 | 0.39 | 29 September 2026 | Claude Engineering Implementer | WP12 drafted and self-reviewed per EIP-ESR0059-012 v0.2: SQLite schema versioning (EBG-0147); test-isolation defect found and fixed. Awaiting Programme Sponsor approval. |
 | 0.38 | 29 September 2026 | Claude Engineering Implementer | WP11 closed: committed dc0fae9, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
