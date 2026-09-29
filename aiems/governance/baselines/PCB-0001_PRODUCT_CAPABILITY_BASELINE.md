@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 2.18 |
+| Version | 2.19 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -36,7 +36,7 @@ The v2.3 refresh ([[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] WP3) incorpor
 Repository validation confirmed that the following evidence artefacts exist:
 
 - [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT]]
-- [[RBL-0038_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0058; superseded RBL-0007 through RBL-0037 since PCB-0001 v1.0)
+- [[RBL-0039_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0059; superseded RBL-0007 through RBL-0038 since PCB-0001 v1.0)
 - [[JARVIS_PRODUCT_ARCHITECTURE]]
 - [[JARVIS_CAPABILITY_READINESS_MATRIX]]
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER]]
@@ -133,6 +133,7 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.19 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: current-baseline references updated from RBL-0038 to RBL-0039, established at ESR-0059 (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory). |
 | 2.18 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP14 (EBG-0132): recorded that GAM-0001 Section 8.1 household roles are now enforced for memory; credentialed authentication and role authority beyond memory remain open. |
 | 2.17 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP13 (EBG-0132): recorded that memory is now scoped to the active profile; credentialed authentication and role-authority enforcement remain open. |
 | 2.16 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). Also corrected the Current Constraints and Conversation Workspace claims that the deterministic local provider is a production fallback - both missed by ESR-0059 WP3; the second caught by the WP4 design review. |

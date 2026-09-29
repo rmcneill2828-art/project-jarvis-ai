@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.46 |
-| Status | Open |
+| Version | 1.0 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0059 |
 | Date Opened | 28 September 2026 |
-| Date Closed | - |
-| Closure Status | Open |
+| Date Closed | 29 September 2026 |
+| Closure Status | Closed - fourteen Work Packages complete; RBL-0039 established, superseding RBL-0038 |
 
 ---
 
@@ -280,6 +280,38 @@ Validation: pytest 751 passed/1 skipped, Playwright 26/26, ruff and validator cl
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**, and directed closing the session. [[EIP-ESR0059-014_HOUSEHOLD_ROLE_ENFORCEMENT|EIP-ESR0059-014]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`61f1712`, `0d89198..61f1712`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36582578214 on `main`: all four jobs green.
+
+**Post-commit review - disclosed self-verification**: covered by the session-wide verification below, run against `61f1712` itself. Retrospective Copilot review owed (EBG-0153). **WP14 closed, subject to that retrospective review.**
+
+---
+
+---
+
+# 3A. Session-Wide WP15 - Independent Repository Verification
+
+The Programme Sponsor directed closing the session after WP14. GitHub Copilot CLI's monthly quota was re-probed and still exhausted, so this is a **disclosed self-verification** - the ESR-0057 WP6 substitute pattern - and the full session range is added to EBG-0153's retrospective-review list.
+
+Range `85068ed..61f1712` (ESR-0058's closing commit to WP14):
+
+* **27 commits**: an implementation commit and a closure commit for each of WP1 to WP13, plus WP14's implementation commit (its closure is recorded here). 73 files changed, 6,471 insertions, 560 deletions.
+* **CI on `main`**: 28 runs in the session - 26 green on all four jobs. The two red runs are WP1 (`f2ffaa5`) and its closure (`b37ea4c`), both before WP2 restored the CI `python` gate that had been red since 29 July 2026 (EBG-0152); every run since `ae358f4` is green.
+* **`sentinel/policy.py`**: zero lines changed all session - the `LOCAL_AGENT_ACTION` boundary untouched.
+* **Fresh re-run against the final state**: pytest 751 passed/1 skipped; ruff clean; `validate_repository.py` 0 errors/333 warnings (the pre-session count); `sync_product_version.py --check` agrees; `pip-audit` in a fresh virtual environment no known vulnerabilities; `cargo build`, `cargo test` (8 passed), `clippy -D warnings` and `fmt --check` clean; `npm run build` clean; Playwright 26/26; the full suite run against a fake home directory creates no files there.
+* **Backlog consistency**: EBG-0132 and EBG-0135 to EBG-0145, EBG-0147, EBG-0148 and EBG-0152 are Completed, each with a "Resolved at" note naming its EIP; EBG-0149, EBG-0150, EBG-0151 and EBG-0153 remain Candidate Backlog. **One inconsistency found and corrected**: EBG-0146 (code signing) was still Candidate Backlog although the Programme Sponsor decided to defer it - now Deferred.
+
+**Verdict: Pass** (self-verified, disclosed). Advisory baseline assessment: **Establish** a new baseline - fourteen delivered Work Packages, every Critical, High and Medium item of the production code review, a two-month CI outage ended, and three new real defects found and fixed by the session's own live checks (the packaged backend's stdin inheritance, the restore-orphaning gap, the test-suite leak into the home directory). The Programme Sponsor makes the actual WP16 determination.
+
+---
+
+# 3B. Session-Wide WP16 - Repository Baseline Determination
+
+**The Programme Sponsor's determination**: **establish a new baseline**, approving the Engineering Implementer's WP15 advisory ("Approved", read as accepting the recommendation to Establish, which was the only recommendation put). [[RBL-0039_REPOSITORY_BASELINE|RBL-0039]] created and accepted, superseding RBL-0038.
+
+Every controlled artefact's "current accepted repository baseline" pointer updated to RBL-0039: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]], [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]], the [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (full closure sweep - Current Mode, Baseline, Phase, Workflow and Objective; the Prior Session rolling window shifted, ESR-0058 added and ESR-0055 dropped; product-baseline rows). **Documentation Debt found during the sweep and corrected**: PST-0001's "Next Required Activity" row still named ESR-0033 (26 sessions stale), and its "Next Work Package Candidate" row pre-dated ESR-0048 - both refreshed to this session's actual carried-forward candidates. README.md (uncontrolled) updated to match.
+
+**ESR-0059 formally closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -311,7 +343,9 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
-| WP14 | Household role enforcement for memory (EBG-0132, role half) | Approved (EIP-ESR0059-014 v1.0) - pending commit/push; retrospective review owed |
+| WP15 | Session-wide independent verification | Complete - disclosed self-verification (Copilot CLI quota exhausted); Pass |
+| WP16 | Session-wide repository baseline determination | Complete - Establish RBL-0039, superseding RBL-0038 |
+| WP14 | Household role enforcement for memory (EBG-0132, role half) | Complete (EIP-ESR0059-014 v1.0) - committed `61f1712`, pushed; CI green; self-verified in WP15; retrospective review owed (EBG-0153) |
 | WP13 | Profile-scoped memory (EBG-0132, isolation half) | Complete (EIP-ESR0059-013 v1.0) - committed `eadcad4`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP12 | SQLite schema versioning (EBG-0147) | Complete (EIP-ESR0059-012 v1.0) - committed `8ab3a81`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Complete (EIP-ESR0059-011 v1.0) - committed `dc0fae9`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
@@ -323,6 +357,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 29 September 2026 | Programme Sponsor | ESR-0059 formally closed. WP16: Establish RBL-0039, superseding RBL-0038, approving the Engineering Implementer's advisory. Fourteen Work Packages delivered every Critical, High and Medium item of the production code review. Session-wide WP15 disclosed self-verification (GitHub Copilot CLI quota exhausted) - Pass, one register inconsistency corrected; retrospective review owed (EBG-0153). Every controlled artefact's baseline pointer synced to RBL-0039. |
+| 0.47 | 29 September 2026 | Claude Engineering Implementer | WP14 closed (61f1712, CI green). WP15 session-wide verification: disclosed self-verification, Pass; one register inconsistency (EBG-0146) corrected. Advisory: Establish a new baseline. WP16 awaiting Programme Sponsor determination. |
 | 0.46 | 29 September 2026 | Claude Engineering Implementer | WP14 approved via Programme Sponsor direct chat instruction ("Approved"); session closure directed. EIP-ESR0059-014 synced to v1.0. Pending commit/push. |
 | 0.45 | 29 September 2026 | Claude Engineering Implementer | WP14 drafted and self-reviewed per EIP-ESR0059-014 v0.2: household role enforcement for memory (EBG-0132 role half). Awaiting Programme Sponsor approval. |
 | 0.44 | 29 September 2026 | Claude Engineering Implementer | WP13 closed: committed eadcad4, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
