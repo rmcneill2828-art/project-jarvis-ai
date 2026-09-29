@@ -50,6 +50,9 @@ class ProviderConfiguration:
     retry_policy: RetryPolicy = field(default_factory=RetryPolicy)
     credential: CredentialReference | None = None
     metadata: Mapping[str, str] = field(default_factory=dict)
+    # Optional cap on generated tokens per call (EBG-0143, ESR-0059 WP8).
+    # None sends no cap, exactly as before.
+    max_output_tokens: int | None = None
 
     def __post_init__(self) -> None:
         if not self.provider_name.strip():
@@ -57,6 +60,9 @@ class ProviderConfiguration:
             raise ValueError(msg)
         if not self.default_capability.strip():
             msg = "Provider configuration default capability must not be empty."
+            raise ValueError(msg)
+        if self.max_output_tokens is not None and self.max_output_tokens < 1:
+            msg = "Provider configuration max output tokens must be at least one when set."
             raise ValueError(msg)
         if self.timeout_seconds <= 0:
             msg = "Provider configuration timeout seconds must be greater than zero."

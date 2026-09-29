@@ -127,6 +127,8 @@ class GeminiProvider:
         else:
             contents = [{"parts": [{"text": framed_prompt(request)}]}]
         payload: dict[str, object] = {"contents": contents}
+        if self._configuration.max_output_tokens is not None:
+            payload["generationConfig"] = {"maxOutputTokens": self._configuration.max_output_tokens}
         if request.system_prompt:
             payload["systemInstruction"] = {"parts": [{"text": request.system_prompt}]}
         headers = {

@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.26 |
+| Version | 0.28 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -180,6 +180,16 @@ Validation: pytest 670 passed/1 skipped, ruff clean, validator 0 errors/333 warn
 
 ---
 
+**WP8 - Input Limits and Prompt Budgets (Self-reviewed):** the first Medium-priority action-plan item (EBG-0143), under the Programme Sponsor's standing instruction. [[EIP-ESR0059-008_INPUT_LIMITS_AND_PROMPT_BUDGETS|EIP-ESR0059-008]] drafted and implemented: RPC input limits with a matching UXP chat-input limit, history and memory prompt budgets, and an optional output cap left off by default (disclosed: a cap on a reasoning model can leave replies empty, and no model is available here to test one). **Real finding during implementation**: the first budgets (600/2,000 characters) left too little of Ollama's context for a reply once the 1,746-character persona was counted; tightened to 400/1,500 and the bound made a test.
+
+Validation: pytest 689 passed/1 skipped, ruff clean, validator 0 errors, frontend build clean, Playwright 23/23. Live-checked against the real backend process: oversized message refused with a clear error, normal message still answered, blank memory refused.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: the limits are enforced at the RPC boundary before any runtime call, so an oversized request touches no provider, voice model or store; `len()` counts characters, matching the UXP's `maxLength`; the memory budget only affects what one turn carries - nothing is deleted from the store; the output cap is sent under `max_completion_tokens`, never the `max_tokens` the gpt-5 family rejects; the context bound was recalculated with the real persona length, which is what led to tightening the budgets. No further change needed. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-008_INPUT_LIMITS_AND_PROMPT_BUDGETS|EIP-ESR0059-008]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -207,7 +217,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP6 | Provider retry, backoff and circuit breaker (rest of EBG-0140) | Complete (EIP-ESR0059-006 v1.0) - committed `9e1dbbe`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
-| Planned | Token budgets and input size limits (EBG-0143) | Not started |
+| WP8 | Input limits and prompt budgets (EBG-0143) | Approved (EIP-ESR0059-008 v1.0) - pending commit/push; retrospective review owed |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
 
 ---
@@ -216,6 +226,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.28 | 29 September 2026 | Claude Engineering Implementer | WP8 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-008 synced to v1.0. Pending commit/push. |
+| 0.27 | 29 September 2026 | Claude Engineering Implementer | WP8 drafted and self-reviewed per EIP-ESR0059-008 v0.2: input limits and prompt budgets (EBG-0143). Awaiting Programme Sponsor approval. |
 | 0.26 | 29 September 2026 | Claude Engineering Implementer | WP7 closed: committed 9070488, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). Every Critical and High action-plan item now delivered. |
 | 0.25 | 29 September 2026 | Claude Engineering Implementer | WP7 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-007 synced to v1.0. Pending commit/push. |
 | 0.24 | 29 September 2026 | Claude Engineering Implementer | WP7 drafted and self-reviewed per EIP-ESR0059-007 v0.2: prompt structure (EBG-0142), live-verified end to end. Awaiting Programme Sponsor approval. |

@@ -22,6 +22,23 @@ from jarvis.memory.store import PersonalMemoryRecord
 
 DEFAULT_HISTORY_LIMIT = 6
 
+# Prompt budgets (EBG-0143, ESR-0059 WP8). Each history entry is truncated
+# to HISTORY_ENTRY_CHAR_LIMIT; retained memory notes are kept, newest first,
+# up to MEMORY_NOTES_CHAR_BUDGET in total. With the RPC boundary's 4000-
+# character message limit and the persona, a worst-case turn still leaves
+# roughly 400 tokens of Ollama's 4096-token context for the reply, at a
+# conservative 3.5 characters per token - rather than being silently
+# truncated from the start. The bound is an estimate, checked by a test.
+HISTORY_ENTRY_CHAR_LIMIT = 400
+MEMORY_NOTES_CHAR_BUDGET = 1_500
+TRUNCATION_MARKER = " [truncated]"
+
+
+def _truncate(text: str, limit: int) -> str:
+    if len(text) <= limit:
+        return text
+    return text[: limit - len(TRUNCATION_MARKER)] + TRUNCATION_MARKER
+
 
 class GuardianCognitiveCore:
     """Tracks bounded, in-process conversation history and turns retained
@@ -43,15 +60,28 @@ class GuardianCognitiveCore:
         """Return recorded (user message, Guardian reply) exchanges, oldest
         first - at most `history_limit` of them."""
 
-        return tuple(self._history)
+        return tuple(
+            (_truncate(user_message, HISTORY_ENTRY_CHAR_LIMIT), _truncate(reply, HISTORY_ENTRY_CHAR_LIMIT))
+            for user_message, reply in self._history
+        )
 
     @staticmethod
     def memory_notes(memory_records: Iterable[PersonalMemoryRecord]) -> tuple[str, ...]:
-        """Return retained memory as plain notes, in stored order. Content is
-        passed through unchanged; the provider adapters are responsible for
-        framing it as data rather than instructions."""
+        """Return retained memory as plain notes, in stored order, within
+        MEMORY_NOTES_CHAR_BUDGET (EBG-0143): the newest notes are kept first,
+        so once memory outgrows the budget the oldest are left out of the
+        turn - never truncated mid-note. The provider adapters frame the
+        notes as data rather than instructions."""
 
-        return tuple(record.content for record in memory_records)
+        contents = [record.content for record in memory_records]
+        kept: list[str] = []
+        used = 0
+        for content in reversed(contents):
+            if used + len(content) > MEMORY_NOTES_CHAR_BUDGET:
+                break
+            kept.append(content)
+            used += len(content)
+        return tuple(reversed(kept))
 
     def record_exchange(self, user_message: str, response_message: str) -> None:
         """Record a semantically successful exchange into bounded history.

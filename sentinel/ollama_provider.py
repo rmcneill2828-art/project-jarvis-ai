@@ -96,6 +96,8 @@ class OllamaProvider:
             "think": False,
             "options": {"num_ctx": DEFAULT_NUM_CTX},
         }
+        if self._configuration.max_output_tokens is not None:
+            payload["options"]["num_predict"] = self._configuration.max_output_tokens  # type: ignore[index]
         if request.system_prompt:
             payload["system"] = request.system_prompt
         headers = {"Content-Type": "application/json"}

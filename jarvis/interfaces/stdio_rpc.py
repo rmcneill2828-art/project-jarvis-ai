@@ -210,6 +210,25 @@ DEFAULT_IDENTITY_DB_PATH = Path.home() / ".jarvis" / "identity" / "profiles.db"
 # Streaming Notifications MVP (EIP-ESR0031-002): interval between heartbeat
 # notifications, overridable per JARVIS_MEMORY_DB_PATH's established
 # test-isolation convention - a real 30-second sleep has no place in a test.
+# Input size limits at the RPC boundary (EBG-0143, ESR-0059 WP8). Oversized
+# input is refused with a clear error rather than passed on to a provider,
+# a voice model or the memory store. MAX_MESSAGE_CHARS also keeps a
+# worst-case turn - message, bounded history and memory notes (see
+# jarvis/guardian/cognitive_core.py) - inside Ollama's 4096-token context
+# (DEFAULT_NUM_CTX), which otherwise silently truncates the prompt.
+MAX_MESSAGE_CHARS = 4_000
+MAX_SPEAK_CHARS = 5_000
+MAX_AUDIO_BASE64_CHARS = 20_000_000  # about 15 MB of audio - minutes of push-to-talk speech
+MAX_MEMORY_CHARS = 2_000
+
+# Optional output-token cap for every text provider (EBG-0143, ESR-0059 WP8).
+# Off by default, deliberately: on reasoning models (OpenAI's gpt-5 family,
+# Gemini 2.5) internal "thinking" tokens can count against the cap, so a cap
+# chosen without a live test can leave replies empty. Set it once verified
+# against the configured models; an absent, non-integer or non-positive
+# value leaves output uncapped.
+MAX_OUTPUT_TOKENS_ENV_VAR = "JARVIS_MAX_OUTPUT_TOKENS"
+
 # Overall budget for one conversation turn, every provider tried included
 # (EBG-0139, ESR-0059 WP5). Must stay below src-tauri/src/lib.rs's
 # BACKEND_CALL_TIMEOUT (120s): past that, the shell stops waiting and the
@@ -263,6 +282,7 @@ def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvide
         default_model=model,
         credential=CredentialReference(environment_variable=spec["credential_env_var"]),
         retry_policy=CLOUD_RETRY_POLICY,
+        max_output_tokens=_max_output_tokens(environ),
     )
     if name == "openai":
         return OpenAIProvider(configuration)
@@ -441,6 +461,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
         default_model=ollama_model,
         endpoint=environ.get(OLLAMA_ENDPOINT_ENV_VAR) or None,
         timeout_seconds=OLLAMA_TIMEOUT_SECONDS,
+        max_output_tokens=_max_output_tokens(environ),
     )
     ollama_provider = OllamaProvider(ollama_configuration)
     orchestrator.register_provider(ollama_provider)
@@ -589,6 +610,7 @@ class StdioRpcServer:
         if not isinstance(message, str):
             msg = "params.message must be a string."
             raise TypeError(msg)
+        _require_max_length(message, MAX_MESSAGE_CHARS, "params.message")
         response = self._runtime.converse(message)
         return {"message": response.message, "provider": response.provider}
 
@@ -597,6 +619,7 @@ class StdioRpcServer:
         if not isinstance(text, str):
             msg = "params.text must be a string."
             raise TypeError(msg)
+        _require_max_length(text, MAX_SPEAK_CHARS, "params.text")
         outcome = self._runtime.speak(text)
         result: dict[str, Any] = {"status": outcome.status, "message": outcome.message}
         if outcome.status == "synthesized":
@@ -610,6 +633,7 @@ class StdioRpcServer:
         if not isinstance(audio_base64, str):
             msg = "params.audioBase64 must be a string."
             raise TypeError(msg)
+        _require_max_length(audio_base64, MAX_AUDIO_BASE64_CHARS, "params.audioBase64")
         if not isinstance(mime_type, str):
             msg = "params.mimeType must be a string."
             raise TypeError(msg)
@@ -706,6 +730,10 @@ class StdioRpcServer:
         if not isinstance(content, str):
             msg = "params.content must be a string."
             raise TypeError(msg)
+        if not content.strip():
+            msg = "params.content must not be blank."
+            raise ValueError(msg)
+        _require_max_length(content, MAX_MEMORY_CHARS, "params.content")
         pending = self._runtime.propose_memory(content)
         return {"pendingId": pending.id, "content": pending.content}
 
@@ -973,6 +1001,26 @@ class StdioRpcServer:
             self._process_line(line, out_stream)
         except Exception:  # must not vanish silently inside an executor thread
             logger.exception("Slow-lane request could not be completed.")
+
+
+def _require_max_length(value: str, limit: int, name: str) -> None:
+    """Refuse oversized RPC input (EBG-0143, ESR-0059 WP8)."""
+
+    if len(value) > limit:
+        msg = f"{name} is too long ({len(value)} characters; the limit is {limit})."
+        raise ValueError(msg)
+
+
+def _max_output_tokens(environ: Mapping[str, str]) -> int | None:
+    """Return the configured output-token cap, or None (uncapped) for any
+    absent or unusable value (EBG-0143, ESR-0059 WP8)."""
+
+    raw = (environ.get(MAX_OUTPUT_TOKENS_ENV_VAR) or "").strip()
+    try:
+        value = int(raw)
+    except ValueError:
+        return None
+    return value if value > 0 else None
 
 
 def _request_method(line: str) -> str | None:

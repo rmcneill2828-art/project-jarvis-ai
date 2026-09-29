@@ -98,10 +98,14 @@ class OpenAIProvider:
         # message carries only the persona.
         messages.extend({"role": turn.role, "content": turn.content} for turn in request.history)
         messages.append({"role": "user", "content": framed_prompt(request)})
-        payload = {
+        payload: dict[str, object] = {
             "model": self._configuration.default_model,
             "messages": messages,
         }
+        # `max_completion_tokens`, not the older `max_tokens`, which the
+        # gpt-5 model family rejects (EBG-0143, ESR-0059 WP8).
+        if self._configuration.max_output_tokens is not None:
+            payload["max_completion_tokens"] = self._configuration.max_output_tokens
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",

@@ -128,6 +128,11 @@ function derivePlatformSignals(platformState, platformError) {
 // ESR-0023 WP6 (EBG-0073), SystemHealthPanel is these rows' sole owner -
 // DiagnosticsPanel below no longer duplicates them; its remaining rows
 // (boundary, shell, agents) are permanently-static placeholders.
+// Must match MAX_MESSAGE_CHARS in jarvis/interfaces/stdio_rpc.py (EBG-0143,
+// ESR-0059 WP8): the backend refuses longer messages, so the input stops
+// accepting typing at the same limit instead of failing after send.
+const MAX_MESSAGE_CHARS = 4000;
+
 const SYSTEM_HEALTH_LABELS = { guardian: "Guardian", sentinel: "Sentinel", providers: "Providers" };
 
 function deriveSystemHealth(platformState, platformError) {
@@ -556,6 +561,7 @@ function CommandPanel({
         <input
           value={inputValue}
           onChange={(event) => onInputChange(event.target.value)}
+          maxLength={MAX_MESSAGE_CHARS}
           placeholder="Ask Guardian anything..."
           disabled={sending}
         />
