@@ -47,6 +47,7 @@ Implementer's own repository checkout, not end-user product telemetry).
 
 import logging
 import re
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -54,18 +55,18 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Protocol
 
+from jarvis.repository import (
+    GIT_FAILED_MESSAGE,
+    RepositoryUnavailableError,
+    resolve_repository_root,
+)
+
 logger = logging.getLogger(__name__)
 
 # Field separator for `git log`'s combined --format output - unlikely to
 # appear in a commit subject line, avoiding ambiguity a plain space or colon
 # split could introduce.
 _GIT_LOG_FIELD_SEPARATOR = "\x1f"
-
-# This file's own location is used only to resolve which repository `git`
-# should operate against (via `git -C <dir> rev-parse --show-toplevel`) -
-# robust regardless of the calling process's own working directory, unlike
-# depending on `Path.cwd()`.
-_MODULE_DIR = Path(__file__).resolve().parent
 
 # Tolerant of both of scripts/validate_repository.py's own summary
 # phrasings ("0 errors, N warning(s)." on pass; "N error(s), M warning(s)."
@@ -124,6 +125,31 @@ class EngineeringStateReader(Protocol):
         ...
 
 
+VALIDATION_TIMEOUT_SECONDS = 120.0
+
+PYTHON_UNAVAILABLE_MESSAGE = (
+    "Repository validation needs a Python interpreter on PATH, and this packaged installation has none."
+)
+
+
+def _script_interpreter() -> str:
+    """Return the Python interpreter to run repository scripts with.
+
+    From source, the running interpreter. In the PyInstaller-packaged
+    sidecar, `sys.executable` is the backend executable itself, not Python:
+    running a script "with" it started a second backend (found live at
+    ESR-0059 WP11, EBG-0148), so a Python on PATH is used instead, and its
+    absence is reported rather than guessed around.
+    """
+
+    if not getattr(sys, "frozen", False):
+        return sys.executable
+    interpreter = shutil.which("python") or shutil.which("python3")
+    if interpreter is None:
+        raise RepositoryUnavailableError(PYTHON_UNAVAILABLE_MESSAGE)
+    return interpreter
+
+
 class RealEngineeringStateReader:
     """Default production reader.
 
@@ -143,24 +169,26 @@ class RealEngineeringStateReader:
         self._repo_root: str | None = None
 
     def _resolve_repo_root(self) -> str:
+        # EBG-0148 (ESR-0059 WP11): resolved through jarvis.repository -
+        # JARVIS_REPOSITORY_ROOT, else this package's own checkout - so a
+        # packaged install with neither gets RepositoryUnavailableError, not
+        # a raw git failure naming its temporary extraction directory.
         if self._repo_root is None:
-            result = subprocess.run(
-                ["git", "-C", str(_MODULE_DIR), "rev-parse", "--show-toplevel"],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            self._repo_root = result.stdout.strip()
+            self._repo_root = str(resolve_repository_root())
         return self._repo_root
 
     def _run_git(self, *args: str) -> str:
-        result = subprocess.run(
-            ["git", *args],
-            cwd=self._resolve_repo_root(),
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+        try:
+            result = subprocess.run(
+                ["git", *args],
+                cwd=self._resolve_repo_root(),
+                capture_output=True,
+                text=True,
+                check=True,
+                stdin=subprocess.DEVNULL,  # never the JSON-RPC request stream
+            )
+        except (OSError, subprocess.CalledProcessError) as exc:
+            raise RepositoryUnavailableError(GIT_FAILED_MESSAGE) from exc
         return result.stdout
 
     def branch(self) -> str:
@@ -199,17 +227,26 @@ class RealEngineeringStateReader:
         # non-zero exactly when it finds errors, and that is a result to
         # report, not a failure to raise - the summary line is parsed below
         # either way, and an unparseable one still raises.
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        # stdin=DEVNULL and the timeout (EBG-0148, ESR-0059 WP11): this runs
+        # inside the stdio JSON-RPC backend, whose stdin is the request
+        # stream - a child must never be able to read from it.
+        try:
+            result = subprocess.run(
+                [_script_interpreter(), str(script_path)],
+                capture_output=True,
+                text=True,
+                check=False,
+                stdin=subprocess.DEVNULL,
+                timeout=VALIDATION_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as exc:
+            msg = f"Repository validation did not finish within {VALIDATION_TIMEOUT_SECONDS:.0f}s."
+            raise RuntimeError(msg) from exc
         match = _VALIDATION_SUMMARY_PATTERN.search(result.stdout)
         if not match:
             msg = (
-                f"Could not parse a repository validation summary line from '{script_path}' "
-                f"output (exit code {result.returncode})."
+                "Could not parse a repository validation summary line from "
+                f"scripts/validate_repository.py output (exit code {result.returncode})."
             )
             raise RuntimeError(msg)
         return int(match.group(1)), int(match.group(2))

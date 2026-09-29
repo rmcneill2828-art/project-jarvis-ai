@@ -20,11 +20,20 @@ import re
 import subprocess
 from pathlib import Path
 
+from jarvis.repository import (
+    GIT_FAILED_MESSAGE,
+    RepositoryUnavailableError,
+    resolve_repository_root,
+)
+
 # Anchored to this module's own file location, not the process's working
 # directory. The Tauri sidecar spawns Python via `Command::new("python")`
 # with no `.current_dir(...)` set (src-tauri/src/lib.rs), so relying on
 # `os.getcwd()` or a bare `git rev-parse` from an unknown cwd would be
 # brittle depending on how/where the bridge happens to be launched from.
+# Since EBG-0148 (ESR-0059 WP11) this is informational only - build_graph()
+# resolves the root through jarvis.repository, which also honours
+# JARVIS_REPOSITORY_ROOT and fails cleanly in a packaged install.
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 WIKILINK_PATTERN = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
@@ -38,13 +47,19 @@ def _tracked_markdown_files(repo_root: Path) -> list[Path]:
     dozens of untracked README.md files that would otherwise dwarf the
     repository's own ~135-150 real engineering artefacts."""
 
-    result = subprocess.run(
-        ["git", "ls-files", "*.md"],
-        cwd=repo_root,
-        capture_output=True,
-        encoding="utf-8",
-        check=True,
-    )
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "*.md"],
+            cwd=repo_root,
+            capture_output=True,
+            encoding="utf-8",
+            check=True,
+            stdin=subprocess.DEVNULL,  # never the JSON-RPC request stream (EBG-0148)
+        )
+    except (OSError, subprocess.CalledProcessError) as exc:
+        # EBG-0148 (ESR-0059 WP11): git missing, or not a repository. Never
+        # surface str(exc) - it carries the command line and paths.
+        raise RepositoryUnavailableError(GIT_FAILED_MESSAGE) from exc
     return [repo_root / line for line in result.stdout.splitlines() if line]
 
 
@@ -114,7 +129,10 @@ def build_graph(repo_root: Path | None = None) -> dict[str, list[dict[str, str]]
     on unresolved WikiLinks.
     """
 
-    root = repo_root if repo_root is not None else REPO_ROOT
+    # EBG-0148 (ESR-0059 WP11): JARVIS_REPOSITORY_ROOT, else this package's
+    # own checkout; RepositoryUnavailableError in a packaged install that
+    # has neither - never a raw git error.
+    root = repo_root if repo_root is not None else resolve_repository_root()
     files = _tracked_markdown_files(root)
 
     candidates_by_stem: dict[str, list[Path]] = {}

@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.35 |
+| Version | 0.37 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -224,6 +224,18 @@ Validation: pytest 707 passed/1 skipped, Playwright 26/26, ruff, clippy, fmt, fr
 
 ---
 
+**WP11 - Repository-Reading Capabilities in Packaged Builds (Self-reviewed):** EBG-0148, under the Programme Sponsor's standing instruction to continue with the backlog. [[EIP-ESR0059-011_REPOSITORY_CAPABILITIES_IN_PACKAGED_BUILDS|EIP-ESR0059-011]]. **Verified before fixing, on a real packaged build** run from outside the repository: `knowledge.graph` and `gia.engineeringStatus` failed with a raw `CalledProcessError` exposing the internal `_MEI` path. Fixed with a shared resolver (`JARVIS_REPOSITORY_ROOT`, path-free unavailable message).
+
+**Second real defect, found while verifying the fix**: with a repository configured, the packaged backend ran the repository validator using `sys.executable` - the backend executable itself in a PyInstaller build - starting a second backend that inherited the JSON-RPC request stream as its stdin. Fixed: a real Python from PATH in packaged builds, every child process with stdin closed (enforced by a test), and a validator timeout.
+
+Validation: pytest 721 passed/1 skipped, ruff clean, validator 0 errors. Re-verified on a freshly rebuilt packaged build: without a repository, both methods report cleanly and the backend keeps answering; with `JARVIS_REPOSITORY_ROOT` set, the graph returns 325 nodes and engineering status answers in 2.9s. No stray processes.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: every `subprocess` call in `jarvis/` and `sentinel/` enumerated - exactly three, all now with closed stdin, enforced by a test; resolution by `.git` presence cannot fail merely because git is absent, and git's own failures are converted without echoing their command line; `_script_interpreter()` can never return the frozen executable; the cached `_repo_root` behaviour the existing observer tests depend on is unchanged; the live re-verification covered both configurations on a freshly rebuilt package, and left no stray processes. No further change needed. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-011_REPOSITORY_CAPABILITIES_IN_PACKAGED_BUILDS|EIP-ESR0059-011]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -253,6 +265,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
+| WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Approved (EIP-ESR0059-011 v1.0) - pending commit/push; retrospective review owed |
 | WP10 | Per-item memory revocation (EBG-0145) | Complete (EIP-ESR0059-010 v1.0) - committed `35c1921`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 
 ---
@@ -261,6 +274,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.37 | 29 September 2026 | Claude Engineering Implementer | WP11 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-011 synced to v1.0. Pending commit/push. |
+| 0.36 | 29 September 2026 | Claude Engineering Implementer | WP11 drafted and self-reviewed per EIP-ESR0059-011 v0.2: repository-reading capabilities in packaged builds (EBG-0148). Awaiting Programme Sponsor approval. |
 | 0.35 | 29 September 2026 | Claude Engineering Implementer | WP10 closed: committed 35c1921, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). Every Critical, High and Medium action-plan item now delivered. |
 | 0.34 | 29 September 2026 | Claude Engineering Implementer | WP10 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-010 synced to v1.0. Pending commit/push. |
 | 0.33 | 29 September 2026 | Claude Engineering Implementer | WP10 drafted and self-reviewed per EIP-ESR0059-010 v0.2: per-item memory revocation (EBG-0145). Awaiting Programme Sponsor approval. |
