@@ -242,3 +242,28 @@ def test_ollama_refuses_to_start_a_call_after_the_deadline() -> None:
         provider.execute(ProviderRequest(prompt="hello", deadline=time.monotonic() - 1.0))
 
     assert calls == []
+
+
+def test_ollama_http_and_network_errors_are_classified_for_retry() -> None:
+    """EBG-0140 (ESR-0059 WP6)."""
+
+    import urllib.error
+
+    from sentinel.providers import ProviderError
+
+    def failing(error):
+        def transport(*args):
+            raise error
+
+        return OllamaProvider(_configuration(), transport=transport)
+
+    with pytest.raises(ProviderError) as server_error:
+        failing(urllib.error.HTTPError("u", 503, "x", None, None)).execute(ProviderRequest(prompt="hi"))
+    with pytest.raises(ProviderError) as missing_model:
+        failing(urllib.error.HTTPError("u", 404, "x", None, None)).execute(ProviderRequest(prompt="hi"))
+    with pytest.raises(ProviderError) as refused:
+        failing(urllib.error.URLError("refused")).execute(ProviderRequest(prompt="hi"))
+
+    assert server_error.value.transient is True
+    assert missing_model.value.transient is False  # e.g. model not pulled - retrying cannot help
+    assert refused.value.transient is True

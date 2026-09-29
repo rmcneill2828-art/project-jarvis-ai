@@ -133,3 +133,79 @@ def test_capabilities_and_name_reflect_configuration(monkeypatch):
 
     assert provider.name == "openai"
     assert provider.capabilities == ("text-generation",)
+
+
+# EBG-0140 (ESR-0059 WP6): error classification, empty replies, usage.
+
+
+def _provider_returning(body: dict | None = None, error: Exception | None = None) -> OpenAIProvider:
+    def fake_transport(url, payload, headers, timeout):
+        if error is not None:
+            raise error
+        return json.dumps(body).encode("utf-8")
+
+    return OpenAIProvider(_configuration(), transport=fake_transport)
+
+
+@pytest.mark.parametrize(("status", "transient"), [(429, True), (500, True), (503, True), (401, False), (404, False)])
+def test_http_errors_are_classified_for_retry(monkeypatch, status, transient):
+    from sentinel.providers import ProviderError
+
+    monkeypatch.setenv("TEST_OPENAI_API_KEY", "sk-test")
+    provider = _provider_returning(error=urllib.error.HTTPError("u", status, "x", None, None))
+
+    with pytest.raises(ProviderError, match=f"status {status}") as raised:
+        provider.execute(ProviderRequest(prompt="hi"))
+
+    assert raised.value.transient is transient
+    assert isinstance(raised.value, RuntimeError)  # established contract preserved
+
+
+def test_network_failures_are_transient(monkeypatch):
+    from sentinel.providers import ProviderError
+
+    monkeypatch.setenv("TEST_OPENAI_API_KEY", "sk-test")
+    provider = _provider_returning(error=urllib.error.URLError("connection reset"))
+
+    with pytest.raises(ProviderError) as raised:
+        provider.execute(ProviderRequest(prompt="hi"))
+
+    assert raised.value.transient is True
+
+
+@pytest.mark.parametrize("content", [None, "", "   "])
+def test_empty_or_null_content_is_a_clear_failure(monkeypatch, content):
+    monkeypatch.setenv("TEST_OPENAI_API_KEY", "sk-test")
+    provider = _provider_returning({"choices": [{"message": {"content": content, "refusal": "secret refusal text"}, "finish_reason": "stop"}]})
+
+    with pytest.raises(RuntimeError, match=r"no text content \(finish_reason: stop\)") as raised:
+        provider.execute(ProviderRequest(prompt="hi"))
+
+    assert "secret refusal text" not in str(raised.value)
+    assert getattr(raised.value, "transient", False) is False
+
+
+def test_token_usage_is_recorded_in_metadata(monkeypatch):
+    monkeypatch.setenv("TEST_OPENAI_API_KEY", "sk-test")
+    provider = _provider_returning(
+        {
+            "choices": [{"message": {"content": "hello"}, "finish_reason": "stop"}],
+            "usage": {"prompt_tokens": 12, "completion_tokens": 3, "total_tokens": 15, "details": {"x": 1}},
+        }
+    )
+
+    response = provider.execute(ProviderRequest(prompt="hi"))
+
+    assert response.metadata["usage_prompt_tokens"] == "12"
+    assert response.metadata["usage_total_tokens"] == "15"
+    assert response.metadata["finish_reason"] == "stop"
+    assert "usage_details" not in response.metadata  # nested values skipped, metadata stays string-only
+
+
+def test_retry_policy_comes_from_configuration():
+    from sentinel.provider_config import RetryPolicy
+
+    policy = RetryPolicy(max_attempts=2, backoff_seconds=1.0)
+    provider = OpenAIProvider(_configuration(retry_policy=policy))
+
+    assert provider.retry_policy is policy

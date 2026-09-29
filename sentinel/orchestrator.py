@@ -1,17 +1,26 @@
 """Sentinel provider orchestration and resilience primitives."""
 
+import random
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 
 from sentinel.audit import AuditEvent, AuditRecorder, MemoryAuditRecorder
-from sentinel.core import SentinelResponse
+from sentinel.core import SentinelDecisionOutcome, SentinelResponse
+from sentinel.provider_config import RetryPolicy
 from sentinel.providers import (
     ExecutionProvider,
     ProviderRequest,
     ProviderResponse,
     execute_with_sentinel_decision,
 )
+
+# How long a provider that just failed is skipped before being tried again
+# (EBG-0140, ESR-0059 WP6). Long enough to stop a dead provider costing its
+# timeout on every turn of a conversation, short enough to notice recovery
+# within a minute.
+DEFAULT_CIRCUIT_COOLDOWN_SECONDS = 30.0
 
 
 class ProviderHealth(Enum):
@@ -64,12 +73,31 @@ class OrchestratedProviderResponse:
 class ProviderOrchestrator:
     """Health-aware Sentinel provider orchestrator with failover."""
 
-    def __init__(self, audit_recorder: AuditRecorder | None = None) -> None:
+    def __init__(
+        self,
+        audit_recorder: AuditRecorder | None = None,
+        circuit_cooldown_seconds: float = DEFAULT_CIRCUIT_COOLDOWN_SECONDS,
+        clock: Callable[[], float] = time.monotonic,
+        sleep: Callable[[float], None] = time.sleep,
+        random_fraction: Callable[[], float] = random.random,
+    ) -> None:
+        if circuit_cooldown_seconds < 0:
+            msg = "Circuit cooldown seconds must not be negative."
+            raise ValueError(msg)
         self._providers: dict[str, ExecutionProvider] = {}
         self._health: dict[str, ProviderHealth] = {}
         self._routes: dict[str, ProviderRoute] = {}
         self._history: list[ProviderExecutionRecord] = []
         self._audit_recorder = audit_recorder or MemoryAuditRecorder()
+        # Circuit breaker state (EBG-0140, ESR-0059 WP6): provider name to the
+        # clock time until which it is skipped after a failure. Only failures
+        # open a circuit - a health set by an operator via set_health() is
+        # unaffected. clock/sleep/random_fraction are injectable for tests.
+        self._open_until: dict[str, float] = {}
+        self._circuit_cooldown_seconds = circuit_cooldown_seconds
+        self._clock = clock
+        self._sleep = sleep
+        self._random = random_fraction
 
     def register_provider(
         self,
@@ -147,9 +175,29 @@ class ProviderOrchestrator:
         sentinel_response: SentinelResponse,
         request: ProviderRequest,
     ) -> OrchestratedProviderResponse:
-        """Execute a provider request using route order and failover."""
+        """Execute a provider request using route order, retry and failover.
+
+        EBG-0140 (ESR-0059 WP6):
+
+        * A non-ALLOW Sentinel decision raises `PermissionError` before any
+          provider is touched. Previously it was caught as a provider
+          failure and degraded every provider on the route.
+        * Each provider gets up to its `retry_policy.max_attempts`, retrying
+          only failures marked transient (rate limits, server errors,
+          network failures), with exponential backoff and jitter - and never
+          sleeping past the request's deadline.
+        * A provider that fails is skipped for `circuit_cooldown_seconds`
+          (its circuit is open), so a provider that is down stops costing
+          its full timeout on every turn. After the cooldown it is tried
+          again; a success closes the circuit and restores HEALTHY.
+        """
+
+        if sentinel_response.decision.outcome is not SentinelDecisionOutcome.ALLOW:
+            msg = "Sentinel decision does not allow provider execution."
+            raise PermissionError(msg)
 
         attempted: list[str] = []
+        cooling_down: list[str] = []
         last_error: Exception | None = None
         deadline_reached = False
 
@@ -160,18 +208,20 @@ class ProviderOrchestrator:
             if request.deadline is not None and time.monotonic() >= request.deadline:
                 deadline_reached = True
                 break
+            if self._circuit_is_open(provider.name):
+                cooling_down.append(provider.name)
+                continue
             attempted.append(provider.name)
             try:
-                provider_response = execute_with_sentinel_decision(
-                    sentinel_response,
-                    provider,
-                    request,
-                )
+                provider_response, attempts = self._execute_with_retry(sentinel_response, provider, request)
             except Exception as exc:  # noqa: BLE001 - any provider failure must fail over, not just known exception types
                 last_error = exc
                 self._health[provider.name] = ProviderHealth.DEGRADED
+                self._open_until[provider.name] = self._clock() + self._circuit_cooldown_seconds
                 continue
 
+            self._health[provider.name] = ProviderHealth.HEALTHY
+            self._open_until.pop(provider.name, None)
             record = ProviderExecutionRecord(
                 capability=request.capability,
                 attempted_providers=tuple(attempted),
@@ -192,6 +242,7 @@ class ProviderOrchestrator:
                         "capability": request.capability,
                         "selected_provider": provider.name,
                         "attempted_providers": ",".join(attempted),
+                        "attempts": str(attempts),
                     },
                 )
             )
@@ -203,6 +254,8 @@ class ProviderOrchestrator:
         reason = "No healthy provider could execute the request."
         if last_error is not None:
             reason = f"Provider execution failed: {last_error}"
+        elif cooling_down:
+            reason = f"Every eligible provider is cooling down after a recent failure: {', '.join(cooling_down)}."
         if deadline_reached:
             reason = f"Request deadline reached after attempting: {', '.join(attempted) or 'no provider'}."
         record = ProviderExecutionRecord(
@@ -221,10 +274,40 @@ class ProviderOrchestrator:
                 metadata={
                     "capability": request.capability,
                     "attempted_providers": ",".join(attempted),
+                    "cooling_down": ",".join(cooling_down),
                 },
             )
         )
         raise RuntimeError(reason)
+
+    def _circuit_is_open(self, provider_name: str) -> bool:
+        open_until = self._open_until.get(provider_name)
+        return open_until is not None and self._clock() < open_until
+
+    def _execute_with_retry(
+        self,
+        sentinel_response: SentinelResponse,
+        provider: ExecutionProvider,
+        request: ProviderRequest,
+    ) -> tuple[ProviderResponse, int]:
+        """Run one provider with its retry policy; return the response and the
+        number of attempts it took, or raise the last failure."""
+
+        policy = getattr(provider, "retry_policy", None) or RetryPolicy()
+        attempt = 1
+        while True:
+            try:
+                return execute_with_sentinel_decision(sentinel_response, provider, request), attempt
+            except Exception as exc:
+                if attempt >= policy.max_attempts or not getattr(exc, "transient", False):
+                    raise
+                # Exponential backoff with +/-50% jitter, so concurrent
+                # clients do not retry in lockstep.
+                delay = policy.backoff_seconds * (2 ** (attempt - 1)) * (0.5 + self._random())
+                if request.deadline is not None and time.monotonic() + delay >= request.deadline:
+                    raise
+                self._sleep(delay)
+                attempt += 1
 
     def history(self) -> tuple[ProviderExecutionRecord, ...]:
         """Return provider orchestration history."""

@@ -56,6 +56,27 @@ class ProviderResponse:
             raise ValueError(msg)
 
 
+# HTTP statuses worth retrying: the request was fine, the service was not
+# (EBG-0140, ESR-0059 WP6). 401/403/404 and other 4xx are permanent - a bad
+# key or model name will not fix itself between attempts.
+TRANSIENT_HTTP_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
+
+
+class ProviderError(RuntimeError):
+    """A provider call failure that says whether retrying could help.
+
+    Subclasses `RuntimeError`, every adapter's established failure type, so
+    existing callers and tests that expect `RuntimeError` are unaffected.
+    `transient` is True for rate limits, server errors, timeouts and
+    network failures; False for anything retrying cannot fix. A plain
+    `RuntimeError` from a provider is treated as not transient.
+    """
+
+    def __init__(self, message: str, *, transient: bool) -> None:
+        super().__init__(message)
+        self.transient = transient
+
+
 def remaining_timeout(configured_timeout_seconds: float, request: ProviderRequest) -> float:
     """Return the timeout a provider call may use for `request`.
 

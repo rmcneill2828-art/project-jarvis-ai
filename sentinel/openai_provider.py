@@ -6,8 +6,14 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 
-from sentinel.provider_config import ProviderConfiguration
-from sentinel.providers import ProviderRequest, ProviderResponse, remaining_timeout
+from sentinel.provider_config import ProviderConfiguration, RetryPolicy
+from sentinel.providers import (
+    TRANSIENT_HTTP_STATUSES,
+    ProviderError,
+    ProviderRequest,
+    ProviderResponse,
+    remaining_timeout,
+)
 
 Transport = Callable[[str, bytes, dict[str, str], float], bytes]
 
@@ -16,6 +22,23 @@ def _default_transport(url: str, body: bytes, headers: dict[str, str], timeout_s
     request = urllib.request.Request(url, data=body, headers=headers, method="POST")
     with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
         return response.read()
+
+
+def _response_metadata(data: dict, choice: dict, model: str) -> dict[str, str]:
+    """Model, finish reason and token usage as ProviderResponse's
+    string-only metadata - matching what GeminiProvider already records
+    (EBG-0140, ESR-0059 WP6), so token spend is visible for both providers."""
+
+    metadata = {"model": model}
+    finish_reason = choice.get("finish_reason")
+    if finish_reason is not None:
+        metadata["finish_reason"] = str(finish_reason)
+    usage = data.get("usage")
+    if isinstance(usage, dict):
+        for key, value in usage.items():
+            if isinstance(value, (str, int, float, bool)):
+                metadata[f"usage_{key}"] = str(value)
+    return metadata
 
 
 class OpenAIProvider:
@@ -48,6 +71,13 @@ class OpenAIProvider:
     @property
     def capabilities(self) -> tuple[str, ...]:
         return (self._configuration.default_capability,)
+
+    @property
+    def retry_policy(self) -> RetryPolicy:
+        """This provider's configured retry policy, read by
+        `ProviderOrchestrator` (EBG-0140, ESR-0059 WP6)."""
+
+        return self._configuration.retry_policy
 
     def execute(self, request: ProviderRequest) -> ProviderResponse:
         api_key = os.environ.get(self._configuration.credential.environment_variable)
@@ -92,24 +122,37 @@ class OpenAIProvider:
             # the cause (exhausted API credit, HTTP 429) was a billing issue and
             # not a bad model identifier.
             msg = f"OpenAI request failed: HTTPError (status {exc.code})."
-            raise RuntimeError(msg) from exc
+            # Retryable only for rate limits and server errors (EBG-0140).
+            raise ProviderError(msg, transient=exc.code in TRANSIENT_HTTP_STATUSES) from exc
         except Exception as exc:
             # Deliberately expose only the exception type, never str(exc) - a raw
             # transport error message is not guaranteed safe to surface, and this
             # message can end up in ProviderOrchestrator's persisted audit trail.
             msg = f"OpenAI request failed: {type(exc).__name__}."
-            raise RuntimeError(msg) from exc
+            # Network failures and timeouts are retryable (EBG-0140).
+            raise ProviderError(msg, transient=True) from exc
 
         try:
             data = json.loads(raw_response)
-            content = data["choices"][0]["message"]["content"]
-        except (KeyError, IndexError, json.JSONDecodeError) as exc:
+            choice = data["choices"][0]
+            content = choice["message"]["content"]
+        except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
             msg = "Unexpected OpenAI response shape: missing choices[0].message.content."
             raise RuntimeError(msg) from exc
+
+        # EBG-0140 (ESR-0059 WP6): `content` is null or empty for a refusal,
+        # a tool call or a length cut-off with no text. Previously that
+        # surfaced as an AttributeError from ProviderResponse's validation;
+        # now it is this adapter's own clear, non-retryable failure. Only
+        # finish_reason is surfaced - never the refusal or tool-call text.
+        if not isinstance(content, str) or not content.strip():
+            finish_reason = choice.get("finish_reason") if isinstance(choice, dict) else None
+            msg = f"OpenAI returned no text content (finish_reason: {finish_reason})."
+            raise RuntimeError(msg)
 
         return ProviderResponse(
             provider_name=self.name,
             content=content,
             capability=request.capability,
-            metadata={"model": self._configuration.default_model},
+            metadata=_response_metadata(data, choice, self._configuration.default_model),
         )

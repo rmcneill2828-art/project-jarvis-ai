@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.20 |
+| Version | 0.22 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -142,6 +142,22 @@ Validation: pytest 637 passed/1 skipped on three consecutive runs, ruff clean, v
 
 ---
 
+**WP6 - Provider Retry and Circuit Breaker (Self-reviewed):** the rest of EBG-0140, under the Programme Sponsor's standing instruction. [[EIP-ESR0059-006_PROVIDER_RETRY_AND_CIRCUIT_BREAKER|EIP-ESR0059-006]] drafted and implemented:
+
+* `ProviderError(RuntimeError)` with a `transient` flag; 408/425/429/5xx and network failures are retryable, other failures are not.
+* Deadline-aware retry with exponential backoff and jitter; cloud providers one retry, Ollama none.
+* A 30s cooldown circuit breaker: a failed provider is skipped, then retried after the cooldown and restored to `HEALTHY` on success.
+* A non-ALLOW Sentinel decision is refused up front instead of degrading every provider.
+* OpenAI: clear failure on null content (never echoing refusal text), token usage recorded.
+
+Validation: pytest 660 passed/1 skipped on two runs, ruff clean, validator 0 errors. **Live-verified against the real backend process**: with Ollama hanging and a 6s test deadline, turn 1 returned the honest reply at 6.3s and opened Ollama's circuit; turn 2 returned it in 0.0s instead of waiting again.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: circuit state (`_open_until`) is read and written only inside `execute()`, which since WP5 runs only on the single slow-lane worker, so no new cross-thread state is introduced; retry backoff sleeps on that worker, never blocking status, memory or profile calls; the up-front deny check raises before any retry or circuit logic runs; the deadline comparison in the retry path uses real `time.monotonic()`, matching the deadline's own clock even when a test injects a fake circuit clock; a permanent 404 from Ollama (model not pulled) now costs one fast failed call per 30s instead of one per turn. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-006_PROVIDER_RETRY_AND_CIRCUIT_BREAKER|EIP-ESR0059-006]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -166,7 +182,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
 | WP5 | Per-turn deadline and slow-request lane (EBG-0139) | Complete (EIP-ESR0059-005 v1.0) - committed `e851e17`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Complete (EIP-ESR0059-004 v1.0) - committed `f33286a`, pushed; CI green; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153) |
-| Planned | Provider resilience: retry, backoff, circuit breaking (rest of EBG-0140) | Not started |
+| WP6 | Provider retry, backoff and circuit breaker (rest of EBG-0140) | Approved (EIP-ESR0059-006 v1.0) - pending commit/push; retrospective review owed |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
 | Planned | Prompt structure and token budgets (EBG-0142, EBG-0143) | Not started |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
@@ -177,6 +193,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.22 | 29 September 2026 | Claude Engineering Implementer | WP6 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-006 synced to v1.0. Pending commit/push. |
+| 0.21 | 29 September 2026 | Claude Engineering Implementer | WP6 drafted and self-reviewed per EIP-ESR0059-006 v0.2: provider retry and circuit breaker (rest of EBG-0140), live-verified. Awaiting Programme Sponsor approval. |
 | 0.20 | 29 September 2026 | Claude Engineering Implementer | WP5 closed: committed e851e17, pushed; CI green on all four jobs; post-commit review self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.19 | 29 September 2026 | Claude Engineering Implementer | WP5 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-005 synced to v1.0. Pending commit/push. |
 | 0.18 | 29 September 2026 | Claude Engineering Implementer | WP5 disclosed self-review recorded (Copilot CLI quota still exhausted). Awaiting Programme Sponsor approval. |

@@ -321,3 +321,34 @@ def test_endpoint_override_is_respected(monkeypatch):
     provider.execute(ProviderRequest(prompt="hello"))
 
     assert captured["url"] == "https://example-proxy.internal/gemini"
+
+
+def test_gemini_http_errors_are_classified_for_retry(monkeypatch) -> None:
+    """EBG-0140 (ESR-0059 WP6)."""
+
+    import urllib.error
+
+    from sentinel.gemini_provider import GeminiProvider
+    from sentinel.provider_config import CredentialReference, ProviderConfiguration
+    from sentinel.providers import ProviderError, ProviderRequest
+
+    monkeypatch.setenv("TEST_GEMINI_KEY_WP6", "key")
+    configuration = ProviderConfiguration(
+        provider_name="gemini",
+        default_model="gemini-2.5-flash",
+        credential=CredentialReference(environment_variable="TEST_GEMINI_KEY_WP6"),
+    )
+
+    def provider_raising(status):
+        def transport(*args):
+            raise urllib.error.HTTPError("u", status, "x", None, None)
+
+        return GeminiProvider(configuration, transport=transport)
+
+    with pytest.raises(ProviderError) as rate_limited:
+        provider_raising(429).execute(ProviderRequest(prompt="hi"))
+    with pytest.raises(ProviderError) as forbidden:
+        provider_raising(403).execute(ProviderRequest(prompt="hi"))
+
+    assert rate_limited.value.transient is True
+    assert forbidden.value.transient is False

@@ -67,7 +67,7 @@ from sentinel.ollama_provider import OllamaProvider
 from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
 from sentinel.policy import TrustTierPolicy
-from sentinel.provider_config import CredentialReference, ProviderConfiguration
+from sentinel.provider_config import CredentialReference, ProviderConfiguration, RetryPolicy
 from sentinel.whisper_provider import WhisperProvider
 
 JSONRPC_VERSION = "2.0"
@@ -86,6 +86,15 @@ logger = logging.getLogger(__name__)
 SLOW_METHODS = frozenset(
     {"guardian.converse", "guardian.speak", "guardian.transcribe", "guardian.agent.invoke"}
 )
+
+# Retry policy for the cloud providers (EBG-0140, ESR-0059 WP6): one retry
+# after a transient failure (rate limit, server error, network failure),
+# after a jittered backoff of about a second. ProviderOrchestrator only
+# retries failures the adapter marks transient, and never sleeps past the
+# turn deadline. Ollama keeps the default single attempt: it is local, and
+# retrying a cold start that already took its full timeout would only
+# double the wait.
+CLOUD_RETRY_POLICY = RetryPolicy(max_attempts=2, backoff_seconds=1.0)
 
 # Selects which real provider build_default_runtime() tries to wire as primary;
 # unset defaults to "openai" per PEM-001's Primary/Secondary designation.
@@ -253,6 +262,7 @@ def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvide
         provider_name=name,
         default_model=model,
         credential=CredentialReference(environment_variable=spec["credential_env_var"]),
+        retry_policy=CLOUD_RETRY_POLICY,
     )
     if name == "openai":
         return OpenAIProvider(configuration)

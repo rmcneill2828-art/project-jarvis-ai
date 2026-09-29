@@ -8,7 +8,8 @@ from sentinel.orchestrator import (
     ProviderOrchestrator,
     ProviderRoute,
 )
-from sentinel.providers import ProviderRequest, ProviderResponse
+from sentinel.provider_config import RetryPolicy
+from sentinel.providers import ProviderError, ProviderRequest, ProviderResponse
 
 
 @dataclass(frozen=True)
@@ -200,17 +201,33 @@ def test_orchestrator_records_execution_history() -> None:
 
 
 def test_orchestrator_blocks_execution_when_sentinel_does_not_allow() -> None:
-    orchestrator = ProviderOrchestrator()
-    orchestrator.register_provider(OrchestratorStubProvider(name="primary"))
+    """EBG-0140 (ESR-0059 WP6): a non-ALLOW decision is refused up front.
+    Previously it was caught as a provider failure, recorded as one and
+    degraded every provider on the route."""
 
-    with pytest.raises(RuntimeError, match="Provider execution failed"):
+    called: list[str] = []
+
+    @dataclass(frozen=True)
+    class _RecordingProvider:
+        name: str = "primary"
+        capabilities: tuple[str, ...] = ("text-generation",)
+
+        def execute(self, request: ProviderRequest) -> ProviderResponse:
+            called.append(self.name)
+            return ProviderResponse(provider_name=self.name, content="x", capability=request.capability)
+
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(_RecordingProvider())
+
+    with pytest.raises(PermissionError, match="does not allow provider execution"):
         orchestrator.execute(
             review_sentinel_response(),
             ProviderRequest(prompt="hello"),
         )
 
-    assert orchestrator.history()[0].succeeded is False
-    assert orchestrator.history()[0].selected_provider is None
+    assert called == []
+    assert orchestrator.health("primary") is ProviderHealth.HEALTHY
+    assert orchestrator.history() == ()
 
 
 def test_orchestrator_raises_when_no_provider_supports_capability() -> None:
@@ -301,3 +318,166 @@ def test_orchestrator_without_a_deadline_still_fails_over_as_before() -> None:
     result = orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hello"))
 
     assert result.provider_response.content == "secondary:hello"
+
+
+# EBG-0140 (ESR-0059 WP6): retry, backoff and circuit breaking.
+
+
+
+class _ScriptedProvider:
+    """Fails with each scripted error in turn, then succeeds."""
+
+    def __init__(self, name: str, errors: list[Exception], retry_policy: RetryPolicy | None = None) -> None:
+        self.name = name
+        self.capabilities = ("text-generation",)
+        self._errors = list(errors)
+        self.calls = 0
+        if retry_policy is not None:
+            self.retry_policy = retry_policy
+
+    def execute(self, request: ProviderRequest) -> ProviderResponse:
+        self.calls += 1
+        if self._errors:
+            raise self._errors.pop(0)
+        return ProviderResponse(provider_name=self.name, content=f"{self.name} ok", capability=request.capability)
+
+
+class _FakeClock:
+    def __init__(self) -> None:
+        self.now = 1000.0
+        self.slept: list[float] = []
+
+    def __call__(self) -> float:
+        return self.now
+
+    def sleep(self, seconds: float) -> None:
+        self.slept.append(seconds)
+        self.now += seconds
+
+
+def _resilient_orchestrator(*providers, cooldown: float = 30.0):
+    clock = _FakeClock()
+    orchestrator = ProviderOrchestrator(
+        circuit_cooldown_seconds=cooldown, clock=clock, sleep=clock.sleep, random_fraction=lambda: 0.5
+    )
+    for provider in providers:
+        orchestrator.register_provider(provider)
+    orchestrator.register_route(
+        ProviderRoute(capability="text-generation", providers=tuple(p.name for p in providers))
+    )
+    return orchestrator, clock
+
+
+def test_transient_failure_is_retried_with_backoff_then_succeeds() -> None:
+    primary = _ScriptedProvider(
+        "primary", [ProviderError("503", transient=True)], retry_policy=RetryPolicy(max_attempts=2, backoff_seconds=1.0)
+    )
+    orchestrator, clock = _resilient_orchestrator(primary)
+
+    result = orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi"))
+
+    assert result.provider_response.content == "primary ok"
+    assert primary.calls == 2
+    assert clock.slept == [1.0]  # backoff 1.0 x 2**0 x (0.5 + 0.5 jitter)
+    assert orchestrator.audit_events()[-1].metadata["attempts"] == "2"
+
+
+def test_permanent_failure_is_not_retried_and_fails_over() -> None:
+    primary = _ScriptedProvider(
+        "primary", [ProviderError("401", transient=False)], retry_policy=RetryPolicy(max_attempts=3, backoff_seconds=1.0)
+    )
+    secondary = _ScriptedProvider("secondary", [])
+    orchestrator, clock = _resilient_orchestrator(primary, secondary)
+
+    result = orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi"))
+
+    assert result.provider_response.content == "secondary ok"
+    assert primary.calls == 1
+    assert clock.slept == []
+
+
+def test_plain_runtime_errors_are_treated_as_not_transient() -> None:
+    primary = _ScriptedProvider("primary", [RuntimeError("bad shape")], retry_policy=RetryPolicy(max_attempts=3))
+    secondary = _ScriptedProvider("secondary", [])
+    orchestrator, _ = _resilient_orchestrator(primary, secondary)
+
+    orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi"))
+
+    assert primary.calls == 1
+
+
+def test_retries_stop_at_max_attempts_with_exponential_backoff() -> None:
+    errors = [ProviderError("503", transient=True) for _ in range(5)]
+    primary = _ScriptedProvider("primary", errors, retry_policy=RetryPolicy(max_attempts=3, backoff_seconds=1.0))
+    orchestrator, clock = _resilient_orchestrator(primary)
+
+    with pytest.raises(RuntimeError, match="Provider execution failed: 503"):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi"))
+
+    assert primary.calls == 3
+    assert clock.slept == [1.0, 2.0]
+
+
+def test_no_retry_when_the_backoff_would_pass_the_deadline() -> None:
+    import time
+
+    primary = _ScriptedProvider(
+        "primary", [ProviderError("503", transient=True)], retry_policy=RetryPolicy(max_attempts=2, backoff_seconds=60.0)
+    )
+    orchestrator, clock = _resilient_orchestrator(primary)
+
+    with pytest.raises(RuntimeError):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi", deadline=time.monotonic() + 5.0))
+
+    assert primary.calls == 1
+    assert clock.slept == []
+
+
+def test_failed_provider_is_skipped_while_its_circuit_is_open_then_retried() -> None:
+    primary = _ScriptedProvider("primary", [ProviderError("down", transient=False)])
+    secondary = _ScriptedProvider("secondary", [])
+    orchestrator, clock = _resilient_orchestrator(primary, secondary, cooldown=30.0)
+
+    orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="one"))
+    assert primary.calls == 1
+    assert orchestrator.health("primary") is ProviderHealth.DEGRADED
+
+    clock.now += 10.0  # still cooling down
+    result = orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="two"))
+    assert primary.calls == 1  # skipped, did not cost its timeout again
+    assert result.provider_response.provider_name == "secondary"
+
+    clock.now += 25.0  # cooldown over - tried again, and now it works
+    result = orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="three"))
+    assert primary.calls == 2
+    assert result.provider_response.provider_name == "primary"
+    assert orchestrator.health("primary") is ProviderHealth.HEALTHY
+
+
+def test_every_provider_cooling_down_fails_fast_without_calls() -> None:
+    primary = _ScriptedProvider("primary", [ProviderError("down", transient=False)])
+    orchestrator, _ = _resilient_orchestrator(primary)
+
+    with pytest.raises(RuntimeError):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="one"))
+    with pytest.raises(RuntimeError, match="cooling down after a recent failure: primary"):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="two"))
+
+    assert primary.calls == 1
+
+
+def test_circuit_breaker_leaves_operator_set_health_alone() -> None:
+    primary = _ScriptedProvider("primary", [])
+    orchestrator, _ = _resilient_orchestrator(primary)
+    orchestrator.set_health("primary", ProviderHealth.UNAVAILABLE)
+
+    with pytest.raises(RuntimeError, match="No healthy provider"):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi"))
+
+    assert primary.calls == 0
+    assert orchestrator.health("primary") is ProviderHealth.UNAVAILABLE
+
+
+def test_negative_circuit_cooldown_is_rejected() -> None:
+    with pytest.raises(ValueError, match="must not be negative"):
+        ProviderOrchestrator(circuit_cooldown_seconds=-1.0)

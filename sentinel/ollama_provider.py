@@ -14,8 +14,14 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 
-from sentinel.provider_config import ProviderConfiguration
-from sentinel.providers import ProviderRequest, ProviderResponse, remaining_timeout
+from sentinel.provider_config import ProviderConfiguration, RetryPolicy
+from sentinel.providers import (
+    TRANSIENT_HTTP_STATUSES,
+    ProviderError,
+    ProviderRequest,
+    ProviderResponse,
+    remaining_timeout,
+)
 
 Transport = Callable[[str, bytes, dict[str, str], float], bytes]
 
@@ -67,6 +73,13 @@ class OllamaProvider:
     def capabilities(self) -> tuple[str, ...]:
         return (self._configuration.default_capability,)
 
+    @property
+    def retry_policy(self) -> RetryPolicy:
+        """This provider's configured retry policy, read by
+        `ProviderOrchestrator` (EBG-0140, ESR-0059 WP6)."""
+
+        return self._configuration.retry_policy
+
     def execute(self, request: ProviderRequest) -> ProviderResponse:
         endpoint = self._configuration.endpoint or DEFAULT_ENDPOINT
         payload: dict[str, object] = {
@@ -95,12 +108,14 @@ class OllamaProvider:
             # plain protocol-level integers, safe to surface and diagnostically
             # useful, unlike raw response bodies or exception messages.
             msg = f"Ollama request failed: HTTPError (status {exc.code})."
-            raise RuntimeError(msg) from exc
+            # Retryable only for rate limits and server errors (EBG-0140).
+            raise ProviderError(msg, transient=exc.code in TRANSIENT_HTTP_STATUSES) from exc
         except Exception as exc:
             # Deliberately expose only the exception type, never str(exc) -
             # same rationale as the cloud provider adapters.
             msg = f"Ollama request failed: {type(exc).__name__}."
-            raise RuntimeError(msg) from exc
+            # Network failures and timeouts are retryable (EBG-0140).
+            raise ProviderError(msg, transient=True) from exc
 
         try:
             data = json.loads(raw_response)

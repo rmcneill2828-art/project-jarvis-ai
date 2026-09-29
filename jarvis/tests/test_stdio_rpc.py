@@ -1665,9 +1665,12 @@ def test_guardian_converse_fails_over_from_openai_to_gemini(tmp_path, monkeypatc
     )
 
     assert response["result"] == {"message": "Gemini here.", "provider": "gemini"}
+    # ESR-0059 WP6 (EBG-0140): a 503 is transient, so OpenAI is retried once
+    # (CLOUD_RETRY_POLICY) before failing over to Gemini.
     assert "api.openai.com" in called[0]
-    assert "generativelanguage.googleapis.com" in called[1]
-    assert len(called) == 2  # Ollama never reached - Gemini answered first
+    assert "api.openai.com" in called[1]
+    assert "generativelanguage.googleapis.com" in called[2]
+    assert len(called) == 3  # Ollama never reached - Gemini answered first
 
 
 # EBG-0139 (ESR-0059 WP5): per-turn deadline configuration and the slow lane.
@@ -1754,3 +1757,25 @@ def test_malformed_lines_still_get_an_inline_error_reply(tmp_path):
     server.serve_forever(in_stream=io.StringIO("{not json\n"), out_stream=out_stream)
 
     assert _responses(out_stream)[0]["error"]["code"] == -32700
+
+
+def test_cloud_providers_get_one_retry_and_ollama_none(tmp_path):
+    """EBG-0140 (ESR-0059 WP6): cloud providers retry once after a transient
+    failure; local Ollama keeps a single attempt."""
+
+    from jarvis.interfaces.stdio_rpc import CLOUD_RETRY_POLICY
+
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+        }
+    )
+    orchestrator = runtime._conversation_provider._orchestrator
+    policies = {p.name: p.retry_policy for p in orchestrator.eligible_providers("text-generation")}
+
+    assert CLOUD_RETRY_POLICY.max_attempts == 2
+    assert policies["openai"] == CLOUD_RETRY_POLICY
+    assert policies["gemini"] == CLOUD_RETRY_POLICY
+    assert policies["ollama"].max_attempts == 1
