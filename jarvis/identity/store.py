@@ -19,6 +19,30 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from jarvis.shared.schema_migrations import apply_migrations
+
+# Schema history (EBG-0147, ESR-0059 WP12) - see PERSONAL_MEMORY_MIGRATIONS
+# in jarvis/memory/store.py for the rules. Migration 1 is the original
+# ESR-0046 schema.
+PROFILE_MIGRATIONS: tuple[tuple[str, ...], ...] = (
+    (
+        """
+        CREATE TABLE IF NOT EXISTS profiles (
+            id TEXT PRIMARY KEY,
+            display_name TEXT NOT NULL,
+            role TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS active_profile (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            profile_id TEXT NOT NULL
+        )
+        """,
+    ),
+)
+
 HOUSEHOLD_ROLES = ("Administrator", "Adult", "Child", "Guest")
 
 _ACTIVE_PROFILE_ROW_ID = 1
@@ -55,25 +79,7 @@ class ProfileStore:
     def __init__(self, db_path: Path) -> None:
         self._db_path = db_path
         db_path.parent.mkdir(parents=True, exist_ok=True)
-        with self._transaction() as connection:
-            connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS profiles (
-                    id TEXT PRIMARY KEY,
-                    display_name TEXT NOT NULL,
-                    role TEXT NOT NULL,
-                    created_at TEXT NOT NULL
-                )
-                """
-            )
-            connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS active_profile (
-                    id INTEGER PRIMARY KEY CHECK (id = 1),
-                    profile_id TEXT NOT NULL
-                )
-                """
-            )
+        apply_migrations(db_path, PROFILE_MIGRATIONS, "profile")
 
     def _connect(self) -> sqlite3.Connection:
         return sqlite3.connect(self._db_path)

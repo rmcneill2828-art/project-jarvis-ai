@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.38 |
+| Version | 0.40 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -240,6 +240,18 @@ Validation: pytest 721 passed/1 skipped, ruff clean, validator 0 errors. Re-veri
 
 ---
 
+**WP12 - SQLite Schema Versioning (Self-reviewed):** EBG-0147, the prerequisite for EBG-0132, under the Programme Sponsor's standing instruction. [[EIP-ESR0059-012_SCHEMA_VERSIONING|EIP-ESR0059-012]]: a shared migration helper using `PRAGMA user_version`, one explicit `BEGIN IMMEDIATE` transaction per upgrade, refusing databases from a newer JARVIS; both stores' original schemas become migration 1, safe on existing installations.
+
+**Real defect found by this package's own live check, not by review**: the real `~/.jarvis` memory and profile stores had been modified minutes earlier by the test suite. Running the suite against a fake home directory, then test by test, found five call sites opening the real stores by omission - two GIA tests (ESR-0029), the Home Assistant RPC test (ESR-0058 WP4), the activity-tracker test (ESR-0051) and this session's own WP9 audit test. Harmless before WP12 (a read-only no-op on existing tables); after WP12 opening a store writes its version, so fixed here: explicit paths at all five sites plus an autouse `conftest.py` guard. The suite now creates zero files in a fake home. **Disclosed**: the real stores were already stamped version 1 by leaking runs this session - the correct version for their unchanged schema; both are empty; no data was changed or lost.
+
+Validation: pytest 729 passed/1 skipped, ruff clean, validator 0 errors. Live check on copies of the real stores: row counts identical before and after, version 1.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: migration 1's SQL is character-for-character the original schema, so existing databases see no change beyond the version stamp; the only f-string SQL is the `PRAGMA user_version` value, an integer computed from the migration count, never user input; `BEGIN IMMEDIATE` plus rollback on `BaseException` covers interrupted startups; the conftest guard patches module defaults rather than `Path.home()`, which the defaults are computed from at import time; every test still passes with it in place. No further change needed. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-012_SCHEMA_VERSIONING|EIP-ESR0059-012]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -269,6 +281,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
+| WP12 | SQLite schema versioning (EBG-0147) | Approved (EIP-ESR0059-012 v1.0) - pending commit/push; retrospective review owed |
 | WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Complete (EIP-ESR0059-011 v1.0) - committed `dc0fae9`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP10 | Per-item memory revocation (EBG-0145) | Complete (EIP-ESR0059-010 v1.0) - committed `35c1921`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 
@@ -278,6 +291,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.40 | 29 September 2026 | Claude Engineering Implementer | WP12 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-012 synced to v1.0. Pending commit/push. |
+| 0.39 | 29 September 2026 | Claude Engineering Implementer | WP12 drafted and self-reviewed per EIP-ESR0059-012 v0.2: SQLite schema versioning (EBG-0147); test-isolation defect found and fixed. Awaiting Programme Sponsor approval. |
 | 0.38 | 29 September 2026 | Claude Engineering Implementer | WP11 closed: committed dc0fae9, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.37 | 29 September 2026 | Claude Engineering Implementer | WP11 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-011 synced to v1.0. Pending commit/push. |
 | 0.36 | 29 September 2026 | Claude Engineering Implementer | WP11 drafted and self-reviewed per EIP-ESR0059-011 v0.2: repository-reading capabilities in packaged builds (EBG-0148). Awaiting Programme Sponsor approval. |

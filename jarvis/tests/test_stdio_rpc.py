@@ -574,7 +574,7 @@ def test_home_assistant_agent_registered_and_invokable_when_configured(tmp_path,
             "JARVIS_HOME_ASSISTANT_TOKEN": "secret-token",
         }
     )
-    server = StdioRpcServer(runtime)
+    server = StdioRpcServer(runtime, identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")))
 
     assert "home-assistant-state-query" in runtime.available_agents()
     result = server._methods["guardian.agent.invoke"](
@@ -747,7 +747,9 @@ def test_gia_status_serializes_an_injected_fake_snapshot_to_exact_camel_case(tmp
         captured_at=captured_at,
     )
     server = StdioRpcServer(
-        build_default_runtime(),
+        build_default_runtime(
+            environ={"JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1", "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db")}
+        ),
         gia_observer=_fake_gia_observer(fake_snapshot),
         identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
     )
@@ -856,7 +858,9 @@ def test_gia_engineering_status_serializes_an_injected_fake_snapshot_to_exact_ca
         captured_at=captured_at,
     )
     server = StdioRpcServer(
-        build_default_runtime(),
+        build_default_runtime(
+            environ={"JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1", "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db")}
+        ),
         gia_engineering_observer=_fake_gia_engineering_observer(fake_snapshot),
         identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
     )

@@ -4,10 +4,11 @@ in-process history, and the backend's own log file."""
 import json
 import logging
 import threading
-from pathlib import Path
 
 import pytest
 
+from jarvis.identity.service import ProfileService
+from jarvis.identity.store import ProfileStore
 from jarvis.interfaces.stdio_rpc import (
     AUDIT_LOG_FILENAME,
     StdioRpcServer,
@@ -100,7 +101,11 @@ def test_unresolved_memory_proposals_are_bounded(tmp_path):
 def test_log_dir_defaults_beside_the_memory_store_and_can_be_overridden(tmp_path):
     assert _log_dir({"JARVIS_MEMORY_DB_PATH": str(tmp_path / "memory" / "personal.db")}) == tmp_path / "logs"
     assert _log_dir({"JARVIS_LOG_DIR": str(tmp_path / "elsewhere")}) == tmp_path / "elsewhere"
-    assert _log_dir({}) == Path.home() / ".jarvis" / "logs"
+    # Unset, it sits beside the default memory store (conftest.py sandboxes
+    # that default, so this never resolves to the real home directory here).
+    from jarvis.interfaces import stdio_rpc
+
+    assert _log_dir({}) == stdio_rpc.DEFAULT_MEMORY_DB_PATH.parent.parent / "logs"
 
 
 def test_runtime_writes_a_durable_audit_trail_without_conversation_text(tmp_path):
@@ -115,7 +120,7 @@ def test_runtime_writes_a_durable_audit_trail_without_conversation_text(tmp_path
             "JARVIS_LOG_DIR": str(log_dir),
         }
     )
-    server = StdioRpcServer(runtime)
+    server = StdioRpcServer(runtime, identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")))
     secret = "my bank PIN is 4921"
 
     server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.converse", "params": {"message": secret}}))

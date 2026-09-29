@@ -18,6 +18,37 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from jarvis.shared.schema_migrations import apply_migrations
+
+# Schema history (EBG-0147, ESR-0059 WP12). Migration N brings the schema to
+# version N; append new migrations, never edit a released one. Migration 1
+# is the original ESR-0027 schema, `IF NOT EXISTS` so it is safe on existing
+# installations created before versioning.
+PERSONAL_MEMORY_MIGRATIONS: tuple[tuple[str, ...], ...] = (
+    (
+        """
+        CREATE TABLE IF NOT EXISTS personal_memory (
+            id TEXT PRIMARY KEY,
+            content TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            consent_decision_id TEXT NOT NULL
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS consent_decisions (
+            id TEXT PRIMARY KEY,
+            capability TEXT NOT NULL,
+            decision TEXT NOT NULL,
+            decided_at TEXT NOT NULL,
+            approver_label TEXT NOT NULL,
+            sentinel_outcome TEXT NOT NULL,
+            sentinel_category TEXT,
+            sentinel_reason TEXT NOT NULL
+        )
+        """,
+    ),
+)
+
 
 @dataclass(frozen=True)
 class ConsentDecisionRecord:
@@ -60,31 +91,7 @@ class PersonalMemoryStore:
     def __init__(self, db_path: Path) -> None:
         self._db_path = db_path
         db_path.parent.mkdir(parents=True, exist_ok=True)
-        with self._transaction() as connection:
-            connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS personal_memory (
-                    id TEXT PRIMARY KEY,
-                    content TEXT NOT NULL,
-                    created_at TEXT NOT NULL,
-                    consent_decision_id TEXT NOT NULL
-                )
-                """
-            )
-            connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS consent_decisions (
-                    id TEXT PRIMARY KEY,
-                    capability TEXT NOT NULL,
-                    decision TEXT NOT NULL,
-                    decided_at TEXT NOT NULL,
-                    approver_label TEXT NOT NULL,
-                    sentinel_outcome TEXT NOT NULL,
-                    sentinel_category TEXT,
-                    sentinel_reason TEXT NOT NULL
-                )
-                """
-            )
+        apply_migrations(db_path, PERSONAL_MEMORY_MIGRATIONS, "Personal Memory")
 
     def _connect(self) -> sqlite3.Connection:
         return sqlite3.connect(self._db_path)

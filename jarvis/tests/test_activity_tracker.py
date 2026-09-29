@@ -1,6 +1,8 @@
 """Tests for the Guardian Orb Phase 2 activity tracker (EBG-0121,
 EIP-ESR0051-002)."""
 
+from jarvis.identity.service import ProfileService
+from jarvis.identity.store import ProfileStore
 from jarvis.interfaces.activity_tracker import METHOD_CLUSTERS, ActivityTracker
 from jarvis.interfaces.stdio_rpc import StdioRpcServer
 
@@ -94,6 +96,6 @@ def test_method_clusters_covers_every_dispatched_rpc_method(tmp_path):
             "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
         }
     )
-    server = StdioRpcServer(runtime)
+    server = StdioRpcServer(runtime, identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")))
 
     assert set(METHOD_CLUSTERS.keys()) == set(server._methods.keys())  # the exact coverage this test exists to enforce
