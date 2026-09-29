@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.44 |
+| Version | 0.46 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -272,6 +272,16 @@ Validation: pytest 739 passed/1 skipped, Playwright 26/26, ruff, frontend build 
 
 ---
 
+**WP14 - Household Role Enforcement for Memory (Self-reviewed):** the role half of EBG-0132, per the Programme Sponsor's decision to split it from WP13. [[EIP-ESR0059-014_HOUSEHOLD_ROLE_ENFORCEMENT|EIP-ESR0059-014]]: GAM-0001 Section 8.1 enforced for memory at the RPC boundary - only Administrator/Adult may approve saving a memory (satisfying its Sentinel `REVIEW`), Guests see no household notes in list, count or conversation, backup and restore Administrator-only; declining a proposal stays open to all (it stores nothing).
+
+Validation: pytest 751 passed/1 skipped, Playwright 26/26, ruff and validator clean; the suite still creates no files in a fake home. **Live-checked through the real backend process**: Child approval refused, Adult approval allowed, Adult backup refused, Administrator backup allowed, Guest list empty.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: every role check reads the active profile from the backend's identity service, never from request parameters, so the UXP cannot claim a role; each check runs before any store change, and the tests confirm nothing is written on refusal; the only dynamic SQL is a choice between two fixed fragments; Guest exclusion covers all three read paths (list, count, conversation). Deliberate choice, disclosed: declining a proposal is not restricted, since it stores nothing. No change needed. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**, and directed closing the session. [[EIP-ESR0059-014_HOUSEHOLD_ROLE_ENFORCEMENT|EIP-ESR0059-014]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -301,6 +311,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
+| WP14 | Household role enforcement for memory (EBG-0132, role half) | Approved (EIP-ESR0059-014 v1.0) - pending commit/push; retrospective review owed |
 | WP13 | Profile-scoped memory (EBG-0132, isolation half) | Complete (EIP-ESR0059-013 v1.0) - committed `eadcad4`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP12 | SQLite schema versioning (EBG-0147) | Complete (EIP-ESR0059-012 v1.0) - committed `8ab3a81`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Complete (EIP-ESR0059-011 v1.0) - committed `dc0fae9`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
@@ -312,6 +323,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.46 | 29 September 2026 | Claude Engineering Implementer | WP14 approved via Programme Sponsor direct chat instruction ("Approved"); session closure directed. EIP-ESR0059-014 synced to v1.0. Pending commit/push. |
+| 0.45 | 29 September 2026 | Claude Engineering Implementer | WP14 drafted and self-reviewed per EIP-ESR0059-014 v0.2: household role enforcement for memory (EBG-0132 role half). Awaiting Programme Sponsor approval. |
 | 0.44 | 29 September 2026 | Claude Engineering Implementer | WP13 closed: committed eadcad4, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.43 | 29 September 2026 | Claude Engineering Implementer | WP13 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-013 synced to v1.0. Pending commit/push. |
 | 0.42 | 29 September 2026 | Claude Engineering Implementer | WP13 drafted and self-reviewed per EIP-ESR0059-013 v0.2: profile-scoped memory (EBG-0132 isolation half), on the Programme Sponsor's decisions. Awaiting Programme Sponsor approval. |

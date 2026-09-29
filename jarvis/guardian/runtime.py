@@ -176,7 +176,9 @@ class GuardianRuntime:
             core = self._cognitive_cores[profile_id] = GuardianCognitiveCore()
         return core
 
-    def converse(self, message: str, profile_id: str | None = None) -> ConversationResponse:
+    def converse(
+        self, message: str, profile_id: str | None = None, *, include_household: bool = True
+    ) -> ConversationResponse:
         """Route a message through the connected conversation provider.
 
         Returns a boundary response, rather than raising, when no provider is
@@ -199,7 +201,11 @@ class GuardianRuntime:
 
         # EBG-0132 (ESR-0059 WP13): only this profile's memories plus shared
         # household notes, and only this profile's own recent history.
-        memory_records = () if self._memory_service is None else self._memory_service.list_visible(profile_id)
+        memory_records = (
+            ()
+            if self._memory_service is None
+            else self._memory_service.list_visible(profile_id, include_household=include_household)
+        )
         cognitive_core = self._cognitive_core_for(profile_id)
         # EBG-0142 (ESR-0059 WP7): the persona goes to the provider verbatim
         # as the system prompt; history and retained memory travel separately,
@@ -327,13 +333,15 @@ class GuardianRuntime:
         self._require_memory_service()
         return self._memory_service.deny(pending_id)
 
-    def list_memory(self, profile_id: str | None = None) -> tuple[PersonalMemoryRecord, ...]:
+    def list_memory(
+        self, profile_id: str | None = None, *, include_household: bool = True
+    ) -> tuple[PersonalMemoryRecord, ...]:
         """Return the memories `profile_id` may see: its own plus shared
         household notes; household notes only when no profile is given
         (EBG-0132)."""
 
         self._require_memory_service()
-        return self._memory_service.list_visible(profile_id)
+        return self._memory_service.list_visible(profile_id, include_household=include_household)
 
     def delete_memory(self, record_id: str, profile_id: str | None = None, *, is_administrator: bool = False) -> None:
         """Revoke one retained memory (EBG-0145, ESR-0059 WP10). It stops
@@ -343,11 +351,11 @@ class GuardianRuntime:
         self._require_memory_service()
         self._memory_service.delete(record_id, profile_id, is_administrator=is_administrator)
 
-    def memory_status(self, profile_id: str | None = None) -> int:
+    def memory_status(self, profile_id: str | None = None, *, include_household: bool = True) -> int:
         """Return how many memories `profile_id` may see (EBG-0131, EBG-0132)."""
 
         self._require_memory_service()
-        return self._memory_service.count_visible(profile_id)
+        return self._memory_service.count_visible(profile_id, include_household=include_household)
 
     def backup_memory(self, backup_dir: Path) -> Path:
         """Write a full point-in-time Personal Memory backup file and return its path.

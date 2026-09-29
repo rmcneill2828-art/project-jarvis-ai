@@ -223,24 +223,25 @@ class PersonalMemoryStore:
             rows = connection.execute(f"SELECT {_RECORD_COLUMNS} FROM personal_memory ORDER BY created_at").fetchall()
         return tuple(_record_from_row(row) for row in rows)
 
-    def list_visible(self, profile_id: str | None) -> tuple[PersonalMemoryRecord, ...]:
-        """Return the records `profile_id` may see: its own plus shared
-        household notes. With no profile, household notes only (EBG-0132)."""
+    def list_visible(self, profile_id: str | None, *, include_household: bool = True) -> tuple[PersonalMemoryRecord, ...]:
+        """Return the records `profile_id` may see: its own plus, unless
+        `include_household` is False, shared household notes (EBG-0132).
+        With no profile, household notes only."""
 
         with self._transaction() as connection:
             rows = connection.execute(
-                f"SELECT {_RECORD_COLUMNS} FROM personal_memory "
-                "WHERE profile_id IS NULL OR profile_id = ? ORDER BY created_at",
+                f"SELECT {_RECORD_COLUMNS} FROM personal_memory WHERE {_visibility_clause(include_household)} "
+                "ORDER BY created_at",
                 (profile_id,),
             ).fetchall()
         return tuple(_record_from_row(row) for row in rows)
 
-    def count_visible(self, profile_id: str | None) -> int:
+    def count_visible(self, profile_id: str | None, *, include_household: bool = True) -> int:
         """Return how many records `profile_id` may see (see list_visible)."""
 
         with self._transaction() as connection:
             row = connection.execute(
-                "SELECT COUNT(*) FROM personal_memory WHERE profile_id IS NULL OR profile_id = ?",
+                f"SELECT COUNT(*) FROM personal_memory WHERE {_visibility_clause(include_household)}",
                 (profile_id,),
             ).fetchone()
         return int(row[0])
@@ -493,6 +494,11 @@ class PersonalMemoryStore:
 
 
 _RECORD_COLUMNS = "id, content, created_at, consent_decision_id, profile_id"
+
+
+def _visibility_clause(include_household: bool) -> str:
+    # Fixed SQL fragments only; the profile id is always a bound parameter.
+    return "profile_id IS NULL OR profile_id = ?" if include_household else "profile_id = ?"
 
 
 def _record_from_row(row: tuple) -> PersonalMemoryRecord:

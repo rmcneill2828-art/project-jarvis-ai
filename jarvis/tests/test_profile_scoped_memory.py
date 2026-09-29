@@ -142,7 +142,7 @@ def test_profiles_see_only_their_own_memories_over_rpc(tmp_path):
     server = _server(tmp_path)
     alice = _profile(server, "Alice", "Adult")
     _remember(server, "Alice's surprise party plan.")
-    _profile(server, "Ben", "Child")
+    _profile(server, "Ben", "Adult")  # a Child cannot approve saving a memory (WP14)
     _remember(server, "Ben's favourite dinosaur.")
 
     ben_view = _call(server, "memory.list", {})["result"]["records"]
@@ -157,7 +157,7 @@ def test_profiles_see_only_their_own_memories_over_rpc(tmp_path):
 
 def test_restore_gives_memories_from_unknown_profiles_to_the_restoring_profile(tmp_path):
     source = _server(tmp_path / "source")
-    _profile(source, "Old device user", "Adult")
+    _profile(source, "Old device user", "Administrator")  # backup is Administrator-only (WP14)
     _remember(source, "Tea, no sugar.")
     backup = _call(source, "memory.backup", {"backupDir": str(tmp_path / "backups")})["result"]["path"]
 
@@ -172,7 +172,7 @@ def test_restore_gives_memories_from_unknown_profiles_to_the_restoring_profile(t
 
 def test_restore_without_a_selected_profile_is_refused(tmp_path):
     source = _server(tmp_path / "source")
-    _profile(source, "Robert", "Adult")
+    _profile(source, "Robert", "Administrator")
     _remember(source, "Tea, no sugar.")
     backup = _call(source, "memory.backup", {"backupDir": str(tmp_path / "backups")})["result"]["path"]
 

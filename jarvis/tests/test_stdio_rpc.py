@@ -1498,7 +1498,7 @@ def test_memory_approve_rejects_non_string_pending_id(tmp_path):
 
 
 def test_memory_approve_unknown_pending_id_returns_internal_error(tmp_path):
-    server = _server(tmp_path)
+    server = _server_with_profile(tmp_path)
 
     response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 1, "method": "memory.approve", "params": {"pendingId": "does-not-exist"}})

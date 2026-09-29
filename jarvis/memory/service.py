@@ -142,14 +142,14 @@ class PersonalMemoryService:
     def reassign_unknown_owners(self, known_profile_ids: set[str], new_owner: str) -> int:
         return self._store.reassign_unknown_owners(known_profile_ids, new_owner)
 
-    def list_visible(self, profile_id: str | None) -> tuple[PersonalMemoryRecord, ...]:
-        """Return the memories `profile_id` may see: its own plus shared
-        household notes (EBG-0132)."""
+    def list_visible(self, profile_id: str | None, *, include_household: bool = True) -> tuple[PersonalMemoryRecord, ...]:
+        """Return the memories `profile_id` may see: its own plus, unless
+        excluded, shared household notes (EBG-0132)."""
 
-        return self._store.list_visible(profile_id)
+        return self._store.list_visible(profile_id, include_household=include_household)
 
-    def count_visible(self, profile_id: str | None) -> int:
-        return self._store.count_visible(profile_id)
+    def count_visible(self, profile_id: str | None, *, include_household: bool = True) -> int:
+        return self._store.count_visible(profile_id, include_household=include_household)
 
     def delete(self, record_id: str, profile_id: str | None = None, *, is_administrator: bool = False) -> None:
         """Revoke one retained memory (EBG-0145, ESR-0059 WP10).

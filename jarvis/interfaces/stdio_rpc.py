@@ -660,7 +660,12 @@ class StdioRpcServer:
             msg = "params.message must be a string."
             raise TypeError(msg)
         _require_max_length(message, MAX_MESSAGE_CHARS, "params.message")
-        response = self._runtime.converse(message, self._active_profile_id())
+        active = self._identity_service.active_profile()
+        response = self._runtime.converse(
+            message,
+            active.id if active is not None else None,
+            include_household=_sees_household_notes(active),
+        )
         return {"message": response.message, "provider": response.provider}
 
     def _guardian_speak(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -794,6 +799,14 @@ class StdioRpcServer:
 
     def _memory_approve(self, params: dict[str, Any]) -> dict[str, Any]:
         pending_id = self._require_pending_id(params)
+        # EBG-0132 (ESR-0059 WP14), GAM-0001 Section 8.1: approving a memory
+        # proposal satisfies a Sentinel REVIEW escalation, which only an
+        # Administrator or Adult may do.
+        _require_role(
+            self._identity_service.active_profile(),
+            REVIEW_APPROVER_ROLES,
+            "Only an Administrator or Adult profile can approve saving a memory.",
+        )
         record = self._runtime.approve_memory(pending_id)
         return {
             "id": record.id,
@@ -808,7 +821,10 @@ class StdioRpcServer:
         return {"decisionId": decision.id, "decision": decision.decision}
 
     def _memory_list(self, params: dict[str, Any]) -> dict[str, Any]:
-        records = self._runtime.list_memory(self._active_profile_id())
+        active = self._identity_service.active_profile()
+        records = self._runtime.list_memory(
+            active.id if active is not None else None, include_household=_sees_household_notes(active)
+        )
         return {
             "records": [
                 {
@@ -845,7 +861,10 @@ class StdioRpcServer:
         never full record content, matching PersonalMemoryStore.count()'s
         own dedicated COUNT(*) query rather than reusing memory.list()."""
 
-        count = self._runtime.memory_status(self._active_profile_id())
+        active = self._identity_service.active_profile()
+        count = self._runtime.memory_status(
+            active.id if active is not None else None, include_household=_sees_household_notes(active)
+        )
         return {"recordCount": count}
 
     def _memory_backup(self, params: dict[str, Any]) -> dict[str, Any]:
@@ -865,6 +884,12 @@ class StdioRpcServer:
         else:
             env_value = os.environ.get(MEMORY_BACKUP_DIR_ENV_VAR)
             backup_dir = Path(env_value) if env_value else DEFAULT_MEMORY_BACKUP_DIR
+        # EBG-0132 (ESR-0059 WP14): a backup holds every profile's memories.
+        _require_role(
+            self._identity_service.active_profile(),
+            ADMINISTRATOR_ROLES,
+            "Only an Administrator profile can back up memory.",
+        )
         path = self._runtime.backup_memory(backup_dir)
         return {"path": str(path)}
 
@@ -892,6 +917,12 @@ class StdioRpcServer:
         if active_profile_id is None:
             msg = "Select a profile before restoring memory."
             raise ValueError(msg)
+        # EBG-0132 (ESR-0059 WP14): a restore replaces every profile's memories.
+        _require_role(
+            self._identity_service.active_profile(),
+            ADMINISTRATOR_ROLES,
+            "Only an Administrator profile can restore memory.",
+        )
         count = self._runtime.restore_memory(Path(backup_path_param), confirm_overwrite=confirm_overwrite)
         known_profile_ids = {profile.id for profile in self._identity_service.list_profiles()}
         reassigned = self._runtime.reassign_unknown_memory_owners(known_profile_ids, active_profile_id)
@@ -1091,6 +1122,28 @@ class StdioRpcServer:
             self._process_line(line, out_stream)
         except Exception:  # must not vanish silently inside an executor thread
             logger.exception("Slow-lane request could not be completed.")
+
+
+# GAM-0001 Section 8.1 household roles, enforced at the RPC boundary where
+# the active profile is known (EBG-0132, ESR-0059 WP14). Profiles are
+# unauthenticated, so these rules separate cooperating household members;
+# they are not a defence against someone selecting another profile.
+ADMINISTRATOR_ROLES = frozenset({"Administrator"})
+REVIEW_APPROVER_ROLES = frozenset({"Administrator", "Adult"})
+
+
+def _require_role(active, allowed: frozenset[str], message: str) -> None:
+    if active is None:
+        msg = "Select a profile first."
+        raise PermissionError(msg)
+    if active.role not in allowed:
+        raise PermissionError(message)
+
+
+def _sees_household_notes(active) -> bool:
+    """A Guest has no access to family-shared memory (GAM-0001 Section 8.1)."""
+
+    return active is None or active.role != "Guest"
 
 
 def _require_max_length(value: str, limit: int, name: str) -> None:

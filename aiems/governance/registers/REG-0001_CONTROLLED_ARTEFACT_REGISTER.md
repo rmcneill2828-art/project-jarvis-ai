@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.679
+**Version:** 3.685
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.679 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.685 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.208 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.209 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -162,11 +162,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0036 | Repository Baseline | ESR-0056 Repository Baseline (esbuild/vite Security Upgrade; DRA-0001 Device Bootstrap and Restore Architecture) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0056 | `aiems/governance/baselines/` |
 | RBL-0037 | Repository Baseline | ESR-0057 Repository Baseline (JRM-0001 Staleness Sweep; BRD-0001 Personal Memory Backup; Home Assistant Assessment) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0057 | `aiems/governance/baselines/` |
 | RBL-0038 | Repository Baseline | ESR-0058 Repository Baseline (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0058 | `aiems/governance/baselines/` |
-| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.17 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.18 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | RSC-0001 | v1.0 Readiness Scorecard | v1.0 Readiness Scorecard | 1.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | LGB-0001 | Launch Gap Backlog | Launch Gap Backlog | 1.2 | Accepted | Programme Sponsor | RSC-0001 | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.3 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
-| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.17 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
+| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.18 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.11 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | CURRENT_ARCHITECTURE | Architecture Snapshot | AIEMS Current Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/architecture/` |
@@ -320,7 +320,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0058-003 | Engineering Implementation Package | Home Assistant State Query Agent | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-004 | Engineering Implementation Package | Playwright E2E Reliability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0058-005 | Engineering Implementation Package | Memory Management UXP Surface | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0059 | Engineering Session Report | Engineering Session Report | 0.44 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0059 | Engineering Session Report | Engineering Session Report | 0.46 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0059-001 | Engineering Implementation Package | Critical Runtime Safety Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-002 | Engineering Implementation Package | Restore the CI Python Gate | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-003 | Engineering Implementation Package | Honest Provider-Failure Replies | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
@@ -334,6 +334,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0059-011 | Engineering Implementation Package | Repository-Reading Capabilities in Packaged Builds | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-012 | Engineering Implementation Package | SQLite Schema Versioning | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-013 | Engineering Implementation Package | Profile-Scoped Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0059-014 | Engineering Implementation Package | Household Role Enforcement for Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -448,6 +449,12 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.685 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP14 approved: synced EIP-ESR0059-014 row (0.2 to 1.0, Approved - implemented) by hand. |
+| 3.684 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.45 to 0.46) following: WP14 approved via Programme Sponsor direct chat instruction ("Approved"); session closure directed. EIP-ESR0059-014 synced to v1.0. Pending commit/push. |
+| 3.683 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP14: registered EIP-ESR0059-014 (0.2, Draft - Household Role Enforcement for Memory); JARVIS Capability Readiness Matrix row (2.17 to 2.18) synced by hand. |
+| 3.682 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.44 to 0.45) following: WP14 drafted and self-reviewed per EIP-ESR0059-014 v0.2: household role enforcement for memory (EBG-0132 role half). Awaiting Programme Sponsor approval. |
+| 3.681 | 29 September 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.208 to 1.209) following: ESR-0059 WP14: EBG-0132 closed Completed for memory per EIP-ESR0059-013/014 (isolation and role enforcement); authentication and non-memory role authority remain future work; EBG-0153 extended to WP14. |
+| 3.680 | 29 September 2026 | Claude Engineering Implementer | Aligned PCB-0001 version (2.17 to 2.18) following: ESR-0059 WP14 (EBG-0132): recorded that GAM-0001 Section 8.1 household roles are now enforced for memory; credentialed authentication and role authority beyond memory remain open. |
 | 3.679 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.43 to 0.44) following: WP13 closed: committed eadcad4, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 3.678 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP13 approved: synced EIP-ESR0059-013 row (0.2 to 1.0, Approved - implemented) by hand. |
 | 3.677 | 29 September 2026 | Claude Engineering Implementer | Aligned ESR-0059 version (0.42 to 0.43) following: WP13 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-013 synced to v1.0. Pending commit/push. |
