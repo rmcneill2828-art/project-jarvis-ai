@@ -411,8 +411,10 @@ class PersonalMemoryStore:
 
         return len(memory_rows)
 
-    def delete(self, record_id: str) -> None:
-        """Delete exactly one Personal Memory record by id.
+    def delete(self, record_id: str) -> bool:
+        """Delete exactly one Personal Memory record by id; return whether a
+        record was actually deleted (EBG-0145, ESR-0059 WP10), so callers can
+        report an unknown id honestly instead of claiming success.
 
         Satisfies MDS-0001 Section 7.4's per-item revocation requirement
         directly - no broader destructive operation is required or performed.
@@ -422,7 +424,8 @@ class PersonalMemoryStore:
         """
 
         with self._transaction() as connection:
-            connection.execute("DELETE FROM personal_memory WHERE id = ?", (record_id,))
+            cursor = connection.execute("DELETE FROM personal_memory WHERE id = ?", (record_id,))
+            return cursor.rowcount > 0
 
 
 def utc_now() -> datetime:

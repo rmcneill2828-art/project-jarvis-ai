@@ -19,6 +19,13 @@
 // into an explicit inline confirmation step before retrying with
 // confirmOverwrite: true. An empty store restores immediately, with
 // nothing to overwrite.
+//
+// Per-item revocation (EBG-0145, ESR-0059 WP10): the stored memories are
+// listed only when the user explicitly opens the list - the panel otherwise
+// shows just the count, the same privacy stance EBG-0131 took - and each
+// can be deleted after an inline "cannot be undone" confirmation, the same
+// pattern restore uses. The list and the count are re-read from the backend
+// after a delete rather than updated optimistically.
 
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
@@ -35,6 +42,44 @@ export function MemoryManagementPanel({ recordCount, statusError, onStatusChange
   const [restoreResult, setRestoreResult] = useState(null);
   const [restoreError, setRestoreError] = useState(null);
   const [pendingOverwritePath, setPendingOverwritePath] = useState(null);
+
+  const [memories, setMemories] = useState(null);
+  const [listBusy, setListBusy] = useState(false);
+  const [listError, setListError] = useState(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+
+  const loadMemories = () => {
+    setListBusy(true);
+    setListError(null);
+    invoke("list_memory")
+      .then((result) => setMemories(result.records ?? []))
+      .catch((error) => setListError(`Could not load memories: ${error}`))
+      .finally(() => setListBusy(false));
+  };
+
+  const handleToggleList = () => {
+    if (memories !== null) {
+      setMemories(null);
+      setPendingDeleteId(null);
+      return;
+    }
+    loadMemories();
+  };
+
+  const handleConfirmDelete = () => {
+    if (!pendingDeleteId) return;
+    setDeleteBusy(true);
+    setListError(null);
+    invoke("delete_memory", { recordId: pendingDeleteId })
+      .then(() => {
+        setPendingDeleteId(null);
+        loadMemories();
+        onStatusChange?.();
+      })
+      .catch((error) => setListError(`Delete failed: ${error}`))
+      .finally(() => setDeleteBusy(false));
+  };
 
   const handleBackup = async () => {
     setBackupError(null);
@@ -114,6 +159,48 @@ export function MemoryManagementPanel({ recordCount, statusError, onStatusChange
             <dd>{recordCount === null ? "Connecting..." : recordCount}</dd>
           </div>
         </dl>
+      )}
+
+      <div className="memory-action-row">
+        <button type="button" className="outline-action" disabled={listBusy} onClick={handleToggleList}>
+          {memories !== null ? "Hide memories" : listBusy ? "Loading..." : "Show memories"}
+        </button>
+      </div>
+
+      {memories !== null && (
+        <ul className="memory-record-list" aria-label="Stored memories">
+          {memories.length === 0 && <li className="panel-status-message">No stored memories.</li>}
+          {memories.map((record) => (
+            <li key={record.id} className="memory-record">
+              <span className="memory-record-content">{record.content}</span>
+              {pendingDeleteId === record.id ? (
+                <span className="memory-delete-confirm" role="alertdialog" aria-label="Confirm delete">
+                  <span className="conversation-error">Delete this memory? This cannot be undone.</span>
+                  <button type="button" className="outline-action" onClick={handleConfirmDelete} disabled={deleteBusy}>
+                    {deleteBusy ? "Deleting..." : "Delete"}
+                  </button>
+                  <button type="button" className="outline-action" onClick={() => setPendingDeleteId(null)}>
+                    Cancel
+                  </button>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className="outline-action"
+                  aria-label={`Delete memory: ${record.content}`}
+                  onClick={() => setPendingDeleteId(record.id)}
+                >
+                  Delete...
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {listError && (
+        <p className="conversation-error" role="alert">
+          {listError}
+        </p>
       )}
 
       <div className="memory-action-row">

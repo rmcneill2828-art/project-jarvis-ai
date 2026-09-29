@@ -686,6 +686,33 @@ async fn memory_status(
     call_backend_off_main_thread(state, app_handle, "memory.status", json!({})).await
 }
 
+/// Lists stored memories with their content (EBG-0145, ESR-0059 WP10) - the
+/// UXP asks only when the user explicitly opens the list, so memory text is
+/// never on screen by default.
+#[tauri::command]
+async fn list_memory(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "memory.list", json!({})).await
+}
+
+/// Revokes one stored memory by id (EBG-0145, ESR-0059 WP10).
+#[tauri::command]
+async fn delete_memory(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    record_id: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "memory.delete",
+        json!({ "recordId": record_id }),
+    )
+    .await
+}
+
 /// `backup_dir` is a real, human-chosen directory (via the frontend's own
 /// `tauri-plugin-dialog` folder picker) - the backend's `memory.backup`
 /// always names the file itself (a timestamped filename inside whatever
@@ -743,6 +770,8 @@ pub fn run() {
             list_agents,
             invoke_agent,
             memory_status,
+            list_memory,
+            delete_memory,
             backup_memory,
             restore_memory
         ])

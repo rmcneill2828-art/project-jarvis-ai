@@ -643,6 +643,7 @@ class StdioRpcServer:
             "memory.deny": self._memory_deny,
             "memory.list": self._memory_list,
             "memory.status": self._memory_status,
+            "memory.delete": self._memory_delete,
             "memory.backup": self._memory_backup,
             "memory.restore": self._memory_restore,
             "profile.list": self._profile_list,
@@ -813,6 +814,17 @@ class StdioRpcServer:
                 for record in records
             ]
         }
+
+    def _memory_delete(self, params: dict[str, Any]) -> dict[str, Any]:
+        """EBG-0145 (ESR-0059 WP10): revoke one retained memory by id. An
+        unknown id is an error, not a silent success."""
+
+        record_id = params.get("recordId")
+        if not isinstance(record_id, str) or not record_id.strip():
+            msg = "params.recordId must be a non-empty string."
+            raise TypeError(msg)
+        self._runtime.delete_memory(record_id)
+        return {"recordId": record_id, "deleted": True}
 
     def _memory_status(self, params: dict[str, Any]) -> dict[str, Any]:
         """EBG-0131 (Memory Management UXP Surface): a lightweight status

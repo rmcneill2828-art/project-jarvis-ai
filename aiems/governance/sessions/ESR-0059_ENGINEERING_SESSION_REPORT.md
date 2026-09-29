@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.32 |
+| Version | 0.34 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -210,6 +210,16 @@ Validation: pytest 698 passed/1 skipped, ruff clean, validator 0 errors. **Live-
 
 ---
 
+**WP10 - Per-Item Memory Revocation (Self-reviewed):** EBG-0145, under the Programme Sponsor's standing instruction. [[EIP-ESR0059-010_MEMORY_REVOCATION|EIP-ESR0059-010]] drafted and implemented from store to UXP: `memory.delete` RPC, two new async Tauri commands, and a Memory Management panel list - hidden until the user opens it - with a confirmed per-item delete. Deliberately not gated by Sentinel policy; consent history kept; revocations logged by id only.
+
+Validation: pytest 707 passed/1 skipped, Playwright 26/26, ruff, clippy, fmt, frontend build and validator clean. **Live-checked through the real backend process**: a memory was listed, deleted, then absent from list and count; a second delete returned a clear error; `backend.log` recorded the id only.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: the delete runs inside the store's transaction and reports the real row count; the revocation log line carries the id only; memory content is rendered through React text nodes, never as HTML, so stored text cannot inject markup into the panel; both new Tauri commands go through `call_backend_off_main_thread()`, so neither blocks the window; `memory.delete` runs inline on the RPC main thread (it is not a slow method), and SQLite serialises it against a conversation turn reading memory on the worker; the not-gated-by-Sentinel decision is stated in the code and the EIP rather than implied. No change needed. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-010_MEMORY_REVOCATION|EIP-ESR0059-010]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -239,7 +249,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
-| Planned | Memory revocation surface (EBG-0145) | Not started |
+| WP10 | Per-item memory revocation (EBG-0145) | Approved (EIP-ESR0059-010 v1.0) - pending commit/push; retrospective review owed |
 
 ---
 
@@ -247,6 +257,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.34 | 29 September 2026 | Claude Engineering Implementer | WP10 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-010 synced to v1.0. Pending commit/push. |
+| 0.33 | 29 September 2026 | Claude Engineering Implementer | WP10 drafted and self-reviewed per EIP-ESR0059-010 v0.2: per-item memory revocation (EBG-0145). Awaiting Programme Sponsor approval. |
 | 0.32 | 29 September 2026 | Claude Engineering Implementer | WP9 closed: committed c45e0d6, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.31 | 29 September 2026 | Claude Engineering Implementer | WP9 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-009 synced to v1.0. Pending commit/push. |
 | 0.30 | 29 September 2026 | Claude Engineering Implementer | WP9 drafted and self-reviewed per EIP-ESR0059-009 v0.2: durable audit trail and backend logging (EBG-0144). Awaiting Programme Sponsor approval. |

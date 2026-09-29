@@ -21,6 +21,7 @@ async function mockTauriIpc(
     dialogOpenResult = null,
     backupMemoryResult,
     restoreMemoryResult,
+    memories = [],
   } = {},
 ) {
   await page.addInitScript(
@@ -38,6 +39,7 @@ async function mockTauriIpc(
       dialogOpenResult,
       backupMemoryResult,
       restoreMemoryResult,
+      memories,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -74,7 +76,12 @@ async function mockTauriIpc(
       // read this state, create_profile/select_profile mutate it - a real
       // Tauri backend behaves the same way, just persisted to SQLite instead
       // of an in-memory closure.
-      const state = { profiles: [...profiles], active: activeProfile, memoryRecordCount };
+      const state = {
+        profiles: [...profiles],
+        active: activeProfile,
+        memoryRecordCount: memories.length || memoryRecordCount,
+        memories: [...memories],
+      };
       let nextId = state.profiles.length + 1;
 
       window.__TAURI_INTERNALS__ = {
@@ -128,6 +135,18 @@ async function mockTauriIpc(
             );
           }
           if (cmd === "memory_status") return Promise.resolve({ recordCount: state.memoryRecordCount });
+          // EBG-0145 (ESR-0059 WP10): list and revoke, mirroring the real
+          // backend - an unknown id is an error, not a silent success.
+          if (cmd === "list_memory") return Promise.resolve({ records: state.memories });
+          if (cmd === "delete_memory") {
+            const before = state.memories.length;
+            state.memories = state.memories.filter((record) => record.id !== args.recordId);
+            if (state.memories.length === before) {
+              return Promise.reject(new Error(`KeyError: No stored memory found for id: '${args.recordId}'.`));
+            }
+            state.memoryRecordCount = state.memories.length;
+            return Promise.resolve({ recordId: args.recordId, deleted: true });
+          }
           if (cmd === "plugin:dialog|open") return Promise.resolve(dialogOpenResult);
           if (cmd === "backup_memory") {
             if (backupMemoryResult && backupMemoryResult.error) {
@@ -188,6 +207,7 @@ async function mockTauriIpc(
       dialogOpenResult,
       backupMemoryResult,
       restoreMemoryResult,
+      memories,
     },
   );
 }
@@ -520,4 +540,55 @@ test("cancelling the overwrite confirmation leaves stored memory untouched", asy
 
   await expect(page.locator(".memory-overwrite-confirm")).toHaveCount(0);
   await expect(page.locator(".memory-management-panel .metric-row")).toContainText("4");
+});
+
+
+const SAMPLE_MEMORIES = [
+  { id: "m-1", content: "Robert prefers dark mode.", createdAt: "2026-09-01T10:00:00+00:00", consentDecisionId: "d-1" },
+  { id: "m-2", content: "Tea, no sugar.", createdAt: "2026-09-02T10:00:00+00:00", consentDecisionId: "d-2" },
+];
+
+test("stored memory text is hidden until the list is explicitly opened", async ({ page }) => {
+  await mockTauriIpc(page, { memories: SAMPLE_MEMORIES });
+  await page.goto("/");
+
+  const panel = page.locator(".memory-management-panel");
+  await expect(panel).toContainText("Stored memories");
+  await expect(panel).not.toContainText("Robert prefers dark mode.");
+
+  await panel.getByRole("button", { name: "Show memories" }).click();
+
+  await expect(panel.getByRole("list", { name: "Stored memories" })).toContainText("Robert prefers dark mode.");
+  await expect(panel.getByRole("list", { name: "Stored memories" })).toContainText("Tea, no sugar.");
+});
+
+test("deleting a memory needs confirmation, then removes it and updates the count", async ({ page }) => {
+  await mockTauriIpc(page, { memories: SAMPLE_MEMORIES });
+  await page.goto("/");
+
+  const panel = page.locator(".memory-management-panel");
+  await panel.getByRole("button", { name: "Show memories" }).click();
+  await panel.getByRole("button", { name: "Delete memory: Tea, no sugar." }).click();
+
+  await expect(panel.locator(".memory-delete-confirm")).toContainText("This cannot be undone.");
+  await panel.locator(".memory-delete-confirm").getByRole("button", { name: "Delete" }).click();
+
+  const list = panel.getByRole("list", { name: "Stored memories" });
+  await expect(list).not.toContainText("Tea, no sugar.");
+  await expect(list).toContainText("Robert prefers dark mode.");
+  await expect(panel.locator(".metric-row")).toContainText("1");
+});
+
+test("cancelling a delete leaves the memory in place", async ({ page }) => {
+  await mockTauriIpc(page, { memories: SAMPLE_MEMORIES });
+  await page.goto("/");
+
+  const panel = page.locator(".memory-management-panel");
+  await panel.getByRole("button", { name: "Show memories" }).click();
+  await panel.getByRole("button", { name: "Delete memory: Tea, no sugar." }).click();
+  await panel.locator(".memory-delete-confirm").getByRole("button", { name: "Cancel" }).click();
+
+  await expect(panel.locator(".memory-delete-confirm")).toHaveCount(0);
+  await expect(panel.getByRole("list", { name: "Stored memories" })).toContainText("Tea, no sugar.");
+  await expect(panel.locator(".metric-row")).toContainText("2");
 });

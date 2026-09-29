@@ -133,6 +133,22 @@ class PersonalMemoryService:
 
         return self._store.list_all()
 
+    def delete(self, record_id: str) -> None:
+        """Revoke one retained memory (EBG-0145, ESR-0059 WP10).
+
+        Deliberately not gated by Sentinel policy: revocation only removes
+        the user's own data, and no policy should be able to stop a user
+        withdrawing something they chose to retain (MDS-0001 Section 7.4).
+        The consent decision that approved it is kept as audit history, and
+        the revocation is logged by id only - never by content. Raises
+        KeyError for an unknown id rather than reporting a false success.
+        """
+
+        if not self._store.delete(record_id):
+            msg = f"No stored memory found for id: {record_id!r}."
+            raise KeyError(msg)
+        logger.info("Memory record revoked: record_id=%s", record_id)
+
     def record_count(self) -> int:
         """Return the number of stored Personal Memory records (EBG-0131)."""
 

@@ -1082,3 +1082,33 @@ button {
     display: none;
   }
 }
+/* Per-item memory revocation list (EBG-0145, ESR-0059 WP10). */
+.memory-record-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.memory-record {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.memory-record-content {
+  flex: 1 1 12rem;
+  overflow-wrap: anywhere;
+}
+
+.memory-delete-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}

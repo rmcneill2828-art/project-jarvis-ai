@@ -321,6 +321,14 @@ class GuardianRuntime:
         self._require_memory_service()
         return self._memory_service.list_records()
 
+    def delete_memory(self, record_id: str) -> None:
+        """Revoke one retained memory (EBG-0145, ESR-0059 WP10). It stops
+        reaching conversation turns immediately - memory is read fresh on
+        every turn."""
+
+        self._require_memory_service()
+        self._memory_service.delete(record_id)
+
     def memory_status(self) -> int:
         """Return the number of stored Personal Memory records (EBG-0131)."""
 
