@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.37 |
+| Version | 0.38 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -234,6 +234,10 @@ Validation: pytest 721 passed/1 skipped, ruff clean, validator 0 errors. Re-veri
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-011_REPOSITORY_CAPABILITIES_IN_PACKAGED_BUILDS|EIP-ESR0059-011]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`dc0fae9`, `b2a1631..dc0fae9`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36552873647 on `main`: all four jobs green, including the repository-resolution tests against CI's own checkout.
+
+**Post-commit review - disclosed self-verification** (Copilot CLI quota re-probed, still exhausted): exactly the 8 committed files; working tree equals the commit; pytest (721 passed/1 skipped) re-run fresh. Retrospective Copilot review owed (EBG-0153). **WP11 closed, subject to that retrospective review.**
+
 ---
 
 # 4. Engineering Authority
@@ -265,7 +269,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP9 | Durable audit trail and backend logging (EBG-0144) | Complete (EIP-ESR0059-009 v1.0) - committed `c45e0d6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
-| WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Approved (EIP-ESR0059-011 v1.0) - pending commit/push; retrospective review owed |
+| WP11 | Repository-reading capabilities in packaged builds (EBG-0148) | Complete (EIP-ESR0059-011 v1.0) - committed `dc0fae9`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP10 | Per-item memory revocation (EBG-0145) | Complete (EIP-ESR0059-010 v1.0) - committed `35c1921`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 
 ---
@@ -274,6 +278,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.38 | 29 September 2026 | Claude Engineering Implementer | WP11 closed: committed dc0fae9, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.37 | 29 September 2026 | Claude Engineering Implementer | WP11 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-011 synced to v1.0. Pending commit/push. |
 | 0.36 | 29 September 2026 | Claude Engineering Implementer | WP11 drafted and self-reviewed per EIP-ESR0059-011 v0.2: repository-reading capabilities in packaged builds (EBG-0148). Awaiting Programme Sponsor approval. |
 | 0.35 | 29 September 2026 | Claude Engineering Implementer | WP10 closed: committed 35c1921, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). Every Critical, High and Medium action-plan item now delivered. |
