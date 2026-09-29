@@ -1668,3 +1668,89 @@ def test_guardian_converse_fails_over_from_openai_to_gemini(tmp_path, monkeypatc
     assert "api.openai.com" in called[0]
     assert "generativelanguage.googleapis.com" in called[1]
     assert len(called) == 2  # Ollama never reached - Gemini answered first
+
+
+# EBG-0139 (ESR-0059 WP5): per-turn deadline configuration and the slow lane.
+
+
+def test_turn_deadline_defaults_and_rejects_unusable_values():
+    from jarvis.interfaces.stdio_rpc import DEFAULT_TURN_DEADLINE_SECONDS, _turn_deadline_seconds
+
+    assert DEFAULT_TURN_DEADLINE_SECONDS < 120.0  # must stay under the Tauri BACKEND_CALL_TIMEOUT
+    assert _turn_deadline_seconds({}) == DEFAULT_TURN_DEADLINE_SECONDS
+    assert _turn_deadline_seconds({"JARVIS_TURN_DEADLINE_SECONDS": "45"}) == 45.0
+    for unusable in ["", "   ", "soon", "0", "-5", "nan", "inf"]:
+        assert _turn_deadline_seconds({"JARVIS_TURN_DEADLINE_SECONDS": unusable}) == DEFAULT_TURN_DEADLINE_SECONDS
+
+
+class _SlowConversationProvider:
+    """Takes real time to answer, standing in for a slow model call."""
+
+    name = "slow-conversation"
+
+    def __init__(self, seconds: float) -> None:
+        self._seconds = seconds
+
+    def generate(self, request):
+        from jarvis.interfaces.conversation import ConversationResponse
+
+        time.sleep(self._seconds)
+        return ConversationResponse(message=f"slow: {request.message}", provider=self.name, is_model_reply=True)
+
+
+def _slow_server(tmp_path, seconds: float) -> StdioRpcServer:
+    runtime = GuardianRuntime(conversation_provider=_SlowConversationProvider(seconds))
+    runtime.start()
+    return StdioRpcServer(
+        runtime,
+        heartbeat_interval_seconds=9999.0,
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
+
+
+def _responses(out_stream: io.StringIO) -> list[dict]:
+    return [m for m in (json.loads(line) for line in out_stream.getvalue().splitlines() if line) if "id" in m]
+
+
+def test_status_is_answered_while_a_slow_converse_is_still_running(tmp_path):
+    """The head-of-line blocking EBG-0139 names: before WP5, platform.status
+    sent after a slow guardian.converse waited for it to finish."""
+
+    server = _slow_server(tmp_path, seconds=0.5)
+    requests = (
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.converse", "params": {"message": "hi"}})
+        + "\n"
+        + json.dumps({"jsonrpc": "2.0", "id": 2, "method": "platform.status", "params": {}})
+        + "\n"
+    )
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=io.StringIO(requests), out_stream=out_stream)
+
+    responses = _responses(out_stream)
+    assert [r["id"] for r in responses] == [2, 1]  # status overtook the slow turn
+    assert responses[1]["result"]["message"] == "slow: hi"  # and the slow turn was still answered
+
+
+def test_slow_requests_keep_their_order(tmp_path):
+    server = _slow_server(tmp_path, seconds=0.05)
+    requests = "".join(
+        json.dumps({"jsonrpc": "2.0", "id": i, "method": "guardian.converse", "params": {"message": f"m{i}"}}) + "\n"
+        for i in (1, 2, 3)
+    )
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=io.StringIO(requests), out_stream=out_stream)
+
+    responses = _responses(out_stream)
+    assert [r["id"] for r in responses] == [1, 2, 3]
+    assert [r["result"]["message"] for r in responses] == ["slow: m1", "slow: m2", "slow: m3"]
+
+
+def test_malformed_lines_still_get_an_inline_error_reply(tmp_path):
+    server = _slow_server(tmp_path, seconds=0.0)
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=io.StringIO("{not json\n"), out_stream=out_stream)
+
+    assert _responses(out_stream)[0]["error"]["code"] == -32700

@@ -199,3 +199,46 @@ def test_capabilities_and_name_reflect_configuration():
     assert provider.capabilities == ("text-generation",)
 
 
+
+
+def test_ollama_timeout_is_capped_by_the_request_deadline() -> None:
+    """EBG-0139 (ESR-0059 WP5): the 90s cold-start timeout must not outlast
+    the turn's overall deadline."""
+
+    import time
+
+    seen: list[float] = []
+
+    def fake_transport(url: str, body: bytes, headers: dict[str, str], timeout: float) -> bytes:
+        seen.append(timeout)
+        return json.dumps({"response": "hi"}).encode("utf-8")
+
+    provider = OllamaProvider(_configuration(timeout_seconds=90.0), transport=fake_transport)
+    provider.execute(ProviderRequest(prompt="hello", deadline=time.monotonic() + 5.0))
+
+    assert 0 < seen[0] <= 5.0
+
+
+def test_ollama_uses_its_configured_timeout_without_a_deadline() -> None:
+    seen: list[float] = []
+
+    def fake_transport(url: str, body: bytes, headers: dict[str, str], timeout: float) -> bytes:
+        seen.append(timeout)
+        return json.dumps({"response": "hi"}).encode("utf-8")
+
+    provider = OllamaProvider(_configuration(timeout_seconds=90.0), transport=fake_transport)
+    provider.execute(ProviderRequest(prompt="hello"))
+
+    assert seen == [90.0]
+
+
+def test_ollama_refuses_to_start_a_call_after_the_deadline() -> None:
+    import time
+
+    calls: list[str] = []
+    provider = OllamaProvider(_configuration(), transport=lambda *a: calls.append("called") or b"{}")
+
+    with pytest.raises(RuntimeError, match="deadline reached"):
+        provider.execute(ProviderRequest(prompt="hello", deadline=time.monotonic() - 1.0))
+
+    assert calls == []

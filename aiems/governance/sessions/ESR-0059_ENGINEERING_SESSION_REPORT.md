@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.16 |
+| Version | 0.19 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -125,6 +125,19 @@ Validation: pytest 624 passed/1 skipped, ruff clean, validator 0 errors/333 warn
 
 ---
 
+**WP5 - Turn Deadline and Slow-Request Lane (Drafted):** the next High-priority action-plan item (EBG-0139), taken under the Programme Sponsor's standing instruction to proceed with the plan. [[EIP-ESR0059-005_TURN_DEADLINE_AND_SLOW_LANE|EIP-ESR0059-005]] drafted (v0.1) and implemented:
+
+* Per-turn deadline, default 100s (`JARVIS_TURN_DEADLINE_SECONDS`): the orchestrator starts no provider after it, and every text adapter caps its timeout by what remains. Fixes WP4's disclosed 150s worst case against the 120s Tauri timeout.
+* A single-worker lane for `guardian.converse`/`speak`/`transcribe`/`agent.invoke`: other methods answer while one is in flight; slow calls stay in order; every accepted request is answered before shutdown.
+
+Validation: pytest 637 passed/1 skipped on three consecutive runs, ruff clean, validator 0 errors/333 warnings. **Live-verified against the real backend process**: with Ollama pointed at a non-routable address and a 6s test deadline, `platform.status` answered at 0.3s while the turn was still waiting, the turn returned the honest reply at 6.4s instead of after Ollama's 90s timeout, and the backend exited cleanly.
+
+**Design review - disclosed self-review** (GitHub Copilot CLI's monthly quota still exhausted, re-probed before this review; the Programme Sponsor's WP4 decision to self-verify with a retrospective Copilot review applies, EBG-0153). Because this package introduces the backend's first concurrency, the review enumerated every piece of mutable state touched after startup: the gateway's decision list and both in-memory audit recorders are appended from both threads (single `list.append` calls, atomic under CPython's GIL); the orchestrator's health map is written only by the worker and only for existing keys, while `platform.status` iterates the route tuple, never the map; Cognitive Core history, the speech/transcription providers and the agent service are touched only by the single worker; pending memory proposals and profiles only by the main thread; SQLite opens a connection per call and serialises writers itself. **Disclosed limitation**: this relies on CPython's GIL. A free-threaded (no-GIL) Python build would need explicit locks on the shared lists and the health map. Also disclosed: speech, transcription and agent calls share the one worker, so a long speech synthesis delays the next conversation turn (they no longer delay anything else). Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-005_TURN_DEADLINE_AND_SLOW_LANE|EIP-ESR0059-005]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -147,7 +160,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Complete (EIP-ESR0059-001 v1.0) - committed `f2ffaa5`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
-| Planned | Backend request concurrency and per-turn deadline (EBG-0139) | Not started |
+| WP5 | Per-turn deadline and slow-request lane (EBG-0139) | Approved (EIP-ESR0059-005 v1.0) - pending commit/push; retrospective review owed |
 | WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Complete (EIP-ESR0059-004 v1.0) - committed `f33286a`, pushed; CI green; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153) |
 | Planned | Provider resilience: retry, backoff, circuit breaking (rest of EBG-0140) | Not started |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
@@ -160,6 +173,9 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.19 | 29 September 2026 | Claude Engineering Implementer | WP5 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-005 synced to v1.0. Pending commit/push. |
+| 0.18 | 29 September 2026 | Claude Engineering Implementer | WP5 disclosed self-review recorded (Copilot CLI quota still exhausted). Awaiting Programme Sponsor approval. |
+| 0.17 | 29 September 2026 | Claude Engineering Implementer | WP5 drafted per EIP-ESR0059-005 v0.1: per-turn deadline and slow-request lane (EBG-0139), live-verified against the real backend process. Not yet reviewed, approved or committed. |
 | 0.16 | 29 September 2026 | Claude Engineering Implementer | WP4 closed: committed f33286a, pushed; CI green; post-commit review self-verified (Copilot quota exhausted, disclosed); retrospective review owed, EBG-0153 registered. |
 | 0.15 | 29 September 2026 | Claude Engineering Implementer | WP4 approved via Programme Sponsor direct chat instruction ("Approved"); disclosed self-verification accepted while Copilot quota is exhausted, retrospective review owed. EIP-ESR0059-004 synced to v1.0. |
 | 0.14 | 29 September 2026 | Claude Engineering Implementer | WP4 design review Conditional Pass (one documentation finding, fixed). Re-review blocked: GitHub Copilot CLI monthly quota exhausted mid-review; disclosed self-verification substituted. Awaiting Programme Sponsor approval and decision on review coverage. |

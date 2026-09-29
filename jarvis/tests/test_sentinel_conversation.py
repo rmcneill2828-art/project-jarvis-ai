@@ -139,3 +139,45 @@ def test_conversation_service_smoke_test_with_sentinel_gated_provider():
     assert response.message == "echo: hello there"
     assert service.provider_name == "sentinel-gated"
     assert service.exchange_count == 1
+
+
+def test_turn_deadline_is_set_on_the_provider_request():
+    """EBG-0139 (ESR-0059 WP5)."""
+
+    import time
+
+    stub = _StubProvider()
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(stub)
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("stub",)))
+    provider = SentinelGatedConversationProvider(
+        gateway=SentinelTrustGateway(), orchestrator=orchestrator, turn_deadline_seconds=100.0
+    )
+
+    before = time.monotonic()
+    provider.generate(ConversationRequest(message="hello"))
+
+    deadline = stub.received[0].deadline
+    assert deadline is not None
+    assert before + 99.0 < deadline <= time.monotonic() + 100.0
+
+
+def test_no_turn_deadline_leaves_the_request_unbounded():
+    stub = _StubProvider()
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(stub)
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("stub",)))
+    provider = SentinelGatedConversationProvider(gateway=SentinelTrustGateway(), orchestrator=orchestrator)
+
+    provider.generate(ConversationRequest(message="hello"))
+
+    assert stub.received[0].deadline is None
+
+
+def test_turn_deadline_must_be_positive():
+    import pytest
+
+    with pytest.raises(ValueError, match="greater than zero"):
+        SentinelGatedConversationProvider(
+            gateway=SentinelTrustGateway(), orchestrator=ProviderOrchestrator(), turn_deadline_seconds=0
+        )

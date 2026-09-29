@@ -240,3 +240,64 @@ def test_orchestrator_raises_when_all_providers_unavailable() -> None:
         )
 
     assert orchestrator.history()[0].succeeded is False
+
+
+# EBG-0139 (ESR-0059 WP5): the per-request deadline.
+
+
+@dataclass(frozen=True)
+class _SlowStubProvider:
+    """Takes real time to fail, so a deadline can expire mid-failover."""
+
+    name: str
+    seconds: float
+    capabilities: tuple[str, ...] = ("text-generation",)
+
+    def execute(self, request: ProviderRequest) -> ProviderResponse:
+        import time
+
+        time.sleep(self.seconds)
+        msg = f"{self.name} timed out"
+        raise RuntimeError(msg)
+
+
+def test_orchestrator_attempts_no_provider_once_the_deadline_has_passed() -> None:
+    import time
+
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(OrchestratorStubProvider("primary"))
+    request = ProviderRequest(prompt="hello", deadline=time.monotonic() - 1.0)
+
+    with pytest.raises(RuntimeError, match="deadline reached"):
+        orchestrator.execute(allowed_sentinel_response(), request)
+
+    assert orchestrator.history()[-1].attempted_providers == ()
+    # Skipped for time, not failed - health untouched.
+    assert orchestrator.health("primary") is ProviderHealth.HEALTHY
+
+
+def test_orchestrator_stops_failover_when_the_deadline_expires_mid_chain() -> None:
+    import time
+
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(_SlowStubProvider("primary", seconds=0.3))
+    orchestrator.register_provider(OrchestratorStubProvider("secondary"))
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("primary", "secondary")))
+    request = ProviderRequest(prompt="hello", deadline=time.monotonic() + 0.1)
+
+    with pytest.raises(RuntimeError, match="deadline reached after attempting: primary"):
+        orchestrator.execute(allowed_sentinel_response(), request)
+
+    assert orchestrator.history()[-1].attempted_providers == ("primary",)
+    assert orchestrator.health("secondary") is ProviderHealth.HEALTHY
+
+
+def test_orchestrator_without_a_deadline_still_fails_over_as_before() -> None:
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(_SlowStubProvider("primary", seconds=0.05))
+    orchestrator.register_provider(OrchestratorStubProvider("secondary"))
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("primary", "secondary")))
+
+    result = orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hello"))
+
+    assert result.provider_response.content == "secondary:hello"

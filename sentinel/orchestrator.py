@@ -1,5 +1,6 @@
 """Sentinel provider orchestration and resilience primitives."""
 
+import time
 from dataclasses import dataclass
 from enum import Enum
 
@@ -150,8 +151,15 @@ class ProviderOrchestrator:
 
         attempted: list[str] = []
         last_error: Exception | None = None
+        deadline_reached = False
 
         for provider in self.eligible_providers(request.capability):
+            # EBG-0139 (ESR-0059 WP5): once the request's overall deadline has
+            # passed, stop - never start another provider call. A provider
+            # skipped this way did not fail, so its health is left untouched.
+            if request.deadline is not None and time.monotonic() >= request.deadline:
+                deadline_reached = True
+                break
             attempted.append(provider.name)
             try:
                 provider_response = execute_with_sentinel_decision(
@@ -195,6 +203,8 @@ class ProviderOrchestrator:
         reason = "No healthy provider could execute the request."
         if last_error is not None:
             reason = f"Provider execution failed: {last_error}"
+        if deadline_reached:
+            reason = f"Request deadline reached after attempting: {', '.join(attempted) or 'no provider'}."
         record = ProviderExecutionRecord(
             capability=request.capability,
             attempted_providers=tuple(attempted),

@@ -14,7 +14,7 @@ import urllib.request
 from collections.abc import Callable
 
 from sentinel.provider_config import ProviderConfiguration
-from sentinel.providers import ProviderRequest, ProviderResponse
+from sentinel.providers import ProviderRequest, ProviderResponse, remaining_timeout
 
 Transport = Callable[[str, bytes, dict[str, str], float], bytes]
 
@@ -108,12 +108,15 @@ class GeminiProvider:
             "Content-Type": "application/json",
         }
 
+        # Capped by the request's overall deadline, if any (EBG-0139).
+        timeout_seconds = remaining_timeout(self._configuration.timeout_seconds, request)
+
         try:
             raw_response = self._transport(
                 endpoint,
                 json.dumps(payload).encode("utf-8"),
                 headers,
-                self._configuration.timeout_seconds,
+                timeout_seconds,
             )
         except urllib.error.HTTPError as exc:
             # Mirrors OpenAIProvider: HTTP status codes are plain protocol-level

@@ -28,10 +28,13 @@ line.
 
 import base64
 import json
+import logging
+import math
 import os
 import sys
 import threading
 from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, TextIO
@@ -68,6 +71,21 @@ from sentinel.provider_config import CredentialReference, ProviderConfiguration
 from sentinel.whisper_provider import WhisperProvider
 
 JSONRPC_VERSION = "2.0"
+
+logger = logging.getLogger(__name__)
+
+# Methods that can block for seconds to minutes on an external model, voice
+# model or agent (EBG-0139, ESR-0059 WP5). serve_forever() runs these on a
+# single dedicated worker, so status, memory, profile and knowledge calls
+# keep answering while one is in flight instead of queueing behind it. One
+# worker, not a pool: slow calls still run one at a time and in arrival
+# order, so conversation turns can never overtake each other, and
+# GuardianRuntime's conversation state is only ever touched from one thread.
+# Responses carry their request id, and the Tauri host already routes
+# responses by id, so a fast reply overtaking a slow one is safe.
+SLOW_METHODS = frozenset(
+    {"guardian.converse", "guardian.speak", "guardian.transcribe", "guardian.agent.invoke"}
+)
 
 # Selects which real provider build_default_runtime() tries to wire as primary;
 # unset defaults to "openai" per PEM-001's Primary/Secondary designation.
@@ -183,6 +201,17 @@ DEFAULT_IDENTITY_DB_PATH = Path.home() / ".jarvis" / "identity" / "profiles.db"
 # Streaming Notifications MVP (EIP-ESR0031-002): interval between heartbeat
 # notifications, overridable per JARVIS_MEMORY_DB_PATH's established
 # test-isolation convention - a real 30-second sleep has no place in a test.
+# Overall budget for one conversation turn, every provider tried included
+# (EBG-0139, ESR-0059 WP5). Must stay below src-tauri/src/lib.rs's
+# BACKEND_CALL_TIMEOUT (120s): past that, the shell stops waiting and the
+# user sees a timeout instead of the honest provider-unavailable reply. The
+# 20s margin covers Sentinel evaluation, prompt composition and IPC. With
+# OpenAI (30s) + Gemini (30s) + Ollama (90s), the unbounded worst case was
+# 150s. An absent, blank, non-numeric or non-positive value uses the default
+# rather than failing startup.
+TURN_DEADLINE_ENV_VAR = "JARVIS_TURN_DEADLINE_SECONDS"
+DEFAULT_TURN_DEADLINE_SECONDS = 100.0
+
 HEARTBEAT_INTERVAL_ENV_VAR = "JARVIS_HEARTBEAT_INTERVAL_SECONDS"
 DEFAULT_HEARTBEAT_INTERVAL_SECONDS = 30.0
 
@@ -308,6 +337,20 @@ def _build_home_assistant_agent(environ: Mapping[str, str]) -> HomeAssistantStat
     return HomeAssistantStateQueryAgent(HomeAssistantClient(base_url=base_url, token=token))
 
 
+def _turn_deadline_seconds(environ: Mapping[str, str]) -> float:
+    """Return the configured per-turn deadline, or the default for any
+    absent or unusable value (EBG-0139, ESR-0059 WP5)."""
+
+    raw = (environ.get(TURN_DEADLINE_ENV_VAR) or "").strip()
+    try:
+        value = float(raw)
+    except ValueError:
+        return DEFAULT_TURN_DEADLINE_SECONDS
+    # math.isfinite also rejects nan and inf - an infinite deadline would
+    # silently remove the bound this setting exists to enforce.
+    return value if math.isfinite(value) and value > 0 else DEFAULT_TURN_DEADLINE_SECONDS
+
+
 def _secondary_provider_name(primary_name: str, environ: Mapping[str, str]) -> str | None:
     """Return the secondary cloud provider's name, or None when there is none.
 
@@ -396,7 +439,11 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     orchestrator.register_route(
         ProviderRoute(capability="text-generation", providers=tuple(route_providers))
     )
-    conversation_provider = SentinelGatedConversationProvider(gateway=gateway, orchestrator=orchestrator)
+    conversation_provider = SentinelGatedConversationProvider(
+        gateway=gateway,
+        orchestrator=orchestrator,
+        turn_deadline_seconds=_turn_deadline_seconds(environ),
+    )
 
     memory_db_path = Path(environ[MEMORY_DB_PATH_ENV_VAR]) if environ.get(MEMORY_DB_PATH_ENV_VAR) else DEFAULT_MEMORY_DB_PATH
     memory_store = PersonalMemoryStore(memory_db_path)
@@ -859,34 +906,78 @@ class StdioRpcServer:
         )
         heartbeat_thread.start()
 
+        # EBG-0139 (ESR-0059 WP5): a dedicated worker for SLOW_METHODS - see
+        # that constant for why it is exactly one thread.
+        slow_lane = ThreadPoolExecutor(max_workers=1, thread_name_prefix="jarvis-slow")
+
         try:
             for raw_line in in_stream:
                 line = raw_line.strip()
                 if not line:
                     continue
-                response = self.handle_line(line)
-                if response is not None:
-                    self._write_line(out_stream, response)
-                # Guardian Orb Phase 2 (EBG-0121): emit one
-                # knowledge.cluster_activity notification per genuinely
-                # recorded dispatch since the last line - drained after the
-                # response write, mirroring _heartbeat_loop's own no-`id`-key
-                # notification shape and using the same _write_line/lock.
-                for method, cluster in self._activity_tracker.pop_pending():
-                    self._write_line(
-                        out_stream,
-                        {
-                            "jsonrpc": JSONRPC_VERSION,
-                            "method": "knowledge.cluster_activity",
-                            "params": {
-                                "cluster": cluster,
-                                "method": method,
-                                "timestamp": datetime.now(UTC).isoformat(),
-                            },
-                        },
-                    )
+                if _request_method(line) in SLOW_METHODS:
+                    slow_lane.submit(self._process_line_logged, line, out_stream)
+                else:
+                    self._process_line(line, out_stream)
         finally:
+            # stdin closed: let any in-flight or queued slow request finish
+            # and write its response before the heartbeat stops and run()
+            # stops the runtime - a request accepted is always answered.
+            slow_lane.shutdown(wait=True)
             stop_heartbeat.set()
+
+    def _process_line(self, line: str, out_stream: TextIO) -> None:
+        """Handle one request line and write its response, then any activity
+        notifications recorded since - on whichever thread runs it."""
+
+        response = self.handle_line(line)
+        if response is not None:
+            self._write_line(out_stream, response)
+        # Guardian Orb Phase 2 (EBG-0121): emit one
+        # knowledge.cluster_activity notification per genuinely
+        # recorded dispatch since the last drain - after the response
+        # write, mirroring _heartbeat_loop's own no-`id`-key notification
+        # shape and using the same _write_line/lock. ActivityTracker
+        # guards its own state, so draining from either thread is safe.
+        for method, cluster in self._activity_tracker.pop_pending():
+            self._write_line(
+                out_stream,
+                {
+                    "jsonrpc": JSONRPC_VERSION,
+                    "method": "knowledge.cluster_activity",
+                    "params": {
+                        "cluster": cluster,
+                        "method": method,
+                        "timestamp": datetime.now(UTC).isoformat(),
+                    },
+                },
+            )
+
+    def _process_line_logged(self, line: str, out_stream: TextIO) -> None:
+        """`_process_line()` for the slow-lane worker. handle_line() already
+        turns every handler failure into a JSON-RPC error reply; this only
+        catches a failure to *write* (for example a closed stdout), which
+        would otherwise vanish silently inside the executor's future."""
+
+        try:
+            self._process_line(line, out_stream)
+        except Exception:  # must not vanish silently inside an executor thread
+            logger.exception("Slow-lane request could not be completed.")
+
+
+def _request_method(line: str) -> str | None:
+    """Return a request line's `method`, or None if it cannot be read -
+    malformed lines take the normal inline path, where handle_line() turns
+    them into the proper JSON-RPC error reply."""
+
+    try:
+        request = json.loads(line)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(request, dict):
+        return None
+    method = request.get("method")
+    return method if isinstance(method, str) else None
 
 
 def run() -> None:

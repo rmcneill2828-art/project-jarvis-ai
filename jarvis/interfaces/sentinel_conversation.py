@@ -1,6 +1,7 @@
 """Conversation provider that routes requests through Sentinel."""
 
 import logging
+import time
 
 from jarvis.interfaces.conversation import (
     EMPTY_MESSAGE_RESPONSE,
@@ -33,11 +34,19 @@ class SentinelGatedConversationProvider:
         orchestrator: ProviderOrchestrator,
         capability: str = "text-generation",
         source: str = "jarvis.conversation",
+        turn_deadline_seconds: float | None = None,
     ) -> None:
+        if turn_deadline_seconds is not None and turn_deadline_seconds <= 0:
+            msg = "turn_deadline_seconds must be greater than zero when provided."
+            raise ValueError(msg)
         self._gateway = gateway
         self._orchestrator = orchestrator
         self._capability = capability
         self._source = source
+        # Overall budget for one conversation turn, failover included
+        # (EBG-0139, ESR-0059 WP5). None keeps the previous behaviour: only
+        # each provider's own timeout applies.
+        self._turn_deadline_seconds = turn_deadline_seconds
 
     @property
     def gateway(self) -> SentinelTrustGateway:
@@ -71,6 +80,11 @@ class SentinelGatedConversationProvider:
             prompt=request.message,
             capability=self._capability,
             system_prompt=request.persona,
+            deadline=(
+                time.monotonic() + self._turn_deadline_seconds
+                if self._turn_deadline_seconds is not None
+                else None
+            ),
         )
 
         try:

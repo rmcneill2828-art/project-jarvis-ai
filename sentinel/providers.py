@@ -5,6 +5,7 @@ trust boundary. This module defines contracts only; concrete AI providers are
 implemented separately.
 """
 
+import time
 from dataclasses import dataclass, field
 from typing import Protocol
 
@@ -19,6 +20,11 @@ class ProviderRequest:
     capability: str = "text-generation"
     metadata: dict[str, str] = field(default_factory=dict)
     system_prompt: str | None = None
+    # Optional `time.monotonic()` instant by which the whole request - every
+    # provider tried for it, failover included - must finish (EBG-0139,
+    # ESR-0059 WP5). None means no overall deadline: each provider's own
+    # configured timeout alone applies, exactly as before.
+    deadline: float | None = None
 
     def __post_init__(self) -> None:
         if not self.prompt.strip():
@@ -48,6 +54,25 @@ class ProviderResponse:
         if not self.capability.strip():
             msg = "Provider response capability must not be empty."
             raise ValueError(msg)
+
+
+def remaining_timeout(configured_timeout_seconds: float, request: ProviderRequest) -> float:
+    """Return the timeout a provider call may use for `request`.
+
+    The provider's own configured timeout, capped by whatever remains of the
+    request's overall deadline (EBG-0139, ESR-0059 WP5), so a late provider
+    in a failover chain cannot run past the turn budget. Raises
+    `RuntimeError` - every adapter's established failure type, which
+    `ProviderOrchestrator` handles - when the deadline has already passed.
+    """
+
+    if request.deadline is None:
+        return configured_timeout_seconds
+    remaining = request.deadline - time.monotonic()
+    if remaining <= 0:
+        msg = "Request deadline reached before the provider call could start."
+        raise RuntimeError(msg)
+    return min(configured_timeout_seconds, remaining)
 
 
 class ExecutionProvider(Protocol):
