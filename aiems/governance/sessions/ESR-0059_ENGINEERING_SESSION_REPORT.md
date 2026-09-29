@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.19 |
+| Version | 0.20 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -136,6 +136,10 @@ Validation: pytest 637 passed/1 skipped on three consecutive runs, ruff clean, v
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-005_TURN_DEADLINE_AND_SLOW_LANE|EIP-ESR0059-005]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`e851e17`, `4b89691..e851e17`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36537670249 on `main`: all four jobs green, including the timing-based tests on the Linux runner.
+
+**Post-commit review - disclosed self-verification** (Copilot CLI quota re-probed, still exhausted): exactly the 15 committed files; working tree equals the commit; pytest (637 passed/1 skipped), the validator (0 errors/333 warnings) and ruff (clean) re-run fresh. Retrospective Copilot review owed (EBG-0153). **WP5 closed, subject to that retrospective review.**
+
 ---
 
 # 4. Engineering Authority
@@ -160,7 +164,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | Critical Runtime Safety Fixes (EBG-0135 to EBG-0138) plus review-finding registration | Complete (EIP-ESR0059-001 v1.0) - committed `f2ffaa5`, pushed; post-commit review Pass via genuine GitHub Copilot CLI invocation |
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
-| WP5 | Per-turn deadline and slow-request lane (EBG-0139) | Approved (EIP-ESR0059-005 v1.0) - pending commit/push; retrospective review owed |
+| WP5 | Per-turn deadline and slow-request lane (EBG-0139) | Complete (EIP-ESR0059-005 v1.0) - committed `e851e17`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Complete (EIP-ESR0059-004 v1.0) - committed `f33286a`, pushed; CI green; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153) |
 | Planned | Provider resilience: retry, backoff, circuit breaking (rest of EBG-0140) | Not started |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
@@ -173,6 +177,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.20 | 29 September 2026 | Claude Engineering Implementer | WP5 closed: committed e851e17, pushed; CI green on all four jobs; post-commit review self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.19 | 29 September 2026 | Claude Engineering Implementer | WP5 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-005 synced to v1.0. Pending commit/push. |
 | 0.18 | 29 September 2026 | Claude Engineering Implementer | WP5 disclosed self-review recorded (Copilot CLI quota still exhausted). Awaiting Programme Sponsor approval. |
 | 0.17 | 29 September 2026 | Claude Engineering Implementer | WP5 drafted per EIP-ESR0059-005 v0.1: per-turn deadline and slow-request lane (EBG-0139), live-verified against the real backend process. Not yet reviewed, approved or committed. |
