@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.22 |
+| Version | 0.23 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -156,6 +156,10 @@ Validation: pytest 660 passed/1 skipped on two runs, ruff clean, validator 0 err
 
 **Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-006_PROVIDER_RETRY_AND_CIRCUIT_BREAKER|EIP-ESR0059-006]] synced to v1.0 (Approved - implemented).
 
+**Committed and pushed** (`9e1dbbe`, `9badc56..9e1dbbe`), gated through the real Sponsor Approval Service via `submit-response`. Real CI run 36540586714 on `main`: all four jobs green.
+
+**Post-commit review - disclosed self-verification** (Copilot CLI quota re-probed, still exhausted): exactly the 15 committed files; working tree equals the commit; pytest (660 passed/1 skipped), the validator (0 errors/333 warnings) and ruff (clean) re-run fresh. Retrospective Copilot review owed (EBG-0153). **WP6 closed, subject to that retrospective review.**
+
 ---
 
 # 4. Engineering Authority
@@ -182,7 +186,7 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP2 | Restore the CI `python` gate (EBG-0152) | Complete (EIP-ESR0059-002 v1.0) - committed `ae358f4`, pushed; CI green on all four jobs; branch protection applied; post-commit review Pass |
 | WP5 | Per-turn deadline and slow-request lane (EBG-0139) | Complete (EIP-ESR0059-005 v1.0) - committed `e851e17`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Complete (EIP-ESR0059-004 v1.0) - committed `f33286a`, pushed; CI green; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153) |
-| WP6 | Provider retry, backoff and circuit breaker (rest of EBG-0140) | Approved (EIP-ESR0059-006 v1.0) - pending commit/push; retrospective review owed |
+| WP6 | Provider retry, backoff and circuit breaker (rest of EBG-0140) | Complete (EIP-ESR0059-006 v1.0) - committed `9e1dbbe`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
 | Planned | Prompt structure and token budgets (EBG-0142, EBG-0143) | Not started |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
@@ -193,6 +197,7 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.23 | 29 September 2026 | Claude Engineering Implementer | WP6 closed: committed 9e1dbbe, pushed; CI green on all four jobs; post-commit review self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.22 | 29 September 2026 | Claude Engineering Implementer | WP6 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-006 synced to v1.0. Pending commit/push. |
 | 0.21 | 29 September 2026 | Claude Engineering Implementer | WP6 drafted and self-reviewed per EIP-ESR0059-006 v0.2: provider retry and circuit breaker (rest of EBG-0140), live-verified. Awaiting Programme Sponsor approval. |
 | 0.20 | 29 September 2026 | Claude Engineering Implementer | WP5 closed: committed e851e17, pushed; CI green on all four jobs; post-commit review self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
