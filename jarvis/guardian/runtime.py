@@ -175,11 +175,12 @@ class GuardianRuntime:
         existing pattern of returning an honest message instead of a hidden
         failure (see `SentinelGatedConversationProvider`).
 
-        The Guardian Cognitive Core (EBG-0108 Phase 1) composes the actual
-        persona/system-prompt text sent to the provider from persona,
+        Each turn carries the persona (as the system prompt, verbatim),
         retained Personal Memory content (read fresh on every turn - no
-        caching) and bounded recent conversation history, then records the
-        exchange once a genuine, non-error response comes back.
+        caching) and bounded recent conversation history from the Guardian
+        Cognitive Core (EBG-0108 Phase 1) - the latter two as separate data,
+        never inside the system prompt (EBG-0142, ESR-0059 WP7). The
+        exchange is recorded only once a genuine model reply comes back.
         """
 
         if self._conversation_provider is None:
@@ -188,9 +189,16 @@ class GuardianRuntime:
             return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
 
         memory_records = () if self._memory_service is None else self._memory_service.list_records()
-        composed_persona = self._cognitive_core.compose(self._config.persona, memory_records)
+        # EBG-0142 (ESR-0059 WP7): the persona goes to the provider verbatim
+        # as the system prompt; history and retained memory travel separately,
+        # so no user-authored text is ever given system-level authority.
         response = self._conversation_provider.generate(
-            ConversationRequest(message=message, persona=composed_persona)
+            ConversationRequest(
+                message=message,
+                persona=self._config.persona,
+                history=self._cognitive_core.history(),
+                memory_notes=self._cognitive_core.memory_notes(memory_records),
+            )
         )
         # Only genuine model replies enter Cognitive Core history
         # (EIP-ESR0039-001 Implementation Requirement 6). Decided by the

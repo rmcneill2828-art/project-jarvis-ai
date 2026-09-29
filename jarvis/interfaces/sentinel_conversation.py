@@ -10,7 +10,7 @@ from jarvis.interfaces.conversation import (
 )
 from sentinel.core import SentinelDecisionOutcome, SentinelRequest, SentinelTrustGateway
 from sentinel.orchestrator import ProviderOrchestrator
-from sentinel.providers import ProviderRequest
+from sentinel.providers import ConversationTurn, ProviderRequest
 
 logger = logging.getLogger(__name__)
 
@@ -80,6 +80,14 @@ class SentinelGatedConversationProvider:
             prompt=request.message,
             capability=self._capability,
             system_prompt=request.persona,
+            # EBG-0142 (ESR-0059 WP7): history and retained memory travel as
+            # data, not inside the system prompt.
+            history=tuple(
+                turn
+                for user_message, reply in request.history
+                for turn in (ConversationTurn("user", user_message), ConversationTurn("assistant", reply))
+            ),
+            context_notes=request.memory_notes,
             deadline=(
                 time.monotonic() + self._turn_deadline_seconds
                 if self._turn_deadline_seconds is not None

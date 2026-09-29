@@ -181,3 +181,28 @@ def test_turn_deadline_must_be_positive():
         SentinelGatedConversationProvider(
             gateway=SentinelTrustGateway(), orchestrator=ProviderOrchestrator(), turn_deadline_seconds=0
         )
+
+
+def test_history_and_memory_reach_the_provider_as_data_not_system_prompt():
+    """EBG-0142 (ESR-0059 WP7)."""
+
+    stub = _StubProvider()
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(stub)
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("stub",)))
+    provider = SentinelGatedConversationProvider(gateway=SentinelTrustGateway(), orchestrator=orchestrator)
+
+    provider.generate(
+        ConversationRequest(
+            message="and now?",
+            persona="You are Guardian.",
+            history=(("hello", "hi there"),),
+            memory_notes=("Robert prefers dark mode.",),
+        )
+    )
+
+    sent = stub.received[0]
+    assert sent.system_prompt == "You are Guardian."
+    assert [(t.role, t.content) for t in sent.history] == [("user", "hello"), ("assistant", "hi there")]
+    assert sent.context_notes == ("Robert prefers dark mode.",)
+    assert sent.prompt == "and now?"

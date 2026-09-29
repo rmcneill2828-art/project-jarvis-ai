@@ -12,6 +12,7 @@ from sentinel.providers import (
     ProviderError,
     ProviderRequest,
     ProviderResponse,
+    framed_prompt,
     remaining_timeout,
 )
 
@@ -92,7 +93,11 @@ class OpenAIProvider:
         messages: list[dict[str, str]] = []
         if request.system_prompt:
             messages.append({"role": "system", "content": request.system_prompt})
-        messages.append({"role": "user", "content": request.prompt})
+        # EBG-0142 (ESR-0059 WP7): earlier turns in their own roles, and
+        # retained notes framed inside the current user message - the system
+        # message carries only the persona.
+        messages.extend({"role": turn.role, "content": turn.content} for turn in request.history)
+        messages.append({"role": "user", "content": framed_prompt(request)})
         payload = {
             "model": self._configuration.default_model,
             "messages": messages,

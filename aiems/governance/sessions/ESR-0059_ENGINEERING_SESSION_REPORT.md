@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.23 |
+| Version | 0.25 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -162,6 +162,20 @@ Validation: pytest 660 passed/1 skipped on two runs, ruff clean, validator 0 err
 
 ---
 
+**WP7 - Prompt Structure (Self-reviewed):** the last High-priority action-plan item (EBG-0142), under the Programme Sponsor's standing instruction. [[EIP-ESR0059-007_PROMPT_STRUCTURE|EIP-ESR0059-007]] drafted and implemented:
+
+* `ProviderRequest` gains `history` (role-tagged `ConversationTurn`s) and `context_notes`; `framed_prompt()` and `history_transcript()` delimit notes and transcripts, and user-authored text cannot close a block early.
+* OpenAI and Gemini send history in its own roles; Ollama as a transcript in the prompt. Retained memory goes in the current user message as notes marked as information, not instructions. The system prompt is the AAM-0001 persona, verbatim.
+* `GuardianCognitiveCore.compose()` removed; runtime tests that had become vacuous were rewritten to assert the real fields.
+
+Validation: pytest 670 passed/1 skipped, ruff clean, validator 0 errors/333 warnings. **Live-verified end to end** through the real backend process against a recording stand-in for Ollama: with an injection-style memory and an injection-style first message, the `system` field was exactly the approved persona on both turns and contained neither; memory arrived as a notes block and turn 1 as a transcript on turn 2.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: history is always recorded as (user, reply) pairs, so OpenAI and Gemini receive strictly alternating user/assistant turns ending on the user - the ordering both APIs expect; blank messages and non-model replies never enter history (EBG-0141), and `ProviderResponse` rejects empty content, so no empty turn is ever sent; `LocalEchoProvider` reads only `prompt`, so it is unaffected; nothing else in the codebase read memory or history out of the persona. No change needed. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-007_PROMPT_STRUCTURE|EIP-ESR0059-007]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -188,7 +202,8 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP4 | Gemini as the secondary provider (EBG-0051, routing part of EBG-0140) | Complete (EIP-ESR0059-004 v1.0) - committed `f33286a`, pushed; CI green; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153) |
 | WP6 | Provider retry, backoff and circuit breaker (rest of EBG-0140) | Complete (EIP-ESR0059-006 v1.0) - committed `9e1dbbe`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
-| Planned | Prompt structure and token budgets (EBG-0142, EBG-0143) | Not started |
+| WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Approved (EIP-ESR0059-007 v1.0) - pending commit/push; retrospective review owed |
+| Planned | Token budgets and input size limits (EBG-0143) | Not started |
 | Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
 
 ---
@@ -197,6 +212,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.25 | 29 September 2026 | Claude Engineering Implementer | WP7 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-007 synced to v1.0. Pending commit/push. |
+| 0.24 | 29 September 2026 | Claude Engineering Implementer | WP7 drafted and self-reviewed per EIP-ESR0059-007 v0.2: prompt structure (EBG-0142), live-verified end to end. Awaiting Programme Sponsor approval. |
 | 0.23 | 29 September 2026 | Claude Engineering Implementer | WP6 closed: committed 9e1dbbe, pushed; CI green on all four jobs; post-commit review self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.22 | 29 September 2026 | Claude Engineering Implementer | WP6 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-006 synced to v1.0. Pending commit/push. |
 | 0.21 | 29 September 2026 | Claude Engineering Implementer | WP6 drafted and self-reviewed per EIP-ESR0059-006 v0.2: provider retry and circuit breaker (rest of EBG-0140), live-verified. Awaiting Programme Sponsor approval. |

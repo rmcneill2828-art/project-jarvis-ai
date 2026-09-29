@@ -8,7 +8,7 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.15 |
+| Version | 2.16 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -29,7 +29,7 @@ It supports product capability prioritisation without approving implementation b
 | Capability | Vision | Architecture | Implementation | Testing | Overall Readiness |
 |------------|--------|--------------|----------------|---------|-------------------|
 | Conversation | Complete | Complete | Implemented | Implemented | Implemented (Foundation) |
-| Intelligence | Complete | Draft | Phase 1 implemented (Guardian Cognitive Core composes persona/memory/history each turn, `jarvis/guardian/cognitive_core.py`) - ESR-0039 | Implemented | Implemented (Phase 1) |
+| Intelligence | Complete | Draft | Phase 1 implemented (Guardian Cognitive Core supplies persona/memory/history each turn, `jarvis/guardian/cognitive_core.py`) - ESR-0039; memory/history kept out of the system prompt since ESR-0059 WP7 | Implemented | Implemented (Phase 1) |
 | Memory | Complete | Partial | Personal Memory foundation implemented (`PersonalMemoryStore`/`PersonalMemoryService`, consent-gated, wired into `GuardianRuntime`) - ESR-0027 WP1 | Implemented (unit-tested: `test_memory_store.py`, `test_memory_service.py`) | Implemented (Foundation) |
 | Identity | Complete | Partial | Local, unauthenticated profile create/list/select implemented (`jarvis/identity/`), role-tagged against GAM-0001 Section 8.1's four household roles - ESR-0046 | Implemented (unit- and RPC-tested) | Implemented (Foundation) |
 | Voice | Complete | Partial | Both increments implemented: speech output (self-hosted Piper, ESR-0040/ESR-0044) and speech input (self-hosted `faster-whisper`, push-to-talk, ESR-0047) | Implemented (unit-, RPC- and Playwright-tested) | Implemented (Foundation) |
@@ -57,7 +57,7 @@ JARVIS has moved well past the early executable foundation this matrix described
 - **Knowledge** has a real backend graph builder and live-rendered Guardian Orb (Phase 1 complete, Phase 2 partially delivered).
 - **Provider Architecture** has two live-validated adapters, and one is now wired into the default production runtime conversation path (EBG-0070, Complete, ESR-0022 WP1), and the other one follows as a credential-gated secondary since ESR-0059 WP4 (`JARVIS_SECONDARY_PROVIDER`, `none` to disable) - Ollama is the local fallback; the `LocalEchoProvider` echo fallback was removed from the production route at ESR-0059 WP3 (EBG-0141).
 - **Memory** has a Personal Memory foundation (`PersonalMemoryStore`/`PersonalMemoryService`), consent-gated and wired into `GuardianRuntime`, delivered at ESR-0027 WP1. Session and Shared Family memory remain not implemented.
-- **Intelligence** moved from Draft/Planned to Implemented (Phase 1): the Guardian Cognitive Core now composes persona, retained Personal Memory and bounded recent history before every provider call, delivered at ESR-0039. Full cognition beyond this remains architecturally Draft, per AAM-0001.
+- **Intelligence** moved from Draft/Planned to Implemented (Phase 1): the Guardian Cognitive Core now supplies persona, retained Personal Memory and bounded recent history to every provider call, delivered at ESR-0039 - since ESR-0059 WP7 (EBG-0142) the persona alone is the system prompt, with history sent in its own user/assistant roles and retained memory as a delimited block of notes in the user message, never in the system prompt. Full cognition beyond this remains architecturally Draft, per AAM-0001.
 - **Identity** is newly implemented at foundation level: local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's four household roles, delivered at ESR-0046. Credentialed authentication, memory scoping by profile and role-authority enforcement remain not implemented.
 - **Voice** is now implemented at foundation level for both directions: speech output (ESR-0040/ESR-0044) and speech input (ESR-0047), both self-hosted, Sentinel-gated and reachable through the live UXP.
 - **Agent Framework** moved from Proof of Concept (GIA-BOOT) to Implemented (Foundation): GIA's read-only local-resource observability is now a real, Sentinel-gated `ROUTINE_INTERACTION` specialist agent, reachable via `guardian.agent.*` RPC (ESR-0049, EBG-0119). It has no UXP surface yet, and `LOCAL_AGENT_ACTION` (the Action faculty, local device/system control) remains a hard `DENY` under GAM-0001 Section 8A - not implemented, not approached.
@@ -86,6 +86,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.16 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP7 (EBG-0142): Intelligence row and summary corrected - history and retained memory are no longer composed into the system prompt (EIP-ESR0059-007). |
 | 2.15 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). |
 | 2.14 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP3 (EBG-0141, Documentation Debt Discipline): corrected the claim that the deterministic LocalEchoProvider is the production final failover - removed from the production route by EIP-ESR0059-003; when no provider can answer, Guardian now returns an honest provider-unavailable reply. |
 | 2.13 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP8: corrected the Related Artefacts current-baseline reference from RBL-0037 to RBL-0038, established at ESR-0058 WP8 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP). Pointer fix only - capability rows not re-audited this pass; the Home Assistant agent and Memory Management UXP are not yet reflected as their own rows, flagged for a future refresh (EBG-0134). |

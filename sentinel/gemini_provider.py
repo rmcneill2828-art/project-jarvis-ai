@@ -19,6 +19,7 @@ from sentinel.providers import (
     ProviderError,
     ProviderRequest,
     ProviderResponse,
+    framed_prompt,
     remaining_timeout,
 )
 
@@ -113,7 +114,19 @@ class GeminiProvider:
             self._configuration.endpoint
             or f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         )
-        payload: dict[str, object] = {"contents": [{"parts": [{"text": request.prompt}]}]}
+        # EBG-0142 (ESR-0059 WP7): earlier turns in their own roles (Gemini
+        # calls the assistant role "model"), retained notes framed inside the
+        # current user message. With no history the payload keeps its
+        # original single-content shape.
+        if request.history:
+            contents: list[dict[str, object]] = [
+                {"role": "model" if turn.role == "assistant" else "user", "parts": [{"text": turn.content}]}
+                for turn in request.history
+            ]
+            contents.append({"role": "user", "parts": [{"text": framed_prompt(request)}]})
+        else:
+            contents = [{"parts": [{"text": framed_prompt(request)}]}]
+        payload: dict[str, object] = {"contents": contents}
         if request.system_prompt:
             payload["systemInstruction"] = {"parts": [{"text": request.system_prompt}]}
         headers = {

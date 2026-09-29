@@ -16,10 +16,18 @@ TRANSCRIPT_FORMAT_TEXT = "text"
 
 @dataclass(frozen=True)
 class ConversationRequest:
-    """User request submitted to the conversation framework."""
+    """User request submitted to the conversation framework.
+
+    `persona` is the system prompt, and carries only the approved persona.
+    `history` (earlier (user, Guardian) exchanges, oldest first) and
+    `memory_notes` (retained memory) are kept separate from it (EBG-0142,
+    ESR-0059 WP7), so providers can place them outside the system role.
+    """
 
     message: str
     persona: str | None = None
+    history: tuple[tuple[str, str], ...] = ()
+    memory_notes: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

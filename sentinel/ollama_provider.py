@@ -20,6 +20,8 @@ from sentinel.providers import (
     ProviderError,
     ProviderRequest,
     ProviderResponse,
+    framed_prompt,
+    history_transcript,
     remaining_timeout,
 )
 
@@ -84,7 +86,12 @@ class OllamaProvider:
         endpoint = self._configuration.endpoint or DEFAULT_ENDPOINT
         payload: dict[str, object] = {
             "model": self._configuration.default_model,
-            "prompt": request.prompt,
+            # EBG-0142 (ESR-0059 WP7): /api/generate takes one prompt, so
+            # earlier turns go in as a delimited transcript ahead of the
+            # framed current message - in the prompt, never in `system`.
+            "prompt": "\n\n".join(
+                part for part in (history_transcript(request), framed_prompt(request)) if part
+            ),
             "stream": False,
             "think": False,
             "options": {"num_ctx": DEFAULT_NUM_CTX},

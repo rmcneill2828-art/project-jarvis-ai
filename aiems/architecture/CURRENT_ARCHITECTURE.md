@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | CURRENT_ARCHITECTURE |
 | Title | AIEMS Current Architecture |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -79,7 +79,7 @@ Those responsibilities belong to Sentinel.
 
 The responsibilities above were role definitions from the start; what has changed is how much of Guardian is now real, evidenced implementation rather than foundation-only:
 
-- **Guardian Cognitive Core, Phase 1** (ESR-0039): composes persona, retained Personal Memory and bounded recent history before every provider call.
+- **Guardian Cognitive Core, Phase 1** (ESR-0039): supplies persona, retained Personal Memory and bounded recent history to every provider call - since ESR-0059 WP7 (EBG-0142) the persona alone is the system prompt, with history sent in its own user/assistant roles and retained memory as a delimited block of notes in the user message, never in the system prompt.
 - **Personal Memory** (ESR-0027 WP1, EBG-0080): consent-gated, `PersonalMemoryStore`/`PersonalMemoryService`, wired into `GuardianRuntime`.
 - **Guardian Orb** (ESR-0019 WP2 onward): renders the live repository knowledge graph, no longer the placeholder animation this document's earlier revision described as "future."
 - **Identity and Profiles** (ESR-0046): local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's household roles.
@@ -300,6 +300,7 @@ Forward-looking sequencing is no longer this document's responsibility. [[JRM-00
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP7 (EBG-0142): Cognitive Core description corrected - history and retained memory are no longer composed into the system prompt (EIP-ESR0059-007). |
 | 1.2 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). |
 | 1.1 | 28 September 2026 | Claude Engineering Implementer | ESR-0059 WP3 (EBG-0141, Documentation Debt Discipline): corrected the claim that the deterministic LocalEchoProvider is the production final failover - removed from the production route by EIP-ESR0059-003; when no provider can answer, Guardian now returns an honest provider-unavailable reply. |
 | 1.0 | 5 August 2026 | Claude Engineering Implementer | ESR-0050 WP3, per EIP-ESR0050-002, resolving EBG-0047 (Sentinel Gate of Durin Architecture Specification). First registration as a controlled artefact (Document Control block, version field added). Corrected the stale Status line (claimed close of ESR-0014; last real edit was ESR-0016 WP2A) and one factual error (claimed `SimpleApprovalPolicy` remains the production default; `TrustTierPolicy` has been the real default since ESR-0024 WP1/EBG-0074). Added Guardian's "Faculties Delivered Since ESR-0014" and Sentinel's post-ESR-0016 implemented-capabilities detail (audit logging, speech/transcription providers, Agent Framework gating, real provider wiring). Added the new Sentinel Gate of Durin subsection directly resolving EBG-0047, grounded in `SentinelTrustGateway.evaluate()`, `TrustTierPolicy.classify()` and `build_default_runtime()`'s single shared gateway evidence. Refreshed Provider Ecosystem's implemented-versus-planned distinction. Replaced the long-completed "ESR-0015 Starting Architecture" forward-look with a historical note, redirecting to JRM-0001/EBR-0001. Added Related Artefacts and this Version History section, neither of which existed before. |
