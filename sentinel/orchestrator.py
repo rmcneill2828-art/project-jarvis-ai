@@ -2,11 +2,12 @@
 
 import random
 import time
+from collections import deque
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 
-from sentinel.audit import AuditEvent, AuditRecorder, MemoryAuditRecorder
+from sentinel.audit import DEFAULT_MAX_MEMORY_EVENTS, AuditEvent, AuditRecorder, MemoryAuditRecorder
 from sentinel.core import SentinelDecisionOutcome, SentinelResponse
 from sentinel.provider_config import RetryPolicy
 from sentinel.providers import (
@@ -87,7 +88,8 @@ class ProviderOrchestrator:
         self._providers: dict[str, ExecutionProvider] = {}
         self._health: dict[str, ProviderHealth] = {}
         self._routes: dict[str, ProviderRoute] = {}
-        self._history: list[ProviderExecutionRecord] = []
+        # Most recent executions only (EBG-0144, ESR-0059 WP9).
+        self._history: deque[ProviderExecutionRecord] = deque(maxlen=DEFAULT_MAX_MEMORY_EVENTS)
         self._audit_recorder = audit_recorder or MemoryAuditRecorder()
         # Circuit breaker state (EBG-0140, ESR-0059 WP6): provider name to the
         # clock time until which it is skipped after a failure. Only failures

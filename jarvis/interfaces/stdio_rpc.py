@@ -29,6 +29,7 @@ line.
 import base64
 import json
 import logging
+import logging.handlers
 import math
 import os
 import sys
@@ -60,6 +61,7 @@ from jarvis.interfaces.voice import (
 )
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
+from sentinel.audit import JsonAuditRecorder
 from sentinel.core import SentinelTrustGateway
 from sentinel.gemini_provider import GeminiProvider
 from sentinel.kokoro_provider import KokoroProvider
@@ -201,6 +203,18 @@ DEFAULT_MEMORY_DB_PATH = Path.home() / ".jarvis" / "memory" / "personal.db"
 # listing.
 MEMORY_BACKUP_DIR_ENV_VAR = "JARVIS_MEMORY_BACKUP_DIR"
 DEFAULT_MEMORY_BACKUP_DIR = Path.home() / ".jarvis" / "memory" / "backups"
+
+# Log directory for the durable Sentinel audit trail and the backend's own
+# log file (EBG-0144, ESR-0059 WP9). Unset, it is the `logs` directory beside
+# the Personal Memory store's directory - ~/.jarvis/logs by default - so all
+# of Guardian's local data lives under one root, and tests that already
+# point JARVIS_MEMORY_DB_PATH at a temporary directory never write logs into
+# the real home directory (the same isolation lesson as ESR-0026 WP1).
+LOG_DIR_ENV_VAR = "JARVIS_LOG_DIR"
+AUDIT_LOG_FILENAME = "audit.jsonl"
+BACKEND_LOG_FILENAME = "backend.log"
+BACKEND_LOG_MAX_BYTES = 5_000_000
+BACKEND_LOG_BACKUP_COUNT = 3
 
 # Identity/profile store location (EIP-ESR0046-001), mirroring the Personal
 # Memory store's env-var/default/test-isolation convention exactly.
@@ -367,6 +381,35 @@ def _build_home_assistant_agent(environ: Mapping[str, str]) -> HomeAssistantStat
     return HomeAssistantStateQueryAgent(HomeAssistantClient(base_url=base_url, token=token))
 
 
+def _memory_db_path(environ: Mapping[str, str]) -> Path:
+    return Path(environ[MEMORY_DB_PATH_ENV_VAR]) if environ.get(MEMORY_DB_PATH_ENV_VAR) else DEFAULT_MEMORY_DB_PATH
+
+
+def _log_dir(environ: Mapping[str, str]) -> Path:
+    """Return the log directory - see LOG_DIR_ENV_VAR (EBG-0144)."""
+
+    explicit = (environ.get(LOG_DIR_ENV_VAR) or "").strip()
+    if explicit:
+        return Path(explicit)
+    return _memory_db_path(environ).parent.parent / "logs"
+
+
+def _configure_backend_log_file(environ: Mapping[str, str]) -> Path:
+    """Also write the backend's log records to a rotating file (EBG-0144,
+    ESR-0059 WP9). The packaged sidecar's stderr is not captured by the
+    Tauri host, so without this a release build kept no logs at all.
+    stdout is never used - it carries the JSON-RPC stream."""
+
+    log_path = _log_dir(environ) / BACKEND_LOG_FILENAME
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    handler = logging.handlers.RotatingFileHandler(
+        log_path, maxBytes=BACKEND_LOG_MAX_BYTES, backupCount=BACKEND_LOG_BACKUP_COUNT, encoding="utf-8"
+    )
+    handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+    logging.getLogger().addHandler(handler)
+    return log_path
+
+
 def _turn_deadline_seconds(environ: Mapping[str, str]) -> float:
     """Return the configured per-turn deadline, or the default for any
     absent or unusable value (EBG-0139, ESR-0059 WP5)."""
@@ -442,8 +485,13 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
 
     environ = os.environ if environ is None else environ
 
-    gateway = SentinelTrustGateway(policy_engine=TrustTierPolicy())
-    orchestrator = ProviderOrchestrator()
+    # EBG-0144 (ESR-0059 WP9): one durable, rotating audit trail shared by the
+    # gateway and the orchestrator, replacing in-memory recorders that lost
+    # every decision on restart. Audit events carry decision outcomes,
+    # provider names and status codes - never conversation or memory text.
+    audit_recorder = JsonAuditRecorder(_log_dir(environ) / AUDIT_LOG_FILENAME)
+    gateway = SentinelTrustGateway(policy_engine=TrustTierPolicy(), audit_recorder=audit_recorder)
+    orchestrator = ProviderOrchestrator(audit_recorder=audit_recorder)
 
     route_providers: list[str] = []
     primary_name = environ.get(PRIMARY_PROVIDER_ENV_VAR, DEFAULT_PRIMARY_PROVIDER)
@@ -476,7 +524,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
         turn_deadline_seconds=_turn_deadline_seconds(environ),
     )
 
-    memory_db_path = Path(environ[MEMORY_DB_PATH_ENV_VAR]) if environ.get(MEMORY_DB_PATH_ENV_VAR) else DEFAULT_MEMORY_DB_PATH
+    memory_db_path = _memory_db_path(environ)
     memory_store = PersonalMemoryStore(memory_db_path)
     # Reuses the same gateway instance conversation requests are evaluated
     # against - one trust boundary, not two (EIP-ESR0027-001 Section 4).
@@ -1041,9 +1089,21 @@ def _request_method(line: str) -> str | None:
 def run() -> None:
     """Entry point: build the default runtime and serve JSON-RPC over stdio until stdin closes."""
 
-    runtime = build_default_runtime()
-    server = StdioRpcServer(runtime)
+    log_path = _configure_backend_log_file(os.environ)
+    logger.info("JARVIS backend starting; logging to %s.", log_path)
+    try:
+        runtime = build_default_runtime()
+        server = StdioRpcServer(runtime)
+    except Exception:
+        # Before WP9 a startup failure in the packaged app vanished with the
+        # sidecar's discarded stderr (EBG-0144).
+        logger.exception("JARVIS backend failed to start.")
+        raise
     try:
         server.serve_forever()
+    except Exception:
+        logger.exception("JARVIS backend stopped on an unhandled error.")
+        raise
     finally:
         runtime.stop()
+        logger.info("JARVIS backend stopped.")

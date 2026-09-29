@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0059 |
 | Title | Engineering Session Report |
-| Version | 0.29 |
+| Version | 0.31 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -194,6 +194,18 @@ Validation: pytest 689 passed/1 skipped, ruff clean, validator 0 errors, fronten
 
 ---
 
+**WP9 - Durable Audit Trail and Backend Logging (Self-reviewed):** EBG-0144, under the Programme Sponsor's standing instruction. [[EIP-ESR0059-009_DURABLE_AUDIT_AND_LOGGING|EIP-ESR0059-009]] drafted and implemented: a durable, rotating, thread-safe audit trail replacing the in-memory recorders; bounded in-process histories and pending proposals; a rotating backend log file so release builds keep logs, including startup failures; `JARVIS_LOG_DIR`, defaulting beside the memory store so tests never touch the home directory (verified).
+
+**Observation**: `~/.jarvis/logs/` on the development machine already holds unrelated June 2026 files apparently from another application (`backend-DATE.log`, `electron-...`, `nextjs-...`); JARVIS's new file names do not clash with them. Noted, not changed.
+
+Validation: pytest 698 passed/1 skipped, ruff clean, validator 0 errors. **Live-checked against the real backend process**: a fake PIN in a message and a fake passport number in a memory proposal appeared in neither `audit.jsonl` nor `backend.log`; the audit trail recorded the decisions; `backend.log` recorded startup and shutdown.
+
+**Review - disclosed self-review** (GitHub Copilot CLI quota re-probed, still exhausted; EBG-0153 applies). Checked: every audit event's fields were traced to their source and none carries conversation or memory text - confirmed by a test and the live check; rotation runs under the same lock as writes, so two threads cannot rotate twice or interleave a line; the backend log goes to a file and stderr only, never stdout; the log directory's default keeps test runs out of the home directory (verified); dropping the oldest unresolved proposal stores nothing, so no content is retained without consent. Real finding during implementation, fixed before testing: `sentinel/core.py` was missing its `deque` import (174 tests failed until added). No further change needed. Awaiting Programme Sponsor approval.
+
+**Programme Sponsor approved via direct chat instruction ("Approved")**. [[EIP-ESR0059-009_DURABLE_AUDIT_AND_LOGGING|EIP-ESR0059-009]] synced to v1.0 (Approved - implemented).
+
+---
+
 # 4. Engineering Authority
 
 ESR-0059 opening was authorised by direct Programme Sponsor instruction on 28 September 2026, following ESR-0058's formal closure.
@@ -222,7 +234,8 @@ Implement the production code review's action plan, one Work Package at a time t
 | WP3 | Honest provider-failure replies (EBG-0141) | Complete (EIP-ESR0059-003 v1.0) - committed `0790ea9`, pushed; CI green; post-commit review Pass |
 | WP7 | Prompt structure: history and memory out of the system prompt (EBG-0142) | Complete (EIP-ESR0059-007 v1.0) - committed `9070488`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
 | WP8 | Input limits and prompt budgets (EBG-0143) | Complete (EIP-ESR0059-008 v1.0) - committed `705f3a6`, pushed; CI green; post-commit self-verified; retrospective review owed (EBG-0153) |
-| Planned | Production observability (EBG-0144) and memory revocation (EBG-0145) | Not started |
+| WP9 | Durable audit trail and backend logging (EBG-0144) | Approved (EIP-ESR0059-009 v1.0) - pending commit/push; retrospective review owed |
+| Planned | Memory revocation surface (EBG-0145) | Not started |
 
 ---
 
@@ -230,6 +243,8 @@ Implement the production code review's action plan, one Work Package at a time t
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.31 | 29 September 2026 | Claude Engineering Implementer | WP9 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-009 synced to v1.0. Pending commit/push. |
+| 0.30 | 29 September 2026 | Claude Engineering Implementer | WP9 drafted and self-reviewed per EIP-ESR0059-009 v0.2: durable audit trail and backend logging (EBG-0144). Awaiting Programme Sponsor approval. |
 | 0.29 | 29 September 2026 | Claude Engineering Implementer | WP8 closed: committed 705f3a6, pushed; CI green on all four jobs; post-commit self-verified (Copilot quota exhausted); retrospective review owed (EBG-0153). |
 | 0.28 | 29 September 2026 | Claude Engineering Implementer | WP8 approved via Programme Sponsor direct chat instruction ("Approved"). EIP-ESR0059-008 synced to v1.0. Pending commit/push. |
 | 0.27 | 29 September 2026 | Claude Engineering Implementer | WP8 drafted and self-reviewed per EIP-ESR0059-008 v0.2: input limits and prompt budgets (EBG-0143). Awaiting Programme Sponsor approval. |

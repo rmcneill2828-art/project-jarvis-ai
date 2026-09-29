@@ -4,13 +4,14 @@ Sentinel is intentionally independent of the JARVIS package so it can become a
 shared trust gateway for Guardian and future AI systems.
 """
 
+from collections import deque
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from types import MappingProxyType
 
-from sentinel.audit import AuditEvent, AuditRecorder, MemoryAuditRecorder
+from sentinel.audit import DEFAULT_MAX_MEMORY_EVENTS, AuditEvent, AuditRecorder, MemoryAuditRecorder
 
 
 class SentinelDecisionOutcome(Enum):
@@ -110,7 +111,9 @@ class SentinelTrustGateway:
         audit_recorder: AuditRecorder | None = None,
         policy_engine: PolicyEngine | None = None,
     ) -> None:
-        self._decisions: list[SentinelResponse] = []
+        # Most recent decisions only (EBG-0144): durable history is the
+        # audit recorder's job, not this in-process list's.
+        self._decisions: deque[SentinelResponse] = deque(maxlen=DEFAULT_MAX_MEMORY_EVENTS)
         self._audit_recorder = audit_recorder or MemoryAuditRecorder()
         self._policy_engine = policy_engine or SimpleApprovalPolicy()
 

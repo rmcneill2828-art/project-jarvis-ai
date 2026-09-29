@@ -32,6 +32,11 @@ from sentinel.core import (
 logger = logging.getLogger(__name__)
 
 MEMORY_RETENTION_CAPABILITY = "memory_retention"
+
+# Unresolved proposals kept at once (EBG-0144, ESR-0059 WP9). Past this, the
+# oldest unresolved proposal is dropped - nothing is stored or decided for
+# it, exactly as if the process had restarted.
+MAX_PENDING_PROPOSALS = 100
 LOCAL_USER_APPROVER_LABEL = "local-user"
 
 
@@ -95,6 +100,10 @@ class PersonalMemoryService:
         pending_id = str(uuid.uuid4())
         pending = PendingMemoryRequest(id=pending_id, content=content, sentinel_response=sentinel_response)
         self._pending[pending_id] = pending
+        while len(self._pending) > MAX_PENDING_PROPOSALS:
+            oldest_id = next(iter(self._pending))
+            del self._pending[oldest_id]
+            logger.info("Oldest unresolved memory proposal dropped: pending_id=%s", oldest_id)
         return pending
 
     def approve(self, pending_id: str) -> PersonalMemoryRecord:
