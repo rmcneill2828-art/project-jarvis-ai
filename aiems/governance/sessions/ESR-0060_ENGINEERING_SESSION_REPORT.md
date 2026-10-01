@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0060 |
 | Title | Engineering Session Report |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -40,7 +40,15 @@ WP0A/WP0B session initialisation followed PBK-0001 and [[GDE-0001_PROJECT_KNOWLE
 
 **WP0B - Engineering Session Initialisation (Complete):** ESR-0059 confirmed formally Closed. ESR-0060 opened as the next session identifier. `~/.current_session` updated to `ESR-0060`. Objective set by Programme Sponsor decision among presented options - **"Open now, review-first"**: WP1 is the EBG-0153 retrospective Copilot review of ESR-0059 WP4 to WP14 once the quota resets; WP2 is process-tree termination for the packaged backend, design-reviewed by Copilot before any implementation. Today's work is limited to opening the session and drafting WP2's design.
 
-**WP1 - EBG-0153 Retrospective Engineering Review (Not started):** blocked on the Copilot CLI quota reset (1 October 2026). Scope per EBG-0153: genuine scoped Copilot CLI review of ESR-0059 WP4 (`f33286a`) to WP14 (`61f1712`), with WP5's reliance on CPython's GIL for thread safety called out as the point most worth an independent look, and the case-sensitivity mismatch between `JARVIS_PRIMARY_PROVIDER` and `JARVIS_SECONDARY_PROVIDER`.
+**WP1 - EBG-0153 Retrospective Engineering Review (Complete):** GitHub Copilot CLI quota confirmed reset on 1 October 2026 (one-line probe returned "OK"). Routed through the real bridge (`init`/`submit-to-review` for `ESR-0060`/`WP1`, 46-file scope = the committed code diff `f33286a^..61f1712`, governance documents excluded). Review-only: no code change proposed. Run as three genuine scoped Copilot CLI invocations (`--allow-tool='shell(git:*)' --allow-tool='shell(python:*)' --deny-tool='write'`), one per batch, each briefed to test every ESR-0059 self-review claim against the code rather than accept it, and each recording its own `return-findings` entry - all three independently verified against the transcript (`sender: reviewer`, `repository_ref: 5fbfff9...`).
+
+* **Batch A, WP4-WP6 - Conditional Pass.** WP5's GIL-reliant thread-safety claim **holds** for the paths it covers: every stdout write (main thread, slow lane, heartbeat) is under one `_write_lock`, so JSON lines cannot interleave; per-profile Cognitive Cores are touched only by the single slow-lane worker; health-map reads racing worker writes are benign one-step-stale reads. Retry backoff never sleeps past the deadline; a non-ALLOW Sentinel decision raises before any provider is touched; transient-status classification matches across all three adapters. **Finding 1 (High), reproduced live by the reviewer**: `JARVIS_PRIMARY_PROVIDER` is matched case-sensitively - `Gemini` with a valid key registers only `ollama`, silently, with no log line. Registered EBG-0155. **Finding 2 (Medium), reproduced by the reviewer and confirmed by the Engineering Implementer in code**: a deadline that expires inside a provider's own `remaining_timeout()` raises a plain `RuntimeError`, which `execute()` treats as a genuine fault - the provider is marked DEGRADED and its circuit opened for 30 seconds, contrary to EIP-ESR0059-005/006. Registered EBG-0156. Findings 3-5 (concurrent SQLite access with no `busy_timeout`; an unguarded fast-lane write failure; no automated real-thread test) registered in EBG-0157. On finding 3 the Engineering Implementer disagrees with the reviewer's Medium rating: memory writes are short single transactions and Python's 5-second default lock wait applies, so it is hardening, not a live defect.
+* **Batch B, WP7-WP10 - Pass.** Strict user/assistant alternation for OpenAI and Gemini; persona-only system prompts; every text-accepting RPC limited before any runtime call, with the UXP limit matching; no conversation or memory content on any audit or log path (every `AuditEvent` traced); rotation under one lock; nothing logged to stdout; a revoked memory is absent from the very next turn. Re-ran the full suite: 751 passed, 1 skipped; ruff clean; validator 0 errors. Two Low findings (raw `str(exc)` in RPC error replies and in persisted provider-failure audit reasons - safe today only by adapter discipline) registered in EBG-0157.
+* **Batch C, WP11-WP14 - Pass.** Exactly three subprocess call sites, all list-form with closed stdin; the frozen executable is never re-invoked as an interpreter; a newer-than-code database is refused untouched and five concurrent first-opens migrate correctly (both verified with throwaway scripts); every memory handler takes the profile from the identity service, never from parameters; another profile's memory is indistinguishable from a missing one. One Low finding (the 100 pending-proposal cap is shared across profiles) registered in EBG-0157.
+
+EBG-0153 closed Completed. **Programme Sponsor decision (option (a), direct chat instruction)**: close WP1, and fix the High finding as a separate Work Package before WP2. Read as taking the recommendation in full, so WP1b covers EBG-0156 as well as EBG-0155. This adds a Work Package to the session plan, recorded as an explicit Programme Sponsor scope change. Single-reviewer risk unchanged: Codex remains unavailable.
+
+**WP1b - Provider-Selection and Deadline-Health Fixes (Not started):** EBG-0155 and EBG-0156, through the standing design-review, Programme Sponsor approval, `submit-response` and post-commit-review template.
 
 **WP2 - Backend Process-Tree Termination (Drafted - design only):** [[EIP-ESR0060-002_BACKEND_PROCESS_TREE_TERMINATION|EIP-ESR0060-002]] drafted (v0.1). No code changed. EBG-0154 registered in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] (Candidate Backlog, Medium). **Programme Sponsor approved the new direct `windows-sys` dependency** (EIP Section 4F) via direct chat instruction ("Approved"). This approves the dependency only; implementation still waits for the design review, and EIP-ESR0060-002 is synced to v0.2.
 
@@ -65,7 +73,7 @@ GitHub and the repository remain the authoritative source of truth.
 
 # 5. Session Objective
 
-Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 WP4 to WP14 as soon as GitHub Copilot CLI's quota resets, then deliver backend process-tree termination (EBG-0154) through the standing design-review, Programme Sponsor approval, `submit-response` and post-commit-review template, with a genuine independent reviewer at every step.
+Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 WP4 to WP14 as soon as GitHub Copilot CLI's quota resets, fix what it finds that matters (WP1b), then deliver backend process-tree termination (EBG-0154) through the standing design-review, Programme Sponsor approval, `submit-response` and post-commit-review template, with a genuine independent reviewer at every step.
 
 ---
 
@@ -75,9 +83,10 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1 | EBG-0153 retrospective Copilot CLI review of ESR-0059 WP4 to WP14 | Not started - blocked on Copilot quota reset, 1 October 2026 |
-| WP2 | Backend process-tree termination (EBG-0154) | Drafted (EIP-ESR0060-002 v0.2, design only; dependency approved) - awaiting design review after WP1 |
-| Candidate | EBG-0149, EBG-0150, EBG-0151 (Low); EBG-0130 (Programme Sponsor judgement) | Not started |
+| WP1 | EBG-0153 retrospective Copilot CLI review of ESR-0059 WP4 to WP14 | Complete - A Conditional Pass, B Pass, C Pass; EBG-0155 to EBG-0157 registered |
+| WP1b | Provider-selection case fix and deadline-health fix (EBG-0155, EBG-0156) | Not started - added by Programme Sponsor decision |
+| WP2 | Backend process-tree termination (EBG-0154) | Drafted (EIP-ESR0060-002 v0.2, design only; dependency approved) - awaiting design review after WP1b |
+| Candidate | EBG-0149, EBG-0150, EBG-0151, EBG-0157 (Low); EBG-0130 (Programme Sponsor judgement) | Not started |
 
 ---
 
@@ -85,5 +94,6 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 1 October 2026 | Claude Engineering Implementer | WP1 complete: EBG-0153 retrospective review of ESR-0059 WP4-WP14 ran as three genuine scoped Copilot CLI reviews through the bridge (A Conditional Pass, B Pass, C Pass); WP5's GIL-reliant thread safety confirmed; EBG-0155 to EBG-0157 registered. Programme Sponsor decision (a): WP1b added before WP2 to fix EBG-0155 and EBG-0156. |
 | 0.2 | 30 September 2026 | Claude Engineering Implementer | Programme Sponsor approved the new direct windows-sys dependency for WP2 (EIP-ESR0060-002 Section 4F), via direct chat instruction ("Approved"). Dependency only; implementation still waits for the design review. EIP-ESR0060-002 synced to v0.2. |
 | 0.1 | 30 September 2026 | Claude Engineering Implementer | ESR-0060 opened. WP0A/WP0B complete. Neither independent reviewer available (Copilot CLI quota exhausted until 1 October 2026; Codex CLI workspace deactivated). Objective set by Programme Sponsor decision: review-first. WP2 design drafted per EIP-ESR0060-002 v0.1 after verifying EIP-ESR0059-001 Section 4G live; EBG-0154 registered. No code changed. |
