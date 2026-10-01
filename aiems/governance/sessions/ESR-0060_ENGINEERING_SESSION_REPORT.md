@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0060 |
 | Title | Engineering Session Report |
-| Version | 0.12 |
+| Version | 0.13 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -58,7 +58,7 @@ EBG-0153 closed Completed. **Programme Sponsor decision (option (a), direct chat
 
 **Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit - **Pass**, no findings, independently verified against the transcript (`repository_ref: e1d31a4...`). It confirmed the exact 9-file changed-set, that the committed code is identical to what was design-reviewed and that the later changes were record-keeping only, every commit-message claim, the REG-0001 rows against each document's own version, and a clean working tree. It re-ran pytest (759 passed/1 skipped), ruff (clean) and the validator (0 errors) against the committed state. **WP1b closed.**
 
-**WP2 - Backend Process-Tree Termination (Drafted - design only):** [[EIP-ESR0060-002_BACKEND_PROCESS_TREE_TERMINATION|EIP-ESR0060-002]] drafted (v0.1). No code changed. EBG-0154 registered in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] (Candidate Backlog, Medium). **Programme Sponsor approved the new direct `windows-sys` dependency** (EIP Section 4F) via direct chat instruction ("Approved"). This approves the dependency only; implementation still waits for the design review, and EIP-ESR0060-002 is synced to v0.2.
+**WP2 - Backend Process-Tree Termination (Complete):** [[EIP-ESR0060-002_BACKEND_PROCESS_TREE_TERMINATION|EIP-ESR0060-002]] drafted (v0.1). No code changed. EBG-0154 registered in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] (Candidate Backlog, Medium). **Programme Sponsor approved the new direct `windows-sys` dependency** (EIP Section 4F) via direct chat instruction ("Approved"). This approves the dependency only; implementation still waits for the design review, and EIP-ESR0060-002 is synced to v0.2.
 
 **Real finding made while investigating, before drafting** - EIP-ESR0059-001 Section 4G recorded that terminating the backend's direct child might not reach the real interpreter, "not verified". Verified on this machine today against the real packaged sidecar (`src-tauri/binaries/jarvis-backend-x86_64-pc-windows-msvc.exe`, built 29 September 2026 at ESR-0059 WP11):
 
@@ -93,6 +93,10 @@ Recorded as EBG-0154 rather than overstated: this is not "every app close leaks 
 
 **Programme Sponsor approved** via direct chat instruction ("Approved") and the Sponsor Approval Service (`approve`, `repository_ref: e2eb0f5`, 2026-10-01T15:22:26Z, after the CI-change review). The request covered both the `Win32_Security` feature and the commit; read as approving both. EIP-ESR0060-002 synced to v1.0.
 
+**Committed** as `5f1693b` through `submit-response` (2026-10-01T15:26:03Z) and pushed. CI run 36884252081 on `main` green on all five jobs. **The new `rust-windows` job passed on its first run**: all seven Windows job-object tests executed and passed on a GitHub-hosted Windows runner, which runs jobs inside its own job object, so nested job objects work there. The test timing margins the CI-change review flagged held on this run.
+
+**Post-commit independent review**: a further genuine scoped `copilot` invocation against the real pushed commit - **Pass**, no findings, independently verified against the transcript (`repository_ref: 5f1693b...`). It confirmed the exact 8-file changed-set, that the committed code and CI file are identical to what was reviewed with only record-keeping changed since, every commit-message claim, the REG-0001 rows and a clean tree. **Disclosed gap**: this review's tool permissions refused every validation command, so it re-ran none. It instead cited earlier transcript results, attributing them to the wrong review round and misquoting pytest as 760 passed. The Engineering Implementer therefore re-ran everything against the committed state: cargo fmt and clippy `--tests` clean, cargo test 19 passed/1 ignored, pytest 759 passed/1 skipped, ruff clean, validator 0 errors. CI ran the same on both platforms. **WP2 closed.**
+
 ---
 
 # 4. Engineering Authority
@@ -117,7 +121,7 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0153 retrospective Copilot CLI review of ESR-0059 WP4 to WP14 | Complete - A Conditional Pass, B Pass, C Pass; EBG-0155 to EBG-0157 registered |
 | WP1b | Provider-selection case fix and deadline-health fix (EBG-0155, EBG-0156) | Complete - `e1d31a4`, CI green, post-commit review Pass |
-| WP2 | Backend process-tree termination (EBG-0154) | Approved (EIP-ESR0060-002 v1.0) - pending commit |
+| WP2 | Backend process-tree termination (EBG-0154) | Complete - `5f1693b`, CI green incl. first `rust-windows` run, post-commit review Pass |
 | Candidate | EBG-0149, EBG-0150, EBG-0151, EBG-0157 (Low); EBG-0130 (Programme Sponsor judgement) | Not started |
 
 ---
@@ -126,6 +130,7 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.13 | 1 October 2026 | Claude Engineering Implementer | WP2 closed: 5f1693b CI green on all five jobs (run 36884252081), including the first rust-windows run with all seven job-object tests passing; genuine Copilot CLI post-commit review Pass (its validation re-runs were refused by tool permissions, so re-run by the Engineering Implementer, all green). |
 | 0.12 | 1 October 2026 | Claude Engineering Implementer | WP2 CI-change review Pass; Programme Sponsor approved the Win32_Security feature and the commit via the Sponsor Approval Service; EIP-ESR0060-002 synced to 1.0 (REG-0001 row synced by hand). Pending commit. |
 | 0.11 | 1 October 2026 | Claude Engineering Implementer | WP2 implementation re-review Pass; Programme Sponsor decision 2(a): rust-windows CI job and clippy --tests added (EIP-ESR0060-002 v0.7, REG-0001 row synced by hand); awaiting review of the CI change. |
 | 0.10 | 1 October 2026 | Claude Engineering Implementer | WP2 implementation review Conditional Pass; Medium finding (unchecked termination plus unbounded reap) fixed in EIP-ESR0060-002 v0.6 (REG-0001 row synced by hand); Windows CI job and clippy --tests recommendations raised for the Programme Sponsor; awaiting re-review. |
