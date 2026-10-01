@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.693
+**Version:** 3.697
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.693 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.697 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.210 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.211 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -336,6 +336,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0059-012 | Engineering Implementation Package | SQLite Schema Versioning | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-013 | Engineering Implementation Package | Profile-Scoped Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-014 | Engineering Implementation Package | Household Role Enforcement for Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| ESR-0060 | Engineering Session Report | Engineering Session Report | 0.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 0.2 | Draft - design only, not implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -450,6 +452,10 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.697 | 30 September 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.1 to 0.2) following: Programme Sponsor approved the new direct windows-sys dependency for WP2 (EIP-ESR0060-002 Section 4F), via direct chat instruction ("Approved"). Dependency only; implementation still waits for the design review. EIP-ESR0060-002 synced to v0.2. |
+| 3.696 | 30 September 2026 | Claude Engineering Implementer | ESR-0060: synced EIP-ESR0060-002 row (0.1 to 0.2) - `windows-sys` dependency approved by the Programme Sponsor. Synced by hand (EIP-ESR*-style id). |
+| 3.695 | 30 September 2026 | Claude Engineering Implementer | ESR-0060 opened (WP0A/WP0B): registered ESR-0060 (0.1, Open) and EIP-ESR0060-002 (0.1, Draft - WP2 Backend Process-Tree Termination, design only). EIP-ESR*-style ids are not matched by bump_version.py's register parser, so these rows are synced by hand. |
+| 3.694 | 30 September 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.210 to 1.211) following: ESR-0060 WP0: registered EBG-0154 (busy or hung backend survives teardown and app exit - packaged sidecar process tree), verified live against the real packaged sidecar; Candidate Backlog, Medium, proposed in EIP-ESR0060-002. |
 | 3.693 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: registered RBL-0039 (1.0, Accepted - Establish); ESR-0059 row set to Closed; JARVIS Capability Readiness Matrix row (2.18 to 2.19) synced by hand. |
 | 3.692 | 29 September 2026 | Programme Sponsor | Aligned ESR-0059 version (0.47 to 1.0) following: ESR-0059 formally closed. WP16: Establish RBL-0039, superseding RBL-0038, approving the Engineering Implementer's advisory. Fourteen Work Packages delivered every Critical, High and Medium item of the production code review. Session-wide WP15 disclosed self-verification (GitHub Copilot CLI quota exhausted) - Pass, one register inconsistency corrected; retrospective review owed (EBG-0153). Every controlled artefact's baseline pointer synced to RBL-0039. |
 | 3.691 | 29 September 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.43 to 3.44) following: ESR-0059 formally closed: full closure sweep - Current Mode, Baseline (RBL-0039), Phase, Workflow and Objective; Section 4A rewritten for ESR-0059; Prior Session window shifted (ESR-0058 added, ESR-0055 dropped); product-baseline rows. Documentation Debt corrected: the Next Required Activity row (named ESR-0033) and the Next Work Package Candidate row (pre-ESR-0048) refreshed. |
