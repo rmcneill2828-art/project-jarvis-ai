@@ -11,6 +11,7 @@ from sentinel.audit import DEFAULT_MAX_MEMORY_EVENTS, AuditEvent, AuditRecorder,
 from sentinel.core import SentinelDecisionOutcome, SentinelResponse
 from sentinel.provider_config import RetryPolicy
 from sentinel.providers import (
+    DeadlineExceededError,
     ExecutionProvider,
     ProviderRequest,
     ProviderResponse,
@@ -216,6 +217,12 @@ class ProviderOrchestrator:
             attempted.append(provider.name)
             try:
                 provider_response, attempts = self._execute_with_retry(sentinel_response, provider, request)
+            except DeadlineExceededError:
+                # EBG-0156 (ESR-0060 WP1b): the deadline passed between the
+                # check above and the provider's own - the same "out of time,
+                # not a fault" case, so health and circuit stay untouched.
+                deadline_reached = True
+                break
             except Exception as exc:  # noqa: BLE001 - any provider failure must fail over, not just known exception types
                 last_error = exc
                 self._health[provider.name] = ProviderHealth.DEGRADED

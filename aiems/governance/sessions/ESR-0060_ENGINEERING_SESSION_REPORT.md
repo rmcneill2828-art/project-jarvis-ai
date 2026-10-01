@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0060 |
 | Title | Engineering Session Report |
-| Version | 0.3 |
+| Version | 0.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -48,7 +48,11 @@ WP0A/WP0B session initialisation followed PBK-0001 and [[GDE-0001_PROJECT_KNOWLE
 
 EBG-0153 closed Completed. **Programme Sponsor decision (option (a), direct chat instruction)**: close WP1, and fix the High finding as a separate Work Package before WP2. Read as taking the recommendation in full, so WP1b covers EBG-0156 as well as EBG-0155. This adds a Work Package to the session plan, recorded as an explicit Programme Sponsor scope change. Single-reviewer risk unchanged: Codex remains unavailable.
 
-**WP1b - Provider-Selection and Deadline-Health Fixes (Not started):** EBG-0155 and EBG-0156, through the standing design-review, Programme Sponsor approval, `submit-response` and post-commit-review template.
+**WP1b - Provider-Selection and Deadline-Health Fixes (Approved - pending commit):** [[EIP-ESR0060-001_PROVIDER_SELECTION_AND_DEADLINE_HEALTH_FIXES|EIP-ESR0060-001]] v1.0. EBG-0155: `JARVIS_PRIMARY_PROVIDER` is now stripped and lower-cased like the secondary, and unknown primary or secondary names are logged as a warning instead of being dropped silently. **Second defect found while reading the code, not raised by the review**: a set-but-blank primary bypassed the default and also built no cloud provider; blank now means the default. EBG-0156: `remaining_timeout()` raises a new `DeadlineExceededError` (still a `RuntimeError`), which `ProviderOrchestrator.execute()` treats as out of time, leaving health and circuit untouched. 8 new tests; five of the six provider-selection tests were run against the old code and fail there. pytest 759 passed/1 skipped, ruff clean, validator 0 errors. Disclosed residual, raised for the design review: a network timeout shortened by the deadline still counts as a fault.
+
+**Design review**: routed through the real bridge (`init`/`submit-to-review` for `ESR-0060`/`WP1b`, 9-file scope) and reviewed by GitHub Copilot CLI with scoped, write-denied tools. **Verdict: Pass**, with no blocking findings, independently verified against the transcript (`sender: reviewer`). The reviewer traced every primary/secondary combination (mixed case, blank, `none`, unknown, same as primary, missing credential), confirmed against `git show HEAD` that five of the six provider-selection tests fail on the old code, and confirmed that `DeadlineExceededError` is raised only by `remaining_timeout()`, reaches the orchestrator unwrapped from all three adapters, is never retried, and leaves health and circuit untouched. It re-ran pytest (759 passed/1 skipped), ruff (clean) and the validator (0 errors). Two informational notes: a provider stopped by the deadline is listed as attempted, which matches the existing pre-call path, so no change was made; and the EBG-0155 row named the wrong function, now corrected. On the open question, the reviewer recommended leaving the deadline-capped-timeout residual in the backlog and suggested a design; recorded as EBG-0157 item (6).
+
+**Programme Sponsor approved** in direct chat ("Approved") and via the Sponsor Approval Service (`approve`, `repository_ref: 7fd5279`, 2026-10-01T09:32:59Z). The approval arrived just before the design review returned. The review then passed with no code change, so it covers what was reviewed; only the record-keeping above (EIP v1.0, this section, two EBR-0001 text edits) changed afterwards.
 
 **WP2 - Backend Process-Tree Termination (Drafted - design only):** [[EIP-ESR0060-002_BACKEND_PROCESS_TREE_TERMINATION|EIP-ESR0060-002]] drafted (v0.1). No code changed. EBG-0154 registered in [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] (Candidate Backlog, Medium). **Programme Sponsor approved the new direct `windows-sys` dependency** (EIP Section 4F) via direct chat instruction ("Approved"). This approves the dependency only; implementation still waits for the design review, and EIP-ESR0060-002 is synced to v0.2.
 
@@ -84,7 +88,7 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0153 retrospective Copilot CLI review of ESR-0059 WP4 to WP14 | Complete - A Conditional Pass, B Pass, C Pass; EBG-0155 to EBG-0157 registered |
-| WP1b | Provider-selection case fix and deadline-health fix (EBG-0155, EBG-0156) | Not started - added by Programme Sponsor decision |
+| WP1b | Provider-selection case fix and deadline-health fix (EBG-0155, EBG-0156) | Approved (EIP-ESR0060-001 v1.0; design review Pass) - pending commit |
 | WP2 | Backend process-tree termination (EBG-0154) | Drafted (EIP-ESR0060-002 v0.2, design only; dependency approved) - awaiting design review after WP1b |
 | Candidate | EBG-0149, EBG-0150, EBG-0151, EBG-0157 (Low); EBG-0130 (Programme Sponsor judgement) | Not started |
 
@@ -94,6 +98,8 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.5 | 1 October 2026 | Claude Engineering Implementer | WP1b design review Pass (genuine Copilot CLI, no blocking findings); Programme Sponsor approved via the Sponsor Approval Service; EIP-ESR0060-001 synced to 1.0 (Approved - implemented; REG-0001 row synced by hand). Pending commit. |
+| 0.4 | 1 October 2026 | Claude Engineering Implementer | WP1b implemented per EIP-ESR0060-001 v0.1 (registered by hand in REG-0001, EIP-ESR*-style id): EBG-0155 provider-name normalisation plus a second blank-primary defect found while reading the code; EBG-0156 DeadlineExceededError. 8 new tests; pytest 759 passed/1 skipped. Awaiting design review. |
 | 0.3 | 1 October 2026 | Claude Engineering Implementer | WP1 complete: EBG-0153 retrospective review of ESR-0059 WP4-WP14 ran as three genuine scoped Copilot CLI reviews through the bridge (A Conditional Pass, B Pass, C Pass); WP5's GIL-reliant thread safety confirmed; EBG-0155 to EBG-0157 registered. Programme Sponsor decision (a): WP1b added before WP2 to fix EBG-0155 and EBG-0156. |
 | 0.2 | 30 September 2026 | Claude Engineering Implementer | Programme Sponsor approved the new direct windows-sys dependency for WP2 (EIP-ESR0060-002 Section 4F), via direct chat instruction ("Approved"). Dependency only; implementation still waits for the design review. EIP-ESR0060-002 synced to v0.2. |
 | 0.1 | 30 September 2026 | Claude Engineering Implementer | ESR-0060 opened. WP0A/WP0B complete. Neither independent reviewer available (Copilot CLI quota exhausted until 1 October 2026; Codex CLI workspace deactivated). Objective set by Programme Sponsor decision: review-first. WP2 design drafted per EIP-ESR0060-002 v0.1 after verifying EIP-ESR0059-001 Section 4G live; EBG-0154 registered. No code changed. |

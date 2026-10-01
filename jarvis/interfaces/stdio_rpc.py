@@ -424,13 +424,43 @@ def _turn_deadline_seconds(environ: Mapping[str, str]) -> float:
     return value if math.isfinite(value) and value > 0 else DEFAULT_TURN_DEADLINE_SECONDS
 
 
+def _primary_provider_name(environ: Mapping[str, str]) -> str:
+    """Return the configured primary cloud provider's name, normalised.
+
+    Matched exactly like `JARVIS_SECONDARY_PROVIDER` - stripped and
+    lower-cased - and unset or blank means the default (EBG-0155, ESR-0060
+    WP1b). Previously the raw value was used, so `Gemini` or a blank value
+    silently registered no cloud provider at all, even with a valid key.
+    """
+
+    return (environ.get(PRIMARY_PROVIDER_ENV_VAR) or "").strip().lower() or DEFAULT_PRIMARY_PROVIDER
+
+
+def _warn_if_unknown_provider(env_var: str, name: str | None) -> None:
+    """Log a warning when a configured cloud provider name matches no provider.
+
+    The value logged is a provider name from configuration, never a
+    credential (EBG-0155, ESR-0060 WP1b): an unknown name used to be
+    dropped silently, leaving the user on local Ollama with no sign why.
+    """
+
+    if name is not None and name not in _REAL_PROVIDER_SPECS:
+        logger.warning(
+            "%s=%r matches no known provider (%s); it is ignored.",
+            env_var,
+            name,
+            ", ".join(_REAL_PROVIDER_SPECS),
+        )
+
+
 def _secondary_provider_name(primary_name: str, environ: Mapping[str, str]) -> str | None:
     """Return the secondary cloud provider's name, or None when there is none.
 
     Unset or blank `JARVIS_SECONDARY_PROVIDER` means "the other one" of
     openai/gemini; `none` disables the secondary; any other value names it
-    directly (an unknown name, like an unknown primary, simply builds
-    nothing in `_build_real_provider()`). Returning the primary's own name
+    directly (an unknown name, like an unknown primary, builds nothing in
+    `_build_real_provider()`, and `build_default_runtime()` logs a warning
+    naming it - EBG-0155). Returning the primary's own name
     is harmless - `build_default_runtime()` never registers a provider twice.
     """
 
@@ -494,8 +524,11 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     orchestrator = ProviderOrchestrator(audit_recorder=audit_recorder)
 
     route_providers: list[str] = []
-    primary_name = environ.get(PRIMARY_PROVIDER_ENV_VAR, DEFAULT_PRIMARY_PROVIDER)
-    for cloud_name in (primary_name, _secondary_provider_name(primary_name, environ)):
+    primary_name = _primary_provider_name(environ)
+    secondary_name = _secondary_provider_name(primary_name, environ)
+    _warn_if_unknown_provider(PRIMARY_PROVIDER_ENV_VAR, primary_name)
+    _warn_if_unknown_provider(SECONDARY_PROVIDER_ENV_VAR, secondary_name)
+    for cloud_name in (primary_name, secondary_name):
         if cloud_name is None or cloud_name in route_providers:
             continue
         real_provider = _build_real_provider(cloud_name, environ)

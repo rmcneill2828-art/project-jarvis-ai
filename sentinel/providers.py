@@ -152,14 +152,26 @@ class ProviderError(RuntimeError):
         self.transient = transient
 
 
+class DeadlineExceededError(RuntimeError):
+    """The request's overall deadline passed before a provider call could start.
+
+    Not a provider fault (EBG-0156, ESR-0060 WP1b): `ProviderOrchestrator`
+    stops on it exactly as on its own pre-call deadline check, leaving the
+    provider's health and circuit untouched. Previously a plain
+    `RuntimeError`, which marked a healthy provider degraded and opened its
+    circuit whenever the deadline expired between the orchestrator's check
+    and the provider's own. Subclasses `RuntimeError` so callers that expect
+    one are unaffected.
+    """
+
+
 def remaining_timeout(configured_timeout_seconds: float, request: ProviderRequest) -> float:
     """Return the timeout a provider call may use for `request`.
 
     The provider's own configured timeout, capped by whatever remains of the
     request's overall deadline (EBG-0139, ESR-0059 WP5), so a late provider
     in a failover chain cannot run past the turn budget. Raises
-    `RuntimeError` - every adapter's established failure type, which
-    `ProviderOrchestrator` handles - when the deadline has already passed.
+    `DeadlineExceededError` when the deadline has already passed.
     """
 
     if request.deadline is None:
@@ -167,7 +179,7 @@ def remaining_timeout(configured_timeout_seconds: float, request: ProviderReques
     remaining = request.deadline - time.monotonic()
     if remaining <= 0:
         msg = "Request deadline reached before the provider call could start."
-        raise RuntimeError(msg)
+        raise DeadlineExceededError(msg)
     return min(configured_timeout_seconds, remaining)
 
 

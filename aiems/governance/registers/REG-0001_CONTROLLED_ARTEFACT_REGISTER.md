@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.699
+**Version:** 3.703
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.699 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.703 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.212 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.214 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -336,7 +336,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0059-012 | Engineering Implementation Package | SQLite Schema Versioning | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-013 | Engineering Implementation Package | Profile-Scoped Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-014 | Engineering Implementation Package | Household Role Enforcement for Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0060 | Engineering Session Report | Engineering Session Report | 0.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0060 | Engineering Session Report | Engineering Session Report | 0.5 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| EIP-ESR0060-001 | Engineering Implementation Package | Provider-Selection and Deadline-Health Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 0.2 | Draft - design only, not implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
@@ -452,6 +453,10 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.703 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.4 to 0.5) following: WP1b design review Pass (genuine Copilot CLI, no blocking findings); Programme Sponsor approved via the Sponsor Approval Service; EIP-ESR0060-001 synced to 1.0 (Approved - implemented; REG-0001 row synced by hand). Pending commit. |
+| 3.702 | 1 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.213 to 1.214) following: ESR-0060 WP1b design review (Pass): EBG-0155 row now names the correct function (reviewer note); deadline-capped network timeout residual added to EBG-0157 as item (6) with the reviewer's suggested design. |
+| 3.701 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.3 to 0.4) following: WP1b implemented per EIP-ESR0060-001 v0.1 (registered by hand in REG-0001, EIP-ESR*-style id): EBG-0155 provider-name normalisation plus a second blank-primary defect found while reading the code; EBG-0156 DeadlineExceededError. 8 new tests; pytest 759 passed/1 skipped. Awaiting design review. |
+| 3.700 | 1 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.212 to 1.213) following: ESR-0060 WP1b: EBG-0155 and EBG-0156 closed Completed per EIP-ESR0060-001 (primary provider name normalised, blank means default, unknown names warned about; deadline expiry inside a provider call no longer a provider fault). |
 | 3.699 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.2 to 0.3) following: WP1 complete: EBG-0153 retrospective review of ESR-0059 WP4-WP14 ran as three genuine scoped Copilot CLI reviews through the bridge (A Conditional Pass, B Pass, C Pass); WP5's GIL-reliant thread safety confirmed; EBG-0155 to EBG-0157 registered. Programme Sponsor decision (a): WP1b added before WP2 to fix EBG-0155 and EBG-0156. |
 | 3.698 | 1 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.211 to 1.212) following: ESR-0060 WP1: EBG-0153 closed Completed (genuine Copilot CLI retrospective review of ESR-0059 WP4-WP14: A Conditional Pass, B Pass, C Pass); registered EBG-0155 (High, JARVIS_PRIMARY_PROVIDER case mismatch), EBG-0156 (Medium, deadline expiry marked as provider fault) and EBG-0157 (Low hardening cluster). |
 | 3.697 | 30 September 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.1 to 0.2) following: Programme Sponsor approved the new direct windows-sys dependency for WP2 (EIP-ESR0060-002 Section 4F), via direct chat instruction ("Approved"). Dependency only; implementation still waits for the design review. EIP-ESR0060-002 synced to v0.2. |

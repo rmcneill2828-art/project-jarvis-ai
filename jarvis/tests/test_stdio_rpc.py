@@ -3,11 +3,14 @@
 import base64
 import io
 import json
+import logging
 import threading
 import time
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
+
+import pytest
 
 from jarvis.gia.engineering_observability import EngineeringSnapshot
 from jarvis.gia.observability import GiaSnapshot
@@ -143,6 +146,68 @@ def test_build_default_runtime_respects_primary_provider_selection(tmp_path):
     )
 
     assert runtime.configured_providers() == ("gemini", "ollama")
+
+
+@pytest.mark.parametrize("configured", ["Gemini", "GEMINI", "  gemini  "])
+def test_build_default_runtime_matches_primary_provider_case_insensitively(tmp_path, configured):
+    # EBG-0155 (ESR-0060 WP1b): a mis-cased primary used to register no cloud
+    # provider at all, silently, even with a valid key.
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "JARVIS_PRIMARY_PROVIDER": configured,
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+        }
+    )
+
+    assert runtime.configured_providers() == ("gemini", "openai", "ollama")
+
+
+def test_build_default_runtime_treats_a_blank_primary_provider_as_the_default(tmp_path):
+    # EBG-0155: a blank value used to bypass the default and build nothing.
+    runtime = build_default_runtime(
+        environ={
+            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+            "JARVIS_PRIMARY_PROVIDER": "  ",
+            "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            "GEMINI_API_KEY": "test-key-not-a-real-credential",
+        }
+    )
+
+    assert runtime.configured_providers() == ("openai", "gemini", "ollama")
+
+
+def test_build_default_runtime_warns_about_an_unknown_provider_name(tmp_path, caplog):
+    # EBG-0155: an unknown name is still ignored, but no longer silently.
+    with caplog.at_level(logging.WARNING, logger="jarvis.interfaces.stdio_rpc"):
+        runtime = build_default_runtime(
+            environ={
+                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                "JARVIS_PRIMARY_PROVIDER": "anthropic",
+                "JARVIS_SECONDARY_PROVIDER": "mistral",
+                "OPENAI_API_KEY": "test-key-not-a-real-credential",
+            }
+        )
+
+    assert runtime.configured_providers() == ("ollama",)
+    warnings = [record.getMessage() for record in caplog.records if record.levelno == logging.WARNING]
+    assert any("JARVIS_PRIMARY_PROVIDER='anthropic'" in message for message in warnings)
+    assert any("JARVIS_SECONDARY_PROVIDER='mistral'" in message for message in warnings)
+    assert not any("test-key-not-a-real-credential" in message for message in warnings)
+
+
+def test_build_default_runtime_does_not_warn_about_known_provider_names(tmp_path, caplog):
+    with caplog.at_level(logging.WARNING, logger="jarvis.interfaces.stdio_rpc"):
+        build_default_runtime(
+            environ={
+                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                "JARVIS_PRIMARY_PROVIDER": "Gemini",
+                "JARVIS_SECONDARY_PROVIDER": "none",
+            }
+        )
+
+    assert not [record for record in caplog.records if "matches no known provider" in record.getMessage()]
 
 
 def test_build_default_runtime_uses_credentialled_secondary_when_selected_primary_has_no_credential(tmp_path):

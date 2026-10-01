@@ -9,7 +9,13 @@ from sentinel.orchestrator import (
     ProviderRoute,
 )
 from sentinel.provider_config import RetryPolicy
-from sentinel.providers import ProviderError, ProviderRequest, ProviderResponse
+from sentinel.providers import (
+    DeadlineExceededError,
+    ProviderError,
+    ProviderRequest,
+    ProviderResponse,
+    remaining_timeout,
+)
 
 
 @dataclass(frozen=True)
@@ -307,6 +313,55 @@ def test_orchestrator_stops_failover_when_the_deadline_expires_mid_chain() -> No
 
     assert orchestrator.history()[-1].attempted_providers == ("primary",)
     assert orchestrator.health("secondary") is ProviderHealth.HEALTHY
+
+
+class _DeadlinePassedInsideProvider:
+    """Raises what `remaining_timeout()` raises when the deadline passes
+    between the orchestrator's own check and the provider's."""
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.capabilities = ("text-generation",)
+        self.calls = 0
+
+    def execute(self, request: ProviderRequest) -> ProviderResponse:
+        self.calls += 1
+        msg = "Request deadline reached before the provider call could start."
+        raise DeadlineExceededError(msg)
+
+
+def test_deadline_passing_inside_a_provider_is_not_a_provider_fault() -> None:
+    # EBG-0156 (ESR-0060 WP1b): this used to mark the provider DEGRADED and
+    # open its circuit for the cooldown, excluding a healthy provider.
+    import time
+
+    orchestrator = ProviderOrchestrator()
+    primary = _DeadlinePassedInsideProvider("primary")
+    secondary = OrchestratorStubProvider("secondary")
+    orchestrator.register_provider(primary)
+    orchestrator.register_provider(secondary)
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("primary", "secondary")))
+    request = ProviderRequest(prompt="hello", deadline=time.monotonic() + 60.0)
+
+    with pytest.raises(RuntimeError, match="deadline reached after attempting: primary"):
+        orchestrator.execute(allowed_sentinel_response(), request)
+
+    assert primary.calls == 1  # not retried
+    assert orchestrator.health("primary") is ProviderHealth.HEALTHY
+    assert orchestrator.history()[-1].attempted_providers == ("primary",)
+    # Circuit still closed: the next request goes straight to the primary again.
+    with pytest.raises(RuntimeError, match="deadline reached"):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hello", deadline=time.monotonic() + 60.0))
+    assert primary.calls == 2
+
+
+def test_remaining_timeout_raises_a_deadline_error_that_is_still_a_runtime_error() -> None:
+    import time
+
+    with pytest.raises(DeadlineExceededError) as excinfo:
+        remaining_timeout(30.0, ProviderRequest(prompt="hello", deadline=time.monotonic() - 1.0))
+
+    assert isinstance(excinfo.value, RuntimeError)
 
 
 def test_orchestrator_without_a_deadline_still_fails_over_as_before() -> None:
