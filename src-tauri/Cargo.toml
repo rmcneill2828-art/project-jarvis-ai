@@ -24,6 +24,13 @@ tauri-plugin-dialog = "2"
 tokio = { version = "1", features = ["sync"] }
 serde_json = "1"
 
+# Backend process-tree termination (EBG-0154, EIP-ESR0060-002): a job object
+# per backend. Already compiled into every Windows build through Tauri, so no
+# new crate - pinned to 0.60 to reuse that copy. Win32_Security is needed only
+# because windows-sys gates CreateJobObjectW's signature on it.
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.60", features = ["Win32_Foundation", "Win32_Security", "Win32_System_JobObjects", "Win32_System_Threading"] }
+
 [lib]
 name = "jarvis_guardian_shell_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]

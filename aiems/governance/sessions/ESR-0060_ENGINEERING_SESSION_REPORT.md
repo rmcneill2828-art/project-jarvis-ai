@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0060 |
 | Title | Engineering Session Report |
-| Version | 0.6 |
+| Version | 0.12 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -69,6 +69,30 @@ EBG-0153 closed Completed. **Programme Sponsor decision (option (a), direct chat
 
 Recorded as EBG-0154 rather than overstated: this is not "every app close leaks a backend".
 
+**Design review (1 October 2026)**: routed through the real bridge (`init`/`submit-to-review` for `ESR-0060`/`WP2`, design only) and reviewed by GitHub Copilot CLI with scoped, write-denied tools, with the `tauri-plugin-shell` 2.3.5 and `windows-sys` 0.60.2 sources available to check API claims. **Verdict: Conditional Pass**, independently verified against the transcript (`sender: reviewer`). The core mechanism was confirmed: dropping `CommandChild` closes the backend's stdin (also checked independently by the Engineering Implementer in the plugin source: `stdin_writer` is owned only by `CommandChild`); every `tear_down_if_current()` caller runs on a reader thread or Tokio's blocking pool, so the grace wait is harmless there, and releasing the lock before it reopens no orphan path; the feature list covers every API used; PyInstaller's bootloader never breaks away from a job. Five findings, all addressed in EIP-ESR0060-002 v0.3: (1, Medium) the no-job fallback would sleep the full 3 s blindly, and (4, Low) its PID-based `TerminateProcess` contradicted the PID-reuse argument against `taskkill` - both fixed by holding a process handle from spawn, which gives an early return and a reuse-safe kill; (2, Medium) suspended spawning recorded as considered and deferred rather than unavailable; (3, Medium) the exit handler's wait runs on the main thread - disclosed, and added to the live check, since windows are normally already closed by then; (5, Low) a test for a genuine `adopt()` failure added.
+
+**Design re-review**: **Conditional Pass**, independently verified against the transcript. All five findings confirmed resolved - the held handle judged a stronger fix than the one the reviewer had suggested. One new Low finding: v0.3's way of forcing an `adopt()` failure (an already-exited child's PID) is unreliable and could adopt an unrelated process after PID reuse. Corrected in v0.4 to `adopt(0)`, which `OpenProcess` is documented to reject at every privilege level (CI runners are elevated, so the reviewer's suggested PID 4 was not used). Advisory adopted: the held handle gets an explicit `Drop` owner. The reviewer's sandbox could not read the cargo registry this run, so it relied on docs.rs for the new APIs' feature coverage; the Engineering Implementer had already confirmed it in the local source.
+
+**Final design re-review**: **Pass**, no findings, independently verified against the transcript.
+
+**Programme Sponsor approved the design for implementation** via direct chat instruction ("Approved").
+
+**Implementation** (EIP-ESR0060-002 v0.5, Section 4I). `src-tauri/src/lib.rs`: `ProcessGuard` (optional job object and held process handle, both closed in `Drop`), `BackendHandle::shutdown()` replacing `kill()`, teardown and app exit shutting down after releasing the lock, and non-Windows stand-ins so Linux still builds. **Two real gaps that the design and all three review rounds missed, found while implementing:**
+
+* `windows-sys` 0.60.2 compiles `CreateJobObjectW` only with a fourth feature, `Win32_Security`. Same crate and copy, no new package, but beyond the three features the Programme Sponsor approved - **flagged for the Programme Sponsor**.
+* The CI `rust` job runs on **Linux**, not Windows, so the seven Windows job-object tests run locally only. CI compiles and tests the non-Windows path (verified on WSL Ubuntu: clippy clean, 11 tests passed). Whether to add a Windows CI job is **raised for the Programme Sponsor**, not done here.
+
+**Live checks**, sidecar rebuilt from the current code and release app built: (a) normal close - both backend processes gone in 826 ms, graceful (clean "stopped" logged); (b) the real packaged sidecar torn down with a slow turn in flight - the job held both processes (the spawn-to-adopt gap did not let the interpreter escape) and the whole tree was ended by force at 3.006 s, where before this package it survived for up to 100 s per queued turn; (c) host force-killed - tree gone in 96 ms; dev path - forced at 3.09 s when closed while still busy with startup calls, graceful in 161 ms once settled. Validation: cargo test 18 passed/1 ignored, clippy and fmt clean; pytest 759 passed/1 skipped; Playwright 26/26; ruff clean; validator 0 errors. A leaked Vite dev-server process from the dev-path check was found and stopped.
+
+**Implementation review**: genuine scoped GitHub Copilot CLI invocation (cargo allowed, writes denied) - **Conditional Pass**, independently verified against the transcript. Confirmed the FFI (struct sizes, NULL checks, each handle closed exactly once), every guard/path combination, the lock released before shutdown, and re-ran cargo fmt/clippy/test (all 7 Windows tests genuinely executed), pytest and the validator. **One real Medium finding, fixed (EIP v0.6)**: `force()` assumed termination succeeded, and the dev path then called an unbounded `wait()` - a failed termination could have hung teardown forever. Termination results are now checked with fallback, and reaping is bounded. Advisories adopted (a `WAIT_INFINITE` comment; a spawn-to-attach PID-reuse race recorded). The reviewer recommends a Windows CI job running `cargo test` on pushes to `main`, and `--tests` on CI's clippy step - **raised for the Programme Sponsor** with the `Win32_Security` question. cargo test 19 passed/1 ignored, Linux 12 passed; live harness (b) re-run on v0.6 unchanged (3.05 s).
+
+**Implementation re-review**: **Pass**, no findings, independently verified against the transcript. It traced every shutdown path for an unbounded wait and found none, and re-ran the new bounded-reap test three more times (2.03-2.04 s each, not flaky).
+
+**Programme Sponsor decision 2(a)** (direct chat instruction): add the Windows CI job now, as part of WP2. `.github/workflows/ci.yml` gains `rust-windows` (`cargo test` on `windows-latest`, on pushes to `main` and on demand only) and `--tests` on the Linux clippy step (EIP-ESR0060-002 v0.7). 
+**CI-change review**: **Pass**, independently verified against the transcript (steps match the working Linux and release jobs, gating correct, no new third-party action). Two notes: the Windows tests' timing margins were sized on this machine, so the first shared-runner runs will be watched; and the job builds no frontend, which is confirmed only by symmetry with the Linux job until its first run.
+
+**Programme Sponsor approved** via direct chat instruction ("Approved") and the Sponsor Approval Service (`approve`, `repository_ref: e2eb0f5`, 2026-10-01T15:22:26Z, after the CI-change review). The request covered both the `Win32_Security` feature and the commit; read as approving both. EIP-ESR0060-002 synced to v1.0.
+
 ---
 
 # 4. Engineering Authority
@@ -93,7 +117,7 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 | WP0B | Engineering Session Initialisation | Complete |
 | WP1 | EBG-0153 retrospective Copilot CLI review of ESR-0059 WP4 to WP14 | Complete - A Conditional Pass, B Pass, C Pass; EBG-0155 to EBG-0157 registered |
 | WP1b | Provider-selection case fix and deadline-health fix (EBG-0155, EBG-0156) | Complete - `e1d31a4`, CI green, post-commit review Pass |
-| WP2 | Backend process-tree termination (EBG-0154) | Drafted (EIP-ESR0060-002 v0.2, design only; dependency approved) - next - awaiting design review |
+| WP2 | Backend process-tree termination (EBG-0154) | Approved (EIP-ESR0060-002 v1.0) - pending commit |
 | Candidate | EBG-0149, EBG-0150, EBG-0151, EBG-0157 (Low); EBG-0130 (Programme Sponsor judgement) | Not started |
 
 ---
@@ -102,6 +126,12 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.12 | 1 October 2026 | Claude Engineering Implementer | WP2 CI-change review Pass; Programme Sponsor approved the Win32_Security feature and the commit via the Sponsor Approval Service; EIP-ESR0060-002 synced to 1.0 (REG-0001 row synced by hand). Pending commit. |
+| 0.11 | 1 October 2026 | Claude Engineering Implementer | WP2 implementation re-review Pass; Programme Sponsor decision 2(a): rust-windows CI job and clippy --tests added (EIP-ESR0060-002 v0.7, REG-0001 row synced by hand); awaiting review of the CI change. |
+| 0.10 | 1 October 2026 | Claude Engineering Implementer | WP2 implementation review Conditional Pass; Medium finding (unchecked termination plus unbounded reap) fixed in EIP-ESR0060-002 v0.6 (REG-0001 row synced by hand); Windows CI job and clippy --tests recommendations raised for the Programme Sponsor; awaiting re-review. |
+| 0.9 | 1 October 2026 | Claude Engineering Implementer | WP2 final design re-review Pass; Programme Sponsor approved implementation; implemented per EIP-ESR0060-002 v0.5 (REG-0001 row synced by hand). Two gaps missed by the design reviews flagged: Win32_Security feature needed; CI rust job runs on Linux. Live checks passed. Awaiting implementation review. |
+| 0.8 | 1 October 2026 | Claude Engineering Implementer | WP2 design re-review Conditional Pass (one new Low finding: unreliable adopt() failure test); EIP-ESR0060-002 v0.4 corrects it to adopt(0) and adds an explicit Drop owner for the held handle (REG-0001 row synced by hand); awaiting final re-review. |
+| 0.7 | 1 October 2026 | Claude Engineering Implementer | WP2 design review Conditional Pass (genuine Copilot CLI); EIP-ESR0060-002 revised to v0.3 addressing all five findings (REG-0001 row synced by hand); awaiting re-review. |
 | 0.6 | 1 October 2026 | Claude Engineering Implementer | WP1b closed: e1d31a4 CI green (run 36843717345, all four jobs); genuine Copilot CLI post-commit review Pass. WP2 next. |
 | 0.5 | 1 October 2026 | Claude Engineering Implementer | WP1b design review Pass (genuine Copilot CLI, no blocking findings); Programme Sponsor approved via the Sponsor Approval Service; EIP-ESR0060-001 synced to 1.0 (Approved - implemented; REG-0001 row synced by hand). Pending commit. |
 | 0.4 | 1 October 2026 | Claude Engineering Implementer | WP1b implemented per EIP-ESR0060-001 v0.1 (registered by hand in REG-0001, EIP-ESR*-style id): EBG-0155 provider-name normalisation plus a second blank-primary defect found while reading the code; EBG-0156 DeadlineExceededError. 8 new tests; pytest 759 passed/1 skipped. Awaiting design review. |

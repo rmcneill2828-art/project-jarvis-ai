@@ -45,7 +45,7 @@ use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use tauri::{AppHandle, Emitter, Manager, State};
 use tauri_plugin_shell::process::{CommandChild, CommandEvent};
 use tauri_plugin_shell::ShellExt;
@@ -84,28 +84,369 @@ impl BackendHandle {
         }
     }
 
-    /// Best-effort termination on app exit - mirrors the original
-    /// `backend.child.kill()` behaviour for both paths (EIP-ESR0032-001
-    /// Implementation Requirement 7). Errors are intentionally swallowed:
-    /// this runs during shutdown, where there is no caller left to report to.
-    fn kill(self) {
+    /// Ends the backend's whole process tree (EBG-0154, EIP-ESR0060-002):
+    /// gracefully first, then by force.
+    ///
+    /// 1. Close stdin, so an idle backend's `serve_forever()` sees EOF and
+    ///    exits on its own. For the sidecar this means dropping the
+    ///    `CommandChild` - the plugin offers no other way to close stdin.
+    /// 2. Wait up to `BACKEND_SHUTDOWN_GRACE` for it to finish.
+    /// 3. Force: terminate the job (every process in the tree), or without
+    ///    one, the direct child alone - today's behaviour.
+    ///
+    /// Previously `CommandChild::kill()` ended only PyInstaller's bootloader,
+    /// so a busy backend kept running beside its replacement, and a hung one
+    /// never ended. Blocks for at most the grace period plus a forced kill,
+    /// so callers must not hold the shared-state lock. Errors are swallowed:
+    /// this runs during teardown, where there is no caller left to report to.
+    fn shutdown(self, guard: ProcessGuard) {
+        let deadline = Instant::now() + BACKEND_SHUTDOWN_GRACE;
         match self {
-            BackendHandle::Dev { mut child, .. } => {
-                let _ = child.kill();
-                // Reap the terminated process so it does not linger as a
-                // zombie on Unix-like platforms (ESR-0059 WP1). Returns
-                // promptly once kill() has taken effect.
-                let _ = child.wait();
+            BackendHandle::Dev { mut child, stdin } => {
+                drop(stdin);
+                let exited = guard.wait_until(deadline, || matches!(child.try_wait(), Ok(Some(_))));
+                if !exited && !guard.force() {
+                    let _ = child.kill();
+                }
+                reap(&mut child);
             }
             BackendHandle::Sidecar { child } => {
-                let _ = child.kill();
+                if guard.is_empty() {
+                    // Nothing to wait on or force with once the
+                    // `CommandChild` is gone, so keep today's behaviour:
+                    // kill the bootloader, which also closes stdin.
+                    let _ = child.kill();
+                    return;
+                }
+                drop(child);
+                let exited = guard.wait_until(deadline, || false);
+                if !exited {
+                    guard.force();
+                }
             }
+        }
+    }
+}
+
+/// Reaps a dev-path child so it does not linger as a zombie on Unix-like
+/// platforms (ESR-0059 WP1) - but never waits unboundedly (implementation
+/// review finding, EIP-ESR0060-002 v0.6): if the forced termination itself
+/// failed, a plain `wait()` would block teardown forever, the very hang this
+/// package removes. After `REAP_TIMEOUT` it tries `kill()` once more, logs,
+/// and gives up rather than hang.
+fn reap(child: &mut Child) {
+    let deadline = Instant::now() + REAP_TIMEOUT;
+    loop {
+        match child.try_wait() {
+            Ok(Some(_)) | Err(_) => return,
+            Ok(None) if Instant::now() >= deadline => {
+                let _ = child.kill();
+                eprintln!(
+                    "JARVIS backend process {} did not exit after being terminated.",
+                    child.id()
+                );
+                return;
+            }
+            Ok(None) => thread::sleep(SHUTDOWN_POLL_INTERVAL),
+        }
+    }
+}
+
+/// How long `reap()` waits for a terminated child to exit. Termination is
+/// normally immediate; this only bounds the case where it failed.
+const REAP_TIMEOUT: Duration = Duration::from_secs(2);
+
+/// How long `BackendHandle::shutdown()` waits for a backend to exit on stdin
+/// EOF before ending it by force (EIP-ESR0060-002 Section 4B). About five
+/// times the 637 ms a real packaged backend took to exit cleanly; queued
+/// turns are not waited for, since `fail_all_pending()` has already answered
+/// their callers.
+const BACKEND_SHUTDOWN_GRACE: Duration = Duration::from_secs(3);
+const SHUTDOWN_POLL_INTERVAL: Duration = Duration::from_millis(50);
+
+/// What the host holds on to so it can end a backend's whole process tree
+/// (EIP-ESR0060-002 Sections 4A/4B): a job object, and a handle to the
+/// direct child. Either can be missing - attaching never fails a spawn - and
+/// on non-Windows platforms both always are.
+struct ProcessGuard {
+    tree: Option<process_tree::ProcessTree>,
+    process: Option<process_tree::ProcessHandle>,
+}
+
+impl ProcessGuard {
+    #[cfg(test)]
+    fn none() -> Self {
+        ProcessGuard {
+            tree: None,
+            process: None,
+        }
+    }
+
+    /// Called right after spawning, before the backend has had time to start
+    /// its own children (the gap is disclosed in EIP-ESR0060-002 Section 4G).
+    /// A failure is logged and leaves that part `None`: a process-tree guard
+    /// must never be the reason JARVIS cannot start.
+    fn attach(pid: u32) -> Self {
+        let tree = process_tree::ProcessTree::adopt(pid)
+            .map_err(|e| eprintln!("JARVIS backend process-tree guard unavailable: {e}"))
+            .ok();
+        let process = process_tree::ProcessHandle::open(pid)
+            .map_err(|e| eprintln!("JARVIS backend process handle unavailable: {e}"))
+            .ok();
+        ProcessGuard { tree, process }
+    }
+
+    fn is_empty(&self) -> bool {
+        self.tree.is_none() && self.process.is_none()
+    }
+
+    /// Waits until the backend has exited or `deadline` passes; returns
+    /// whether it exited. With a job, "exited" means the whole tree is
+    /// empty. Without one, it means the direct child has exited (for the
+    /// sidecar, PyInstaller's bootloader, which itself waits for the real
+    /// backend) - via the held handle, or `child_exited` on the dev path.
+    fn wait_until(&self, deadline: Instant, mut child_exited: impl FnMut() -> bool) -> bool {
+        loop {
+            let done = match (&self.tree, &self.process) {
+                (Some(tree), _) => tree.is_empty(),
+                (None, Some(process)) => child_exited() || process.wait(Duration::ZERO),
+                (None, None) => child_exited(),
+            };
+            if done {
+                return true;
+            }
+            let now = Instant::now();
+            if now >= deadline {
+                return false;
+            }
+            thread::sleep(SHUTDOWN_POLL_INTERVAL.min(deadline - now));
+        }
+    }
+
+    /// Ends the tree by force; returns whether a termination actually
+    /// succeeded. Tries the job (the whole tree), then the held handle (the
+    /// direct child). False, when there was nothing to force with or every
+    /// attempt failed, leaves the caller to fall back on what it has
+    /// (implementation review finding, v0.6: success used to be assumed).
+    fn force(&self) -> bool {
+        if let Some(tree) = &self.tree {
+            match tree.terminate() {
+                Ok(()) => return true,
+                Err(e) => eprintln!("JARVIS backend job termination failed: {e}"),
+            }
+        }
+        if let Some(process) = &self.process {
+            match process.terminate() {
+                Ok(()) => return true,
+                Err(e) => eprintln!("JARVIS backend process termination failed: {e}"),
+            }
+        }
+        false
+    }
+}
+
+/// Windows job objects and process handles (EBG-0154, EIP-ESR0060-002).
+///
+/// A job created with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE` takes every
+/// process the backend later starts - including PyInstaller's real
+/// interpreter - and the OS ends them all when the job handle closes. That
+/// also covers a killed or crashed host, since the OS closes its handles.
+#[cfg(windows)]
+mod process_tree {
+    use std::io;
+    use std::mem::{size_of, zeroed};
+    use std::ptr::{null, null_mut};
+    use std::time::Duration;
+    use windows_sys::Win32::Foundation::{CloseHandle, HANDLE, WAIT_OBJECT_0};
+    use windows_sys::Win32::System::JobObjects::{
+        AssignProcessToJobObject, CreateJobObjectW, JobObjectBasicAccountingInformation,
+        JobObjectExtendedLimitInformation, QueryInformationJobObject, SetInformationJobObject,
+        TerminateJobObject, JOBOBJECT_BASIC_ACCOUNTING_INFORMATION,
+        JOBOBJECT_EXTENDED_LIMIT_INFORMATION, JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE,
+    };
+    use windows_sys::Win32::System::Threading::{
+        OpenProcess, TerminateProcess, WaitForSingleObject, PROCESS_SET_QUOTA, PROCESS_SYNCHRONIZE,
+        PROCESS_TERMINATE,
+    };
+
+    /// Exit code given to processes ended by force.
+    const FORCED_EXIT_CODE: u32 = 1;
+
+    /// An owned kernel handle, closed on drop - so neither the job nor the
+    /// process handle can leak on any path that drops a `BackendProcess`.
+    struct OwnedHandle(HANDLE);
+
+    // SAFETY: a Windows kernel handle is a process-wide value, valid on any
+    // thread; it is never shared mutably, only used by the one owner.
+    unsafe impl Send for OwnedHandle {}
+
+    impl OwnedHandle {
+        fn new(handle: HANDLE) -> io::Result<Self> {
+            if handle.is_null() {
+                Err(io::Error::last_os_error())
+            } else {
+                Ok(OwnedHandle(handle))
+            }
+        }
+    }
+
+    impl Drop for OwnedHandle {
+        fn drop(&mut self) {
+            // SAFETY: the handle is valid and owned solely by this value.
+            unsafe { CloseHandle(self.0) };
+        }
+    }
+
+    fn check(ok: windows_sys::core::BOOL) -> io::Result<()> {
+        if ok == 0 {
+            Err(io::Error::last_os_error())
+        } else {
+            Ok(())
+        }
+    }
+
+    pub struct ProcessTree {
+        job: OwnedHandle,
+    }
+
+    impl ProcessTree {
+        /// Puts the process `pid`, and everything it starts from now on, in a
+        /// new job that the OS ends when this value is dropped.
+        pub fn adopt(pid: u32) -> io::Result<Self> {
+            // SAFETY: plain FFI calls with valid arguments; every handle
+            // returned is owned by an `OwnedHandle` before anything can fail.
+            unsafe {
+                let job = OwnedHandle::new(CreateJobObjectW(null(), null()))?;
+                let mut limits: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = zeroed();
+                limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+                check(SetInformationJobObject(
+                    job.0,
+                    JobObjectExtendedLimitInformation,
+                    &limits as *const _ as *const _,
+                    size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
+                ))?;
+                let process =
+                    OwnedHandle::new(OpenProcess(PROCESS_SET_QUOTA | PROCESS_TERMINATE, 0, pid))?;
+                check(AssignProcessToJobObject(job.0, process.0))?;
+                Ok(ProcessTree { job })
+            }
+        }
+
+        /// True once no process is left in the job. A failed query counts as
+        /// not empty, so the caller falls through to a forced termination.
+        pub fn is_empty(&self) -> bool {
+            self.active_processes() == Some(0)
+        }
+
+        /// How many processes are in the job, or None if the query failed.
+        pub fn active_processes(&self) -> Option<u32> {
+            // SAFETY: the job handle is valid; the buffer is correctly sized.
+            unsafe {
+                let mut info: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION = zeroed();
+                let ok = QueryInformationJobObject(
+                    self.job.0,
+                    JobObjectBasicAccountingInformation,
+                    &mut info as *mut _ as *mut _,
+                    size_of::<JOBOBJECT_BASIC_ACCOUNTING_INFORMATION>() as u32,
+                    null_mut(),
+                );
+                (ok != 0).then_some(info.ActiveProcesses)
+            }
+        }
+
+        /// Ends every process in the job. Harmless when it is already empty.
+        pub fn terminate(&self) -> io::Result<()> {
+            // SAFETY: the job handle is valid.
+            check(unsafe { TerminateJobObject(self.job.0, FORCED_EXIT_CODE) })
+        }
+    }
+
+    /// A handle to one process, held from spawn (EIP-ESR0060-002 Section
+    /// 4A): lets shutdown wait for it without a job, and end it without
+    /// risking an unrelated process - Windows does not reuse a process ID
+    /// while any handle to that process is open.
+    pub struct ProcessHandle {
+        process: OwnedHandle,
+    }
+
+    impl ProcessHandle {
+        pub fn open(pid: u32) -> io::Result<Self> {
+            // SAFETY: plain FFI call; the result is owned immediately.
+            let handle = unsafe { OpenProcess(PROCESS_SYNCHRONIZE | PROCESS_TERMINATE, 0, pid) };
+            Ok(ProcessHandle {
+                process: OwnedHandle::new(handle)?,
+            })
+        }
+
+        /// Waits up to `timeout` for the process to exit; true if it has.
+        pub fn wait(&self, timeout: Duration) -> bool {
+            // Capped below u32::MAX, which WaitForSingleObject reads as
+            // INFINITE - an over-long timeout must not become no timeout.
+            let millis = u32::try_from(timeout.as_millis()).unwrap_or(u32::MAX - 1);
+            // SAFETY: the process handle is valid and has SYNCHRONIZE access.
+            unsafe { WaitForSingleObject(self.process.0, millis) == WAIT_OBJECT_0 }
+        }
+
+        pub fn terminate(&self) -> io::Result<()> {
+            // SAFETY: the process handle is valid and has TERMINATE access.
+            check(unsafe { TerminateProcess(self.process.0, FORCED_EXIT_CODE) })
+        }
+    }
+}
+
+/// Non-Windows stand-in: JARVIS ships a Windows installer only, and Unix
+/// process groups are out of scope (EIP-ESR0060-002 Section 4E). Attaching
+/// always fails, so every `ProcessGuard` is empty and shutdown behaves as
+/// before. Exists so the crate still builds and tests on Linux CI.
+#[cfg(not(windows))]
+mod process_tree {
+    use std::io;
+    use std::time::Duration;
+
+    fn unsupported() -> io::Error {
+        io::Error::new(
+            io::ErrorKind::Unsupported,
+            "process-tree termination is Windows-only",
+        )
+    }
+
+    pub enum ProcessTree {}
+
+    impl ProcessTree {
+        pub fn adopt(_pid: u32) -> io::Result<Self> {
+            Err(unsupported())
+        }
+
+        pub fn is_empty(&self) -> bool {
+            match *self {}
+        }
+
+        pub fn terminate(&self) -> io::Result<()> {
+            match *self {}
+        }
+    }
+
+    pub enum ProcessHandle {}
+
+    impl ProcessHandle {
+        pub fn open(_pid: u32) -> io::Result<Self> {
+            Err(unsupported())
+        }
+
+        pub fn wait(&self, _timeout: Duration) -> bool {
+            match *self {}
+        }
+
+        pub fn terminate(&self) -> io::Result<()> {
+            match *self {}
         }
     }
 }
 
 struct BackendProcess {
     handle: BackendHandle,
+    /// Job object and process handle for ending the whole tree (EBG-0154).
+    guard: ProcessGuard,
     next_id: u64,
     pending: PendingMap,
     /// Identifies which spawned process this is (ESR-0059 WP1). A reader
@@ -113,6 +454,14 @@ struct BackendProcess {
     /// to - never a newer one spawned after it, which a stale reader's EOF
     /// handling would otherwise silently drop (and orphan).
     generation: u64,
+}
+
+impl BackendProcess {
+    /// Ends this backend's whole process tree. Must not be called while the
+    /// shared-state lock is held - see `BackendHandle::shutdown()`.
+    fn shut_down(self) {
+        self.handle.shutdown(self.guard);
+    }
 }
 
 static NEXT_GENERATION: AtomicU64 = AtomicU64::new(1);
@@ -143,10 +492,16 @@ fn tear_down_if_current(shared_state: &SharedBackend, generation: u64) {
         return;
     };
     let current = guard.as_ref().map(|backend| backend.generation);
-    if is_current_generation(current, generation) {
-        if let Some(backend) = guard.take() {
-            backend.handle.kill();
-        }
+    if !is_current_generation(current, generation) {
+        return;
+    }
+    let backend = guard.take();
+    // Released before shutting down (EIP-ESR0060-002 Section 4B): the
+    // graceful wait can take up to BACKEND_SHUTDOWN_GRACE, and a request
+    // arriving meanwhile must be able to spawn its replacement at once.
+    drop(guard);
+    if let Some(backend) = backend {
+        backend.shut_down();
     }
 }
 
@@ -382,6 +737,8 @@ fn spawn_dev_backend(
         .stderr(Stdio::inherit())
         .spawn()
         .map_err(|e| format!("Failed to start JARVIS backend process: {e}"))?;
+    // Immediately, so the job takes the venv launcher's real interpreter.
+    let guard = ProcessGuard::attach(child.id());
 
     let stdin = child
         .stdin
@@ -409,6 +766,7 @@ fn spawn_dev_backend(
 
     Ok(BackendProcess {
         handle: BackendHandle::Dev { child, stdin },
+        guard,
         next_id: 1,
         pending,
         generation,
@@ -427,6 +785,9 @@ fn spawn_sidecar_backend(
     let (receiver, child) = sidecar_command
         .spawn()
         .map_err(|e| format!("Failed to start JARVIS backend sidecar: {e}"))?;
+    // Immediately, so the job takes PyInstaller's real interpreter, which the
+    // bootloader starts only after unpacking its archive.
+    let guard = ProcessGuard::attach(child.pid());
 
     let pending: PendingMap = Arc::new(Mutex::new(HashMap::new()));
 
@@ -445,6 +806,7 @@ fn spawn_sidecar_backend(
 
     Ok(BackendProcess {
         handle: BackendHandle::Sidecar { child },
+        guard,
         next_id: 1,
         pending,
         generation,
@@ -778,19 +1140,22 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("error while building JARVIS Guardian desktop shell")
         .run(|app_handle, event| {
-            // Terminate the backend child process on app exit where possible -
-            // best-effort cleanup, not a guarantee against every ungraceful
-            // termination path (e.g. a killed parent process). Full
-            // crash/restart policy remains deferred to EBG-0050. The reader
-            // thread is not explicitly joined - as a plain spawned thread, it
-            // is terminated by the OS along with the rest of the process,
-            // equivalent to a daemon thread.
+            // End the backend's whole process tree on app exit: gracefully,
+            // then by force after BACKEND_SHUTDOWN_GRACE (EBG-0154,
+            // EIP-ESR0060-002). A killed or crashed host is covered too, on
+            // Windows: the OS closes the job handle, and the job's
+            // KILL_ON_JOB_CLOSE limit ends the tree. This wait runs on the
+            // main thread, normally after the last window has closed (Section
+            // 4C). Crash/restart policy remains deferred to EBG-0050. The
+            // reader thread is not explicitly joined - as a plain spawned
+            // thread, it is terminated by the OS along with the rest of the
+            // process, equivalent to a daemon thread.
             if let tauri::RunEvent::Exit = event {
                 if let Some(state) = app_handle.try_state::<BackendState>() {
-                    if let Ok(mut guard) = state.0.lock() {
-                        if let Some(backend) = guard.take() {
-                            backend.handle.kill();
-                        }
+                    // Taken under the lock, shut down after releasing it.
+                    let backend = state.0.lock().ok().and_then(|mut guard| guard.take());
+                    if let Some(backend) = backend {
+                        backend.shut_down();
                     }
                 }
             }
@@ -888,6 +1253,7 @@ mod tests {
         let stdin = child.stdin.take().expect("stdin was piped");
         BackendProcess {
             handle: BackendHandle::Dev { child, stdin },
+            guard: ProcessGuard::none(),
             next_id: 1,
             pending: empty_pending(),
             generation,
@@ -914,5 +1280,317 @@ mod tests {
         tear_down_if_current(&shared, 1);
 
         assert!(shared.lock().unwrap().is_none());
+    }
+
+    /// A real dev-path backend running `script`, for the shutdown tests.
+    fn dev_backend(script: &str) -> (Child, ChildStdin) {
+        let mut child = Command::new("python")
+            .args(["-c", script])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .expect("python must be on PATH for this test");
+        let stdin = child.stdin.take().expect("stdin was piped");
+        (child, stdin)
+    }
+
+    /// Ignores stdin EOF entirely, like a backend busy draining slow turns.
+    const IGNORES_EOF: &str = "import time; time.sleep(60)";
+    /// Exits as soon as stdin closes, like an idle backend.
+    const EXITS_ON_EOF: &str = "import sys; sys.stdin.read()";
+
+    /// EIP-ESR0060-002 Section 4D: with no guard at all (every non-Windows
+    /// build, or a Windows build whose guard could not attach), shutdown
+    /// still ends a dev child that ignores EOF - today's behaviour.
+    #[test]
+    fn shutdown_without_a_guard_still_ends_the_child() {
+        let (child, stdin) = dev_backend(IGNORES_EOF);
+        let started = Instant::now();
+
+        // Returns only after the child has been killed and reaped.
+        BackendHandle::Dev { child, stdin }.shutdown(ProcessGuard::none());
+
+        assert!(started.elapsed() < BACKEND_SHUTDOWN_GRACE + Duration::from_secs(5));
+    }
+
+    /// The idle case: closing stdin is enough, so no force is needed and
+    /// shutdown returns well before the grace period ends.
+    #[test]
+    fn shutdown_of_an_idle_child_returns_early() {
+        let (child, stdin) = dev_backend(EXITS_ON_EOF);
+        let started = Instant::now();
+
+        BackendHandle::Dev { child, stdin }.shutdown(ProcessGuard::none());
+
+        assert!(started.elapsed() < BACKEND_SHUTDOWN_GRACE);
+    }
+
+    /// Implementation review finding (v0.6): reaping is bounded. Even for a
+    /// child that was never terminated - standing in for a forced
+    /// termination that failed - `reap()` gives up after REAP_TIMEOUT
+    /// (killing it on the way out) instead of blocking teardown forever.
+    #[test]
+    fn reap_never_blocks_forever_on_a_live_child() {
+        let (mut child, _stdin) = dev_backend(IGNORES_EOF);
+        let started = Instant::now();
+
+        reap(&mut child);
+
+        let elapsed = started.elapsed();
+        assert!(elapsed >= REAP_TIMEOUT);
+        assert!(elapsed < REAP_TIMEOUT + Duration::from_secs(2));
+        // The parting kill() took effect.
+        let _ = child.wait();
+    }
+
+    /// Section 4B: the graceful wait never holds the shared-state lock, so a
+    /// request arriving while an EOF-ignoring backend is being ended can take
+    /// the lock (and spawn a replacement) at once.
+    #[test]
+    fn tear_down_releases_the_lock_before_waiting() {
+        let (child, stdin) = dev_backend(IGNORES_EOF);
+        let shared: SharedBackend = Arc::new(Mutex::new(Some(BackendProcess {
+            handle: BackendHandle::Dev { child, stdin },
+            guard: ProcessGuard::none(),
+            next_id: 1,
+            pending: empty_pending(),
+            generation: 9,
+        })));
+
+        let teardown_state = Arc::clone(&shared);
+        let teardown = thread::spawn(move || tear_down_if_current(&teardown_state, 9));
+        // Let the teardown take the backend and enter its grace wait.
+        thread::sleep(Duration::from_millis(500));
+
+        let started = Instant::now();
+        let guard = shared.lock().unwrap();
+        assert!(started.elapsed() < Duration::from_millis(500));
+        assert!(guard.is_none());
+        assert!(
+            !teardown.is_finished(),
+            "teardown should still be in its grace wait"
+        );
+        drop(guard);
+
+        teardown.join().unwrap();
+    }
+
+    /// Windows-only: these drive real job objects (EIP-ESR0060-002 Section
+    /// 4D). The CI `rust` job runs on Linux, so they run locally only.
+    #[cfg(windows)]
+    mod windows_process_tree {
+        use super::*;
+        use process_tree::{ProcessHandle, ProcessTree};
+
+        /// A child that waits for "go" on stdin, then starts a grandchild
+        /// and reports the grandchild's PID - so the grandchild is created
+        /// only after the child has been adopted into the job, as
+        /// PyInstaller's real interpreter is.
+        const SPAWNS_GRANDCHILD: &str = "import subprocess, sys, time\n\
+sys.stdin.readline()\n\
+g = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'])\n\
+print(g.pid, flush=True)\n\
+time.sleep(60)";
+
+        /// Starts the child, adopts it, then lets it start its grandchild;
+        /// returns the child, its stdin, the job and a handle to the
+        /// grandchild (held so its PID cannot be reused while we check it).
+        fn tree_with_grandchild() -> (Child, ChildStdin, ProcessTree, ProcessHandle) {
+            let (mut child, mut stdin) = dev_backend(SPAWNS_GRANDCHILD);
+            let tree = ProcessTree::adopt(child.id()).expect("adopt the child");
+            writeln!(stdin, "go").unwrap();
+            stdin.flush().unwrap();
+            let mut line = String::new();
+            BufReader::new(child.stdout.take().unwrap())
+                .read_line(&mut line)
+                .unwrap();
+            let grandchild_pid: u32 = line.trim().parse().expect("grandchild pid");
+            let grandchild = ProcessHandle::open(grandchild_pid).expect("open grandchild");
+            (child, stdin, tree, grandchild)
+        }
+
+        #[test]
+        fn terminating_the_job_ends_child_and_grandchild() {
+            let (mut child, _stdin, tree, grandchild) = tree_with_grandchild();
+            assert!(!tree.is_empty());
+
+            tree.terminate().expect("terminate the job");
+
+            assert!(grandchild.wait(Duration::from_secs(5)));
+            child.wait().unwrap();
+            assert!(tree.is_empty());
+        }
+
+        /// Stands in for the host being killed: the OS closing the job handle
+        /// ends the tree through KILL_ON_JOB_CLOSE.
+        #[test]
+        fn dropping_the_job_ends_child_and_grandchild() {
+            let (mut child, _stdin, tree, grandchild) = tree_with_grandchild();
+
+            drop(tree);
+
+            assert!(grandchild.wait(Duration::from_secs(5)));
+            child.wait().unwrap();
+        }
+
+        /// Forced path: a tree that ignores EOF is ended within the grace
+        /// period plus a margin, grandchild included.
+        #[test]
+        fn shutdown_forces_a_tree_that_ignores_eof() {
+            let (child, stdin, tree, grandchild) = tree_with_grandchild();
+            let started = Instant::now();
+
+            BackendHandle::Dev { child, stdin }.shutdown(ProcessGuard {
+                tree: Some(tree),
+                process: None,
+            });
+
+            let elapsed = started.elapsed();
+            assert!(elapsed >= BACKEND_SHUTDOWN_GRACE);
+            assert!(elapsed < BACKEND_SHUTDOWN_GRACE + Duration::from_secs(2));
+            assert!(grandchild.wait(Duration::from_secs(1)));
+        }
+
+        /// Graceful path: a child that writes a marker on EOF and exits gets
+        /// to do so, and shutdown returns well inside the grace period.
+        #[test]
+        fn shutdown_lets_an_idle_child_exit_gracefully() {
+            let marker = std::env::temp_dir().join(format!(
+                "jarvis-graceful-shutdown-{}.marker",
+                std::process::id()
+            ));
+            let _ = std::fs::remove_file(&marker);
+            let script = format!(
+                "import sys; sys.stdin.read(); open(r'{}', 'w').write('eof')",
+                marker.display()
+            );
+            let (child, stdin) = dev_backend(&script);
+            let guard = ProcessGuard::attach(child.id());
+            assert!(guard.tree.is_some() && guard.process.is_some());
+            let started = Instant::now();
+
+            BackendHandle::Dev { child, stdin }.shutdown(guard);
+
+            assert!(started.elapsed() < BACKEND_SHUTDOWN_GRACE);
+            assert!(
+                marker.exists(),
+                "child should have exited on EOF, not by force"
+            );
+            let _ = std::fs::remove_file(&marker);
+        }
+
+        /// No job, but a held handle: the early return still works, rather
+        /// than a blind sleep through the whole grace period.
+        #[test]
+        fn shutdown_without_a_job_returns_early_via_the_handle() {
+            let (child, stdin) = dev_backend(EXITS_ON_EOF);
+            let process = ProcessHandle::open(child.id()).unwrap();
+            let started = Instant::now();
+
+            BackendHandle::Dev { child, stdin }.shutdown(ProcessGuard {
+                tree: None,
+                process: Some(process),
+            });
+
+            assert!(started.elapsed() < BACKEND_SHUTDOWN_GRACE);
+        }
+
+        /// No job, held handle, EOF ignored: forced through the handle.
+        #[test]
+        fn shutdown_without_a_job_forces_through_the_handle() {
+            let (child, stdin) = dev_backend(IGNORES_EOF);
+            let pid = child.id();
+            let process = ProcessHandle::open(pid).unwrap();
+            let observer = ProcessHandle::open(pid).unwrap();
+
+            BackendHandle::Dev { child, stdin }.shutdown(ProcessGuard {
+                tree: None,
+                process: Some(process),
+            });
+
+            assert!(observer.wait(Duration::from_secs(1)));
+        }
+
+        /// Section 4D, corrected at design review v0.4: OpenProcess on PID 0,
+        /// the System Idle Process, is documented to fail at every privilege
+        /// level - a genuine attach failure with no timing involved.
+        #[test]
+        fn adopting_pid_zero_fails_and_attach_degrades() {
+            assert!(ProcessTree::adopt(0).is_err());
+            assert!(ProcessHandle::open(0).is_err());
+
+            let guard = ProcessGuard::attach(0);
+            assert!(guard.is_empty());
+        }
+
+        /// Live check (b) of EIP-ESR0060-002 Section 5, against the real
+        /// packaged sidecar: a backend torn down while a slow turn is in
+        /// flight - the case EBG-0154 found surviving teardown - is ended,
+        /// whole tree, within the grace period. Ignored by default: it needs
+        /// a built sidecar, named by JARVIS_LIVE_SIDECAR. Run with
+        /// `cargo test -- --ignored live_packaged_sidecar --nocapture`.
+        #[test]
+        #[ignore = "needs a packaged sidecar: set JARVIS_LIVE_SIDECAR"]
+        fn live_packaged_sidecar_busy_tree_is_ended_within_the_grace() {
+            let sidecar = std::env::var("JARVIS_LIVE_SIDECAR").expect("set JARVIS_LIVE_SIDECAR");
+            let scratch = std::env::temp_dir().join(format!("jarvis-live-{}", std::process::id()));
+            std::fs::create_dir_all(&scratch).unwrap();
+            let mut child = Command::new(sidecar)
+                // Isolated stores, and an Ollama endpoint that never answers,
+                // so the turn stays in flight on the slow lane.
+                .env("JARVIS_MEMORY_DB_PATH", scratch.join("personal.db"))
+                .env("JARVIS_IDENTITY_DB_PATH", scratch.join("identity.db"))
+                .env("JARVIS_LOG_DIR", scratch.join("logs"))
+                .env("JARVIS_OLLAMA_ENDPOINT", "http://10.255.255.1:11434")
+                .env_remove("OPENAI_API_KEY")
+                .env_remove("GEMINI_API_KEY")
+                .stdin(Stdio::piped())
+                .stdout(Stdio::piped())
+                .stderr(Stdio::null())
+                .spawn()
+                .expect("start the packaged sidecar");
+            let guard = ProcessGuard::attach(child.id());
+            assert!(
+                guard.tree.is_some(),
+                "job object must attach to the sidecar"
+            );
+            let mut stdin = child.stdin.take().unwrap();
+            let mut stdout = BufReader::new(child.stdout.take().unwrap());
+
+            writeln!(
+                stdin,
+                r#"{{"jsonrpc":"2.0","id":1,"method":"platform.status","params":{{}}}}"#
+            )
+            .unwrap();
+            stdin.flush().unwrap();
+            let mut line = String::new();
+            loop {
+                line.clear();
+                stdout.read_line(&mut line).unwrap();
+                if line.contains("\"id\": 1") || line.contains("\"id\":1") {
+                    break;
+                }
+            }
+            // The real interpreter must have been caught by the job despite
+            // the spawn-to-adopt gap (Section 4G): bootloader plus child.
+            let active = guard.tree.as_ref().unwrap().active_processes().unwrap();
+            println!("processes in the job once the backend answered: {active}");
+            assert!(
+                active >= 2,
+                "PyInstaller's real interpreter escaped the job"
+            );
+
+            writeln!(stdin, r#"{{"jsonrpc":"2.0","id":2,"method":"guardian.converse","params":{{"message":"hello"}}}}"#).unwrap();
+            stdin.flush().unwrap();
+            thread::sleep(Duration::from_secs(2));
+
+            let started = Instant::now();
+            BackendHandle::Dev { child, stdin }.shutdown(guard);
+            let elapsed = started.elapsed();
+            println!("busy packaged backend shut down in {elapsed:?}");
+            assert!(elapsed < BACKEND_SHUTDOWN_GRACE + Duration::from_secs(2));
+            let _ = std::fs::remove_dir_all(&scratch);
+        }
     }
 }

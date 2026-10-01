@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Lets the Windows job below be run on demand (EIP-ESR0060-002).
+  workflow_dispatch:
 
 jobs:
   python:
@@ -91,6 +93,29 @@ jobs:
       # `cargo build`/`clippy`/`test` fails without it, not just `tauri build`.
       - run: python scripts/build_backend_sidecar.py
       - run: cargo build --manifest-path src-tauri/Cargo.toml
-      - run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
+      # --tests lints the test code too (EIP-ESR0060-002 implementation review).
+      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --tests -- -D warnings
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+
+  # Backend process-tree termination (EBG-0154, EIP-ESR0060-002) is
+  # Windows-only: its job-object tests compile out on the Linux `rust` job
+  # above, so this runs them on Windows. Limited to pushes to main and manual
+  # runs, not every pull request, because Windows runner minutes cost more
+  # (Programme Sponsor decision, ESR-0060 WP2).
+  rust-windows:
+    if: github.event_name != 'pull_request'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          toolchain: stable
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      # generate_context!() needs the externalBin sidecar at compile time, as
+      # on the Linux job.
+      - run: python scripts/build_backend_sidecar.py
       - run: cargo test --manifest-path src-tauri/Cargo.toml

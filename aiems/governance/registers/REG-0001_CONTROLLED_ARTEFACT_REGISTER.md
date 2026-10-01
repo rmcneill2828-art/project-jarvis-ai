@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.704
+**Version:** 3.711
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.704 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.711 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.214 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.215 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -336,9 +336,9 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0059-012 | Engineering Implementation Package | SQLite Schema Versioning | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-013 | Engineering Implementation Package | Profile-Scoped Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0059-014 | Engineering Implementation Package | Household Role Enforcement for Memory | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0060 | Engineering Session Report | Engineering Session Report | 0.6 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0060 | Engineering Session Report | Engineering Session Report | 0.12 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0060-001 | Engineering Implementation Package | Provider-Selection and Deadline-Health Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 0.2 | Draft - design only, not implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -453,6 +453,13 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.711 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.11 to 0.12) following: WP2 CI-change review Pass; Programme Sponsor approved the Win32_Security feature and the commit via the Sponsor Approval Service; EIP-ESR0060-002 synced to 1.0 (REG-0001 row synced by hand). Pending commit. |
+| 3.710 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.10 to 0.11) following: WP2 implementation re-review Pass; Programme Sponsor decision 2(a): rust-windows CI job and clippy --tests added (EIP-ESR0060-002 v0.7, REG-0001 row synced by hand); awaiting review of the CI change. |
+| 3.709 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.9 to 0.10) following: WP2 implementation review Conditional Pass; Medium finding (unchecked termination plus unbounded reap) fixed in EIP-ESR0060-002 v0.6 (REG-0001 row synced by hand); Windows CI job and clippy --tests recommendations raised for the Programme Sponsor; awaiting re-review. |
+| 3.708 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.8 to 0.9) following: WP2 final design re-review Pass; Programme Sponsor approved implementation; implemented per EIP-ESR0060-002 v0.5 (REG-0001 row synced by hand). Two gaps missed by the design reviews flagged: Win32_Security feature needed; CI rust job runs on Linux. Live checks passed. Awaiting implementation review. |
+| 3.707 | 1 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.214 to 1.215) following: ESR-0060 WP2: EBG-0154 closed Completed per EIP-ESR0060-002 (backend process-tree termination: job object per backend, graceful then forced shutdown outside the lock; live-verified on a rebuilt packaged build). |
+| 3.706 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.7 to 0.8) following: WP2 design re-review Conditional Pass (one new Low finding: unreliable adopt() failure test); EIP-ESR0060-002 v0.4 corrects it to adopt(0) and adds an explicit Drop owner for the held handle (REG-0001 row synced by hand); awaiting final re-review. |
+| 3.705 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.6 to 0.7) following: WP2 design review Conditional Pass (genuine Copilot CLI); EIP-ESR0060-002 revised to v0.3 addressing all five findings (REG-0001 row synced by hand); awaiting re-review. |
 | 3.704 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.5 to 0.6) following: WP1b closed: e1d31a4 CI green (run 36843717345, all four jobs); genuine Copilot CLI post-commit review Pass. WP2 next. |
 | 3.703 | 1 October 2026 | Claude Engineering Implementer | Aligned ESR-0060 version (0.4 to 0.5) following: WP1b design review Pass (genuine Copilot CLI, no blocking findings); Programme Sponsor approved via the Sponsor Approval Service; EIP-ESR0060-001 synced to 1.0 (Approved - implemented; REG-0001 row synced by hand). Pending commit. |
 | 3.702 | 1 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.213 to 1.214) following: ESR-0060 WP1b design review (Pass): EBG-0155 row now names the correct function (reviewer note); deadline-capped network timeout residual added to EBG-0157 as item (6) with the reviewer's suggested design. |
