@@ -8,14 +8,14 @@
 |-------|-------|
 | Artefact ID | ESR-0060 |
 | Title | Engineering Session Report |
-| Version | 0.13 |
-| Status | Open |
+| Version | 1.0 |
+| Status | Closed |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Session | ESR-0060 |
 | Date Opened | 30 September 2026 |
-| Date Closed | - |
-| Closure Status | Open |
+| Date Closed | 1 October 2026 |
+| Closure Status | Closed - WP1, WP1b and WP2 complete; RBL-0040 established, superseding RBL-0039 |
 
 ---
 
@@ -99,6 +99,39 @@ Recorded as EBG-0154 rather than overstated: this is not "every app close leaks 
 
 ---
 
+# 3A. Session-Wide WP3 - Independent Repository Verification
+
+The Programme Sponsor directed closing the session with a new baseline after WP2. Unlike ESR-0059, the Engineering Reviewer was available: a genuine scoped GitHub Copilot CLI review ran through the real bridge (`ESR-0060`/`WP3`) over the whole session range.
+
+Range `cd8c06e..679c7dd` (ESR-0059's closing commit to WP2's closure):
+
+* **6 commits**, 14 files changed, 1,420 insertions, 42 deletions. Every commit gated through `submit-response` against an approval recorded at its parent commit - confirmed by the reviewer for all six.
+* **CI on `main`**: every session run green on all jobs; the new `rust-windows` job passed on both of its runs (`5f1693b`, `679c7dd`).
+* **`sentinel/policy.py`**: zero lines changed all session.
+* **Fresh re-run by the Engineering Implementer against the final state**: pytest 759 passed/1 skipped, run against a fake home directory with no files written there; Playwright 26/26; cargo test 19 passed/1 ignored, clippy `--tests` and fmt clean; ruff clean; `validate_repository.py` 0 errors/333 warnings (unchanged); `sync_product_version.py --check` agrees; `npm run build` clean; `pip-audit` in a fresh virtual environment no known vulnerabilities. (This machine's own `.venv` still has urllib3 2.7.0, which three new advisories flag; a fresh install resolves 2.8.0 - a local environment matter, not a repository one.)
+
+**Reviewer verdict: Pass**, independently verified against the transcript (`sender: reviewer`). No findings against gating, claim accuracy or register consistency, and no interaction between WP1b's provider changes and WP2's host changes. Its tool permissions again refused its validation commands (as at WP2's post-commit review), so the results above are the Engineering Implementer's own re-run. Three findings, all about carrying open items visibly into the handover, all addressed:
+
+1. (Low) The `rust-windows` job does not run on pull requests, so a Windows regression surfaces only after merging - recorded in RBL-0040's handover as an accepted risk of the Programme Sponsor's decision 2(a).
+2. (Low) Two WP2 residuals lived only in EIP prose: the spawn-to-attach PID-reuse race, and the manual "Not Responding" check during exit - added to EBG-0157 as items (7) and (8).
+3. (Info) Codex still being unavailable appeared only in prose - added to Section 6 and RBL-0040's handover.
+
+**Added by the Engineering Implementer at closure**: Dependabot has opened pull requests bumping `tauri-plugin-shell` 2.3.5 to 2.4.0 and `tauri` to 2.12.0. WP2's graceful path relies on 2.3.5's `CommandChild` closing stdin when dropped, so EBG-0158 is registered: re-verify that before merging either bump.
+
+**Advisory baseline assessment: Establish** - the independent review RBL-0039 owed is discharged, the two real defects it found are fixed, and the last open runtime-safety item from ESR-0059 is delivered and live-verified, every step genuinely reviewed.
+
+---
+
+# 3B. Session-Wide WP4 - Repository Baseline Determination
+
+**The Programme Sponsor's determination**: **establish a new baseline**, by direct instruction ("yes please close ESR-0060 with new baseline"). [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] created and accepted, superseding RBL-0039.
+
+Every controlled artefact's "current accepted repository baseline" pointer updated to RBL-0040: [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]], [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]], [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]], the [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] and [[PST-0001_PROGRAMME_STATUS|PST-0001]] (full closure sweep - Current Mode, Baseline, Phase, Workflow and Objective; Section 4A rewritten for ESR-0060; the Prior Session rolling window shifted, ESR-0059 added and ESR-0056 dropped; Next Required Activity and Next Work Package Candidate refreshed). **Documentation Debt found during the sweep and corrected**: README.md still said ESR-0058 was the latest closed session (missed at ESR-0059's closure); PST-0001 Section 9's "Latest figures" still quoted ESR-0058's test counts. README.md (uncontrolled) updated to match.
+
+**ESR-0060 formally closed.**
+
+---
+
 # 4. Engineering Authority
 
 ESR-0060 opening was authorised by direct Programme Sponsor instruction on 30 September 2026, following ESR-0059's formal closure.
@@ -122,7 +155,9 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 | WP1 | EBG-0153 retrospective Copilot CLI review of ESR-0059 WP4 to WP14 | Complete - A Conditional Pass, B Pass, C Pass; EBG-0155 to EBG-0157 registered |
 | WP1b | Provider-selection case fix and deadline-health fix (EBG-0155, EBG-0156) | Complete - `e1d31a4`, CI green, post-commit review Pass |
 | WP2 | Backend process-tree termination (EBG-0154) | Complete - `5f1693b`, CI green incl. first `rust-windows` run, post-commit review Pass |
-| Candidate | EBG-0149, EBG-0150, EBG-0151, EBG-0157 (Low); EBG-0130 (Programme Sponsor judgement) | Not started |
+| WP3 | Session-wide independent repository verification | Complete - genuine Copilot CLI review, Pass; three handover findings addressed |
+| WP4 | Repository baseline determination | Complete - Establish; RBL-0040 accepted |
+| Carried forward | EBG-0158 (re-verify before the `tauri-plugin-shell` 2.4.0 bump); EBG-0149, EBG-0150, EBG-0151, EBG-0157 (Low); EBG-0130 (Programme Sponsor judgement). Codex CLI still unavailable (402), so Copilot's monthly quota is the only independent review path | Not started |
 
 ---
 
@@ -130,6 +165,7 @@ Review-first: discharge EBG-0153's retrospective independent review of ESR-0059 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 1 October 2026 | Programme Sponsor | ESR-0060 formally closed. WP3 session-wide verification: genuine GitHub Copilot CLI review - Pass, three handover findings addressed, EBG-0158 registered. WP4: Establish RBL-0040, superseding RBL-0039, by Programme Sponsor direction. |
 | 0.13 | 1 October 2026 | Claude Engineering Implementer | WP2 closed: 5f1693b CI green on all five jobs (run 36884252081), including the first rust-windows run with all seven job-object tests passing; genuine Copilot CLI post-commit review Pass (its validation re-runs were refused by tool permissions, so re-run by the Engineering Implementer, all green). |
 | 0.12 | 1 October 2026 | Claude Engineering Implementer | WP2 CI-change review Pass; Programme Sponsor approved the Win32_Security feature and the commit via the Sponsor Approval Service; EIP-ESR0060-002 synced to 1.0 (REG-0001 row synced by hand). Pending commit. |
 | 0.11 | 1 October 2026 | Claude Engineering Implementer | WP2 implementation re-review Pass; Programme Sponsor decision 2(a): rust-windows CI job and clippy --tests added (EIP-ESR0060-002 v0.7, REG-0001 row synced by hand); awaiting review of the CI change. |
