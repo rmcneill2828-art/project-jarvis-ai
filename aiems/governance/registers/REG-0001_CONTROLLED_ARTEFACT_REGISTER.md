@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.719
+**Version:** 3.720
 
 
 ---
@@ -118,11 +118,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.719 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.720 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.216 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.217 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -454,6 +454,7 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.720 | 4 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.216 to 1.217) following: Direct Programme Sponsor-requested registration (outside an open ESR, following ESR-0060 closure): registered EBG-0159 (Echo devices as a remote voice front-end via a private custom Alexa skill and Cloudflare Tunnel) and EBG-0160 (dedicated JARVIS room voice satellites with a local "Hey Jarvis" wake word), both Candidate Backlog, Low, allocated post-launch by Programme Sponsor decision - outside MLP 0.1 / Version 1.0 scope. No implementation authorised. |
 | 3.719 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 WP4: registered RBL-0040 (1.0, Accepted - Establish); ESR-0060 row set to Closed; JARVIS Capability Readiness Matrix row synced 2.19 to 2.20 (pointer-synced to RBL-0040). Synced by hand: bump_version.py's register parser does not match these rows. |
 | 3.718 | 1 October 2026 | Programme Sponsor | Aligned ESR-0060 version (0.13 to 1.0) following: ESR-0060 formally closed. WP3 session-wide verification: genuine GitHub Copilot CLI review - Pass, three handover findings addressed, EBG-0158 registered. WP4: Establish RBL-0040, superseding RBL-0039, by Programme Sponsor direction. |
 | 3.717 | 1 October 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.44 to 3.45) following: ESR-0060 formally closed: full closure sweep - Current Mode, Baseline (RBL-0040), Product Baseline, Phase, Workflow and Objective; Section 4A rewritten for ESR-0060; Prior Session window shifted (ESR-0059 added, ESR-0056 dropped); Next Required Activity and Next Work Package Candidate refreshed; Repository Health 'Latest figures' corrected (still quoted ESR-0058). |
