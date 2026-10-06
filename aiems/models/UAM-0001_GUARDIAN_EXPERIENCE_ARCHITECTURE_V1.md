@@ -2,7 +2,7 @@
 
 > *"Guardian is not where the interface points; Guardian is who the experience gathers around."*
 
-**Version:** 1.6
+**Version:** 1.7
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | UAM-0001 |
 | Title | Guardian Experience Architecture v1.0 |
-| Version | 1.6 |
+| Version | 1.7 |
 | Status | Approved Baseline |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -137,7 +137,7 @@ The knowledge graph remains a capability in its own right, presented as **its ow
 The Orb is Guardian's state-driven presence. For Version 1.0 it shall meet these acceptance criteria (Programme Sponsor decision D3, 2 October 2026):
 
 1. **Five real states** - idle, listening, thinking, speaking, and offline/error - each driven by an actual runtime event, never by a timer or script.
-2. **A smooth frame rate** on the household PC and the Apple M1 Pro; the numeric target is set in the redesign Work Package's design.
+2. **A smooth frame rate** on the household PC and the household Mac (Apple Silicon); the numeric target is set in the redesign Work Package's design.
 3. **Reduced-motion support**, with the current state also shown as text.
 4. **Works identically with no repository present.**
 5. **Matches the look the Programme Sponsor approves** in the redesign prototype.
@@ -310,6 +310,7 @@ UAM-0001 does not:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.7 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 personal-data minimisation (D23, Programme Sponsor instruction 6 October 2026): a household minor's age and device details replaced with neutral wording (a household member under 18; the household Mac, Apple Silicon). |
 | 1.6 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: Guardian Orb decoupled from the knowledge graph (D11); graph kept as its own view (8.1); Orb Version 1.0 acceptance criteria (8.2, D3); 7.1 incremental approach retired (D9-D10). |
 | 1.5 | 9 July 2026 | Claude Engineering Lead | Corrected Section 7.1 Knowledge Metrics: the reference mock-up's specific node/connection figures (6,842/18,392) are illustrative of an aspirational future scale, not the actual repository state - confirmed by direct count (~135 markdown artefacts) and the Programme Sponsor's own current Obsidian graph screenshot at ESR-0017. Implementation should target real current scale, not the mock-up's illustrated numbers. |
 | 1.4 | 9 July 2026 | Claude Engineering Lead | Referenced the now-persisted mock-up image at aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg from Section 7.1, replacing the earlier description-only reference. |

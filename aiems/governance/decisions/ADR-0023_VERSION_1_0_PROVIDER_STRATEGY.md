@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ADR-0023 |
 | Title | Version 1.0 Provider Strategy |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -19,7 +19,7 @@
 
 # 1. Context
 
-Version 1.0 will be used in a UK household by adults and by a 15-year-old under the Child role, on Windows and macOS, and then released publicly. Today a fresh install has no working provider unless API keys are set in environment variables. Each provider's own terms decide whether a family app with a minor may use it.
+Version 1.0 will be used in a UK household by adults and by a household member under 18 using the Child role, on Windows and macOS, and then released publicly. Today a fresh install has no working provider unless API keys are set in environment variables. Each provider's own terms decide whether a family app with a minor may use it.
 
 # 2. Decision
 
@@ -56,4 +56,5 @@ Not verified: GitHub Copilot, OpenAI Codex and Google Antigravity product terms.
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 1.1 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 personal-data minimisation (D23, Programme Sponsor instruction 6 October 2026): a household minor's age and device details replaced with neutral wording (a household member under 18; the household Mac, Apple Silicon). |
 | 1.0 | 6 October 2026 | Claude Engineering Implementer | Created at ESR-0061 WP1a per EIP-ESR0061-001, recording Programme Sponsor decisions D25-D28 of 2 October 2026 and the provider terms read that day. |

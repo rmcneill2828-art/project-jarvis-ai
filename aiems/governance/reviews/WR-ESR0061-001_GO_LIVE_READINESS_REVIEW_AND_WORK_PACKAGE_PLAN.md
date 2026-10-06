@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | WR-ESR0061-001 (Working Report - numbered at ESR-0061 WP0B, 6 October 2026; drafted outside a session as an unnumbered draft) |
 | Title | Go-Live Readiness Review and Work Package Plan |
-| Version | 0.11 |
+| Version | 0.12 |
 | Status | Working Report - **registered; with the Engineering Reviewer** (PBK-0001 Working Report Lifecycle step 1 of 5 complete; step 2 in progress) |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Author | Claude Engineering Implementer |
@@ -32,9 +32,9 @@ The Programme Sponsor asked for a readiness review of what is needed to **push P
 | D4-D8 | Voice models downloaded in-app; Windows unsigned unless free signing; `keyring`; household soak first; defer `react-dom` 19 | **Decided** (as recommended) |
 | D9-D12 | Incremental rule defunct; full redesign; Orb decoupled; Windows + macOS | **Decided** |
 | D13 | EBG-0015/0059 Superseded; 0022/0111/0128 post-launch | **Decided** (as recommended) |
-| D14 | Apple M1 Pro, macOS Tahoe 26 → one `aarch64` build | **Decided** |
+| D14 | Apple Silicon, macOS 26 → one `aarch64` build | **Decided** |
 | D15 | macOS: free one-time "Open Anyway" rather than paid notarisation | **Decided** (as recommended) |
-| D16 / D17 | Mac access on agreed dates; daughter (15) under the Child role | **Decided** |
+| D16 / D17 | Mac access on agreed dates; a household member under 18 uses the Child role | **Decided** |
 | D18 | Sessions **Tuesday-Friday** | **Decided** |
 | D19 | Second independent reviewer, **high-risk WPs only** (and on Copilot quota exhaustion); a High finding from either reviewer blocks; one-time Google sign-in by the Sponsor | **Decided** |
 | D20 | Fold record-only commits (= rule A3) | **Decided** (via D24) |
@@ -47,7 +47,7 @@ The Programme Sponsor asked for a readiness review of what is needed to **push P
 | D27 | **Gemini API unregistered** from the shipped product (terms bar apps likely used by under-18s); Gemini CLI for engineering review unaffected | **Decided** |
 | D28 | Escalation is **suggested by JARVIS and confirmed by the user** - never automatic | **Decided** |
 | D29 | **gpt-oss-20b as an optional, advisory local pre-screen** before Copilot. Never counted as independent review; every finding verified before acting. Set up in WP1 with the Gemini CLI reviewer. Qwen3-Coder rejected | **Decided** (§5A) |
-| HW | Household PC: i7-7700K, 32 GB RAM, **RTX 4060 8 GB**. Daughter's Mac: M1 Pro, **16 GB** unified memory | **Provided** → §5.4 |
+| HW | Household PC: i7-7700K, 32 GB RAM, **RTX 4060 8 GB**. Household Mac: Apple Silicon, **16 GB** unified memory | **Provided** → §5.4 |
 
 ---
 
@@ -58,8 +58,8 @@ The Programme Sponsor asked for a readiness review of what is needed to **push P
 **What changed in v0.7:**
 - D25 replaces the provider strategy with **local Ollama by default + the Anthropic Claude API for escalation**. That adds a Work Package (WP3 Provider Strategy, about 4-5 days), which moves the target one week later than v0.6's 4 December.
 - **Your VS Code question has a clear answer: no for the product, yes for engineering.** The reasons below come from the actual terms pages, checked today (§5.2).
-- **Gemini must leave the product, not just her profile.** Its API terms prohibit use in any application "likely to be accessed by individuals under the age of 18". A family app with a Child role is exactly that (D27).
-- **The Claude API can serve a 15-year-old,** provided the safeguards Anthropic requires are in place. JARVIS's planned PIN, moderation and AI disclosure match them almost one for one (§5.3).
+- **Gemini must leave the product, not just the Child profile.** Its API terms prohibit use in any application "likely to be accessed by individuals under the age of 18". A family app with a Child role is exactly that (D27).
+- **The Claude API can serve a user under 18,** provided the safeguards Anthropic requires are in place. JARVIS's planned PIN, moderation and AI disclosure match them almost one for one (§5.3).
 
 **Plan: 9 Work Packages, about 30-38 engineering days** after the bottleneck reductions, at 4 session days a week from Tuesday 6 October.
 
@@ -107,7 +107,7 @@ As v0.6, with the provider-specific rows updated: moderation is now **local** (�
 ### 4.5 Orb acceptance criteria (D3 confirmed)
 
 1. Five real states (idle, listening, thinking, speaking, offline/error), each driven by an actual event.
-2. A smooth frame rate on the household PC and the M1 Pro (target set in WP4's design).
+2. A smooth frame rate on the household PC and the household Mac (target set in WP4's design).
 3. Reduced-motion support, with the state also shown in text.
 4. Works identically with no repository present.
 5. Matches the look you approve in the prototype.
@@ -118,7 +118,7 @@ As v0.6, with the provider-specific rows updated: moderation is now **local** (�
 
 ### 5.1 The shape
 
-| Tier | Provider | When used | Cost | Her profile (Child) |
+| Tier | Provider | When used | Cost | Child profile |
 |---|---|---|---|---|
 | **Default** | **Local Ollama** (on each machine) | Every conversation unless escalated | Free; data never leaves the machine (best GDPR position) | Yes, **with local moderation** (§5.3) |
 | **Escalation** | **Anthropic Claude API** | Research, knowledge or harder questions, per D28 | Pay-per-use under a hard cap (D26) | Yes, **with recorded parental consent**, moderation and AI disclosure |
@@ -133,12 +133,12 @@ Removed adapters are **unregistered, not deleted**, as with Piper at ESR-0053. T
 
 | Reason | Detail |
 |---|---|
-| **Terms (verified)** | Claude subscriptions: users must be 18+; automated access is barred "except… via an Anthropic API Key"; you may not make your account "available to anyone else". Routing her chats through your Claude subscription would breach all three. |
+| **Terms (verified)** | Claude subscriptions: users must be 18+; automated access is barred "except… via an Anthropic API Key"; you may not make your account "available to anyone else". Routing a Child-role user's chats through your Claude subscription would breach all three. |
 | **It takes capacity from engineering** | Copilot's monthly quota is the project's independent-review capacity, already the main bottleneck. Spending it on household chat would stall engineering. |
-| **Security** | These tools are coding agents with file and shell access. Putting one behind a 15-year-old's chat box exposes the machine to prompt-injection-driven commands. |
-| **GDPR** | Consumer subscriptions have different data-use terms from APIs. For her data (D23), API terms or local processing are the defensible choice. |
+| **Security** | These tools are coding agents with file and shell access. Putting one behind a child's chat box exposes the machine to prompt-injection-driven commands. |
+| **GDPR** | Consumer subscriptions have different data-use terms from APIs. For a Child-role user's data (D23), API terms or local processing are the defensible choice. |
 | **Doesn't work for Version 1.0 users** | Other households can't use your subscriptions. The product needs local models plus bring-your-own API key. |
-| **Practical** | It would need VS Code and the CLIs installed and signed in on her Mac. Each turn would start a heavyweight agent session (EBG-0090's own recorded finding). |
+| **Practical** | It would need VS Code and the CLIs installed and signed in on the household Mac. Each turn would start a heavyweight agent session (EBG-0090's own recorded finding). |
 
 **Where subscriptions do belong: your own engineering.** That covers Copilot as reviewer, the Gemini CLI second reviewer (D19), and Claude Code doing the implementation. That use is unchanged. **EBG-0090 closes with this answer.**
 
@@ -150,7 +150,7 @@ Removed adapters are **unregistered, not deleted**, as with Piper at ESR-0053. T
 | "Content moderation and filtering" | **Local moderation model via Ollama** (a Llama Guard-class safety classifier; exact model chosen in WP6's design) on Child input **and** output, for both local and Claude replies, plus a child-safety system prompt layer | WP6 |
 | Regulatory compliance documented publicly | A public "Children and privacy" page in the user guide: what is collected, where it goes, consent, retention, erasure (UK GDPR) | WP8 |
 | Tell users they are talking to an AI | Persistent in-UI disclosure, plus a first-run explanation on Child profiles | WP4/WP6 |
-| (Your D25.4) parental consent | An Administrator records consent, with timestamp and scope, before a Child profile may use Claude escalation; her own plain-language acknowledgement is recorded too | WP6 |
+| (Your D25.4) parental consent | An Administrator records consent, with timestamp and scope, before a Child profile may use Claude escalation; the Child-role user's own plain-language acknowledgement is recorded too | WP6 |
 
 Local moderation also closes the gap where a **local** model on its own has no safety filter (raised in v0.5). The earlier plan's reliance on OpenAI/Gemini moderation is gone.
 
@@ -161,7 +161,7 @@ Ollama-first means each machine runs a chat model, plus a small moderation model
 | Machine | Spec | Assessment | WP3 approach |
 |---|---|---|---|
 | **Household PC** | i7-7700K, 32 GB RAM, **RTX 4060 8 GB VRAM** | **Strong for local AI.** A 7-8B-class instruction model at 4-bit quantisation (about 5 GB) fits entirely in VRAM with room for a ~1B moderation model; GPU inference gives conversational speed. The CPU is older but is not on the hot path. | Default to a 7-8B Q4 model, GPU-resident. **Keep Ollama's model store on an SSD** - the PC has several HDDs, and loading models from them would be slow. Note: `faster-whisper` can also use the GPU, so check VRAM headroom with chat + moderation + speech loaded together. |
-| **Daughter's Mac** | M1 Pro, **16 GB** unified memory | **Workable but tight.** The chat model, moderation model, Kokoro/Whisper and macOS all share the same 16 GB. A 7-8B Q4 model is feasible; a 3-4B model is the fallback if memory pressure or speed suffers. | Start with the larger model; measure in real use on Mac visit 1. Fall back to the smaller model automatically if memory is low, and let the Administrator choose. |
+| **Household Mac** | Apple Silicon, **16 GB** unified memory | **Workable but tight.** The chat model, moderation model, Kokoro/Whisper and macOS all share the same 16 GB. A 7-8B Q4 model is feasible; a 3-4B model is the fallback if memory pressure or speed suffers. | Start with the larger model; measure in real use on Mac visit 1. Fall back to the smaller model automatically if memory is low, and let the Administrator choose. |
 
 **WP3 acceptance:**
 - Measured response time and memory use on **both** machines with the Child-profile moderation path active, against a target set in WP3's EIP.
@@ -267,7 +267,7 @@ Template per WP: EIP with evidence pack → Copilot design review (+ Gemini CLI 
 | **WP6** | Household Safety: PIN, Child Role, Moderation, Consent | GAM-0001 §8.2 implementation; local moderation model; child-safety prompt layer; consent records; Child disclosure; D23 safety events | 4.25-5.25 d | 8-10 |
 | **WP7** | Voice Provisioning (Windows + macOS) | New EBG | 2-3 d | 4-6 |
 | **WP8** | Smoke Gates and Documentation | 0133, 0151, 0040, 0011+0061, 0146; user guide; parents' guide; **public "Children and privacy" page** (Anthropic requirement); data map | 4.5-5 d | 5-6 |
-| **WP9** | Release Candidate and Go-Live (`v1.0.0`) | 0046; RC on Windows Sandbox, the household PC and her Mac; soak; publish on your instruction | 2-3 d + soak | 3-4 |
+| **WP9** | Release Candidate and Go-Live (`v1.0.0`) | 0046; RC on Windows Sandbox, the household PC and the household Mac; soak; publish on your instruction | 2-3 d + soak | 3-4 |
 
 **Total:** about 36-45 days before reductions; **about 30-38 after.**
 
@@ -382,7 +382,7 @@ Sections 4.2, 4.3, 4.4 and 6 above say "as v0.6". Earlier drafts were never comm
 | Polish | Scaffolding text; 9 dead controls |
 | Unified look | Fonts not bundled; **two rendering engines to match** (WebView2 = Chromium on Windows; WKWebView = Safari engine on macOS) |
 
-### A.2 macOS - Apple M1 Pro, macOS Tahoe 26 (v0.5)
+### A.2 macOS - Apple Silicon, macOS 26 (v0.5)
 
 | Area | Work | Effort | WP |
 |---|---|---|---|
@@ -412,7 +412,7 @@ GDPR principles are the design standard for all household data (D23). UK GDPR Ar
 | Retention limits | Audit log rotation by size | **WP5** - time-based retention for audit and safety logs (proposed 90 days, configurable) |
 | Transparency | None in-app | **WP5** privacy notice at provider/key setup; **WP6** plain-language explanation for Child profiles |
 | Cloud sharing of retained memory | Always shared when a cloud provider is used (EBG-0110) | **WP3** backend control; **WP5** per-profile UI; **WP6** default **off** for Child |
-| Third-party processing of her data | Assessed 2 October 2026 (§3, §5) | Child restricted to local Ollama and the Anthropic API with recorded consent (D25 option A); Gemini and OpenAI unregistered (D25, D27) |
+| Third-party processing of Child-role data | Assessed 2 October 2026 (§3, §5) | Child restricted to local Ollama and the Anthropic API with recorded consent (D25 option A); Gemini and OpenAI unregistered (D25, D27) |
 | Record of what goes where | None | **WP8** - "what data JARVIS holds and where it goes" in the user guide |
 
 ### A.4 Bottleneck reductions R1-R12 (v0.4 detail, v0.6 status)
@@ -454,10 +454,11 @@ Kept, not reduced: the ADR-0022 per-commit service gate (fail-closed, cannot be 
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.12 | 6 October 2026 | Claude Engineering Implementer | Personal-data minimisation (D23), at the Programme Sponsor's instruction: a household minor's age, relationship and device model replaced with neutral wording (a household member under 18 / Child-role user; the household Mac, Apple Silicon). Earlier wording remains in git history. |
 | 0.11 | 6 October 2026 | Claude Engineering Implementer | Registered as WR-ESR0061-001 at ESR-0061 WP0B and routed to the Engineering Reviewer (Working Report Lifecycle step 2). Content unchanged apart from Document Control, the handover pointer, removal of an empty table header in §9, and a new Appendix A reproducing the earlier-draft content that §4.2-4.4 and §6 refer to as "as v0.6" (never committed, so otherwise unreviewable), renumbered to the current WPs. |
 | 0.10 | 4 October 2026 | Claude Engineering Implementer | Outside a session: EBG-0159 and EBG-0160 (Alexa skill bridge; JARVIS room voice satellites) registered in EBR-0001 1.217 and allocated post-launch by Programme Sponsor decision (§8, §11). Not folded into WP7: outside MLP 0.1, with Child-role and D23 implications. |
 | 0.9 | 2 October 2026 | Claude Engineering Implementer | §5A local-reviewer evaluation completed (5-case scorecard: gpt-oss-20b 2/4 with a clean control and one genuine new defect at stdio_rpc.py:293, folded into WP3; qwen3-coder 1/4 with ~7 false findings). D29 approved: gpt-oss-20b as an advisory pre-screen only, set up in WP1. |
-| 0.8 | 2 October 2026 | Claude Engineering Implementer | Final decisions recorded: D26 (£30/month Claude cap - an explicit exception to the no-budget rule), D27 (Gemini API unregistered), D28 (suggested-then-confirmed escalation), D4-D8/D13/D15 confirmed as recommended. Hardware assessed (§5.4): PC with an RTX 4060 8 GB is strong for GPU-resident 7-8B Q4 models (keep models on SSD); M1 Pro 16 GB is workable but tight (measure on Mac visit 1, smaller-model fallback). No open decisions; ready for Engineering Reviewer review at Session A. |
+| 0.8 | 2 October 2026 | Claude Engineering Implementer | Final decisions recorded: D26 (£30/month Claude cap - an explicit exception to the no-budget rule), D27 (Gemini API unregistered), D28 (suggested-then-confirmed escalation), D4-D8/D13/D15 confirmed as recommended. Hardware assessed (§5.4): PC with an RTX 4060 8 GB is strong for GPU-resident 7-8B Q4 models (keep models on SSD); the household Mac (16 GB) is workable but tight (measure on Mac visit 1, smaller-model fallback). No open decisions; ready for Engineering Reviewer review at Session A. |
 | 0.7 | 2 October 2026 | Claude Engineering Implementer | Recorded D3, D19 (high-risk only), D21, D24 and D25 (UK; OpenAI removed; Ollama-first with escalation; APIs; consent; option A). Verified provider terms against live pages: Claude consumer terms (18+, no automated access except API key, no account sharing) rule out subscription/VS Code backends; Anthropic API permits minors with safeguards, mapped to WP6/WP8; Gemini API bars apps likely used by under-18s → D27. New WP3 Provider Strategy; 9 WPs; 30-38 d; target 11 Dec, planning 18 Dec. D26-D28 and hardware questions added. |
 | 0.6 | 2 October 2026 | Claude Engineering Implementer | D1/D2/D3/D18/D23 recorded; §8 Sponsor asks; GDPR data rights. |
 | 0.5 | 2 October 2026 | Claude Engineering Implementer | Household safety WP; approval-gate analysis. |

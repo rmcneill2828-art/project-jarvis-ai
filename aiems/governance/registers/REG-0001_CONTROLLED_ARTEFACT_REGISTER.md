@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.729
+**Version:** 3.731
 
 
 ---
@@ -118,8 +118,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0020 | Architecture Decision Record | Sentinel Network Exposure Security Requirements | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0026 | `aiems/governance/decisions/` |
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
-| ADR-0023 | Architecture Decision Record | Version 1.0 Provider Strategy | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0061 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.729 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| ADR-0023 | Architecture Decision Record | Version 1.0 Provider Strategy | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0061 | `aiems/governance/decisions/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.731 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -178,7 +178,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | MDS-0001 | Model | Memory and Data Storage Architecture | 1.5 | Approved | Programme Sponsor & Chief Engineering Advisor | GAM-0001 | `aiems/models/` |
 | DRA-0001 | Model | Device Bootstrap and Restore Architecture | 1.0 | Draft | Programme Sponsor & Chief Engineering Advisor | ADR-0012 | `aiems/models/` |
 | BRD-0001 | Model | Backup, Recovery and Data Protection Guidance | 1.2 | Draft | Programme Sponsor & Chief Engineering Advisor | MDS-0001 | `aiems/models/` |
-| UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.6 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
+| UAM-0001 | Model | Guardian Experience Architecture v1.0 | 1.7 | Approved Baseline | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/models/` |
 | PVTM-0001 | Traceability Model | Product Vision Traceability Model | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | ESR-0008 | `aiems/governance/traceability/` |
 | JRM-0001 | Roadmap | Project Roadmap | 1.28 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/roadmap/` |
 | REV-0001 | Review | Phase 0 Gate Review | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
@@ -457,6 +457,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.731 | 6 October 2026 | Claude Engineering Implementer | Aligned UAM-0001 version (1.6 to 1.7) following: ESR-0061 personal-data minimisation (D23, Programme Sponsor instruction 6 October 2026): a household minor's age and device details replaced with neutral wording (a household member under 18; the household Mac, Apple Silicon). |
+| 3.730 | 6 October 2026 | Claude Engineering Implementer | Aligned ADR-0023 version (1.0 to 1.1) following: ESR-0061 personal-data minimisation (D23, Programme Sponsor instruction 6 October 2026): a household minor's age and device details replaced with neutral wording (a household member under 18; the household Mac, Apple Silicon). |
 | 3.729 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1: ESR-0061 row synced 0.1 to 0.2 and EIP-ESR0061-001 row 0.1 to 0.2 (design review Conditional Pass, findings fixed). Synced by hand. |
 | 3.728 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a: JARVIS_PRODUCT_ARCHITECTURE row synced 1.3 to 1.4; ADR-0023 registered (1.0, Approved - Version 1.0 Provider Strategy). Synced by hand: bump_version.py's register parser does not match the JARVIS_PRODUCT_ARCHITECTURE row (R7, WP1c).
 | 3.727 | 6 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.217 to 1.218) following: ESR-0061 WP1a per EIP-ESR0061-001: dispositions - EBG-0015 and EBG-0059 Superseded (D13), EBG-0016 Rejected, EBG-0029, EBG-0052, EBG-0053 and EBG-0067 Completed, EBG-0118 Superseded; EBG-0110 text updated for ADR-0023; EBG-0161 to EBG-0169 registered (Approved Backlog, go-live plan WP1c-WP8). |
