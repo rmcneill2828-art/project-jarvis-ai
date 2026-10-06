@@ -2,7 +2,7 @@
 
 > *"Bounded onboarding scales. Exhaustive onboarding does not."*
 
-**Version:** 1.3
+**Version:** 1.4
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | GDE-0001 |
 | Title | Project Knowledge Map |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -63,6 +63,27 @@ Project Knowledge
 └── Historical Archive        -> HST-*, FCH-*, superseded and closed ESRs
                                  (searched on demand, not mandatory reading)
 ```
+
+---
+
+# 4A. Relationship Vocabulary
+
+Approved at ESR-0006 (as part of the then-proposed "AIEMS Knowledge Architecture") and recorded here at ESR-0061 WP1a (EBG-0067). When an artefact states how it relates to another - in OSE Relationships, Related Artefacts or prose - it should use one of these terms, so relationships stay comparable across the repository and tool-independent:
+
+| Term | Meaning |
+|---|---|
+| implements | Puts an approved decision or design into effect (for example, an EIP implements an ADR) |
+| supports | Helps another artefact achieve its purpose without implementing it |
+| depends_on | Cannot be completed or remain valid without the other artefact |
+| verifies | Checks that the other artefact's claims hold (for example, a review or test) |
+| records | Is the record of an event or decision the other artefact describes |
+| supersedes | Replaces the other artefact, which remains for history |
+| references | Cites the other artefact for context |
+| relates_to | Is connected in a way none of the other terms describes |
+| derived_from | Was produced from the other artefact's content |
+| governed_by | Is subject to the other artefact's rules |
+
+Existing artefacts are not rewritten to adopt it; it applies to new and amended text.
 
 ---
 
@@ -148,6 +169,7 @@ Where this Guide conflicts with [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] or
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.4 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: Section 4A Relationship Vocabulary (EBG-0067). |
 | 1.3 | 18 July 2026 | Claude Engineering Implementer | Added Section 6.1: new HST/FCH artefact creation discontinued for all future Engineering Sessions, formalising practice already true since ESR-0024 (no session from ESR-0024 through ESR-0027 produced a new HST/FCH pair) - Engineering Session Reports have grown sufficiently detailed to make a separate raw-transcript-capture artefact redundant. HST-0023/FCH-0023 confirmed as the final archive entries, not "latest so far." Existing HST/FCH-0000 through -0023 content unaffected - Section 6's access rule continues to govern them. Programme Sponsor decision. |
 | 1.2 | 8 July 2026 | Claude Engineering Implementer | Added Section 7, Role Terminology: a lookup table mapping COC-0001 (Engineering Implementer/Reviewer), EE-0001 (Engineering Lead/Independent Reviewer, trial-scoped) and historical vendor-name references (Codex/ChatGPT), so the mapping is checked rather than reconstructed each session. Renumbered subsequent sections. |
 | 1.1 | 8 July 2026 | Claude Engineering Implementer | Corrected Status from Draft to Approved to comply with STD-0001 section 13 versioning (Version 1.0 requires Approved status, not Draft). This artefact is already operationally binding - referenced and followed by PBK-0001, COC-0001 and PST-0001. |

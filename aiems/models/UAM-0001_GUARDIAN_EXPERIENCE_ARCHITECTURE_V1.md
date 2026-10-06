@@ -2,7 +2,7 @@
 
 > *"Guardian is not where the interface points; Guardian is who the experience gathers around."*
 
-**Version:** 1.5
+**Version:** 1.6
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | UAM-0001 |
 | Title | Guardian Experience Architecture v1.0 |
-| Version | 1.5 |
+| Version | 1.6 |
 | Status | Approved Baseline |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -27,6 +27,8 @@
 [[ADR-0018_SENTINEL_AI_EXECUTION_SECURITY_PLATFORM|ADR-0018]] (approved 8 July 2026) broadened Sentinel's role beyond the "trust posture" representation described in this artefact's Sentinel Trust Posture Representation section, and beyond [[SAM-0001_SENTINEL_TRUST_ARCHITECTURE|SAM-0001]] as originally written. Sentinel is now the AI Execution and Security Platform, with implemented provider orchestration, execution governance and failover under `sentinel/`. [[CURRENT_ARCHITECTURE|CURRENT_ARCHITECTURE.md]] is the current authoritative architecture snapshot. This note does not change UAM-0001's Approved Baseline status or other content.
 
 [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Section 15 ("Guardian UXP Design Outcome") approved a specific Guardian Orb design direction - the Orb as a live rendering of the repository's engineering knowledge graph, with cluster illumination, agent-traversal visualisation and Orb-specific status semantics - originating from a design conversation recorded in `aiems/History/Full Chat/FCH-0010_ESR-0010_FULL_CHAT_HISTORY.md`. This was never merged into UAM-0001 at the time it was approved. Retroactively incorporated at ESR-0017 (Sections 8.1 and 8.2 below) after the Programme Sponsor identified the gap. This note does not change UAM-0001's Approved Baseline status or other content.
+
+On 2 October 2026 the Programme Sponsor directed a full Guardian experience redesign delivered as one Work Package (go-live decisions D9-D11, enacted at ESR-0061 WP1a): the incremental approach to Section 7.1's composition is retired, and the Guardian Orb is **decoupled from the knowledge graph**. The Orb becomes a state-driven presence; the repository knowledge graph remains as its own view, with no loss of functionality. Sections 7.1, 8.1 and 8.2 are amended accordingly. Reason: an Orb drawn from the development repository's own files fails on every installed machine (EBG-0148). The Version 1.0 Orb must meet the acceptance criteria in Section 8.2 (D3). UAM-0001's Approved Baseline status is unchanged.
 
 ---
 
@@ -112,7 +114,7 @@ The reference composition surrounds the central Guardian Orb (7 above; detailed 
 - **AIEMS Principles** - a small panel surfacing governing principles (illustrated as Transparency, Evidence-Based, Human Authority, Continuous Improvement, Engineering Excellence) directly in the experience, reinforcing that Guardian's behaviour is governed rather than autonomous. Any principles shown here shall match, not diverge from, the authoritative principles recorded in PBK-0001 and `JARVIS_PRODUCT_ARCHITECTURE.md` - this panel visualises existing governance, it does not define new governance.
 - **Persistent conversation bar** - beneath the Orb, per Section 9, supporting both text and voice input where Voice capability (per `JARVIS_PRODUCT_ARCHITECTURE.md`) is implemented; voice input affordance shall not be shown as available before it is.
 
-This composition is dense relative to the current foundation-scope UXP (`src/App.jsx`) and shall only be approached incrementally, each addition justified by real implemented capability behind it, per Section 18 and PBK-0001's Feature-First Delivery Discipline - never built ahead of the platform it represents.
+This composition is an illustrative input to the Guardian experience redesign, delivered as one Work Package (Programme Sponsor decisions D9-D10, 2 October 2026), not approached incrementally. Each data-bearing panel still appears only when real implemented capability backs it, per Section 10 - never built ahead of the platform it represents. The System Health illustration's ChatGPT and Codex entries are illustrative only: neither is a Version 1.0 provider ([[ADR-0023_VERSION_1_0_PROVIDER_STRATEGY|ADR-0023]]).
 
 ---
 
@@ -124,32 +126,23 @@ The Orb represents continuity, readiness and companion presence.
 
 It shall not be treated as an ornamental background element or generic status icon.
 
-## 8.1 Knowledge Graph Representation
+## 8.1 Knowledge Graph View (Decoupled from the Orb)
 
-Approved as design direction under [[ESR-0010_ENGINEERING_SESSION_REPORT|ESR-0010]] Section 15, retroactively incorporated here at ESR-0017 - see Subsequent Architectural Update above.
+ESR-0010 Section 15 approved the repository's engineering knowledge graph as the Orb's long-term form (nodes for artefacts, capabilities, systems and agents; connections for real engineering relationships; clusters that illuminate as their systems are accessed). **On 2 October 2026 the Programme Sponsor decoupled the two (D11).** The Orb no longer renders the graph.
 
-The Orb's long-term form is a live rendering of the repository's own engineering knowledge graph, not an abstract animation:
-
-- Nodes represent real artefacts, capabilities, systems or agents.
-- Connections represent real engineering relationships between them.
-- Architectural clusters (for example AIEMS Governance, Engineering Sessions, Guardian Architecture, Execution Environment) illuminate as the systems they represent are accessed.
-- Newly active agents appear as distinct nodes and connect into the graph as they come online, adopting their designated cluster colour as trust and identity are established.
-- The Orb is driven by observed data, not by animation scripts - consistent with Section 8's presence principle, it shall visualise observable engineering or platform state rather than simulated intelligence.
-
-This remains a design direction, not an implementation package. Per Section 18's Capability Evolution Model, it shall be built only through approved engineering packages, in phases tracked at [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0028.
+The knowledge graph remains a capability in its own right, presented as **its own view**, with the functionality it has today preserved. It is driven by observed repository data, not animation scripts, and is shown only where a repository is actually present. Where none is present it says so plainly rather than showing an error or placeholder data (Section 10). Further graph phases (originally phased under [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0028) remain design direction, built only through approved packages (Section 18).
 
 ## 8.2 Orb Status Semantics
 
-The Orb's own animation may communicate Guardian's activity state, distinct from the general capability-state colour language in Section 14:
+The Orb is Guardian's state-driven presence. For Version 1.0 it shall meet these acceptance criteria (Programme Sponsor decision D3, 2 October 2026):
 
-- Calm pulse - idle or observing.
-- Gentle colour flow - learning or traversing knowledge.
-- Bright traversal paths - active reasoning.
-- Multiple concurrent traversal paths - multi-agent collaboration.
-- Gold highlight - awaiting human approval.
-- Green pulse - approved action complete.
+1. **Five real states** - idle, listening, thinking, speaking, and offline/error - each driven by an actual runtime event, never by a timer or script.
+2. **A smooth frame rate** on the household PC and the Apple M1 Pro; the numeric target is set in the redesign Work Package's design.
+3. **Reduced-motion support**, with the current state also shown as text.
+4. **Works identically with no repository present.**
+5. **Matches the look the Programme Sponsor approves** in the redesign prototype.
 
-These semantics apply only where the knowledge-graph Orb (8.1) is implemented. They do not retroactively apply to the current placeholder Orb animation, which remains governed only by Sections 13-15's general visual, colour and animation principles until superseded by an approved implementation package.
+Further states (for example "awaiting human approval", per [[ADR-0010_GUARDIAN_IDENTITY_AND_HITL_GOVERNANCE|ADR-0010]]) may be added by an approved package. The graph-specific semantics previously listed here (traversal paths, multi-agent paths) belong to the knowledge graph view (8.1), not the Orb. Section 14's colour language continues to apply.
 
 ## 8.3 Orb Status Panel (Textual Readout)
 
@@ -317,6 +310,7 @@ UAM-0001 does not:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.6 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: Guardian Orb decoupled from the knowledge graph (D11); graph kept as its own view (8.1); Orb Version 1.0 acceptance criteria (8.2, D3); 7.1 incremental approach retired (D9-D10). |
 | 1.5 | 9 July 2026 | Claude Engineering Lead | Corrected Section 7.1 Knowledge Metrics: the reference mock-up's specific node/connection figures (6,842/18,392) are illustrative of an aspirational future scale, not the actual repository state - confirmed by direct count (~135 markdown artefacts) and the Programme Sponsor's own current Obsidian graph screenshot at ESR-0017. Implementation should target real current scale, not the mock-up's illustrated numbers. |
 | 1.4 | 9 July 2026 | Claude Engineering Lead | Referenced the now-persisted mock-up image at aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg from Section 7.1, replacing the earlier description-only reference. |
 | 1.3 | 9 July 2026 | Claude Engineering Lead | Incorporated the actual Guardian Orb mock-up image provided by the Programme Sponsor at ESR-0017 (richer than the FCH-0010 text description already in 8.1/8.2): new Section 7.1 Reference Dashboard Composition (System Health, Knowledge Metrics, Active Clusters, Real-Time Activity, AIEMS Principles panel, persistent conversation bar with voice affordance) and Section 8.3 Orb Status Panel (Mode/Confidence/Autonomy/Permission textual readout, distinct from 8.2's ambient animation semantics, tied explicitly to ADR-0010 HITL governance). Both explicitly illustrative/design-direction only, not implementation, per Section 18. |

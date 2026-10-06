@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.48 |
+| Version | 1.49 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -422,18 +422,55 @@ Every Engineering Session shall include engineering work that moves Project JARV
 
 Every Engineering Session shall make demonstrable progress toward delivering the live User Experience Platform, replacing the currently static mock-up (`src/`, `src-tauri/`) with a system reflecting real backend state rather than hardcoded placeholders. Progress may be achieved through direct UXP implementation or through delivery of backend capability required by that UXP (for example, Guardian memory, provider failover, or runtime diagnostics that a future UXP increment will depend on) - a session need not touch `src/` itself provided it demonstrably advances toward the live UXP. This requirement stands until that milestone is reached. It shall not be satisfied by cosmetic UI changes made only to formally comply with this rule.
 
-## Incremental Visual Convergence Toward the Reference Mock-up
+---
 
-Directed by the Programme Sponsor at ESR-0019 WP2 closure, following visible progress made integrating the Guardian Orb knowledge graph toward `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg`.
+# Capability-Honest Interface
 
-Where an Engineering Session's work provides a natural opportunity to do so, it should include at least one small, incremental UXP change moving the live interface toward `aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg` (the reference mock-up underlying [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8.1) - for example, adjusting background colour toward the mock-up in one session, then bringing a System Health element in line with it in a later session that happens to touch that capability.
+This section replaces "Incremental Visual Convergence Toward the Reference Mock-up" (ESR-0019 WP2), retired by the Programme Sponsor on 2 October 2026 (go-live decision D9, enacted at ESR-0061 WP1a) because step-by-step convergence was too slow for Version 1.0. The Guardian experience is redesigned in one Work Package instead (D10). The reference mock-up (`aiems/models/UAM-0001_GUARDIAN_ORB_MOCKUP.jpg`) remains an illustrative input to that redesign, not a target to be approached in small steps.
 
-This applies differently depending on what kind of element is being moved toward the mock-up:
+The rule the retired section carried is unchanged and stands on its own: **an interface element shall never imply a capability or status more complete than what is actually implemented and verified.** Data-bearing elements show only real, observed data - never illustrative figures, labels or mock fallbacks used as decoration - per [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 10 and the no-mock-fallback rule established at ESR-0017 WP9. Where a capability is unavailable, the interface says so.
 
-- Cosmetic elements (background colour, typography, spacing, panel styling, colour language) may be adjusted toward the mock-up's presentation at any time, independent of what backend capability that session delivers.
-- Data-bearing elements (for example the mock-up's System Health panel, Knowledge Metrics, Active Clusters and Real-Time Activity feed) shall only be visually adjusted toward the mock-up once genuinely backed by real, observed data delivered by that session or an earlier one - never populated with the mock-up's illustrative figures or labels as decoration. This preserves UAM-0001 Section 10's capability-awareness principle and the no-mock-fallback rule established at ESR-0017 WP9: an interface element shall never imply a capability or status more complete than what is actually implemented and verified.
+---
 
-This is an additive discipline alongside the UXP progress requirement above, not a replacement for it, and is subject to the same anti-gaming constraint: it shall not be satisfied by a token cosmetic change made only to formally comply.
+# Approval Economy
+
+Decided by the Programme Sponsor on 2 October 2026 (go-live decision D24), enacted at ESR-0061 WP1a. Purpose: one approval act per real decision, without removing any oversight. The Programme Sponsor's time is the programme's scarcest resource; asking for the same decision twice spends it without adding control.
+
+| Rule | Statement |
+|---|---|
+| A1 | **One act per decision.** When a decision produces a commit, approval is requested once, through the Sponsor Approval Service (`~/approve <WP> "note"`). No parallel chat approval is requested for the same decision. Chat approval is used only for decisions that produce no commit (for example a code WP's design approval). |
+| A2 | **The Programme Sponsor's instruction is the approval.** An instruction that needs a commit is given as `~/approve` with the instruction in the note. The Engineering Implementer does not ask the Programme Sponsor to confirm what they have just instructed. Session closure: `~/approve CLOSE "establish"` (or `"retain"`), then "close it". |
+| A3 | **No approval for record-keeping alone.** Session-open records, review verdicts, CI results and post-commit verdicts are recorded in the bridge transcript at once (the primary evidence) and committed with the next approved commit, or at session closure. Between those points the session report trails the transcript by one step. |
+| A4 | **Known asks are front-loaded into the design approval.** New dependencies, crate or OS features and CI changes are listed in the EIP's evidence pack. A mid-WP ask is raised only for a genuine surprise, and every surprise is still flagged. |
+| A5 | **Documentation-only WPs take one approval.** When the EIP contains the exact text to be committed, a Sponsor Approval Service approval of that EIP authorises exactly that commit. |
+| A6 | **Code WPs keep two gates:** design approval ("build this") and approval of the built result ("commit what was built, after independent review"). |
+| A7 | **An approved plan authorises its sequence.** Opening a session to run the next Work Package of an approved plan needs no separate objective approval; WP0B's approval requirement is met by the plan approval plus that WP's own design approval. Any deviation from the plan still needs the Programme Sponsor. |
+
+Unchanged by these rules: the per-commit Sponsor Approval Service gate ([[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]]; fail-closed, never self-approved), independent review before and after each code commit, and the Programme Sponsor's sole authority over baselines, go/no-go and publication. An approval records the repository state at the moment it is given, so nothing is committed between requesting an approval and receiving it.
+
+## Execute After Approval
+
+Once the Programme Sponsor approves, the Engineering Implementer proceeds to execute the approved work in the same turn. It does not reply with acknowledgement or further confirmation questions and wait to be prompted again. Genuine new questions are still raised, under Scope-Creep and Cross-WP-Dependency Flagging Discipline. (EBG-0052, from the EE-0001 trial at ESR-0017.)
+
+---
+
+# Delivery Cadence and Independent Review
+
+Decided by the Programme Sponsor on 2 October 2026 (go-live decisions D19, D21, D22, D29), enacted at ESR-0061 WP1a.
+
+## Milestone Sessions
+
+An Engineering Session covers one milestone of an approved plan - one or more Work Packages - rather than one Work Package. Each session still opens with WP0A/WP0B and closes with session-wide independent verification and the Programme Sponsor's baseline determination. Every commit within it remains individually gated, CI-checked and independently reviewed. (D21.)
+
+## Pipelined Design Drafting
+
+While Work Package *n* waits for review or approval, the Engineering Implementer may draft Work Package *n+1*'s EIP and design. Drafting only: no code is changed, nothing is committed and nothing is implemented before Work Package *n+1*'s own approval. The pause between Work Packages still applies to implementation. (D22.)
+
+## Independent Reviewers
+
+* **Engineering Reviewer:** GitHub Copilot CLI reviews every Work Package's design and its committed result.
+* **Second independent reviewer:** Gemini CLI (personal sign-in) also reviews Work Packages the plan or EIP classifies as **high-risk**, and stands in whenever Copilot's quota is exhausted, so that self-verification never becomes the normal path. A **High** finding from either reviewer blocks the Work Package until it is fixed or the Programme Sponsor explicitly overrides it. Lower findings are recorded and dispositioned as before. Review prompts carry no household personal data. (D19.)
+* **Local pre-screen (advisory only):** a local model (gpt-oss-20b via LM Studio, selected by scorecard on 2 October 2026) may pre-screen code Work Packages before Copilot. Its output is labelled advisory, is **never counted as independent review**, and every finding is verified by the Engineering Implementer before it is acted on. (D29.)
 
 ---
 
@@ -615,6 +652,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.49 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: retired Incremental Visual Convergence (D9), keeping its capability-honest rule as a standalone section; added Approval Economy (A1-A7, D24) and Execute After Approval (EBG-0052); added Delivery Cadence and Independent Review (milestone sessions D21, pipelined design drafting D22, second reviewer D19, advisory local pre-screen D29). |
 | 1.48 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 WP4: current-baseline references updated from RBL-0039 to RBL-0040, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). |
 | 1.47 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: current-baseline references updated from RBL-0038 to RBL-0039, established at ESR-0059 (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory). |
 | 1.46 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP8: corrected the stale RBL-0037 current-baseline references (Related Artefacts, OSE Relationships) to RBL-0038, established at ESR-0058 WP8 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP) - the Programme Sponsor's Establish determination following session-wide WP7's genuine GitHub Copilot CLI Conditional Pass verdict. |

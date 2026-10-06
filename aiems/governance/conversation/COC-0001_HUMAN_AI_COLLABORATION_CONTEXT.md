@@ -2,7 +2,7 @@
 
 **Status:** Approved
 
-**Version:** 1.30
+**Version:** 1.31
 
 ---
 
@@ -228,6 +228,8 @@ This role has been filled historically by Codex and other AI collaborators, incl
 
 51. Where the Engineering Implementer's operating environment cannot practically support incremental repository documentation (for example, metered or high-latency tool access), the Programme Sponsor may explicitly direct the Engineering Reviewer to maintain the Engineering Session Report on the Implementer's behalf for that session. This is a Programme Sponsor decision made each time it applies, not a standing delegation or default. It changes who transcribes the report, not who is accountable for engineering content: the Engineering Implementer remains accountable for implementation decisions, and the Engineering Reviewer's report-maintenance under this rule is documentation only.
 
+52. Approvals follow PBK-0001's Approval Economy (rules A1-A7): one approval act per real decision, given through the Sponsor Approval Service whenever it produces a commit. The Engineering Implementer does not request confirmation of an instruction the Programme Sponsor has just given, and proceeds to execute once approval is given.
+
 ---
 
 # Engineering Context
@@ -287,6 +289,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.31 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: rule 52 points to PBK-0001's Approval Economy (D24). |
 | 1.30 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 WP4: current-baseline references updated from RBL-0039 to RBL-0040, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). |
 | 1.29 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: current-baseline references updated from RBL-0038 to RBL-0039, established at ESR-0059 (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory). |
 | 1.28 | 16 September 2026 | Claude Engineering Implementer | ESR-0058 WP8: corrected the RBL-0037 current-baseline references (Session Start Checklist, Related Artefacts, OSE Relationships) to RBL-0038, established at ESR-0058 WP8 (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP), superseding RBL-0037. |

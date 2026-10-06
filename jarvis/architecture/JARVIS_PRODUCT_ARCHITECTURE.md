@@ -8,7 +8,7 @@
 |------|-------|
 | Artefact ID | JARVIS_PRODUCT_ARCHITECTURE |
 | Title | JARVIS Product Architecture |
-| Version | 1.3 |
+| Version | 1.4 |
 | Status | Approved Product Architecture |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Product | JARVIS OS |
@@ -76,6 +76,7 @@ JARVIS OS shall also follow these recovered product principles:
 - Trust through transparency: JARVIS should explain what it can do, what it cannot do and when a capability is unavailable.
 - Calm interaction: JARVIS should avoid noisy, alarming or manipulative behaviour.
 - Design intent preservation: important product intent shall be recorded before implementation details obscure why a feature exists.
+- Grow by capability: JARVIS grows by acquiring capabilities - coherent, end-to-end abilities a family member can rely on - rather than by accumulating disconnected features.
 
 ---
 
@@ -468,7 +469,7 @@ JARVIS OS shall evolve through vertical increments that deliver visible family v
 
 | Phase | Product Focus |
 |-------|---------------|
-| MLP 0.1 | GUI dashboard, chat, text responses, animated avatar/orb, basic voice input, basic memory, user profiles and service status. |
+| MLP 0.1 - **released as Version 1.0** | GUI dashboard, chat, text responses, animated avatar/orb, basic voice input, basic memory, user profiles and service status - on Windows and macOS, with household safety for the Child role. |
 | MLP 0.2 Voice | Improve voice input and introduce richer voice interaction. |
 | MLP 0.3 Family Profiles | Expand administrator, adult, child and guest profile behaviour. |
 | MLP 0.4 Memory | Improve personal memory, shared family memory and memory controls. |
@@ -476,9 +477,9 @@ JARVIS OS shall evolve through vertical increments that deliver visible family v
 | MLP 0.6 Internet | Add controlled internet-assisted capability. |
 | MLP 0.7 Vision | Add visual understanding foundations. |
 | MLP 0.8 Guardian | Expand permission, safety, audit and approval controls. |
-| Version 1.0 | Family AI Operating System. |
+| Family AI Operating System | The combined outcome of MLP 0.2-0.8. |
 
-Roadmap phases describe product direction. Each implementation package shall still be separately approved through AIEMS and selected against [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] where appropriate.
+On 2 October 2026 the Programme Sponsor set the go-live target as MLP 0.1, released as **Version 1.0** (`v1.0.0`) (decisions D1-D2). The Family AI Operating System, previously labelled "Version 1.0", is the later milestone above and no longer carries a version number. Roadmap phases describe product direction. Each implementation package shall still be separately approved through AIEMS and selected against [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] where appropriate.
 
 ---
 
@@ -547,3 +548,4 @@ Engineering economics matter. JARVIS should prefer simple, maintainable, low-cos
 | 1.1 | 29 June 2026 | Programme Sponsor & Chief Engineering Advisor | Promoted recovered product vision, behaviour, user experience, capability hierarchy and engineering intent into the product architecture. |
 | 1.3 | 2 July 2026 | Codex Engineering Implementer | Aligned related artefact context with ESR-0009 readiness and RBL-0009 handover. |
 | 1.2 | 2 July 2026 | Codex Engineering Implementer | Aligned product architecture with ESR-0008 JARVIS Platform, Guardian identity, Sentinel, UXP, Agent Framework and Obsidian/OSE terminology. |
+| 1.4 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: Version 1.0 = MLP 0.1 (D1-D2); the Family AI Operating System milestone renamed; Grow-by-capability principle (EBG-0029). |

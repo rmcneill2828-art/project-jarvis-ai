@@ -8,11 +8,15 @@
 |------|------|
 | ADR ID | ADR-0008 |
 | Title | Hybrid AI Runtime Strategy |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Date Approved | 2 July 2026 |
 | Review Trigger | Significant AI runtime or provider architecture change |
+
+# Subsequent Architectural Update
+
+[[ADR-0023_VERSION_1_0_PROVIDER_STRATEGY|ADR-0023]] (Version 1.0 Provider Strategy, decided 2 October 2026, recorded at ESR-0061 WP1a) selects the concrete Version 1.0 providers under this ADR's hybrid principle: local Ollama by default, the Anthropic Claude API for user-confirmed escalation, OpenAI and Gemini APIs unregistered. This review was triggered by this ADR's own Review Trigger. The hybrid local-plus-cloud principle is unchanged, and this note does not change ADR-0008's Approved status or other content.
 
 ---
 
@@ -114,4 +118,5 @@ Hybrid runtime preserves product value and technology independence. Provider sel
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: Subsequent Architectural Update pointing to ADR-0023 (Review Trigger met). |
 | 1.0 | 2 July 2026 | Codex Engineering Implementer | Initial approved ADR created during ESR-0008 closure. |
