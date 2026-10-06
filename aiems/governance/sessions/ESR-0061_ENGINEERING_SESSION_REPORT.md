@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0061 |
 | Title | Engineering Session Report |
-| Version | 0.5 |
+| Version | 0.6 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -49,6 +49,9 @@ WP0A/WP0B session initialisation followed PBK-0001 and [[GDE-0001_PROJECT_KNOWLE
 | **WP1c design** | EIP-ESR0061-001 Section 7 drafted from the source (v0.6). Programme Sponsor decision on R4: **"warnings"** for the 21 frozen baseline claims. Design review (Antigravity, 09:35Z): **Fail** - two Highs (allow-list safety; CI-break risk from the wider register parser) and a Medium (brittle figure comparison). Assessed and fixed in v0.7, including real allow-list holes found while checking the first High (`ruff --fix`, pytest options, `git diff --output FILE`, `git grep -O`), closed in the live settings at once. Re-review (09:39Z): **Pass**. **Programme Sponsor design approval: direct chat "Approved"** (rule A6, gate 1). |
 | **WP1c built** | Per EIP v0.8 Section 7.5: R7 register parser and status check (12 genuine status mismatches fixed; the RBL-0007 row was a parser bug), `bump_version.py --author` required; R10 Section N warnings about 342 to 260; R4 PST-0001 as the single baseline source (28 frozen claims now warnings); R8 `post_commit_precheck.py` and `run_reviewer.py` (Copilot permissions narrowed, prompts passed by file), the tested allow-list confirmed against the live `agy` matcher; D29 `local_prescreen.py`; PBK-0001's second reviewer now Antigravity CLI with a Gemini model. 85 new tests; pytest 844 passed, 1 skipped; ruff clean. Awaiting independent implementation review, then the Programme Sponsor's approval of the built result (rule A6, gate 2). |
 | **WP1c committed** | Implementation review Pass (Antigravity, through `run_reviewer.py`). Programme Sponsor approved the built result via the Sponsor Approval Service at `23e95bd` (10:14:22Z); committed as `7f1fa93` through `submit-response` (10:15:42Z). Post-commit pre-check PASS; post-commit review Pass. **CI run 37448647822 failed on Linux only**: `find_registered_file()` matched an addendum (`ESR-0007A_...`) before the report under Linux sort order - a latent defect exposed by the new status check. Fixed (exact-ID match, regression test), verified on Linux in Docker; bundled with a `run_reviewer.py` stale-refusal fix and the allow-list sync (EIP-ESR0061-001 7.6). Awaiting review and approval of the fix. |
+| **WP1c-fix committed** | Programme Sponsor approved at `7f1fa93` (12:30:46Z); committed as `77d50e4` (`submit-response` 12:32:26Z); CI run 37463995819 green on all five jobs; pre-check PASS; post-commit review Pass. |
+| **WP2 design** | EIP-ESR0061-002 drafted; **Programme Sponsor override of D19 for WP2: Antigravity (Gemini) is the only independent reviewer** (direct chat "1"; Copilot quota exhausted until 1 November). WP2 split into WP2a (shared hardening and dependency settlement) and WP2b (macOS). Design review (Antigravity, 12:5xZ): **Fail** - three of four main findings correct: the checkpoint step was unnecessary (backups are logical); the creation-time check was backwards and the PID race cannot occur while the child handle is held; the fast-lane design swallowed a broken pipe. Re-review: **Pass**. **Programme Sponsor design approval: direct chat "Approved"** (rule A6, gate 1). |
+| **WP2a built** | Per EIP-ESR0061-002 Section 8A: SQLite WAL plus busy timeout; `ClientFacingError` replies and a type-only audit reason; fast-lane reply-write guard; real-thread memory test; per-profile proposal cap; `shell:allow-execute` removed; `tauri-plugin-shell` 2.4.0, `tauri` 2.12.0 and the npm/Python updates taken, `react-dom` 19 and `piper-tts` deferred; a high `npm audit` finding fixed. **A privacy defect was found and fixed**: restore-validation errors echoed memory content to the UI. Live EBG-0158 checks pass. pytest 864 passed, Playwright 26/26, cargo 19 passed, clippy, fmt and ruff clean. Implementation review (Antigravity, the only reviewer): **Pass**; its one note was checked and led to one more converted message. Linux CI steps run in Docker on the final tree: pytest 866 passed. Awaiting the Programme Sponsor's approval of the built result (gate 2). |
 
 ---
 
@@ -75,7 +78,8 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 | WP1a | Governance enactment ([[EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING|EIP-ESR0061-001]] Section 5) | Complete - `1978070`, CI green; post-commit High overridden by the Programme Sponsor. Personal-data follow-up `9e6c1ea`, CI green; its post-commit review pending |
 | WP1b | Release gate (EBG-0130, 0066, 0134, 0008) | Complete - `23e95bd`, CI green, post-commit review Pass |
 | WP1c | Delivery tooling and second reviewer (EBG-0169) | Design approved; built; awaiting implementation review |
-| WP2 | Platform Foundation: Hardening, Freeze, macOS | Not started - design drafted while WP1 is in review (D22) |
+| WP2a | Shared hardening and dependency settlement ([[EIP-ESR0061-002_PLATFORM_HARDENING_AND_MACOS|EIP-ESR0061-002]]) | Design approved; built; awaiting implementation review |
+| WP2b | macOS (EBG-0162) and non-Windows setup (EBG-0054) | Outlined; design waits on a PyInstaller macOS check |
 | Session-wide | Independent repository verification and baseline determination | Not started - after Mac visit 1 |
 
 ---
@@ -84,6 +88,7 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.6 | 6 October 2026 | Claude Engineering Implementer | WP1 closed (WP1c-fix 77d50e4, CI green). WP2 designed (Gemini-only review, Programme Sponsor override of D19), design approved, WP2a built (EIP-ESR0061-002 v0.3); awaiting implementation review. |
 | 0.5 | 6 October 2026 | Claude Engineering Implementer | WP1c committed (7f1fa93); post-commit review Pass; CI failed on Linux (addendum matched first) - fix prepared as WP1c-fix. |
 | 0.4 | 6 October 2026 | Claude Engineering Implementer | WP1b and the personal-data commit closed (CI green, post-commit reviews Pass). WP1c designed, design review Fail then Pass after fixes, design approved by the Programme Sponsor, and built (EIP-ESR0061-001 v0.8); awaiting implementation review. |
 | 0.3 | 6 October 2026 | Claude Engineering Implementer | WP1a committed (1978070, CI green); Copilot quota exhausted; Antigravity CLI (Gemini) set up as the D19 second reviewer; WP1a post-commit High overridden by the Programme Sponsor; personal-data minimisation committed (9e6c1ea, CI green); WP1b review Conditional Pass, finding fixed, text applied - awaiting approval. |

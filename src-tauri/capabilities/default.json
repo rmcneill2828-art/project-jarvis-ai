@@ -1,19 +1,12 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Default capability for the JARVIS Guardian desktop shell main window - grants access to the JARVIS backend bridge commands (ESR-0017 WP9).",
-  "windows": ["main"],
+  "description": "Default capability for the JARVIS Guardian desktop shell main window - grants access to the JARVIS backend bridge commands (ESR-0017 WP9). No shell permission: the backend sidecar is spawned from Rust (ShellExt), which capabilities do not govern (EBG-0149, ESR-0061 WP2a).",
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "core:default",
-    "dialog:default",
-    {
-      "identifier": "shell:allow-execute",
-      "allow": [
-        {
-          "name": "binaries/jarvis-backend",
-          "sidecar": true
-        }
-      ]
-    }
+    "dialog:default"
   ]
 }

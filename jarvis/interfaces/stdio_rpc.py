@@ -34,6 +34,7 @@ import math
 import os
 import sys
 import threading
+import traceback
 from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
@@ -61,6 +62,13 @@ from jarvis.interfaces.voice import (
 )
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
+from jarvis.shared.errors import (
+    ClientFacingError,
+    ClientFacingPermissionError,
+    ClientFacingTypeError,
+    ClientFacingValueError,
+    public_type_name,
+)
 from sentinel.audit import JsonAuditRecorder
 from sentinel.core import SentinelTrustGateway
 from sentinel.gemini_provider import GeminiProvider
@@ -691,7 +699,7 @@ class StdioRpcServer:
         message = params.get("message")
         if not isinstance(message, str):
             msg = "params.message must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         _require_max_length(message, MAX_MESSAGE_CHARS, "params.message")
         active = self._identity_service.active_profile()
         response = self._runtime.converse(
@@ -705,7 +713,7 @@ class StdioRpcServer:
         text = params.get("text")
         if not isinstance(text, str):
             msg = "params.text must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         _require_max_length(text, MAX_SPEAK_CHARS, "params.text")
         outcome = self._runtime.speak(text)
         result: dict[str, Any] = {"status": outcome.status, "message": outcome.message}
@@ -719,16 +727,16 @@ class StdioRpcServer:
         mime_type = params.get("mimeType")
         if not isinstance(audio_base64, str):
             msg = "params.audioBase64 must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         _require_max_length(audio_base64, MAX_AUDIO_BASE64_CHARS, "params.audioBase64")
         if not isinstance(mime_type, str):
             msg = "params.mimeType must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         try:
             audio_bytes = base64.b64decode(audio_base64, validate=True)
         except (ValueError, TypeError) as exc:
             msg = "params.audioBase64 must be valid base64."
-            raise ValueError(msg) from exc
+            raise ClientFacingValueError(msg) from exc
         outcome = self._runtime.transcribe(audio_bytes, mime_type)
         return {"status": outcome.status, "text": outcome.text, "message": outcome.message}
 
@@ -741,13 +749,13 @@ class StdioRpcServer:
         parameters = params.get("parameters", {})
         if not isinstance(agent_name, str):
             msg = "params.agent must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         if not isinstance(task, str):
             msg = "params.task must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         if not isinstance(parameters, dict):
             msg = "params.parameters must be an object."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         outcome = self._runtime.invoke_agent(agent_name, AgentRequest(task=task, parameters=parameters))
         result: dict[str, Any] = {"status": outcome.status, "message": outcome.message}
         if outcome.result is not None:
@@ -816,17 +824,17 @@ class StdioRpcServer:
         content = params.get("content")
         if not isinstance(content, str):
             msg = "params.content must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         if not content.strip():
             msg = "params.content must not be blank."
-            raise ValueError(msg)
+            raise ClientFacingValueError(msg)
         _require_max_length(content, MAX_MEMORY_CHARS, "params.content")
         # EBG-0132 (ESR-0059 WP13), Programme Sponsor's decision: a memory
         # always belongs to a profile, so saving one needs a selected profile.
         profile_id = self._active_profile_id()
         if profile_id is None:
             msg = "Select a profile before saving a memory."
-            raise ValueError(msg)
+            raise ClientFacingValueError(msg)
         pending = self._runtime.propose_memory(content, profile_id)
         return {"pendingId": pending.id, "content": pending.content}
 
@@ -879,7 +887,7 @@ class StdioRpcServer:
         record_id = params.get("recordId")
         if not isinstance(record_id, str) or not record_id.strip():
             msg = "params.recordId must be a non-empty string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         active = self._identity_service.active_profile()
         self._runtime.delete_memory(
             record_id,
@@ -911,7 +919,7 @@ class StdioRpcServer:
         backup_dir_param = params.get("backupDir")
         if backup_dir_param is not None and not isinstance(backup_dir_param, str):
             msg = "params.backupDir must be a string when provided."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         if backup_dir_param:
             backup_dir = Path(backup_dir_param)
         else:
@@ -936,11 +944,11 @@ class StdioRpcServer:
         backup_path_param = params.get("backupPath")
         if not isinstance(backup_path_param, str):
             msg = "params.backupPath must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         confirm_overwrite = params.get("confirmOverwrite", False)
         if not isinstance(confirm_overwrite, bool):
             msg = "params.confirmOverwrite must be a boolean when provided."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         # EBG-0132 (ESR-0059 WP13): backups hold memories but not profiles,
         # so on another installation a restored memory's owner may not exist
         # and nobody could see it. Such memories go to the profile doing the
@@ -949,7 +957,7 @@ class StdioRpcServer:
         active_profile_id = self._active_profile_id()
         if active_profile_id is None:
             msg = "Select a profile before restoring memory."
-            raise ValueError(msg)
+            raise ClientFacingValueError(msg)
         # EBG-0132 (ESR-0059 WP14): a restore replaces every profile's memories.
         _require_role(
             self._identity_service.active_profile(),
@@ -972,7 +980,7 @@ class StdioRpcServer:
         pending_id = params.get("pendingId")
         if not isinstance(pending_id, str):
             msg = "params.pendingId must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         return pending_id
 
     @staticmethod
@@ -993,10 +1001,10 @@ class StdioRpcServer:
         role = params.get("role")
         if not isinstance(display_name, str):
             msg = "params.displayName must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         if not isinstance(role, str):
             msg = "params.role must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         record = self._identity_service.create_profile(display_name, role)
         return self._serialize_profile(record)
 
@@ -1004,7 +1012,7 @@ class StdioRpcServer:
         profile_id = params.get("profileId")
         if not isinstance(profile_id, str):
             msg = "params.profileId must be a string."
-            raise TypeError(msg)
+            raise ClientFacingTypeError(msg)
         record = self._identity_service.select_profile(profile_id)
         return self._serialize_profile(record)
 
@@ -1042,12 +1050,18 @@ class StdioRpcServer:
 
         try:
             result = handler(params)
+        except ClientFacingError as exc:
+            # Written for the person using JARVIS (the UI shows it); named by
+            # its builtin type so the text the UI shows is unchanged.
+            return self._error(request_id, INTERNAL_ERROR, f"{public_type_name(exc)}: {exc}")
         except Exception as exc:  # noqa: BLE001 - any handler failure must become a JSON-RPC error reply, not crash the loop
-            # Deliberately expose only the exception type and message, matching
-            # the same rationale as OpenAIProvider/GeminiProvider - never let a
-            # raw internal error leak more than necessary into a client-facing
-            # channel, while still being diagnostically useful.
-            return self._error(request_id, INTERNAL_ERROR, f"{type(exc).__name__}: {exc}")
+            # ESR-0061 WP2a (EBG-0157 item 2): any other message may carry
+            # internal detail - or, if built from user data, conversation or
+            # memory content - so the client gets only the type, and the local
+            # log gets the type and where it was raised, never the message
+            # (D23: no conversation or memory content in logs).
+            logger.error("RPC method %s failed: %s at %s", method, type(exc).__name__, _raise_location(exc))
+            return self._error(request_id, INTERNAL_ERROR, f"Guardian hit an internal error ({type(exc).__name__}).")
 
         # Guardian Orb Phase 2 (EBG-0121): only a successful dispatch counts as
         # genuine access to that cluster's capability - an errored or
@@ -1110,7 +1124,7 @@ class StdioRpcServer:
                 if _request_method(line) in SLOW_METHODS:
                     slow_lane.submit(self._process_line_logged, line, out_stream)
                 else:
-                    self._process_line(line, out_stream)
+                    self._process_line_guarded(line, out_stream)
         finally:
             # stdin closed: let any in-flight or queued slow request finish
             # and write its response before the heartbeat stops and run()
@@ -1145,6 +1159,21 @@ class StdioRpcServer:
                 },
             )
 
+    def _process_line_guarded(self, line: str, out_stream: TextIO) -> None:
+        """`_process_line()` for the fast lane (ESR-0061 WP2a, EBG-0157 item
+        3). A failure to produce or write a reply is logged and the loop goes
+        on, as on the slow lane - except broken output (`OSError` from the
+        write, such as a closed pipe), which is re-raised to end the loop:
+        no reply could ever be delivered, so continuing would only fail again
+        on every line."""
+
+        try:
+            self._process_line(line, out_stream)
+        except OSError:
+            raise
+        except Exception:
+            logger.exception("Fast-lane request could not be completed.")
+
     def _process_line_logged(self, line: str, out_stream: TextIO) -> None:
         """`_process_line()` for the slow-lane worker. handle_line() already
         turns every handler failure into a JSON-RPC error reply; this only
@@ -1165,12 +1194,20 @@ ADMINISTRATOR_ROLES = frozenset({"Administrator"})
 REVIEW_APPROVER_ROLES = frozenset({"Administrator", "Adult"})
 
 
+def _raise_location(exc: BaseException) -> str:
+    """Where an exception was raised, as `file:line in function` frames -
+    enough to find the fault without logging its message."""
+
+    frames = traceback.extract_tb(exc.__traceback__)[-3:]
+    return " <- ".join(f"{Path(frame.filename).name}:{frame.lineno} in {frame.name}" for frame in reversed(frames))
+
+
 def _require_role(active, allowed: frozenset[str], message: str) -> None:
     if active is None:
         msg = "Select a profile first."
-        raise PermissionError(msg)
+        raise ClientFacingPermissionError(msg)
     if active.role not in allowed:
-        raise PermissionError(message)
+        raise ClientFacingPermissionError(message)
 
 
 def _sees_household_notes(active) -> bool:
@@ -1184,7 +1221,7 @@ def _require_max_length(value: str, limit: int, name: str) -> None:
 
     if len(value) > limit:
         msg = f"{name} is too long ({len(value)} characters; the limit is {limit})."
-        raise ValueError(msg)
+        raise ClientFacingValueError(msg)
 
 
 def _max_output_tokens(environ: Mapping[str, str]) -> int | None:

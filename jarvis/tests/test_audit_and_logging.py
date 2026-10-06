@@ -150,3 +150,15 @@ def test_backend_log_file_receives_log_records(tmp_path):
                 root.removeHandler(handler)
                 handler.close()
         root.setLevel(previous_level)
+
+
+def test_the_pending_proposal_cap_is_per_profile(tmp_path):
+    """EBG-0157 item 5 (ESR-0061 WP2a): one profile's proposals can no longer
+    evict another profile's."""
+
+    service = PersonalMemoryService(SentinelTrustGateway(), PersonalMemoryStore(tmp_path / "m.db"))
+    keep = service.propose("Bob's only proposal", profile_id="bob")
+    for n in range(MAX_PENDING_PROPOSALS + 5):
+        service.propose(f"alice {n}", profile_id="alice")
+
+    assert service.approve(keep.id).content == "Bob's only proposal"

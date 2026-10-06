@@ -19,7 +19,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
-from jarvis.shared.schema_migrations import apply_migrations
+from jarvis.shared.errors import ClientFacingValueError
+from jarvis.shared.schema_migrations import apply_migrations, connect
 
 # Schema history (EBG-0147, ESR-0059 WP12) - see PERSONAL_MEMORY_MIGRATIONS
 # in jarvis/memory/store.py for the rules. Migration 1 is the original
@@ -65,7 +66,7 @@ class ProfileRecord:
     def __post_init__(self) -> None:
         if self.role not in HOUSEHOLD_ROLES:
             msg = f"Profile role must be one of {HOUSEHOLD_ROLES}, got {self.role!r}."
-            raise ValueError(msg)
+            raise ClientFacingValueError(msg)
 
 
 class ProfileStore:
@@ -82,7 +83,7 @@ class ProfileStore:
         apply_migrations(db_path, PROFILE_MIGRATIONS, "profile")
 
     def _connect(self) -> sqlite3.Connection:
-        return sqlite3.connect(self._db_path)
+        return connect(self._db_path)
 
     @contextlib.contextmanager
     def _transaction(self) -> Iterator[sqlite3.Connection]:

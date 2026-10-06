@@ -1860,3 +1860,191 @@ def test_cloud_providers_get_one_retry_and_ollama_none(tmp_path):
     assert policies["openai"] == CLOUD_RETRY_POLICY
     assert policies["gemini"] == CLOUD_RETRY_POLICY
     assert policies["ollama"].max_attempts == 1
+
+
+# --- ESR-0061 WP2a (EBG-0157 items 2 and 3) ---------------------------------
+
+
+def test_an_unexpected_exception_never_reaches_the_reply(tmp_path, caplog):
+    """Only a ClientFacingError's message is shown; anything else becomes a
+    fixed sentence naming the type, with the detail logged locally."""
+
+    server = _server(tmp_path)
+
+    def boom(_params):
+        raise RuntimeError("internal detail: /home/user/secret.db and an API response body")
+
+    server._methods["test.boom"] = boom
+    with caplog.at_level(logging.ERROR):
+        response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "test.boom", "params": {}}))
+
+    message = response["error"]["message"]
+    assert message == "Guardian hit an internal error (RuntimeError)."
+    assert "secret" not in message
+    # D23: the log records the type and where it was raised, never the message.
+    assert "RuntimeError at" in caplog.text and "boom" in caplog.text
+    assert "secret" not in caplog.text and "internal detail" not in caplog.text
+
+
+def test_a_client_facing_error_keeps_its_message_and_builtin_type_name(tmp_path):
+    from jarvis.shared.errors import ClientFacingPermissionError
+
+    server = _server(tmp_path)
+
+    def denied(_params):
+        raise ClientFacingPermissionError("Only an Administrator profile can restore memory.")
+
+    server._methods["test.denied"] = denied
+    response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "test.denied", "params": {}}))
+
+    assert response["error"]["message"] == "PermissionError: Only an Administrator profile can restore memory."
+
+
+def test_a_fast_lane_write_failure_does_not_end_serve_forever(tmp_path):
+    """EBG-0157 item 3: handler failures were already caught by handle_line();
+    the gap was a failure while *writing* the reply (here, a result JSON cannot
+    serialise), which ended serve_forever() on the fast lane."""
+
+    server = _server(tmp_path)
+
+    def boom(_params):
+        return {"unserialisable": {1, 2, 3}}
+
+    server._methods["test.boom"] = boom
+    in_stream = io.StringIO(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "test.boom", "params": {}})
+        + "\n"
+        + json.dumps({"jsonrpc": "2.0", "id": 2, "method": "platform.status", "params": {}})
+        + "\n"
+    )
+    out_stream = io.StringIO()
+
+    server.serve_forever(in_stream=in_stream, out_stream=out_stream)
+
+    ids = [json.loads(line).get("id") for line in out_stream.getvalue().splitlines() if '"id"' in line]
+    # Request 1's reply cannot be serialised, so it is logged, not sent; the
+    # point is that the loop survived to answer request 2.
+    assert 2 in ids
+
+
+class _BrokenPipe(io.StringIO):
+    def write(self, _text):
+        raise BrokenPipeError("pipe closed")
+
+
+def test_a_broken_output_pipe_ends_serve_forever_cleanly(tmp_path):
+    server = _server(tmp_path)
+    in_stream = io.StringIO(
+        "".join(
+            json.dumps({"jsonrpc": "2.0", "id": i, "method": "platform.status", "params": {}}) + "\n"
+            for i in range(3)
+        )
+    )
+
+    with pytest.raises((BrokenPipeError, OSError)):
+        server.serve_forever(in_stream=in_stream, out_stream=_BrokenPipe())
+
+
+class _MemoryReadingSlowProvider:
+    """Reads the memory store over and over on the slow-lane thread until
+    released - the WP5 shape: a conversation turn reading memory while the
+    main thread writes it."""
+
+    name = "memory-reading-slow"
+
+    def __init__(self, store, release: threading.Event) -> None:
+        self._store = store
+        self._release = release
+        self.reads = 0
+        self.errors: list[BaseException] = []
+
+    def generate(self, request):
+        from jarvis.interfaces.conversation import ConversationResponse
+
+        while not self._release.is_set():
+            try:
+                self._store.list_all()
+                self.reads += 1
+            except BaseException as exc:  # noqa: BLE001 - surfaced by the test's assertion
+                self.errors.append(exc)
+                break
+        return ConversationResponse(message=f"slow: {request.message}", provider=self.name, is_model_reply=True)
+
+
+def test_slow_lane_memory_reads_and_main_thread_writes_run_together(tmp_path):
+    """EBG-0157 item 4 (ESR-0061 WP2a): real threads, no sleeps. The slow
+    turn reads memory continuously while the main thread proposes, approves
+    and lists memories in the same SQLite file; it is released only once the
+    writes have been answered. With WAL and a busy timeout, nothing fails."""
+
+    from jarvis.memory.service import PersonalMemoryService
+    from jarvis.memory.store import PersonalMemoryStore
+    from sentinel.core import SentinelTrustGateway
+
+    store = PersonalMemoryStore(tmp_path / "personal.db")
+    release = threading.Event()
+    provider = _MemoryReadingSlowProvider(store, release)
+    runtime = GuardianRuntime(
+        conversation_provider=provider,
+        memory_service=PersonalMemoryService(SentinelTrustGateway(), store),
+    )
+    runtime.start()
+    server = StdioRpcServer(
+        runtime,
+        heartbeat_interval_seconds=9999.0,
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
+    created = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 0, "method": "profile.create", "params": {"displayName": "A", "role": "Administrator"}})
+    )["result"]
+    server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 0, "method": "profile.select", "params": {"profileId": created["id"]}}))
+
+    proposals = [f"note {i}" for i in range(10)]
+    lines = [json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.converse", "params": {"message": "hi"}})]
+    lines += [
+        json.dumps({"jsonrpc": "2.0", "id": 100 + i, "method": "memory.propose", "params": {"content": text}})
+        for i, text in enumerate(proposals)
+    ]
+    out_stream = io.StringIO()
+
+    def release_when_proposals_answered() -> None:
+        while not release.is_set():
+            ids = {m.get("id") for m in _responses(out_stream)}
+            if all(100 + i in ids for i in range(len(proposals))):
+                # Approve them all from this thread too, while the slow turn
+                # is still reading - real concurrent writes.
+                for message in _responses(out_stream):
+                    if message.get("id", 0) >= 100 and "result" in message:
+                        server.handle_line(
+                            json.dumps({"jsonrpc": "2.0", "id": 0, "method": "memory.approve",
+                                        "params": {"pendingId": message["result"]["pendingId"]}})
+                        )
+                release.set()
+            time.sleep(0.01)
+
+    watcher = threading.Thread(target=release_when_proposals_answered, daemon=True)
+    watcher.start()
+    server.serve_forever(in_stream=io.StringIO("\n".join(lines) + "\n"), out_stream=out_stream)
+    watcher.join(timeout=10)
+
+    responses = {m["id"]: m for m in _responses(out_stream)}
+    assert provider.errors == []
+    assert provider.reads > 0
+    assert responses[1]["result"]["message"] == "slow: hi"
+    assert all("result" in responses[100 + i] for i in range(len(proposals)))
+    assert len(store.list_all()) == len(proposals)
+
+
+def test_a_blank_agent_task_is_reported_to_the_caller_not_hidden(tmp_path):
+    """ESR-0061 WP2a: `guardian.agent.invoke` validation the caller needs to
+    see (the review of the build asked whether any user-reachable message is
+    now hidden behind the generic sentence; this one was)."""
+
+    server = _server(tmp_path)
+    response = server.handle_line(
+        json.dumps(
+            {"jsonrpc": "2.0", "id": 1, "method": "guardian.agent.invoke", "params": {"agent": "gia", "task": "   "}}
+        )
+    )
+
+    assert response["error"]["message"] == "ValueError: Agent request task must not be empty."

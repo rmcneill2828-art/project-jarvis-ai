@@ -35,6 +35,7 @@ from jarvis.interfaces.voice import (
 from jarvis.memory.service import PendingMemoryRequest, PersonalMemoryService
 from jarvis.memory.store import ConsentDecisionRecord, PersonalMemoryRecord
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
+from jarvis.shared.errors import ClientFacingRuntimeError
 
 logger = logging.getLogger(__name__)
 
@@ -389,9 +390,9 @@ class GuardianRuntime:
 
     def _require_memory_service(self) -> None:
         if self._memory_service is None:
-            raise RuntimeError(NO_MEMORY_SERVICE_RESPONSE)
+            raise ClientFacingRuntimeError(NO_MEMORY_SERVICE_RESPONSE)
         if self._state is not GuardianRuntimeState.RUNNING:
-            raise RuntimeError(NOT_RUNNING_RESPONSE)
+            raise ClientFacingRuntimeError(NOT_RUNNING_RESPONSE)
 
     def register_service(self, service: JarvisService) -> JarvisService:
         """Register or replace a Guardian runtime service."""

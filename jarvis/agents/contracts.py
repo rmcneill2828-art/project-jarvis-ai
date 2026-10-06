@@ -19,6 +19,8 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Protocol
 
+from jarvis.shared.errors import ClientFacingValueError
+
 
 @dataclass(frozen=True)
 class AgentRequest:
@@ -30,7 +32,7 @@ class AgentRequest:
     def __post_init__(self) -> None:
         if not self.task.strip():
             msg = "Agent request task must not be empty."
-            raise ValueError(msg)
+            raise ClientFacingValueError(msg)
         object.__setattr__(self, "parameters", MappingProxyType(dict(self.parameters)))
 
 

@@ -22,6 +22,11 @@ from jarvis.memory.store import (
     PersonalMemoryStore,
     utc_now,
 )
+from jarvis.shared.errors import (
+    ClientFacingKeyError,
+    ClientFacingPermissionError,
+    ClientFacingRuntimeError,
+)
 from sentinel.core import (
     SentinelDecisionOutcome,
     SentinelRequest,
@@ -36,7 +41,7 @@ MEMORY_RETENTION_CAPABILITY = "memory_retention"
 # Unresolved proposals kept at once (EBG-0144, ESR-0059 WP9). Past this, the
 # oldest unresolved proposal is dropped - nothing is stored or decided for
 # it, exactly as if the process had restarted.
-MAX_PENDING_PROPOSALS = 100
+MAX_PENDING_PROPOSALS = 100  # per profile (ESR-0061 WP2a)
 LOCAL_USER_APPROVER_LABEL = "local-user"
 
 
@@ -92,7 +97,7 @@ class PersonalMemoryService:
 
         if outcome is SentinelDecisionOutcome.DENY:
             msg = "Memory retention request was denied by Sentinel policy before any human review."
-            raise RuntimeError(msg)
+            raise ClientFacingRuntimeError(msg)
         if outcome is not SentinelDecisionOutcome.REVIEW:
             msg = (
                 f"Memory retention request received unexpected Sentinel outcome {outcome.value!r} "
@@ -105,8 +110,12 @@ class PersonalMemoryService:
             id=pending_id, content=content, sentinel_response=sentinel_response, profile_id=profile_id
         )
         self._pending[pending_id] = pending
-        while len(self._pending) > MAX_PENDING_PROPOSALS:
-            oldest_id = next(iter(self._pending))
+        # The cap applies per profile (ESR-0061 WP2a, EBG-0157 item 5): one
+        # profile's proposals must not evict another's. Dicts keep insertion
+        # order, so the first match is that profile's oldest.
+        same_profile = [key for key, value in self._pending.items() if value.profile_id == profile_id]
+        while len(same_profile) > MAX_PENDING_PROPOSALS:
+            oldest_id = same_profile.pop(0)
             del self._pending[oldest_id]
             logger.info("Oldest unresolved memory proposal dropped: pending_id=%s", oldest_id)
         return pending
@@ -169,12 +178,12 @@ class PersonalMemoryService:
         record = self._store.get(record_id)
         not_found = f"No stored memory found for id: {record_id!r}."
         if record is None or (record.profile_id is not None and record.profile_id != profile_id):
-            raise KeyError(not_found)
+            raise ClientFacingKeyError(not_found)
         if record.profile_id is None and not is_administrator:
             msg = "Only an Administrator can delete a shared household note."
-            raise PermissionError(msg)
+            raise ClientFacingPermissionError(msg)
         if not self._store.delete(record_id):
-            raise KeyError(not_found)
+            raise ClientFacingKeyError(not_found)
         logger.info("Memory record revoked: record_id=%s", record_id)
 
     def record_count(self) -> int:
@@ -233,7 +242,7 @@ class PersonalMemoryService:
             return self._pending.pop(pending_id)
         except KeyError as exc:
             msg = f"No pending memory request found for id: {pending_id!r} (unknown or already resolved)."
-            raise KeyError(msg) from exc
+            raise ClientFacingKeyError(msg) from exc
 
     def _record_decision(self, pending: PendingMemoryRequest, decision: str) -> ConsentDecisionRecord:
         sentinel_decision = pending.sentinel_response.decision

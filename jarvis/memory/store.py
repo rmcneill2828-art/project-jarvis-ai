@@ -18,7 +18,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
-from jarvis.shared.schema_migrations import apply_migrations
+from jarvis.shared.errors import ClientFacingValueError
+from jarvis.shared.schema_migrations import apply_migrations, connect
 
 # Schema history (EBG-0147, ESR-0059 WP12). Migration N brings the schema to
 # version N; append new migrations, never edit a released one. Migration 1
@@ -101,7 +102,7 @@ class PersonalMemoryStore:
         apply_migrations(db_path, PERSONAL_MEMORY_MIGRATIONS, "Personal Memory")
 
     def _connect(self) -> sqlite3.Connection:
-        return sqlite3.connect(self._db_path)
+        return connect(self._db_path)
 
     @contextlib.contextmanager
     def _transaction(self) -> Iterator[sqlite3.Connection]:
@@ -362,7 +363,7 @@ class PersonalMemoryStore:
 
         if not isinstance(snapshot, dict) or "personal_memory" not in snapshot or "consent_decisions" not in snapshot:
             msg = "Invalid backup snapshot: expected a dict with 'personal_memory' and 'consent_decisions' keys."
-            raise ValueError(msg)
+            raise ClientFacingValueError(msg)
 
         memory_rows = snapshot["personal_memory"]
         decision_rows = snapshot["consent_decisions"]
@@ -372,28 +373,30 @@ class PersonalMemoryStore:
         # paths are genuine, not just the file round trip.
         if not isinstance(memory_rows, list | tuple) or not isinstance(decision_rows, list | tuple):
             msg = "Invalid backup snapshot: 'personal_memory' and 'consent_decisions' must both be lists."
-            raise ValueError(msg)  # noqa: TRY004 - ValueError is import_snapshot()'s established invalid-backup contract
+            raise ClientFacingValueError(msg)
 
         decision_ids: set[str] = set()
         approved_decision_ids: set[str] = set()
         for row in decision_rows:
             required = {"id", "capability", "decision", "decided_at", "approver_label", "sentinel_outcome", "sentinel_reason"}
             if not isinstance(row, dict) or not required.issubset(row):
-                msg = f"Invalid backup snapshot: consent_decisions row missing required fields: {row!r}"
-                raise ValueError(msg)
+                missing = sorted(required - set(row)) if isinstance(row, dict) else ["(row is not an object)"]
+                # Names the missing fields, never the row: a row can hold memory content.
+                msg = f"Invalid backup snapshot: consent_decisions row missing required fields: {missing}"
+                raise ClientFacingValueError(msg)
             _require_text_fields(row, ("id", "capability", "decision", "approver_label", "sentinel_outcome"), "consent_decisions")
             if not isinstance(row["sentinel_reason"], str):
                 msg = f"Invalid backup snapshot: consent_decisions row {row['id']!r} has a non-text sentinel_reason."
-                raise ValueError(msg)  # noqa: TRY004 - ValueError is import_snapshot()'s established invalid-backup contract
+                raise ClientFacingValueError(msg)
             if row.get("sentinel_category") is not None and not isinstance(row["sentinel_category"], str):
                 msg = f"Invalid backup snapshot: consent_decisions row {row['id']!r} has a non-text sentinel_category."
-                raise ValueError(msg)
+                raise ClientFacingValueError(msg)
             if row["decision"] not in ("approved", "denied"):
                 msg = (
                     f"Invalid backup snapshot: consent_decisions row {row['id']!r} has decision "
                     f"{row['decision']!r} (expected 'approved' or 'denied')."
                 )
-                raise ValueError(msg)
+                raise ClientFacingValueError(msg)
             _require_timestamp(row, "decided_at", "consent_decisions")
             decision_ids.add(row["id"])
             if row["decision"] == "approved":
@@ -402,15 +405,17 @@ class PersonalMemoryStore:
         for row in memory_rows:
             required = {"id", "content", "created_at", "consent_decision_id"}
             if not isinstance(row, dict) or not required.issubset(row):
-                msg = f"Invalid backup snapshot: personal_memory row missing required fields: {row!r}"
-                raise ValueError(msg)
+                missing = sorted(required - set(row)) if isinstance(row, dict) else ["(row is not an object)"]
+                # Names the missing fields, never the row: a row can hold memory content.
+                msg = f"Invalid backup snapshot: personal_memory row missing required fields: {missing}"
+                raise ClientFacingValueError(msg)
             _require_text_fields(row, ("id", "content", "consent_decision_id"), "personal_memory")
             # Optional (EBG-0132): backups made before profile scoping have no
             # profile_id and restore as shared household notes.
             owner = row.get("profile_id")
             if owner is not None and (not isinstance(owner, str) or not owner.strip()):
                 msg = f"Invalid backup snapshot: personal_memory row {row['id']!r} has an invalid profile_id."
-                raise ValueError(msg)
+                raise ClientFacingValueError(msg)
             _require_timestamp(row, "created_at", "personal_memory")
             if row["consent_decision_id"] not in decision_ids:
                 msg = (
@@ -418,7 +423,7 @@ class PersonalMemoryStore:
                     f"consent_decision_id {row['consent_decision_id']!r}, not present among the "
                     "snapshot's own consent_decisions - refusing a partial/inconsistent import."
                 )
-                raise ValueError(msg)
+                raise ClientFacingValueError(msg)
             # ESR-0059 WP1: the same guarantee `add()` enforces for live
             # writes - content is only ever retained against an *approved*
             # decision. Checking presence alone let a backup restore content
@@ -430,7 +435,7 @@ class PersonalMemoryStore:
                     f"consent_decision_id {row['consent_decision_id']!r}, which is not an approved "
                     "decision - refusing to restore content without recorded consent."
                 )
-                raise ValueError(msg)
+                raise ClientFacingValueError(msg)
 
         with self._transaction() as connection:
             existing = connection.execute("SELECT COUNT(*) FROM personal_memory").fetchone()[0]
@@ -440,7 +445,7 @@ class PersonalMemoryStore:
                     "Store is not empty: restoring would overwrite existing data. "
                     "Pass confirm_overwrite=True to proceed - recovery never runs silently."
                 )
-                raise ValueError(msg)
+                raise ClientFacingValueError(msg)
 
             if existing:
                 connection.execute("DELETE FROM personal_memory")
@@ -529,8 +534,8 @@ def _require_text_fields(row: dict, fields: tuple[str, ...], table: str) -> None
     for field in fields:
         value = row[field]
         if not isinstance(value, str) or not value.strip():
-            msg = f"Invalid backup snapshot: {table} row field {field!r} must be non-empty text, got {value!r}."
-            raise ValueError(msg)
+            msg = f"Invalid backup snapshot: {table} row field {field!r} must be non-empty text, got {type(value).__name__}."
+            raise ClientFacingValueError(msg)
 
 
 def _require_timestamp(row: dict, field: str, table: str) -> None:
@@ -546,9 +551,9 @@ def _require_timestamp(row: dict, field: str, table: str) -> None:
     value = row[field]
     if not isinstance(value, str):
         msg = f"Invalid backup snapshot: {table} row field {field!r} must be an ISO 8601 timestamp, got {value!r}."
-        raise ValueError(msg)  # noqa: TRY004 - ValueError is import_snapshot()'s established invalid-backup contract
+        raise ClientFacingValueError(msg)
     try:
         datetime.fromisoformat(value)
     except ValueError as exc:
         msg = f"Invalid backup snapshot: {table} row field {field!r} is not a valid ISO 8601 timestamp: {value!r}."
-        raise ValueError(msg) from exc
+        raise ClientFacingValueError(msg) from exc

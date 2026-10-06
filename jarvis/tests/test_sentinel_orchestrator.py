@@ -466,7 +466,7 @@ def test_retries_stop_at_max_attempts_with_exponential_backoff() -> None:
     primary = _ScriptedProvider("primary", errors, retry_policy=RetryPolicy(max_attempts=3, backoff_seconds=1.0))
     orchestrator, clock = _resilient_orchestrator(primary)
 
-    with pytest.raises(RuntimeError, match="Provider execution failed: 503"):
+    with pytest.raises(RuntimeError, match=r"Provider execution failed: ProviderError \(transient\)$"):
         orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi"))
 
     assert primary.calls == 3
@@ -536,3 +536,19 @@ def test_circuit_breaker_leaves_operator_set_health_alone() -> None:
 def test_negative_circuit_cooldown_is_rejected() -> None:
     with pytest.raises(ValueError, match="must not be negative"):
         ProviderOrchestrator(circuit_cooldown_seconds=-1.0)
+
+
+def test_failure_reason_carries_no_free_text_but_the_log_keeps_it(caplog) -> None:
+    """ESR-0061 WP2a (EBG-0157 item 2): the durable audit reason names the
+    type and transience only; the message is logged locally for diagnosis."""
+
+    errors = [ProviderError("upstream said: secret body", transient=False)]
+    primary = _ScriptedProvider("primary", errors, retry_policy=RetryPolicy(max_attempts=1))
+    orchestrator, _ = _resilient_orchestrator(primary)
+
+    with caplog.at_level("WARNING"), pytest.raises(RuntimeError) as excinfo:
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hi"))
+
+    assert str(excinfo.value) == "Provider execution failed: ProviderError (permanent)"
+    assert "secret" not in orchestrator.history()[-1].reason
+    assert "upstream said: secret body" in caplog.text

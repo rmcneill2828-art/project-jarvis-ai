@@ -22,6 +22,8 @@ import os
 from collections.abc import Mapping
 from pathlib import Path
 
+from jarvis.shared.errors import ClientFacingError
+
 REPOSITORY_ROOT_ENV_VAR = "JARVIS_REPOSITORY_ROOT"
 
 # The checkout containing this package (jarvis/ is one level below the root).
@@ -34,7 +36,7 @@ UNAVAILABLE_MESSAGE = (
 GIT_FAILED_MESSAGE = "The JARVIS source repository could not be read with git."
 
 
-class RepositoryUnavailableError(RuntimeError):
+class RepositoryUnavailableError(ClientFacingError, RuntimeError):
     """The capability needs the source repository, and none is available.
     Messages never contain filesystem paths."""
 

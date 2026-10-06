@@ -28,6 +28,22 @@ from pathlib import Path
 
 Migration = Sequence[str]
 
+# ESR-0061 WP2a (EBG-0157 item 1): since ESR-0059 WP5 the slow lane
+# (conversation, which reads memory) and the main thread (memory writes) can
+# open the same database at once. Every connection now waits up to this long
+# for a lock, explicitly rather than by Python's default, and each database
+# runs in WAL mode (set once by apply_migrations; persistent per file), so
+# readers never wait for a writer.
+BUSY_TIMEOUT_MS = 5000
+
+
+def connect(db_path: Path) -> sqlite3.Connection:
+    """Open a connection to a JARVIS store with the busy timeout set."""
+
+    connection = sqlite3.connect(db_path, timeout=BUSY_TIMEOUT_MS / 1000)
+    connection.execute(f"PRAGMA busy_timeout = {BUSY_TIMEOUT_MS:d}")
+    return connection
+
 
 class SchemaVersionError(RuntimeError):
     """The database was created by a newer JARVIS than this one."""
@@ -36,7 +52,7 @@ class SchemaVersionError(RuntimeError):
 def schema_version(db_path: Path) -> int:
     """Return the database's recorded schema version (0 if never versioned)."""
 
-    connection = sqlite3.connect(db_path)
+    connection = connect(db_path)
     try:
         return int(connection.execute("PRAGMA user_version").fetchone()[0])
     finally:
@@ -53,7 +69,8 @@ def apply_migrations(db_path: Path, migrations: Sequence[Migration], store_name:
     """
 
     latest = len(migrations)
-    connection = sqlite3.connect(db_path, isolation_level=None)
+    connection = connect(db_path)
+    connection.isolation_level = None
     try:
         # IMMEDIATE takes the write lock up front, so two processes opening
         # the same store cannot both decide to run the same migration.
@@ -77,6 +94,9 @@ def apply_migrations(db_path: Path, migrations: Sequence[Migration], store_name:
         except BaseException:
             connection.execute("ROLLBACK")
             raise
+        # Outside any transaction: SQLite cannot change the journal mode
+        # inside one. Idempotent, and persistent for the file.
+        connection.execute("PRAGMA journal_mode = WAL")
         return latest
     finally:
         connection.close()

@@ -11,6 +11,7 @@ from __future__ import annotations
 import uuid
 
 from jarvis.identity.store import ProfileRecord, ProfileStore, utc_now
+from jarvis.shared.errors import ClientFacingValueError
 
 
 class ProfileService:
@@ -48,7 +49,7 @@ class ProfileService:
         record = self._store.get(profile_id)
         if record is None:
             msg = f"Cannot select profile {profile_id!r}: no such profile exists."
-            raise ValueError(msg)
+            raise ClientFacingValueError(msg)
         self._store.set_active(profile_id)
         return record
 

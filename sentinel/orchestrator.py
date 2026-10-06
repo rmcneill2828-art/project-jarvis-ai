@@ -1,5 +1,6 @@
 """Sentinel provider orchestration and resilience primitives."""
 
+import logging
 import random
 import time
 from collections import deque
@@ -17,6 +18,8 @@ from sentinel.providers import (
     ProviderResponse,
     execute_with_sentinel_decision,
 )
+
+logger = logging.getLogger(__name__)
 
 # How long a provider that just failed is skipped before being tried again
 # (EBG-0140, ESR-0059 WP6). Long enough to stop a dead provider costing its
@@ -262,7 +265,15 @@ class ProviderOrchestrator:
 
         reason = "No healthy provider could execute the request."
         if last_error is not None:
-            reason = f"Provider execution failed: {last_error}"
+            # ESR-0061 WP2a (EBG-0157 item 2): the durable audit record and
+            # the raised error name the failure's type (and, for a
+            # ProviderError, whether it was transient) - never its free text,
+            # which is safe today only because every adapter keeps content
+            # out of its messages. The message goes to the local log.
+            transient = getattr(last_error, "transient", None)
+            kind = type(last_error).__name__ + {True: " (transient)", False: " (permanent)"}.get(transient, "")
+            reason = f"Provider execution failed: {kind}"
+            logger.warning("Provider execution failed: %s: %s", type(last_error).__name__, last_error)
         elif cooling_down:
             reason = f"Every eligible provider is cooling down after a recent failure: {', '.join(cooling_down)}."
         if deadline_reached:
