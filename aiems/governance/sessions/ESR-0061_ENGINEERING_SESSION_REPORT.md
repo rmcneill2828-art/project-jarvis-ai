@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0061 |
 | Title | Engineering Session Report |
-| Version | 0.4 |
+| Version | 0.5 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -48,6 +48,7 @@ WP0A/WP0B session initialisation followed PBK-0001 and [[GDE-0001_PROJECT_KNOWLE
 | **WP1b and personal-data commit closed** | WP1b committed as `23e95bd` (approved at `9e6c1ea`, 09:07:27Z; `submit-response` 09:08:44Z), CI run 37441031822 green on all five jobs. Combined post-commit review (Antigravity, 09:14Z): `9e6c1ea` **Pass**, `23e95bd` **Pass**, no findings - including that the two disclosed v0.5 changes are acceptable without re-review. |
 | **WP1c design** | EIP-ESR0061-001 Section 7 drafted from the source (v0.6). Programme Sponsor decision on R4: **"warnings"** for the 21 frozen baseline claims. Design review (Antigravity, 09:35Z): **Fail** - two Highs (allow-list safety; CI-break risk from the wider register parser) and a Medium (brittle figure comparison). Assessed and fixed in v0.7, including real allow-list holes found while checking the first High (`ruff --fix`, pytest options, `git diff --output FILE`, `git grep -O`), closed in the live settings at once. Re-review (09:39Z): **Pass**. **Programme Sponsor design approval: direct chat "Approved"** (rule A6, gate 1). |
 | **WP1c built** | Per EIP v0.8 Section 7.5: R7 register parser and status check (12 genuine status mismatches fixed; the RBL-0007 row was a parser bug), `bump_version.py --author` required; R10 Section N warnings about 342 to 260; R4 PST-0001 as the single baseline source (28 frozen claims now warnings); R8 `post_commit_precheck.py` and `run_reviewer.py` (Copilot permissions narrowed, prompts passed by file), the tested allow-list confirmed against the live `agy` matcher; D29 `local_prescreen.py`; PBK-0001's second reviewer now Antigravity CLI with a Gemini model. 85 new tests; pytest 844 passed, 1 skipped; ruff clean. Awaiting independent implementation review, then the Programme Sponsor's approval of the built result (rule A6, gate 2). |
+| **WP1c committed** | Implementation review Pass (Antigravity, through `run_reviewer.py`). Programme Sponsor approved the built result via the Sponsor Approval Service at `23e95bd` (10:14:22Z); committed as `7f1fa93` through `submit-response` (10:15:42Z). Post-commit pre-check PASS; post-commit review Pass. **CI run 37448647822 failed on Linux only**: `find_registered_file()` matched an addendum (`ESR-0007A_...`) before the report under Linux sort order - a latent defect exposed by the new status check. Fixed (exact-ID match, regression test), verified on Linux in Docker; bundled with a `run_reviewer.py` stale-refusal fix and the allow-list sync (EIP-ESR0061-001 7.6). Awaiting review and approval of the fix. |
 
 ---
 
@@ -83,6 +84,7 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.5 | 6 October 2026 | Claude Engineering Implementer | WP1c committed (7f1fa93); post-commit review Pass; CI failed on Linux (addendum matched first) - fix prepared as WP1c-fix. |
 | 0.4 | 6 October 2026 | Claude Engineering Implementer | WP1b and the personal-data commit closed (CI green, post-commit reviews Pass). WP1c designed, design review Fail then Pass after fixes, design approved by the Programme Sponsor, and built (EIP-ESR0061-001 v0.8); awaiting implementation review. |
 | 0.3 | 6 October 2026 | Claude Engineering Implementer | WP1a committed (1978070, CI green); Copilot quota exhausted; Antigravity CLI (Gemini) set up as the D19 second reviewer; WP1a post-commit High overridden by the Programme Sponsor; personal-data minimisation committed (9e6c1ea, CI green); WP1b review Conditional Pass, finding fixed, text applied - awaiting approval. |
 | 0.2 | 6 October 2026 | Claude Engineering Implementer | WP1 design review Conditional Pass (Copilot CLI), three findings fixed in EIP-ESR0061-001 v0.2; WP1a text applied to the working tree, awaiting the Programme Sponsor's single approval (A5). |

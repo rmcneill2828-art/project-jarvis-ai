@@ -147,9 +147,15 @@ def find_registered_file(artefact_id: str, location: str) -> Path | None:
     base = REPO_ROOT / location
     if not base.exists():
         return None
-    matches = sorted(base.glob(f"{artefact_id}*.md"))
+    matches = list(base.glob(f"{artefact_id}*.md"))
+    # Prefer the exact ID: `ESR-0007*.md` also matches the addendum
+    # `ESR-0007A_...`, and the two sort differently on Linux and Windows
+    # (CI run 37448647822), so "first match" was platform-dependent.
+    exact = [path for path in matches if path.stem == artefact_id or path.stem.startswith(f"{artefact_id}_")]
+    if exact:
+        return min(exact, key=lambda path: path.name)
     if matches:
-        return matches[0]
+        return min(matches, key=lambda path: path.name)
     # Compound IDs such as `ESR-0005-RELOAD` name a file like
     # `ESR-0005_ENGINEERING_SESSION_RELOAD.md`: match the numbered stem, then
     # require every suffix token in the filename.

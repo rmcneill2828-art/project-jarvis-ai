@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-001 |
 | Title | Engineering Implementation Package: WP1 Release Gate, Governance and Streamlining |
-| Version | 0.8 |
-| Status | Draft - WP1c built; implementation review Pass; awaiting Programme Sponsor approval of the built result |
+| Version | 0.9 |
+| Status | Draft - WP1c committed; CI Linux fix (WP1c-fix) awaiting review and approval |
 | Session | ESR-0061 |
 | Work Package | WP1 (WP1a, WP1b, WP1c) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP1 |
@@ -642,6 +642,16 @@ Changed: `scripts/validate_repository.py`, `scripts/bump_version.py`, `scripts/t
 | D29 | `local_prescreen.py` skips cleanly (LM Studio not running on 6 October). `/v1/models` remains unverified live; the script treats any failure as a skip. |
 | Tests | 85 new tests (validator 19, `bump_version` 3, `run_reviewer` 51, pre-check 7, pre-screen 5). The R7 parser, status and compound-ID tests, the R10 pattern tests, the R4 tests and the `--author`/"Refresh History" tests were each run against the old code first and failed there. Full suite **844 passed, 1 skipped**; ruff clean; validator **0 errors** once this EIP's own register row is synced at commit. |
 
+## 7.6 Post-Commit Record and Fix (WP1c-fix)
+
+**WP1c committed** as `7f1fa93` (approved at `23e95bd`, 10:14:22Z; `submit-response` 10:15:42Z). `scripts/post_commit_precheck.py` on the real commit: all seven hard checks PASS (on Windows). Post-commit review through `run_reviewer.py` (Antigravity, Gemini 3.1 Pro, 10:22Z): **Pass**, no findings - after two resumes: once on `git log --format=%B` (an `=` argument, rightly refused - the Engineering Implementer's own prompt had suggested it) and once on a single-quoted grep pattern with options after it (read-only; allowed).
+
+**CI run 37448647822 failed** (python job; every other job green): the validator reported four errors on Linux that do not occur on Windows. **Cause:** `find_registered_file()` returned the first file matching `<ID>*.md`, and `ESR-0007*.md` also matches the addendum `ESR-0007A_...`; Linux sorts the addendum first ("A" before "_"), Windows does not, so on Linux ESR-0007, ESR-0014, ESR-0016 and ESR-0025 were compared with their addenda. A latent pre-existing defect, exposed by the new status check; the Windows-only pre-check could not see it. **Fix:** prefer the exact ID (`<ID>.md` or `<ID>_*`), then a plain name comparison that is identical on every platform; a regression test forces the Linux ordering and fails on the old code. **Verified on Linux** (Docker, `python:3.12-slim`): validator 0 errors, script tests pass.
+
+Two further fixes from WP1c's first real use, bundled because they are small, in the same tooling, and found by using it (disclosed scope addition): `run_reviewer.py` reported a previous run's refusal after a resume - it now counts only steps from the current run, and names the last command attempted when the refusal itself was not logged (new test); and `scripts/reviewer/antigravity_allowlist.json` gains the two read-only patterns added to the live settings during these reviews - single-quoted grep patterns, and grep options after the pattern (new allowed and refused test cases; `--check-settings` reports a match).
+
+**WP1c-fix commit contents:** `scripts/validate_repository.py`, `scripts/run_reviewer.py`, `scripts/reviewer/antigravity_allowlist.json`, `scripts/tests/test_validate_repository.py`, `scripts/tests/test_run_reviewer.py`, `aiems/governance/reviews/EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
+
 ---
 
 # 8. Validation Requirements
@@ -715,6 +725,7 @@ Also in v0.5: Section 5's quoted ADR-0023 and UAM-0001 text brought into line wi
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.9 | 6 October 2026 | Claude Engineering Implementer | WP1c committed (7f1fa93); pre-check PASS; post-commit review Pass. CI failed on Linux only: find_registered_file() matched an addendum first under Linux sort order (latent, exposed by the status check) - fixed with an exact-ID match and a regression test, verified on Linux. Wrapper stale-refusal fix and allow-list sync bundled (7.6). |
 | 0.8 | 6 October 2026 | Claude Engineering Implementer | WP1c built per the approved v0.7 design (Programme Sponsor "Approved", rule A6 gate 1). Build record 7.5: 12 status mismatches fixed (not 3); the RBL-0007 row was a parser bug, not malformed; Section N warnings about 342 to 260; Copilot permissions narrowed and prompts passed by file (beyond the design, both narrowing); live agy matcher probe matches the tests. 85 new tests; 844 passed, 1 skipped. Awaiting implementation review. |
 | 0.7 | 6 October 2026 | Claude Engineering Implementer | WP1c design review Fail (Antigravity CLI): two Highs and a Medium fixed - allow-list stated exactly and hardened (live list too: no ruff --fix, no pytest options, no git --output or grep -O), explicit validator-clean gate for the wider register parser, advisory-only figure comparison. R4 decision "warnings" recorded. Awaiting re-review. |
 | 0.6 | 6 October 2026 | Claude Engineering Implementer | WP1a and WP1b closed (1978070, 9e6c1ea, 23e95bd all CI green; post-commit reviews of 9e6c1ea and 23e95bd Pass). WP1c full design and evidence pack (Section 7) drafted from the source: second reviewer is Antigravity CLI (Gemini CLI replaced 18 June 2026); register parser blind to 97 rows; R10's five heuristic gaps; R4's 26 files. Questions 5-9 added. Awaiting design review. |

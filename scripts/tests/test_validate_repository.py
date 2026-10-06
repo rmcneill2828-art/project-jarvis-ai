@@ -576,3 +576,23 @@ def test_baseline_claims_ignore_records_and_version_history(tmp_path, monkeypatc
         },
     )
     assert result.errors == [] and result.warnings == []
+
+
+def test_find_registered_file_prefers_the_exact_id_over_a_suffixed_one(tmp_path, monkeypatch):
+    """CI run 37448647822 (Linux): `ESR-0007*.md` also matches the addendum
+    `ESR-0007A_...`, and Linux sorts it first ("A" < "_") while Windows does
+    not, so ESR-0007's row was compared with its addendum."""
+
+    import scripts.validate_repository as validator
+
+    monkeypatch.setattr(validator, "REPO_ROOT", tmp_path)
+    sessions = tmp_path / "aiems/governance/sessions"
+    sessions.mkdir(parents=True)
+    report = sessions / "ESR-0007_ENGINEERING_SESSION_REPORT.md"
+    addendum = sessions / "ESR-0007A_POST_CLOSURE_ENGINEERING_ADDENDUM.md"
+    report.write_text("r", encoding="utf-8")
+    addendum.write_text("a", encoding="utf-8")
+    monkeypatch.setattr(validator.Path, "glob", lambda self, pattern: iter([addendum, report]))
+
+    assert validator.find_registered_file("ESR-0007", "aiems/governance/sessions/") == report
+    assert validator.find_registered_file("ESR-0007A", "aiems/governance/sessions/") == addendum

@@ -178,8 +178,21 @@ def reviewer_entries_since(session: str, wp: str, since: datetime) -> list[str]:
     return entries
 
 
-def last_refused_command(brain: Path | None = None) -> str | None:
-    """Best effort: the command Antigravity's latest conversation refused."""
+def _step_time(step: dict) -> datetime | None:
+    try:
+        return datetime.fromisoformat(str(step.get("created_at")))
+    except ValueError:
+        return None
+
+
+def last_refused_command(since: datetime | None = None, brain: Path | None = None) -> str | None:
+    """Best effort: the command Antigravity refused during this run.
+
+    Only steps at or after `since` count: a resumed conversation still holds
+    the previous run's refusal, which was reported again by mistake on first
+    use (ESR-0061). The refusal itself is not always logged before the run
+    aborts, so the last command attempted in this run is reported instead,
+    marked as such."""
 
     brain = brain or ANTIGRAVITY_BRAIN
     if not brain.exists():
@@ -190,17 +203,25 @@ def last_refused_command(brain: Path | None = None) -> str | None:
     log = conversations[-1] / ".system_generated" / "logs" / "transcript.jsonl"
     if not log.exists():
         return None
-    refused = None
+    refused = attempted = None
     for line in log.read_text(encoding="utf-8", errors="replace").splitlines():
         try:
             step = json.loads(line)
         except json.JSONDecodeError:
             continue
-        error = str(step.get("error") or "")
-        found = re.search(r'permission check failed for command "(.*?)": ', error, re.DOTALL)
+        when = _step_time(step)
+        if since is not None and (when is None or when < since):
+            continue
+        found = re.search(r'permission check failed for command "(.*?)": ', str(step.get("error") or ""), re.DOTALL)
         if found:
             refused = found.group(1)
-    return refused
+        for call in step.get("tool_calls") or []:
+            command = (call.get("args") or {}).get("CommandLine")
+            if command:
+                attempted = str(command).strip('"')
+    if refused is not None:
+        return refused
+    return f"{attempted} (last command attempted; the refusal itself was not logged)" if attempted else None
 
 
 def run_review(tool: str, session: str, wp: str, prompt: str, resume: str | None) -> int:
@@ -238,7 +259,7 @@ def run_review(tool: str, session: str, wp: str, prompt: str, resume: str | None
         print("Reviewer quota exhausted - no review ran.")
         return EXIT_QUOTA
     if REFUSED_MARKER in output:
-        refused = last_refused_command() if tool == "antigravity" else None
+        refused = last_refused_command(since=started) if tool == "antigravity" else None
         print("Reviewer run aborted on a refused tool" + (f": {refused}" if refused else "."))
         print("If the command is read-only and safe, extend the allow-list deliberately, then --resume.")
         return EXIT_REFUSED

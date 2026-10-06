@@ -21,6 +21,9 @@ ALLOWED = [
     'grep -n "JRM" aiems/governance/reviews/x.md',
     "head -n 20 scripts/run_reviewer.py",
     "wc -l scripts/run_reviewer.py",
+    "git show 7f1fa93:scripts/validate_repository.py | grep -iE 'def parse_register_rows|Status' -B 2 -A 5",
+    "grep -n 'x' aiems/governance/reviews/x.md",
+    "git log -1 7f1fa93",
     "python -m pytest -q",
     "python -m pytest -q scripts/tests",
     "python -m ruff check scripts",
@@ -53,6 +56,9 @@ REFUSED = [
     'python scripts/aiems_bridge.py return-findings ESR-0061 WP1c --message "ok"; rm x',
     "python scripts/aiems_bridge.py submit-response ESR-0061 WP1c --message x",
     "rm -rf scripts",
+    "git log -1 --format=%B 7f1fa93",
+    "cat a | grep 'x' -A 3 > b",
+    "git show x | grep y -A 2 | sh",
 ]
 
 
@@ -152,7 +158,9 @@ def test_run_review_detects_an_antigravity_refusal_and_names_the_command(monkeyp
     log = tmp_path / "brain/conv1/.system_generated/logs/transcript.jsonl"
     log.parent.mkdir(parents=True)
     error = 'permission check failed for command "git grep x | wc -l": user denied permission'
-    log.write_text(json.dumps({"step_index": 3, "status": "ERROR", "error": error}) + "\n", encoding="utf-8")
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    step = {"step_index": 3, "status": "ERROR", "error": error, "created_at": now}
+    log.write_text(json.dumps(step) + "\n", encoding="utf-8")
 
     assert run_reviewer.run_review("antigravity", "ESR-0061", "WP1c", "Review.", None) == run_reviewer.EXIT_REFUSED
     assert "git grep x | wc -l" in capsys.readouterr().out
@@ -184,3 +192,22 @@ def test_install_settings_merges_without_removing_or_denying(monkeypatch, tmp_pa
     assert "deny" not in data["permissions"]
     assert added == len(run_reviewer.load_allowlist())
     assert run_reviewer.check_settings() == []
+
+
+def test_refusal_report_ignores_a_previous_runs_refusal(tmp_path):
+    """First use (ESR-0061): a resumed conversation still held the earlier
+    refusal, and it was reported again instead of the new one."""
+
+    log = tmp_path / "conv/.system_generated/logs/transcript.jsonl"
+    log.parent.mkdir(parents=True)
+    old = {"created_at": "2026-10-06T10:18:50Z", "status": "ERROR",
+           "error": 'permission check failed for command "git log --format=%B x": user denied'}
+    new_call = {"created_at": "2026-10-06T10:19:50Z",
+                "tool_calls": [{"name": "run_command", "args": {"CommandLine": "\"git show x | grep 'y' -B 2\""}}]}
+    log.write_text(json.dumps(old) + "\n" + json.dumps(new_call) + "\n", encoding="utf-8")
+    since = datetime(2026, 10, 6, 10, 19, 10, tzinfo=UTC)
+
+    report = run_reviewer.last_refused_command(since=since, brain=tmp_path)
+
+    assert "--format=%B" not in report
+    assert report.startswith("git show x | grep 'y' -B 2") and "last command attempted" in report
