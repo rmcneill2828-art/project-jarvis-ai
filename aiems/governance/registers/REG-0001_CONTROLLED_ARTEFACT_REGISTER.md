@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.731
+**Version:** 3.737
 
 
 ---
@@ -119,17 +119,17 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
 | ADR-0023 | Architecture Decision Record | Version 1.0 Provider Strategy | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0061 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.731 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.737 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.218 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.219 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0004 | Standard | Validation and Quality Assurance Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0006 | Standard | Configuration and Secrets Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
-| TPL-0001 | Template | Engineering Execution Package Template | 0.2 | Draft | Programme Sponsor & Chief Engineering Advisor | CHR-0002 | `aiems/templates/` |
+| TPL-0001 | Template | Engineering Implementation Package Standard and Template | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0002 | `aiems/templates/` |
 | RBL-0004 | Repository Baseline | ESR-0004 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0008 | Repository Baseline | ESR-0007 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
@@ -165,11 +165,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0039 | Repository Baseline | ESR-0059 Repository Baseline (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0059 | `aiems/governance/baselines/` |
 | RBL-0040 | Repository Baseline | ESR-0060 Repository Baseline (Retrospective Review Discharged; Backend Process-Tree Termination) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0060 | `aiems/governance/baselines/` |
 | RBL-0038 | Repository Baseline | ESR-0058 Repository Baseline (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0058 | `aiems/governance/baselines/` |
-| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 2.20 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
-| RSC-0001 | v1.0 Readiness Scorecard | v1.0 Readiness Scorecard | 1.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
-| LGB-0001 | Launch Gap Backlog | Launch Gap Backlog | 1.2 | Accepted | Programme Sponsor | RSC-0001 | `aiems/governance/baselines/` |
+| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 3.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| RSC-0001 | v1.0 Readiness Scorecard | v1.0 Readiness Scorecard | 2.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| LGB-0001 | Launch Gap Backlog | Launch Gap Backlog | 1.3 | Accepted | Programme Sponsor | RSC-0001 | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.4 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
-| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 2.20 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
+| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 3.0 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.11 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | CURRENT_ARCHITECTURE | Architecture Snapshot | AIEMS Current Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/architecture/` |
@@ -341,8 +341,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0060 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0060-001 | Engineering Implementation Package | Provider-Selection and Deadline-Health Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0061 | Engineering Session Report | Engineering Session Report | 0.2 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| EIP-ESR0061-001 | Engineering Implementation Package | Release Gate, Governance and Streamlining | 0.2 | Draft - design review Conditional Pass, findings fixed; WP1a awaiting Programme Sponsor approval | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| ESR-0061 | Engineering Session Report | Engineering Session Report | 0.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| EIP-ESR0061-001 | Engineering Implementation Package | Release Gate, Governance and Streamlining | 0.5 | Draft - WP1b review Conditional Pass, finding fixed; WP1b applied, awaiting Programme Sponsor approval | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -457,6 +457,12 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.737 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b: ESR-0061 row synced 0.2 to 0.3; EIP-ESR0061-001 row synced to 0.5. Synced by hand. |
+| 3.736 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b: TPL-0001 row synced (0.2 Draft to 1.0 Approved; retitled Engineering Implementation Package Standard and Template, filename kept); JARVIS_CAPABILITY_READINESS_MATRIX row synced 2.20 to 3.0. Synced by hand: bump_version.py does not match these rows (R7, WP1c). |
+| 3.735 | 6 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.218 to 1.219) following: ESR-0061 WP1b per EIP-ESR0061-001: EBG-0008, EBG-0066, EBG-0130 and EBG-0134 Completed (TPL-0001 1.0; RSC-0001 2.0 Section 4B; RSC-0001 2.0 and LGB-0001 1.3; PCB-0001 3.0 and the Capability Readiness Matrix 3.0). |
+| 3.734 | 6 October 2026 | Claude Engineering Implementer | Aligned PCB-0001 version (2.20 to 3.0) following: ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0134): first content re-audit since ESR-0050 - UXP, provider, voice and agent rows refreshed against delivered code (Kokoro, three agents, Memory Management panel, packaged sidecar, job-object termination, retry/deadline); new Personal Memory and Observability rows; ADR-0023 direction recorded; constraints updated. |
+| 3.733 | 6 October 2026 | Claude Engineering Implementer | Aligned LGB-0001 version (1.2 to 1.3) following: ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0130): Must-Ship reconciled with RSC-0001 2.0's fresh-install scoring; eight go-live blockers allocated to WP2-WP8. |
+| 3.732 | 6 October 2026 | Claude Engineering Implementer | Aligned RSC-0001 version (1.1 to 2.0) following: ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0130, EBG-0066): re-scored against a fresh install on Windows and macOS (Windows 2 Pass/3 Partial/3 Fail; macOS no build); Version 1.0 release requirements (4A); go/no-go dimensions and AIEMS maturity index (4B); release-candidate checklist (4C); contradiction with LGB-0001 resolved. |
 | 3.731 | 6 October 2026 | Claude Engineering Implementer | Aligned UAM-0001 version (1.6 to 1.7) following: ESR-0061 personal-data minimisation (D23, Programme Sponsor instruction 6 October 2026): a household minor's age and device details replaced with neutral wording (a household member under 18; the household Mac, Apple Silicon). |
 | 3.730 | 6 October 2026 | Claude Engineering Implementer | Aligned ADR-0023 version (1.0 to 1.1) following: ESR-0061 personal-data minimisation (D23, Programme Sponsor instruction 6 October 2026): a household minor's age and device details replaced with neutral wording (a household member under 18; the household Mac, Apple Silicon). |
 | 3.729 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1: ESR-0061 row synced 0.1 to 0.2 and EIP-ESR0061-001 row 0.1 to 0.2 (design review Conditional Pass, findings fixed). Synced by hand. |

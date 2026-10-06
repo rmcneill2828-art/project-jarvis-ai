@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0061 |
 | Title | Engineering Session Report |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -39,6 +39,12 @@ WP0A/WP0B session initialisation followed PBK-0001 and [[GDE-0001_PROJECT_KNOWLE
 | **WP1 design drafted** | [[EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING|EIP-ESR0061-001]] v0.1: WP1 split into WP1a (governance, exact text, one approval under rule A5), WP1b (release gate, docs) and WP1c (tooling, code); WP2's need for the second reviewer makes WP1c a prerequisite of WP2's implementation review (flagged). |
 | **WP1 design review** | Bridge `ESR-0061`/`WP1`; genuine GitHub Copilot CLI review with write denied (2026-10-06T07:19:31Z, `sender: reviewer`) of WR-ESR0061-001 and EIP-ESR0061-001 v0.1: **Conditional Pass**, no High. Medium: ADR-0008's own Review Trigger is met but it was left untouched. Low: Capability-Honest Interface's parent section; UAM-0001 8.1 dropped the EBG-0028 pointer. All three fixed in EIP v0.2. The reviewer also posted a stray contentless "test" entry first, and its tool permissions again blocked its validator/pytest runs (the gap R8 fixes). EBG-0016's disposition corrected to Rejected (EBR-0001 defines no "Closed - not adopted" status). |
 | **WP1a applied to the working tree (uncommitted)** | Section 5 text applied verbatim from EIP v0.2's quote blocks by script, so the approval covers the real diff: PBK-0001 1.49, COC-0001 1.31, UAM-0001 1.6, JARVIS_PRODUCT_ARCHITECTURE 1.4, ADR-0008 1.1, new ADR-0023 1.0, GDE-0001 1.4, EBR-0001 1.218 (eight dispositions, EBG-0110 text, EBG-0161 to EBG-0169), REG-0001, REG-0002. `bump_version.py` defaulted the author to "Claude Engineering Reviewer" (corrected by hand) and does not match the JARVIS_PRODUCT_ARCHITECTURE row (synced by hand) - both R7 inputs for WP1c. Awaiting the Programme Sponsor's single approval (A5). |
+| **WP1a committed** | `1978070`, approved via the Sponsor Approval Service at `e153874` (2026-10-06T07:41:15Z, empty note), gated through `submit-response` (07:42:32Z). CI run 37431602802 green on all five jobs. |
+| **Copilot quota exhausted** | The post-commit Copilot review of `1978070` stopped on the monthly quota before recording a verdict (only five days after the 1 October reset); a fresh probe confirmed it. Next reset 1 November 2026. |
+| **Second reviewer: Antigravity CLI** | Programme Sponsor decision "A" (pull the second reviewer forward). Verified 6 October: Google replaced Gemini CLI with Antigravity CLI on 18 June 2026 (for unpaid tiers, and per Google's blog for AI Pro/Ultra too), so D19's named route no longer exists. Antigravity CLI 1.2.2 was already installed and signed in on the Programme Sponsor's Google AI Pro subscription (no new cost). Terms: Google may use prompts and code ("Interactions") to improve its products and models, with human review - acceptable for this public repository with no household personal data in prompts. Run headless with a Gemini model only (`gemini-3.1-pro-high`), under a read-only `permissions.allow` list in `~/.gemini/antigravity-cli/settings.json` (reads; read-only git, cat and grep with one read-only filter; pytest, ruff, the validator, `return-findings`); file writes, `git push`/`branch`, `--output=` and chained commands stay refused. Headless mode aborts a run on any refused tool, so the list was widened in read-only steps as reviews hit them. |
+| **WP1a post-commit review** | Antigravity (2026-10-06T08:21:32Z, `sender: reviewer`): **Fail**, one High - WR-ESR0061-001 was in the commit but not in the EIP's Section 5. **Overridden by the Programme Sponsor under D19** (direct chat decision "1"): the approval request named the Working Report and the plan required it; the real gap - Section 5 not listing every file - is fixed by a mandatory Commit Contents section in TPL-0001 1.0 (WP1b). Detail in EIP-ESR0061-001 Section 10A. |
+| **Personal-data minimisation** | The repository is public, and WP1a added a household minor's age and device details. At the Programme Sponsor's instruction (D23), replaced with neutral wording in WR-ESR0061-001 0.12, ADR-0023 1.1 and UAM-0001 1.7: `9e6c1ea`, approved at `1978070` (08:42:43Z), `submit-response` 08:45:18Z, CI run 37438272867 green on all five jobs. The earlier wording remains in git history; no history rewrite proposed. |
+| **WP1b review and application** | EIP-ESR0061-001 Section 6 reviewed by Antigravity (08:47:53Z): **Conditional Pass** - anchors, factual claims, fresh-install scores, the EBG-0130 resolution and the TPL-0001 rewrite all confirmed; one Medium (a JRM-0001 sweep and PST-0001 Section 8 update wrongly cited as plan scope) fixed by removing both. Two further disclosed v0.5 changes: TPL-0001 keeps its filename; one sentence added to LGB-0001 Section 7. Applied to the working tree from EIP v0.5: RSC-0001 2.0, LGB-0001 1.3, PCB-0001 3.0, Capability Readiness Matrix 3.0, TPL-0001 1.0, EBR-0001 1.219 (EBG-0008/0066/0130/0134 Completed), REG-0001. Awaiting the Programme Sponsor's single approval (A5). |
 
 ---
 
@@ -62,8 +68,8 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1a | Governance enactment ([[EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING|EIP-ESR0061-001]] Section 5) | Design review Conditional Pass, findings fixed; applied, awaiting Programme Sponsor approval |
-| WP1b | Release gate (EBG-0130, 0066, 0134, 0008) | Design outlined; exact text drafted while WP1a is approved (D22) |
+| WP1a | Governance enactment ([[EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING|EIP-ESR0061-001]] Section 5) | Complete - `1978070`, CI green; post-commit High overridden by the Programme Sponsor. Personal-data follow-up `9e6c1ea`, CI green; its post-commit review pending |
+| WP1b | Release gate (EBG-0130, 0066, 0134, 0008) | Review Conditional Pass, finding fixed; applied, awaiting Programme Sponsor approval |
 | WP1c | Delivery tooling and second reviewer (EBG-0169) | Design outlined |
 | WP2 | Platform Foundation: Hardening, Freeze, macOS | Not started - design drafted while WP1 is in review (D22) |
 | Session-wide | Independent repository verification and baseline determination | Not started - after Mac visit 1 |
@@ -74,5 +80,6 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.3 | 6 October 2026 | Claude Engineering Implementer | WP1a committed (1978070, CI green); Copilot quota exhausted; Antigravity CLI (Gemini) set up as the D19 second reviewer; WP1a post-commit High overridden by the Programme Sponsor; personal-data minimisation committed (9e6c1ea, CI green); WP1b review Conditional Pass, finding fixed, text applied - awaiting approval. |
 | 0.2 | 6 October 2026 | Claude Engineering Implementer | WP1 design review Conditional Pass (Copilot CLI), three findings fixed in EIP-ESR0061-001 v0.2; WP1a text applied to the working tree, awaiting the Programme Sponsor's single approval (A5). |
 | 0.1 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 opened as go-live Session A (WP1-WP2) under rule A7. WP0A/WP0B complete: tree clean at e153874, CI green, pytest 759 passed/1 skipped, validator 0 errors; Copilot CLI available. Go-live readiness review registered as WR-ESR0061-001 v0.11; WP1 design drafted as EIP-ESR0061-001 v0.1. No code changed. |

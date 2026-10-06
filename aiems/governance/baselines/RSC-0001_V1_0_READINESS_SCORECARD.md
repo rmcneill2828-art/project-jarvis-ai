@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | RSC-0001 |
 | Title | v1.0 Readiness Scorecard |
-| Version | 1.1 |
+| Version | 2.0 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -31,32 +31,78 @@ RSC-0001 does not itself approve, prioritise or schedule any implementation. It 
 
 # 3. Scoring Method
 
-Each MLP 0.1 item is scored against the live repository (code, tests and controlled artefacts), not against architecture intent or backlog specification-completion alone - a specification being "Complete" (e.g. a GAM-0001 section, an ADR) is not treated as equivalent to the capability itself being implemented and reachable through the live running product.
+From version 2.0 (ESR-0061 WP1b, EBG-0130) each item is scored against a **fresh install from the release installer on a clean machine, separately for Windows and macOS** - not against the development checkout. A development machine has repository files, environment variables and locally installed models that a household install does not, so scoring there overstated readiness (version 1.1 scored 7 Pass against the checkout; the same product fails three items on a fresh install). Specification completeness is still never treated as the capability itself.
 
 | Score | Meaning |
 |-------|---------|
-| **Pass** | Implemented, reachable through the live running product (UXP and/or First Light), and live-verified at least once. |
-| **Partial** | Implemented at foundation level only, or reachable but materially incomplete against the MLP item's own description. |
-| **Fail** | Not implemented; architecture/specification may exist, but no working code path exists. |
+| **Pass** | Works on a fresh install of that platform with no developer setup, through the live product, verified at least once. |
+| **Partial** | Works on a fresh install but is materially incomplete against the item's description, or breaches [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 10 (capability honesty). |
+| **Fail** | Does not work on a fresh install of that platform, including where no build for that platform exists. |
 
 ---
 
 # 4. MLP 0.1 Scorecard
 
-Per [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5, MLP 0.1 "shall include" the following eight items.
+Per [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5, MLP 0.1 "shall include" the following eight items. Version 1.0 is MLP 0.1 ([[JARVIS_PRODUCT_ARCHITECTURE]] Section 10). Scored at ESR-0061 WP1b from the go-live readiness review ([[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.1, 2 October 2026) against `v0.1.0`-era code.
 
-| MLP 0.1 Item | Score | Evidence |
-|--------------|-------|----------|
-| GUI Dashboard | **Pass** | Guardian Desktop Platform Shell (Tauri + React, `src/`, `src-tauri/`) is live, packaged as a distributable installer since ESR-0032; capability/diagnostics panels derive from live `platform.status` data. |
-| Chat Interface | **Pass** | Live conversation workspace reachable through both the Tkinter First Light shell and the UXP; the UXP chat input calls the real backend over a duplex stdio JSON-RPC bridge (`python -m jarvis --ipc-stdio`, [[ADR-0019_UXP_BACKEND_INTEGRATION_ARCHITECTURE|ADR-0019]]), not a static mock-up. |
-| Text Responses | **Pass** | `GuardianRuntime.converse()` returns real generated or deterministic-fallback text through the same live path as Chat Interface; a real external provider (OpenAI or Gemini) is wired into the default path when credentialed (EBG-0070, ESR-0022), with Ollama and a deterministic local provider as further fallbacks. |
-| Animated Avatar / Orb | **Partial** | The Guardian Orb is Guardian's visual presence ([[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 8) and renders the live repository knowledge graph as a 2D force-directed, circle-confined visualisation, genuinely animating today via a continuous `requestAnimationFrame` rotation loop (`src/GuardianOrbGraph.jsx`'s `drawFrame`/`rotateNode`, ESR-0019 WP2) - not a static placeholder. The MLP's "animated" qualifier is therefore met at a basic level; true 3D rendering and knowledge-graph Phases 2-4 (cluster illumination, agent-traversal animation, Guardian reasoning connection) remain not implemented, which is why this is Partial rather than Pass. |
-| Basic Voice Input | **Pass** | Push-to-talk microphone capture is implemented (Voice faculty Phase 6 Increment B, `sentinel/whisper_provider.py`/`jarvis/interfaces/voice.py`, EBG-0117, [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]], ESR-0047), Sentinel-gated exactly like the existing speech-output path and reachable through the live UXP's mic button (conditionally rendered on real-time capability detection). Live-verified: Guardian's own Piper-synthesized speech was transcribed back by Guardian's own Whisper path via the real `guardian.transcribe` RPC, exact text match. No wake-word/continuous listening, speaker identification or role enforcement - deliberately out of MLP 0.1's "basic" bar. |
-| Basic Conversation Memory | **Pass** | Personal Memory is implemented at foundation level, consent-gated (`jarvis/memory/`, ESR-0027 WP1) and wired into live conversation via the Guardian Cognitive Core, which composes persona, retained Personal Memory and bounded recent conversation history before each provider call (`jarvis/guardian/runtime.py`, ESR-0039). This satisfies the MLP's "basic" qualifier; Session and Shared-Family memory tiers ([[MDS-0001_MEMORY_AND_DATA_STORAGE_ARCHITECTURE|MDS-0001]] Sections 6.1/6.3) are a later-phase capability, not part of MLP 0.1's own stated scope. |
-| User Profiles | **Pass** | Local, unauthenticated profile create/list/select is implemented (`jarvis/identity/`, EBG-0116, [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]], ESR-0046), role-tagged against [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]] Section 8.1's four household roles and reachable through a real UXP profile picker replacing the previous static placeholder. Credentialed authentication, memory scoping by profile and enforcement of the roles' differing authority remain not implemented - deliberately deferred, disclosed follow-on work beyond MLP 0.1's "basic" bar. |
-| Service Status Dashboard | **Pass** | `platform.status` JSON-RPC method exposes a live service/health model consumed by the UXP's diagnostics panels, not the original lightweight model alone. |
+| MLP 0.1 Item | Windows (fresh install) | macOS | Gap | Closed by |
+|--------------|-------------------------|-------|-----|-----------|
+| GUI Dashboard | **Partial** | **Fail** (no build) | Long scrolling page; stale static capability labels and dead controls (a UAM-0001 Section 10 breach); fonts not bundled | Go-live WP2 (macOS), WP4 (redesign, EBG-0164) |
+| Chat Interface | **Partial** | **Fail** | Works, but the composer sits below the fold at 1280x820 | WP4 |
+| Text Responses | **Fail** | **Fail** | No provider answers on a fresh install: cloud keys only via environment variables, and Ollama is neither detected nor guided | WP3 (EBG-0163), WP5 (EBG-0165) |
+| Animated Avatar / Orb | **Fail** | **Fail** | The Orb draws the repository knowledge graph, so an installed machine shows no Orb; scored against UAM-0001 Section 8.2's Version 1.0 criteria (decision D3) | WP4 (EBG-0164) |
+| Basic Voice Input | **Fail** | **Fail** | Voice models are not provisioned by the installer; macOS microphone permission and audio format unverified | WP7 (EBG-0167) |
+| Basic Conversation Memory | **Pass** | **Fail** | Consent-gated Personal Memory, profile-scoped, with revocation, backup and restore | WP2 (macOS build) |
+| User Profiles | **Pass** | **Fail** | Profiles work; roles are enforced for memory only, so the Child role is not yet safe (see 4A) | WP2; WP6 (EBG-0166) |
+| Service Status Dashboard | **Partial** | **Fail** | Live `platform.status`, but surfaces repeat and some labels are static | WP4 |
 
-**Score: 7 Pass, 1 Partial, 0 Fail (of 8 MLP 0.1 items).**
+**Windows: 2 Pass, 3 Partial, 3 Fail. macOS: 8 Fail (no build). Not ready for Version 1.0.**
+
+# 4A. Version 1.0 Release Requirements Beyond the Eight Items
+
+Programme Sponsor decisions of 2 October 2026 add requirements that MLP 0.1's eight items do not name. They gate Version 1.0 equally.
+
+| Requirement | Source | Status | Closed by |
+|-------------|--------|--------|-----------|
+| macOS (Apple Silicon) build | D12, D14 | **Fail** | WP2 (EBG-0162) |
+| Provider strategy: Ollama default, consent-confirmed Claude escalation, spend cap, OpenAI/Gemini unregistered | [[ADR-0023_VERSION_1_0_PROVIDER_STRATEGY|ADR-0023]] | **Fail** | WP3 (EBG-0163) |
+| Household safety for the Child role: Administrator PIN, local moderation, recorded parental consent, AI disclosure | D17, D25, ADR-0023 Section 3 | **Fail** | WP6 (EBG-0166) |
+| Data rights: per-profile erasure and export, retention limits, privacy notice | D23 | **Fail** | WP5 (EBG-0165) |
+| User guide, parents' guide and public "Children and privacy" page | ADR-0023 Section 3 | **Fail** | WP8 (EBG-0168) |
+
+# 4B. Go/No-Go Dimensions (EBG-0066)
+
+The Programme Sponsor's go/no-go decision at go-live WP9 reads these six dimensions. Each is **Ready** only when every listed criterion holds; the decision remains the Programme Sponsor's alone.
+
+| Dimension | Ready when | Current |
+|-----------|-----------|---------|
+| Product readiness | Every Section 4 item Pass on both platforms | Not ready |
+| Release requirements | Every Section 4A item Pass | Not ready |
+| Safety | Child-role safeguards live-verified on the household Mac; moderation on both input and output | Not ready |
+| Release-candidate checklist | Section 4C fully passed on the tagged build | Not run |
+| Review coverage | Every commit since the last baseline independently reviewed before and after commit; high-risk WPs reviewed by both reviewers | Ready to date |
+| Repository integrity | CI green on Linux, Windows and macOS; validator 0 errors; no open High backlog item allocated to Version 1.0 | Partial (no macOS CI) |
+
+**AIEMS maturity index.** The same evidence also answers how mature the engineering system itself is, without a separate scoring artefact. At each baseline, record: validator errors and warnings; the share of commits since the last baseline with both pre- and post-commit independent review; the count and age of open High backlog items; and the CI platforms covered. At ESR-0061 WP1b: 0 errors and 346 warnings (330-plus of one false-positive class, triaged in WP1c); every commit since ESR-0058 independently reviewed before commit, but the post-commit review of `1978070` (WP1a) was cut short by Copilot's quota (see the review record); open High items are EBG-0130 and six go-live items registered at WP1a (EBG-0162 to EBG-0166, EBG-0168); CI covers Linux and Windows.
+
+# 4C. Release-Candidate Checklist
+
+The actual release gate, run at go-live WP9 on the tagged build, on Windows Sandbox, the household PC and the household Mac:
+
+1. CI green on the tag: Linux, Windows and macOS.
+2. Installers (`.exe`, `.dmg`) and their checksums published by `release.yml`.
+3. Clean install and first launch on each machine with no developer setup.
+4. The same look on WebView2 and WKWebView, at two display scalings; no dead controls, scaffolding text or static capability labels.
+5. The presence Orb meets UAM-0001 Section 8.2 with no repository present.
+6. The functionality-preservation inventory (EBG-0164) passes on both engines.
+7. Guided first run completes; a first conversation succeeds with local Ollama only.
+8. Escalation: suggested, confirmed and labelled with a key; honestly unavailable without one; the spend cap falls back to Ollama.
+9. The honest no-provider path works.
+10. Voice installs and works, including the macOS microphone permission prompt; the voice-unavailable path is honest.
+11. Memory: consent, revocation, per-profile export and erasure, backup and restore.
+12. Profiles and roles: Administrator PIN; the Child role cannot change settings or profiles; moderation and consent records work.
+13. Upgrade over `v0.1.0` data on Windows preserves memory and profiles.
+14. Household soak (D7) completed with no unresolved High finding.
 
 ---
 
@@ -78,17 +124,13 @@ The independent Codex `govreview` finding that prompted this artefact also named
 
 # 6. Interpretation
 
-JARVIS is **not yet at v1.0** if v1.0 is defined as MLP 0.1 fully delivered, but the gap has narrowed materially since this scorecard's original scoring: both items that scored Fail (Basic Voice Input, User Profiles) are now Pass, resolved at ESR-0047 and ESR-0046 respectively. Only one item, Animated Avatar/Orb, remains short of full Pass - genuinely animating today but not yet 3D or connected to the Guardian Orb knowledge-graph vision's later phases.
-
-The 7 Pass items represent genuine, live-verified capability, not aspirational claims - each cites a specific code path and a live-verification record in its originating Engineering Session Report. The prerequisite this scorecard originally identified (user identity/profile plumbing) has been closed, which is also what unblocked Basic Voice Input's own delivery and now leaves the path clear for Family Profiles (MLP 0.3) and full HITL/family-safety wiring (MLP 0.8), neither of which is itself complete yet - both remain gated on role-authority enforcement, which EBG-0116/EBG-0117 deliberately did not implement.
-
-This artefact does not recommend implementation order - that remains for a future Work Package or Engineering Session, informed by [[JRM-0001_PROJECT_ROADMAP|JRM-0001]]'s existing phase sequencing and [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]]'s backlog.
+JARVIS is **not ready for Version 1.0**. Version 1.1 of this scorecard (7 Pass, 1 Partial) scored the development checkout; scored against a fresh install, three items fail on Windows and every item fails on macOS, which has no build yet. This resolves the contradiction EBG-0130 recorded between this scorecard and [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]]: the Orb is a genuine launch blocker under UAM-0001 Section 8.2, and LGB-0001 now lists the same blockers. Every Fail and Partial in Sections 4 and 4A is allocated to a go-live Work Package in [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]]; this artefact still authorises none of them.
 
 ---
 
 # 7. Maintenance
 
-RSC-0001 shall be refreshed whenever a Work Package changes the score of any MLP 0.1 item, and reviewed at minimum whenever [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] is refreshed, since both draw on the same live repository evidence.
+RSC-0001 is re-scored whenever a Work Package changes any Section 4 or 4A score, and in full at each session-closure baseline. Section 4C is run once, at go-live WP9, on the tagged build. Section 5 is unchanged.
 
 ---
 
@@ -111,5 +153,6 @@ RSC-0001 shall be refreshed whenever a Work Package changes the score of any MLP
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 2.0 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0130, EBG-0066): re-scored against a fresh install on Windows and macOS (Windows 2 Pass/3 Partial/3 Fail; macOS no build); Version 1.0 release requirements (4A); go/no-go dimensions and AIEMS maturity index (4B); release-candidate checklist (4C); contradiction with LGB-0001 resolved. |
 | 1.1 | 4 August 2026 | Claude Engineering Implementer | ESR-0048 WP1 (Documentation Debt Discipline), per this artefact's own Section 7 maintenance rule: refreshed both Fail items to Pass - Basic Voice Input (EBG-0117, ESR-0047) and User Profiles (EBG-0116, ESR-0046). Score corrected from 5 Pass/1 Partial/2 Fail to 7 Pass/1 Partial/0 Fail. Section 5's Voice/Family Profiles rows and Section 6's Interpretation updated accordingly. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | Initial RSC-0001 created at ESR-0045 WP4, per the Programme Sponsor's selection of the triggering Codex governance review's first recommendation (a single explicit v1.0 release-criteria artefact). Scored all 8 MLP 0.1 items against live repository evidence: 5 Pass, 1 Partial (Animated Avatar/Orb), 2 Fail (Basic Voice Input, User Profiles). Recorded beyond-MLP-0.1 gaps for completeness. |

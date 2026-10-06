@@ -8,11 +8,11 @@
 |-------|-------|
 | Title | JARVIS Capability Readiness Matrix |
 | Artefact ID | JARVIS_CAPABILITY_READINESS_MATRIX |
-| Version | 2.20 |
+| Version | 3.0 |
 | Status | Maintained |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
-| Last Refreshed | ESR-0050 WP1 (5 August 2026) |
+| Last Refreshed | ESR-0061 WP1b (6 October 2026) |
 
 ---
 
@@ -32,18 +32,18 @@ It supports product capability prioritisation without approving implementation b
 | Intelligence | Complete | Draft | Phase 1 implemented (Guardian Cognitive Core supplies persona/memory/history each turn, `jarvis/guardian/cognitive_core.py`) - ESR-0039; memory/history kept out of the system prompt since ESR-0059 WP7 | Implemented | Implemented (Phase 1) |
 | Memory | Complete | Partial | Personal Memory foundation implemented (`PersonalMemoryStore`/`PersonalMemoryService`, consent-gated, wired into `GuardianRuntime`) - ESR-0027 WP1 | Implemented (unit-tested: `test_memory_store.py`, `test_memory_service.py`) | Implemented (Foundation) |
 | Identity | Complete | Partial | Local, unauthenticated profile create/list/select implemented (`jarvis/identity/`), role-tagged against GAM-0001 Section 8.1's four household roles - ESR-0046 | Implemented (unit- and RPC-tested) | Implemented (Foundation) |
-| Voice | Complete | Partial | Both increments implemented: speech output (self-hosted Piper, ESR-0040/ESR-0044) and speech input (self-hosted `faster-whisper`, push-to-talk, ESR-0047) | Implemented (unit-, RPC- and Playwright-tested) | Implemented (Foundation) |
+| Voice | Complete | Partial | Both increments: Kokoro British English speech output (production, ESR-0053) and `faster-whisper` speech input (ESR-0047); not provisioned on a fresh install | Implemented (unit-, RPC- and Playwright-tested) | Implemented (Foundation) |
 | Vision | Complete | Partial | Not Started | Not Started | Planned |
 | Guardian | Complete | Complete | Implemented (Foundation) | Implemented | Implemented (Foundation) |
 | Sentinel | Complete | Complete | Implemented | Implemented | Implemented (Foundation) |
 | Platform Services | Complete | Complete | Implemented (Foundation) | Implemented | Implemented (Foundation) |
-| User Experience Platform | Complete | Complete | Implemented (Foundation) | Implemented | Implemented (Foundation) |
+| User Experience Platform | Complete | Complete (redesign directed, UAM-0001 1.6) | Implemented (Foundation): live panels incl. Agent Framework and Memory Management; Windows installer; no macOS build | Implemented | Implemented (Foundation) - Version 1.0 redesign pending |
 | Home Automation | Complete | Planned | Not Started | Not Started | Planned |
 | Productivity | Complete | Planned | Not Started | Not Started | Planned |
-| Agent Framework (specialist agents serving Guardian) | Complete | Complete | GIA's read-only local-resource observability wired as the first live specialist agent (`jarvis/agents/`, `GiaObservabilityAgent`), Sentinel-gated `ROUTINE_INTERACTION`, reachable via `guardian.agent.*` RPC - ESR-0049, EBG-0119. No UXP surface yet; `LOCAL_AGENT_ACTION` (the Action faculty) remains a hard `DENY`, not implemented. | Implemented (unit- and RPC-tested, 27 new tests) | Implemented (Foundation) |
-| Knowledge | Complete | Complete | Implemented (Phase 1-2 of 4) | Implemented | Partial |
+| Agent Framework (specialist agents serving Guardian) | Complete | Complete | Three read-only `ROUTINE_INTERACTION` agents (GIA observability, GIA engineering status, Home Assistant state query), `guardian.agent.*` RPC and a UXP panel; `LOCAL_AGENT_ACTION` a hard `DENY` | Implemented | Implemented (Foundation) |
+| Knowledge | Complete | Complete | Phases 1-2 of 4 (graph plus cluster illumination); decoupled from the Orb as its own view for Version 1.0 | Implemented | Partial |
 | Multi-device | Complete | Planned | Not Started | Not Started | Planned |
-| Provider Architecture | Complete | Complete | Implemented (live-validated, wired into production runtime per EBG-0070) | Implemented | Implemented (Foundation) |
+| Provider Architecture | Complete | Complete ([[ADR-0023_VERSION_1_0_PROVIDER_STRATEGY|ADR-0023]] direction set) | Implemented with deadline, retry and circuit breaker; Ollama-first strategy not yet implemented | Implemented | Implemented (Foundation) |
 
 ---
 
@@ -61,6 +61,7 @@ JARVIS has moved well past the early executable foundation this matrix described
 - **Identity** is newly implemented at foundation level: local, unauthenticated profile create/list/select, role-tagged against GAM-0001 Section 8.1's four household roles, delivered at ESR-0046. Since ESR-0059 WP13 memory is scoped to the active profile since ESR-0059 WP13 (each profile sees its own memories plus shared household notes); GAM-0001 Section 8.1's roles are enforced for memory since ESR-0059 WP14 (only Administrator/Adult approve saving a memory, Guests see no household notes, backup/restore Administrator-only); credentialed authentication and role authority beyond memory remain not implemented.
 - **Voice** is now implemented at foundation level for both directions: speech output (ESR-0040/ESR-0044) and speech input (ESR-0047), both self-hosted, Sentinel-gated and reachable through the live UXP.
 - **Agent Framework** moved from Proof of Concept (GIA-BOOT) to Implemented (Foundation): GIA's read-only local-resource observability is now a real, Sentinel-gated `ROUTINE_INTERACTION` specialist agent, reachable via `guardian.agent.*` RPC (ESR-0049, EBG-0119). It has no UXP surface yet, and `LOCAL_AGENT_ACTION` (the Action faculty, local device/system control) remains a hard `DENY` under GAM-0001 Section 8A - not implemented, not approached.
+- **Re-audited at ESR-0061 WP1b (EBG-0134)** against delivered code, not just pointer-synced: Kokoro production voice, three specialist agents with a UXP panel, Memory Management, packaged Windows distribution. Version 1.0 direction is set by UAM-0001 1.6 and ADR-0023; scores against a fresh install are in [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]]." Refresh History row (3.0): "ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0134): Voice, UXP, Agent Framework, Knowledge and Provider Architecture rows re-audited against delivered code; summary updated.
 
 **Vision, Home Automation, Productivity and Multi-device remain not implemented**, consistent with PST-0001's "Outstanding Observations" - these are deliberately deferred, not overlooked.
 
@@ -86,6 +87,7 @@ JARVIS implementation maturity is now foundation-level-and-live across its core 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.0 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0134): Voice, UXP, Agent Framework, Knowledge and Provider Architecture rows re-audited against delivered code; summary updated. |
 | 2.20 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 WP4: current-baseline references updated from RBL-0039 to RBL-0040, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). |
 | 2.19 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: current-baseline references updated from RBL-0038 to RBL-0039, established at ESR-0059 (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory). |
 | 2.18 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP14 (EBG-0132): recorded that GAM-0001 Section 8.1 household roles are now enforced for memory; credentialed authentication and role authority beyond memory remain open. |

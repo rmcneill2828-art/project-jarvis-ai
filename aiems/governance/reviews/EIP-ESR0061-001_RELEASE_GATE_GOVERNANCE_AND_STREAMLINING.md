@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-001 |
 | Title | Engineering Implementation Package: WP1 Release Gate, Governance and Streamlining |
-| Version | 0.2 |
-| Status | Draft - design review Conditional Pass, findings fixed; WP1a awaiting Programme Sponsor approval |
+| Version | 0.5 |
+| Status | Draft - WP1b review Conditional Pass, finding fixed; WP1b applied, awaiting Programme Sponsor approval |
 | Session | ESR-0061 |
 | Work Package | WP1 (WP1a, WP1b, WP1c) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP1 |
@@ -140,7 +140,7 @@ Version History row (1.31): "ESR-0061 WP1a per EIP-ESR0061-001: rule 52 points t
 > The Orb is Guardian's state-driven presence. For Version 1.0 it shall meet these acceptance criteria (Programme Sponsor decision D3, 2 October 2026):
 >
 > 1. **Five real states** - idle, listening, thinking, speaking, and offline/error - each driven by an actual runtime event, never by a timer or script.
-> 2. **A smooth frame rate** on the household PC and the Apple M1 Pro; the numeric target is set in the redesign Work Package's design.
+> 2. **A smooth frame rate** on the household PC and the household Mac (Apple Silicon); the numeric target is set in the redesign Work Package's design.
 > 3. **Reduced-motion support**, with the current state also shown as text.
 > 4. **Works identically with no repository present.**
 > 5. **Matches the look the Programme Sponsor approves** in the redesign prototype.
@@ -198,7 +198,7 @@ New file `aiems/governance/decisions/ADR-0023_VERSION_1_0_PROVIDER_STRATEGY.md`,
 >
 > # 1. Context
 >
-> Version 1.0 will be used in a UK household by adults and by a 15-year-old under the Child role, on Windows and macOS, and then released publicly. Today a fresh install has no working provider unless API keys are set in environment variables. Each provider's own terms decide whether a family app with a minor may use it.
+> Version 1.0 will be used in a UK household by adults and by a household member under 18 using the Child role, on Windows and macOS, and then released publicly. Today a fresh install has no working provider unless API keys are set in environment variables. Each provider's own terms decide whether a family app with a minor may use it.
 >
 > # 2. Decision
 >
@@ -309,12 +309,248 @@ Version syncs for every artefact above (including ADR-0008 1.1 in REG-0001; REG-
 
 ---
 
-# 6. WP1b - Design (exact text follows in v0.2)
+# 6. WP1b - Exact Text (Approval Under A5 Covers Exactly This)
 
-* **EBG-0130 release gate.** RSC-0001 re-scored (version 2.0) against a **fresh install on Windows and macOS**, not the development checkout, using WR-ESR0061-001 Section 4.1's assessment. The Orb item is scored against UAM-0001 Section 8.2's criteria (D3), so it is a genuine launch blocker until WP4. A new **Release-Candidate Checklist** section becomes the actual gate: CI green on the tag (Linux, Windows, macOS); installers and checksums published; install and launch smoke test on a clean machine per OS; first conversation with Ollama only; escalation with and without a key; voice unavailable and available paths; backup and restore; Child-role safeguards; household soak. LGB-0001's Must-Ship list is reconciled with RSC-0001 so the two give one answer.
-* **EBG-0066.** Scored go/no-go dimensions added to RSC-0001 (product readiness, platform coverage, safety, documentation, repository integrity, review coverage), plus a short AIEMS maturity index read from data the repository already holds (validator results, review coverage, backlog age). No new artefact.
-* **EBG-0134.** PCB-0001 and the Capability Readiness Matrix re-audited against delivered code, not just pointer-synced.
-* **EBG-0008 + R3 + R11.** TPL-0001 extended into the EIP standard: mandatory sections, numbering, lifecycle and approval rules (A4-A6); an **evidence pack** (affected-API facts checked against source, Windows and macOS coverage, CI jobs that will run it, test list, new dependencies); a **tabular ESR Work Package entry** (commit, CI run, review verdicts, decisions, deviations). Extending TPL-0001 rather than creating a new standard follows Minimise Controlled Artefact Creation.
+Drafted under D22 while WP1a was committed and post-commit reviewed. Same conventions as Section 5.
+
+**Commit contents (the WP1b commit adds or changes exactly these files and no others):** `aiems/governance/baselines/RSC-0001_V1_0_READINESS_SCORECARD.md`, `aiems/governance/baselines/LGB-0001_LAUNCH_GAP_BACKLOG.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `aiems/templates/TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE.md` (filename kept), `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, this EIP, and `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md` (session records, rule A3). **Removed in v0.5:** a JRM-0001 sweep and a PST-0001 Section 8 update, which v0.3 added citing the plan's WP1 row and Appendix A.4 - that citation was wrong (both items came from an uncommitted earlier draft; the registered plan does not list them for WP1, and its Section 11 sets JRM-0001's post-launch order at WP9). PST-0001 Section 8 is refreshed at session closure as before.
+
+## 6.1 RSC-0001 (1.1 to 2.0) - release gate (EBG-0130, EBG-0066)
+
+**6.1.1 Replace** Section 3 (Scoring Method) body with:
+
+> From version 2.0 (ESR-0061 WP1b, EBG-0130) each item is scored against a **fresh install from the release installer on a clean machine, separately for Windows and macOS** - not against the development checkout. A development machine has repository files, environment variables and locally installed models that a household install does not, so scoring there overstated readiness (version 1.1 scored 7 Pass against the checkout; the same product fails three items on a fresh install). Specification completeness is still never treated as the capability itself.
+>
+> | Score | Meaning |
+> |-------|---------|
+> | **Pass** | Works on a fresh install of that platform with no developer setup, through the live product, verified at least once. |
+> | **Partial** | Works on a fresh install but is materially incomplete against the item's description, or breaches [[UAM-0001_GUARDIAN_EXPERIENCE_ARCHITECTURE_V1|UAM-0001]] Section 10 (capability honesty). |
+> | **Fail** | Does not work on a fresh install of that platform, including where no build for that platform exists. |
+
+**6.1.2 Replace** Section 4 (MLP 0.1 Scorecard) with:
+
+> # 4. MLP 0.1 Scorecard
+>
+> Per [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5, MLP 0.1 "shall include" the following eight items. Version 1.0 is MLP 0.1 ([[JARVIS_PRODUCT_ARCHITECTURE]] Section 10). Scored at ESR-0061 WP1b from the go-live readiness review ([[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.1, 2 October 2026) against `v0.1.0`-era code.
+>
+> | MLP 0.1 Item | Windows (fresh install) | macOS | Gap | Closed by |
+> |--------------|-------------------------|-------|-----|-----------|
+> | GUI Dashboard | **Partial** | **Fail** (no build) | Long scrolling page; stale static capability labels and dead controls (a UAM-0001 Section 10 breach); fonts not bundled | Go-live WP2 (macOS), WP4 (redesign, EBG-0164) |
+> | Chat Interface | **Partial** | **Fail** | Works, but the composer sits below the fold at 1280x820 | WP4 |
+> | Text Responses | **Fail** | **Fail** | No provider answers on a fresh install: cloud keys only via environment variables, and Ollama is neither detected nor guided | WP3 (EBG-0163), WP5 (EBG-0165) |
+> | Animated Avatar / Orb | **Fail** | **Fail** | The Orb draws the repository knowledge graph, so an installed machine shows no Orb; scored against UAM-0001 Section 8.2's Version 1.0 criteria (decision D3) | WP4 (EBG-0164) |
+> | Basic Voice Input | **Fail** | **Fail** | Voice models are not provisioned by the installer; macOS microphone permission and audio format unverified | WP7 (EBG-0167) |
+> | Basic Conversation Memory | **Pass** | **Fail** | Consent-gated Personal Memory, profile-scoped, with revocation, backup and restore | WP2 (macOS build) |
+> | User Profiles | **Pass** | **Fail** | Profiles work; roles are enforced for memory only, so the Child role is not yet safe (see 4A) | WP2; WP6 (EBG-0166) |
+> | Service Status Dashboard | **Partial** | **Fail** | Live `platform.status`, but surfaces repeat and some labels are static | WP4 |
+>
+> **Windows: 2 Pass, 3 Partial, 3 Fail. macOS: 8 Fail (no build). Not ready for Version 1.0.**
+>
+> # 4A. Version 1.0 Release Requirements Beyond the Eight Items
+>
+> Programme Sponsor decisions of 2 October 2026 add requirements that MLP 0.1's eight items do not name. They gate Version 1.0 equally.
+>
+> | Requirement | Source | Status | Closed by |
+> |-------------|--------|--------|-----------|
+> | macOS (Apple Silicon) build | D12, D14 | **Fail** | WP2 (EBG-0162) |
+> | Provider strategy: Ollama default, consent-confirmed Claude escalation, spend cap, OpenAI/Gemini unregistered | [[ADR-0023_VERSION_1_0_PROVIDER_STRATEGY|ADR-0023]] | **Fail** | WP3 (EBG-0163) |
+> | Household safety for the Child role: Administrator PIN, local moderation, recorded parental consent, AI disclosure | D17, D25, ADR-0023 Section 3 | **Fail** | WP6 (EBG-0166) |
+> | Data rights: per-profile erasure and export, retention limits, privacy notice | D23 | **Fail** | WP5 (EBG-0165) |
+> | User guide, parents' guide and public "Children and privacy" page | ADR-0023 Section 3 | **Fail** | WP8 (EBG-0168) |
+>
+> # 4B. Go/No-Go Dimensions (EBG-0066)
+>
+> The Programme Sponsor's go/no-go decision at go-live WP9 reads these six dimensions. Each is **Ready** only when every listed criterion holds; the decision remains the Programme Sponsor's alone.
+>
+> | Dimension | Ready when | Current |
+> |-----------|-----------|---------|
+> | Product readiness | Every Section 4 item Pass on both platforms | Not ready |
+> | Release requirements | Every Section 4A item Pass | Not ready |
+> | Safety | Child-role safeguards live-verified on the household Mac; moderation on both input and output | Not ready |
+> | Release-candidate checklist | Section 4C fully passed on the tagged build | Not run |
+> | Review coverage | Every commit since the last baseline independently reviewed before and after commit; high-risk WPs reviewed by both reviewers | Ready to date |
+> | Repository integrity | CI green on Linux, Windows and macOS; validator 0 errors; no open High backlog item allocated to Version 1.0 | Partial (no macOS CI) |
+>
+> **AIEMS maturity index.** The same evidence also answers how mature the engineering system itself is, without a separate scoring artefact. At each baseline, record: validator errors and warnings; the share of commits since the last baseline with both pre- and post-commit independent review; the count and age of open High backlog items; and the CI platforms covered. At ESR-0061 WP1b: 0 errors and 346 warnings (330-plus of one false-positive class, triaged in WP1c); every commit since ESR-0058 independently reviewed before commit, but the post-commit review of `1978070` (WP1a) was cut short by Copilot's quota (see the review record); open High items are EBG-0130 and six go-live items registered at WP1a (EBG-0162 to EBG-0166, EBG-0168); CI covers Linux and Windows.
+>
+> # 4C. Release-Candidate Checklist
+>
+> The actual release gate, run at go-live WP9 on the tagged build, on Windows Sandbox, the household PC and the household Mac:
+>
+> 1. CI green on the tag: Linux, Windows and macOS.
+> 2. Installers (`.exe`, `.dmg`) and their checksums published by `release.yml`.
+> 3. Clean install and first launch on each machine with no developer setup.
+> 4. The same look on WebView2 and WKWebView, at two display scalings; no dead controls, scaffolding text or static capability labels.
+> 5. The presence Orb meets UAM-0001 Section 8.2 with no repository present.
+> 6. The functionality-preservation inventory (EBG-0164) passes on both engines.
+> 7. Guided first run completes; a first conversation succeeds with local Ollama only.
+> 8. Escalation: suggested, confirmed and labelled with a key; honestly unavailable without one; the spend cap falls back to Ollama.
+> 9. The honest no-provider path works.
+> 10. Voice installs and works, including the macOS microphone permission prompt; the voice-unavailable path is honest.
+> 11. Memory: consent, revocation, per-profile export and erasure, backup and restore.
+> 12. Profiles and roles: Administrator PIN; the Child role cannot change settings or profiles; moderation and consent records work.
+> 13. Upgrade over `v0.1.0` data on Windows preserves memory and profiles.
+> 14. Household soak (D7) completed with no unresolved High finding.
+
+**6.1.3 Replace** Section 6 (Interpretation) body with:
+
+> JARVIS is **not ready for Version 1.0**. Version 1.1 of this scorecard (7 Pass, 1 Partial) scored the development checkout; scored against a fresh install, three items fail on Windows and every item fails on macOS, which has no build yet. This resolves the contradiction EBG-0130 recorded between this scorecard and [[LGB-0001_LAUNCH_GAP_BACKLOG|LGB-0001]]: the Orb is a genuine launch blocker under UAM-0001 Section 8.2, and LGB-0001 now lists the same blockers. Every Fail and Partial in Sections 4 and 4A is allocated to a go-live Work Package in [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]]; this artefact still authorises none of them.
+
+**6.1.4 Replace** Section 7 (Maintenance) body with:
+
+> RSC-0001 is re-scored whenever a Work Package changes any Section 4 or 4A score, and in full at each session-closure baseline. Section 4C is run once, at go-live WP9, on the tagged build. Section 5 is unchanged.
+
+**6.1.5** Version History row (2.0): "ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0130, EBG-0066): re-scored against a fresh install on Windows and macOS (Windows 2 Pass/3 Partial/3 Fail; macOS no build); Version 1.0 release requirements (4A); go/no-go dimensions and AIEMS maturity index (4B); release-candidate checklist (4C); contradiction with LGB-0001 resolved."
+
+## 6.2 LGB-0001 (1.2 to 1.3)
+
+**Replace** Section 4's heading and body (from "# 4. Must-Ship" to just before "# 5. Defer") with:
+
+> # 4. Must-Ship (Blocks Version 1.0)
+>
+> Reconciled with [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] 2.0 at ESR-0061 WP1b (EBG-0130), so the two artefacts give one answer. **RSC-0001 holds the scores; this section lists the blocking gaps.** Version 1.0 = MLP 0.1, released on Windows and macOS (Programme Sponsor decisions D1-D2, D12).
+>
+> | Gap | RSC-0001 2.0 | Backlog | Go-live WP |
+> |-----|--------------|---------|------------|
+> | No macOS build | Section 4A Fail; every Section 4 item Fail on macOS | EBG-0162 | WP2 |
+> | No working provider on a fresh install | Text Responses Fail | EBG-0163, EBG-0165 | WP3, WP5 |
+> | Orb fails without a repository | Animated Avatar / Orb Fail | EBG-0164 | WP4 |
+> | Dashboard, chat and status breach capability honesty and layout | Three items Partial | EBG-0164 | WP4 |
+> | Voice not provisioned | Basic Voice Input Fail | EBG-0167 | WP7 |
+> | Child role not safe | Section 4A Fail | EBG-0166 | WP6 |
+> | Data rights | Section 4A Fail | EBG-0165 | WP5 |
+> | User and parents' documentation, "Children and privacy" page | Section 4A Fail | EBG-0168 | WP8 |
+>
+> The two items this section listed before version 1.3 (EBG-0116 User Identity, EBG-0117 Speech Input) remain resolved: both were delivered at ESR-0046 and ESR-0047, and both still score Pass in a development checkout. Speech input fails on a fresh install only because its models are not provisioned, which is the new EBG-0167.
+
+**Append** to Section 7 (Interpretation), after its last sentence (v0.5 addition; without it, "both Must-Ship items are now delivered" would read as contradicting the new Section 4): " Since version 1.3 (ESR-0061 WP1b), Section 4 lists eight Version 1.0 blockers from [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] 2.0's fresh-install scoring; the two items above remain delivered."
+
+**Version History** row (1.3): "ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0130): Must-Ship reconciled with RSC-0001 2.0's fresh-install scoring; eight go-live blockers allocated to WP2-WP8."
+
+## 6.3 PCB-0001 (2.20 to 3.0) - capability re-audit (EBG-0134)
+
+Rows re-audited against the code and the completion records in EBR-0001, not just pointer-synced. **Replace** these Section 4 rows (Baseline Area unchanged; Accepted Position text replaced):
+
+> | User Experience Platform (UXP) | The Tauri+React UXP is live: capability/diagnostics panels derive from live `platform.status` data; an Agent Framework panel (`src/AgentFrameworkPanel.jsx`, ESR-0050) and a Memory Management panel with per-item revocation (`src/MemoryManagementPanel.jsx`, ESR-0058, ESR-0059 WP10) reach the real backend. The Guardian Orb renders the repository knowledge graph as a 2D force-directed, circle-confined visualisation with cluster illumination (Phase 2, ESR-0051) - which means it shows no graph on an installed machine without a repository (EBG-0148 made that failure honest at ESR-0059 WP11; decoupling the Orb from the graph is go-live WP4, EBG-0164, per UAM-0001 1.6). Distributed as a Windows installer with a packaged backend sidecar (ESR-0032, EBG-0102); a busy or hung backend is terminated with the app (Windows job object, ESR-0060, EBG-0154). No macOS build (EBG-0162). The Tkinter GUI remains the separate legacy First Light shell. |
+> | Provider abstraction framework | OpenAI or Gemini is wired into the default conversation path when credentialed (`JARVIS_PRIMARY_PROVIDER`, normalised since ESR-0060, EBG-0155), the other as a credential-gated secondary, Ollama as the local fallback; no echo fallback (ESR-0059 WP3). Every text call has a per-turn deadline (ESR-0059 WP5), retry with backoff and a circuit breaker (ESR-0059 WP6); a deadline expiry is not counted as a provider fault (ESR-0060, EBG-0156). **Direction change:** [[ADR-0023_VERSION_1_0_PROVIDER_STRATEGY|ADR-0023]] (2 October 2026) makes Ollama the Version 1.0 default with Claude API escalation and unregisters OpenAI and Gemini - not yet implemented (go-live WP3, EBG-0163). |
+> | Voice faculty | Both directions implemented. Speech output uses self-hosted Kokoro with British English voices as the production voice (ESR-0053, EBG-0125); Piper is unregistered but kept. Speech input uses self-hosted `faster-whisper`, push-to-talk, conditionally rendered on real-time capability detection (ESR-0047). Models are not provisioned by the installer, so voice is unavailable on a fresh install (go-live WP7, EBG-0167). No wake word, continuous listening or speaker identification. |
+> | Agent Framework | `jarvis/agents/` contract with three Sentinel-gated, read-only `ROUTINE_INTERACTION` specialist agents: GIA local-resource observability (ESR-0049), GIA engineering status (git, repository health and register state, ESR-0054/ESR-0055) and Home Assistant state query, registered only when `JARVIS_HOME_ASSISTANT_URL`/`_TOKEN` are set (ESR-0058, EBG-0127). Reachable via `guardian.agent.*` and the UXP Agent Framework panel. `LOCAL_AGENT_ACTION` (the Action faculty) remains a hard `DENY`. |
+> | Personal Memory | Consent-gated, profile-scoped SQLite store with role enforcement (ESR-0027, ESR-0059 WP13-WP14), per-item revocation (`memory.delete`, ESR-0059 WP10), and backup and restore (`memory.backup`/`memory.restore`, Administrator-only, ESR-0057). |
+> | Observability | Durable rotating audit trail with no conversation or memory content, bounded in-process histories and a rotating `backend.log` (ESR-0059 WP9, EBG-0144). |
+
+The last two are **new rows**, inserted after "User Identity and Profiles". In Section 3, **append** to the v2.3 paragraph: "The v3.0 refresh (ESR-0061 WP1b, EBG-0134) re-audited the UXP, provider, voice and agent rows against delivered code for the first time since ESR-0050 - they had been pointer-synced only at each baseline - and added Personal Memory and Observability rows." **Replace** Section 6's knowledge-graph Orb and sidecar-packaging bullets with:
+
+> - The Guardian Orb depends on repository data and shows no graph on an installed machine; Version 1.0 decouples it (UAM-0001 1.6, go-live WP4).
+> - Windows only: no macOS build (go-live WP2). The Windows installer is unsigned (EBG-0146, Deferred).
+
+**Version History** row (3.0): "ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0134): first content re-audit since ESR-0050 - UXP, provider, voice and agent rows refreshed against delivered code (Kokoro, three agents, Memory Management panel, packaged sidecar, job-object termination, retry/deadline); new Personal Memory and Observability rows; ADR-0023 direction recorded; constraints updated."
+
+## 6.4 JARVIS Capability Readiness Matrix (2.20 to 3.0) (EBG-0134)
+
+**Replace** these Section 2 rows:
+
+> | Voice | Complete | Partial | Both increments: Kokoro British English speech output (production, ESR-0053) and `faster-whisper` speech input (ESR-0047); not provisioned on a fresh install | Implemented (unit-, RPC- and Playwright-tested) | Implemented (Foundation) |
+> | User Experience Platform | Complete | Complete (redesign directed, UAM-0001 1.6) | Implemented (Foundation): live panels incl. Agent Framework and Memory Management; Windows installer; no macOS build | Implemented | Implemented (Foundation) - Version 1.0 redesign pending |
+> | Agent Framework (specialist agents serving Guardian) | Complete | Complete | Three read-only `ROUTINE_INTERACTION` agents (GIA observability, GIA engineering status, Home Assistant state query), `guardian.agent.*` RPC and a UXP panel; `LOCAL_AGENT_ACTION` a hard `DENY` | Implemented | Implemented (Foundation) |
+> | Knowledge | Complete | Complete | Phases 1-2 of 4 (graph plus cluster illumination); decoupled from the Orb as its own view for Version 1.0 | Implemented | Partial |
+> | Provider Architecture | Complete | Complete ([[ADR-0023_VERSION_1_0_PROVIDER_STRATEGY|ADR-0023]] direction set) | Implemented with deadline, retry and circuit breaker; Ollama-first strategy not yet implemented | Implemented | Implemented (Foundation) |
+
+Set "Last Refreshed" to "ESR-0061 WP1b (6 October 2026)". In Section 3, **append** after the Agent Framework bullet: "- **Re-audited at ESR-0061 WP1b (EBG-0134)** against delivered code, not just pointer-synced: Kokoro production voice, three specialist agents with a UXP panel, Memory Management, packaged Windows distribution. Version 1.0 direction is set by UAM-0001 1.6 and ADR-0023; scores against a fresh install are in [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]]." Refresh History row (3.0): "ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0134): Voice, UXP, Agent Framework, Knowledge and Provider Architecture rows re-audited against delivered code; summary updated."
+
+## 6.5 TPL-0001 (0.2 Draft to 1.0 Approved) - EIP standard (EBG-0008, R3, R11)
+
+TPL-0001 0.2 is a Draft template for the ESR-0009-era "Engineering Execution Package" prompt format; no Work Package has used it since EIPs replaced it. **Proposal: rewrite it as the EIP standard and template** rather than create a new standard (Minimise Controlled Artefact Creation). Title becomes "Engineering Implementation Package Standard and Template"; Version 1.0, Status Approved, Effective Date 6 October 2026. **The filename is kept** (`TPL-0001_ENGINEERING_EXECUTION_PACKAGE_TEMPLATE.md`): renaming would mean editing links inside nine files, including archived chat histories and closed session records, so only the title changes (v0.5 change - v0.4 proposed a rename). Sections 2 onward are replaced with:
+
+> # 2. Purpose
+>
+> Defines the format, lifecycle, numbering and approval rules for an Engineering Implementation Package (EIP), and gives its template. Replaces the ESR-0009-era Engineering Execution Package template (TPL-0001 0.2), which no Work Package has used since EIPs superseded it. EBG-0008, ESR-0061 WP1b.
+>
+> # 3. Numbering and Location
+>
+> `EIP-ESR<session>-<nnn>_<TITLE>.md` in `aiems/governance/reviews/`, numbered in creation order within the session, registered in REG-0001 when created.
+>
+> # 4. Lifecycle and Approval
+>
+> | Step | Code WP (rule A6) | Documentation-only WP (rule A5) |
+> |---|---|---|
+> | 1 | EIP drafted with its evidence pack (Section 6) and commit contents | EIP drafted with the exact text and the full commit contents (Section 5, item 4A) |
+> | 2 | Independent design review (both reviewers if high-risk) | Independent review |
+> | 3 | Programme Sponsor design approval (chat; no commit) | - |
+> | 4 | Implement; independent review of the built result | Apply the exact text |
+> | 5 | Sponsor Approval Service approval; `submit-response`; commit | Sponsor Approval Service approval; `submit-response`; commit |
+> | 6 | CI on every platform; post-commit pre-check and independent review | Same |
+>
+> Version 0.x while in draft; 1.0 when approved and implemented. Every review verdict and every change made after a review is recorded in the EIP itself.
+>
+> # 5. Mandatory Sections
+>
+> 1. **Document Control** - ID, title, version, status, session, Work Package, risk class (standard or high-risk).
+> 2. **Purpose** - what is delivered and which backlog items it closes.
+> 3. **Repository Context Investigated** - what the Engineering Implementer read and verified, with file references.
+> 4. **Scope** - for code, the design; for documentation, the exact text.
+> 4A. **Commit Contents** - every file the commit will add or change, including session records (the ESR, register rows, Working Reports, the EIP itself). An A5 approval covers exactly these files and this text; nothing else may enter that commit.
+> 5. **Evidence Pack** - Section 6 below (code WPs).
+> 6. **Explicitly Out of Scope** - including disclosed residuals.
+> 7. **Validation Requirements** - tests, validator, CI jobs, live checks.
+> 8. **Questions for the Engineering Reviewer.**
+> 9. **Review Record** - each verdict, its findings and their dispositions.
+> 10. **Version History.**
+>
+> # 6. Evidence Pack (R3)
+>
+> Built from ESR-0060 WP2, where three design rounds missed facts a source check would have caught. Required for every code WP before design review:
+>
+> | Item | Content |
+> |---|---|
+> | API facts | Every library, OS or framework behaviour the design relies on, checked against source or documentation, with the reference |
+> | Platform coverage | Windows and macOS behaviour, stated separately; any platform-specific code path named |
+> | CI | Which CI jobs will exercise the change, on which platforms; any CI change needed |
+> | Tests | The test list, and which tests are shown failing on the old code |
+> | New dependencies and features | Every new package, crate, crate feature, OS permission or capability - listed so the design approval covers them (rule A4) |
+>
+> # 7. ESR Work Package Entry (R11)
+>
+> An Engineering Session Report records each Work Package as one table row; detail stays in the EIP and the bridge transcript.
+>
+> | WP | EIP | Commit | CI run | Design review | Post-commit review | Decisions | Deviations |
+> |---|---|---|---|---|---|---|---|
+> | WPn | EIP-ESRxxxx-nnn vX | `abc1234` | run id, result | reviewer, verdict, findings | reviewer, verdict | approvals with timestamps | anything not as designed |
+>
+> # 8. Template
+>
+> ```text
+> # EIP-ESRxxxx-nnn - <Title>
+> # 1. Document Control   (table: ID, Title, Version, Status, Session, Work Package, Risk class)
+> # 2. Purpose
+> # 3. Repository Context Investigated
+> # 4. Scope
+> # 4A. Commit Contents
+> # 5. Evidence Pack
+> # 6. Explicitly Out of Scope
+> # 7. Validation Requirements
+> # 8. Questions for the Engineering Reviewer
+> # 9. Review Record
+> # 10. Version History
+> ```
+>
+> # 9. Related Artefacts
+>
+> [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] (Approval Economy, Delivery Cadence and Independent Review), [[ADR-0022_SPONSOR_APPROVAL_SERVICE|ADR-0022]], [[CHR-0002_ENGINEERING_CONSTITUTION|CHR-0002]].
+>
+> # 10. Version History
+>
+> | Version | Date | Author | Summary |
+> |---|---|---|---|
+> | 1.0 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0008, R3, R11): rewritten as the EIP standard and template - numbering, lifecycle and approval (A5/A6), mandatory sections including the full commit contents, evidence pack, tabular ESR entry. Replaces the unused 0.2 Engineering Execution Package template. |
+> | 0.2 | (unchanged) | | |
+
+(The 0.2 and earlier history rows are kept beneath the new 1.0 row.)
+
+## 6.6 EBR-0001 and REG-0001
+
+EBG-0008, EBG-0066, EBG-0130 and EBG-0134 set to Completed, each citing ESR-0061 WP1b and the artefact that closes it (TPL-0001 1.0; RSC-0001 Section 4B; RSC-0001 2.0 and LGB-0001 1.3; PCB-0001 3.0 and the matrix 3.0). REG-0001 rows synced, including TPL-0001's new title, version and status.
+
+---
 
 # 7. WP1c - Design outline (full design in v0.3)
 
@@ -360,9 +596,26 @@ Version syncs for every artefact above (including ADR-0008 1.1 in REG-0001; REG-
 
 Questions in Section 10, as answered: (1) a new ADR is right, with a pointer in ADR-0008 (finding 1); (2) the WP1a/b/c split and WP1c-before-WP2 are sound; (3) the capability-honest rule is preserved verbatim and strengthened; (4) the "Version 1.0 = Family AI OS" contradiction is confined to the one artefact WP1a fixes, and every target anchor exists exactly once. The reviewer verified that the EBG-0161 defect reproduces, that every disposition matches its row's current text, and that EBG-0161 to EBG-0169 do not collide.
 
+**WP1a post-commit review** of `1978070`. Copilot CLI's run stopped on its monthly quota before recording a verdict. Under D19 the second reviewer stood in: **Antigravity CLI** with a Gemini model (`gemini-3.1-pro-high`) on the Programme Sponsor's existing Google AI Pro subscription (Google replaced Gemini CLI with Antigravity CLI on 18 June 2026). It ran headless with a read-only permission allow-list; its run was refused, and resumed, three times on read-only command patterns not yet allowed (`git ... | grep`, a quoted grep pattern, `| head`), each then allowed; an attempted `> file` redirect stayed refused. Verdict recorded at 2026-10-06T08:21:32Z (`sender: reviewer`, `repository_ref: 1978070`): **Fail**, one High finding - the commit added WR-ESR0061-001, which Section 5 did not list, so under a strict reading of rule A5 it was unapproved. Otherwise Section 5 landed exactly, versions and register rows aligned, the v0.1 findings were fixed, and the validator was clean.
+
+**Disposition: Programme Sponsor override under D19** (direct chat decision "1", 6 October 2026). The Engineering Implementer's assessment, accepted by the Programme Sponsor: Low rather than High - the approval request explicitly named the Working Report as part of the commit, the plan's handover step 2 required registering it in a single A5 commit, and Copilot had reviewed it at v0.1. The genuine gap is that Section 5 did not list every file in the commit; the session report and this EIP were outside it in the same way. **Fix:** TPL-0001 1.0 (6.5) adds a mandatory Commit Contents section, and WP1b's own commit contents are listed at the top of Section 6.
+
+**WP1b review** (Section 6 at v0.4; Antigravity CLI, Gemini 3.1 Pro, standing in for quota-exhausted Copilot; bridge `ESR-0061`/`WP1b`, 2026-10-06T08:47:53Z, `sender: reviewer`, `repository_ref: 9e6c1ea`): **Conditional Pass**. Every anchor exists exactly once and reads coherently; every PCB-0001 and matrix claim matches the code and EBR-0001; RSC-0001 2.0's fresh-install scores match the plan and the code; the EBG-0130 contradiction is genuinely resolved; rewriting TPL-0001 is the right call (remaining references to its old content are only in historical ESR-0017/ESR-0019 records); the commit contents are complete. The run was refused, and resumed, four times on read-only command patterns not yet allowed (`cat`, `grep` on a file, `cat | grep -A`), each then allowed.
+
+| # | Finding | Disposition in v0.5 |
+|---|---|---|
+| 7 (Medium) | Section 6's intro falsely claimed the plan lists a JRM-0001 sweep and PST-0001 Section 8 for WP1; it does not, and the plan sets JRM-0001's post-launch order at WP9 - unapproved scope under a false citation | **Accepted and fixed** by removing both (former 6.6 and 6.7) and correcting the intro; confirmed against the registered plan - the wording came from an uncommitted earlier draft. A removal only, so no re-review is needed; the reviewer's stated condition is met |
+
+Two further v0.5 changes found by the Engineering Implementer while applying the text, both disclosed rather than re-reviewed: TPL-0001 keeps its filename instead of being renamed, which avoids editing links in archived histories and closed records (a reduction in scope); and LGB-0001 Section 7 gains one sentence, so that "both Must-Ship items are now delivered" does not contradict the new Section 4 (the reviewer did not raise this).
+
+Also in v0.5: Section 5's quoted ADR-0023 and UAM-0001 text brought into line with the committed personal-data minimisation (`9e6c1ea`, ADR-0023 1.1, UAM-0001 1.7); the committed artefacts are authoritative.
+
 # 11. Version History
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.5 | 6 October 2026 | Claude Engineering Implementer | WP1b review Conditional Pass (Antigravity CLI, Gemini 3.1 Pro); its Medium finding accepted - the JRM-0001 sweep and PST-0001 Section 8 update removed (wrongly cited as plan scope). Section 5 quotes aligned with the committed personal-data minimisation (9e6c1ea). |
+| 0.4 | 6 October 2026 | Claude Engineering Implementer | WP1a post-commit review (Antigravity CLI, Gemini 3.1 Pro, standing in for quota-exhausted Copilot): Fail on one High - Working Report not listed in Section 5; overridden by the Programme Sponsor, recorded in 10A. TPL-0001 text gains a mandatory Commit Contents section; WP1b commit contents listed; Section 6 wording made neutral ("the household Mac") per D23 minimisation. |
+| 0.3 | 6 October 2026 | Claude Engineering Implementer | WP1a committed as 1978070 (Sponsor Approval Service approval at e153874, 07:41:15Z; submit-response 07:42:32Z); CI run 37431602802 green on all five jobs. Post-commit Copilot review cut short by its monthly quota before a verdict. WP1b exact text drafted (Section 6, D22), adding the JRM-0001 sweep and PST-0001 Section 8 that v0.2 omitted; TPL-0001 proposed for rewrite as the EIP standard. |
 | 0.2 | 6 October 2026 | Claude Engineering Implementer | Design review Conditional Pass (Copilot CLI); all three findings fixed: ADR-0008 pointer note added (5.5A), Capability-Honest Interface made a top-level PBK-0001 section, EBG-0028 pointer restored in UAM-0001 8.1. Review record added (10A). EBG-0016 disposition corrected to Rejected (EBR-0001 Section 8 defines no "Closed - not adopted" status). |
 | 0.1 | 6 October 2026 | Claude Engineering Implementer | Initial draft at ESR-0061 WP0B. WP1 split into WP1a (governance, exact text), WP1b (release gate, design) and WP1c (tooling, outline); WP2 dependency on WP1c flagged. Awaiting design review. |

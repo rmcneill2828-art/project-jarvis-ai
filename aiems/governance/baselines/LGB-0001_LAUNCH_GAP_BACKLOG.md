@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | LGB-0001 |
 | Title | Launch Gap Backlog |
-| Version | 1.2 |
+| Version | 1.3 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -31,16 +31,22 @@ An item is **Must-Ship** only if [[JARVIS_PRODUCT_ARCHITECTURE]] Section 5 (MLP 
 
 ---
 
-# 4. Must-Ship (Blocks MLP 0.1 / v1.0 Launch)
+# 4. Must-Ship (Blocks Version 1.0)
 
-| Gap | RSC-0001 Score | Backlog Status | Rationale |
-|-----|-----------------|-----------------|-----------|
-| ~~User Identity and Profile Foundation~~ | User Profiles: **Fail** (at time of scoring) | **[[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0116 - Completed at ESR-0046 WP1** per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]] | **Resolved.** Local, unauthenticated profile identification and switching implemented (`jarvis/identity/`), role-tagged against GAM-0001 Section 8.1's four household roles. Credentialed authentication, memory scoping by profile and enforcement of the roles' differing authority remain deliberately unimplemented, disclosed separately-tracked follow-on work, not part of this Must-Ship item's own bar. |
-| ~~Voice Faculty Increment B (Speech Input)~~ | Basic Voice Input: **Fail** (at time of scoring) | **[[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0117 - Completed at ESR-0047 WP3** per [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]] | **Resolved.** Push-to-talk microphone capture transcribed via a new self-hosted `faster-whisper` provider, Sentinel-gated exactly like speech output, populates the message composer for review before send - never auto-submitted. Speaker identification/role-attribution, wake word/continuous listening, and enforcement of GAM-0001 Section 8.1's role differences remain deliberately unimplemented, disclosed separately-tracked follow-on work, not part of this Must-Ship item's own bar. |
+Reconciled with [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] 2.0 at ESR-0061 WP1b (EBG-0130), so the two artefacts give one answer. **RSC-0001 holds the scores; this section lists the blocking gaps.** Version 1.0 = MLP 0.1, released on Windows and macOS (Programme Sponsor decisions D1-D2, D12).
 
-No item is scored Must-Ship at only Partial: Animated Avatar/Orb's Partial score already reflects a genuinely live, animating presence meeting MLP 0.1's basic bar (see RSC-0001 Section 4) - its remaining gap belongs in Defer below.
+| Gap | RSC-0001 2.0 | Backlog | Go-live WP |
+|-----|--------------|---------|------------|
+| No macOS build | Section 4A Fail; every Section 4 item Fail on macOS | EBG-0162 | WP2 |
+| No working provider on a fresh install | Text Responses Fail | EBG-0163, EBG-0165 | WP3, WP5 |
+| Orb fails without a repository | Animated Avatar / Orb Fail | EBG-0164 | WP4 |
+| Dashboard, chat and status breach capability honesty and layout | Three items Partial | EBG-0164 | WP4 |
+| Voice not provisioned | Basic Voice Input Fail | EBG-0167 | WP7 |
+| Child role not safe | Section 4A Fail | EBG-0166 | WP6 |
+| Data rights | Section 4A Fail | EBG-0165 | WP5 |
+| User and parents' documentation, "Children and privacy" page | Section 4A Fail | EBG-0168 | WP8 |
 
-**Both Must-Ship items are now resolved** (EBG-0116 at ESR-0046 WP1, EBG-0117 at ESR-0047 WP3) - this section's launch-blocking gap list is empty pending any future [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] refresh (Section 8's own maintenance trigger).
+The two items this section listed before version 1.3 (EBG-0116 User Identity, EBG-0117 Speech Input) remain resolved: both were delivered at ESR-0046 and ESR-0047, and both still score Pass in a development checkout. Speech input fails on a fresh install only because its models are not provisioned, which is the new EBG-0167.
 
 ---
 
@@ -71,7 +77,7 @@ Neither entry authorises implementation. A future Engineering Implementation Pac
 
 # 7. Interpretation
 
-Two items were originally Must-Ship, sharing no common code dependency on each other. User Identity and Profile Foundation, identified as the higher-leverage item since RSC-0001 flagged it as blocking two further Defer-bucket items (Family Profiles, full HITL live wiring) beyond User Profiles itself, was resolved first, at ESR-0046 WP1. Voice Faculty Increment B (Speech Input) was resolved second, at ESR-0047 WP3 - both Must-Ship items are now delivered.
+Two items were originally Must-Ship, sharing no common code dependency on each other. User Identity and Profile Foundation, identified as the higher-leverage item since RSC-0001 flagged it as blocking two further Defer-bucket items (Family Profiles, full HITL live wiring) beyond User Profiles itself, was resolved first, at ESR-0046 WP1. Voice Faculty Increment B (Speech Input) was resolved second, at ESR-0047 WP3 - both Must-Ship items are now delivered.both Must-Ship items are now delivered" would read as contradicting the new Section 4): " Since version 1.3 (ESR-0061 WP1b), Section 4 lists eight Version 1.0 blockers from [[RSC-0001_V1_0_READINESS_SCORECARD|RSC-0001]] 2.0's fresh-install scoring; the two items above remain delivered.
 
 ---
 
@@ -98,6 +104,7 @@ LGB-0001 shall be refreshed whenever a Must-Ship item is delivered (moving it ou
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.3 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0130): Must-Ship reconciled with RSC-0001 2.0's fresh-install scoring; eight go-live blockers allocated to WP2-WP8. |
 | 1.2 | 4 August 2026 | Claude Engineering Implementer | Per Section 8's own maintenance rule: EBG-0117 (Voice Faculty Increment B, Speech Input) resolved at ESR-0047 WP3 per [[EIP-ESR0047-001_VOICE_PHASE6_INCREMENT_B_SPEECH_INPUT_SCOPE|EIP-ESR0047-001]]. Section 4's Must-Ship row struck through and marked resolved; Section 7's Interpretation updated. Both original Must-Ship items now delivered. |
 | 1.1 | 31 July 2026 | Claude Engineering Implementer | Per Section 8's own maintenance rule: EBG-0116 (User Identity and Profile Foundation) resolved at ESR-0046 WP1 per [[EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION|EIP-ESR0046-001]]. Section 4's Must-Ship row struck through and marked resolved; Section 7's Interpretation updated to reflect one of two Must-Ship items now delivered. One Must-Ship item (EBG-0117, Voice Faculty Increment B) remains open. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | Initial LGB-0001 created at ESR-0045 WP5, per the Programme Sponsor's selection of the triggering Codex review's second recommended next action (a prioritised launch-gap backlog split must-ship vs defer). Split RSC-0001's scored gaps into 2 Must-Ship items (both newly registered as EBG-0116/EBG-0117, confirmed genuinely untracked before registering) and 7 Defer items (later MLP phases or beyond-MLP-0.1 enhancements). |
