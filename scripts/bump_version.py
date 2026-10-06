@@ -6,7 +6,11 @@ since editing REG-0001 is itself a REG-0001 change) with one command.
 
 Usage:
     python scripts/bump_version.py <ARTEFACT_ID> <NEW_VERSION> --summary "..."
-        [--author "Claude Engineering Reviewer"] [--date "25 July 2026"]
+        --author "Claude Engineering Implementer" [--date "25 July 2026"]
+
+--author is required (ESR-0061 WP1c): it used to default to "Claude
+Engineering Reviewer", which mislabelled every row the Engineering
+Implementer wrote without passing it.
 
 This is mechanical only. It does not decide what changed - the --summary
 text is required and inserted verbatim into both Version History tables.
@@ -33,7 +37,6 @@ from validate_repository import (
 )
 
 REGISTER_PATH = REPO_ROOT / "aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md"
-DEFAULT_AUTHOR = "Claude Engineering Reviewer"
 
 
 def _today_display_date() -> str:
@@ -85,11 +88,13 @@ def _bump_version_fields(text: str, old_version: str, new_version: str, path: Pa
 
 
 def _insert_version_history_row(text: str, row: str, path: Path) -> str:
-    heading_pattern = re.compile(r"(?m)^#{1,2}\s+(?:\d+\.\s*)?Version History\s*$")
+    # "Refresh History" is the JARVIS Capability Readiness Matrix's name for
+    # the same table (ESR-0061 WP1c).
+    heading_pattern = re.compile(r"(?m)^#{1,2}\s+(?:\d+\.\s*)?(?:Version|Refresh) History\s*$")
     heading_match = heading_pattern.search(text)
     if not heading_match:
         rel = path.relative_to(REPO_ROOT)
-        raise BumpVersionError(f"No 'Version History' section found in {rel}.")
+        raise BumpVersionError(f"No 'Version History' (or 'Refresh History') section found in {rel}.")
 
     separator_pattern = re.compile(r"\n(\|-{2,}[-|]*\|)\n")
     separator_match = separator_pattern.search(text, heading_match.end())
@@ -181,7 +186,9 @@ def main() -> int:
     parser.add_argument("artefact_id", help="Registered artefact ID, e.g. SAM-0001")
     parser.add_argument("new_version", help="New version string, e.g. 0.4")
     parser.add_argument("--summary", required=True, help="What changed - inserted verbatim into Version History")
-    parser.add_argument("--author", default=DEFAULT_AUTHOR)
+    parser.add_argument(
+        "--author", required=True, help='Role of the author, e.g. "Claude Engineering Implementer"'
+    )
     parser.add_argument(
         "--date",
         default=None,

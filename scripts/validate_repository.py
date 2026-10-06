@@ -66,6 +66,24 @@ def check_wikilinks(result: ValidationResult) -> None:
                 result.error(f"Unresolved WikiLink in {rel}: [[{target}]]")
 
 
+# ESR-0061 WP1c (R7): every register-row ID shape actually in use - plain
+# `ADR-0001`, session-scoped `EIP-ESR0061-001`, named
+# `JARVIS_PRODUCT_ARCHITECTURE`, suffixed `ESR-0005A`/`ESR-0005-RELOAD` and
+# archive `HST-0015_GPT`. The old `^[A-Z]+-\d{4}$` rule silently skipped 97
+# rows, so neither this validator nor bump_version.py ever checked them.
+REGISTER_ID_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]*(?:-[A-Za-z0-9_]+)*$")
+_WIKILINK_IN_CELL = re.compile(r"\[\[[^\]]*\]\]")
+
+
+def _split_table_row(line: str) -> list[str]:
+    """Split a Markdown table row into cells, keeping a `[[target|label]]`
+    WikiLink's own pipe inside its cell (a naive split shifted every column
+    of such a row, so it was skipped as unparseable)."""
+
+    protected = _WIKILINK_IN_CELL.sub(lambda m: m.group(0).replace("|", "\x00"), line.strip())
+    return [cell.strip().replace("\x00", "|") for cell in protected.strip("|").split("|")]
+
+
 def parse_register_rows(register_path: Path) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for line in register_path.read_text(encoding="utf-8", errors="replace").splitlines():
@@ -73,14 +91,17 @@ def parse_register_rows(register_path: Path) -> list[dict[str, str]]:
             continue
         if "Artefact ID" in line or line.startswith("|-"):
             continue
-        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-        if len(cells) < 8:
+        cells = _split_table_row(line)
+        # Only the artefact table has 8+ columns with a location (a path, or
+        # "-") last; Version History and Related Artefacts rows never do.
+        location = cells[7].strip("`") if len(cells) >= 8 else ""
+        if not ("/" in location or location == "-"):
             continue
         artefact_id = cells[0]
         wikilink_id = re.match(r"\[\[[^\]|]+(?:\|([^\]]+))?\]\]", artefact_id)
         if wikilink_id:
             artefact_id = wikilink_id.group(1) or artefact_id
-        if not re.match(r"^[A-Z]+-\d{4}$", artefact_id):
+        if not REGISTER_ID_PATTERN.match(artefact_id):
             continue
         rows.append(
             {
@@ -89,7 +110,7 @@ def parse_register_rows(register_path: Path) -> list[dict[str, str]]:
                 "title": cells[2],
                 "version": cells[3],
                 "status": cells[4],
-                "location": cells[7].strip("`"),
+                "location": location,
             }
         )
     return rows
@@ -127,7 +148,26 @@ def find_registered_file(artefact_id: str, location: str) -> Path | None:
     if not base.exists():
         return None
     matches = sorted(base.glob(f"{artefact_id}*.md"))
-    return matches[0] if matches else None
+    if matches:
+        return matches[0]
+    # Compound IDs such as `ESR-0005-RELOAD` name a file like
+    # `ESR-0005_ENGINEERING_SESSION_RELOAD.md`: match the numbered stem, then
+    # require every suffix token in the filename.
+    compound = re.match(r"^([A-Z]+-\d{4})-(.+)$", artefact_id)
+    if compound:
+        stem, suffix = compound.groups()
+        tokens = [t for t in re.split(r"[-_]", suffix.upper()) if t]
+        candidates = [
+            path for path in sorted(base.glob(f"{stem}_*.md")) if all(t in path.stem.upper() for t in tokens)
+        ]
+        if len(candidates) == 1:
+            return candidates[0]
+    return None
+
+
+def extract_table_status(text: str) -> str | None:
+    match = re.search(r"(?m)^\|\s*Status\s*\|\s*([^|\r\n]+?)\s*\|$", text)
+    return match.group(1).strip() if match else None
 
 
 def check_controlled_register(result: ValidationResult) -> None:
@@ -141,15 +181,26 @@ def check_controlled_register(result: ValidationResult) -> None:
         if path is None:
             result.error(f"{row['id']} is registered but no matching file was found under {row['location']}.")
             continue
-        document_version = extract_document_version(path)
+        rel = path.relative_to(REPO_ROOT)
+        # Frozen chat archives (GDE-0001 tier) carry no Document Control, so a
+        # missing version or status there is expected, not a finding.
+        archive = _is_historical_archive(path)
+        text = path.read_text(encoding="utf-8", errors="replace")
+        document_version = extract_table_version(text) or extract_badge_version(text)
         if document_version is None:
-            result.warn(f"{row['id']} has no parseable document version in {path.relative_to(REPO_ROOT)}.")
-            continue
-        if document_version != row["version"]:
-            rel = path.relative_to(REPO_ROOT)
-            result.error(
-                f"{row['id']} version mismatch: REG-0001={row['version']} file={document_version} path={rel}"
-            )
+            if not archive:
+                result.warn(f"{row['id']} has no parseable document version in {rel}.")
+        elif document_version != row["version"]:
+            result.error(f"{row['id']} version mismatch: REG-0001={row['version']} file={document_version} path={rel}")
+
+        # ESR-0061 WP1c (R7): Status drifted unnoticed because only Version
+        # was ever compared.
+        document_status = extract_table_status(text)
+        if document_status is None:
+            if not archive:
+                result.warn(f"{row['id']} has no parseable document status in {rel}.")
+        elif document_status != row["status"]:
+            result.error(f"{row['id']} status mismatch: REG-0001={row['status']} file={document_status} path={rel}")
 
 
 def check_version_badge_table_consistency(result: ValidationResult) -> None:
@@ -299,7 +350,20 @@ def check_stale_status_references(result: ValidationResult) -> None:
 
 
 HEADING_NUMBER_PATTERN = re.compile(r"(?m)^#{1,6}\s+(\d+(?:\.\d+)*)\.?\s+\S")
-SECTION_REF_PATTERN = re.compile(r"\bSections?\s+(\d+(?:\.\d+)*)\b")
+# ESR-0061 WP1c (R10): a reference may list several numbers ("Sections 6.1,
+# 6.2 and 7.3", "Section 8.1-8.4", "Section 7.1/7.3"); every one is checked.
+_SECTION_NUMBER = r"\d+(?:\.\d+)*"
+_SECTION_JOINER = r"(?:\s*,\s*|\s+and\s+|\s+or\s+|\s*-\s*|\s+to\s+|/)"
+SECTION_REF_PATTERN = re.compile(
+    rf"\bSections?\s+({_SECTION_NUMBER}(?:{_SECTION_JOINER}{_SECTION_NUMBER})*)\b"
+)
+# End of a sentence or clause: punctuation followed by whitespace or the end,
+# or a table-cell boundary. A "." inside "8.1" is not one, and nor is a colon
+# ("[[JRM-0001]]: Track B Section 7.3" still refers to JRM-0001).
+_CLAUSE_BREAK = re.compile(r"[.;!?](?=\s|$)|\|")
+_REFERENT_TOKEN = re.compile(r"\[\[[^\]]+\]\]|[A-Z]{2,6}-\d{3,4}[A-Z]?")
+_QUALIFIER_MAX_WORDS = 4
+_HISTORY_HEADING = re.compile(r"^#{1,6}\s+(?:\d+(?:\.\d+)*\.?\s+)?(?:Version|Refresh) History\b", re.IGNORECASE)
 WIKILINK_PATTERN = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
 ARTEFACT_ID_PATTERN = re.compile(r"^([A-Z]{2,6}-\d{3,4}[A-Z]?)")
 HISTORICAL_ARCHIVE_DIR = REPO_ROOT / "aiems" / "History"
@@ -369,11 +433,63 @@ def _referenced_artefact(preceding: str, file_by_basename: dict[str, Path], id_i
     return None
 
 
+def _resolve_token(token: str, file_by_basename: dict[str, Path], id_index: dict[str, Path]) -> Path | None:
+    """Resolve a single WikiLink or bare artefact ID to its file, if any."""
+
+    link = WIKILINK_PATTERN.fullmatch(token)
+    target = link.group(1) if link else token
+    if target in file_by_basename:
+        return file_by_basename[target]
+    id_match = ARTEFACT_ID_PATTERN.match(target)
+    if id_match and id_match.group(1) in id_index:
+        return id_index[id_match.group(1)]
+    return None
+
+
+def _qualified_referent(preceding: str, file_by_basename: dict[str, Path], id_index: dict[str, Path]) -> Path | None:
+    """ESR-0061 WP1c (R10): "JRM-0001 Track B Section 7.1" or "UAM-0001's own
+    Section 8.2" - the referent is the last artefact named in the same clause,
+    at most _QUALIFIER_MAX_WORDS words before "Section"."""
+
+    breaks = list(_CLAUSE_BREAK.finditer(preceding))
+    clause = preceding[breaks[-1].end():] if breaks else preceding
+    tokens = list(_REFERENT_TOKEN.finditer(clause))
+    if not tokens:
+        return None
+    last = tokens[-1]
+    if len(clause[last.end():].split()) > _QUALIFIER_MAX_WORDS:
+        return None
+    return _resolve_token(last.group(0), file_by_basename, id_index)
+
+
+def _table_cell_referent(line: str, position: int, file_by_basename: dict[str, Path], id_index: dict[str, Path]) -> Path | None:
+    """ESR-0061 WP1c (R10): in "| [[UAM-0001|UAM-0001]] | Section 8.1 ... |"
+    the referent is the artefact that fills an earlier cell of the same row."""
+
+    if not line.lstrip().startswith("|"):
+        return None
+    protected = _WIKILINK_IN_CELL.sub(lambda m: m.group(0).replace("|", "\x00"), line)
+    cells_before = protected[:position].split("|")[1:-1]
+    for cell in reversed(cells_before):
+        candidate = cell.strip().replace("\x00", "|")
+        if _REFERENT_TOKEN.fullmatch(candidate):
+            resolved = _resolve_token(candidate, file_by_basename, id_index)
+            if resolved is not None:
+                return resolved
+    return None
+
+
 def check_section_references(result: ValidationResult) -> None:
     """Warn (not error - see WP3 EIP) when a "Section N" reference doesn't
-    match any heading, in the current document or an immediately-adjacent
-    cross-referenced one. See _referenced_artefact for the adjacency rule
-    and why it's deliberately tight rather than scanning the whole sentence.
+    match any heading, in the current document or the artefact it refers to.
+
+    The referent is found, in order: immediately before "Section"
+    (_referenced_artefact); in an earlier cell of the same table row; earlier
+    in the same clause behind a short qualifier; or inherited from the
+    previous reference in the same clause ("Section 8.1 ... and Section 8.2").
+    Every number in a list is checked. Version History and Refresh History
+    tables are skipped: they narrate other documents as they were (ESR-0061
+    WP1c, R10). Guard tests keep a genuinely broken reference warning.
     """
 
     files = [p for p in iter_markdown_files() if not _is_historical_archive(p)]
@@ -391,25 +507,41 @@ def check_section_references(result: ValidationResult) -> None:
     for path in files:
         text = path.read_text(encoding="utf-8", errors="replace")
         own_headings = headings_for(path)
+        in_history = False
         for line_num, line in enumerate(text.splitlines(), start=1):
             if re.match(r"^#{1,6}\s", line):
+                in_history = bool(_HISTORY_HEADING.match(line))
                 continue
+            if in_history:
+                continue
+            previous_target: Path | None = None
+            previous_end = 0
             for match in SECTION_REF_PATTERN.finditer(line):
-                section_number = match.group(1)
                 preceding = line[: match.start()]
-                target_path = _referenced_artefact(preceding, file_by_basename, id_index)
+                target_path = (
+                    _referenced_artefact(preceding, file_by_basename, id_index)
+                    or _table_cell_referent(line, match.start(), file_by_basename, id_index)
+                    or _qualified_referent(preceding, file_by_basename, id_index)
+                )
+                if target_path is None and previous_target is not None:
+                    between = line[previous_end : match.start()]
+                    if not _CLAUSE_BREAK.search(between):
+                        target_path = previous_target
+                previous_target, previous_end = target_path, match.end()
+
                 if target_path is not None and target_path != path:
                     target_headings = headings_for(target_path)
                     target_desc = target_path.stem
                 else:
                     target_headings = own_headings
                     target_desc = "this document"
-                if section_number not in target_headings:
-                    rel = path.relative_to(REPO_ROOT)
-                    result.warn(
-                        f"{rel}:{line_num} references Section {section_number}, "
-                        f"not found as a heading in {target_desc}."
-                    )
+                for section_number in re.findall(_SECTION_NUMBER, match.group(1)):
+                    if section_number not in target_headings:
+                        rel = path.relative_to(REPO_ROOT)
+                        result.warn(
+                            f"{rel}:{line_num} references Section {section_number}, "
+                            f"not found as a heading in {target_desc}."
+                        )
 
 
 def check_precommit_hook_installed(result: ValidationResult) -> None:
@@ -457,12 +589,52 @@ def check_governance_only_scope(result: ValidationResult) -> None:
             result.error(f"Governance-only scope violation: {path}")
 
 
+# ESR-0061 WP1c (R4): PST-0001 is the single statement of the current
+# baseline. These artefacts were re-synced by hand at every closure; a
+# "current baseline" claim in them is now an error. Elsewhere it is a warning
+# (frozen claims, reworded when each artefact is next revised - Programme
+# Sponsor decision, 6 October 2026).
+LIVE_BASELINE_POINTER_ARTEFACTS = (
+    "README.md",
+    "aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md",
+    "aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md",
+    "aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md",
+    "jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md",
+)
+_CURRENT_BASELINE_PHRASE = re.compile(r"\bcurrent\s+(?:accepted\s+)?(?:repository\s+)?baseline\b", re.IGNORECASE)
+# Records of what was true at the time, not live claims.
+_BASELINE_CLAIM_EXEMPT_DIRS = ("aiems/History/", "aiems/governance/sessions/", "aiems/governance/reviews/")
+
+
+def check_current_baseline_claims(result: ValidationResult) -> None:
+    for path in iter_markdown_files():
+        rel = path.relative_to(REPO_ROOT).as_posix()
+        if rel.startswith(_BASELINE_CLAIM_EXEMPT_DIRS) or path.name.startswith(("PST-0001", "RBL-")):
+            continue
+        live = rel in LIVE_BASELINE_POINTER_ARTEFACTS
+        in_history = False
+        for line_num, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), start=1):
+            if re.match(r"^#{1,6}\s", line):
+                in_history = bool(_HISTORY_HEADING.match(line))
+                continue
+            if in_history or not _CURRENT_BASELINE_PHRASE.search(line):
+                continue
+            if not re.search(r"RBL-\d{4}", line) or "PST-0001" in line:
+                continue
+            message = f"{rel}:{line_num} names an RBL as the current baseline; point to PST-0001 instead."
+            if live:
+                result.error(message)
+            else:
+                result.warn(message)
+
+
 def run_validation(governance_only: bool) -> ValidationResult:
     result = ValidationResult(errors=[], warnings=[])
     check_wikilinks(result)
     check_controlled_register(result)
     check_version_badge_table_consistency(result)
     check_stale_status_references(result)
+    check_current_baseline_claims(result)
     check_precommit_hook_installed(result)
     check_section_references(result)
     if governance_only:

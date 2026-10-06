@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-001 |
 | Title | Engineering Implementation Package: WP1 Release Gate, Governance and Streamlining |
-| Version | 0.5 |
-| Status | Draft - WP1b review Conditional Pass, finding fixed; WP1b applied, awaiting Programme Sponsor approval |
+| Version | 0.8 |
+| Status | Draft - WP1c built; implementation review Pass; awaiting Programme Sponsor approval of the built result |
 | Session | ESR-0061 |
 | Work Package | WP1 (WP1a, WP1b, WP1c) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP1 |
@@ -552,15 +552,95 @@ EBG-0008, EBG-0066, EBG-0130 and EBG-0134 set to Completed, each citing ESR-0061
 
 ---
 
-# 7. WP1c - Design outline (full design in v0.3)
+# 7. WP1c - Design (Code WP, Rule A6: Design Approval, Then Approval of the Built Result)
 
-* **R4.** PST-0001 becomes the single statement of the current baseline. Other artefacts say "see PST-0001"; README's per-session rows become a pointer. New validator check: a hard-coded "current baseline is RBL-NNNN" claim outside PST-0001 is an error.
-* **R7.** New validator check: each artefact's Document Control version and status must match its REG-0001 row. `bump_version.py`'s row parser fixed for the row shapes it currently misses (disclosed by hand at ESR-0060).
-* **R8.** `scripts/post_commit_precheck.py`: proves the committed tree equals the reviewed tree, re-runs pytest, ruff and the validator, and checks commit-message figures against the actual results. `scripts/run_reviewer.py`: one wrapper for Copilot and Gemini CLI with read-only tools that still allow `git`, `python -m pytest`, `ruff` and the validator, so the reviewer can run its own validations.
-* **R10.** The "Section N not found" heuristic changed to skip references qualified by another artefact (for example "GAM-0001 Section 8.1" or a wiki link in the same sentence); the remaining genuine broken references fixed; the three unversioned HST files given a justification record.
-* **R2/D19.** Gemini CLI terms (free tier limits, data use) verified **before** any use and recorded; the Programme Sponsor signs in once; `AIEMS_REVIEWER_TOOL=gemini` supported by the wrapper and the bridge preflight.
-* **D29.** `scripts/local_prescreen.py`: sends a diff to LM Studio's local API (gpt-oss-20b), with output headed "ADVISORY - NOT INDEPENDENT REVIEW". Skips cleanly if LM Studio is not running. Never a gate.
-* **New dependencies:** none expected (standard library HTTP for LM Studio). Any change is listed here before design approval (A4).
+Drafted at v0.6 (6 October 2026) from the source, not from the outline. Risk class: standard. Reviewer: Antigravity CLI with a Gemini model, standing in under D19 while Copilot's quota is exhausted (until 1 November 2026).
+
+## 7.1 What changed since the outline
+
+* **Gemini CLI no longer exists for this use.** Google replaced it with Antigravity CLI on 18 June 2026 (Google's quota page and blog, read 6 October 2026). The second reviewer is therefore Antigravity CLI (`agy` 1.2.2, already installed and signed in on the Programme Sponsor's existing Google AI Pro subscription), always with a Gemini model. No sign-in step remains. Its terms (antigravity.google/terms) let Google use prompts and code to improve its models, with human review - acceptable for this public repository, so review prompts must never contain household personal data.
+* **R7's gap is wider than the outline said.** `parse_register_rows()` only accepts IDs matching `^[A-Z]+-\d{4}$`, so the validator never version-checks 97 register rows: every EIP (`EIP-ESR0061-001` style, 77 rows), `JARVIS_PRODUCT_ARCHITECTURE`, the Capability Readiness Matrix and suffixed rows such as `ESR-0005A`. `bump_version.py` reuses the same parser, which is why it refused those rows this session. A simulation with a wider ID rule surfaces only four problems: two malformed rows (one whose ID cell opens a wiki link to RBL-0007's file but never closes it, and `ESR-0005-RELOAD`, which has no matching file) and two archive files with no version.
+* **R10's warnings are mostly one heuristic's blind spots.** `_referenced_artefact()` only accepts an artefact ID or link *immediately* before "Section N". A sample of the warnings shows five patterns: the artefact named in an earlier cell of the same table row; a qualifier between the ID and "Section" ("JRM-0001 Track B Section 7.1", "UAM-0001's own Section 8.2"); a follow-on reference in the same clause ("MDS-0001 Section 9 ... and Section 10"); lists where only the first number is parsed ("Sections 6.1, 6.2, 6.3"); and narrative inside Version History tables.
+* **R4's scope is 26 files, not a handful.** 41 lines across 26 artefacts call an RBL the "current" baseline: five live ones re-synced at every closure (README, COC-0001, PBK-0001, PCB-0001, the matrix) and about 21 frozen since July that still name RBL-0009 (ADR-0001 to ADR-0006, CHR-0001, MOD-0001, STD-0001/0003/0004/0006 and others).
+
+## 7.2 Design
+
+**R4 - single-source current baseline.**
+1. The five live artefacts stop naming the baseline: their lines become "the current accepted repository baseline is recorded in [[PST-0001_PROGRAMME_STATUS|PST-0001]]". README's "Current Engineering Focus" row likewise points to PST-0001. Closure sweeps then update PST-0001 only.
+2. New validator check `check_current_baseline_claims()`: in the five live artefacts plus README, a line saying "current (accepted) (repository) baseline" next to an RBL link is an **error**. In any other non-archive file it is a **warning** naming the file, so the 21 frozen claims are visible and reworded when each artefact is next revised, without 21 version bumps now. Session reports, review records, baselines and Version History rows are excluded (they record the baseline as it was).
+3. **Programme Sponsor decision (direct chat, 6 October 2026): "warnings".** The 21 frozen claims stay as visible validator warnings and are reworded when each artefact is next revised; no bulk rewording in this WP.
+
+**R7 - REG-0001 sync.**
+1. `parse_register_rows()` accepts every register-row ID shape in use - including `EIP-ESR####-###`, `JARVIS_*` and suffixed IDs - while still skipping Version History rows (a row counts only if it has at least 8 cells and a location-like eighth cell). Both the validator and `bump_version.py` gain this through the shared parser.
+2. New status check: an artefact's Document Control Status must equal its REG-0001 Status (an error); a document with no Status field is a warning, as a missing version is today. Three genuine mismatches exist (RBA-0001, RPCA-0001, ESR-0004, all closed records); their REG-0001 rows are corrected to match the documents.
+3. The two malformed rows are repaired.
+3A. **CI-safety gate (design review finding 2):** the wider parser, the new status check and every fix it needs land in the same commit, and the commit is only submitted once `python scripts/validate_repository.py` reports 0 errors on the exact tree being committed (`submit-response` and the pre-commit hook re-run it independently). The 6 October simulation of all 97 newly checked rows found four problems - the two malformed rows (3) and two unversioned archive files (`aiems/History`, exempted under R10) - and no version mismatches; the build re-runs it before submission and fixes anything new.
+4. `bump_version.py`: `--author` becomes **required** (no default - it defaulted to "Claude Engineering Reviewer", wrongly labelling every row written this session); the Version History heading pattern also accepts "Refresh History" (the matrix's heading).
+
+**R8 - post-commit pre-check and reviewer wrapper.**
+1. `scripts/post_commit_precheck.py <commit> [--eip PATH]` - a deterministic report, run before the AI post-commit review and handed to it:
+   * the working tree is clean and the commit is on `origin/main`;
+   * if `--eip` is given, the commit's changed files equal the EIP's Commit Contents list (paths parsed from its backticks);
+   * the latest `submit-response` transcript entry for the session/WP records the commit's parent as `repository_ref`;
+   * pytest, ruff and the validator are re-run. **Hard checks** (non-zero exit): pytest has 0 failed and 0 errors, ruff is clean, the validator has 0 errors. **Advisory checks** (reported, never failing - design review finding 3): any "N passed", "N skipped" or "N warnings" figure in the commit message is compared with the actual result and a difference is shown, since those counts legitimately move.
+
+   It exits non-zero only on a hard-check failure or a mismatch in the first three bullets. It replaces nothing: the independent post-commit review still runs.
+2. `scripts/run_reviewer.py --tool {copilot,antigravity} --session S --wp W --prompt-file F [--resume "text"]`:
+   * appends the standard TOOL RULES block for the tool;
+   * runs it with the right flags - Copilot's scoped `--allow-tool` and `--deny-tool='write'`, which now include `shell(python -m pytest:*)` so its own validations are not refused; Antigravity with `--model gemini-3.1-pro-high --effort high` headless;
+   * saves the output under `.aiems-exchange/reviews/` (git-ignored);
+   * detects the two known failure modes - Copilot's "exceeded your monthly quota" and Antigravity's "no output produced ... auto-denied" - reporting the refused command from the Antigravity log so a resume is one step;
+   * confirms afterwards that a new `sender: reviewer` entry appeared in the transcript, and says so plainly if not.
+
+   It never writes findings itself.
+3. `scripts/reviewer/antigravity_allowlist.json`: the tested allow-list, every rule anchored (`^...$`) so nothing can be appended. Exactly (hardened after design review finding 1):
+   * `read_file` on the repository;
+   * `git` with **only** the subcommands `log`, `show`, `diff`, `status`, `rev-parse`, `ls-files`, `grep`, `cat-file` (so `clean`, `reset`, `add`, `commit`, `push`, `branch`, `checkout` are refused), arguments with no `=`, no long option starting `--ou` (blocks `--output FILE` and `--output=FILE`, which write a file) and no short `-O` (blocks `git grep -O<pager>`, which launches a program); the bare `--` separator is allowed;
+   * `cat` and `grep` on files; `ls`; `head`/`tail -n N FILE`; `wc`;
+   * a `git`, `cat` or `grep` command may be followed by up to two read-only filters (`grep`, `head -n N`, `tail -n N`, `wc`);
+   * `python -m pytest` with optional `-q` and **path arguments only** (no options, so no `--junitxml`, `-p`, `-c`);
+   * `python -m ruff check` with **path arguments only** (no `--fix`);
+   * `python scripts/validate_repository.py` with no arguments;
+   * `python scripts/aiems_bridge.py return-findings` with a quoted message barring `` "`$;&|<> ``.
+
+   Never allowed: `python -c`, redirects, `;`, `&`, `$`, backticks, any other command. The live copy in `~/.gemini/antigravity-cli/settings.json` was hardened the same way on 6 October 2026, before any further review. `run_reviewer.py --check-settings` reports any difference from the live file; `--install-settings` merges the list only when explicitly asked and never adds deny rules, so interactive use is unaffected. **Tests** assert that the list allows the read-only commands the reviews used and refuses: `git clean -fdx`, `git reset --hard`, `git add .`, `git push`, `git branch x`, `git diff --output x`, `git log --output=x`, `git grep -Ovim x`, `ruff check --fix`, `pytest --junitxml x`, `pytest -p x`, `python -c ...`, redirects and chained commands. The tests use Python's `re`; the build also runs a short live probe of the real `agy` matcher on a sample of allowed and refused commands, because its regex engine (likely Go RE2) may differ - the rules avoid look-around and back-references for that reason.
+4. The bridge preflight already accepts any reviewer tool through `AIEMS_REVIEWER_TOOL` (presence plus `--version`; `agy --version` returns 1.2.2), so it needs no change - only documentation.
+
+**R10 - section-reference warnings.** `_referenced_artefact()` and `check_section_references()` gain the five patterns in 7.1: an earlier table cell in the same row; up to four intervening words with no sentence punctuation; inheritance by a follow-on reference in the same clause; every number in a list; and skipping Version History and Refresh History tables. Remaining warnings are then either fixed (genuine broken references in live documents) or listed in the completion report. The three unversioned HST archives become a stated exemption for `aiems/History`. Target: the actual before and after counts are reported; no promise of zero.
+
+**R2/D19 - governance text.** PBK-0001's Independent Reviewers bullet named Gemini CLI. Exact replacement text, included in this WP's commit: "**Second independent reviewer:** Antigravity CLI (Google's successor to Gemini CLI, which it replaced on 18 June 2026), always run with a Gemini model, never a Claude model, under the read-only permission allow-list in `scripts/reviewer/antigravity_allowlist.json` ..." followed by the existing rest of that bullet unchanged.
+
+**D29 - advisory local pre-screen.** `scripts/local_prescreen.py [--base B] [--head H]` sends the diff to LM Studio's OpenAI-compatible endpoint (`http://localhost:1234/v1/chat/completions`, as used by the 2 October scorecard). The model is found by listing `/v1/models` for an id containing `gpt-oss-20b` (override: `AIEMS_PRESCREEN_MODEL`). The output is headed "ADVISORY - NOT INDEPENDENT REVIEW" and saved under `.aiems-exchange/prescreen/`; it never writes to the transcript. If the server is not running (the case on 6 October), it prints a skip message and exits 0. Large diffs are truncated with a notice. Standard library only.
+
+## 7.3 Evidence Pack (TPL-0001 1.0 Section 6)
+
+| Item | Content |
+|---|---|
+| API facts | `agy` 1.2.2 flags `-p`, `--model`, `--effort`, `--print-timeout`, `-c` (from `agy --help`); headless mode auto-denies unlisted tools and aborts the run (observed seven times on 6 October); allow-list syntax `action(target)` with `command(regex:...)` and precedence Deny > Ask > Allow (antigravity.google/docs/permissions, read 6 October 2026); Copilot flags as used at ESR-0060 and on 6 October; LM Studio `POST /v1/chat/completions` with `model`, `messages`, `temperature`, `max_tokens` (2 October scorecard script); `GET /v1/models` - **not verified live** (server off on 6 October), verified in the build before relying on it. |
+| Platform coverage | Windows is where reviewers run; every script is pure-Python standard library with list-form `subprocess`. Copilot is an npm `.cmd` shim on Windows, which needs `shell=True` there (the bridge's own documented precedent); `agy.exe` does not. Nothing is macOS-specific. |
+| CI | The CI `python` job (`ubuntu-latest`) runs pytest and the validator; all new tests mock `subprocess`, HTTP and the reviewer CLIs, so they run on Linux. No workflow change. The new validator errors must pass on the repository as committed (the R4/R7 fixes land in the same commit). |
+| Tests | New or updated: `test_validate_repository.py` (wider register IDs; status check; current-baseline check, live versus frozen; each R10 pattern, plus guards showing a genuinely broken own-document reference still warns); `test_bump_version.py` (required `--author`; "Refresh History"; an EIP row and a `JARVIS_*` row); `test_post_commit_precheck.py`; `test_run_reviewer.py` (flag construction, quota and denial detection, missing-verdict reporting, allow-list refusals); `test_local_prescreen.py` (server down skips with exit 0; the advisory header; truncation). Tests for the parser and the `--author` change are shown failing on the old code. |
+| New dependencies and features | None. No new packages, no CI change, no OS permission. One change to the Programme Sponsor's machine already made at their direction: the allow-list in `~/.gemini/antigravity-cli/settings.json` (6 October 2026). |
+
+## 7.4 Commit Contents (final, as built)
+
+New: `scripts/post_commit_precheck.py`, `scripts/run_reviewer.py`, `scripts/local_prescreen.py`, `scripts/reviewer/antigravity_allowlist.json`, `scripts/tests/test_post_commit_precheck.py`, `scripts/tests/test_run_reviewer.py`, `scripts/tests/test_local_prescreen.py`.
+
+Changed: `scripts/validate_repository.py`, `scripts/bump_version.py`, `scripts/tests/test_validate_repository.py`, `scripts/tests/test_bump_version.py`, `scripts/README.md`, `README.md`, `aiems/governance/conversation/COC-0001_HUMAN_AI_COLLABORATION_CONTEXT.md`, `aiems/governance/playbooks/PBK-0001_AI_ENGINEERING_PLAYBOOK.md`, `aiems/governance/baselines/PCB-0001_PRODUCT_CAPABILITY_BASELINE.md`, `jarvis/architecture/JARVIS_CAPABILITY_READINESS_MATRIX.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/reviews/EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`.
+
+**Added during the build** (disclosed, 7.5): `aiems/governance/baselines/RBL-0007_REPOSITORY_BASELINE.md` and `aiems/governance/reviews/EIP-ESR0046-001_USER_IDENTITY_AND_PROFILE_FOUNDATION.md` - one stale Status cell each, surfaced by the new status check.
+
+## 7.5 Build Record (6 October 2026)
+
+| Item | Result |
+|---|---|
+| R7 | `parse_register_rows()` now covers every ID shape and keeps a piped WikiLink in its cell. **Correction to 7.1:** the "malformed" RBL-0007 row was not malformed - the parser split the pipe inside its WikiLink's display-text separator, which is a parser bug, now fixed. `ESR-0005-RELOAD` is a genuine compound ID, now resolved by `find_registered_file()`. **The status check found 12 genuine mismatches, not 3** (the simulation had only covered rows the old parser could read): 10 register rows synced to their documents' more precise Status, and 2 documents (RBL-0007 "Pending Acceptance", EIP-ESR0046-001 "Approved - implementing") corrected because their own Status was stale, each with a version bump. `bump_version.py --author` is required, and the "Refresh History" heading is accepted - shown working by bumping the Capability Readiness Matrix, which it had refused before. |
+| R10 | "Section N" warnings: about **342 to 260**. The remainder are mostly references whose referent is set by the paragraph, not the line (for example a whole EIP discussing GAM-0001), which a line-level check cannot resolve; no promise of zero was made. Every number in a list is now checked, which adds a few genuine warnings. Unversioned/unstatused `aiems/History` archives are exempt from the register warnings. |
+| R4 | No current-baseline claim remains in the five live artefacts or README; 28 frozen claims now show as warnings (Programme Sponsor decision "warnings"). |
+| R8 | `post_commit_precheck.py` - while testing, found and fixed its own parser: the validator prints "0 errors" when passing but "2 error(s)" when failing. `run_reviewer.py` - **two hardenings beyond the design**, both narrowing: Copilot's `--allow-tool` rules are now read-only (ESR-0060's `shell(git:*)`/`shell(python:*)` also allowed `git push` and `python -c`); and the full prompt is written to a git-ignored file, with the CLI given only a fixed shell-safe instruction to read it, so no prompt text reaches a Windows `cmd.exe` command line. Two bugs found by its tests and fixed: same-second verdict timestamps were ignored, and the Antigravity log path could not be redirected. |
+| Live matcher probe | Real `agy` with the committed allow-list: a piped `git grep ... | grep -v ... | wc -l` ran (output 118); `git diff --output FILE` was refused and no file was created - matching the Python-regex tests. |
+| D29 | `local_prescreen.py` skips cleanly (LM Studio not running on 6 October). `/v1/models` remains unverified live; the script treats any failure as a skip. |
+| Tests | 85 new tests (validator 19, `bump_version` 3, `run_reviewer` 51, pre-check 7, pre-screen 5). The R7 parser, status and compound-ID tests, the R10 pattern tests, the R4 tests and the `--author`/"Refresh History" tests were each run against the old code first and failed there. Full suite **844 passed, 1 skipped**; ruff clean; validator **0 errors** once this EIP's own register row is synced at commit. |
 
 ---
 
@@ -581,6 +661,14 @@ EBG-0008, EBG-0066, EBG-0130 and EBG-0134 set to Completed, each citing ESR-0061
 2. Is the WP1a / WP1b / WP1c split sound, and is WP1c-before-WP2 (Section 3) the right way to handle WP2's need for the second reviewer?
 3. Does the Capability-Honest Interface text (5.1.1) fully preserve the retained rule?
 4. Does any text in Section 5 contradict another controlled artefact not listed here?
+
+WP1c (Section 7, added at v0.6):
+
+5. R4: leave the 21 frozen "current baseline" claims as visible warnings (recommended), or reword all of them now with 21 version bumps? This is also a Programme Sponsor decision.
+6. R7: is a wider register-ID rule safe - can it pick up a non-artefact row (Version History, notes) as an artefact? Is the status check worth its three corrections?
+7. R10: do the five heuristics risk hiding genuinely broken references? Are the proposed guard tests enough?
+8. R8: is a pre-check that compares commit-message figures with real results robust enough to be useful, or will it be brittle?
+9. Is anything in the 7.3 evidence pack wrong or missing - in particular the Antigravity allow-list's safety, and Windows/Linux behaviour in the new scripts?
 
 ---
 
@@ -606,6 +694,19 @@ Questions in Section 10, as answered: (1) a new ADR is right, with a pointer in 
 |---|---|---|
 | 7 (Medium) | Section 6's intro falsely claimed the plan lists a JRM-0001 sweep and PST-0001 Section 8 for WP1; it does not, and the plan sets JRM-0001's post-launch order at WP9 - unapproved scope under a false citation | **Accepted and fixed** by removing both (former 6.6 and 6.7) and correcting the intro; confirmed against the registered plan - the wording came from an uncommitted earlier draft. A removal only, so no re-review is needed; the reviewer's stated condition is met |
 
+**WP1c design review** (Section 7 at v0.6; Antigravity CLI, Gemini 3.1 Pro; 2026-10-06T09:35:01Z, `sender: reviewer`, `repository_ref: 23e95bd`): **Fail**. Its run was refused, and resumed, four times: three on read-only patterns then allowed (pipe into `wc`, two chained filters), and once on `python -c` with an inline script, which stays refused permanently - arbitrary code is never allowed to the reviewer. It verified the factual claims about the scripts and the CI platform.
+
+| # | Finding | Engineering Implementer assessment | Disposition in v0.7 |
+|---|---|---|---|
+| 1 (High) | Allow-list safety: "read-only git without `=` arguments" permits `git clean -fdx`, `git reset --hard`, `git add`; `ruff --fix` writes files | **Partly wrong, partly right.** The live rule already restricted git to eight read-only subcommands, so `clean`/`reset`/`add` were refused - the EIP's wording was too loose to show that. But following the finding, real holes existed: `ruff check --fix` and pytest options such as `--junitxml` (write files), `git diff --output FILE` with a space (writes a file), and `git grep -O<pager>` (launches a program) | **Fixed**: 7.2 R8 point 3 now states the exact rule set; the live list was hardened at once and tested against 13 allowed and 15 refused commands; tests and a live `agy` probe are part of the build |
+| 2 (High) | R7 could break CI if any of the 97 newly checked rows is out of sync | Valid as a risk; the 6 October simulation found four problems and no version mismatches | **Fixed**: 7.2 R7 point 3A makes "validator 0 errors on the exact committed tree" an explicit gate, with the simulation re-run in the build |
+| 3 (Medium) | Exact "N passed" comparison is brittle | Valid | **Fixed**: hard checks are failures and errors only; count comparisons are advisory |
+| 4, 5 (Info) | Q5 - leave the frozen R4 claims as warnings; Q7 - the R10 guard tests are adequate | Agreed (Q5 matches the Programme Sponsor's "warnings" decision) | None needed |
+
+**WP1c design re-review** (v0.7; Antigravity CLI, Gemini 3.1 Pro, fresh conversation; 2026-10-06T09:39:30Z, `sender: reviewer`): **Pass**, information-only notes. It confirmed the Engineering Implementer's assessment that the original live rule already refused `clean`/`reset`/`add`, that the hardened rule set blocks file modification, git state changes and arbitrary code, that the R7 point 3A gate prevents a CI break, and that the hard/advisory split in R8 is sound. Ran without a single refused command.
+
+**WP1c implementation review** (v0.8 built tree; Antigravity CLI, Gemini 3.1 Pro, run through the new `scripts/run_reviewer.py`; 2026-10-06T10:09Z, `sender: reviewer`): **Pass**, no findings. It re-ran pytest (844 passed, 1 skipped), ruff (clean) and the validator (0 errors, 303 warnings), judged the allow-list and the prompt-by-file approach safe, and accepted the two hardenings beyond the design and the two files added during the build. The run needed no allow-list change and no resume - the wrapper's first real use. **Engineering Implementer's caveat, disclosed:** the review is brief and largely affirmative, and Gemini was the only reviewer (Copilot's quota is exhausted until 1 November). One path is untested live: `run_reviewer.py --tool copilot` on Windows (Copilot is a `.cmd` shim launched without `shell=True`; its arguments are fixed shell-safe strings). It is exercised by unit tests only, and should be run live once the quota resets.
+
 Two further v0.5 changes found by the Engineering Implementer while applying the text, both disclosed rather than re-reviewed: TPL-0001 keeps its filename instead of being renamed, which avoids editing links in archived histories and closed records (a reduction in scope); and LGB-0001 Section 7 gains one sentence, so that "both Must-Ship items are now delivered" does not contradict the new Section 4 (the reviewer did not raise this).
 
 Also in v0.5: Section 5's quoted ADR-0023 and UAM-0001 text brought into line with the committed personal-data minimisation (`9e6c1ea`, ADR-0023 1.1, UAM-0001 1.7); the committed artefacts are authoritative.
@@ -614,6 +715,9 @@ Also in v0.5: Section 5's quoted ADR-0023 and UAM-0001 text brought into line wi
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.8 | 6 October 2026 | Claude Engineering Implementer | WP1c built per the approved v0.7 design (Programme Sponsor "Approved", rule A6 gate 1). Build record 7.5: 12 status mismatches fixed (not 3); the RBL-0007 row was a parser bug, not malformed; Section N warnings about 342 to 260; Copilot permissions narrowed and prompts passed by file (beyond the design, both narrowing); live agy matcher probe matches the tests. 85 new tests; 844 passed, 1 skipped. Awaiting implementation review. |
+| 0.7 | 6 October 2026 | Claude Engineering Implementer | WP1c design review Fail (Antigravity CLI): two Highs and a Medium fixed - allow-list stated exactly and hardened (live list too: no ruff --fix, no pytest options, no git --output or grep -O), explicit validator-clean gate for the wider register parser, advisory-only figure comparison. R4 decision "warnings" recorded. Awaiting re-review. |
+| 0.6 | 6 October 2026 | Claude Engineering Implementer | WP1a and WP1b closed (1978070, 9e6c1ea, 23e95bd all CI green; post-commit reviews of 9e6c1ea and 23e95bd Pass). WP1c full design and evidence pack (Section 7) drafted from the source: second reviewer is Antigravity CLI (Gemini CLI replaced 18 June 2026); register parser blind to 97 rows; R10's five heuristic gaps; R4's 26 files. Questions 5-9 added. Awaiting design review. |
 | 0.5 | 6 October 2026 | Claude Engineering Implementer | WP1b review Conditional Pass (Antigravity CLI, Gemini 3.1 Pro); its Medium finding accepted - the JRM-0001 sweep and PST-0001 Section 8 update removed (wrongly cited as plan scope). Section 5 quotes aligned with the committed personal-data minimisation (9e6c1ea). |
 | 0.4 | 6 October 2026 | Claude Engineering Implementer | WP1a post-commit review (Antigravity CLI, Gemini 3.1 Pro, standing in for quota-exhausted Copilot): Fail on one High - Working Report not listed in Section 5; overridden by the Programme Sponsor, recorded in 10A. TPL-0001 text gains a mandatory Commit Contents section; WP1b commit contents listed; Section 6 wording made neutral ("the household Mac") per D23 minimisation. |
 | 0.3 | 6 October 2026 | Claude Engineering Implementer | WP1a committed as 1978070 (Sponsor Approval Service approval at e153874, 07:41:15Z; submit-response 07:42:32Z); CI run 37431602802 green on all five jobs. Post-commit Copilot review cut short by its monthly quota before a verdict. WP1b exact text drafted (Section 6, D22), adding the JRM-0001 sweep and PST-0001 Section 8 that v0.2 omitted; TPL-0001 proposed for rewrite as the EIP standard. |

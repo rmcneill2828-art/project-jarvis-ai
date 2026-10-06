@@ -8,7 +8,7 @@
 |------|------|
 | Artefact ID | PBK-0001 |
 | Title | AI Engineering Playbook |
-| Version | 1.49 |
+| Version | 1.50 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -469,7 +469,7 @@ While Work Package *n* waits for review or approval, the Engineering Implementer
 ## Independent Reviewers
 
 * **Engineering Reviewer:** GitHub Copilot CLI reviews every Work Package's design and its committed result.
-* **Second independent reviewer:** Gemini CLI (personal sign-in) also reviews Work Packages the plan or EIP classifies as **high-risk**, and stands in whenever Copilot's quota is exhausted, so that self-verification never becomes the normal path. A **High** finding from either reviewer blocks the Work Package until it is fixed or the Programme Sponsor explicitly overrides it. Lower findings are recorded and dispositioned as before. Review prompts carry no household personal data. (D19.)
+* **Second independent reviewer:** Antigravity CLI (Google's successor to Gemini CLI, which it replaced on 18 June 2026), always run with a Gemini model, never a Claude model, under the read-only permission allow-list in `scripts/reviewer/antigravity_allowlist.json` and through `scripts/run_reviewer.py`, also reviews Work Packages the plan or EIP classifies as **high-risk**, and stands in whenever Copilot's quota is exhausted, so that self-verification never becomes the normal path. A **High** finding from either reviewer blocks the Work Package until it is fixed or the Programme Sponsor explicitly overrides it. Lower findings are recorded and dispositioned as before. Review prompts carry no household personal data. (D19.)
 * **Local pre-screen (advisory only):** a local model (gpt-oss-20b via LM Studio, selected by scorecard on 2 October 2026) may pre-screen code Work Packages before Copilot. Its output is labelled advisory, is **never counted as independent review**, and every finding is verified by the Engineering Implementer before it is acted on. (D29.)
 
 ---
@@ -617,7 +617,7 @@ This is a documentation architecture principle, not a software design principle.
 
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current programme status used during implementation session initialisation.
 * [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] defines the lightweight collaboration context that complements this playbook.
-* [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] records the current accepted repository baseline, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical baseline lineage only.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current accepted repository baseline (ESR-0061 WP1c, R4: named only there, so closures no longer re-sync this artefact). [[RBL-0009_REPOSITORY_BASELINE|RBL-0009]] is retained for historical lineage.
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative engineering backlog referenced by health review guidance.
 * [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] is the forward-looking sequencing artefact referenced by Backlog Progression Analysis.
@@ -638,7 +638,7 @@ This is a documentation architecture principle, not a software design principle.
 | [[COC-0001_HUMAN_AI_COLLABORATION_CONTEXT|COC-0001]] | Collaboration operating context that complements PBK-0001. |
 | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] | Authoritative backlog source for health review and backlog progression guidance. |
 | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | Forward-looking sequencing artefact; its horizon placements inform Backlog Progression Analysis recommendations. |
-| [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] | Current accepted repository baseline, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). |
+| [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] | Repository baseline established at ESR-0060; the current baseline is recorded in PST-0001. |
 | [[HST-0023_CLAUDE_CHAT_SUMMARY|HST-0023]] | Final historical session record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[FCH-0023_CLAUDE_FULL_CHAT_HISTORY|FCH-0023]] | Final full chat historical evidence record (Claude) - GDE-0001 Section 6.1 discontinued new HST/FCH creation for all future Engineering Sessions; resides in the GDE-0001 Historical Archive tier, searched on demand rather than mandatory WP0 review. |
 | [[HST-0020_CLAUDE_CHAT_SUMMARY|HST-0020]] | Historical session record retained for lineage; no longer the latest archive entry. |
@@ -652,6 +652,7 @@ This is a documentation architecture principle, not a software design principle.
 
 | Version | Date | Author | Summary |
 |---------|------------|-------------------------------|------------------------------------------------------------|
+| 1.50 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c per EIP-ESR0061-001: R4 - the current baseline is named only in PST-0001 (this artefact now points there); D19 - the second independent reviewer is Antigravity CLI with a Gemini model (Google replaced Gemini CLI on 18 June 2026), under the read-only allow-list in scripts/reviewer/antigravity_allowlist.json. |
 | 1.49 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: retired Incremental Visual Convergence (D9), keeping its capability-honest rule as a standalone section; added Approval Economy (A1-A7, D24) and Execute After Approval (EBG-0052); added Delivery Cadence and Independent Review (milestone sessions D21, pipelined design drafting D22, second reviewer D19, advisory local pre-screen D29). |
 | 1.48 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 WP4: current-baseline references updated from RBL-0039 to RBL-0040, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). |
 | 1.47 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: current-baseline references updated from RBL-0038 to RBL-0039, established at ESR-0059 (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory). |

@@ -9,8 +9,8 @@
 | Package ID | EIP-ESR0046-001 |
 | Artefact ID | EIP-ESR0046-001 |
 | Title | User Identity and Profile Foundation |
-| Version | 1.0 |
-| Status | Approved - implementing |
+| Version | 1.1 |
+| Status | Approved - implemented |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
 | Parent | [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0116 |
@@ -200,5 +200,6 @@ Draft v0.1 submitted to Codex via direct `codex exec -s read-only` invocation, p
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c (R7): Status corrected from Approved - implementing to Approved - implemented, matching REG-0001 - the package was implemented at ESR-0046 WP1; the new status check surfaced the stale field. No other change. |
 | 0.2 | 31 July 2026 | Claude Engineering Implementer | Engineering Reviewer (Codex) design review via direct `codex exec -s read-only` invocation: **Pass, no blocking findings.** Every Repository Context claim independently verified against live cited files; scope confirmed within EBG-0116's authority; Section 8 exclusions assessed as defensible for the MLP 0.1 basic bar. Awaiting Programme Sponsor approval. |
 | 0.1 | 31 July 2026 | Claude Engineering Implementer | Initial draft, produced at ESR-0046 WP1. |

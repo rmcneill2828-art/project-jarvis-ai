@@ -230,3 +230,56 @@ def test_main_uses_explicit_date_when_provided(tmp_path, monkeypatch):
     text = adr_path.read_text(encoding="utf-8")
     assert "| 1.1 | 1 January 2020 | Test Author | Backdated change. |" in text
     assert "5 July 2026" not in text
+
+
+# --- ESR-0061 WP1c R7 -------------------------------------------------------
+
+
+def test_main_requires_an_explicit_author(tmp_path, monkeypatch, capsys):
+    """--author defaulted to "Claude Engineering Reviewer", which wrongly
+    labelled every row the Engineering Implementer wrote at ESR-0061 WP1a."""
+
+    import pytest
+
+    _setup(tmp_path, monkeypatch, reg_version="3.60")
+    monkeypatch.setattr(bump_version, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["bump_version.py", "ADR-0099", "1.1", "--summary", "Test change."])
+
+    with pytest.raises(SystemExit) as excinfo:
+        bump_version.main()
+
+    assert excinfo.value.code == 2
+    assert "--author" in capsys.readouterr().err
+
+
+def test_plan_bump_handles_an_eip_style_id(tmp_path, monkeypatch):
+    register_path = _setup(tmp_path, monkeypatch, reg_version="3.60")
+    text = register_path.read_text(encoding="utf-8").replace(
+        "| REG-0001 | Register |",
+        "| EIP-ESR0099-001 | Engineering Implementation Package | Example | 0.1 | Draft | PS | EBR-0001 | `aiems/governance/reviews/` |\n| REG-0001 | Register |",
+    )
+    register_path.write_text(text, encoding="utf-8")
+    reviews = tmp_path / "aiems/governance/reviews"
+    reviews.mkdir(parents=True)
+    (reviews / "EIP-ESR0099-001_EXAMPLE.md").write_text(
+        ADR_CONTENT.replace("ADR-0099", "EIP-ESR0099-001").replace("| Version | 1.0 |", "| Version | 0.1 |"),
+        encoding="utf-8",
+    )
+
+    edits = plan_bump("EIP-ESR0099-001", "0.2", "Test change.", "Test Author", "9 July 2026")
+
+    eip_edit = next(edit for edit in edits if edit.path.name.startswith("EIP-ESR0099-001"))
+    assert "| Version | 0.2 |" in eip_edit.text
+    reg_edit = next(edit for edit in edits if edit.path == register_path)
+    assert "| EIP-ESR0099-001 | Engineering Implementation Package | Example | 0.2 |" in reg_edit.text
+
+
+def test_plan_bump_accepts_a_refresh_history_heading(tmp_path, monkeypatch):
+    _setup(tmp_path, monkeypatch, reg_version="3.60")
+    adr = tmp_path / "aiems/governance/decisions/ADR-0099_EXAMPLE_DECISION.md"
+    adr.write_text(ADR_CONTENT.replace("# Version History", "# 4. Refresh History"), encoding="utf-8")
+
+    edits = plan_bump("ADR-0099", "1.1", "Test change.", "Test Author", "9 July 2026")
+
+    adr_edit = next(edit for edit in edits if edit.path == adr)
+    assert "| 1.1 | 9 July 2026 | Test Author | Test change. |" in adr_edit.text

@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | PCB-0001 |
 | Title | Product Capability Baseline |
-| Version | 3.0 |
+| Version | 3.1 |
 | Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -36,7 +36,7 @@ The v2.3 refresh ([[ESR-0045_ENGINEERING_SESSION_REPORT|ESR-0045]] WP3) incorpor
 Repository validation confirmed that the following evidence artefacts exist:
 
 - [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT]]
-- [[RBL-0040_REPOSITORY_BASELINE]] (current accepted repository baseline, established at ESR-0060; superseded RBL-0007 through RBL-0039 since PCB-0001 v1.0)
+- [[PST-0001_PROGRAMME_STATUS]] (records the current accepted repository baseline; successive baselines have superseded RBL-0007 since PCB-0001 v1.0)
 - [[JARVIS_PRODUCT_ARCHITECTURE]]
 - [[JARVIS_CAPABILITY_READINESS_MATRIX]]
 - [[EBR-0001_ENGINEERING_BACKLOG_REGISTER]]
@@ -135,6 +135,7 @@ Acceptance records the current operational foundation and its known constraints.
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.1 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c per EIP-ESR0061-001 (R4): Section 3 points to PST-0001 for the current accepted repository baseline instead of naming it. |
 | 3.0 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b per EIP-ESR0061-001 (EBG-0134): first content re-audit since ESR-0050 - UXP, provider, voice and agent rows refreshed against delivered code (Kokoro, three agents, Memory Management panel, packaged sidecar, job-object termination, retry/deadline); new Personal Memory and Observability rows; ADR-0023 direction recorded; constraints updated. |
 | 2.20 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 WP4: current-baseline references updated from RBL-0039 to RBL-0040, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). |
 | 2.19 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: current-baseline references updated from RBL-0038 to RBL-0039, established at ESR-0059 (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory). |

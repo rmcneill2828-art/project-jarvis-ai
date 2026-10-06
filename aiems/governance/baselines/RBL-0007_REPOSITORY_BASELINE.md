@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | RBL-0007 |
 | Title | ESR-0006 Repository Baseline |
-| Version | 1.0 |
-| Status | Pending Acceptance |
+| Version | 1.1 |
+| Status | Accepted |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Engineering Session | ESR-0006 |
 | Previous Baseline | [[RBL-0006_REPOSITORY_BASELINE|RBL-0006]] |
@@ -161,4 +161,5 @@ JARVIS/
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c (R7): Status corrected from Pending Acceptance to Accepted, matching REG-0001 - the baseline was accepted and later superseded; the new status check surfaced the stale field. No other change. |
 | 1.0 | 1 July 2026 | Programme Sponsor & Chief Engineering Advisor | Initial ESR-0006 repository baseline recording Obsidian evaluation, OSE pilot outcomes, repository integrity improvements and ESR-0007 handover readiness. |

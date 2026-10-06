@@ -1,0 +1,18 @@
+{
+  "_comment": "Read-only allow-list for the Antigravity CLI reviewer (ESR-0061 WP1c, R8). Headless mode refuses any tool not listed, and a refused tool aborts the run. Every command rule is anchored; nothing can be appended. Never add python -c, redirects, chaining, or write-capable options. {repo_root} is replaced with the repository path by scripts/run_reviewer.py --install-settings. Tested by scripts/tests/test_run_reviewer.py.",
+  "permissions": {
+    "allow": [
+      "read_file({repo_root})",
+      "command(regex:^git (log|show|diff|status|rev-parse|ls-files|grep|cat-file)( (\"[^\"`$]*\"|([^-;&|`$<>\"= ][^;&|`$<>\"= ]*|-[^-O;&|`$<>\"= ][^;&|`$<>\"= ]*|--([^o;&|`$<>\"= ]|o[^u;&|`$<>\"= ])[^;&|`$<>\"= ]*|--o|--)))*( \\| (grep( -[a-zA-Z]+( [0-9]+)?)* (\"[^\"`$]*\"|[^;&|`$<>\" ]+)|head -n [0-9]+|tail -n [0-9]+|wc( -[lwc])?)){0,2}$)",
+      "command(regex:^cat( [^;&|`$<>\" ]+)+( \\| (grep( -[a-zA-Z]+( [0-9]+)?)* (\"[^\"`$]*\"|[^;&|`$<>\" ]+)|head -n [0-9]+|tail -n [0-9]+|wc( -[lwc])?)){0,2}$)",
+      "command(regex:^grep( -[a-zA-Z]+( [0-9]+)?)* (\"[^\"`$]*\"|[^;&|`$<>\" ]+)( [^;&|`$<>\" ]+)+( \\| (grep( -[a-zA-Z]+( [0-9]+)?)* (\"[^\"`$]*\"|[^;&|`$<>\" ]+)|head -n [0-9]+|tail -n [0-9]+|wc( -[lwc])?)){0,2}$)",
+      "command(regex:^ls( -[a-zA-Z]+)*( [^;&|`$<>\" ]+)*$)",
+      "command(regex:^(head|tail) -n [0-9]+ [^;&|`$<>\" ]+$)",
+      "command(regex:^wc( -[lwc])? [^;&|`$<>\" ]+$)",
+      "command(regex:^python -m pytest( -q)?( [^-;&|`$<>\" ][^;&|`$<>\" ]*)*$)",
+      "command(regex:^python scripts/validate_repository\\.py$)",
+      "command(regex:^python -m ruff check( [^-;&|`$<>\" ][^;&|`$<>\" ]*)*$)",
+      "command(regex:^python scripts/aiems_bridge\\.py return-findings ESR-[0-9]{4} WP[0-9A-Za-z_-]+ --message \"[^\"`$;&|<>]*\"$)"
+    ]
+  }
+}

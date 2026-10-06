@@ -2,7 +2,7 @@
 
 **Status:** Approved
 
-**Version:** 1.31
+**Version:** 1.32
 
 ---
 
@@ -249,7 +249,7 @@ Record the current engineering state before beginning work.
 
 Before beginning engineering activities:
 
-* Review [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]], the current accepted repository baseline.
+* Review the current accepted repository baseline, as recorded in [[PST-0001_PROGRAMME_STATUS|PST-0001]].
 * Review README.md for repository orientation and platform context.
 * Load this Collaboration Context.
 * Perform WP0A - Repository Synchronisation.
@@ -265,7 +265,7 @@ Before beginning engineering activities:
 
 * [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] defines implementation behaviour and complements this collaboration context.
 * [[PST-0001_PROGRAMME_STATUS|PST-0001]] records current programme status for engineering session reload and synchronisation.
-* [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] records the current accepted repository baseline, accepted by the Programme Sponsor at ESR-0060 WP4 on 1 October 2026. [[RBL-0039_REPOSITORY_BASELINE|RBL-0039]] (ESR-0059) is retained as historical lineage.
+* [[PST-0001_PROGRAMME_STATUS|PST-0001]] records the current accepted repository baseline (ESR-0061 WP1c, R4: named only there, so closures no longer re-sync this artefact).
 * [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] records the closed architecture evaluation session that established ESR-0009 readiness.
 * [[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] is the authoritative backlog reference for Repository Engineering Health Reviews.
 * [[STD-0004_VALIDATION_QUALITY_ASSURANCE_STANDARD|STD-0004]] defines validation and quality assurance expectations relevant to repository review.
@@ -281,7 +281,7 @@ Before beginning engineering activities:
 | [[ADR-0013_ENGINEERING_ECOSYSTEM_SYNCHRONISATION|ADR-0013]] | Establishes Engineering Ecosystem Synchronisation as the current WP0 working practice. |
 | [[PBK-0001_AI_ENGINEERING_PLAYBOOK|PBK-0001]] | Playbook governing Engineering Implementer behaviour that complements COC-0001. |
 | [[PST-0001_PROGRAMME_STATUS|PST-0001]] | Current programme status used for session reload and synchronisation. |
-| [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] | Current accepted repository baseline, accepted by the Programme Sponsor at ESR-0060 WP4 on 1 October 2026. |
+| [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] | Repository baseline accepted at ESR-0060 WP4; the current baseline is recorded in PST-0001. |
 | [[ESR-0008_ENGINEERING_SESSION_REPORT|ESR-0008]] | Closed session report that hands over to ESR-0009 validation readiness. |
 
 ---
@@ -289,6 +289,7 @@ Before beginning engineering activities:
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.32 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c per EIP-ESR0061-001 (R4): the current accepted repository baseline is named only in PST-0001; this artefact now points there, so closures no longer re-sync it. |
 | 1.31 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: rule 52 points to PBK-0001's Approval Economy (D24). |
 | 1.30 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 WP4: current-baseline references updated from RBL-0039 to RBL-0040, established at ESR-0060 (Retrospective Review Discharged; Backend Process-Tree Termination). |
 | 1.29 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP16: current-baseline references updated from RBL-0038 to RBL-0039, established at ESR-0059 (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory). |

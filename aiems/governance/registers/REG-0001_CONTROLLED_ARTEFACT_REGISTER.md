@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.737
+**Version:** 3.746
 
 
 ---
@@ -119,11 +119,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
 | ADR-0023 | Architecture Decision Record | Version 1.0 Provider Strategy | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0061 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.737 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.746 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.219 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.220 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -131,7 +131,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | STD-0006 | Standard | Configuration and Secrets Standard | 1.0 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | TPL-0001 | Template | Engineering Implementation Package Standard and Template | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | CHR-0002 | `aiems/templates/` |
 | RBL-0004 | Repository Baseline | ESR-0004 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
-| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
+| [[RBL-0007_REPOSITORY_BASELINE|RBL-0007]] | Repository Baseline | ESR-0006 Repository Baseline | 1.1 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0008 | Repository Baseline | ESR-0007 Repository Baseline | 1.0 | Accepted | Programme Sponsor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0009 | Repository Baseline | ESR-0008 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
 | RBL-0010 | Repository Baseline | ESR-0009 Repository Baseline | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/baselines/` |
@@ -165,11 +165,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | RBL-0039 | Repository Baseline | ESR-0059 Repository Baseline (Production Code Review Action Plan; CI Gate Restored; Profile-Scoped Memory) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0059 | `aiems/governance/baselines/` |
 | RBL-0040 | Repository Baseline | ESR-0060 Repository Baseline (Retrospective Review Discharged; Backend Process-Tree Termination) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0060 | `aiems/governance/baselines/` |
 | RBL-0038 | Repository Baseline | ESR-0058 Repository Baseline (Engineering Reviewer Succession; BRD-0001 Recovery; Home Assistant Agent; Playwright Reliability Fix; Memory Management UXP) | 1.0 | Accepted | Programme Sponsor & Chief Engineering Advisor | ESR-0058 | `aiems/governance/baselines/` |
-| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 3.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
+| PCB-0001 | Product Capability Baseline | Product Capability Baseline | 3.1 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | RSC-0001 | v1.0 Readiness Scorecard | v1.0 Readiness Scorecard | 2.0 | Accepted | Programme Sponsor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/baselines/` |
 | LGB-0001 | Launch Gap Backlog | Launch Gap Backlog | 1.3 | Accepted | Programme Sponsor | RSC-0001 | `aiems/governance/baselines/` |
 | JARVIS_PRODUCT_ARCHITECTURE | Product Architecture | JARVIS Product Architecture | 1.4 | Approved Product Architecture | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
-| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 3.0 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
+| JARVIS_CAPABILITY_READINESS_MATRIX | Capability Readiness Matrix | JARVIS Capability Readiness Matrix | 3.1 | Maintained | Programme Sponsor & Chief Engineering Advisor | EBG-0017 | `jarvis/architecture/` |
 | MOD-0001 | Model | Platform Architecture Model | 1.11 | Approved | Programme Sponsor | CHR-0002 | `aiems/models/` |
 | SAM-0001 | Model | Sentinel Trust Architecture | 0.3 | Draft | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/models/` |
 | CURRENT_ARCHITECTURE | Architecture Snapshot | AIEMS Current Architecture | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | MOD-0001 | `aiems/architecture/` |
@@ -189,11 +189,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0021-002 | Engineering Implementation Package | PBK-0001 Historical Archive Breadcrumb Alignment | 0.2 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0021-003 | Engineering Implementation Package | PBK-0001 JRM-0001 Cross-Reference Addition | 0.3 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0022-001 | Engineering Implementation Package | Production Provider Wiring and System Health Panel | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0024-001 | Engineering Implementation Package | TrustTierPolicy Production Wiring | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0024-002 | Engineering Implementation Package | System Health Policy Engine Detail | 1.0 | Approved | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0025-001 | Engineering Implementation Package | AIEMS Exchange Bridge MVP | 1.3 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0025-002 | Engineering Implementation Package | Ollama Local Fallback Provider | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0027-001 | Engineering Implementation Package | Personal Memory Implementation with Minimal Consent Gate | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0024-001 | Engineering Implementation Package | TrustTierPolicy Production Wiring | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0024-002 | Engineering Implementation Package | System Health Policy Engine Detail | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | PBK-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0025-001 | Engineering Implementation Package | AIEMS Exchange Bridge MVP | 1.3 | Approved - implemented, post-implementation findings addressed | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0025-002 | Engineering Implementation Package | Ollama Local Fallback Provider | 1.1 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0027-001 | Engineering Implementation Package | Personal Memory Implementation with Minimal Consent Gate | 1.1 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0027-002 | Engineering Implementation Package | UXP DiagnosticsPanel Static Row Reconciliation Against UAM-0001 | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0028-001 | Engineering Implementation Package | AIEMS Process Hygiene Batch | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0028-002 | Engineering Implementation Package | JARVIS Product Requirements Backlog Identification | 1.0 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
@@ -217,7 +217,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0043-001 | Engineering Implementation Package | Guardian Persona: JARVIS Characterisation Refinement | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | AAM-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0044-001 | Engineering Implementation Package | Wire Guardian's Voice Faculty into the Live Runtime and UXP | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0045-001 | Engineering Implementation Package | STD-0006 Configuration and Secrets Standard | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0046-001 | Engineering Implementation Package | User Identity and Profile Foundation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0046-001 | Engineering Implementation Package | User Identity and Profile Foundation | 1.1 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0047-001 | Engineering Implementation Package | Voice Phase 6 Increment B: Speech Input Scope | 1.1 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0048-001 | Engineering Implementation Package | Agent Framework Architecture Scope | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0049-001 | Engineering Implementation Package | Agent Framework Phase 3: First Specialist Agent Implementation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
@@ -228,7 +228,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0045-002 | Engineering Implementation Package | v1.0 Readiness Scorecard | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | JARVIS_PRODUCT_ARCHITECTURE | `aiems/governance/reviews/` |
 | EIP-ESR0045-003 | Engineering Implementation Package | Launch Gap Backlog | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0052-001 | Engineering Implementation Package | Process/Tooling Currency Cluster | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0052-002 | Engineering Implementation Package | Kokoro TTS Live Comparison | 1.0 | Approved - implemented; EBG-0115 closed Complete on Programme Sponsor's positive listening verdict | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0052-002 | Engineering Implementation Package | Kokoro TTS Live Comparison | 1.0 | Approved - implemented; EBG-0115 closed Complete on the Programme Sponsor's positive listening verdict | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0053-001 | Engineering Implementation Package | Active Backlog View Generation | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0053-002 | Engineering Implementation Package | Kokoro Production Voice Wiring | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0054-002 | Engineering Implementation Package | GIA Phase 3a Git State Observability | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
@@ -249,17 +249,17 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | FE-0005 | Engineering Feature | Engineering Review of PBK-0001 AI Engineering Playbook (Part I) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0006 | Engineering Feature | Populate PBK-0001 AI Engineering Playbook (Part II - Operational Engineering Workflow) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
 | FE-0007 | Engineering Feature | Approved Implementation of PBK-0001 AI Engineering Playbook (Part II) | 1.0 | Complete | Programme Sponsor | PBK-0001 | `aiems/governance/reviews/` |
-| PBK-0001 | Playbook | AI Engineering Playbook | 1.49 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
-| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.31 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
+| PBK-0001 | Playbook | AI Engineering Playbook | 1.50 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/playbooks/` |
+| COC-0001 | Conversation Operating Context | Human-AI Collaboration Context | 1.32 | Approved | Programme Sponsor | CHR-0002 | `aiems/governance/conversation/` |
 | GDE-0001 | Guide | Project Knowledge Map | 1.4 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
-| RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
-| RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
+| RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete - Pending Programme Sponsor Acceptance | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
+| RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Implementation Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
 | PST-0001 | Programme Status | Programme Status | 3.45 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0003 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0004 | Engineering Session Report | Engineering Session Report | 1.1 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0004 | Engineering Session Report | Engineering Session Report | 1.1 | Ready for Final Closure | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0005 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0005-RELOAD | Session Reload Snapshot | Engineering Session Reload | 1.0 | Superseded | Programme Sponsor & Chief Engineering Advisor | ESR-0005 | `aiems/governance/status/` |
 | ESR-0006 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
@@ -274,7 +274,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0014A | Engineering Session Report | Post-Closure Engineering Addendum - Knowledge Tiering | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/governance/sessions/` |
 | ESR-0015 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0016 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Accepted Addendum | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
+| ESR-0016A | Engineering Session Report | Post-Closure Engineering Addendum - Governance and Tooling Improvements | 1.0 | Complete | Programme Sponsor & Chief Engineering Advisor | ESR-0016 | `aiems/governance/sessions/` |
 | ESR-0017 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0018 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0019 | Engineering Session Report | Engineering Session Report | 1.5 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
@@ -341,8 +341,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0060 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0060-001 | Engineering Implementation Package | Provider-Selection and Deadline-Health Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0061 | Engineering Session Report | Engineering Session Report | 0.3 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| EIP-ESR0061-001 | Engineering Implementation Package | Release Gate, Governance and Streamlining | 0.5 | Draft - WP1b review Conditional Pass, finding fixed; WP1b applied, awaiting Programme Sponsor approval | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| ESR-0061 | Engineering Session Report | Engineering Session Report | 0.4 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| EIP-ESR0061-001 | Engineering Implementation Package | Release Gate, Governance and Streamlining | 0.8 | Draft - WP1c built; implementation review Pass; awaiting Programme Sponsor approval of the built result | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -457,6 +457,15 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.746 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c: EIP-ESR0061-001 row synced to 0.8 (built, awaiting implementation review); ESR-0061 row synced to 0.4. Synced by hand: bump_version.py edits the document as well, which is already at these versions. |
+| 3.745 | 6 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.219 to 1.220) following: ESR-0061 WP1c per EIP-ESR0061-001: EBG-0169 Completed (delivery streamlining tooling and second independent reviewer). |
+| 3.744 | 6 October 2026 | Claude Engineering Implementer | Aligned JARVIS_CAPABILITY_READINESS_MATRIX version (3.0 to 3.1) following: ESR-0061 WP1c per EIP-ESR0061-001 (R4): Related Artefacts points to PST-0001 for the current accepted repository baseline instead of naming it. |
+| 3.743 | 6 October 2026 | Claude Engineering Implementer | Aligned PCB-0001 version (3.0 to 3.1) following: ESR-0061 WP1c per EIP-ESR0061-001 (R4): Section 3 points to PST-0001 for the current accepted repository baseline instead of naming it. |
+| 3.742 | 6 October 2026 | Claude Engineering Implementer | Aligned COC-0001 version (1.31 to 1.32) following: ESR-0061 WP1c per EIP-ESR0061-001 (R4): the current accepted repository baseline is named only in PST-0001; this artefact now points there, so closures no longer re-sync it. |
+| 3.741 | 6 October 2026 | Claude Engineering Implementer | Aligned PBK-0001 version (1.49 to 1.50) following: ESR-0061 WP1c per EIP-ESR0061-001: R4 - the current baseline is named only in PST-0001 (this artefact now points there); D19 - the second independent reviewer is Antigravity CLI with a Gemini model (Google replaced Gemini CLI on 18 June 2026), under the read-only allow-list in scripts/reviewer/antigravity_allowlist.json. |
+| 3.740 | 6 October 2026 | Claude Engineering Implementer | Aligned EIP-ESR0046-001 version (1.0 to 1.1) following: ESR-0061 WP1c (R7): Status corrected from Approved - implementing to Approved - implemented, matching REG-0001 - the package was implemented at ESR-0046 WP1; the new status check surfaced the stale field. No other change. |
+| 3.739 | 6 October 2026 | Claude Engineering Implementer | Aligned RBL-0007 version (1.0 to 1.1) following: ESR-0061 WP1c (R7): Status corrected from Pending Acceptance to Accepted, matching REG-0001 - the baseline was accepted and later superseded; the new status check surfaced the stale field. No other change. |
+| 3.738 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c (R7): Status column synced to each document's own Document Control Status, surfaced by the new status check: EIP-ESR0024-001 (Approved to Approved - implemented); EIP-ESR0024-002 (Approved to Approved - implemented); EIP-ESR0025-001 (Approved to Approved - implemented, post-implementation findings addressed); EIP-ESR0025-002 (Approved to Approved - implemented); EIP-ESR0027-001 (Approved to Approved - implemented); EIP-ESR0052-002 (Approved - implemented; EBG-0115 closed Complete on Programme Sponsor's positive listening verdict to Approved - implemented; EBG-0115 closed Complete on the Programme Sponsor's positive listening verdict); RBA-0001 (Complete to Complete - Pending Programme Sponsor Acceptance); RPCA-0001 (Complete to Implementation Complete); ESR-0004 (In Review to Ready for Final Closure); ESR-0016A (Accepted Addendum to Complete). Synced by hand. |
 | 3.737 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b: ESR-0061 row synced 0.2 to 0.3; EIP-ESR0061-001 row synced to 0.5. Synced by hand. |
 | 3.736 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b: TPL-0001 row synced (0.2 Draft to 1.0 Approved; retitled Engineering Implementation Package Standard and Template, filename kept); JARVIS_CAPABILITY_READINESS_MATRIX row synced 2.20 to 3.0. Synced by hand: bump_version.py does not match these rows (R7, WP1c). |
 | 3.735 | 6 October 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.218 to 1.219) following: ESR-0061 WP1b per EIP-ESR0061-001: EBG-0008, EBG-0066, EBG-0130 and EBG-0134 Completed (TPL-0001 1.0; RSC-0001 2.0 Section 4B; RSC-0001 2.0 and LGB-0001 1.3; PCB-0001 3.0 and the Capability Readiness Matrix 3.0). |

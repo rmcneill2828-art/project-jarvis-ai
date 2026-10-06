@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.219
+**Version:** 1.220
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.219 |
+| Version | 1.220 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -277,7 +277,7 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 | EBG-0166 | Household Safety - Administrator PIN, Child Role, Moderation and Consent | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] (go-live plan, 2 October 2026); registered ESR-0061 WP1a | Approved Backlog | High | Programme Sponsor | GAM-0001 Section 8.2 implemented: Administrator PIN (`hashlib.scrypt`, rate-limited); Child cannot switch profile or change settings; local moderation model on Child input and output; child-safety prompt layer; recorded parental consent before Child escalation; Child AI disclosure; safety events recorded as category and time only (D23). Allocated to go-live WP6. No implementation authorised by this entry beyond that WP's own approved EIP. |
 | EBG-0167 | Voice Provisioning on Windows and macOS | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] (go-live plan, 2 October 2026); registered ESR-0061 WP1a | Approved Backlog | Medium | Programme Sponsor | In-app download of voice models (D4); `kokoro-onnx`/espeak and `faster-whisper` verified in both sidecars; WKWebView `audio/mp4` path verified. Allocated to go-live WP7. No implementation authorised by this entry beyond that WP's own approved EIP. |
 | EBG-0168 | User Guide, Parents' Guide and Public "Children and Privacy" Page | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] (go-live plan, 2 October 2026); registered ESR-0061 WP1a | Approved Backlog | High | Programme Sponsor | User guide; parents' guide; public page meeting Anthropic's minors requirement (what is collected, where it goes, consent, retention, erasure); a data map of what JARVIS holds and where it goes. Allocated to go-live WP8. No implementation authorised by this entry beyond that WP's own approved EIP. |
-| EBG-0169 | Delivery Streamlining Tooling and Second Independent Reviewer | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] (go-live plan, 2 October 2026); registered ESR-0061 WP1a | Approved Backlog | Medium | Programme Sponsor | R4 single-source baseline with validator rule; R7 REG-0001 sync check; R8 post-commit pre-check and reviewer wrapper with working tool permissions; R10 validator warning triage; Gemini CLI as second reviewer (terms verified before use; Programme Sponsor's one-time sign-in); gpt-oss-20b advisory pre-screen. Allocated to go-live WP1c. No implementation authorised by this entry beyond that WP's own approved EIP. |
+| EBG-0169 | Delivery Streamlining Tooling and Second Independent Reviewer | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] (go-live plan, 2 October 2026); registered ESR-0061 WP1a | Completed | Medium | Programme Sponsor | R4 single-source baseline with validator rule; R7 REG-0001 sync check; R8 post-commit pre-check and reviewer wrapper with working tool permissions; R10 validator warning triage; Gemini CLI as second reviewer (terms verified before use; Programme Sponsor's one-time sign-in); gpt-oss-20b advisory pre-screen. Allocated to go-live WP1c. No implementation authorised by this entry beyond that WP's own approved EIP. **Completed at ESR-0061 WP1c** (per EIP-ESR0061-001 Section 7): R4 single-source baseline check; R7 register parser covering every row shape, status check, `bump_version.py --author` required; R8 `scripts/post_commit_precheck.py` and `scripts/run_reviewer.py` with the tested read-only Antigravity allow-list; R10 section-reference heuristics; the second reviewer is Antigravity CLI with a Gemini model (Gemini CLI replaced 18 June 2026); D29 `scripts/local_prescreen.py`, advisory only. |
 ---
 
 # 5A. Active Backlog View
@@ -408,6 +408,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.220 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1c per EIP-ESR0061-001: EBG-0169 Completed (delivery streamlining tooling and second independent reviewer). |
 | 1.219 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1b per EIP-ESR0061-001: EBG-0008, EBG-0066, EBG-0130 and EBG-0134 Completed (TPL-0001 1.0; RSC-0001 2.0 Section 4B; RSC-0001 2.0 and LGB-0001 1.3; PCB-0001 3.0 and the Capability Readiness Matrix 3.0). |
 | 1.218 | 6 October 2026 | Claude Engineering Implementer | ESR-0061 WP1a per EIP-ESR0061-001: dispositions - EBG-0015 and EBG-0059 Superseded (D13), EBG-0016 Rejected, EBG-0029, EBG-0052, EBG-0053 and EBG-0067 Completed, EBG-0118 Superseded; EBG-0110 text updated for ADR-0023; EBG-0161 to EBG-0169 registered (Approved Backlog, go-live plan WP1c-WP8). |
 | 1.217 | 4 October 2026 | Claude Engineering Implementer | Direct Programme Sponsor-requested registration (outside an open ESR, following ESR-0060 closure): registered EBG-0159 (Echo devices as a remote voice front-end via a private custom Alexa skill and Cloudflare Tunnel) and EBG-0160 (dedicated JARVIS room voice satellites with a local "Hey Jarvis" wake word), both Candidate Backlog, Low, allocated post-launch by Programme Sponsor decision - outside MLP 0.1 / Version 1.0 scope. No implementation authorised. |
