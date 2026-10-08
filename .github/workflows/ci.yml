@@ -188,5 +188,6 @@ jobs:
         with:
           node-version: "20"
       - run: npm ci
-      - run: npx playwright install --with-deps webkit
+      # The suite's global setup warms Vite with Chromium, so both browsers are needed.
+      - run: npx playwright install --with-deps chromium webkit
       - run: npx playwright test --project=webkit

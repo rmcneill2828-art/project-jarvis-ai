@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.756
+**Version:** 3.761
 
 
 ---
@@ -119,7 +119,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
 | ADR-0023 | Architecture Decision Record | Version 1.0 Provider Strategy | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0061 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.756 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.761 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
@@ -341,9 +341,10 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ESR-0060 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0060-001 | Engineering Implementation Package | Provider-Selection and Deadline-Health Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| ESR-0061 | Engineering Session Report | Engineering Session Report | 0.9 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0061 | Engineering Session Report | Engineering Session Report | 0.10 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0061-001 | Engineering Implementation Package | Release Gate, Governance and Streamlining | 0.9 | Draft - WP1c committed; CI Linux fix (WP1c-fix) awaiting review and approval | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0061-002 | Engineering Implementation Package | Platform Hardening and macOS | 0.11 | Draft - WP2a and WP2a-fix committed; WP2b built (CI-verified on Linux, Mac checks at Mac visit 1); implementation review Pass after one Fail (fixed), awaiting Programme Sponsor approval of the built result | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0061-002 | Engineering Implementation Package | Platform Hardening and macOS | 0.13 | Draft - WP2a, WP2a-fix and WP2b committed (post-commit reviews Pass; WP2b real-Mac checks at Mac visit 1); WP2c follow-ups built, implementation review Pass, awaiting Programme Sponsor approval of the built result | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0061-003 | Engineering Implementation Package | Provider Strategy: Ollama First and Claude Escalation | 0.3 | Draft - design only, drafted ahead under D22; design review Pass (Gemini) with one correction applied; Programme Sponsor decisions S1-S6 approved (chat, 8 October 2026); nothing built, build waits for Session B | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -458,6 +459,11 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.761 | 8 October 2026 | Claude Engineering Implementer | ESR-0061 WP2c: EIP-ESR0061-002 row synced to 0.13 (implementation review Pass). Synced by hand. |
+| 3.760 | 8 October 2026 | Claude Engineering Implementer | ESR-0061 WP2c: EIP-ESR0061-002 row synced to 0.12; ESR-0061 row synced to 0.10. Synced by hand. |
+| 3.759 | 8 October 2026 | Claude Engineering Implementer | ESR-0061: EIP-ESR0061-003 row synced to 0.3 (Programme Sponsor approved S1-S6). Synced by hand. |
+| 3.758 | 8 October 2026 | Claude Engineering Implementer | ESR-0061: EIP-ESR0061-003 row synced to 0.2 (design review Pass, role-gate correction). Synced by hand. |
+| 3.757 | 8 October 2026 | Claude Engineering Implementer | ESR-0061: registered EIP-ESR0061-003 (0.1, Draft - WP3 provider strategy design, drafted ahead under D22). Synced by hand. |
 | 3.756 | 8 October 2026 | Claude Engineering Implementer | ESR-0061 WP2b: EIP-ESR0061-002 row synced to 0.11 (implementation review Pass after fixes); ESR-0061 row synced to 0.9. Synced by hand. |
 | 3.755 | 8 October 2026 | Claude Engineering Implementer | ESR-0061 WP2b: EIP-ESR0061-002 row synced to 0.9 (WP2b built); ESR-0061 row synced to 0.8; EBR-0001 row synced to 1.222. Synced by hand. |
 | 3.754 | 8 October 2026 | Claude Engineering Implementer | ESR-0061 WP2b: EIP-ESR0061-002 row synced to 0.8 (WP2b design drafted). Synced by hand. |

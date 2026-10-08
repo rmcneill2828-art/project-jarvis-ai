@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-002 |
 | Title | Engineering Implementation Package: WP2 Platform Hardening and macOS |
-| Version | 0.11 |
-| Status | Draft - WP2a and WP2a-fix committed; WP2b built (CI-verified on Linux, Mac checks at Mac visit 1); implementation review Pass after one Fail (fixed), awaiting Programme Sponsor approval of the built result |
+| Version | 0.13 |
+| Status | Draft - WP2a, WP2a-fix and WP2b committed (post-commit reviews Pass; WP2b real-Mac checks at Mac visit 1); WP2c follow-ups built, implementation review Pass, awaiting Programme Sponsor approval of the built result |
 | Session | ESR-0061 |
 | Work Package | WP2 (WP2a, WP2b) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP2 |
@@ -182,6 +182,8 @@ Not changed (the design listed them; the build did not need them): `jarvis/ident
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.13 | 8 October 2026 | Claude Engineering Implementer | WP2c implementation review Pass (Gemini, Info only); Linux Docker run on the final tree 890 passed. Awaiting approval of the built result. |
+| 0.12 | 8 October 2026 | Claude Engineering Implementer | WP2a-fix and WP2b post-commit reviews recorded (Pass); CI result for `dd946a2`; Section 16 (WP2c): the three queued follow-ups (WebKit job installs Chromium, pre-check recognises `.plist` and a "Differences" paragraph, record trail) built. |
 | 0.11 | 8 October 2026 | Claude Engineering Implementer | WP2b re-review Pass (Gemini, all Info) after the two fixes; Section 15 completed. Linux full run on the final tree recorded in Section 14. Awaiting Programme Sponsor approval of the built result. |
 | 0.10 | 8 October 2026 | Claude Engineering Implementer | WP2b implementation review Fail (Gemini: 1 High, 1 Medium, 3 Info); both fixed (setup script no longer uses `sort -V`; smoke test checks the backend is alive before the host is killed); the Windows `os.kill(pid, 0)` wording corrected after checking; Section 15 review record. Awaiting re-review. |
 | 0.9 | 8 October 2026 | Claude Engineering Implementer | WP2b design review Pass (Gemini, all Info) and approved by the Programme Sponsor (chat); built. Section 14 build record: Unix process-group guard, orphan watchdog (POSIX-only - corrected from the design), real-sidecar smoke test (not in the design), macOS CI and release jobs, bundle config, GIA, setup script, pre-check fix. Section 13 commit contents finalised. Awaiting implementation review. |
@@ -254,3 +256,29 @@ Differences from the design-time estimate: `scripts/jarvis_backend_entry.py` is 
 | 5 (Info) | The provided pytest, ruff and validator checks pass; the Docker and Windows evidence could not be reproduced | Stated in Section 14 | None |
 
 **Review 2 - re-review** (Antigravity CLI, Gemini; 2026-10-08T10:4xZ, `sender: reviewer`): **Pass**, all Info. `version_at_least` is plain bash arithmetic valid in bash 3.2 and nothing else in the script is missing on stock macOS; the two new smoke assertions remove the false-pass path and the orphan test is sound; it agreed that signal 0 is `CTRL_C_EVENT` on Windows, so the watchdog stays POSIX-only; its local pytest, ruff and validator runs passed. **Process note, disclosed:** it needed four resumes (refused: `dir`, a `cat` of its own task log, a `cat` with a quoted absolute path) and, once finished, gave its Pass in its reply without recording it; a final resume made it record the verdict, and the Engineering Implementer wrote no reviewer entry. **Caveats:** a single reviewer with no web access; it cannot run any macOS or Docker evidence.
+
+# 16. WP2c - Follow-ups After WP2b
+
+Small, queued at the WP2b post-commit review and announced to the Programme Sponsor on 8 October 2026; no new behaviour. Risk class: low (a CI job, a read-only reporting script, records), reviewed by Antigravity under the D19 override for WP2.
+
+**16.1 Post-commit record, not previously written down.**
+
+| Commit | CI | Post-commit review (Antigravity, Gemini; `sender: reviewer`) |
+|---|---|---|
+| `65c4100` WP2a-fix | run 37753668213: all five jobs passed | **Pass**, Info. Noted the commit message said four new tests when five were added; not amended (pushed), disclosed here |
+| `dd946a2` WP2b | run 37765878232: `python`, `rust`, `frontend-build`, `playwright`, `rust-windows`, **`python-macos`** and **`rust-macos`** passed; `playwright-webkit` (informational) failed | **Pass**, Info. Confirmed the 22 files match Section 13, the script is mode 100755, and the pre-check FAIL (`.plist` unknown to the extension list; the "Differences" paragraph read as part of the list) is a script defect, not a commit defect. One resume (`git ls-tree` is not on its allow-list) |
+
+`rust-macos` was the first run on a real Apple-Silicon runner: the real packaged sidecar was a tree of two processes, all nine smoke checks passed (graceful stop, force-killed host, group kill, no `_MEI*` left), 15 cargo tests passed, and the `.app` bundle carried `NSMicrophoneUsageDescription` and minimum macOS 13.0. `playwright-webkit` ran **no test**: it installed only WebKit, but `tests/e2e/global-setup.js` launches Chromium to warm Vite, so it failed before the first test.
+
+**16.2 Changes.**
+* `.github/workflows/ci.yml`: `playwright-webkit` installs Chromium as well as WebKit, so the WebKit project actually runs. It stays `continue-on-error` until WP4.
+* `scripts/post_commit_precheck.py`: `plist`, `ini`, `cfg` and `xml` join the path extensions; a paragraph starting "Differences" ends the list exactly as "Not changed" does. Tests added. Re-run on `dd946a2` with Section 13, the file lists now match (they did not before).
+* Records: this section, ESR-0061, REG-0001, and the WP3 design EIP-ESR0061-003 v0.3 (a new file, committed here because it is the approved design the next work package builds from).
+
+**16.3 Not verified.** The corrected job has not run; it first runs on the push, and any WebKit failures it then reveals are findings for WP4, not defects in this change.
+
+**16.4 Implementation review** (Antigravity CLI, Gemini; 2026-10-08T12:1xZ, `sender: reviewer`, no resumes): **Pass**. Confirmed Chromium is needed by the global setup, the job stays `continue-on-error`, the 16.1 statements match git and the bridge transcripts, and the Section 17 list equals `git status`. One Info: the "Differences" rule would truncate a list whose own first line started with that word - accepted, the convention is to put such notes after the list. Evidence of the Engineering Implementer's own: Linux Docker run on the final tree (ruff clean, 890 passed, validator 0 errors).
+
+# 17. WP2c Commit Contents
+
+New: `aiems/governance/reviews/EIP-ESR0061-003_PROVIDER_STRATEGY_OLLAMA_FIRST_AND_CLAUDE_ESCALATION.md`. Changed: `.github/workflows/ci.yml`, `scripts/post_commit_precheck.py`, `scripts/tests/test_post_commit_precheck.py`, `aiems/governance/reviews/EIP-ESR0061-002_PLATFORM_HARDENING_AND_MACOS.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.

@@ -32,7 +32,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TRANSCRIPT_DIR = REPO_ROOT / ".aiems-exchange" / "transcript"
-_PATH_TOKEN = re.compile(r"`([^`\s]+\.(?:md|py|json|jsx|js|rs|toml|yml|yaml|txt|lock|sh|ps1|bat|html|css))`")
+_PATH_TOKEN = re.compile(r"`([^`\s]+\.(?:md|py|json|jsx|js|rs|toml|yml|yaml|txt|lock|sh|ps1|bat|html|css|plist|ini|cfg|xml))`")
 
 
 @dataclass
@@ -76,11 +76,11 @@ def eip_commit_contents(eip_text: str, heading: str) -> set[str]:
     stop = r"(?m)^(?:#{1,6}\s|\*\*)" if heading.startswith("**") else r"(?m)^#{1,6}\s"
     end = re.search(stop, rest)
     block = rest[: end.start()] if end else rest
-    # A "Not changed" note names paths the build left alone: stop there, but only
+    # A "Not changed" or "Differences" note names paths the build left alone: stop there, but only
     # once a listed path has been seen, so a leading note cannot empty the list.
     first_path = _PATH_TOKEN.search(block)
     if first_path:
-        note = re.search(r"(?m)^Not changed", block[first_path.end():])
+        note = re.search(r"(?m)^(?:Not changed|Differences)", block[first_path.end():])
         if note:
             block = block[: first_path.end() + note.start()]
     return set(_PATH_TOKEN.findall(block))

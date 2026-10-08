@@ -65,6 +65,16 @@ def test_a_bold_label_block_ends_at_the_next_bold_label():
     assert pc.eip_commit_contents(text, "**12.4 Commit contents") == {"a.py", "b.py"}
 
 
+def test_eip_commit_contents_reads_plist_files():
+    text = _block("`src-tauri/Info.plist`, `a.py`")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"src-tauri/Info.plist", "a.py"}
+
+
+def test_a_differences_paragraph_naming_unchanged_files_is_not_part_of_the_list():
+    text = _block("New: `a.py`.", "", "Differences from the estimate: `scripts/other.py` is not changed.", "", "## 9. Next")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"a.py"}
+
+
 def test_parse_pytest_counts_failures_and_errors():
     assert pc.parse_pytest("3 failed, 759 passed, 1 skipped, 2 errors in 51s") == {
         "passed": 759,
