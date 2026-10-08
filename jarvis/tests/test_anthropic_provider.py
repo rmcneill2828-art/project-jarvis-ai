@@ -349,3 +349,19 @@ def test_is_timeout_recognises_each_way_urllib_reports_one():
     assert not is_timeout(urllib.error.URLError(ConnectionRefusedError()))
     assert not is_timeout(ConnectionError())
     assert not is_timeout(_http_error(504))
+
+
+def test_a_decline_carries_the_usage_figures_so_the_spend_ledger_can_still_bill_it():
+    """ESR-0061 WP3b: a refusal is HTTP 200 and its input tokens are billed."""
+
+    raw = _reply(stop_reason="refusal", content=[], usage={"input_tokens": 300, "output_tokens": 0})
+    provider = AnthropicProvider(_configuration(), transport=lambda *a: raw)
+
+    with pytest.raises(ProviderDeclinedError) as caught:
+        provider.execute(ProviderRequest(prompt="hello"))
+
+    assert caught.value.metadata == {"usage_input_tokens": "300", "usage_output_tokens": "0"}
+
+
+def test_the_model_property_names_the_model_every_request_uses():
+    assert AnthropicProvider(_configuration(), transport=lambda *a: b"").model == "claude-sonnet-5-5"

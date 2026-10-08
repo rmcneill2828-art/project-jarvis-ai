@@ -1118,3 +1118,93 @@ button {
   opacity: 0.7;
   font-style: italic;
 }
+
+/* Asking Claude (ESR-0061 WP3b): functional only; WP4 restyles. */
+.claude-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid rgba(255, 190, 90, 0.55);
+  border-radius: 999px;
+  color: #ffc46b;
+  background: rgba(255, 190, 90, 0.1);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+.escalation-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.escalation-offer {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ffc46b;
+}
+
+.ask-claude-button,
+.escalation-offer button,
+.escalation-actions button {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 190, 90, 0.5);
+  border-radius: 8px;
+  color: #ffc46b;
+  background: rgba(255, 190, 90, 0.08);
+  cursor: pointer;
+}
+
+.ask-claude-button:disabled,
+.escalation-offer button:disabled,
+.escalation-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.escalation-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.escalation-dialog {
+  max-width: 520px;
+  padding: 20px;
+  border: 1px solid rgba(255, 190, 90, 0.4);
+  border-radius: 12px;
+  color: #dbe3e7;
+  background: #0b1418;
+}
+
+.escalation-message {
+  margin: 8px 0;
+  padding: 8px 12px;
+  border-left: 3px solid rgba(255, 190, 90, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  word-break: break-word;
+}
+
+.escalation-warning {
+  color: #ff736e;
+}
+
+.escalation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}

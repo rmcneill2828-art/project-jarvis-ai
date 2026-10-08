@@ -10,7 +10,7 @@ from jarvis.interfaces.conversation import (
 )
 from sentinel.core import SentinelDecisionOutcome, SentinelRequest, SentinelTrustGateway
 from sentinel.orchestrator import ProviderOrchestrator
-from sentinel.providers import ConversationTurn, ProviderRequest
+from sentinel.providers import ConversationTurn, ProviderDeclinedError, ProviderRequest
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +20,9 @@ logger = logging.getLogger(__name__)
 # text: both responses carry `is_model_reply=False`.
 SENTINEL_DENIED_RESPONSE = "Sentinel did not allow this request to proceed."
 PROVIDER_UNAVAILABLE_RESPONSE = "JARVIS could not reach an AI provider right now. Please try again."
+# A provider's safety decline (ESR-0061 WP3a/WP3b): answered honestly, never by
+# silently asking another model.
+PROVIDER_DECLINED_RESPONSE = "The AI provider declined to answer this request."
 
 
 class SentinelGatedConversationProvider:
@@ -35,6 +38,7 @@ class SentinelGatedConversationProvider:
         capability: str = "text-generation",
         source: str = "jarvis.conversation",
         turn_deadline_seconds: float | None = None,
+        intent: str = "conversation.generate",
     ) -> None:
         if turn_deadline_seconds is not None and turn_deadline_seconds <= 0:
             msg = "turn_deadline_seconds must be greater than zero when provided."
@@ -43,6 +47,7 @@ class SentinelGatedConversationProvider:
         self._orchestrator = orchestrator
         self._capability = capability
         self._source = source
+        self._intent = intent
         # Overall budget for one conversation turn, failover included
         # (EBG-0139, ESR-0059 WP5). None keeps the previous behaviour: only
         # each provider's own timeout applies.
@@ -66,10 +71,15 @@ class SentinelGatedConversationProvider:
         if not request.message.strip():
             return ConversationResponse(message=EMPTY_MESSAGE_RESPONSE, provider=self.name)
 
+        metadata = {"capability": self._capability}
+        if request.requester_role is not None:
+            # Server-derived (see ConversationRequest); Sentinel's policy needs
+            # it to gate the cloud route.
+            metadata["role"] = request.requester_role
         sentinel_request = SentinelRequest(
             source=self._source,
-            intent="conversation.generate",
-            metadata={"capability": self._capability},
+            intent=self._intent,
+            metadata=metadata,
         )
         sentinel_response = self._gateway.evaluate(sentinel_request)
 
@@ -80,7 +90,7 @@ class SentinelGatedConversationProvider:
             # shouldn't be echoed into a live user-facing response. The full
             # reason is already captured in Sentinel's audit trail via
             # SentinelTrustGateway.evaluate().
-            return ConversationResponse(message=SENTINEL_DENIED_RESPONSE, provider=self.name)
+            return ConversationResponse(message=SENTINEL_DENIED_RESPONSE, provider=self.name, failure="denied")
 
         provider_request = ProviderRequest(
             prompt=request.message,
@@ -103,14 +113,25 @@ class SentinelGatedConversationProvider:
 
         try:
             orchestrated = self._orchestrator.execute(sentinel_response, provider_request)
+        except ProviderDeclinedError as exc:
+            logger.warning("Sentinel provider declined the request.")
+            return ConversationResponse(
+                message=PROVIDER_DECLINED_RESPONSE,
+                provider=self.name,
+                failure="declined",
+                metadata=dict(exc.metadata),
+            )
         except RuntimeError as exc:
             logger.warning("Sentinel provider execution failed: %s", type(exc).__name__)
-            return ConversationResponse(message=PROVIDER_UNAVAILABLE_RESPONSE, provider=self.name)
+            return ConversationResponse(
+                message=PROVIDER_UNAVAILABLE_RESPONSE, provider=self.name, failure="unavailable"
+            )
 
         return ConversationResponse(
             message=orchestrated.provider_response.content,
             provider=orchestrated.execution_record.selected_provider or self.name,
             is_model_reply=True,
+            metadata=dict(orchestrated.provider_response.metadata),
         )
 
     def configured_providers(self) -> tuple[str, ...]:

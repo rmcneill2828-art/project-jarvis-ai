@@ -1151,6 +1151,65 @@ async fn send_message(
     .await
 }
 
+/// Claude escalation (ESR-0061 WP3b, EIP-ESR0061-003 6.5): an offer for a
+/// message the person chose ("Ask Claude").
+#[tauri::command]
+async fn offer_escalation(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    message: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "guardian.escalation.offer",
+        json!({ "message": message }),
+    )
+    .await
+}
+
+/// Sends an offered question to Claude, after the person confirmed it.
+#[tauri::command]
+async fn escalate_message(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    token: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "guardian.escalate",
+        json!({ "token": token }),
+    )
+    .await
+}
+
+#[tauri::command]
+async fn provider_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "provider.status", json!({})).await
+}
+
+/// Administrator only (the backend enforces it): whether a profile's retained
+/// memory may accompany a question sent to Claude.
+#[tauri::command]
+async fn set_profile_cloud_memory(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    profile_id: String,
+    enabled: bool,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "profile.setCloudMemory",
+        json!({ "profileId": profile_id, "enabled": enabled }),
+    )
+    .await
+}
+
 #[tauri::command]
 async fn speak_message(
     state: State<'_, BackendState>,
@@ -1347,6 +1406,10 @@ pub fn run() {
         .manage(BackendState(Arc::new(Mutex::new(None))))
         .invoke_handler(tauri::generate_handler![
             send_message,
+            offer_escalation,
+            escalate_message,
+            provider_status,
+            set_profile_cloud_memory,
             speak_message,
             transcribe_audio,
             platform_status,

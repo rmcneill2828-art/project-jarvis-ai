@@ -21,7 +21,31 @@ def test_a_new_memory_store_is_created_at_the_latest_version(tmp_path):
 def test_a_new_profile_store_is_created_at_the_latest_version(tmp_path):
     ProfileStore(tmp_path / "p.db")
 
-    assert schema_version(tmp_path / "p.db") == len(PROFILE_MIGRATIONS) == 1
+    assert schema_version(tmp_path / "p.db") == len(PROFILE_MIGRATIONS) == 2
+
+
+def test_an_existing_profile_database_gains_the_cloud_memory_flag_switched_off(tmp_path):
+    """ESR-0061 WP3b migration 2: profiles made before it keep working and share
+    nothing with the cloud until an Administrator says so."""
+
+    path = tmp_path / "p.db"
+    connection = sqlite3.connect(path)
+    for statement in PROFILE_MIGRATIONS[0]:
+        connection.execute(statement)
+    connection.execute("INSERT INTO profiles VALUES ('p1', 'Old', 'Adult', '2026-01-01T00:00:00+00:00')")
+    connection.execute("PRAGMA user_version = 1")
+    connection.commit()
+    connection.close()
+
+    store = ProfileStore(path)
+
+    assert schema_version(path) == 2
+    record = store.get("p1")
+    assert record is not None
+    assert record.share_memory_with_cloud is False
+    assert store.set_share_memory_with_cloud("p1", True) is True
+    assert store.get("p1").share_memory_with_cloud is True
+    assert store.set_share_memory_with_cloud("missing", True) is False
 
 
 def _legacy_memory_db(path) -> None:

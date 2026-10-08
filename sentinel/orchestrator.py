@@ -310,7 +310,7 @@ class ProviderOrchestrator:
             )
         )
         if declined is not None:
-            raise ProviderDeclinedError(reason) from declined
+            raise ProviderDeclinedError(reason, declined.metadata) from declined
         raise RuntimeError(reason)
 
     def _circuit_is_open(self, provider_name: str) -> bool:

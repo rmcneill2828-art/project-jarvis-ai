@@ -56,6 +56,19 @@ def _default_transport(url: str, body: bytes, headers: dict[str, str], timeout_s
         return response.read()
 
 
+def _usage_metadata(data: dict) -> dict[str, str]:
+    """The response's token counts as string metadata (empty if absent)."""
+
+    usage = data.get("usage")
+    found: dict[str, str] = {}
+    if isinstance(usage, dict):
+        for key in _USAGE_FIELDS:
+            value = usage.get(key)
+            if isinstance(value, int) and not isinstance(value, bool):
+                found[f"usage_{key}"] = str(value)
+    return found
+
+
 class AnthropicProvider:
     """Sentinel execution provider backed by the Anthropic Messages API.
 
@@ -96,6 +109,12 @@ class AnthropicProvider:
         `ProviderOrchestrator` (EBG-0140, ESR-0059 WP6)."""
 
         return self._configuration.retry_policy
+
+    @property
+    def model(self) -> str:
+        """The model every request names (priced by the spend ledger)."""
+
+        return self._configuration.default_model
 
     @property
     def max_tokens(self) -> int:
@@ -172,7 +191,7 @@ class AnthropicProvider:
             category = details.get("category") if isinstance(details, dict) else None
             suffix = f" ({category})" if isinstance(category, str) and category.isidentifier() else ""
             msg = f"Anthropic declined to answer this request{suffix}."
-            raise ProviderDeclinedError(msg)
+            raise ProviderDeclinedError(msg, _usage_metadata(data))
         if stop_reason == "tool_use":
             msg = "Anthropic returned an unsupported tool-use response."
             raise RuntimeError(msg)
@@ -196,12 +215,7 @@ class AnthropicProvider:
         metadata = {"model": str(data.get("model") or model)}
         if isinstance(stop_reason, str):
             metadata["stop_reason"] = stop_reason
-        usage = data.get("usage")
-        if isinstance(usage, dict):
-            for key in _USAGE_FIELDS:
-                value = usage.get(key)
-                if isinstance(value, int) and not isinstance(value, bool):
-                    metadata[f"usage_{key}"] = str(value)
+        metadata.update(_usage_metadata(data))
 
         return ProviderResponse(
             provider_name=self.name,

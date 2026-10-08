@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0061 |
 | Title | Engineering Session Report |
-| Version | 0.11 |
+| Version | 0.13 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -82,7 +82,7 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 | WP2a-fix | Post-commit pre-check defects (EIP-ESR0061-002, WP2a-fix section) | Complete - `65c4100`, CI green, post-commit review Pass |
 | WP2b | macOS (EBG-0162) and non-Windows setup (EBG-0054) | Design reviewed (Pass) and approved; built; Complete - `dd946a2`, CI green incl. `python-macos` and `rust-macos`, post-commit review Pass. Real-Mac checks wait for Mac visit 1 |
 | WP2c | Follow-ups after WP2b (EIP-ESR0061-002, WP2c section) | Complete - `d67e3ef`, CI green (WebKit job informational: 24 passed, 2 microphone tests fail on WebKit), post-commit review Pass |
-| WP3 | Provider strategy: Ollama first, Claude escalation ([[EIP-ESR0061-003_PROVIDER_STRATEGY_OLLAMA_FIRST_AND_CLAUDE_ESCALATION|EIP-ESR0061-003]]) | Design reviewed (Pass) and S1-S6 approved. Planned for Session B; the Programme Sponsor directed WP3a to start under this session on 8 October 2026. **WP3a** built, implementation review Pass (live API checks pending a key); WP3b, WP3c not started |
+| WP3 | Provider strategy: Ollama first, Claude escalation ([[EIP-ESR0061-003_PROVIDER_STRATEGY_OLLAMA_FIRST_AND_CLAUDE_ESCALATION|EIP-ESR0061-003]]) | Design reviewed (Pass) and S1-S6 approved. Planned for Session B; the Programme Sponsor directed WP3a to start under this session on 8 October 2026. **WP3a** committed (`6cdbedb`), CI green, post-commit review Pass (live API checks pending a key). **WP3b** (spend ledger and cap, confirmed escalation, two-layer role gate, memory control, smallest UI) built, implementation review Pass, awaiting the Programme Sponsor's approval to commit; WP3c not started |
 | Session-wide | Independent repository verification and baseline determination | Not started - after Mac visit 1 |
 
 ---
@@ -91,6 +91,8 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.13 | 8 October 2026 | Claude Engineering Implementer | WP3b implementation review Pass (single Gemini reviewer, no findings - a weak signal for a high-risk package, disclosed in EIP-ESR0061-003 Section 19). Live API checks still pending a key. |
+| 0.12 | 8 October 2026 | Claude Engineering Implementer | WP3a committed (`6cdbedb`, pre-check all PASS, CI green apart from the informational WebKit job, post-commit Pass). WP3b built at the Programme Sponsor's request: spend ledger and cap, one-time escalation tokens, the role gate in two places with a new Sentinel policy rule, per-profile memory control, the smallest UI. Live API checks still pending a key. |
 | 0.11 | 8 October 2026 | Claude Engineering Implementer | WP2c committed (`d67e3ef`, pre-check all PASS, CI green, post-commit Pass; the WebKit job now runs and finds two failing microphone tests - a WKWebView difference for the voice work). WP3a built: Anthropic adapter, two-route split, deadline-aware timeouts, OpenAI and Gemini unregistered. Live API checks pending a key. |
 | 0.10 | 8 October 2026 | Claude Engineering Implementer | WP2b committed (`dd946a2`, CI green including the first macOS runs, post-commit Pass); WP2a-fix post-commit Pass recorded; WP3 provider-strategy design drafted ahead (EIP-ESR0061-003 v0.3, design review Pass, Programme Sponsor approved decisions S1-S6); WP2c follow-ups built. Programme Sponsor directed WP3a to start under this session (8 October 2026). |
 | 0.9 | 8 October 2026 | Claude Engineering Implementer | WP2b implementation review Fail (setup script used `sort -V`; smoke test could pass wrongly) then Pass after both were fixed; the Windows `os.kill(pid, 0)` claim corrected after checking. Awaiting approval of the built result. |

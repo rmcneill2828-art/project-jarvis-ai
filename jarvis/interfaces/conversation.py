@@ -1,7 +1,8 @@
 """Conversation framework for JARVIS First Light."""
 
 import logging
-from dataclasses import dataclass
+from collections.abc import Mapping
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Protocol
 from uuid import uuid4
@@ -28,6 +29,10 @@ class ConversationRequest:
     persona: str | None = None
     history: tuple[tuple[str, str], ...] = ()
     memory_notes: tuple[str, ...] = ()
+    # The household role of the requester, derived by the server from the
+    # active profile - never from a client parameter (ESR-0061 WP3b,
+    # EIP-ESR0061-003 6.8). Sentinel's policy reads it for the cloud route.
+    requester_role: str | None = None
 
 
 @dataclass(frozen=True)
@@ -44,6 +49,14 @@ class ConversationResponse:
     message: str
     provider: str
     is_model_reply: bool = False
+    # Why a non-model reply is not an answer, when it is a provider outcome
+    # rather than a boundary: "unavailable" (no provider could answer) or
+    # "declined" (the provider refused on safety grounds). Typed, so no caller
+    # matches on message text (EBG-0141). ESR-0061 WP3b.
+    failure: str | None = None
+    # The provider's string-only usage figures for the spend ledger. Not part
+    # of equality, so existing comparisons of responses are unchanged.
+    metadata: Mapping[str, str] = field(default_factory=dict, compare=False)
 
 
 @dataclass(frozen=True)

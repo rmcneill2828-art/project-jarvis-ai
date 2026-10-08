@@ -22,6 +22,7 @@ async function mockTauriIpc(
     backupMemoryResult,
     restoreMemoryResult,
     memories = [],
+    claude = null,
   } = {},
 ) {
   await page.addInitScript(
@@ -40,6 +41,7 @@ async function mockTauriIpc(
       backupMemoryResult,
       restoreMemoryResult,
       memories,
+      claude,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -88,9 +90,62 @@ async function mockTauriIpc(
         invoke: (cmd, args) => {
           if (cmd === "platform_status") return Promise.resolve({ ...platformStatus, transcriptionAvailable });
           if (cmd === "knowledge_graph") return Promise.resolve(knowledgeGraph);
+          // Asking Claude (ESR-0061 WP3b): `claude` is null for a machine with no
+          // key (provider_status fails, so the controls stay hidden). Otherwise
+          // it describes what the backend would report; every escalate call is
+          // recorded so a test can prove nothing was sent without a confirm.
+          window.__escalateCalls = window.__escalateCalls || [];
+          const claudeAllowance = {
+            month: "2026-10",
+            capUsd: 37.5,
+            spentUsd: 1.25,
+            remainingUsd: 36.25,
+            capGbp: 30,
+            remainingGbp: 29,
+            requests: 3,
+            warning: Boolean(claude && claude.warning),
+            capReached: false,
+          };
+          const claudeOffer = (reason, message) => ({
+            offered: true,
+            reason,
+            token: `token-${window.__escalateCalls.length + 1}`,
+            expiresInSeconds: 600,
+            model: "claude-sonnet-5-5",
+            sendsMemory: Boolean(claude && claude.sendsMemory),
+            allowance: claudeAllowance,
+            message,
+          });
+          if (cmd === "provider_status") {
+            if (!claude) return Promise.reject(new Error("provider.status unavailable"));
+            return Promise.resolve({
+              claude: {
+                configured: true,
+                model: "claude-sonnet-5-5",
+                mayEscalate: claude.mayEscalate !== false,
+                allowance: claudeAllowance,
+              },
+            });
+          }
+          if (cmd === "offer_escalation") return Promise.resolve(claudeOffer("requested", args.message));
+          if (cmd === "escalate_message") {
+            window.__escalateCalls.push(args.token);
+            if (claude && claude.escalateError) return Promise.reject(new Error(claude.escalateError));
+            return Promise.resolve({
+              message: "Claude says: a considered answer.",
+              provider: "anthropic",
+              answeredBy: "claude",
+              failure: null,
+              allowance: { ...claudeAllowance, spentUsd: 1.254, remainingUsd: 36.246, requests: 4 },
+            });
+          }
           if (cmd === "send_message") {
             const message = args && args.message ? args.message : "";
-            return Promise.resolve({ message: `local-echo: ${message}`, provider: "local-echo" });
+            const escalation =
+              claude && claude.offerReason
+                ? claudeOffer(claude.offerReason, message)
+                : { offered: false, reason: null, token: null };
+            return Promise.resolve({ message: `local-echo: ${message}`, provider: "local-echo", escalation });
           }
           if (cmd === "speak_message") {
             return Promise.resolve(
@@ -208,6 +263,7 @@ async function mockTauriIpc(
       backupMemoryResult,
       restoreMemoryResult,
       memories,
+      claude,
     },
   );
 }
@@ -591,4 +647,123 @@ test("cancelling a delete leaves the memory in place", async ({ page }) => {
   await expect(panel.locator(".memory-delete-confirm")).toHaveCount(0);
   await expect(panel.getByRole("list", { name: "Stored memories" })).toContainText("Tea, no sugar.");
   await expect(panel.locator(".metric-row")).toContainText("2");
+});
+
+// --- ESR-0061 WP3b (EIP-ESR0061-003 6.7): asking Claude -------------------------------------------------------------
+
+async function sendMessage(page, text) {
+  await page.getByPlaceholder("Ask Guardian anything...").fill(text);
+  await page.getByRole("button", { name: "Send" }).click();
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(1);
+}
+
+test("with no Claude key the Ask Claude controls are not shown at all", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await sendMessage(page, "hello");
+
+  await expect(page.getByRole("button", { name: "Ask Claude about my last message" })).toHaveCount(0);
+  await expect(page.locator(".escalation-bar")).toHaveCount(0);
+});
+
+test("a profile that may not ask Claude (a Child or Guest) sees no Claude controls", async ({ page }) => {
+  await mockTauriIpc(page, { claude: { mayEscalate: false, offerReason: "local_unavailable" } });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+
+  await expect(page.locator(".escalation-bar")).toHaveCount(0);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+test("Ask Claude is disabled until there is a message to ask about", async ({ page }) => {
+  await mockTauriIpc(page, { claude: {} });
+  await page.goto("/");
+
+  await expect(page.getByRole("button", { name: "Ask Claude about my last message" })).toBeDisabled();
+  await sendMessage(page, "hello");
+  await expect(page.getByRole("button", { name: "Ask Claude about my last message" })).toBeEnabled();
+});
+
+test("an offer is shown after a local failure and sends nothing until it is confirmed", async ({ page }) => {
+  await mockTauriIpc(page, { claude: { offerReason: "local_unavailable" } });
+  await page.goto("/");
+  await sendMessage(page, "what is the capital of Peru");
+
+  await expect(page.locator(".escalation-offer")).toContainText("could not answer");
+  await page.getByRole("button", { name: "Review and ask Claude" }).click();
+
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("Send this question to Claude?");
+  await expect(dialog).toContainText("over the internet");
+  await expect(dialog).toContainText("what is the capital of Peru");
+  await expect(dialog).toContainText("This costs money");
+  await expect(dialog).toContainText("£29.00");
+  await expect(dialog).toContainText("Your saved memory notes will not be sent.");
+  expect(await page.evaluate(() => window.__escalateCalls.length)).toBe(0);
+
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(await page.evaluate(() => window.__escalateCalls.length)).toBe(0);
+  await expect(page.locator(".claude-badge")).toHaveCount(0);
+});
+
+test("confirming sends the offer's token once and labels the answer as Claude's", async ({ page }) => {
+  await mockTauriIpc(page, { claude: { offerReason: "research_cue" } });
+  await page.goto("/");
+  await sendMessage(page, "research solar panels");
+
+  await expect(page.locator(".escalation-offer")).toContainText("more thorough");
+  await page.getByRole("button", { name: "Review and ask Claude" }).click();
+  await page.getByRole("button", { name: "Send to Claude" }).click();
+
+  const answer = page.locator(".conversation-message.guardian").last();
+  await expect(answer).toContainText("Claude says: a considered answer.");
+  await expect(answer.locator(".claude-badge")).toHaveText("Claude");
+  await expect(page.locator(".claude-badge")).toHaveCount(1);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.locator(".escalation-offer")).toHaveCount(0);
+  expect(await page.evaluate(() => window.__escalateCalls)).toEqual(["token-1"]);
+});
+
+test("the dialog says when saved memory notes will be sent and warns near the cap", async ({ page }) => {
+  await mockTauriIpc(page, { claude: { offerReason: "local_unavailable", sendsMemory: true, warning: true } });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+
+  await page.getByRole("button", { name: "Review and ask Claude" }).click();
+
+  await expect(page.getByRole("dialog")).toContainText("Your saved memory notes will also be sent.");
+  await expect(page.getByRole("dialog").getByRole("alert")).toContainText("80%");
+});
+
+test("Ask Claude opens the confirmation for the last message even after a good local answer", async ({ page }) => {
+  await mockTauriIpc(page, { claude: {} });
+  await page.goto("/");
+  await sendMessage(page, "what is two plus two");
+  await expect(page.locator(".escalation-offer")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Ask Claude about my last message" }).click();
+
+  await expect(page.getByRole("dialog")).toContainText("what is two plus two");
+  expect(await page.evaluate(() => window.__escalateCalls.length)).toBe(0);
+  await page.getByRole("button", { name: "Send to Claude" }).click();
+  await expect(page.locator(".claude-badge")).toHaveCount(1);
+  expect(await page.evaluate(() => window.__escalateCalls)).toEqual(["token-1"]);
+});
+
+test("a failed escalation is shown as an error and ends the offer", async ({ page }) => {
+  await mockTauriIpc(page, {
+    claude: { offerReason: "local_unavailable", escalateError: "ValueError: This offer has expired or was already used." },
+  });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+  await page.getByRole("button", { name: "Review and ask Claude" }).click();
+
+  await page.getByRole("button", { name: "Send to Claude" }).click();
+
+  await expect(page.locator(".conversation-error")).toContainText("Claude did not respond");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.locator(".escalation-offer")).toHaveCount(0);
+  await expect(page.locator(".claude-badge")).toHaveCount(0);
 });

@@ -16,6 +16,7 @@ from jarvis.interfaces.conversation import (
     ConversationRequest,
     ConversationResponse,
 )
+from jarvis.interfaces.escalation import NOT_AVAILABLE_RESPONSE, MeteredCloudConversationProvider
 from jarvis.interfaces.sentinel_agent import AgentOutcome, SentinelGatedAgentService
 from jarvis.interfaces.voice import (
     NOT_CONNECTED_MESSAGE as SPEECH_NOT_CONNECTED_MESSAGE,
@@ -57,8 +58,12 @@ class GuardianRuntime:
         speech_provider: GuardianSpeechProvider | None = None,
         transcription_provider: GuardianTranscriptionProvider | None = None,
         agent_service: SentinelGatedAgentService | None = None,
+        escalation_provider: MeteredCloudConversationProvider | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
+        # The cloud route's provider (ESR-0061 WP3b). Used only by escalate(),
+        # which only a confirmed escalation reaches - never by converse().
+        self._escalation_provider = escalation_provider
         self._conversation_provider = conversation_provider
         self._memory_service = memory_service
         self._speech_provider = speech_provider
@@ -225,6 +230,66 @@ class GuardianRuntime:
         # text matching let any unlisted non-model reply - the former
         # local-echo fallback's echo of the user's own message, or the
         # empty-message prompt - be recorded as if Guardian had said it.
+        if response.is_model_reply:
+            cognitive_core.record_exchange(message, response.message)
+        return response
+
+    @property
+    def escalation_provider(self) -> MeteredCloudConversationProvider | None:
+        """The metered cloud provider, or None when no key is configured."""
+
+        return self._escalation_provider
+
+    @property
+    def escalation_available(self) -> bool:
+        """True when Claude can be offered at all (a key is configured)."""
+
+        return self._escalation_provider is not None and self._escalation_provider.available
+
+    def escalate(
+        self,
+        message: str,
+        profile_id: str | None,
+        *,
+        role: str | None,
+        include_household: bool,
+        share_memory: bool,
+    ) -> ConversationResponse:
+        """Answer `message` through the cloud provider (ESR-0061 WP3b).
+
+        Called only after the RPC layer has checked the role and redeemed a
+        confirmation token. `role` is the server-held active profile's. The
+        profile's recent conversation travels (the question cannot be answered
+        without it); its retained memory notes travel only when `share_memory`
+        - the profile's own setting - is true. The exchange is recorded, like
+        a local one, only when a real model reply comes back.
+        """
+
+        if self._escalation_provider is None or not self._escalation_provider.available:
+            return ConversationResponse(message=NOT_AVAILABLE_RESPONSE, provider="guardian-boundary", failure="unavailable")
+        if self._state is not GuardianRuntimeState.RUNNING:
+            return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
+
+        cognitive_core = self._cognitive_core_for(profile_id)
+        history = cognitive_core.history()
+        # The local attempt at this same message may already be the newest
+        # exchange; sending it again would show the model the question twice.
+        if history and history[-1][0] == message:
+            history = history[:-1]
+        memory_notes: tuple[str, ...] = ()
+        if share_memory and self._memory_service is not None:
+            memory_notes = cognitive_core.memory_notes(
+                self._memory_service.list_visible(profile_id, include_household=include_household)
+            )
+        response = self._escalation_provider.generate(
+            ConversationRequest(
+                message=message,
+                persona=self._config.persona,
+                history=history,
+                memory_notes=memory_notes,
+                requester_role=role,
+            )
+        )
         if response.is_model_reply:
             cognitive_core.record_exchange(message, response.message)
         return response

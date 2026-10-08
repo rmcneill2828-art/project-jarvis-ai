@@ -204,3 +204,72 @@ def test_trust_tier_policy_denies_restricted_categories_before_review_routing(
     assert decision.trust_tier is TrustTier.RESTRICTED
     assert decision.category is expected_category
     assert decision.requires_human_approval is False
+
+
+# --- ESR-0061 WP3b: the cloud text route is for Administrators and Adults only (EIP-ESR0061-003 6.8) -------------
+
+
+def _cloud_request(role: str | None, *, requires_approval: bool = False) -> SentinelRequest:
+    metadata = {"capability": "text-generation-cloud"}
+    if role is not None:
+        metadata["role"] = role
+    return SentinelRequest(
+        source="jarvis.escalation",
+        intent="conversation.escalate",
+        requires_approval=requires_approval,
+        metadata=metadata,
+    )
+
+
+@pytest.mark.parametrize("role", ["Administrator", "Adult", "administrator", " Adult "])
+def test_an_administrator_or_adult_may_use_the_cloud_route(role):
+    decision = TrustTierPolicy().evaluate(_cloud_request(role))
+
+    assert decision.outcome is SentinelDecisionOutcome.ALLOW
+    assert decision.category is TrustCategory.ROUTINE_INTERACTION
+
+
+@pytest.mark.parametrize("role", ["Child", "Guest", "child", "Superuser", "", "   "])
+def test_a_child_a_guest_or_an_unknown_role_is_denied_the_cloud_route(role):
+    decision = TrustTierPolicy().evaluate(_cloud_request(role))
+
+    assert decision.outcome is SentinelDecisionOutcome.DENY
+    assert decision.category is TrustCategory.CLOUD_ESCALATION_NOT_PERMITTED
+    assert decision.trust_tier is TrustTier.RESTRICTED
+
+
+def test_a_cloud_request_with_no_role_at_all_is_denied():
+    """The role is supplied by the server from the active profile, so its
+    absence means something is wrong - the safe reading is a refusal."""
+
+    decision = TrustTierPolicy().evaluate(_cloud_request(None))
+
+    assert decision.outcome is SentinelDecisionOutcome.DENY
+    assert decision.category is TrustCategory.CLOUD_ESCALATION_NOT_PERMITTED
+
+
+def test_the_cloud_rule_cannot_be_softened_by_asking_for_approval():
+    decision = TrustTierPolicy().evaluate(_cloud_request("Child", requires_approval=True))
+
+    assert decision.outcome is SentinelDecisionOutcome.DENY
+
+
+def test_the_role_means_nothing_off_the_cloud_route():
+    """The ordinary local route is unaffected: a Child's turn needs no role."""
+
+    local = SentinelRequest(source="s", intent="conversation.generate", metadata={"capability": "text-generation"})
+    with_role = SentinelRequest(
+        source="s", intent="conversation.generate", metadata={"capability": "text-generation", "role": "Child"}
+    )
+
+    assert TrustTierPolicy().evaluate(local).outcome is SentinelDecisionOutcome.ALLOW
+    assert TrustTierPolicy().evaluate(with_role).outcome is SentinelDecisionOutcome.ALLOW
+
+
+def test_the_gateway_denies_a_childs_cloud_request_and_audits_it():
+    gateway = SentinelTrustGateway(policy_engine=TrustTierPolicy())
+
+    response = gateway.evaluate(_cloud_request("Child"))
+
+    assert response.decision.outcome is SentinelDecisionOutcome.DENY
+    assert "cloud_escalation_not_permitted" in response.decision.reason

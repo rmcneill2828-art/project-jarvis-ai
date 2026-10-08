@@ -689,7 +689,11 @@ def test_guardian_converse_reports_honest_failure_when_no_provider_can_answer(tm
     assert response == {
         "jsonrpc": "2.0",
         "id": 1,
-        "result": {"message": PROVIDER_UNAVAILABLE_RESPONSE, "provider": "sentinel-gated"},
+        "result": {
+            "message": PROVIDER_UNAVAILABLE_RESPONSE,
+            "provider": "sentinel-gated",
+            "escalation": {"offered": False, "reason": None, "token": None},
+        },
     }
     assert "hello" not in response["result"]["message"]
 

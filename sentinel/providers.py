@@ -183,7 +183,15 @@ class ProviderDeclinedError(RuntimeError):
     evaded by failover. `ProviderOrchestrator` stops on it and re-raises it,
     so the caller can tell the user honestly that the answer was declined.
     Subclasses `RuntimeError`, the adapters' established failure type.
+
+    `metadata` carries the provider's string-only usage figures, when it
+    reported any, so a caller that meters spend (the WP3b ledger) can still
+    settle a call the provider billed but declined.
     """
+
+    def __init__(self, message: str, metadata: dict[str, str] | None = None) -> None:
+        super().__init__(message)
+        self.metadata: dict[str, str] = dict(metadata or {})
 
 
 def is_timeout(exc: BaseException) -> bool:

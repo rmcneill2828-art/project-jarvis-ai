@@ -42,11 +42,26 @@ PROFILE_MIGRATIONS: tuple[tuple[str, ...], ...] = (
         )
         """,
     ),
+    # Migration 2 (ESR-0061 WP3b, EBG-0110 backend): whether a profile's
+    # retained memory notes may accompany a question escalated to the cloud.
+    # Off for every profile, existing ones included.
+    ("ALTER TABLE profiles ADD COLUMN share_memory_with_cloud INTEGER NOT NULL DEFAULT 0",),
 )
 
 HOUSEHOLD_ROLES = ("Administrator", "Adult", "Child", "Guest")
 
 _ACTIVE_PROFILE_ROW_ID = 1
+_PROFILE_COLUMNS = "id, display_name, role, created_at, share_memory_with_cloud"
+
+
+def _profile_from_row(row: tuple) -> ProfileRecord:
+    return ProfileRecord(
+        id=row[0],
+        display_name=row[1],
+        role=row[2],
+        created_at=datetime.fromisoformat(row[3]),
+        share_memory_with_cloud=bool(row[4]),
+    )
 
 
 @dataclass(frozen=True)
@@ -62,6 +77,10 @@ class ProfileRecord:
     display_name: str
     role: str
     created_at: datetime
+    # Whether this profile's retained memory notes may be sent to the cloud
+    # provider with an escalated question (EBG-0110). False unless an
+    # Administrator turned it on.
+    share_memory_with_cloud: bool = False
 
     def __post_init__(self) -> None:
         if self.role not in HOUSEHOLD_ROLES:
@@ -111,10 +130,16 @@ class ProfileStore:
         with self._transaction() as connection:
             connection.execute(
                 """
-                INSERT INTO profiles (id, display_name, role, created_at)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO profiles (id, display_name, role, created_at, share_memory_with_cloud)
+                VALUES (?, ?, ?, ?, ?)
                 """,
-                (record.id, record.display_name, record.role, record.created_at.isoformat()),
+                (
+                    record.id,
+                    record.display_name,
+                    record.role,
+                    record.created_at.isoformat(),
+                    int(record.share_memory_with_cloud),
+                ),
             )
         return record
 
@@ -123,34 +148,29 @@ class ProfileStore:
 
         with self._transaction() as connection:
             rows = connection.execute(
-                "SELECT id, display_name, role, created_at FROM profiles ORDER BY created_at"
+                f"SELECT {_PROFILE_COLUMNS} FROM profiles ORDER BY created_at"
             ).fetchall()
-        return tuple(
-            ProfileRecord(
-                id=row[0],
-                display_name=row[1],
-                role=row[2],
-                created_at=datetime.fromisoformat(row[3]),
-            )
-            for row in rows
-        )
+        return tuple(_profile_from_row(row) for row in rows)
 
     def get(self, profile_id: str) -> ProfileRecord | None:
         """Return a single profile by id, or None if not found."""
 
         with self._transaction() as connection:
             row = connection.execute(
-                "SELECT id, display_name, role, created_at FROM profiles WHERE id = ?",
+                f"SELECT {_PROFILE_COLUMNS} FROM profiles WHERE id = ?",
                 (profile_id,),
             ).fetchone()
-        if row is None:
-            return None
-        return ProfileRecord(
-            id=row[0],
-            display_name=row[1],
-            role=row[2],
-            created_at=datetime.fromisoformat(row[3]),
-        )
+        return None if row is None else _profile_from_row(row)
+
+    def set_share_memory_with_cloud(self, profile_id: str, enabled: bool) -> bool:
+        """Set the cloud memory-sharing flag; return False if no such profile."""
+
+        with self._transaction() as connection:
+            cursor = connection.execute(
+                "UPDATE profiles SET share_memory_with_cloud = ? WHERE id = ?",
+                (int(enabled), profile_id),
+            )
+        return cursor.rowcount > 0
 
     def set_active(self, profile_id: str) -> None:
         """Persist `profile_id` as the currently active profile.

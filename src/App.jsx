@@ -37,6 +37,7 @@ import { GuardianOrbGraph } from "./GuardianOrbGraph.jsx";
 import { ActiveClustersPanel, KnowledgeMetricsPanel } from "./KnowledgeGraphPanels.jsx";
 import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
 import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
+import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalation.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -512,7 +513,13 @@ function CommandPanel({
   onToggleRecording,
   transcribeError,
   transcriptionAvailable,
+  claudeStatus,
+  offer,
+  escalating,
+  onAskClaude,
+  onReviewOffer,
 }) {
+  const lastUserMessage = [...messages].reverse().find((entry) => entry.role === "user");
   return (
     <section className="command-panel" aria-labelledby="command-heading">
       <h2 id="command-heading">How can I help you today?</h2>
@@ -521,6 +528,7 @@ function CommandPanel({
           {messages.map((entry) => (
             <p className={`conversation-message ${entry.role}`} key={entry.id}>
               <span>{entry.text}</span>
+              {entry.answeredBy === "claude" && <ClaudeBadge />}
               {entry.role === "guardian" && (
                 <button
                   type="button"
@@ -535,6 +543,14 @@ function CommandPanel({
           ))}
         </div>
       )}
+      <EscalationBar
+        claudeStatus={claudeStatus}
+        offer={offer}
+        canAsk={Boolean(lastUserMessage) && !sending}
+        busy={escalating}
+        onAskClaude={onAskClaude}
+        onReviewOffer={onReviewOffer}
+      />
       {sendError && (
         <p className="conversation-error" role="alert">
           {sendError}
@@ -642,6 +658,17 @@ export function App() {
   const [sendError, setSendError] = useState(null);
   const [speakError, setSpeakError] = useState(null);
 
+  // Asking Claude (ESR-0061 WP3b, EIP-ESR0061-003 6.5-6.7). `claudeStatus` is
+  // what the backend says about Claude for the active profile (configured,
+  // whether this role may ask, the month's allowance); `offer` is the latest
+  // offer, with the message it is for; nothing is sent until the dialog's
+  // confirm button spends the offer's one-time token.
+  const [claudeStatus, setClaudeStatus] = useState(null);
+  const [offer, setOffer] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [escalating, setEscalating] = useState(false);
+  const [escalationError, setEscalationError] = useState(null);
+
   // Voice Faculty Increment B (EIP-ESR0047-001): push-to-talk speech input.
   // isRecording drives the mic button's visual state only - the actual
   // MediaRecorder instance and its bounded 30s auto-stop timer live in refs,
@@ -745,6 +772,25 @@ export function App() {
     };
   }, []);
 
+  // Who may ask Claude depends on the active profile's role, so this is read
+  // again whenever the profile changes. A failed read hides the controls
+  // rather than guessing.
+  useEffect(() => {
+    let cancelled = false;
+    setOffer(null);
+    setConfirmOpen(false);
+    invoke("provider_status")
+      .then((result) => {
+        if (!cancelled) setClaudeStatus(result.claude ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setClaudeStatus(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeProfile?.id]);
+
   // Re-reads the real count after a restore, rather than trusting the
   // restore response's own recordCount as a proxy for the store's new
   // total - restoring into a non-empty store (once ever allowed) would
@@ -822,6 +868,8 @@ export function App() {
     setSendError(null);
     setMessages((current) => [...current, { id: `${Date.now()}-user`, role: "user", text: message }]);
     setInputValue("");
+    setOffer(null);
+    setEscalationError(null);
 
     invoke("send_message", { message })
       .then((response) => {
@@ -829,12 +877,58 @@ export function App() {
           ...current,
           { id: `${Date.now()}-guardian`, role: "guardian", text: response.message },
         ]);
+        if (response.escalation?.offered) setOffer({ ...response.escalation, message });
       })
       .catch((error) => {
         setSendError(`Guardian did not respond: ${error}`);
       })
       .finally(() => {
         setSending(false);
+      });
+  };
+
+  // "Ask Claude": an offer for the last thing the person said, whatever the
+  // local model answered. Opens the confirmation; sends nothing.
+  const handleAskClaude = () => {
+    const last = [...messages].reverse().find((entry) => entry.role === "user");
+    if (!last) return;
+    setEscalationError(null);
+    invoke("offer_escalation", { message: last.text })
+      .then((requested) => {
+        setOffer({ ...requested, message: last.text });
+        setConfirmOpen(true);
+      })
+      .catch((error) => {
+        setEscalationError(`Could not ask Claude: ${error}`);
+      });
+  };
+
+  const handleConfirmEscalation = () => {
+    if (!offer || escalating) return;
+    setEscalating(true);
+    setEscalationError(null);
+
+    invoke("escalate_message", { token: offer.token })
+      .then((result) => {
+        setMessages((current) => [
+          ...current,
+          {
+            id: `${Date.now()}-claude`,
+            role: "guardian",
+            text: result.message,
+            answeredBy: result.answeredBy ?? null,
+          },
+        ]);
+        setClaudeStatus((current) => (current ? { ...current, allowance: result.allowance ?? current.allowance } : current));
+      })
+      .catch((error) => {
+        setEscalationError(`Claude did not respond: ${error}`);
+      })
+      .finally(() => {
+        // The token is spent either way, so the offer is over.
+        setOffer(null);
+        setConfirmOpen(false);
+        setEscalating(false);
       });
   };
 
@@ -1034,7 +1128,17 @@ export function App() {
                 onToggleRecording={handleToggleRecording}
                 transcribeError={transcribeError}
                 transcriptionAvailable={Boolean(platformState?.transcriptionAvailable)}
+                claudeStatus={claudeStatus}
+                offer={offer}
+                escalating={escalating}
+                onAskClaude={handleAskClaude}
+                onReviewOffer={() => setConfirmOpen(true)}
               />
+              {escalationError && (
+                <p className="conversation-error" role="alert">
+                  {escalationError}
+                </p>
+              )}
             </div>
             <div className="side-column">
               <SystemHealthPanel
@@ -1063,6 +1167,14 @@ export function App() {
           <AppFooter />
         </section>
       </div>
+      {confirmOpen && offer && (
+        <ClaudeConfirmDialog
+          offer={offer}
+          busy={escalating}
+          onConfirm={handleConfirmEscalation}
+          onCancel={() => setConfirmOpen(false)}
+        />
+      )}
     </main>
   );
 }

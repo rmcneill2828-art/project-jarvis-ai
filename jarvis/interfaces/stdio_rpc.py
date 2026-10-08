@@ -52,6 +52,14 @@ from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.activity_tracker import ActivityTracker
+from jarvis.interfaces.escalation import (
+    ESCALATION_ROLES,
+    REASON_REQUESTED,
+    EscalationOffers,
+    MeteredCloudConversationProvider,
+    allowance_payload,
+    offer_reason,
+)
 from jarvis.interfaces.orphan_watchdog import start_orphan_watchdog
 from jarvis.interfaces.sentinel_agent import SentinelGatedAgentService
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
@@ -70,6 +78,7 @@ from jarvis.shared.errors import (
     ClientFacingValueError,
     public_type_name,
 )
+from jarvis.shared.spend_ledger import MICRO_DOLLARS_PER_DOLLAR, SpendLedger
 from sentinel.anthropic_provider import AnthropicProvider
 from sentinel.audit import JsonAuditRecorder
 from sentinel.core import SentinelTrustGateway
@@ -95,7 +104,7 @@ logger = logging.getLogger(__name__)
 # Responses carry their request id, and the Tauri host already routes
 # responses by id, so a fast reply overtaking a slow one is safe.
 SLOW_METHODS = frozenset(
-    {"guardian.converse", "guardian.speak", "guardian.transcribe", "guardian.agent.invoke"}
+    {"guardian.converse", "guardian.escalate", "guardian.speak", "guardian.transcribe", "guardian.agent.invoke"}
 )
 
 # Retry policy for the cloud providers (EBG-0140, ESR-0059 WP6): one retry
@@ -120,6 +129,14 @@ CLAUDE_MODEL_ENV_VAR = "JARVIS_CLAUDE_MODEL"
 # Programme Sponsor decision S1 (8 October 2026): Sonnet 5.5 at low effort.
 DEFAULT_CLAUDE_MODEL = "claude-sonnet-5-5"
 ANTHROPIC_TIMEOUT_SECONDS = 60.0
+# Decision S4: a monthly cap of GBP 30, enforced as US dollars at a deliberately
+# low fixed rate, with the provider Console's own limit as the hard backstop.
+CLAUDE_CAP_GBP_ENV_VAR = "JARVIS_CLAUDE_MONTHLY_CAP_GBP"
+USD_PER_GBP_ENV_VAR = "JARVIS_USD_PER_GBP"
+DEFAULT_CLAUDE_CAP_GBP = 30.0
+DEFAULT_USD_PER_GBP = 1.25
+SPEND_DB_FILENAME = "spend.db"
+CLOUD_NOT_PERMITTED_MESSAGE = "This profile cannot ask Claude. Ask an Administrator or Adult profile."
 
 # Ollama (EBG-0075, EIP-ESR0025-002): unlike the cloud providers above, this
 # has no credential gate - registered unconditionally, since a local, missing
@@ -416,6 +433,43 @@ def _turn_deadline_seconds(environ: Mapping[str, str]) -> float:
     return value if math.isfinite(value) and value > 0 else DEFAULT_TURN_DEADLINE_SECONDS
 
 
+def _positive_float(environ: Mapping[str, str], name: str, default: float) -> float:
+    """A finite number above zero from the environment, or `default` for any
+    absent or unusable value."""
+
+    raw = (environ.get(name) or "").strip()
+    try:
+        value = float(raw)
+    except ValueError:
+        return default
+    return value if math.isfinite(value) and value > 0 else default
+
+
+def _build_escalation_provider(
+    environ: Mapping[str, str],
+    gateway: SentinelTrustGateway,
+    orchestrator: ProviderOrchestrator,
+    audit_recorder: JsonAuditRecorder,
+) -> MeteredCloudConversationProvider:
+    """The metered provider for the cloud route. Only called when the Claude
+    provider is registered, so the spend database exists only for people who
+    set a key."""
+
+    usd_per_gbp = _positive_float(environ, USD_PER_GBP_ENV_VAR, DEFAULT_USD_PER_GBP)
+    cap_gbp = _positive_float(environ, CLAUDE_CAP_GBP_ENV_VAR, DEFAULT_CLAUDE_CAP_GBP)
+    cap_micro = round(cap_gbp * usd_per_gbp * MICRO_DOLLARS_PER_DOLLAR)
+    ledger = SpendLedger(_memory_db_path(environ).parent / SPEND_DB_FILENAME, cap_micro)
+    inner = SentinelGatedConversationProvider(
+        gateway=gateway,
+        orchestrator=orchestrator,
+        capability=CLOUD_TEXT_GENERATION_CAPABILITY,
+        source="jarvis.escalation",
+        turn_deadline_seconds=_turn_deadline_seconds(environ),
+        intent="conversation.escalate",
+    )
+    return MeteredCloudConversationProvider(inner, ledger, audit_recorder, usd_per_gbp=usd_per_gbp)
+
+
 def _warn_about_legacy_provider_settings(environ: Mapping[str, str]) -> None:
     """One logged warning when an old OpenAI/Gemini selector is still set.
 
@@ -496,6 +550,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     orchestrator.register_route(ProviderRoute(capability=TEXT_GENERATION_CAPABILITY, providers=(ollama_provider.name,)))
 
     anthropic_provider = _build_anthropic_provider(environ)
+    escalation_provider: MeteredCloudConversationProvider | None = None
     if anthropic_provider is not None:
         orchestrator.register_provider(anthropic_provider)
         orchestrator.register_route(
@@ -539,12 +594,16 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
 
     agent_service = SentinelGatedAgentService(gateway=gateway, agents=agents)
 
+    if anthropic_provider is not None:
+        escalation_provider = _build_escalation_provider(environ, gateway, orchestrator, audit_recorder)
+
     runtime = GuardianRuntime(
         conversation_provider=conversation_provider,
         memory_service=memory_service,
         speech_provider=speech_provider,
         transcription_provider=transcription_provider,
         agent_service=agent_service,
+        escalation_provider=escalation_provider,
     )
     runtime.start()
     return runtime
@@ -561,8 +620,12 @@ class StdioRpcServer:
         heartbeat_interval_seconds: float | None = None,
         identity_service: ProfileService | None = None,
         activity_tracker: ActivityTracker | None = None,
+        escalation_offers: EscalationOffers | None = None,
     ) -> None:
         self._runtime = runtime
+        # Confirmation tokens for escalating a question to Claude (ESR-0061
+        # WP3b). Held in memory only; injectable so tests can control time.
+        self._escalation_offers = escalation_offers if escalation_offers is not None else EscalationOffers()
         # Guardian Orb Phase 2 (EBG-0121, UAM-0001 Section 8.1): records
         # genuinely-dispatched RPC activity so the Orb/Active Clusters panel
         # can illuminate clusters as they are actually accessed. Injectable
@@ -615,6 +678,10 @@ class StdioRpcServer:
             self._identity_service = ProfileService(ProfileStore(identity_db_path))
         self._methods = {
             "guardian.converse": self._guardian_converse,
+            "guardian.escalation.offer": self._guardian_escalation_offer,
+            "guardian.escalate": self._guardian_escalate,
+            "provider.status": self._provider_status,
+            "profile.setCloudMemory": self._profile_set_cloud_memory,
             "guardian.speak": self._guardian_speak,
             "guardian.transcribe": self._guardian_transcribe,
             "guardian.agent.list": self._guardian_agent_list,
@@ -649,7 +716,137 @@ class StdioRpcServer:
             active.id if active is not None else None,
             include_household=_sees_household_notes(active),
         )
-        return {"message": response.message, "provider": response.provider}
+        return {
+            "message": response.message,
+            "provider": response.provider,
+            "escalation": self._escalation_offer(active, message, offer_reason(response, message)),
+        }
+
+    def _escalation_offer(self, active, message: str, reason: str | None) -> dict[str, Any]:
+        """The offer to ask Claude about `message`, or "not offered".
+
+        Offered only when there is a reason, Claude is configured, the active
+        profile's role may use it and the month's cap has room. A profile that
+        may not escalate is told nothing about it: no offer, no reason.
+        """
+
+        not_offered: dict[str, Any] = {"offered": False, "reason": None, "token": None}
+        provider = self._runtime.escalation_provider
+        if (
+            reason is None
+            or provider is None
+            or not self._runtime.escalation_available
+            or active is None
+            or active.role not in ESCALATION_ROLES
+        ):
+            return not_offered
+        snapshot = provider.ledger.snapshot()
+        if snapshot.cap_reached:
+            return not_offered
+        return {
+            "offered": True,
+            "reason": reason,
+            "token": self._escalation_offers.issue(active.id, message),
+            "expiresInSeconds": int(self._escalation_offers.ttl_seconds),
+            "model": provider.model,
+            # What the confirmation must tell the person is being sent.
+            "sendsMemory": active.share_memory_with_cloud,
+            "allowance": allowance_payload(snapshot, provider.usd_per_gbp),
+        }
+
+    def _guardian_escalation_offer(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Ask Claude: an offer for a message the person chose, at any time."""
+
+        message = params.get("message")
+        if not isinstance(message, str):
+            msg = "params.message must be a string."
+            raise ClientFacingTypeError(msg)
+        if not message.strip():
+            msg = "params.message must not be blank."
+            raise ClientFacingValueError(msg)
+        _require_max_length(message, MAX_MESSAGE_CHARS, "params.message")
+        active = self._identity_service.active_profile()
+        _require_role(active, ESCALATION_ROLES, CLOUD_NOT_PERMITTED_MESSAGE)
+        if not self._runtime.escalation_available:
+            msg = "Asking Claude is not set up on this computer."
+            raise ClientFacingValueError(msg)
+        offer = self._escalation_offer(active, message, REASON_REQUESTED)
+        if not offer["offered"]:
+            msg = "The monthly allowance for asking Claude has been used up."
+            raise ClientFacingValueError(msg)
+        return offer
+
+    def _guardian_escalate(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Send an offered question to Claude, after the person confirmed.
+
+        First of the two role checks (EIP-ESR0061-003 6.8): the role is the
+        server-held active profile's, never a parameter. The second is
+        Sentinel's, on the cloud capability, inside the call.
+        """
+
+        token = params.get("token")
+        if not isinstance(token, str):
+            msg = "params.token must be a string."
+            raise ClientFacingTypeError(msg)
+        active = self._identity_service.active_profile()
+        _require_role(active, ESCALATION_ROLES, CLOUD_NOT_PERMITTED_MESSAGE)
+        message = self._escalation_offers.redeem(token, active.id)
+        if message is None:
+            msg = "This offer has expired or was already used. Ask again."
+            raise ClientFacingValueError(msg)
+        response = self._runtime.escalate(
+            message,
+            active.id,
+            role=active.role,
+            include_household=_sees_household_notes(active),
+            share_memory=active.share_memory_with_cloud,
+        )
+        provider = self._runtime.escalation_provider
+        return {
+            "message": response.message,
+            "provider": response.provider,
+            "answeredBy": "claude" if response.is_model_reply else None,
+            "failure": response.failure,
+            "allowance": (
+                allowance_payload(provider.ledger.snapshot(), provider.usd_per_gbp) if provider is not None else None
+            ),
+        }
+
+    def _provider_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        active = self._identity_service.active_profile()
+        provider = self._runtime.escalation_provider
+        configured = self._runtime.escalation_available
+        return {
+            "claude": {
+                "configured": configured,
+                "model": provider.model if configured and provider is not None else None,
+                "mayEscalate": active is not None and active.role in ESCALATION_ROLES,
+                "allowance": (
+                    allowance_payload(provider.ledger.snapshot(), provider.usd_per_gbp)
+                    if configured and provider is not None
+                    else None
+                ),
+            }
+        }
+
+    def _profile_set_cloud_memory(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Administrator only: whether a profile's retained memory notes may
+        accompany a question escalated to Claude (EBG-0110)."""
+
+        profile_id = params.get("profileId")
+        enabled = params.get("enabled")
+        if not isinstance(profile_id, str):
+            msg = "params.profileId must be a string."
+            raise ClientFacingTypeError(msg)
+        if not isinstance(enabled, bool):
+            msg = "params.enabled must be true or false."
+            raise ClientFacingTypeError(msg)
+        _require_role(
+            self._identity_service.active_profile(),
+            frozenset({"Administrator"}),
+            "Only an Administrator profile can change whether memory is shared with Claude.",
+        )
+        return self._serialize_profile(self._identity_service.set_cloud_memory_sharing(profile_id, enabled))
 
     def _guardian_speak(self, params: dict[str, Any]) -> dict[str, Any]:
         text = params.get("text")
@@ -932,6 +1129,7 @@ class StdioRpcServer:
             "displayName": record.display_name,
             "role": record.role,
             "createdAt": record.created_at.isoformat(),
+            "shareMemoryWithCloud": record.share_memory_with_cloud,
         }
 
     def _profile_list(self, params: dict[str, Any]) -> dict[str, Any]:

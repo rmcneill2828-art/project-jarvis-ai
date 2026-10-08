@@ -64,3 +64,35 @@ def test_select_profile_rejects_unknown_id(service):
         service.select_profile("does-not-exist")
 
     assert service.active_profile() is None
+
+
+# --- ESR-0061 WP3b (EBG-0110 backend): per-profile memory-to-cloud control ---------------------------------------
+
+
+def test_a_new_profile_shares_no_memory_with_the_cloud(service):
+    assert service.create_profile("Robert", "Administrator").share_memory_with_cloud is False
+
+
+@pytest.mark.parametrize("role", ["Administrator", "Adult"])
+def test_memory_sharing_can_be_turned_on_and_off_for_an_administrator_or_adult(service, role):
+    record = service.create_profile("Pat", role)
+
+    assert service.set_cloud_memory_sharing(record.id, True).share_memory_with_cloud is True
+    assert service.list_profiles()[0].share_memory_with_cloud is True
+    assert service.set_cloud_memory_sharing(record.id, False).share_memory_with_cloud is False
+
+
+@pytest.mark.parametrize("role", ["Child", "Guest"])
+def test_memory_sharing_cannot_be_turned_on_for_a_child_or_guest(service, role):
+    record = service.create_profile("Sam", role)
+
+    with pytest.raises(ValueError, match="cannot share memory"):
+        service.set_cloud_memory_sharing(record.id, True)
+
+    assert service.list_profiles()[0].share_memory_with_cloud is False
+    assert service.set_cloud_memory_sharing(record.id, False).share_memory_with_cloud is False
+
+
+def test_memory_sharing_for_an_unknown_profile_is_an_error(service):
+    with pytest.raises(ValueError, match="no such profile"):
+        service.set_cloud_memory_sharing("missing", True)

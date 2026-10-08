@@ -30,6 +30,8 @@ import time
 # EIP-ESR0051-002).
 METHOD_CLUSTERS: dict[str, str] = {
     "guardian.converse": "jarvis",
+    "guardian.escalation.offer": "jarvis",
+    "guardian.escalate": "sentinel",
     "guardian.speak": "sentinel",
     "guardian.transcribe": "sentinel",
     "guardian.agent.list": "jarvis",
@@ -48,6 +50,8 @@ METHOD_CLUSTERS: dict[str, str] = {
     "profile.create": "jarvis",
     "profile.select": "jarvis",
     "profile.active": "jarvis",
+    "profile.setCloudMemory": "jarvis",
+    "provider.status": "jarvis",
     "gia.status": "jarvis",
     "gia.engineeringStatus": "jarvis",
 }

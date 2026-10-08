@@ -13,6 +13,8 @@ import uuid
 from jarvis.identity.store import ProfileRecord, ProfileStore, utc_now
 from jarvis.shared.errors import ClientFacingValueError
 
+CLOUD_MEMORY_SHARING_ROLES = frozenset({"Administrator", "Adult"})
+
 
 class ProfileService:
     """Create, list and select local Guardian profiles."""
@@ -52,6 +54,27 @@ class ProfileService:
             raise ClientFacingValueError(msg)
         self._store.set_active(profile_id)
         return record
+
+    def set_cloud_memory_sharing(self, profile_id: str, enabled: bool) -> ProfileRecord:
+        """Allow or stop a profile's retained memory notes accompanying an
+        escalated (cloud) question. Off by default (ESR-0061 WP3b, EBG-0110).
+
+        Only a profile that may escalate at all (Administrator or Adult) can
+        have it on: for a Child it stays off until WP6 delivers consent, and a
+        Guest never escalates.
+        """
+
+        record = self._store.get(profile_id)
+        if record is None:
+            msg = f"Cannot change profile {profile_id!r}: no such profile exists."
+            raise ClientFacingValueError(msg)
+        if enabled and record.role not in CLOUD_MEMORY_SHARING_ROLES:
+            msg = f"A {record.role} profile cannot share memory with the cloud service."
+            raise ClientFacingValueError(msg)
+        self._store.set_share_memory_with_cloud(profile_id, enabled)
+        updated = self._store.get(profile_id)
+        assert updated is not None
+        return updated
 
     def active_profile(self) -> ProfileRecord | None:
         """Return the currently active profile, or None if none is selected."""

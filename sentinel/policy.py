@@ -30,6 +30,9 @@ class TrustCategory(Enum):
     EMERGENCY_CONTROL = "emergency_control"
     LOCAL_AGENT_ACTION = "local_agent_action"
     UNSUPPORTED_HIGH_RISK = "unsupported_high_risk"
+    # A request for the cloud text route from a requester who may not use it
+    # (ESR-0061 WP3b, EIP-ESR0061-003 6.8).
+    CLOUD_ESCALATION_NOT_PERMITTED = "cloud_escalation_not_permitted"
 
 
 @dataclass(frozen=True)
@@ -85,6 +88,13 @@ class TrustTierPolicy:
 
     _LOCAL_AGENT_PAYLOAD_TYPES = frozenset({"local_agent", "device_control"})
     _EMERGENCY_PAYLOAD_TYPES = frozenset({"emergency_control", "family_safety"})
+    # The one capability that sends household data to a third party, and the
+    # household roles allowed to use it. Child is not on the list until WP6
+    # delivers consent and moderation (decision S6); Guest never is. A request
+    # with no role is refused: the role is supplied by the server from the
+    # active profile, so its absence means something is wrong.
+    _CLOUD_CAPABILITY = "text-generation-cloud"
+    _CLOUD_ESCALATION_ROLES = frozenset({"administrator", "adult"})
 
     def evaluate(self, request: SentinelRequest) -> PolicyDecision:
         category = self.classify(request)
@@ -93,6 +103,7 @@ class TrustTierPolicy:
             TrustCategory.LOCAL_AGENT_ACTION,
             TrustCategory.EMERGENCY_CONTROL,
             TrustCategory.UNSUPPORTED_HIGH_RISK,
+            TrustCategory.CLOUD_ESCALATION_NOT_PERMITTED,
         }:
             return PolicyDecision(
                 outcome=SentinelDecisionOutcome.DENY,
@@ -138,6 +149,10 @@ class TrustTierPolicy:
             return TrustCategory.EMERGENCY_CONTROL
         if payload_type in self._LOCAL_AGENT_PAYLOAD_TYPES or capability == "local_agent":
             return TrustCategory.LOCAL_AGENT_ACTION
+        if capability == self._CLOUD_CAPABILITY and (
+            request.metadata.get("role", "").strip().lower() not in self._CLOUD_ESCALATION_ROLES
+        ):
+            return TrustCategory.CLOUD_ESCALATION_NOT_PERMITTED
         if request.requires_approval:
             return TrustCategory.HUMAN_APPROVAL_REQUIRED
         return TrustCategory.ROUTINE_INTERACTION

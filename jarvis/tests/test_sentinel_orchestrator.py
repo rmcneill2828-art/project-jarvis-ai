@@ -607,3 +607,24 @@ def test_a_decline_is_audited_without_the_provider_message() -> None:
 
 def test_a_decline_is_still_a_runtime_error_for_existing_callers() -> None:
     assert issubclass(ProviderDeclinedError, RuntimeError)
+
+
+def test_the_decline_the_orchestrator_re_raises_keeps_the_providers_usage_metadata() -> None:
+    """ESR-0061 WP3b: the spend ledger settles a billed decline from it."""
+
+    class _Billed:
+        name = "primary"
+        capabilities = ("text-generation",)
+
+        def execute(self, request: ProviderRequest) -> ProviderResponse:
+            msg = "declined"
+            raise ProviderDeclinedError(msg, {"usage_input_tokens": "300"})
+
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(_Billed())
+
+    with pytest.raises(ProviderDeclinedError) as caught:
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hello"))
+
+    assert caught.value.metadata == {"usage_input_tokens": "300"}
+    assert ProviderDeclinedError("plain").metadata == {}
