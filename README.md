@@ -268,7 +268,7 @@ The current application provides an operational First Light Conversation Workspa
 
 GUI remains the historical implementation term for the current Tkinter interface. Current architecture uses User Experience Platform (UXP) for future presentation-layer planning.
 
-To run the Guardian Desktop Platform Shell (Tauri + React UXP, live backend bridge), install frontend dependencies with `npm install` and run `npm run tauri dev` from the repository root. This spawns `python -m jarvis --ipc-stdio` as a managed sidecar process; a configured OpenAI/Gemini API key (`OPENAI_API_KEY`/`GEMINI_API_KEY`) or a running local Ollama instance is optional and only changes which Sentinel provider handles conversation requests - a working conversation path exists with no provider configured.
+To run the Guardian Desktop Platform Shell (Tauri + React UXP, live backend bridge), install frontend dependencies with `npm install` and run `npm run tauri dev` from the repository root. This spawns `python -m jarvis --ipc-stdio` as a managed sidecar process; a running local Ollama instance answers conversation requests (Version 1.0's default; OpenAI and Gemini are no longer wired in), and an optional `ANTHROPIC_API_KEY` registers Claude as an escalation provider that is never used by failover (ESR-0061 WP3a; the confirmed-escalation flow is WP3b) - with no provider reachable, Guardian says so honestly instead of answering.
 
 ---
 

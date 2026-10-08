@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0061 |
 | Title | Engineering Session Report |
-| Version | 0.10 |
+| Version | 0.11 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -81,8 +81,8 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 | WP2a | Shared hardening and dependency settlement ([[EIP-ESR0061-002_PLATFORM_HARDENING_AND_MACOS|EIP-ESR0061-002]]) | Complete - `b14c6a0`, CI green, post-commit review Pass (Info: pre-check defects) |
 | WP2a-fix | Post-commit pre-check defects (EIP-ESR0061-002, WP2a-fix section) | Complete - `65c4100`, CI green, post-commit review Pass |
 | WP2b | macOS (EBG-0162) and non-Windows setup (EBG-0054) | Design reviewed (Pass) and approved; built; Complete - `dd946a2`, CI green incl. `python-macos` and `rust-macos`, post-commit review Pass. Real-Mac checks wait for Mac visit 1 |
-| WP2c | Follow-ups after WP2b (EIP-ESR0061-002, WP2c section) | Built; implementation review Pass; awaiting approval of the built result |
-| WP3 | Provider strategy: Ollama first, Claude escalation ([[EIP-ESR0061-003_PROVIDER_STRATEGY_OLLAMA_FIRST_AND_CLAUDE_ESCALATION|EIP-ESR0061-003]]) | Design drafted ahead, reviewed (Pass), decisions S1-S6 approved. Planned for Session B; the Programme Sponsor directed WP3a to start under this session on 8 October 2026 |
+| WP2c | Follow-ups after WP2b (EIP-ESR0061-002, WP2c section) | Complete - `d67e3ef`, CI green (WebKit job informational: 24 passed, 2 microphone tests fail on WebKit), post-commit review Pass |
+| WP3 | Provider strategy: Ollama first, Claude escalation ([[EIP-ESR0061-003_PROVIDER_STRATEGY_OLLAMA_FIRST_AND_CLAUDE_ESCALATION|EIP-ESR0061-003]]) | Design reviewed (Pass) and S1-S6 approved. Planned for Session B; the Programme Sponsor directed WP3a to start under this session on 8 October 2026. **WP3a** built, implementation review Pass (live API checks pending a key); WP3b, WP3c not started |
 | Session-wide | Independent repository verification and baseline determination | Not started - after Mac visit 1 |
 
 ---
@@ -91,6 +91,7 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.11 | 8 October 2026 | Claude Engineering Implementer | WP2c committed (`d67e3ef`, pre-check all PASS, CI green, post-commit Pass; the WebKit job now runs and finds two failing microphone tests - a WKWebView difference for the voice work). WP3a built: Anthropic adapter, two-route split, deadline-aware timeouts, OpenAI and Gemini unregistered. Live API checks pending a key. |
 | 0.10 | 8 October 2026 | Claude Engineering Implementer | WP2b committed (`dd946a2`, CI green including the first macOS runs, post-commit Pass); WP2a-fix post-commit Pass recorded; WP3 provider-strategy design drafted ahead (EIP-ESR0061-003 v0.3, design review Pass, Programme Sponsor approved decisions S1-S6); WP2c follow-ups built. Programme Sponsor directed WP3a to start under this session (8 October 2026). |
 | 0.9 | 8 October 2026 | Claude Engineering Implementer | WP2b implementation review Fail (setup script used `sort -V`; smoke test could pass wrongly) then Pass after both were fixed; the Windows `os.kill(pid, 0)` claim corrected after checking. Awaiting approval of the built result. |
 | 0.8 | 8 October 2026 | Claude Engineering Implementer | WP2a-fix committed (`65c4100`, CI green, post-commit Pass; commit message says four new tests, five were added). WP2b: PyInstaller macOS behaviour verified in bootloader source, design reviewed (Pass, Gemini) and approved, built; real Linux sidecar proves the 2-process tree and the watchdog. Awaiting implementation review. |

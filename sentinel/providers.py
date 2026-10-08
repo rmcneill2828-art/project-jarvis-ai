@@ -6,12 +6,20 @@ implemented separately.
 """
 
 import time
+import urllib.error
 from dataclasses import dataclass, field
 from typing import Protocol
 
 from sentinel.core import SentinelDecisionOutcome, SentinelResponse
 
 CONVERSATION_ROLES = frozenset({"user", "assistant"})
+
+# The two text-generation capabilities (ESR-0061 WP3a, EIP-ESR0061-003 6.1).
+# `text-generation` is the ordinary conversation route and holds only the local
+# provider, so a local failure can never fail over to a cloud service. The cloud
+# route is reachable only by a confirmed escalation (WP3b).
+TEXT_GENERATION_CAPABILITY = "text-generation"
+CLOUD_TEXT_GENERATION_CAPABILITY = "text-generation-cloud"
 
 
 @dataclass(frozen=True)
@@ -134,7 +142,8 @@ def history_transcript(request: ProviderRequest) -> str | None:
 # HTTP statuses worth retrying: the request was fine, the service was not
 # (EBG-0140, ESR-0059 WP6). 401/403/404 and other 4xx are permanent - a bad
 # key or model name will not fix itself between attempts.
-TRANSIENT_HTTP_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
+# 529 is Anthropic's "overloaded" status (ESR-0061 WP3a).
+TRANSIENT_HTTP_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504, 529})
 
 
 class ProviderError(RuntimeError):
@@ -165,6 +174,48 @@ class DeadlineExceededError(RuntimeError):
     """
 
 
+class ProviderDeclinedError(RuntimeError):
+    """The provider refused to answer on safety grounds (ESR-0061 WP3a).
+
+    Not a provider fault: the service worked and made a decision, so health
+    and the circuit are untouched, and - unlike a failure - the request is
+    **not** passed on to another provider, which would let a decline be
+    evaded by failover. `ProviderOrchestrator` stops on it and re-raises it,
+    so the caller can tell the user honestly that the answer was declined.
+    Subclasses `RuntimeError`, the adapters' established failure type.
+    """
+
+
+def is_timeout(exc: BaseException) -> bool:
+    """True for a network timeout, however `urllib` chose to wrap it: a read
+    timeout surfaces as `TimeoutError`, a connect timeout as a `URLError`
+    whose reason is one."""
+
+    if isinstance(exc, TimeoutError):
+        return True
+    return isinstance(exc, urllib.error.URLError) and isinstance(exc.reason, TimeoutError)
+
+
+def remaining_timeout_budget(configured_timeout_seconds: float, request: ProviderRequest) -> tuple[float, bool]:
+    """Return the timeout a provider call may use for `request`, and whether
+    the request's overall deadline - not the provider's own setting - is what
+    shortened it (EBG-0157 item 6, ESR-0061 WP3a).
+
+    A timeout that the deadline caused is the turn running out of time, not
+    the provider failing, so adapters raise `DeadlineExceededError` for it
+    instead of a transient `ProviderError`. Raises `DeadlineExceededError`
+    when the deadline has already passed.
+    """
+
+    if request.deadline is None:
+        return configured_timeout_seconds, False
+    remaining = request.deadline - time.monotonic()
+    if remaining <= 0:
+        msg = "Request deadline reached before the provider call could start."
+        raise DeadlineExceededError(msg)
+    return min(configured_timeout_seconds, remaining), remaining < configured_timeout_seconds
+
+
 def remaining_timeout(configured_timeout_seconds: float, request: ProviderRequest) -> float:
     """Return the timeout a provider call may use for `request`.
 
@@ -174,13 +225,7 @@ def remaining_timeout(configured_timeout_seconds: float, request: ProviderReques
     `DeadlineExceededError` when the deadline has already passed.
     """
 
-    if request.deadline is None:
-        return configured_timeout_seconds
-    remaining = request.deadline - time.monotonic()
-    if remaining <= 0:
-        msg = "Request deadline reached before the provider call could start."
-        raise DeadlineExceededError(msg)
-    return min(configured_timeout_seconds, remaining)
+    return remaining_timeout_budget(configured_timeout_seconds, request)[0]
 
 
 class ExecutionProvider(Protocol):

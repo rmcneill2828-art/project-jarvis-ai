@@ -11,6 +11,7 @@ from sentinel.orchestrator import (
 from sentinel.provider_config import RetryPolicy
 from sentinel.providers import (
     DeadlineExceededError,
+    ProviderDeclinedError,
     ProviderError,
     ProviderRequest,
     ProviderResponse,
@@ -552,3 +553,57 @@ def test_failure_reason_carries_no_free_text_but_the_log_keeps_it(caplog) -> Non
     assert str(excinfo.value) == "Provider execution failed: ProviderError (permanent)"
     assert "secret" not in orchestrator.history()[-1].reason
     assert "upstream said: secret body" in caplog.text
+
+
+class _DecliningProvider:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.capabilities = ("text-generation",)
+        self.calls = 0
+
+    def execute(self, request: ProviderRequest) -> ProviderResponse:
+        self.calls += 1
+        msg = "Anthropic declined to answer this request (cyber)."
+        raise ProviderDeclinedError(msg)
+
+
+def test_a_decline_is_not_retried_not_failed_over_and_not_a_provider_fault() -> None:
+    # ESR-0061 WP3a: a safety decline is a decision, not an outage. Asking the
+    # next provider would let the decline be evaded by failover.
+    orchestrator = ProviderOrchestrator()
+    declining = _DecliningProvider("primary")
+    secondary = OrchestratorStubProvider("secondary")
+    orchestrator.register_provider(declining)
+    orchestrator.register_provider(secondary)
+    orchestrator.register_route(ProviderRoute(capability="text-generation", providers=("primary", "secondary")))
+
+    with pytest.raises(ProviderDeclinedError, match="declined the request: primary"):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hello"))
+
+    assert declining.calls == 1  # not retried
+    assert orchestrator.health("primary") is ProviderHealth.HEALTHY
+    assert orchestrator.health("secondary") is ProviderHealth.HEALTHY
+    record = orchestrator.history()[-1]
+    assert record.attempted_providers == ("primary",)  # secondary never asked
+    assert record.succeeded is False
+    # No circuit: the very next request goes to the primary again.
+    with pytest.raises(ProviderDeclinedError):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="again"))
+    assert declining.calls == 2
+
+
+def test_a_decline_is_audited_without_the_provider_message() -> None:
+    orchestrator = ProviderOrchestrator()
+    orchestrator.register_provider(_DecliningProvider("primary"))
+
+    with pytest.raises(ProviderDeclinedError):
+        orchestrator.execute(allowed_sentinel_response(), ProviderRequest(prompt="hello"))
+
+    event = orchestrator.audit_events()[-1]
+    assert event.outcome == "failed"
+    assert "declined" in event.summary
+    assert "cyber" not in event.summary
+
+
+def test_a_decline_is_still_a_runtime_error_for_existing_callers() -> None:
+    assert issubclass(ProviderDeclinedError, RuntimeError)

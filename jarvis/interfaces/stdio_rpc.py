@@ -70,15 +70,15 @@ from jarvis.shared.errors import (
     ClientFacingValueError,
     public_type_name,
 )
+from sentinel.anthropic_provider import AnthropicProvider
 from sentinel.audit import JsonAuditRecorder
 from sentinel.core import SentinelTrustGateway
-from sentinel.gemini_provider import GeminiProvider
 from sentinel.kokoro_provider import KokoroProvider
 from sentinel.ollama_provider import OllamaProvider
-from sentinel.openai_provider import OpenAIProvider
 from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
 from sentinel.policy import TrustTierPolicy
 from sentinel.provider_config import CredentialReference, ProviderConfiguration, RetryPolicy
+from sentinel.providers import CLOUD_TEXT_GENERATION_CAPABILITY, TEXT_GENERATION_CAPABILITY
 from sentinel.whisper_provider import WhisperProvider
 
 JSONRPC_VERSION = "2.0"
@@ -107,35 +107,19 @@ SLOW_METHODS = frozenset(
 # double the wait.
 CLOUD_RETRY_POLICY = RetryPolicy(max_attempts=2, backoff_seconds=1.0)
 
-# Selects which real provider build_default_runtime() tries to wire as primary;
-# unset defaults to "openai" per PEM-001's Primary/Secondary designation.
-PRIMARY_PROVIDER_ENV_VAR = "JARVIS_PRIMARY_PROVIDER"
-DEFAULT_PRIMARY_PROVIDER = "openai"
-
-# Secondary cloud provider (EBG-0140/EBG-0051, ESR-0059 WP4, on the
-# Programme Sponsor's decision to add Gemini between OpenAI and Ollama).
-# Unset, the secondary is whichever of openai/gemini is not primary -
-# registered only when its own credential is present, like the primary.
-# "none" disables it: every failover call to a cloud provider is billed, so
-# a deployment can opt out without removing its key.
-SECONDARY_PROVIDER_ENV_VAR = "JARVIS_SECONDARY_PROVIDER"
-NO_SECONDARY_PROVIDER = "none"
-
-# Per-provider credential/model env var names and default models, matching the
-# established convention from scripts/wp5_first_conversation_demo.py (OpenAI)
-# and scripts/gemini_provider_smoke_test.py (Gemini).
-_REAL_PROVIDER_SPECS: dict[str, dict[str, str]] = {
-    "openai": {
-        "credential_env_var": "OPENAI_API_KEY",
-        "model_env_var": "OPENAI_MODEL",
-        "default_model": "gpt-5.5",
-    },
-    "gemini": {
-        "credential_env_var": "GEMINI_API_KEY",
-        "model_env_var": "GEMINI_MODEL",
-        "default_model": "gemini-2.5-flash",
-    },
-}
+# Version 1.0 provider strategy (ADR-0023, ESR-0061 WP3a, EIP-ESR0061-003).
+# Local Ollama answers every ordinary conversation. The Anthropic Claude API is
+# the only cloud provider: it sits on its own capability, reached only by a
+# confirmed escalation, never by failover. OpenAI and Gemini are unregistered
+# (their adapters and tests stay, so the decision can be reversed - the Piper
+# precedent, ESR-0053). The old selector variables below are ignored with one
+# logged warning.
+LEGACY_PROVIDER_ENV_VARS = ("JARVIS_PRIMARY_PROVIDER", "JARVIS_SECONDARY_PROVIDER")
+ANTHROPIC_KEY_ENV_VAR = "ANTHROPIC_API_KEY"
+CLAUDE_MODEL_ENV_VAR = "JARVIS_CLAUDE_MODEL"
+# Programme Sponsor decision S1 (8 October 2026): Sonnet 5.5 at low effort.
+DEFAULT_CLAUDE_MODEL = "claude-sonnet-5-5"
+ANTHROPIC_TIMEOUT_SECONDS = 60.0
 
 # Ollama (EBG-0075, EIP-ESR0025-002): unlike the cloud providers above, this
 # has no credential gate - registered unconditionally, since a local, missing
@@ -149,6 +133,18 @@ OLLAMA_MODEL_ENV_VAR = "JARVIS_OLLAMA_MODEL"
 OLLAMA_ENDPOINT_ENV_VAR = "JARVIS_OLLAMA_ENDPOINT"
 DEFAULT_OLLAMA_MODEL = "qwen3.5:2b"
 OLLAMA_TIMEOUT_SECONDS = 90.0
+
+
+def _clean_env(environ: Mapping[str, str], name: str) -> str | None:
+    """A configuration value, stripped; None when unset or blank.
+
+    A whitespace-only value is truthy, so `environ.get(name) or default` used it
+    as the setting (EBG-0161, found by the local pre-screen on 2 October 2026).
+    Every model and endpoint variable goes through here instead.
+    """
+
+    value = (environ.get(name) or "").strip()
+    return value or None
 
 # Kokoro voice model paths (EIP-ESR0053-002, EBG-0125): replaces Piper as
 # Guardian's production speech-synthesis provider, per the Programme
@@ -275,41 +271,28 @@ INVALID_PARAMS = -32602
 INTERNAL_ERROR = -32000
 
 
-def _build_real_provider(name: str, environ: Mapping[str, str]) -> OpenAIProvider | GeminiProvider | None:
-    """Build the named real provider adapter, or None if its credential is absent or blank.
+def _build_anthropic_provider(environ: Mapping[str, str]) -> AnthropicProvider | None:
+    """Build the Claude escalation provider, or None if no key is configured.
 
-    An absent or blank credential is treated as "not available on this machine",
-    not a startup failure - build_default_runtime() still registers Ollama, and
-    when no route provider can answer, `SentinelGatedConversationProvider`
-    returns its honest "could not reach an AI provider" reply, matching this
-    codebase's honest-degradation pattern (ESR-0017 WP9's no-mock-fallback
-    rule; EBG-0141, ESR-0059 WP3).
+    An absent or whitespace-only key means "not available on this machine", not
+    a startup failure: escalation is simply never offered, and the local route is
+    unaffected (the honest-degradation pattern of ESR-0017 WP9; EBG-0141). A
+    whitespace-only key is absent, not present (ESR-0059 WP4): treating it as
+    present would offer an escalation that fails on every call.
     """
 
-    spec = _REAL_PROVIDER_SPECS.get(name)
-    if spec is None:
+    if _clean_env(environ, ANTHROPIC_KEY_ENV_VAR) is None:
         return None
-    # A whitespace-only credential is absent, not present (found at ESR-0059
-    # WP4): treating it as present registered a provider that then failed
-    # with an authentication error on every call, costing its timeout.
-    if not (environ.get(spec["credential_env_var"]) or "").strip():
-        return None
-    # A present-but-blank model env var must fall through to the default model,
-    # same as an absent one - environ.get(key, default) alone would let a blank
-    # placeholder silently override the default with "", which the provider
-    # constructor then rejects as an invalid configuration (Engineering
-    # Reviewer finding, EIP-ESR0022-001).
-    model = environ.get(spec["model_env_var"]) or spec["default_model"]
     configuration = ProviderConfiguration(
-        provider_name=name,
-        default_model=model,
-        credential=CredentialReference(environment_variable=spec["credential_env_var"]),
+        provider_name="anthropic",
+        default_capability=CLOUD_TEXT_GENERATION_CAPABILITY,
+        default_model=_clean_env(environ, CLAUDE_MODEL_ENV_VAR) or DEFAULT_CLAUDE_MODEL,
+        credential=CredentialReference(environment_variable=ANTHROPIC_KEY_ENV_VAR),
+        timeout_seconds=ANTHROPIC_TIMEOUT_SECONDS,
         retry_policy=CLOUD_RETRY_POLICY,
         max_output_tokens=_max_output_tokens(environ),
     )
-    if name == "openai":
-        return OpenAIProvider(configuration)
-    return GeminiProvider(configuration)
+    return AnthropicProvider(configuration)
 
 
 def _build_speech_provider(
@@ -433,73 +416,36 @@ def _turn_deadline_seconds(environ: Mapping[str, str]) -> float:
     return value if math.isfinite(value) and value > 0 else DEFAULT_TURN_DEADLINE_SECONDS
 
 
-def _primary_provider_name(environ: Mapping[str, str]) -> str:
-    """Return the configured primary cloud provider's name, normalised.
+def _warn_about_legacy_provider_settings(environ: Mapping[str, str]) -> None:
+    """One logged warning when an old OpenAI/Gemini selector is still set.
 
-    Matched exactly like `JARVIS_SECONDARY_PROVIDER` - stripped and
-    lower-cased - and unset or blank means the default (EBG-0155, ESR-0060
-    WP1b). Previously the raw value was used, so `Gemini` or a blank value
-    silently registered no cloud provider at all, even with a valid key.
+    The value is configuration, never a credential, and is not logged; only the
+    variable names are.
     """
 
-    return (environ.get(PRIMARY_PROVIDER_ENV_VAR) or "").strip().lower() or DEFAULT_PRIMARY_PROVIDER
-
-
-def _warn_if_unknown_provider(env_var: str, name: str | None) -> None:
-    """Log a warning when a configured cloud provider name matches no provider.
-
-    The value logged is a provider name from configuration, never a
-    credential (EBG-0155, ESR-0060 WP1b): an unknown name used to be
-    dropped silently, leaving the user on local Ollama with no sign why.
-    """
-
-    if name is not None and name not in _REAL_PROVIDER_SPECS:
+    present = [name for name in LEGACY_PROVIDER_ENV_VARS if _clean_env(environ, name) is not None]
+    if present:
         logger.warning(
-            "%s=%r matches no known provider (%s); it is ignored.",
-            env_var,
-            name,
-            ", ".join(_REAL_PROVIDER_SPECS),
+            "%s is no longer used: Version 1.0 answers locally with Ollama and offers Claude only by confirmed escalation.",
+            ", ".join(present),
         )
-
-
-def _secondary_provider_name(primary_name: str, environ: Mapping[str, str]) -> str | None:
-    """Return the secondary cloud provider's name, or None when there is none.
-
-    Unset or blank `JARVIS_SECONDARY_PROVIDER` means "the other one" of
-    openai/gemini; `none` disables the secondary; any other value names it
-    directly (an unknown name, like an unknown primary, builds nothing in
-    `_build_real_provider()`, and `build_default_runtime()` logs a warning
-    naming it - EBG-0155). Returning the primary's own name
-    is harmless - `build_default_runtime()` never registers a provider twice.
-    """
-
-    configured = (environ.get(SECONDARY_PROVIDER_ENV_VAR) or "").strip().lower()
-    if configured == NO_SECONDARY_PROVIDER:
-        return None
-    if configured:
-        return configured
-    others = [name for name in _REAL_PROVIDER_SPECS if name != primary_name]
-    return others[0] if len(others) == 1 else None
 
 
 def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianRuntime:
     """Build and start the production Guardian+Sentinel stack.
 
-    Registers a real provider (OpenAI or Gemini, selected by
-    JARVIS_PRIMARY_PROVIDER, default "openai" per PEM-001's Primary
-    designation) as the primary text-generation route provider only when its
-    credential env var is present and non-blank in `environ` (EBG-0070,
-    ESR-0022). The other cloud provider follows as secondary when its own
-    credential is present (ESR-0059 WP4; `JARVIS_SECONDARY_PROVIDER` names it
-    explicitly, or `none` disables it), then the local Ollama fallback
-    (EBG-0075). A selected primary without a credential is skipped, not
-    fatal - a credentialled secondary still serves. There is no
-    further failover: until ESR-0059 WP3 (EBG-0141) a deterministic
-    LocalEchoProvider ended the route, but it echoed the user's own message
-    back as Guardian's answer and that echo was recorded into conversation
-    history as a real turn. When every route provider fails, the user now
-    gets `PROVIDER_UNAVAILABLE_RESPONSE`, marked `is_model_reply=False`.
-    `LocalEchoProvider` itself remains in `sentinel/` for tests and tooling.
+    Version 1.0 provider strategy (ADR-0023, ESR-0061 WP3a, EIP-ESR0061-003):
+    the ordinary `text-generation` route holds the local Ollama provider only,
+    so when Ollama fails the user gets `PROVIDER_UNAVAILABLE_RESPONSE`, marked
+    `is_model_reply=False` - never a silent call to a cloud service (before
+    this the route began with OpenAI and Gemini and failed over automatically;
+    until ESR-0059 WP3, EBG-0141, a LocalEchoProvider ended it and echoed the
+    user's own message back as Guardian's answer; `LocalEchoProvider` itself
+    remains in `sentinel/` for tests and tooling). The Anthropic Claude provider
+    is registered on its own `text-generation-cloud` route, and only when
+    `ANTHROPIC_API_KEY` is present and non-blank; nothing in this function
+    sends a request to it - WP3b's confirmed escalation does. OpenAI and Gemini
+    are unregistered; their adapters and tests remain.
 
     Also wires Guardian's Voice faculty (EIP-ESR0044-001, EBG-0114; Kokoro
     replacing Piper as of EIP-ESR0053-002, EBG-0125) - a Sentinel-gated
@@ -532,34 +478,29 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     gateway = SentinelTrustGateway(policy_engine=TrustTierPolicy(), audit_recorder=audit_recorder)
     orchestrator = ProviderOrchestrator(audit_recorder=audit_recorder)
 
-    route_providers: list[str] = []
-    primary_name = _primary_provider_name(environ)
-    secondary_name = _secondary_provider_name(primary_name, environ)
-    _warn_if_unknown_provider(PRIMARY_PROVIDER_ENV_VAR, primary_name)
-    _warn_if_unknown_provider(SECONDARY_PROVIDER_ENV_VAR, secondary_name)
-    for cloud_name in (primary_name, secondary_name):
-        if cloud_name is None or cloud_name in route_providers:
-            continue
-        real_provider = _build_real_provider(cloud_name, environ)
-        if real_provider is not None:
-            orchestrator.register_provider(real_provider)
-            route_providers.append(real_provider.name)
+    _warn_about_legacy_provider_settings(environ)
 
-    ollama_model = environ.get(OLLAMA_MODEL_ENV_VAR) or DEFAULT_OLLAMA_MODEL
+    # ESR-0061 WP3a (EIP-ESR0061-003 6.1): the ordinary route holds Ollama only,
+    # so a local failure never reaches a cloud service. Claude has its own
+    # capability, used only by a confirmed escalation.
+    ollama_model = _clean_env(environ, OLLAMA_MODEL_ENV_VAR) or DEFAULT_OLLAMA_MODEL
     ollama_configuration = ProviderConfiguration(
         provider_name="ollama",
         default_model=ollama_model,
-        endpoint=environ.get(OLLAMA_ENDPOINT_ENV_VAR) or None,
+        endpoint=_clean_env(environ, OLLAMA_ENDPOINT_ENV_VAR),
         timeout_seconds=OLLAMA_TIMEOUT_SECONDS,
         max_output_tokens=_max_output_tokens(environ),
     )
     ollama_provider = OllamaProvider(ollama_configuration)
     orchestrator.register_provider(ollama_provider)
-    route_providers.append(ollama_provider.name)
+    orchestrator.register_route(ProviderRoute(capability=TEXT_GENERATION_CAPABILITY, providers=(ollama_provider.name,)))
 
-    orchestrator.register_route(
-        ProviderRoute(capability="text-generation", providers=tuple(route_providers))
-    )
+    anthropic_provider = _build_anthropic_provider(environ)
+    if anthropic_provider is not None:
+        orchestrator.register_provider(anthropic_provider)
+        orchestrator.register_route(
+            ProviderRoute(capability=CLOUD_TEXT_GENERATION_CAPABILITY, providers=(anthropic_provider.name,))
+        )
     conversation_provider = SentinelGatedConversationProvider(
         gateway=gateway,
         orchestrator=orchestrator,

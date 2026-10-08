@@ -14,6 +14,7 @@ from sentinel.provider_config import RetryPolicy
 from sentinel.providers import (
     DeadlineExceededError,
     ExecutionProvider,
+    ProviderDeclinedError,
     ProviderRequest,
     ProviderResponse,
     execute_with_sentinel_decision,
@@ -206,6 +207,7 @@ class ProviderOrchestrator:
         cooling_down: list[str] = []
         last_error: Exception | None = None
         deadline_reached = False
+        declined: ProviderDeclinedError | None = None
 
         for provider in self.eligible_providers(request.capability):
             # EBG-0139 (ESR-0059 WP5): once the request's overall deadline has
@@ -225,6 +227,13 @@ class ProviderOrchestrator:
                 # check above and the provider's own - the same "out of time,
                 # not a fault" case, so health and circuit stay untouched.
                 deadline_reached = True
+                break
+            except ProviderDeclinedError as exc:
+                # ESR-0061 WP3a: the provider answered - it declined, on safety
+                # grounds. Not a fault (health and circuit untouched) and not a
+                # reason to ask another provider, which would let a decline be
+                # evaded by failover.
+                declined = exc
                 break
             except Exception as exc:  # noqa: BLE001 - any provider failure must fail over, not just known exception types
                 last_error = exc
@@ -264,7 +273,9 @@ class ProviderOrchestrator:
             )
 
         reason = "No healthy provider could execute the request."
-        if last_error is not None:
+        if declined is not None:
+            reason = f"Provider declined the request: {attempted[-1]}."
+        elif last_error is not None:
             # ESR-0061 WP2a (EBG-0157 item 2): the durable audit record and
             # the raised error name the failure's type (and, for a
             # ProviderError, whether it was transient) - never its free text,
@@ -276,7 +287,7 @@ class ProviderOrchestrator:
             logger.warning("Provider execution failed: %s: %s", type(last_error).__name__, last_error)
         elif cooling_down:
             reason = f"Every eligible provider is cooling down after a recent failure: {', '.join(cooling_down)}."
-        if deadline_reached:
+        if deadline_reached and declined is None:
             reason = f"Request deadline reached after attempting: {', '.join(attempted) or 'no provider'}."
         record = ProviderExecutionRecord(
             capability=request.capability,
@@ -298,6 +309,8 @@ class ProviderOrchestrator:
                 },
             )
         )
+        if declined is not None:
+            raise ProviderDeclinedError(reason) from declined
         raise RuntimeError(reason)
 
     def _circuit_is_open(self, provider_name: str) -> bool:

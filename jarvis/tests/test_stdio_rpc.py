@@ -130,175 +130,128 @@ def test_build_default_runtime_routes_to_ollama_only_without_credential(tmp_path
     assert runtime.configured_providers() == ("ollama",)
 
 
-def test_build_default_runtime_wires_openai_as_default_primary_when_credential_present(tmp_path):
-    runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "OPENAI_API_KEY": "test-key-not-a-real-credential"})
+# --- ESR-0061 WP3a (EIP-ESR0061-003): Ollama first, Claude only by escalation ------------------------------------
 
-    assert runtime.configured_providers() == ("openai", "ollama")
+_TEST_KEY = "test-key-not-a-real-credential"
 
 
-def test_build_default_runtime_respects_primary_provider_selection(tmp_path):
+def _runtime_env(tmp_path, **extra):
+    return {"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), **extra}
+
+
+def _orchestrator(runtime):
+    return runtime._conversation_provider.orchestrator
+
+
+def test_the_ordinary_route_is_ollama_only_whatever_keys_are_set(tmp_path):
+    """The old OpenAI and Gemini keys are ignored, and a Claude key does not put
+    Claude on the ordinary route: it has its own capability."""
+
     runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "JARVIS_PRIMARY_PROVIDER": "gemini",
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-        }
+        environ=_runtime_env(tmp_path, OPENAI_API_KEY=_TEST_KEY, GEMINI_API_KEY=_TEST_KEY, ANTHROPIC_API_KEY=_TEST_KEY)
     )
-
-    assert runtime.configured_providers() == ("gemini", "ollama")
-
-
-@pytest.mark.parametrize("configured", ["Gemini", "GEMINI", "  gemini  "])
-def test_build_default_runtime_matches_primary_provider_case_insensitively(tmp_path, configured):
-    # EBG-0155 (ESR-0060 WP1b): a mis-cased primary used to register no cloud
-    # provider at all, silently, even with a valid key.
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "JARVIS_PRIMARY_PROVIDER": configured,
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-        }
-    )
-
-    assert runtime.configured_providers() == ("gemini", "openai", "ollama")
-
-
-def test_build_default_runtime_treats_a_blank_primary_provider_as_the_default(tmp_path):
-    # EBG-0155: a blank value used to bypass the default and build nothing.
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "JARVIS_PRIMARY_PROVIDER": "  ",
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-        }
-    )
-
-    assert runtime.configured_providers() == ("openai", "gemini", "ollama")
-
-
-def test_build_default_runtime_warns_about_an_unknown_provider_name(tmp_path, caplog):
-    # EBG-0155: an unknown name is still ignored, but no longer silently.
-    with caplog.at_level(logging.WARNING, logger="jarvis.interfaces.stdio_rpc"):
-        runtime = build_default_runtime(
-            environ={
-                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-                "JARVIS_PRIMARY_PROVIDER": "anthropic",
-                "JARVIS_SECONDARY_PROVIDER": "mistral",
-                "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            }
-        )
 
     assert runtime.configured_providers() == ("ollama",)
-    warnings = [record.getMessage() for record in caplog.records if record.levelno == logging.WARNING]
-    assert any("JARVIS_PRIMARY_PROVIDER='anthropic'" in message for message in warnings)
-    assert any("JARVIS_SECONDARY_PROVIDER='mistral'" in message for message in warnings)
-    assert not any("test-key-not-a-real-credential" in message for message in warnings)
 
 
-def test_build_default_runtime_does_not_warn_about_known_provider_names(tmp_path, caplog):
+def test_claude_is_registered_on_its_own_route_only_with_a_usable_key(tmp_path):
+    with_key = build_default_runtime(environ=_runtime_env(tmp_path, ANTHROPIC_API_KEY=_TEST_KEY))
+    names = [provider.name for provider in _orchestrator(with_key).eligible_providers("text-generation-cloud")]
+    assert names == ["anthropic"]
+
+    for unusable in [{}, {"ANTHROPIC_API_KEY": ""}, {"ANTHROPIC_API_KEY": "   "}]:
+        without = build_default_runtime(environ=_runtime_env(tmp_path, **unusable))
+        assert _orchestrator(without).eligible_providers("text-generation-cloud") == ()
+
+
+def test_claude_defaults_to_sonnet_5_5_and_the_model_is_overridable(tmp_path):
+    default = build_default_runtime(environ=_runtime_env(tmp_path, ANTHROPIC_API_KEY=_TEST_KEY))
+    custom = build_default_runtime(
+        environ=_runtime_env(tmp_path, ANTHROPIC_API_KEY=_TEST_KEY, JARVIS_CLAUDE_MODEL="claude-haiku-4-5")
+    )
+
+    assert _orchestrator(default).eligible_providers("text-generation-cloud")[0]._configuration.default_model == "claude-sonnet-5-5"
+    assert _orchestrator(custom).eligible_providers("text-generation-cloud")[0]._configuration.default_model == "claude-haiku-4-5"
+
+
+def test_blank_or_whitespace_model_and_endpoint_variables_fall_back_to_the_defaults(tmp_path):
+    """EBG-0161: a whitespace-only value is truthy, so `environ.get(x) or default`
+    used it as the model name."""
+
+    runtime = build_default_runtime(
+        environ=_runtime_env(
+            tmp_path,
+            ANTHROPIC_API_KEY=_TEST_KEY,
+            JARVIS_CLAUDE_MODEL="   ",
+            JARVIS_OLLAMA_MODEL="   ",
+            JARVIS_OLLAMA_ENDPOINT="  ",
+        )
+    )
+    orchestrator = _orchestrator(runtime)
+
+    claude = orchestrator.eligible_providers("text-generation-cloud")[0]._configuration
+    ollama = orchestrator.eligible_providers("text-generation")[0]._configuration
+    assert claude.default_model == "claude-sonnet-5-5"
+    assert ollama.default_model == "qwen3.5:2b"
+    assert ollama.endpoint is None
+
+
+def test_the_old_selector_variables_are_ignored_with_one_warning_that_names_no_value(tmp_path, caplog):
     with caplog.at_level(logging.WARNING, logger="jarvis.interfaces.stdio_rpc"):
-        build_default_runtime(
-            environ={
-                "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-                "JARVIS_PRIMARY_PROVIDER": "Gemini",
-                "JARVIS_SECONDARY_PROVIDER": "none",
-            }
+        runtime = build_default_runtime(
+            environ=_runtime_env(tmp_path, JARVIS_PRIMARY_PROVIDER="gemini-secret-looking", JARVIS_SECONDARY_PROVIDER="openai")
         )
 
-    assert not [record for record in caplog.records if "matches no known provider" in record.getMessage()]
+    warnings = [record.getMessage() for record in caplog.records if "no longer used" in record.getMessage()]
+    assert len(warnings) == 1
+    assert "JARVIS_PRIMARY_PROVIDER" in warnings[0] and "JARVIS_SECONDARY_PROVIDER" in warnings[0]
+    assert "gemini-secret-looking" not in warnings[0]
+    assert runtime.configured_providers() == ("ollama",)
 
 
-def test_build_default_runtime_uses_credentialled_secondary_when_selected_primary_has_no_credential(tmp_path):
-    # ESR-0059 WP4: replaces the former "ignores unselected provider
-    # credential" rule. With gemini selected as primary but only an OpenAI
-    # key set, OpenAI now serves as the secondary rather than being ignored.
+def test_no_old_selector_variable_means_no_warning(tmp_path, caplog):
+    with caplog.at_level(logging.WARNING, logger="jarvis.interfaces.stdio_rpc"):
+        build_default_runtime(environ=_runtime_env(tmp_path, JARVIS_PRIMARY_PROVIDER="  "))
+
+    assert not [record for record in caplog.records if "no longer used" in record.getMessage()]
+
+
+def test_a_local_failure_never_reaches_a_cloud_service(tmp_path, monkeypatch):
+    """The point of the two routes (D28, 'never automatic'): with a Claude key
+    configured and Ollama failing, an ordinary turn gets the honest reply and no
+    request goes to Anthropic - or to OpenAI or Gemini. Network calls are faked
+    at urlopen; nothing leaves the machine."""
+
+    import urllib.error
+
+    from jarvis.interfaces.sentinel_conversation import PROVIDER_UNAVAILABLE_RESPONSE
+
+    called: list[str] = []
+
+    def _fake_urlopen(request, timeout):
+        called.append(request.full_url)
+        raise urllib.error.URLError("connection refused")
+
+    monkeypatch.setattr("urllib.request.urlopen", _fake_urlopen)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", _TEST_KEY)
     runtime = build_default_runtime(
-        environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "JARVIS_PRIMARY_PROVIDER": "gemini", "OPENAI_API_KEY": "test-key-not-a-real-credential"}
+        environ=_runtime_env(
+            tmp_path,
+            ANTHROPIC_API_KEY=_TEST_KEY,
+            OPENAI_API_KEY=_TEST_KEY,
+            GEMINI_API_KEY=_TEST_KEY,
+            JARVIS_OLLAMA_ENDPOINT="http://127.0.0.1:1",
+        )
+    )
+    server = StdioRpcServer(runtime, identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")))
+
+    response = server.handle_line(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.converse", "params": {"message": "hello"}})
     )
 
-    assert runtime.configured_providers() == ("openai", "ollama")
-
-
-def test_build_default_runtime_wires_gemini_as_secondary_between_openai_and_ollama(tmp_path):
-    """ESR-0059 WP4 (EBG-0140/EBG-0051): with both cloud keys present, the
-    route is primary, then the other cloud provider, then local Ollama."""
-
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-        }
-    )
-
-    assert runtime.configured_providers() == ("openai", "gemini", "ollama")
-
-
-def test_build_default_runtime_secondary_is_symmetric_when_gemini_is_primary(tmp_path):
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "JARVIS_PRIMARY_PROVIDER": "gemini",
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-        }
-    )
-
-    assert runtime.configured_providers() == ("gemini", "openai", "ollama")
-
-
-def test_build_default_runtime_secondary_can_be_disabled(tmp_path):
-    """`JARVIS_SECONDARY_PROVIDER=none` opts out of the billed cloud
-    failover without removing the key - case-insensitive."""
-
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-            "JARVIS_SECONDARY_PROVIDER": "None",
-        }
-    )
-
-    assert runtime.configured_providers() == ("openai", "ollama")
-
-
-def test_build_default_runtime_secondary_needs_its_own_credential(tmp_path):
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "GEMINI_API_KEY": "   ",
-        }
-    )
-
-    assert runtime.configured_providers() == ("openai", "ollama")
-
-
-def test_build_default_runtime_never_registers_a_provider_twice(tmp_path):
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "JARVIS_SECONDARY_PROVIDER": "openai",
-        }
-    )
-
-    assert runtime.configured_providers() == ("openai", "ollama")
-
-
-def test_build_default_runtime_falls_through_to_default_model_when_env_var_is_blank(tmp_path):
-    # A present-but-blank OPENAI_MODEL must not override the fallback default
-    # with an empty string - that would make OpenAIProvider's constructor
-    # reject the configuration, turning a harmless placeholder into a startup
-    # failure (Engineering Reviewer finding, EIP-ESR0022-001).
-    runtime = build_default_runtime(
-        environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), "OPENAI_API_KEY": "test-key-not-a-real-credential", "OPENAI_MODEL": ""}
-    )
-
-    assert runtime.configured_providers() == ("openai", "ollama")
+    assert response["result"]["message"] == PROVIDER_UNAVAILABLE_RESPONSE
+    assert called, "Ollama should have been tried"
+    assert all(url.startswith("http://127.0.0.1:1") for url in called), called
 
 
 def test_build_default_runtime_wires_trust_tier_policy_as_the_production_policy_engine(tmp_path):
@@ -1696,64 +1649,6 @@ def test_profile_active_persists_across_new_server_instance_against_same_db(tmp_
     assert response["result"] == {"profile": created}
 
 
-def test_guardian_converse_fails_over_from_openai_to_gemini(tmp_path, monkeypatch):
-    """ESR-0059 WP4: end to end through the real runtime and RPC path - when
-    the OpenAI primary fails, the Gemini secondary answers, the reply is a
-    genuine model reply, and it names the provider that actually served it.
-    Network calls are faked at urlopen; nothing leaves the machine."""
-
-    import urllib.error
-
-    monkeypatch.setenv("OPENAI_API_KEY", "test-key-not-a-real-credential")
-    monkeypatch.setenv("GEMINI_API_KEY", "test-key-not-a-real-credential")
-    called: list[str] = []
-
-    class _Body:
-        def __init__(self, payload: bytes) -> None:
-            self._payload = payload
-
-        def read(self) -> bytes:
-            return self._payload
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *exc_info) -> None:
-            return None
-
-    def _fake_urlopen(request, timeout):
-        url = request.full_url
-        called.append(url)
-        if "api.openai.com" in url:
-            raise urllib.error.HTTPError(url, 503, "Service Unavailable", None, None)
-        if "generativelanguage.googleapis.com" in url:
-            return _Body(json.dumps({"candidates": [{"content": {"parts": [{"text": "Gemini here."}]}}]}).encode())
-        raise urllib.error.URLError("unexpected endpoint in test")
-
-    monkeypatch.setattr("urllib.request.urlopen", _fake_urlopen)
-    runtime = build_default_runtime(
-        environ={
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-            "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-        }
-    )
-    server = StdioRpcServer(runtime, identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")))
-
-    response = server.handle_line(
-        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.converse", "params": {"message": "hello"}})
-    )
-
-    assert response["result"] == {"message": "Gemini here.", "provider": "gemini"}
-    # ESR-0059 WP6 (EBG-0140): a 503 is transient, so OpenAI is retried once
-    # (CLOUD_RETRY_POLICY) before failing over to Gemini.
-    assert "api.openai.com" in called[0]
-    assert "api.openai.com" in called[1]
-    assert "generativelanguage.googleapis.com" in called[2]
-    assert len(called) == 3  # Ollama never reached - Gemini answered first
-
-
 # EBG-0139 (ESR-0059 WP5): per-turn deadline configuration and the slow lane.
 
 
@@ -1840,26 +1735,18 @@ def test_malformed_lines_still_get_an_inline_error_reply(tmp_path):
     assert _responses(out_stream)[0]["error"]["code"] == -32700
 
 
-def test_cloud_providers_get_one_retry_and_ollama_none(tmp_path):
-    """EBG-0140 (ESR-0059 WP6): cloud providers retry once after a transient
+def test_claude_gets_one_retry_and_ollama_none(tmp_path):
+    """EBG-0140 (ESR-0059 WP6): the cloud provider retries once after a transient
     failure; local Ollama keeps a single attempt."""
 
     from jarvis.interfaces.stdio_rpc import CLOUD_RETRY_POLICY
 
-    runtime = build_default_runtime(
-        environ={
-            "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
-            "OPENAI_API_KEY": "test-key-not-a-real-credential",
-            "GEMINI_API_KEY": "test-key-not-a-real-credential",
-        }
-    )
-    orchestrator = runtime._conversation_provider._orchestrator
-    policies = {p.name: p.retry_policy for p in orchestrator.eligible_providers("text-generation")}
+    runtime = build_default_runtime(environ=_runtime_env(tmp_path, ANTHROPIC_API_KEY=_TEST_KEY))
+    orchestrator = _orchestrator(runtime)
 
     assert CLOUD_RETRY_POLICY.max_attempts == 2
-    assert policies["openai"] == CLOUD_RETRY_POLICY
-    assert policies["gemini"] == CLOUD_RETRY_POLICY
-    assert policies["ollama"].max_attempts == 1
+    assert orchestrator.eligible_providers("text-generation-cloud")[0].retry_policy == CLOUD_RETRY_POLICY
+    assert orchestrator.eligible_providers("text-generation")[0].retry_policy.max_attempts == 1
 
 
 # --- ESR-0061 WP2a (EBG-0157 items 2 and 3) ---------------------------------

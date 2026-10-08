@@ -49,6 +49,12 @@ class SentinelGatedConversationProvider:
         self._turn_deadline_seconds = turn_deadline_seconds
 
     @property
+    def orchestrator(self) -> ProviderOrchestrator:
+        """Return the provider orchestrator, for diagnostics and for the escalation path (ESR-0061 WP3)."""
+
+        return self._orchestrator
+
+    @property
     def gateway(self) -> SentinelTrustGateway:
         """Return the connected Sentinel trust gateway, for test/diagnostic introspection."""
 

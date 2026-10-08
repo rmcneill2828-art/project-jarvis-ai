@@ -17,12 +17,14 @@ from collections.abc import Callable
 from sentinel.provider_config import ProviderConfiguration, RetryPolicy
 from sentinel.providers import (
     TRANSIENT_HTTP_STATUSES,
+    DeadlineExceededError,
     ProviderError,
     ProviderRequest,
     ProviderResponse,
     framed_prompt,
     history_transcript,
-    remaining_timeout,
+    is_timeout,
+    remaining_timeout_budget,
 )
 
 Transport = Callable[[str, bytes, dict[str, str], float], bytes]
@@ -103,7 +105,7 @@ class OllamaProvider:
         headers = {"Content-Type": "application/json"}
 
         # Capped by the request's overall deadline, if any (EBG-0139).
-        timeout_seconds = remaining_timeout(self._configuration.timeout_seconds, request)
+        timeout_seconds, deadline_capped = remaining_timeout_budget(self._configuration.timeout_seconds, request)
 
         try:
             raw_response = self._transport(
@@ -122,6 +124,11 @@ class OllamaProvider:
         except Exception as exc:
             # Deliberately expose only the exception type, never str(exc) -
             # same rationale as the cloud provider adapters.
+            # A timeout the turn deadline caused is the turn running out of time,
+            # not this provider failing (EBG-0157 item 6, ESR-0061 WP3a).
+            if deadline_capped and is_timeout(exc):
+                msg = "Ollama call hit the request deadline."
+                raise DeadlineExceededError(msg) from exc
             msg = f"Ollama request failed: {type(exc).__name__}."
             # Network failures and timeouts are retryable (EBG-0140).
             raise ProviderError(msg, transient=True) from exc
