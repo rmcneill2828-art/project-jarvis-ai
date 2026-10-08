@@ -1234,11 +1234,51 @@ test("a download started with use-when-done still switches the model if the pers
 
   await openView(page, "System");
   await page.evaluate(() => window.__emit("jarvis://notification", { method: "ollama.pullFinished", params: { model: "qwen3.5:4b", outcome: "completed" } }));
-  await openView(page, "AI models");
 
+  // The switch happens while the person is still on another view.
   await expect
     .poll(() => page.evaluate(() => window.__ollamaCalls.map((call) => call.join(":"))))
     .toContain("use:qwen3.5:4b");
+  await expect(page.getByRole("heading", { name: "System", level: 1 })).toBeVisible();
+});
+
+test("a finished download the person did not ask to use is not switched to", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [{ id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" }],
+    activeProfile: { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" },
+  });
+  await page.goto("/");
+  await openView(page, "AI models");
+
+  await page.evaluate(() => window.__emit("jarvis://notification", { method: "ollama.pullFinished", params: { model: "qwen3.5:2b", outcome: "completed" } }));
+  await page.waitForTimeout(500);
+
+  expect(await page.evaluate(() => window.__ollamaCalls.map((call) => call.join(":")))).not.toContain("use:qwen3.5:2b");
+});
+
+test("a failed switch after a download is reported to the person", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [{ id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" }],
+    activeProfile: { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" },
+    ollama: {
+      status: { models: [], activeModel: "qwen3.5:2b", activeModelInstalled: false },
+      recommendation: {
+        primary: { tag: "qwen3.5:4b", label: "Qwen3.5 4B (balanced)", downloadGb: 3.3, note: "n", installed: false },
+      },
+    },
+  });
+  await page.addInitScript(() => {
+    const original = window.__TAURI_INTERNALS__.invoke;
+    window.__TAURI_INTERNALS__.invoke = (cmd, args) =>
+      cmd === "ollama_use_model" ? Promise.reject(new Error("not installed")) : original(cmd, args);
+  });
+  await page.goto("/");
+  await openView(page, "AI models");
+  await page.getByRole("button", { name: "Download and use" }).first().click();
+
+  await page.evaluate(() => window.__emit("jarvis://notification", { method: "ollama.pullFinished", params: { model: "qwen3.5:4b", outcome: "completed" } }));
+
+  await expect(page.locator(".local-ai-panel").getByRole("alert")).toContainText("could not switch");
 });
 
 test("the Guardian view's heading is the page's level-1 heading, as in every other view", async ({ page }) => {

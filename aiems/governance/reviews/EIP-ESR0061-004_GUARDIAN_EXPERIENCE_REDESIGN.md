@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-004 |
 | Title | Engineering Implementation Package: WP4 Guardian Experience Redesign and Presence Orb |
-| Version | 0.5 |
-| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a built under ESR-0061, implementation review Conditional Pass (one Medium and one Low fixed); WP4b to WP4d not started |
+| Version | 0.6 |
+| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix built, implementation review Pass; WP4b to WP4d not started |
 | Session | ESR-0061. WP4 is planned for Session B (WP3-WP4); the design is drafted now under D22 |
 | Work Package | WP4 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.5 (Orb criteria) and Section 7, WP4 |
@@ -204,6 +204,7 @@ A control that is shown but unavailable says why in words. Profile creation and 
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.6 | 8 October 2026 | Claude Engineering Implementer | WP4a committed (`b3693cb`) and its post-commit review recorded (Section 17), with a correction to my own mistake in the review brief (I read a Dependabot CI run, not the push run). WP4a-fix built for the review's High finding: the switch to a downloaded model now happens in the app, not the panel (Section 18). |
 | 0.5 | 8 October 2026 | Claude Engineering Implementer | WP4a implementation review Conditional Pass (Gemini; one Medium, one Low; two resumes). Both fixed with tests: the Guardian view's heading is now the level-1 heading; the choice to switch to a model when its download ends now survives a visit to another view. Section 16 review record; test counts updated (57); `src/LocalAiPanel.jsx` added to the file list. |
 | 0.4 | 8 October 2026 | Claude Engineering Implementer | Design commit `6081425` recorded (Section 13) with its post-commit review (Conditional Pass: one Medium, fixed). WP4a built (Programme Sponsor approved the design; WP4a started at once): tokens and bundled fonts, the app shell, the six views with the existing panels moved in, the controls that did nothing removed. Section 14 build record, Section 15 commit contents. |
 | 0.3 | 8 October 2026 | Claude Engineering Implementer | Programme Sponsor approved the prototype and decisions W1-W10 as recommended (chat, 8 October 2026). This is the design approval of rule A6; nothing is built. |
@@ -259,3 +260,22 @@ New: `src/tokens.css`, `src/shell.css`, `src/panels.css`, `src/Shell.jsx`. Remov
 | Low | Switching view unmounts a panel, so the Local AI panel lost its "switch to this model when the download ends" choice, and the list opened in the Memory view is also lost | **Local AI fixed** - the choice is held by the app, and a finished-download notification that arrives while the panel is away is acted on when it is shown again (a test starts a download, visits System, pushes the finished notification and returns; **mutation-checked**: with the fix removed the test fails). **Memory list state is accepted as lost on a view switch**: the list is deliberately closed until the person opens it (a privacy choice, EBG-0131), so returning to a closed list is the intended state |
 
 **Caveats, disclosed:** a single reviewer with no web access, judging by reading (it cannot run Playwright). The fixes were made after the review and are confirmed by their tests, not re-reviewed before commit; the post-commit review will see them. The test mock was extended to deliver backend notifications, which also removed a class of unhandled-rejection noise in the test log. The Programme Sponsor's first look at the shell in the real Tauri window remains the check on WebView2 rendering.
+
+# 17. WP4a Post-Commit Record (8 October 2026)
+
+WP4a was committed as `b3693cb` after the Programme Sponsor's real approval. **The first two attempts at `submit-response` were refused for a mistake of mine**: the approval is filed under the bridge's work-package name `WP4`, and I had told the Programme Sponsor to approve `WP4a`; the gate held only the earlier `WP4` approval, made before the design commit, and reported the repository as drifted. With `~/approve WP4` it passed. The deterministic pre-check passed every hard check (clean tree, on origin/main, changed files equal Section 15, gated against the parent, pytest 1160 passed and 4 skipped, ruff, validator 0 errors). **CI, correctly read:** the push run (37839937931) ran every job and all succeeded except the informational `playwright-webkit`, which reported 55 passed and 2 failed - the two known microphone tests (a WKWebView difference, WP7). That is the first WebKit run of the new shell: its layout, composer, overflow, font and contrast tests all pass on WebKit. **A mistake of mine, disclosed:** when I first looked at CI I read a Dependabot pull-request run (its macOS, Windows and WebKit jobs are skipped on pull requests), saw them skipped, and passed that wrong statement to the reviewer.
+
+Post-commit review (Antigravity, Gemini, no resumes): **Conditional Pass.** The Guardian heading fix correct; the 17 changed files match Section 15; Sections 13 to 16 consistent. **High:** the use-when-done fix had a hole - the Local AI panel unmounts on a view switch, so a download that finished while the person was on another view did not switch the model until they came back. **Accepted and fixed** (Section 18). **Medium:** the reviewer judged skipping the WebKit job inappropriate; that finding rested on my wrong statement, and the reviewer **withdrew it** when told the real facts.
+
+# 18. WP4a-fix (8 October 2026)
+
+| Item | Result |
+|---|---|
+| The fix | The app's `jarvis://notification` listener now acts on `ollama.pullFinished` itself: when the finished model is the one the person asked to use (`useWhenDoneRef`, set by the panel when the download starts and cleared on cancel), it calls `ollama_use_model` whichever view is showing, then tells the panel, so the panel's refresh sees the switch. The panel no longer calls `ollama_use_model`; it refreshes and then shows the failure messages ("The download did not finish", and "The model downloaded, but JARVIS could not switch to it") - after the refresh, because refreshing clears the error (found when the first version of the new test failed) |
+| Tests | Three new Playwright tests: the switch happens while the person is still on another view (this replaced the earlier test, which only checked it on return); a finished download the person did not ask to use is not switched to; a failed switch is reported. **59 Playwright tests pass** |
+| Review (pre-commit) | Antigravity (Gemini, no resumes): **Pass.** It retracted the WebKit finding, confirmed the High resolved, that a finished event is handled exactly once, the reference cleared on cancel and failure, consecutive downloads work, a stale failure message is not shown on a later visit, and the three tests are not vacuous. It raised no Medium or High finding |
+| **Not done** | The real Tauri window has still not been looked at by me; the Docker Linux check is skipped (no Python changed) |
+
+# 19. WP4a-fix Commit Contents (expected)
+
+Changed: `src/App.jsx`, `src/LocalAiPanel.jsx`, `tests/e2e/app.spec.js`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.

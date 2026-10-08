@@ -44,20 +44,18 @@ export function LocalAiPanel({ activeProfile, pullProgress, pullFinished, useWhe
     refresh();
   }, [refresh, activeProfile?.id]);
 
-  // A finished download: if the person asked to use it, switch to it; then re-read.
+  // A finished download: say so if it failed, then re-read. Switching to the
+  // downloaded model, when the person asked for that, is done by the app when
+  // the download ends, whichever view is showing.
   useEffect(() => {
     if (!pullFinished) return;
-    const tag = pullFinished.model;
-    const wanted = useWhenDone.current === tag;
-    useWhenDone.current = null;
-    const done =
-      pullFinished.outcome === "completed" && wanted
-        ? invoke("ollama_use_model", { model: tag }).catch((failure) => setError(`Could not switch model: ${failure}`))
-        : Promise.resolve();
-    if (pullFinished.outcome === "failed") setError("The download did not finish. You can try again.");
-    done.then(refresh);
+    // refresh() clears the error, so the message is set once it has finished.
+    refresh().then(() => {
+      if (pullFinished.outcome === "failed") setError("The download did not finish. You can try again.");
+      if (pullFinished.switchFailed) setError("The model downloaded, but JARVIS could not switch to it. Choose Use this model.");
+    });
     if (onPullFinishedHandled) onPullFinishedHandled();
-  }, [pullFinished, refresh, useWhenDone, onPullFinishedHandled]);
+  }, [pullFinished, refresh, onPullFinishedHandled]);
 
   const pull = status?.pull;
   const downloading = Boolean(pull?.active);

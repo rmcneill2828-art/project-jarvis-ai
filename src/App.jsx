@@ -590,8 +590,9 @@ export function App() {
   const [pullProgress, setPullProgress] = useState(null);
   const [pullFinished, setPullFinished] = useState(null);
   // Which model the person asked to switch to once its download ends. Held here,
-  // not in the panel, so it survives the person visiting another view while a
-  // download that takes minutes runs (WP4a implementation review, Low).
+  // and acted on here when the download ends, so it works whichever view is
+  // showing while a download that takes minutes runs (WP4a implementation
+  // review, Low; post-commit review, High).
   const useWhenDoneRef = useRef(null);
 
   // Voice Faculty Increment B (EIP-ESR0047-001): push-to-talk speech input.
@@ -738,7 +739,21 @@ export function App() {
         setPullProgress(event.payload.params ?? null);
       }
       if (event.payload?.method === "ollama.pullFinished") {
-        setPullFinished({ ...(event.payload.params ?? {}), at: Date.now() });
+        const finished = event.payload.params ?? {};
+        // Switching to the model the person asked to use happens here, in the
+        // app, so it does not depend on which view is showing when the download
+        // ends (WP4a post-commit review). The panel is told afterwards, so its
+        // refresh sees the switch.
+        const wanted = finished.outcome === "completed" && useWhenDoneRef.current === finished.model;
+        if (finished.model && useWhenDoneRef.current === finished.model) useWhenDoneRef.current = null;
+        const announce = (switchFailed) => setPullFinished({ ...finished, switchFailed, at: Date.now() });
+        if (wanted) {
+          invoke("ollama_use_model", { model: finished.model })
+            .then(() => announce(false))
+            .catch(() => announce(true));
+        } else {
+          announce(false);
+        }
       }
       if (event.payload?.method === "knowledge.cluster_activity") {
         const cluster = event.payload?.params?.cluster;
