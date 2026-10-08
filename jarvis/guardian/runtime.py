@@ -133,6 +133,16 @@ class GuardianRuntime:
 
         return self._transcription_provider is not None
 
+    @property
+    def speech_available(self) -> bool:
+        """Return whether a speech output provider is connected (ESR-0061 WP4b).
+
+        The twin of `transcription_available`, so the interface can say whether
+        Voice output exists instead of guessing from a failed attempt.
+        """
+
+        return self._speech_provider is not None
+
     def start(self) -> GuardianRuntimeState:
         """Start the Guardian runtime foundation without enabling future intelligence."""
 

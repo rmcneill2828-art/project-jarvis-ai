@@ -465,6 +465,26 @@ def test_platform_status_reports_transcription_available_when_whisper_path_prese
     assert result["transcriptionAvailable"] is True
 
 
+def test_platform_status_reports_speech_available_when_a_speech_provider_is_connected(tmp_path):
+    """ESR-0061 WP4b: Voice output is reported as present or absent, as
+    transcription is, so the interface does not have to guess from a failure."""
+
+    with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
+        server = StdioRpcServer(
+            build_default_runtime(
+                environ={
+                    "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
+                    "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
+                    "JARVIS_KOKORO_MODEL_PATH": "kokoro.onnx",
+                    "JARVIS_KOKORO_VOICES_PATH": "voices.bin",
+                }
+            ),
+            identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+        )
+
+    assert server._methods["platform.status"]({})["speechAvailable"] is True
+
+
 def test_guardian_transcribe_rpc_returns_transcribed_shape(tmp_path):
     with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
         server = StdioRpcServer(
@@ -692,6 +712,8 @@ def test_guardian_converse_reports_honest_failure_when_no_provider_can_answer(tm
         "result": {
             "message": PROVIDER_UNAVAILABLE_RESPONSE,
             "provider": "sentinel-gated",
+            "answered": False,
+            "model": None,
             "escalation": {"offered": False, "reason": None, "token": None},
         },
     }
@@ -709,6 +731,7 @@ def test_platform_status_reflects_real_runtime_state(tmp_path):
         "providerConnected": "Online",
         "memoryConnected": "Online",
         "transcriptionAvailable": False,
+        "speechAvailable": False,
         "providers": ["ollama"],
         "policyEngine": "TrustTierPolicy",
     }
@@ -1689,6 +1712,45 @@ def _slow_server(tmp_path, seconds: float) -> StdioRpcServer:
         heartbeat_interval_seconds=9999.0,
         identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
     )
+
+
+def test_guardian_converse_names_the_model_that_answered(tmp_path):
+    """ESR-0061 WP4b: a reply says which model produced it. The slow stub
+    carries no model name, so `answered` is True and `model` is None - the
+    two are separate facts."""
+
+    server = _slow_server(tmp_path, seconds=0.0)
+
+    result = server._methods["guardian.converse"]({"message": "hi"})
+
+    assert result["answered"] is True
+    assert result["model"] is None
+
+
+class _NamedModelProvider:
+    name = "named-model"
+
+    def generate(self, request):
+        from jarvis.interfaces.conversation import ConversationResponse
+
+        return ConversationResponse(
+            message="named", provider=self.name, is_model_reply=True, metadata={"model": "qwen3.5:4b"}
+        )
+
+
+def test_guardian_converse_returns_the_model_name_from_the_provider(tmp_path):
+    runtime = GuardianRuntime(conversation_provider=_NamedModelProvider())
+    runtime.start()
+    server = StdioRpcServer(
+        runtime,
+        heartbeat_interval_seconds=9999.0,
+        identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
+    )
+
+    result = server._methods["guardian.converse"]({"message": "hi"})
+
+    assert result["answered"] is True
+    assert result["model"] == "qwen3.5:4b"
 
 
 def _responses(out_stream: io.StringIO) -> list[dict]:

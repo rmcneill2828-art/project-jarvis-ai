@@ -32,6 +32,8 @@ import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
 import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
 import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalation.jsx";
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
+import { PresenceOrb } from "./PresenceOrb.jsx";
+import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
 import { NavRail, TopBar } from "./Shell.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
@@ -446,6 +448,40 @@ function DiagnosticsPanel({ diagnostics }) {
   );
 }
 
+// Where a reply came from (WP4b, EIP item 6.6). Every reply from the platform
+// carries one: the model on this computer, Claude, or "no model", for the
+// platform's own messages. Claude is named only on a reply Claude gave, so a
+// profile that cannot ask Claude never sees the word.
+function ReplySource({ entry }) {
+  if (entry.source === "claude") {
+    return (
+      <span className="reply-source">
+        <ClaudeBadge /> answered over the internet
+      </span>
+    );
+  }
+  if (entry.source === "local") {
+    return (
+      <span className="reply-source">
+        On this computer{entry.model ? ` · ${entry.model}` : ""}
+      </span>
+    );
+  }
+  if (entry.source === "none") return <span className="reply-source">No AI model answered</span>;
+  return null;
+}
+
+// The permanent line above the composer: the person is told they are talking
+// to an AI, and where the replies in this conversation come from.
+function disclosureText(messages) {
+  const lastLocal = [...messages].reverse().find((entry) => entry.source === "local" && entry.model);
+  const fromClaude = messages.some((entry) => entry.source === "claude");
+  const base = lastLocal
+    ? `You are talking to JARVIS, an AI. Replies come from the AI model on this computer (${lastLocal.model}).`
+    : "You are talking to JARVIS, an AI. Replies come from the AI model on this computer.";
+  return fromClaude ? `${base} Some replies in this conversation came from Claude, over the internet.` : base;
+}
+
 function CommandPanel({
   messages,
   inputValue,
@@ -474,7 +510,6 @@ function CommandPanel({
           {messages.map((entry) => (
             <p className={`conversation-message ${entry.role}`} key={entry.id}>
               <span>{entry.text}</span>
-              {entry.answeredBy === "claude" && <ClaudeBadge />}
               {entry.role === "guardian" && (
                 <button
                   type="button"
@@ -485,6 +520,7 @@ function CommandPanel({
                   <Volume2 size={16} />
                 </button>
               )}
+              {entry.role === "guardian" && <ReplySource entry={entry} />}
             </p>
           ))}
           </div>
@@ -514,8 +550,12 @@ function CommandPanel({
           {transcribeError}
         </p>
       )}
+      <p className="ai-disclosure" id="ai-disclosure">
+        {disclosureText(messages)}
+      </p>
       <form
         className="input-shell"
+        aria-describedby="ai-disclosure"
         aria-label="Guardian conversation input"
         onSubmit={(event) => {
           event.preventDefault();
@@ -600,6 +640,16 @@ export function App() {
   // MediaRecorder instance and its bounded 30s auto-stop timer live in refs,
   // not state, since neither needs to trigger a re-render.
   const [isRecording, setIsRecording] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
+  // The Orb's other real events (WP4b): reply audio playing, and whether the
+  // last turn failed because no AI model answered.
+  const [speaking, setSpeaking] = useState(false);
+  const [lastTurnFailed, setLastTurnFailed] = useState(false);
+  const audioRef = useRef(null);
+  // A conversation belongs to the profile that had it. Every request notes the
+  // epoch it started in, and its answer is dropped if the profile has changed.
+  const conversationEpochRef = useRef(0);
+  const previousProfileIdRef = useRef(null);
   const [transcribeError, setTranscribeError] = useState(null);
   const mediaRecorderRef = useRef(null);
   const recordedChunksRef = useRef([]);
@@ -717,6 +767,44 @@ export function App() {
     };
   }, [activeProfile?.id]);
 
+  // Switching profile clears the on-screen conversation, any open offer or
+  // dialog, and anything in flight (WP4b, EIP item 6.2): the backend keeps each
+  // profile's history separate, so the screen must not show the previous
+  // profile's messages - or its Claude labels - to the next person.
+  useEffect(() => {
+    const previous = previousProfileIdRef.current;
+    previousProfileIdRef.current = activeProfile?.id ?? null;
+    if (previous === null || previous === (activeProfile?.id ?? null)) return;
+    conversationEpochRef.current += 1;
+    setMessages([]);
+    setInputValue("");
+    setSending(false);
+    setSendError(null);
+    setSpeakError(null);
+    setTranscribeError(null);
+    setEscalating(false);
+    setEscalationError(null);
+    setLastTurnFailed(false);
+    setOffer(null);
+    setConfirmOpen(false);
+    if (audioRef.current) {
+      audioRef.current.pause?.();
+      audioRef.current = null;
+    }
+    setSpeaking(false);
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      // Recording belongs to the previous person too: stop it; its onstop
+      // releases the microphone and drops the audio.
+      mediaRecorderRef.current.stop();
+    }
+    if (recordingTimeoutRef.current) {
+      clearTimeout(recordingTimeoutRef.current);
+      recordingTimeoutRef.current = null;
+    }
+    setIsRecording(false);
+    setTranscribing(false);
+  }, [activeProfile?.id]);
+
   // Re-reads the real count after a restore, rather than trusting the
   // restore response's own recordCount as a proxy for the store's new
   // total - restoring into a non-empty store (once ever allowed) would
@@ -817,19 +905,34 @@ export function App() {
     setOffer(null);
     setEscalationError(null);
 
+    const epoch = conversationEpochRef.current;
     invoke("send_message", { message })
       .then((response) => {
+        if (epoch !== conversationEpochRef.current) return;
+        // `answered` is false for the platform's own messages (no provider, not
+        // running): no model produced those, and the Orb goes Offline until a
+        // turn succeeds. A backend that does not say is not assumed to have failed.
+        const answered = response.answered !== false;
+        setLastTurnFailed(!answered);
         setMessages((current) => [
           ...current,
-          { id: `${Date.now()}-guardian`, role: "guardian", text: response.message },
+          {
+            id: `${Date.now()}-guardian`,
+            role: "guardian",
+            text: response.message,
+            source: answered ? "local" : "none",
+            model: response.model ?? null,
+          },
         ]);
         if (response.escalation?.offered) setOffer({ ...response.escalation, message });
       })
       .catch((error) => {
+        if (epoch !== conversationEpochRef.current) return;
         setSendError(`Guardian did not respond: ${error}`);
+        setLastTurnFailed(true);
       })
       .finally(() => {
-        setSending(false);
+        if (epoch === conversationEpochRef.current) setSending(false);
       });
   };
 
@@ -839,12 +942,15 @@ export function App() {
     const last = [...messages].reverse().find((entry) => entry.role === "user");
     if (!last) return;
     setEscalationError(null);
+    const epoch = conversationEpochRef.current;
     invoke("offer_escalation", { message: last.text })
       .then((requested) => {
+        if (epoch !== conversationEpochRef.current) return;
         setOffer({ ...requested, message: last.text });
         setConfirmOpen(true);
       })
       .catch((error) => {
+        if (epoch !== conversationEpochRef.current) return;
         setEscalationError(`Could not ask Claude: ${error}`);
       });
   };
@@ -854,8 +960,10 @@ export function App() {
     setEscalating(true);
     setEscalationError(null);
 
+    const epoch = conversationEpochRef.current;
     invoke("escalate_message", { token: offer.token })
       .then((result) => {
+        if (epoch !== conversationEpochRef.current) return;
         setMessages((current) => [
           ...current,
           {
@@ -863,14 +971,17 @@ export function App() {
             role: "guardian",
             text: result.message,
             answeredBy: result.answeredBy ?? null,
+            source: result.answeredBy === "claude" ? "claude" : "none",
           },
         ]);
         setClaudeStatus((current) => (current ? { ...current, allowance: result.allowance ?? current.allowance } : current));
       })
       .catch((error) => {
+        if (epoch !== conversationEpochRef.current) return;
         setEscalationError(`Claude did not respond: ${error}`);
       })
       .finally(() => {
+        if (epoch !== conversationEpochRef.current) return;
         // The token is spent either way, so the offer is over.
         setOffer(null);
         setConfirmOpen(false);
@@ -881,22 +992,49 @@ export function App() {
   const handleSpeak = (text) => {
     setSpeakError(null);
 
+    const epoch = conversationEpochRef.current;
     invoke("speak_message", { text })
       .then((result) => {
+        // Audio synthesised for the previous profile is never played to the next.
+        if (epoch !== conversationEpochRef.current) return;
         if (result.status !== "synthesized") {
           setSpeakError(result.message || "Guardian could not speak this response.");
           return;
         }
         try {
+          // The Orb speaks while this audio plays: the app records play, end
+          // and error of the audio it plays (WP4b). A newer reply replaces an
+          // older one still playing.
+          audioRef.current?.pause?.();
           const audio = new Audio(`data:${result.mimeType};base64,${result.audio}`);
-          audio.play().catch((error) => {
-            setSpeakError(`Guardian's voice could not play: ${error}`);
-          });
+          audioRef.current = audio;
+          const stop = () => {
+            if (audioRef.current === audio) {
+              audioRef.current = null;
+              setSpeaking(false);
+            }
+          };
+          audio.onended = stop;
+          audio.onerror = () => {
+            if (audioRef.current === audio) setSpeakError("Guardian's voice could not play.");
+            stop();
+          };
+          audio
+            .play()
+            .then(() => {
+              if (audioRef.current === audio) setSpeaking(true);
+            })
+            .catch((error) => {
+              if (audioRef.current === audio) setSpeakError(`Guardian's voice could not play: ${error}`);
+              stop();
+            });
         } catch (error) {
           setSpeakError(`Guardian's voice could not play: ${error}`);
+          setSpeaking(false);
         }
       })
       .catch((error) => {
+        if (epoch !== conversationEpochRef.current) return;
         setSpeakError(`Guardian could not speak this response: ${error}`);
       });
   };
@@ -940,15 +1078,22 @@ export function App() {
         if (event.data.size > 0) recordedChunksRef.current.push(event.data);
       };
 
+      // A recording belongs to the profile that started it (WP4b): if the
+      // profile changes before it ends, the microphone is still released but
+      // the audio is dropped, never transcribed into the next person's screen.
+      const epoch = conversationEpochRef.current;
       recorder.onstop = () => {
         stream.getTracks().forEach((track) => track.stop());
         const mimeType = recorder.mimeType || "audio/webm";
         const blob = new Blob(recordedChunksRef.current, { type: mimeType });
         recordedChunksRef.current = [];
+        if (epoch !== conversationEpochRef.current) return;
 
+        setTranscribing(true);
         blobToBase64(blob)
           .then((audioBase64) => invoke("transcribe_audio", { audioBase64, mimeType }))
           .then((result) => {
+            if (epoch !== conversationEpochRef.current) return;
             if (result.status !== "transcribed") {
               setTranscribeError(result.message || "Guardian could not transcribe that.");
               return;
@@ -959,7 +1104,11 @@ export function App() {
             applyTranscript(result.text);
           })
           .catch((error) => {
+            if (epoch !== conversationEpochRef.current) return;
             setTranscribeError(`Guardian could not transcribe that: ${error}`);
+          })
+          .finally(() => {
+            setTranscribing(false);
           });
       };
 
@@ -1040,6 +1189,20 @@ export function App() {
       });
   };
 
+  // The presence Orb's state, from real events only (WP4b, src/orbState.js).
+  const orbState = deriveOrbState({
+    speaking,
+    thinking: sending || escalating || transcribing,
+    offline: isOffline({ platformState, platformError, lastTurnFailed }),
+    listening: isRecording,
+  });
+  const lastLocalModel = [...messages].reverse().find((entry) => entry.source === "local" && entry.model)?.model ?? null;
+  const orbText = orbReadout(orbState, {
+    recording: isRecording,
+    connecting: isConnecting({ platformState, platformError }),
+    model: lastLocalModel,
+  });
+
   const platformIndicator = derivePlatformIndicator(platformState, platformError);
   const capabilityStatusRows = deriveCapabilityStatuses(platformState, platformError, agents, agentsError);
 
@@ -1085,6 +1248,11 @@ export function App() {
         {view === "guardian" && (
           <section className="view guardian-view" aria-label="Guardian">
             <div className="guardian-presence">
+              <PresenceOrb state={orbState} />
+              <div className="orb-readout" role="status" aria-live="polite" data-orb-readout={orbState}>
+                <span className="orb-state-label">{orbText.label}</span>
+                <span className="orb-state-detail">{orbText.detail}</span>
+              </div>
               <h1 id="command-heading" className="guardian-title">
                 How can I help you today?
               </h1>

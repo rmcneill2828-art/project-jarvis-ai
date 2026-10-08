@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-004 |
 | Title | Engineering Implementation Package: WP4 Guardian Experience Redesign and Presence Orb |
-| Version | 0.6 |
-| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix built, implementation review Pass; WP4b to WP4d not started |
+| Version | 0.7 |
+| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b built, implementation review Conditional Pass (one Medium fixed), awaiting the Programme Sponsor's approval to commit; WP4c and WP4d not started |
 | Session | ESR-0061. WP4 is planned for Session B (WP3-WP4); the design is drafted now under D22 |
 | Work Package | WP4 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.5 (Orb criteria) and Section 7, WP4 |
@@ -204,6 +204,7 @@ A control that is shown but unavailable says why in words. Profile creation and 
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.7 | 8 October 2026 | Claude Engineering Implementer | WP4a-fix committed (`936949e`) and its post-commit review recorded (Section 20). WP4b built: the presence Orb, the Guardian view, the AI disclosure and reply labels, the profile-switch clearing, two small backend additions (Section 21); implementation review Conditional Pass, one Medium fixed (Section 22). Section 23 is the expected commit contents. |
 | 0.6 | 8 October 2026 | Claude Engineering Implementer | WP4a committed (`b3693cb`) and its post-commit review recorded (Section 17), with a correction to my own mistake in the review brief (I read a Dependabot CI run, not the push run). WP4a-fix built for the review's High finding: the switch to a downloaded model now happens in the app, not the panel (Section 18). |
 | 0.5 | 8 October 2026 | Claude Engineering Implementer | WP4a implementation review Conditional Pass (Gemini; one Medium, one Low; two resumes). Both fixed with tests: the Guardian view's heading is now the level-1 heading; the choice to switch to a model when its download ends now survives a visit to another view. Section 16 review record; test counts updated (57); `src/LocalAiPanel.jsx` added to the file list. |
 | 0.4 | 8 October 2026 | Claude Engineering Implementer | Design commit `6081425` recorded (Section 13) with its post-commit review (Conditional Pass: one Medium, fixed). WP4a built (Programme Sponsor approved the design; WP4a started at once): tokens and bundled fonts, the app shell, the six views with the existing panels moved in, the controls that did nothing removed. Section 14 build record, Section 15 commit contents. |
@@ -279,3 +280,39 @@ Post-commit review (Antigravity, Gemini, no resumes): **Conditional Pass.** The 
 # 19. WP4a-fix Commit Contents (expected)
 
 Changed: `src/App.jsx`, `src/LocalAiPanel.jsx`, `tests/e2e/app.spec.js`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
+
+# 20. WP4a-fix Post-Commit Record (8 October 2026)
+
+WP4a-fix was committed as `936949e` after the Programme Sponsor's real `~/approve WP4` (the gate accepted the first submit once the approval was filed under the bridge's work-package name `WP4`). The deterministic pre-check passed every hard check (clean tree, on origin/main, the six changed files equal Section 19, gated against the parent, pytest 1160 passed and 4 skipped, ruff, validator 0 errors). One slip of mine, in the pre-check call and not in the commit: `--eip` takes the file path, not the document number; the first run failed with a file-not-found and was repeated correctly. **CI, selected by commit SHA as the earlier mistake required:** push run 37844187664 ran every job and all succeeded except the informational `playwright-webkit`, which reported 57 passed and 2 failed - the same two known microphone tests (WP7). Post-commit review (Antigravity, Gemini): **Pass**, no findings: the committed tree matches what it reviewed, the six files match Section 19, the commit message is true, Sections 17 and 18 are accurate including the two disclosed mistakes.
+
+# 21. WP4b Build Record (8 October 2026)
+
+| Item | Result |
+|---|---|
+| The presence Orb | New `src/PresenceOrb.jsx` (Canvas 2D, 240 points, time-based, on the shared clock, device pixel ratio capped at 2, paused while hidden, reduced motion draws one still frame per state and follows the setting live) and `src/orbState.js` (the state priority, the offline rule, the words for each state, the frame budget). It reads nothing from the repository. The knowledge-graph Orb (`GuardianOrbGraph.jsx`) is untouched and stays in the Knowledge view |
+| States from real events | Listening: `isRecording`. Thinking: a turn, an escalation or a transcription in flight (a transcription in flight is new state). Speaking: the app records play, end and error of the audio it plays (new: the audio object is held, a newer reply replaces an older one). Offline: the platform call failed, the platform is not Running, the provider is not Online, or the last turn was not answered by a model (cleared by the next success); a failed Claude escalation is deliberately **not** treated as offline, because the local model may be fine. Priority speaking, thinking, offline, listening, idle. While the platform status has not yet arrived the readout says Connecting and the Orb is idle: nothing is known, so nothing is claimed |
+| Guardian view | The Orb and its readout (a polite live region: Ready, Listening, Thinking, Speaking, Offline) above the conversation; the composer still pinned at the bottom (tested at 960 x 640 after eight turns, with the disclosure line) |
+| AI disclosure and labels | A permanent line above the composer ("You are talking to JARVIS, an AI. Replies come from the AI model on this computer (model).") that adds "Some replies in this conversation came from Claude, over the internet." only after Claude has answered. Each reply carries a label: "On this computer · model", the existing Claude badge with "answered over the internet", or "No AI model answered" for the platform's own messages. A profile that cannot ask Claude can never get a Claude reply, so the word never appears for it |
+| Profile switch | New: switching profile clears the on-screen conversation, the draft, errors, any offer and dialog, any audio playing and any recording, and every request that was in flight (send, offer, escalate, transcribe, speak) drops its answer if the profile changed (an epoch counter). A recording in progress still releases the microphone but is never transcribed. **Deliberate limit:** the first profile load (no profile before) does not clear, so a message typed before the profile arrives is kept; a conversation that began with no profile is carried into the first profile selected |
+| Backend (item 6.4) | `platform.status` gains `speechAvailable` (new `GuardianRuntime.speech_available`); `guardian.converse` returns `answered` (whether a model produced the reply) and `model` (from the provider's own metadata, only for a model reply). **A difference from the design, disclosed:** the design said `model` only; I added `answered` as well, because a reply can come from a model that names none, and the Orb and the labels must not treat that as a failure. Both additive; tests for each. The frontend does not yet use `speechAvailable`: the honest capability list in WP4c is its reader |
+| Tests | **25 new Playwright tests** (the Orb from each real event; the priority; the frame budget; the canvas draws with no repository; reduced motion; the live region; the composer on screen at 960 x 640; the disclosure; the labels; profile switch clearing; a Child screen never mentions Claude; a late answer, late audio, a recording and playing audio at a profile switch; the Medium from the review). **84 Playwright tests pass** (Chromium). Four new backend tests plus two exact-shape tests updated: **1164 passed, 4 skipped** on Windows and **1168 passed** in a Linux container; ruff clean; Vite build clean; validator 0 errors. Mutation-checked: with the profile-switch effect removed, all five profile-switch tests fail; with the speak guard removed, the new speak test fails |
+| Test-support changes | The mock gained an `orbMock` option, a fake `Audio`, and now models the backend rule that only an Administrator or Adult may ask Claude (it did not before; the first run of the Child test found this). `animationScheduler.spec.js` now opens the System view first, because the Guardian view's Orb keeps the shared clock running and those tests are about the scheduler alone |
+| **Deferred, disclosed** | The Guardian view's side column of what is available (design item 6.2) moves to **WP4c**, where the honest capability list it would show is built. The Orb's measured frame rate and CPU, and the packaged window's look, are WP4d and the Programme Sponsor's own look. The Orb's drawing creates small arrays each frame (the reviewer's Low): at 240 points this is judged tolerable and will be measured in WP4d |
+| **Not done** | The real Tauri window has not been looked at by me; the Mac look is at Mac visit 1 |
+
+# 22. WP4b Implementation Review Record
+
+**Review** (Antigravity CLI, Gemini, through `run_reviewer.py`; 8 October 2026, `sender: reviewer`): **Conditional Pass.** It found the five states driven by real events with the required priority, the profile-switch epoch correct on send, offer, escalate and transcribe, the disclosure and labels correct and Claude absent for a Child, the backend change additive, and the two deferrals acceptable. Findings and dispositions:
+
+| Rating | Finding | Disposition |
+|---|---|---|
+| Medium | `handleSpeak` ignored the profile epoch: audio being made when the profile changed would have played for the next profile | **Fixed**: `handleSpeak` notes the epoch and drops the result (and a failure) if the profile changed; a new test fails with the guard removed |
+| Low | `drawOrb` creates arrays each frame | **Accepted**, disclosed in Section 21, to be measured in WP4d |
+
+Re-check of the fix (resume): **Pass.** It confirmed the Medium fixed (the epoch is checked in both the success and failure paths of the speak call) and the new test passing; the Low accepted, no further change.
+
+**Caveats, disclosed:** a single reviewer with no web access, judging by reading; the first review was of the build before the Medium's fix, the re-check covered the fix.
+
+# 23. WP4b Commit Contents (expected)
+
+Changed: `jarvis/guardian/runtime.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/tests/test_guardian_runtime.py`, `jarvis/tests/test_stdio_rpc.py`, `src/App.jsx`, `src/PresenceOrb.jsx` (new), `src/orbState.js` (new), `src/panels.css`, `src/shell.css`, `tests/e2e/animationScheduler.spec.js`, `tests/e2e/app.spec.js`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.

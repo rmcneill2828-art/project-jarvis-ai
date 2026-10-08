@@ -765,6 +765,11 @@ class StdioRpcServer:
         return {
             "message": response.message,
             "provider": response.provider,
+            # ESR-0061 WP4b: which model answered, so each reply can say where it
+            # came from. `answered` is False for the boundary's own messages (no
+            # provider, not running, refused), which no model produced.
+            "answered": response.is_model_reply,
+            "model": response.metadata.get("model") if response.is_model_reply else None,
             "escalation": self._escalation_offer(active, message, offer_reason(response, message)),
         }
 
@@ -1014,6 +1019,7 @@ class StdioRpcServer:
             "providerConnected": provider_boundary.status.value if provider_boundary else "Unknown",
             "memoryConnected": memory_boundary.status.value if memory_boundary else "Unknown",
             "transcriptionAvailable": self._runtime.transcription_available,
+            "speechAvailable": self._runtime.speech_available,
             "providers": list(self._runtime.configured_providers()),
             "policyEngine": type(gateway.policy_engine).__name__ if gateway is not None else None,
         }

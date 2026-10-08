@@ -24,6 +24,9 @@ async function mockTauriIpc(
     memories = [],
     claude = null,
     ollama = {},
+    // The presence Orb's inputs (WP4b): platform status overrides, a failing
+    // turn, slow turns and transcriptions, and audio that will not play.
+    orbMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -44,6 +47,7 @@ async function mockTauriIpc(
       memories,
       claude,
       ollama,
+      orbMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -73,9 +77,35 @@ async function mockTauriIpc(
       }
 
       window.MediaRecorder = FakeMediaRecorder;
+      // Reply audio (WP4b): the app records play, end and error of the audio it
+      // plays. A test drives those with window.__audios[n].onended() and so on.
+      window.__audios = [];
+      class FakeAudio {
+        constructor(src) {
+          this.src = src;
+          this.onended = null;
+          this.onerror = null;
+          window.__audios.push(this);
+        }
+
+        play() {
+          return orbMock.playRejects ? Promise.reject(new Error("blocked")) : Promise.resolve();
+        }
+
+        pause() {}
+      }
+      window.Audio = FakeAudio;
       if (!window.navigator.mediaDevices) window.navigator.mediaDevices = {};
       window.navigator.mediaDevices.getUserMedia = () =>
-        Promise.resolve({ getTracks: () => [{ stop: () => {} }] });
+        Promise.resolve({
+          getTracks: () => [
+            {
+              stop: () => {
+                window.__trackStops = (window.__trackStops || 0) + 1;
+              },
+            },
+          ],
+        });
       // Stateful, in-page mock (EIP-ESR0046-001): list_profiles/active_profile
       // read this state, create_profile/select_profile mutate it - a real
       // Tauri backend behaves the same way, just persisted to SQLite instead
@@ -117,7 +147,9 @@ async function mockTauriIpc(
             return Promise.resolve(id);
           }
           if (cmd === "plugin:event|unlisten") return Promise.resolve(null);
-          if (cmd === "platform_status") return Promise.resolve({ ...platformStatus, transcriptionAvailable });
+          if (cmd === "platform_status") {
+            return Promise.resolve({ ...platformStatus, transcriptionAvailable, ...(orbMock.platform || {}) });
+          }
           if (cmd === "knowledge_graph") return Promise.resolve(knowledgeGraph);
           // Asking Claude (ESR-0061 WP3b): `claude` is null for a machine with no
           // key (provider_status fails, so the controls stay hidden). Otherwise
@@ -208,7 +240,9 @@ async function mockTauriIpc(
               claude: {
                 configured: true,
                 model: "claude-sonnet-5-5",
-                mayEscalate: claude.mayEscalate !== false,
+                // As the backend: only an Administrator or an Adult may ask Claude.
+                mayEscalate:
+                  claude.mayEscalate !== false && (!state.active || ["Administrator", "Adult"].includes(state.active.role)),
                 allowance: claudeAllowance,
               },
             });
@@ -231,14 +265,31 @@ async function mockTauriIpc(
               claude && claude.offerReason
                 ? claudeOffer(claude.offerReason, message)
                 : { offered: false, reason: null, token: null };
-            return Promise.resolve({ message: `local-echo: ${message}`, provider: "local-echo", escalation });
+            window.__sendCount = (window.__sendCount || 0) + 1;
+            const failing = orbMock.sendFails || window.__sendCount <= (orbMock.failFirst || 0);
+            const reply = failing
+              ? { message: "Guardian could not reach an AI provider.", provider: "sentinel-gated", answered: false, model: null }
+              : { message: `local-echo: ${message}`, provider: "local-echo", answered: true, model: "qwen3.5:4b" };
+            if (orbMock.sendDelayMs) {
+              return new Promise((resolve) => setTimeout(() => resolve({ ...reply, escalation }), orbMock.sendDelayMs));
+            }
+            return Promise.resolve({ ...reply, escalation });
           }
           if (cmd === "speak_message") {
+            if (orbMock.speakDelayMs) {
+              return new Promise((resolve) => setTimeout(() => resolve(speakResult), orbMock.speakDelayMs));
+            }
             return Promise.resolve(
               speakResult || { status: "not_connected", message: "Guardian has no speech synthesis provider connected." },
             );
           }
           if (cmd === "transcribe_audio") {
+            window.__transcribeCalls = (window.__transcribeCalls || 0) + 1;
+            if (orbMock.transcribeDelayMs) {
+              return new Promise((resolve) =>
+                setTimeout(() => resolve({ status: "transcribed", text: "spoken words", message: null }), orbMock.transcribeDelayMs),
+              );
+            }
             return Promise.resolve(
               transcribeResult || {
                 status: "not_connected",
@@ -351,6 +402,7 @@ async function mockTauriIpc(
       memories,
       claude,
       ollama,
+      orbMock,
     },
   );
 }
@@ -1303,3 +1355,368 @@ test("a pushed ollama.pullProgress notification moves the progress bar", async (
   await expect(page.getByRole("progressbar", { name: "Model download progress" })).toHaveAttribute("aria-valuenow", "75");
 });
 
+// --- ESR-0061 WP4b (EIP-ESR0061-004 items 6.2, 6.3, 6.4, 6.6): the presence Orb and the Guardian view ----------------
+
+const orb = (page) => page.locator(".presence-orb");
+const orbReadout = (page) => page.locator(".orb-readout");
+const SYNTHESIZED = { status: "synthesized", mimeType: "audio/wav", audio: "AAAA" };
+const ALEX = { id: "p1", displayName: "Alex", role: "Adult", createdAt: "2026-10-01T00:00:00Z" };
+const SAM = { id: "p2", displayName: "Sam", role: "Child", createdAt: "2026-10-01T00:00:00Z" };
+
+async function typeAndSend(page, text) {
+  await page.getByPlaceholder("Ask Guardian anything...").fill(text);
+  await page.getByRole("button", { name: "Send" }).click();
+}
+
+async function switchProfileTo(page, name) {
+  await page.getByRole("button", { name: "Switch Guardian profile" }).click();
+  await page.getByRole("list", { name: "Other profiles" }).getByRole("button", { name: new RegExp(name) }).click();
+}
+
+test("the Orb is idle and says Ready, with the model once one has answered", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+  await expect(orbReadout(page)).toContainText("Ready");
+  await expect(orbReadout(page)).toContainText("Answering on this computer.");
+
+  await typeAndSend(page, "hello");
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(1);
+  await expect(orbReadout(page)).toContainText("Answering on this computer with qwen3.5:4b.");
+});
+
+test("Orb: a request in flight is Thinking, and it returns to Ready when the answer arrives", async ({ page }) => {
+  await mockTauriIpc(page, { orbMock: { sendDelayMs: 600 } });
+  await page.goto("/");
+
+  await typeAndSend(page, "hello");
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "thinking");
+  await expect(orbReadout(page)).toContainText("Thinking");
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(1);
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+test("Orb: recording is Listening, then a transcription in flight is Thinking", async ({ page }) => {
+  await mockTauriIpc(page, { transcriptionAvailable: true, orbMock: { transcribeDelayMs: 600 } });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Speak a message" }).click();
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "listening");
+  await expect(orbReadout(page)).toContainText("Listening");
+
+  await page.getByRole("button", { name: "Stop recording and transcribe" }).click();
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "thinking");
+
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toHaveValue("spoken words");
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+test("Orb: reply audio playing is Speaking, and it ends when the audio ends", async ({ page }) => {
+  await mockTauriIpc(page, { speakResult: SYNTHESIZED });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+
+  await page.getByRole("button", { name: "Speak this response" }).click();
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "speaking");
+  await expect(orbReadout(page)).toContainText("Speaking");
+
+  await page.evaluate(() => window.__audios[0].onended());
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+test("Orb: audio that errors ends Speaking and says so", async ({ page }) => {
+  await mockTauriIpc(page, { speakResult: SYNTHESIZED });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+  await page.getByRole("button", { name: "Speak this response" }).click();
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "speaking");
+
+  await page.evaluate(() => window.__audios[0].onerror());
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+  await expect(page.locator(".conversation-error")).toContainText("could not play");
+});
+
+test("Orb: audio that will not start never reaches Speaking", async ({ page }) => {
+  await mockTauriIpc(page, { speakResult: SYNTHESIZED, orbMock: { playRejects: true } });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+
+  await page.getByRole("button", { name: "Speak this response" }).click();
+
+  await expect(page.locator(".conversation-error")).toContainText("could not play");
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+test("Orb: Offline when no provider is online", async ({ page }) => {
+  await mockTauriIpc(page, { orbMock: { platform: { providerConnected: "Offline" } } });
+  await page.goto("/");
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "offline");
+  await expect(orbReadout(page)).toContainText("JARVIS cannot reach an AI model on this computer");
+});
+
+test("Orb: Offline when the platform is not running", async ({ page }) => {
+  await mockTauriIpc(page, { orbMock: { platform: { state: "Stopped" } } });
+  await page.goto("/");
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "offline");
+});
+
+test("Orb: a turn that no AI model answered turns it Offline until the next success", async ({ page }) => {
+  await mockTauriIpc(page, { orbMock: { failFirst: 1 } });
+  await page.goto("/");
+
+  await typeAndSend(page, "first");
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(1);
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "offline");
+  await expect(page.locator(".reply-source")).toHaveText("No AI model answered");
+
+  await typeAndSend(page, "second");
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(2);
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+test("Orb: Offline outranks Listening, and the readout says the microphone is on", async ({ page }) => {
+  await mockTauriIpc(page, { transcriptionAvailable: true, orbMock: { platform: { providerConnected: "Offline" } } });
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Speak a message" }).click();
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "offline");
+  await expect(orbReadout(page)).toContainText("the microphone is on, but JARVIS cannot answer");
+});
+
+test("Orb: Speaking outranks Thinking", async ({ page }) => {
+  await mockTauriIpc(page, { speakResult: SYNTHESIZED });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+  await page.getByRole("button", { name: "Speak this response" }).click();
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "speaking");
+
+  await typeAndSend(page, "while talking");
+
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(2);
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "speaking");
+});
+
+test("the Orb state priority is speaking, thinking, offline, listening, idle", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  const states = await page.evaluate(async () => {
+    const { deriveOrbState } = await import("/src/orbState.js");
+    const all = { speaking: true, thinking: true, offline: true, listening: true };
+    return [
+      deriveOrbState(all),
+      deriveOrbState({ ...all, speaking: false }),
+      deriveOrbState({ ...all, speaking: false, thinking: false }),
+      deriveOrbState({ ...all, speaking: false, thinking: false, offline: false }),
+      deriveOrbState({ speaking: false, thinking: false, offline: false, listening: false }),
+    ];
+  });
+
+  expect(states).toEqual(["speaking", "thinking", "offline", "listening", "idle"]);
+});
+
+test("the Orb frame budget is 60 a second when active, 30 idle and 10 offline", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  const intervals = await page.evaluate(async () => {
+    const { minFrameIntervalMs } = await import("/src/orbState.js");
+    return Object.fromEntries(["speaking", "thinking", "listening", "idle", "offline"].map((s) => [s, minFrameIntervalMs(s)]));
+  });
+
+  for (const active of ["speaking", "thinking", "listening"]) {
+    expect(intervals[active]).toBeGreaterThan(12);
+    expect(intervals[active]).toBeLessThan(17);
+  }
+  expect(intervals.idle).toBeGreaterThan(30);
+  expect(intervals.idle).toBeLessThan(34);
+  expect(intervals.offline).toBeGreaterThan(95);
+  expect(intervals.offline).toBeLessThan(101);
+});
+
+test("the Orb draws on its canvas, and does not need a repository", async ({ page }) => {
+  await mockTauriIpc(page, { knowledgeGraphOverrides: { nodes: [], edges: [] } });
+  await page.goto("/");
+
+  const canvas = orb(page).locator("canvas");
+  await expect(canvas).toBeVisible();
+  await expect
+    .poll(async () =>
+      canvas.evaluate((c) => {
+        const data = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+        for (let i = 3; i < data.length; i += 4) if (data[i] !== 0) return true;
+        return false;
+      }),
+    )
+    .toBe(true);
+});
+
+test("with reduced motion the Orb draws still frames and the state is still written as text", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await mockTauriIpc(page, { orbMock: { sendDelayMs: 400 } });
+  await page.goto("/");
+
+  await expect(orb(page)).toHaveAttribute("data-reduced-motion", "true");
+  await expect(orbReadout(page)).toContainText("Ready");
+  await typeAndSend(page, "hello");
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "thinking");
+  await expect(orbReadout(page)).toContainText("Thinking");
+});
+
+test("the Orb state is announced in a polite live region and the canvas is hidden from assistive technology", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  await expect(orbReadout(page)).toHaveAttribute("role", "status");
+  await expect(orbReadout(page)).toHaveAttribute("aria-live", "polite");
+  await expect(orb(page).locator("canvas")).toHaveAttribute("aria-hidden", "true");
+});
+
+test("the composer and the disclosure line stay on screen at 960 x 640 with the Orb showing", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 640 });
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  for (let turn = 0; turn < 8; turn += 1) {
+    await typeAndSend(page, `message ${turn}`);
+    await expect(page.locator(".conversation-message.guardian")).toHaveCount(turn + 1);
+  }
+
+  await expect(orb(page)).toBeVisible();
+  for (const locator of [page.getByPlaceholder("Ask Guardian anything..."), page.locator(".ai-disclosure")]) {
+    const box = await locator.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box.y + box.height).toBeLessThanOrEqual(640);
+  }
+});
+
+test("the disclosure line says the person is talking to an AI, and names the model once one has answered", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  await expect(page.locator(".ai-disclosure")).toHaveText(
+    "You are talking to JARVIS, an AI. Replies come from the AI model on this computer.",
+  );
+  await sendMessage(page, "hello");
+  await expect(page.locator(".ai-disclosure")).toContainText("the AI model on this computer (qwen3.5:4b)");
+  await expect(page.locator(".ai-disclosure")).not.toContainText("Claude");
+});
+
+test("every reply is labelled with where it came from", async ({ page }) => {
+  await mockTauriIpc(page, { claude: {} });
+  await page.goto("/");
+  await sendMessage(page, "what is two plus two");
+
+  await expect(page.locator(".conversation-message.guardian").first().locator(".reply-source")).toHaveText(
+    "On this computer · qwen3.5:4b",
+  );
+
+  await page.getByRole("button", { name: "Ask Claude about my last message" }).click();
+  await page.getByRole("button", { name: "Send to Claude" }).click();
+
+  const claudeReply = page.locator(".conversation-message.guardian").last();
+  await expect(claudeReply.locator(".reply-source")).toContainText("answered over the internet");
+  await expect(claudeReply.locator(".claude-badge")).toHaveText("Claude");
+  await expect(page.locator(".ai-disclosure")).toContainText(
+    "Some replies in this conversation came from Claude, over the internet.",
+  );
+});
+
+test("switching profile clears the conversation, the draft, the offer, the dialog and the Claude labels", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ALEX, SAM],
+    activeProfile: ALEX,
+    claude: { offerReason: "local_unavailable" },
+  });
+  await page.goto("/");
+  await sendMessage(page, "a private question");
+  await page.getByRole("button", { name: "Review and ask Claude" }).click();
+  await page.getByRole("button", { name: "Send to Claude" }).click();
+  await expect(page.locator(".claude-badge")).toHaveCount(1);
+  await page.getByPlaceholder("Ask Guardian anything...").fill("unsent draft");
+
+  await switchProfileTo(page, "Sam");
+
+  await expect(page.locator(".conversation-message")).toHaveCount(0);
+  await expect(page.locator(".claude-badge")).toHaveCount(0);
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toHaveValue("");
+  await expect(page.locator(".ai-disclosure")).not.toContainText("Claude");
+  await expect(page.locator(".escalation-offer")).toHaveCount(0);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+test("a Child screen never mentions Claude, even straight after an Adult conversation with it", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, claude: {} });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+  await page.getByRole("button", { name: "Ask Claude about my last message" }).click();
+  await page.getByRole("button", { name: "Send to Claude" }).click();
+  await expect(page.locator(".claude-badge")).toHaveCount(1);
+
+  await switchProfileTo(page, "Sam");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
+
+  await expect(page.locator("main")).not.toContainText("Claude");
+});
+
+test("an answer that arrives after the profile changed is not shown to the next profile", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, orbMock: { sendDelayMs: 700 } });
+  await page.goto("/");
+
+  await typeAndSend(page, "slow question");
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "thinking");
+  await switchProfileTo(page, "Sam");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
+  await page.waitForTimeout(1100);
+
+  await expect(page.locator(".conversation-message")).toHaveCount(0);
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+  await page.getByPlaceholder("Ask Guardian anything...").fill("a new question");
+  await expect(page.getByRole("button", { name: "Send" })).toBeEnabled();
+});
+
+test("switching profile while recording releases the microphone and drops the audio", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, transcriptionAvailable: true });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Speak a message" }).click();
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "listening");
+
+  await switchProfileTo(page, "Sam");
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+  await expect.poll(() => page.evaluate(() => window.__trackStops || 0)).toBe(1);
+  expect(await page.evaluate(() => window.__transcribeCalls || 0)).toBe(0);
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toHaveValue("");
+});
+
+test("switching profile stops reply audio that is playing", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, speakResult: SYNTHESIZED });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+  await page.getByRole("button", { name: "Speak this response" }).click();
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "speaking");
+
+  await switchProfileTo(page, "Sam");
+
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+test("audio still being made when the profile changes is never played to the next profile", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, speakResult: SYNTHESIZED, orbMock: { speakDelayMs: 600 } });
+  await page.goto("/");
+  await sendMessage(page, "hello");
+  await page.getByRole("button", { name: "Speak this response" }).click();
+
+  await switchProfileTo(page, "Sam");
+  await page.waitForTimeout(1000);
+
+  expect(await page.evaluate(() => window.__audios.length)).toBe(0);
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});

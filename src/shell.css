@@ -165,8 +165,44 @@
 
 .guardian-presence .guardian-title {
   margin: 0;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 600;
+}
+
+/* The presence Orb (WP4b): a square canvas sized by the window's height, so the
+   composer stays on screen at 960 x 640. */
+.presence-orb {
+  width: clamp(104px, 19vh, 176px);
+  aspect-ratio: 1;
+}
+
+.presence-orb canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.orb-readout {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  max-width: 60ch;
+}
+
+.orb-state-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.orb-state-detail {
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+}
+
+[data-orb-readout="offline"] .orb-state-label {
+  color: var(--red);
 }
 
 /* The knowledge graph's own view. */

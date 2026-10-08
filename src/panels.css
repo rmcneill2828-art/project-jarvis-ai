@@ -599,6 +599,23 @@
   background: var(--bg-panel);
 }
 
+.reply-source {
+  display: block;
+  margin-top: 4px;
+  color: var(--fg-muted);
+  font-size: 0.75rem;
+}
+
+.reply-source .claude-badge {
+  margin-left: 0;
+}
+
+.ai-disclosure {
+  margin: 0 0 var(--space-2);
+  color: var(--fg-muted);
+  font-size: 0.75rem;
+}
+
 .speak-button {
   display: inline-flex;
   align-items: center;

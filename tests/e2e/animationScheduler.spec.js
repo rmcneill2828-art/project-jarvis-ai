@@ -6,8 +6,17 @@ import { test, expect } from "@playwright/test";
 // real browser (not plain Node), so this runs in Playwright's browser
 // context rather than a Node-only unit test.
 
-test("animationScheduler drives multiple subscribers from a single requestAnimationFrame loop", async ({ page }) => {
+// The Guardian view's presence Orb (ESR-0061 WP4b) draws from this same shared
+// clock, so these tests start from a view with no animation: the scheduler's
+// own contract is what is under test, not the app's subscribers.
+async function openQuietView(page) {
   await page.goto("/");
+  await page.getByRole("navigation", { name: "Views" }).getByRole("button", { name: "System", exact: true }).click();
+  await expect(page.locator(".presence-orb")).toHaveCount(0);
+}
+
+test("animationScheduler drives multiple subscribers from a single requestAnimationFrame loop", async ({ page }) => {
+  await openQuietView(page);
 
   // Real browser rAF timing is too jittery (headless throttling, background
   // tabs) for a wall-clock-based frame count to be a reliable assertion, so
@@ -75,7 +84,7 @@ test("animationScheduler drives multiple subscribers from a single requestAnimat
 });
 
 test("animationScheduler isolates a throwing subscriber from other subscribers", async ({ page }) => {
-  await page.goto("/");
+  await openQuietView(page);
 
   const result = await page.evaluate(async () => {
     const { subscribe } = await import("/src/animationScheduler.js");
@@ -100,7 +109,7 @@ test("animationScheduler isolates a throwing subscriber from other subscribers",
 });
 
 test("animationScheduler stops its internal loop once the last subscriber unsubscribes", async ({ page }) => {
-  await page.goto("/");
+  await openQuietView(page);
 
   const result = await page.evaluate(async () => {
     const { subscribe } = await import("/src/animationScheduler.js");
