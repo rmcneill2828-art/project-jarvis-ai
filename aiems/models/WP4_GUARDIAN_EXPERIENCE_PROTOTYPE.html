@@ -423,7 +423,7 @@ canvas#orb { width: 100%; height: 100%; display: block; }
 
   /* ---------- other views ---------- */
   function renderMemory() {
-    $("c-memory").innerHTML = "<h1>Memory</h1><p class=\"lede\">Notes JARVIS keeps on this computer, only after you approve them. They go to Claude only if an Administrator has allowed it for your profile.</p>" +
+    $("c-memory").innerHTML = "<h1>Memory</h1><p class=\"lede\">Notes JARVIS keeps on this computer, only after you approve them." + (canAsk() ? " They go to Claude only if an Administrator has allowed it for your profile." : "") + "</p>" +
       '<div class="card"><h2>Kept notes · 3</h2>' + ["Alex has swimming on Tuesdays.", "The boiler service is due in March.", "We prefer vegetarian dinners midweek."].map(function (t) { return '<div class="row"><span>' + t + '</span><button class="btn" type="button"' + (S.role === "Child" ? " disabled" : "") + ">Forget</button></div>"; }).join("") + "</div>" +
       '<div class="card" style="margin-top:16px"><h2>Backup</h2><div class="actions" style="justify-content:flex-start;margin:0"><button class="btn" type="button"' + (S.role === "Administrator" ? "" : " disabled") + '>Back up…</button><button class="btn" type="button"' + (S.role === "Administrator" ? "" : " disabled") + ">Restore…</button></div>" + (S.role === "Administrator" ? "" : '<p class="note">Only an Administrator profile can back up or restore memory.</p>') + "</div>";
   }

@@ -88,8 +88,35 @@ async function mockTauriIpc(
       };
       let nextId = state.profiles.length + 1;
 
+      // Backend notifications (ESR-0061 WP4a): Tauri's listen() registers a
+      // callback through transformCallback and the event plugin. Mirrored here,
+      // so a test can push a notification with window.__emit(event, payload), as the
+      // backend does on "jarvis://notification" -
+      // and so the app's real listener is exercised instead of failing quietly.
+      window.__callbacks = {};
+      window.__listeners = [];
+      window.__emit = (event, payload) => {
+        window.__listeners
+          .filter((entry) => entry.event === event)
+          .forEach((entry) => window.__callbacks[entry.handler]?.({ event, id: entry.id, payload }));
+      };
+      window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => {} };
       window.__TAURI_INTERNALS__ = {
+        transformCallback: (callback) => {
+          const id = Math.floor(Math.random() * 1e9);
+          window.__callbacks[id] = callback;
+          return id;
+        },
+        unregisterCallback: (id) => {
+          delete window.__callbacks[id];
+        },
         invoke: (cmd, args) => {
+          if (cmd === "plugin:event|listen") {
+            const id = window.__listeners.length + 1;
+            window.__listeners.push({ event: args.event, handler: args.handler, id });
+            return Promise.resolve(id);
+          }
+          if (cmd === "plugin:event|unlisten") return Promise.resolve(null);
           if (cmd === "platform_status") return Promise.resolve({ ...platformStatus, transcriptionAvailable });
           if (cmd === "knowledge_graph") return Promise.resolve(knowledgeGraph);
           // Asking Claude (ESR-0061 WP3b): `claude` is null for a machine with no
@@ -328,9 +355,16 @@ async function mockTauriIpc(
   );
 }
 
+// The app is a shell of views (ESR-0061 WP4a): a panel is on screen only after
+// its view is opened from the rail.
+async function openView(page, name) {
+  await page.getByRole("navigation", { name: "Views" }).getByRole("button", { name, exact: true }).click();
+}
+
 test("app launches and shows JARVIS branding with live system health", async ({ page }) => {
   await mockTauriIpc(page);
   await page.goto("/");
+  await openView(page, "System");
 
   await expect(page.getByText("JARVIS", { exact: true })).toBeVisible();
   await expect(page.locator(".system-health-panel")).toContainText("Runtime: Running");
@@ -495,24 +529,29 @@ test("selecting a profile from the picker switches the active profile", async ({
 // clicking "Run" rendering the real returned payload, and a denied/error
 // outcome rendering inline rather than silently failing - mirroring the
 // speak/transcribe buttons' own established outcome-status test pattern.
-test("agent framework sidebar row and panel show no agents when none are registered", async ({
+test("the Agents view shows no agents when none are registered", async ({
   page,
 }) => {
   await mockTauriIpc(page);
   await page.goto("/");
+  await openView(page, "Agents");
 
   await expect(page.locator(".agent-framework-panel")).toContainText(
     "No specialist agents are registered.",
   );
 });
 
-test("agent framework sidebar row and panel reflect a real registered agent", async ({ page }) => {
+test("the capability list and the Agents view both reflect a real registered agent", async ({ page }) => {
   await mockTauriIpc(page, { agents: ["gia-observability"] });
   await page.goto("/");
+  await openView(page, "System");
 
   await expect(page.locator(".capability-row", { hasText: "Agent Framework" })).toContainText(
     "gia-observability",
   );
+
+  await openView(page, "Agents");
+
   await expect(page.locator(".agent-framework-panel")).toContainText("gia-observability");
 });
 
@@ -526,6 +565,7 @@ test("running an agent renders its real returned payload", async ({ page }) => {
     },
   });
   await page.goto("/");
+  await openView(page, "Agents");
 
   await page.getByRole("button", { name: "Run gia-observability" }).click();
 
@@ -539,6 +579,7 @@ test("a denied agent outcome renders inline rather than silently failing", async
     invokeAgentResult: { status: "denied", message: "Guardian declined this request." },
   });
   await page.goto("/");
+  await openView(page, "Agents");
 
   await page.getByRole("button", { name: "Run gia-observability" }).click();
 
@@ -565,6 +606,7 @@ test("a cluster reported active by knowledge.graph's pull field renders as illum
     },
   });
   await page.goto("/");
+  await openView(page, "Knowledge");
 
   const activeRow = page.locator(".cluster-row", { hasText: "jarvis" });
   const idleRow = page.locator(".cluster-row", { hasText: "sentinel" });
@@ -582,6 +624,7 @@ test("a cluster with no reported activity renders without the illumination class
     },
   });
   await page.goto("/");
+  await openView(page, "Knowledge");
 
   await expect(page.locator(".cluster-row", { hasText: "jarvis" })).not.toHaveClass(/is-active/);
 });
@@ -591,6 +634,7 @@ test("a cluster with no reported activity renders without the illumination class
 test("memory management panel shows the real stored record count", async ({ page }) => {
   await mockTauriIpc(page, { memoryRecordCount: 3 });
   await page.goto("/");
+  await openView(page, "Memory");
 
   await expect(page.locator(".memory-management-panel")).toContainText("Stored memories");
   await expect(page.locator(".memory-management-panel .metric-row")).toContainText("3");
@@ -603,6 +647,7 @@ test("backing up memory shows the real returned backup path", async ({ page }) =
     backupMemoryResult: { path: "C:\\Users\\test\\Backups\\personal_memory_backup_20260916T120000000000Z.json" },
   });
   await page.goto("/");
+  await openView(page, "Memory");
 
   await page.locator(".memory-management-panel").getByRole("button", { name: "Back Up..." }).click();
 
@@ -618,6 +663,7 @@ test("restoring into an empty store succeeds immediately without an overwrite pr
     restoreMemoryResult: { recordCount: 5 },
   });
   await page.goto("/");
+  await openView(page, "Memory");
 
   await page.locator(".memory-management-panel").getByRole("button", { name: "Restore..." }).click();
 
@@ -631,6 +677,7 @@ test("restoring into a non-empty store requires an explicit overwrite confirmati
     dialogOpenResult: "C:\\Users\\test\\backup.json",
   });
   await page.goto("/");
+  await openView(page, "Memory");
 
   await page.locator(".memory-management-panel").getByRole("button", { name: "Restore..." }).click();
 
@@ -648,6 +695,7 @@ test("cancelling the overwrite confirmation leaves stored memory untouched", asy
     dialogOpenResult: "C:\\Users\\test\\backup.json",
   });
   await page.goto("/");
+  await openView(page, "Memory");
 
   await page.locator(".memory-management-panel").getByRole("button", { name: "Restore..." }).click();
   await expect(page.locator(".memory-overwrite-confirm")).toBeVisible();
@@ -667,6 +715,7 @@ const SAMPLE_MEMORIES = [
 test("stored memory text is hidden until the list is explicitly opened", async ({ page }) => {
   await mockTauriIpc(page, { memories: SAMPLE_MEMORIES });
   await page.goto("/");
+  await openView(page, "Memory");
 
   const panel = page.locator(".memory-management-panel");
   await expect(panel).toContainText("Stored memories");
@@ -681,6 +730,7 @@ test("stored memory text is hidden until the list is explicitly opened", async (
 test("deleting a memory needs confirmation, then removes it and updates the count", async ({ page }) => {
   await mockTauriIpc(page, { memories: SAMPLE_MEMORIES });
   await page.goto("/");
+  await openView(page, "Memory");
 
   const panel = page.locator(".memory-management-panel");
   await panel.getByRole("button", { name: "Show memories" }).click();
@@ -698,6 +748,7 @@ test("deleting a memory needs confirmation, then removes it and updates the coun
 test("cancelling a delete leaves the memory in place", async ({ page }) => {
   await mockTauriIpc(page, { memories: SAMPLE_MEMORIES });
   await page.goto("/");
+  await openView(page, "Memory");
 
   const panel = page.locator(".memory-management-panel");
   await panel.getByRole("button", { name: "Show memories" }).click();
@@ -848,6 +899,7 @@ const notInstalled = {
 test("a healthy machine shows the running version, the active model and the recommendation in use", async ({ page }) => {
   await mockTauriIpc(page);
   await page.goto("/");
+  await openView(page, "AI models");
 
   const panel = page.locator(".local-ai-panel");
   await expect(panel).toContainText("Ollama 0.35.0 is running");
@@ -860,6 +912,7 @@ test("a healthy machine shows the running version, the active model and the reco
 test("with Ollama not installed the steps are shown and nothing is installed by JARVIS", async ({ page }) => {
   await mockTauriIpc(page, { ollama: notInstalled });
   await page.goto("/");
+  await openView(page, "AI models");
 
   const panel = page.locator(".local-ai-panel");
   await expect(panel).toContainText("Ollama is not installed");
@@ -874,6 +927,7 @@ test("installed but not running is told apart from not installed", async ({ page
     ollama: { status: { ...notInstalled.status, installed: true, install: { ...notInstalled.status.install, installed: true } } },
   });
   await page.goto("/");
+  await openView(page, "AI models");
 
   const panel = page.locator(".local-ai-panel");
   await expect(panel).toContainText("installed but not running");
@@ -893,6 +947,7 @@ test("downloading the recommended model asks for exactly that model and shows pr
     },
   });
   await page.goto("/");
+  await openView(page, "AI models");
   const panel = page.locator(".local-ai-panel");
 
   await panel.getByRole("button", { name: "Download and use" }).first().click();
@@ -909,6 +964,7 @@ test("a download in progress is shown with its percentage", async ({ page }) => 
     ollama: { status: { pull: { active: true, model: "qwen3.5:4b", completed: 50, total: 100, status: "pulling" } } },
   });
   await page.goto("/");
+  await openView(page, "AI models");
 
   const bar = page.locator(".local-ai-panel").getByRole("progressbar");
   await expect(bar).toHaveAttribute("aria-valuenow", "50");
@@ -927,6 +983,7 @@ test("a model already downloaded can be switched to", async ({ page }) => {
     },
   });
   await page.goto("/");
+  await openView(page, "AI models");
   const panel = page.locator(".local-ai-panel");
 
   await panel.getByRole("button", { name: "Use this model" }).first().click();
@@ -947,6 +1004,7 @@ test("not enough disk space is shown and blocks downloading the recommended mode
     },
   });
   await page.goto("/");
+  await openView(page, "AI models");
   const panel = page.locator(".local-ai-panel");
 
   await expect(panel.getByRole("alert")).toContainText("Not enough free disk space");
@@ -965,6 +1023,7 @@ test("a Child profile sees the setup but cannot download or change the model", a
     },
   });
   await page.goto("/");
+  await openView(page, "AI models");
   const panel = page.locator(".local-ai-panel");
 
   await expect(panel).toContainText("Only an Administrator or Adult profile can download or change models.");
@@ -974,6 +1033,7 @@ test("a Child profile sees the setup but cannot download or change the model", a
 test("a model set by the environment variable says that it overrides the screen", async ({ page }) => {
   await mockTauriIpc(page, { ollama: { status: { modelSource: "environment" } } });
   await page.goto("/");
+  await openView(page, "AI models");
 
   await expect(page.locator(".local-ai-panel")).toContainText("JARVIS_OLLAMA_MODEL");
 });
@@ -986,6 +1046,220 @@ test("a failed status read is shown honestly rather than as a healthy panel", as
       cmd === "ollama_status" ? Promise.reject(new Error("backend unavailable")) : original(cmd, args);
   });
   await page.goto("/");
+  await openView(page, "AI models");
 
   await expect(page.locator(".local-ai-panel").getByRole("alert")).toContainText("Could not read the local AI status");
 });
+
+// --- ESR-0061 WP4a (EIP-ESR0061-004 items 6.1 and 6.8): the app shell, tokens and fonts -------------------------------
+
+const VIEW_NAMES = ["Guardian", "Memory", "Knowledge", "Agents", "AI models", "System"];
+
+test("the rail lists the six views and marks the current one", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  const rail = page.getByRole("navigation", { name: "Views" });
+
+  for (const name of VIEW_NAMES) {
+    await expect(rail.getByRole("button", { name, exact: true })).toBeVisible();
+  }
+  await expect(rail.getByRole("button", { name: "Guardian", exact: true })).toHaveAttribute("aria-current", "page");
+
+  await openView(page, "Memory");
+
+  await expect(rail.getByRole("button", { name: "Memory", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(rail.getByRole("button", { name: "Guardian", exact: true })).not.toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("heading", { name: "Memory", level: 1 })).toBeVisible();
+});
+
+test("every view can be reached from the keyboard", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  await page.getByRole("navigation", { name: "Views" }).getByRole("button", { name: "Knowledge", exact: true }).focus();
+  await page.keyboard.press("Enter");
+
+  await expect(page.getByRole("heading", { name: "Knowledge", level: 1 })).toBeVisible();
+});
+
+for (const size of [
+  { width: 1280, height: 820 },
+  { width: 960, height: 640 },
+]) {
+  test(`the composer is on screen, never below the fold, at ${size.width} x ${size.height}`, async ({ page }) => {
+    await mockTauriIpc(page);
+    await page.setViewportSize(size);
+    await page.goto("/");
+    const input = page.getByPlaceholder("Ask Guardian anything...");
+
+    for (let turn = 0; turn < 12; turn += 1) {
+      await input.fill(`message number ${turn} with enough words to take some room in the conversation pane`);
+      await page.getByRole("button", { name: "Send" }).click();
+      await expect(page.locator(".conversation-message.guardian")).toHaveCount(turn + 1);
+    }
+
+    const box = await input.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(size.height);
+    // The page itself never scrolls: the conversation scrolls inside its own pane.
+    expect(await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight)).toBe(true);
+  });
+}
+
+test("nothing overflows sideways in any view at the smallest window", async ({ page }) => {
+  await mockTauriIpc(page, { agents: ["gia-observability"], memoryRecordCount: 3 });
+  await page.setViewportSize({ width: 960, height: 640 });
+  await page.goto("/");
+
+  for (const name of VIEW_NAMES) {
+    await openView(page, name);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), name).toBe(true);
+  }
+});
+
+test("the conversation survives switching to another view and back", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await page.getByPlaceholder("Ask Guardian anything...").fill("remember this");
+  await page.getByRole("button", { name: "Send" }).click();
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(1);
+
+  await openView(page, "System");
+  await openView(page, "Guardian");
+
+  await expect(page.locator(".conversation-message.user")).toContainText("remember this");
+  await expect(page.locator(".conversation-message.guardian")).toHaveCount(1);
+});
+
+test("the controls that used to do nothing are gone", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  const dead = [
+    "Notifications",
+    "Settings",
+    "Minimize",
+    "Maximize",
+    "Close",
+    "View all capabilities",
+    "View diagnostics",
+    "Platform Status",
+    "View Capabilities",
+    "Run Diagnostics",
+    "Show Roadmap",
+  ];
+
+  for (const view of VIEW_NAMES) {
+    await openView(page, view);
+    for (const name of dead) {
+      await expect(page.getByRole("button", { name }), `${view}: ${name}`).toHaveCount(0);
+    }
+  }
+  await expect(page.getByText("Platform Placeholders")).toHaveCount(0);
+});
+
+test("the active profile is in the top bar with its initial and role", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [{ id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" }],
+    activeProfile: { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" },
+  });
+  await page.goto("/");
+
+  const topbar = page.getByRole("banner");
+  await expect(topbar).toContainText("Robert");
+  await expect(topbar).toContainText("Administrator");
+  await expect(topbar.locator(".avatar")).toHaveText("R");
+});
+
+test("fonts are bundled: they load, and nothing is fetched from outside the app", async ({ page }) => {
+  const outside = [];
+  page.on("request", (request) => {
+    const url = request.url();
+    if (!url.startsWith("http://127.0.0.1:1420") && !url.startsWith("data:") && !url.startsWith("blob:")) outside.push(url);
+  });
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await page.evaluate(() => document.fonts.ready);
+
+  expect(await page.evaluate(() => document.fonts.check('14px "Manrope Variable"'))).toBe(true);
+  expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain("Manrope Variable");
+  expect(outside).toEqual([]);
+});
+
+test("every text colour token has at least 4.5 to 1 contrast against the surfaces it is read on", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  const tokens = await page.evaluate(() => {
+    const style = getComputedStyle(document.documentElement);
+    const read = (name) => style.getPropertyValue(name).trim();
+    return Object.fromEntries(["--fg", "--fg-muted", "--cyan", "--green", "--amber", "--red", "--bg", "--bg-raised", "--bg-panel", "--bg-input"].map((n) => [n, read(n)]));
+  });
+  const channel = (value) => {
+    const v = value / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance = (hex) => {
+    const n = parseInt(hex.slice(1), 16);
+    return 0.2126 * channel((n >> 16) & 255) + 0.7152 * channel((n >> 8) & 255) + 0.0722 * channel(n & 255);
+  };
+  const contrast = (a, b) => {
+    const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+    return (hi + 0.05) / (lo + 0.05);
+  };
+
+  for (const text of ["--fg", "--fg-muted", "--cyan", "--green", "--amber", "--red"]) {
+    for (const surface of ["--bg", "--bg-raised", "--bg-panel", "--bg-input"]) {
+      expect(contrast(tokens[text], tokens[surface]), `${text} on ${surface}`).toBeGreaterThanOrEqual(4.5);
+    }
+  }
+});
+
+// --- WP4a implementation review (Low): the "use it when it finishes" choice survives a view switch ---------------
+
+test("a download started with use-when-done still switches the model if the person visited another view meanwhile", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [{ id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" }],
+    activeProfile: { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" },
+    ollama: {
+      status: { models: [], activeModel: "qwen3.5:2b", activeModelInstalled: false },
+      recommendation: {
+        primary: { tag: "qwen3.5:4b", label: "Qwen3.5 4B (balanced)", downloadGb: 3.3, note: "n", installed: false },
+      },
+    },
+  });
+  await page.goto("/");
+  await openView(page, "AI models");
+  await page.getByRole("button", { name: "Download and use" }).first().click();
+  await expect(page.getByRole("progressbar", { name: "Model download progress" })).toBeVisible();
+
+  await openView(page, "System");
+  await page.evaluate(() => window.__emit("jarvis://notification", { method: "ollama.pullFinished", params: { model: "qwen3.5:4b", outcome: "completed" } }));
+  await openView(page, "AI models");
+
+  await expect
+    .poll(() => page.evaluate(() => window.__ollamaCalls.map((call) => call.join(":"))))
+    .toContain("use:qwen3.5:4b");
+});
+
+test("the Guardian view's heading is the page's level-1 heading, as in every other view", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  for (const name of VIEW_NAMES) {
+    await openView(page, name);
+    await expect(page.getByRole("heading", { level: 1 }), name).toHaveCount(1);
+  }
+});
+
+test("a pushed ollama.pullProgress notification moves the progress bar", async ({ page }) => {
+  await mockTauriIpc(page, {
+    ollama: { status: { pull: { active: true, model: "qwen3.5:4b", completed: 0, total: 100, status: "starting" } } },
+  });
+  await page.goto("/");
+  await openView(page, "AI models");
+
+  await page.evaluate(() => window.__emit("jarvis://notification", { method: "ollama.pullProgress", params: { model: "qwen3.5:4b", status: "pulling", completed: 75, total: 100 } }));
+
+  await expect(page.getByRole("progressbar", { name: "Model download progress" })).toHaveAttribute("aria-valuenow", "75");
+});
+

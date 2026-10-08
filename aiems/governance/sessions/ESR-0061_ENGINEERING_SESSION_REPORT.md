@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0061 |
 | Title | Engineering Session Report |
-| Version | 0.19 |
+| Version | 0.21 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -83,7 +83,7 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 | WP2b | macOS (EBG-0162) and non-Windows setup (EBG-0054) | Design reviewed (Pass) and approved; built; Complete - `dd946a2`, CI green incl. `python-macos` and `rust-macos`, post-commit review Pass. Real-Mac checks wait for Mac visit 1 |
 | WP2c | Follow-ups after WP2b (EIP-ESR0061-002, WP2c section) | Complete - `d67e3ef`, CI green (WebKit job informational: 24 passed, 2 microphone tests fail on WebKit), post-commit review Pass |
 | WP3 | Provider strategy: Ollama first, Claude escalation ([[EIP-ESR0061-003_PROVIDER_STRATEGY_OLLAMA_FIRST_AND_CLAUDE_ESCALATION|EIP-ESR0061-003]]) | Design reviewed (Pass) and S1-S6 approved. Planned for Session B; the Programme Sponsor directed WP3a to start under this session on 8 October 2026. **WP3a** (`6cdbedb`) and **WP3b** (`c7d2c93`) committed, CI green apart from the informational WebKit job, post-commit reviews Pass. Live Anthropic checks run 8 October 2026 (real call and end-to-end escalation work, about US$0.002 spent; refusal, overload and the Console limit not yet exercised). **WP3c** (`78afcb7`, Ollama status, hardware recommendation, guided install, allow-listed background download, model choice, Local AI panel) committed, CI green apart from the informational WebKit job, post-commit review Pass. Open items from WP3 are listed at the end of EIP-ESR0061-003; Mac measurements wait for Mac visit 1 |
-| WP4 | Guardian Experience Redesign and Presence Orb ([[EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN|EIP-ESR0061-004]]) | Design and clickable prototype drafted ahead under D22 at the Programme Sponsor's request (8 October 2026); design review Conditional Pass (conditions addressed: Offline outranks Listening, frame budget by state, three inventory rows, conversation clears on profile switch); **design approved** by the Programme Sponsor (prototype and decisions W1-W10 as recommended, 8 October 2026). Nothing built; WP4a not started |
+| WP4 | Guardian Experience Redesign and Presence Orb ([[EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN|EIP-ESR0061-004]]) | Design and clickable prototype drafted ahead under D22 at the Programme Sponsor's request (8 October 2026); design review Conditional Pass (conditions addressed: Offline outranks Listening, frame budget by state, three inventory rows, conversation clears on profile switch); **design approved** by the Programme Sponsor (prototype and decisions W1-W10 as recommended, 8 October 2026) and committed (`6081425`, post-commit Conditional Pass, Medium fixed). **WP4a** (tokens, bundled fonts, app shell, six views) built, implementation review Conditional Pass (Medium and Low fixed), awaiting the Programme Sponsor's approval to commit; WP4b to WP4d not started |
 | Session-wide | Independent repository verification and baseline determination | Not started - after Mac visit 1 |
 
 ---
@@ -92,6 +92,8 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.21 | 8 October 2026 | Claude Engineering Implementer | WP4a implementation review Conditional Pass: heading level and the download use-when-done choice across view switches fixed with tests (57 Playwright tests). |
+| 0.20 | 8 October 2026 | Claude Engineering Implementer | WP4 design committed (`6081425`; pre-check file-list FAIL because the EIP lacked a design-commit contents section, remedied in EIP-ESR0061-004 Section 13; post-commit review Conditional Pass, one Medium - the prototype mentioned Claude to a Child - fixed). WP4a built. |
 | 0.19 | 8 October 2026 | Claude Engineering Implementer | Programme Sponsor approved the WP4 prototype and decisions W1-W10 as recommended. |
 | 0.18 | 8 October 2026 | Claude Engineering Implementer | WP4 design review Conditional Pass (one High, two Medium, one prototype leak); all addressed in EIP-ESR0061-004 v0.2 and the prototype. Found a real defect in the current app: the previous profile's conversation stays on screen after a profile switch (fix is in WP4b). |
 | 0.17 | 8 October 2026 | Claude Engineering Implementer | WP3c committed (`78afcb7`, pre-check all PASS, CI green apart from the informational WebKit job, post-commit Pass). WP3 open items recorded (EIP-ESR0061-003 Section 26). WP4 design and clickable prototype drafted (EIP-ESR0061-004 v0.1), not yet reviewed. |

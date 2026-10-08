@@ -1,0 +1,259 @@
+/* The app shell: top bar, left rail of views, main area (ESR-0061 WP4a,
+   EIP-ESR0061-004 items 6.1 and 6.2). */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 212px minmax(0, 1fr);
+  grid-template-rows: 56px minmax(0, 1fr);
+  grid-template-areas:
+    "top top"
+    "rail main";
+  height: 100%;
+  background:
+    radial-gradient(900px 520px at 62% 8%, rgba(95, 80, 255, 0.1), transparent 70%),
+    radial-gradient(700px 480px at 18% 100%, rgba(65, 224, 240, 0.06), transparent 70%),
+    var(--bg);
+}
+
+/* ---- top bar ---- */
+.topbar {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 20px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(7, 8, 13, 0.7);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 172px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fff 0 8%, var(--cyan) 22%, var(--violet) 62%, transparent 72%);
+  box-shadow: 0 0 18px rgba(143, 123, 255, 0.55);
+}
+
+.platform-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--bg-raised);
+  font-size: 12.5px;
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+/* ---- rail ---- */
+.rail {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) 12px;
+  border-right: 1px solid var(--line);
+  background: rgba(7, 8, 13, 0.4);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--fg-muted);
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-item svg {
+  flex: none;
+}
+
+.nav-item:hover {
+  background: rgba(150, 165, 255, 0.07);
+  color: var(--fg);
+}
+
+.nav-item[aria-current="page"] {
+  border-color: var(--line-strong);
+  background: var(--violet-soft);
+  color: var(--fg);
+}
+
+.rail-note {
+  margin-top: auto;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  color: var(--fg-muted);
+  font-size: 12px;
+}
+
+/* ---- main ---- */
+.app-main {
+  grid-area: main;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.view {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.view-scroll {
+  height: 100%;
+  overflow: auto;
+  padding: 24px 28px;
+}
+
+.view-heading {
+  margin: 0 0 4px;
+  font-size: 20px;
+  letter-spacing: 0.01em;
+}
+
+.view-lede {
+  max-width: 62ch;
+  margin: 0 0 20px;
+  color: var(--fg-muted);
+}
+
+.view-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: start;
+}
+
+/* The Guardian view: the conversation fills the height and the composer is
+   pinned at the bottom, so it is never below the fold. */
+.guardian-view {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+
+.guardian-presence {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 14px 16px 6px;
+  text-align: center;
+}
+
+.guardian-presence .guardian-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+/* The knowledge graph's own view. */
+.knowledge-stage {
+  display: grid;
+  min-height: 420px;
+  margin-bottom: var(--space-4);
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg-panel);
+}
+
+/* The graph draws on a square, so it gets one, centred. */
+.knowledge-stage .guardian-orb {
+  position: relative;
+  width: min(400px, 100%);
+  aspect-ratio: 1;
+}
+
+/* ---- the profile switcher and the "create a profile" banner ---- */
+.profile-slot {
+  position: relative;
+}
+
+.profile-banner {
+  display: flex;
+  justify-content: center;
+  padding: 10px 28px 0;
+}
+
+/* ---- narrower windows ---- */
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .nav-item span,
+  .rail-note,
+  .brand-text {
+    display: none;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .rail {
+    padding: 12px 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 52px minmax(0, 1fr) 58px;
+    grid-template-areas:
+      "top"
+      "main"
+      "rail";
+  }
+
+  .rail {
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 6px 8px;
+    border-top: 1px solid var(--line);
+    border-right: 0;
+    background: var(--bg-raised);
+  }
+
+  .nav-item {
+    width: auto;
+  }
+
+  .topbar {
+    gap: var(--space-2);
+    padding: 0 12px;
+  }
+
+  .view-scroll {
+    padding: 16px;
+  }
+}

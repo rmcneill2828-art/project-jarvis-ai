@@ -3,28 +3,21 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
   Activity,
-  Bell,
   Box,
   ChevronDown,
-  ChevronRight,
   CircleUserRound,
   Cloud,
   Code2,
   Database,
-  FlaskConical,
   Grid3X3,
   Link2,
   Mic,
-  Minus,
   Monitor,
   SendHorizontal,
   Server,
-  Settings,
   Shield,
-  Square,
   UsersRound,
   Volume2,
-  X,
 } from "lucide-react";
 
 import {
@@ -39,6 +32,7 @@ import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
 import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
 import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalation.jsx";
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
+import { NavRail, TopBar } from "./Shell.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -252,75 +246,30 @@ function IconTile({ icon: Icon, className = "" }) {
   );
 }
 
-function AppHeader({ platformIndicator }) {
+// The capability rows that used to fill the sidebar ("Platform Placeholders"),
+// now a panel in the System view (ESR-0061 WP4a). WP4c replaces them with a
+// list built only from real status.
+function CapabilitiesPanel({ capabilityStatuses }) {
   return (
-    <header className="app-header" aria-label="JARVIS desktop shell header">
-      <div className="brand-lockup" aria-label="JARVIS">
-        <span className="brand-mark" aria-hidden="true">
-          <span />
-        </span>
-        <span className="brand-name">JARVIS</span>
-      </div>
-      <div className="platform-indicator" aria-label="JARVIS platform status">
-        <StateDot state={platformIndicator.status} />
-        <span>{platformIndicator.label}</span>
-        <StatusBadge state={platformIndicator.status} />
-      </div>
-      <div className="window-actions" aria-label="Shell controls">
-        <button type="button" aria-label="Notifications">
-          <Bell size={20} />
-        </button>
-        <button type="button" aria-label="Settings">
-          <Settings size={20} />
-        </button>
-        <button type="button" aria-label="Minimize">
-          <Minus size={20} />
-        </button>
-        <button type="button" aria-label="Maximize">
-          <Square size={16} />
-        </button>
-        <button type="button" aria-label="Close">
-          <X size={20} />
-        </button>
-      </div>
-    </header>
-  );
-}
+    <section className="capabilities-panel" aria-labelledby="capabilities-heading">
+      <h2 id="capabilities-heading">Capabilities</h2>
+      <div className="capability-stack">
+        {capabilityStatuses.map((capability) => {
+          const Icon = capabilityIcons[capability.id] ?? Shield;
 
-function CapabilitySidebar({ capabilityStatuses, profiles, activeProfile, profileError, onCreateProfile, onSelectProfile }) {
-  return (
-    <aside className="sidebar" aria-labelledby="sidebar-heading">
-      <section className="sidebar-panel">
-        <h2 id="sidebar-heading">Platform Placeholders</h2>
-        <div className="capability-stack">
-          {capabilityStatuses.map((capability) => {
-            const Icon = capabilityIcons[capability.id] ?? Shield;
-
-            return (
-              <article className="capability-row" key={capability.id}>
-                <IconTile icon={Icon} />
-                <div>
-                  <h3>{capability.label}</h3>
-                  <StatusBadge state={capability.state} />
-                  <p>{capability.detail}</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-        <button className="outline-action" type="button" aria-label="View all capabilities">
-          <span>View all capabilities</span>
-          <ChevronRight size={18} />
-        </button>
-      </section>
-      <ProfileCard
-        profiles={profiles}
-        activeProfile={activeProfile}
-        profileError={profileError}
-        onCreateProfile={onCreateProfile}
-        onSelectProfile={onSelectProfile}
-      />
-    </aside>
+          return (
+            <article className="capability-row" key={capability.id}>
+              <IconTile icon={Icon} />
+              <div>
+                <h3>{capability.label}</h3>
+                <StatusBadge state={capability.state} />
+                <p>{capability.detail}</p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -328,7 +277,7 @@ function CapabilitySidebar({ capabilityStatuses, profiles, activeProfile, profil
 // be created with (EIP-ESR0046-001).
 const HOUSEHOLD_ROLES = ["Administrator", "Adult", "Child", "Guest"];
 
-function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, onSelectProfile }) {
+function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, onSelectProfile, inTopBar = false }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState("");
   const [newRole, setNewRole] = useState(HOUSEHOLD_ROLES[0]);
@@ -384,7 +333,7 @@ function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, o
   const otherProfiles = (profiles ?? []).filter((profile) => profile.id !== activeProfile.id);
 
   return (
-    <section className="profile-card" aria-label="Signed in profile">
+    <section className={`profile-card${inTopBar ? " in-topbar" : ""}`} aria-label="Signed in profile">
       <button
         type="button"
         className="profile-summary"
@@ -393,13 +342,13 @@ function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, o
         aria-label="Switch Guardian profile"
       >
         <span className="avatar" aria-hidden="true">
-          <CircleUserRound size={34} />
+          {activeProfile.displayName.trim().charAt(0).toUpperCase() || "?"}
         </span>
         <div>
           <strong>{activeProfile.displayName}</strong>
           <span>{activeProfile.role}</span>
         </div>
-        <ChevronDown size={18} aria-hidden="true" />
+        <ChevronDown size={16} aria-hidden="true" />
       </button>
       {pickerOpen && otherProfiles.length > 0 && (
         <ul className="profile-picker" aria-label="Other profiles">
@@ -459,7 +408,7 @@ const CLUSTER_PRUNE_INTERVAL_MS = 2000;
 function GuardianOrbit({ knowledgeGraph, knowledgeGraphError, activeClusters }) {
   return (
     <section className="guardian-stage" aria-label="Guardian">
-      <div className="guardian-orb" role="img" aria-label="Guardian visual presence: live repository knowledge graph">
+      <div className="guardian-orb" role="img" aria-label="Repository knowledge graph">
         <GuardianOrbGraph
           graph={knowledgeGraph}
           loading={!knowledgeGraph && !knowledgeGraphError}
@@ -493,10 +442,6 @@ function DiagnosticsPanel({ diagnostics }) {
           );
         })}
       </div>
-      <button className="outline-action" type="button" aria-label="View diagnostics">
-        <span>View diagnostics</span>
-        <ChevronRight size={18} />
-      </button>
     </aside>
   );
 }
@@ -523,9 +468,9 @@ function CommandPanel({
   const lastUserMessage = [...messages].reverse().find((entry) => entry.role === "user");
   return (
     <section className="command-panel" aria-labelledby="command-heading">
-      <h2 id="command-heading">How can I help you today?</h2>
-      {messages.length > 0 && (
-        <div className="conversation-log" aria-live="polite" aria-label="Conversation with Guardian">
+      <div className="conversation-area">
+        {messages.length > 0 && (
+          <div className="conversation-log" aria-live="polite" aria-label="Conversation with Guardian">
           {messages.map((entry) => (
             <p className={`conversation-message ${entry.role}`} key={entry.id}>
               <span>{entry.text}</span>
@@ -542,8 +487,10 @@ function CommandPanel({
               )}
             </p>
           ))}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
+      <div className="composer-area">
       <EscalationBar
         claudeStatus={claudeStatus}
         offer={offer}
@@ -598,43 +545,8 @@ function CommandPanel({
           <SendHorizontal size={24} />
         </button>
       </form>
-      <div className="quick-actions" aria-label="Static Guardian shortcuts">
-        <button type="button">
-          <Activity size={18} />
-          <span>Platform Status</span>
-        </button>
-        <button type="button">
-          <Grid3X3 size={18} />
-          <span>View Capabilities</span>
-        </button>
-        <button type="button">
-          <Activity size={18} />
-          <span>Run Diagnostics</span>
-        </button>
-        <button type="button">
-          <FlaskConical size={18} />
-          <span>Show Roadmap</span>
-        </button>
       </div>
     </section>
-  );
-}
-
-function AppFooter() {
-  return (
-    <footer className="shell-footer" aria-label="Shell edition and runtime boundary">
-      <span>
-        <Shield size={16} aria-hidden="true" />
-        Guardian protecting your digital world
-      </span>
-      <span className="footer-separator" aria-hidden="true" />
-      <span>All times are local</span>
-      <span className="footer-version">v0.1.0</span>
-      <span>
-        <StateDot state={STATUS.OPERATIONAL} />
-        Shell Edition
-      </span>
-    </footer>
   );
 }
 
@@ -652,6 +564,9 @@ export function App() {
   // pull field (real prior activity) once it loads, then kept live by
   // knowledge.cluster_activity notifications.
   const [activeClusterTimestamps, setActiveClusterTimestamps] = useState(() => new Map());
+
+  // Which view of the app shell is showing (ESR-0061 WP4a).
+  const [view, setView] = useState("guardian");
 
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -674,6 +589,10 @@ export function App() {
   // notifications (ESR-0061 WP3c); the Local AI panel acts on them.
   const [pullProgress, setPullProgress] = useState(null);
   const [pullFinished, setPullFinished] = useState(null);
+  // Which model the person asked to switch to once its download ends. Held here,
+  // not in the panel, so it survives the person visiting another view while a
+  // download that takes minutes runs (WP4a implementation review, Low).
+  const useWhenDoneRef = useRef(null);
 
   // Voice Faculty Increment B (EIP-ESR0047-001): push-to-talk speech input.
   // isRecording drives the mic button's visual state only - the actual
@@ -1106,61 +1025,121 @@ export function App() {
       });
   };
 
+  const platformIndicator = derivePlatformIndicator(platformState, platformError);
+  const capabilityStatusRows = deriveCapabilityStatuses(platformState, platformError, agents, agentsError);
+
   return (
-    <main className="jarvis-shell">
-      <AppHeader platformIndicator={derivePlatformIndicator(platformState, platformError)} />
-      <div className="shell-grid">
-        <CapabilitySidebar
-          capabilityStatuses={deriveCapabilityStatuses(platformState, platformError, agents, agentsError)}
-          profiles={profiles}
-          activeProfile={activeProfile}
-          profileError={profileError}
-          onCreateProfile={handleCreateProfile}
-          onSelectProfile={handleSelectProfile}
-        />
-        <section className="workspace" aria-label="Guardian desktop experience">
-          <StatusCards platformSignals={derivePlatformSignals(platformState, platformError)} />
-          <div className="experience-grid">
-            <div className="guardian-column">
-              <GuardianOrbit
-                knowledgeGraph={knowledgeGraph}
-                knowledgeGraphError={knowledgeGraphError}
-                activeClusters={activeClusters}
-              />
-              <CommandPanel
-                messages={messages}
-                inputValue={inputValue}
-                onInputChange={setInputValue}
-                onSubmit={handleSubmit}
-                sending={sending}
-                sendError={sendError}
-                onSpeak={handleSpeak}
-                speakError={speakError}
-                isRecording={isRecording}
-                onToggleRecording={handleToggleRecording}
-                transcribeError={transcribeError}
-                transcriptionAvailable={Boolean(platformState?.transcriptionAvailable)}
-                claudeStatus={claudeStatus}
-                offer={offer}
-                escalating={escalating}
-                onAskClaude={handleAskClaude}
-                onReviewOffer={() => setConfirmOpen(true)}
-              />
-              {escalationError && (
-                <p className="conversation-error" role="alert">
-                  {escalationError}
-                </p>
-              )}
+    <div className="app-shell">
+      <TopBar
+        platformChip={
+          <>
+            <StateDot state={platformIndicator.status} />
+            <span>{platformIndicator.label}</span>
+            <StatusBadge state={platformIndicator.status} />
+          </>
+        }
+        profileSlot={
+          activeProfile ? (
+            <ProfileCard
+              inTopBar
+              profiles={profiles}
+              activeProfile={activeProfile}
+              profileError={profileError}
+              onCreateProfile={handleCreateProfile}
+              onSelectProfile={handleSelectProfile}
+            />
+          ) : (
+            <span className="local-ai-note">No profile selected</span>
+          )
+        }
+      />
+      <NavRail current={view} onSelect={setView} />
+      <main className="app-main" aria-label="Guardian desktop experience">
+        {!activeProfile && (
+          <div className="profile-banner">
+            <ProfileCard
+              profiles={profiles}
+              activeProfile={activeProfile}
+              profileError={profileError}
+              onCreateProfile={handleCreateProfile}
+              onSelectProfile={handleSelectProfile}
+            />
+          </div>
+        )}
+
+        {view === "guardian" && (
+          <section className="view guardian-view" aria-label="Guardian">
+            <div className="guardian-presence">
+              <h1 id="command-heading" className="guardian-title">
+                How can I help you today?
+              </h1>
             </div>
-            <div className="side-column">
-              <SystemHealthPanel
-                platformState={platformState}
-                platformError={platformError}
-                lastHeartbeatAt={lastHeartbeatAt}
+            <CommandPanel
+              messages={messages}
+              inputValue={inputValue}
+              onInputChange={setInputValue}
+              onSubmit={handleSubmit}
+              sending={sending}
+              sendError={sendError}
+              onSpeak={handleSpeak}
+              speakError={speakError}
+              isRecording={isRecording}
+              onToggleRecording={handleToggleRecording}
+              transcribeError={transcribeError}
+              transcriptionAvailable={Boolean(platformState?.transcriptionAvailable)}
+              claudeStatus={claudeStatus}
+              offer={offer}
+              escalating={escalating}
+              onAskClaude={handleAskClaude}
+              onReviewOffer={() => setConfirmOpen(true)}
+            />
+            {escalationError && (
+              <p className="conversation-error" role="alert">
+                {escalationError}
+              </p>
+            )}
+          </section>
+        )}
+
+        {view === "memory" && (
+          <section className="view" aria-label="Memory">
+            <div className="view-scroll">
+              <h1 className="view-heading">Memory</h1>
+              <p className="view-lede">Notes JARVIS keeps on this computer, only after you approve them.</p>
+              <MemoryManagementPanel
+                recordCount={memoryRecordCount}
+                statusError={memoryStatusError}
+                onStatusChange={refreshMemoryStatus}
               />
-              <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
-              <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} activeClusters={activeClusters} />
-              <LocalAiPanel activeProfile={activeProfile} pullProgress={pullProgress} pullFinished={pullFinished} />
+            </div>
+          </section>
+        )}
+
+        {view === "knowledge" && (
+          <section className="view" aria-label="Knowledge">
+            <div className="view-scroll">
+              <h1 className="view-heading">Knowledge</h1>
+              <p className="view-lede">The project&rsquo;s engineering knowledge graph, drawn from the repository on this computer.</p>
+              <div className="knowledge-stage">
+                <GuardianOrbit
+                  knowledgeGraph={knowledgeGraph}
+                  knowledgeGraphError={knowledgeGraphError}
+                  activeClusters={activeClusters}
+                />
+              </div>
+              <div className="view-grid">
+                <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
+                <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} activeClusters={activeClusters} />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {view === "agents" && (
+          <section className="view" aria-label="Agents">
+            <div className="view-scroll">
+              <h1 className="view-heading">Agents</h1>
+              <p className="view-lede">Helpers that do one job and report back. Each runs only when you ask.</p>
               <AgentFrameworkPanel
                 agents={agents}
                 agentsError={agentsError}
@@ -1169,17 +1148,45 @@ export function App() {
                 agentInvokeError={agentInvokeError}
                 onInvokeAgent={handleInvokeAgent}
               />
-              <MemoryManagementPanel
-                recordCount={memoryRecordCount}
-                statusError={memoryStatusError}
-                onStatusChange={refreshMemoryStatus}
-              />
-              <DiagnosticsPanel diagnostics={diagnostics} />
             </div>
-          </div>
-          <AppFooter />
-        </section>
-      </div>
+          </section>
+        )}
+
+        {view === "models" && (
+          <section className="view" aria-label="AI models">
+            <div className="view-scroll">
+              <h1 className="view-heading">AI models</h1>
+              <p className="view-lede">JARVIS answers on this computer first. Claude is used only when you ask.</p>
+              <LocalAiPanel
+                activeProfile={activeProfile}
+                pullProgress={pullProgress}
+                pullFinished={pullFinished}
+                useWhenDoneRef={useWhenDoneRef}
+                onPullFinishedHandled={() => setPullFinished(null)}
+              />
+            </div>
+          </section>
+        )}
+
+        {view === "system" && (
+          <section className="view" aria-label="System">
+            <div className="view-scroll">
+              <h1 className="view-heading">System</h1>
+              <p className="view-lede">What is running. JARVIS v0.1.0, shell edition.</p>
+              <StatusCards platformSignals={derivePlatformSignals(platformState, platformError)} />
+              <div className="view-grid">
+                <SystemHealthPanel
+                  platformState={platformState}
+                  platformError={platformError}
+                  lastHeartbeatAt={lastHeartbeatAt}
+                />
+                <CapabilitiesPanel capabilityStatuses={capabilityStatusRows} />
+                <DiagnosticsPanel diagnostics={diagnostics} />
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
       {confirmOpen && offer && (
         <ClaudeConfirmDialog
           offer={offer}
@@ -1188,6 +1195,6 @@ export function App() {
           onCancel={() => setConfirmOpen(false)}
         />
       )}
-    </main>
+    </div>
   );
 }

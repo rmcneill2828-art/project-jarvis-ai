@@ -14,12 +14,16 @@ function percent(pull) {
   return Math.min(100, Math.floor((pull.completed / pull.total) * 100));
 }
 
-export function LocalAiPanel({ activeProfile, pullProgress, pullFinished }) {
+export function LocalAiPanel({ activeProfile, pullProgress, pullFinished, useWhenDoneRef, onPullFinishedHandled }) {
   const [status, setStatus] = useState(null);
   const [recommendation, setRecommendation] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
-  const useWhenDone = useRef(null);
+  // Owned by the app when given one, so it outlives this panel being unmounted
+  // by a view switch; a download's end that arrives while the panel is away is
+  // acted on when it is shown again.
+  const ownRef = useRef(null);
+  const useWhenDone = useWhenDoneRef ?? ownRef;
   const canManage = MANAGER_ROLES.includes(activeProfile?.role);
 
   const refresh = useCallback(() => {
@@ -52,7 +56,8 @@ export function LocalAiPanel({ activeProfile, pullProgress, pullFinished }) {
         : Promise.resolve();
     if (pullFinished.outcome === "failed") setError("The download did not finish. You can try again.");
     done.then(refresh);
-  }, [pullFinished, refresh]);
+    if (onPullFinishedHandled) onPullFinishedHandled();
+  }, [pullFinished, refresh, useWhenDone, onPullFinishedHandled]);
 
   const pull = status?.pull;
   const downloading = Boolean(pull?.active);

@@ -606,7 +606,7 @@ export function GuardianOrbGraph({ graph, loading, error, activeClusters = [] })
       height={SIZE}
       className="guardian-orb-graph"
       role="img"
-      aria-label={`Guardian Orb: repository knowledge graph with ${graph.nodes.length} artefacts and ${graph.edges.length} relationships`}
+      aria-label={`Repository knowledge graph with ${graph.nodes.length} artefacts and ${graph.edges.length} relationships`}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     />
