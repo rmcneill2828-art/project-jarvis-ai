@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 import pytest
 
 from jarvis import GiaSnapshot, LocalResourceObserver
+from jarvis.gia.observability import ENGINEERING_TOOLS, engineering_tools_for
 
 
 class _FakeVirtualMemory:
@@ -101,7 +102,7 @@ def test_local_resource_observer_returns_real_snapshot_from_injected_reader() ->
         process=process,
         running_names=frozenset({"Code.exe", "ChatGPT Classic.exe"}),
     )
-    observer = LocalResourceObserver(reader=reader)
+    observer = LocalResourceObserver(reader=reader, engineering_tools=ENGINEERING_TOOLS)
 
     snapshot = observer.snapshot()
 
@@ -139,7 +140,7 @@ def test_local_resource_observer_matches_chatgpt_desktop_under_either_candidate_
     reader = _FakeResourceReader(
         cpu_percent=0.0, memory=memory, disk=disk, process=process, running_names=frozenset({"ChatGPT.exe"})
     )
-    observer = LocalResourceObserver(reader=reader)
+    observer = LocalResourceObserver(reader=reader, engineering_tools=ENGINEERING_TOOLS)
 
     snapshot = observer.snapshot()
 
@@ -153,7 +154,7 @@ def test_local_resource_observer_reads_disk_usage_for_the_storage_path() -> None
     disk = _FakeDiskUsage(percent=1.0, used=1, total=2)
     process = _FakeProcessHealth(status="running", create_time=time.time(), cpu_percent=0.0, memory_rss=1)
     reader = _FakeResourceReader(cpu_percent=0.0, memory=memory, disk=disk, process=process)
-    observer = LocalResourceObserver(reader=reader)
+    observer = LocalResourceObserver(reader=reader, engineering_tools=ENGINEERING_TOOLS)
 
     observer.snapshot()
 
@@ -165,7 +166,7 @@ def test_local_resource_observer_samples_cpu_with_a_real_interval_not_zero() -> 
     disk = _FakeDiskUsage(percent=1.0, used=1, total=2)
     process = _FakeProcessHealth(status="running", create_time=time.time(), cpu_percent=0.0, memory_rss=1)
     reader = _FakeResourceReader(cpu_percent=0.0, memory=memory, disk=disk, process=process)
-    observer = LocalResourceObserver(reader=reader)
+    observer = LocalResourceObserver(reader=reader, engineering_tools=ENGINEERING_TOOLS)
 
     observer.snapshot()
 
@@ -196,5 +197,24 @@ def test_local_resource_observer_defaults_to_the_real_psutil_reader() -> None:
     assert snapshot.process_uptime_seconds >= 0
     assert snapshot.process_cpu_percent >= 0.0
     assert snapshot.process_memory_mb > 0
-    assert set(snapshot.engineering_tools_running) == {"vscode", "obsidian", "githubDesktop", "chatgpt"}
+    assert set(snapshot.engineering_tools_running) == set(engineering_tools_for())
     assert all(isinstance(value, bool) for value in snapshot.engineering_tools_running.values())
+
+
+def test_engineering_tools_are_observed_on_windows_only_until_macos_names_are_verified() -> None:
+    assert set(engineering_tools_for("win32")) == {"vscode", "obsidian", "githubDesktop", "chatgpt"}
+    assert engineering_tools_for("darwin") == {}
+    assert engineering_tools_for("linux") == {}
+
+
+def test_a_snapshot_on_another_platform_reports_no_tools_rather_than_all_not_running() -> None:
+    memory = _FakeVirtualMemory(percent=1.0, used=1, total=2)
+    disk = _FakeDiskUsage(percent=1.0, used=1, total=2)
+    process = _FakeProcessHealth(status="running", create_time=time.time(), cpu_percent=0.0, memory_rss=1)
+    reader = _FakeResourceReader(
+        cpu_percent=0.0, memory=memory, disk=disk, process=process, running_names=frozenset({"Code"})
+    )
+
+    snapshot = LocalResourceObserver(reader=reader, engineering_tools=engineering_tools_for("darwin")).snapshot()
+
+    assert snapshot.engineering_tools_running == {}

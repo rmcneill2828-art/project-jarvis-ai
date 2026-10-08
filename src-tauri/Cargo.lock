@@ -1497,6 +1497,7 @@ name = "jarvis-guardian-shell"
 version = "0.1.0"
 dependencies = [
  "indexmap 1.9.3",
+ "libc",
  "serde_json",
  "tauri",
  "tauri-build",

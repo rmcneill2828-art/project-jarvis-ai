@@ -66,3 +66,55 @@ jobs:
           files: |
             ${{ env.INSTALLER_PATH }}
             ${{ env.CHECKSUM_PATH }}
+
+  # macOS (Apple Silicon) build (ESR-0061 WP2b, EBG-0162). Ad-hoc signed, not
+  # notarised (D15): a user opens it once with "Open Anyway". Publishes beside
+  # the Windows installer to the same release, with its own checksum.
+  release-macos:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          toolchain: stable
+      - run: pip install -e .[dev]
+      - run: npm ci
+      - name: Verify tag matches VERSION
+        shell: bash
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          file_version="$(cat VERSION)"
+          if [ "$tag_version" != "$file_version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match VERSION ($file_version)."
+            exit 1
+          fi
+      - run: python scripts/sync_product_version.py --check
+      - run: python scripts/build_backend_sidecar.py
+      - run: python scripts/smoke_unix_sidecar.py --expect-tree
+      - run: npm run tauri build -- --bundles dmg
+      - name: Locate the disk image and compute checksum
+        shell: bash
+        run: |
+          # No `mapfile`: macOS's default bash is 3.2.
+          count="$(find src-tauri/target/release/bundle/dmg -maxdepth 1 -name '*.dmg' | wc -l | tr -d ' ')"
+          if [ "$count" -ne 1 ]; then
+            echo "Expected exactly one disk image in bundle/dmg, found $count"
+            exit 1
+          fi
+          image="$(find src-tauri/target/release/bundle/dmg -maxdepth 1 -name '*.dmg')"
+          shasum -a 256 "$image" > "$image.sha256"
+          echo "IMAGE_PATH=$image" >> "$GITHUB_ENV"
+          echo "CHECKSUM_PATH=$image.sha256" >> "$GITHUB_ENV"
+      - uses: softprops/action-gh-release@fe965f7af51af5f2602596916f38a38df2e33de0 # v3.0.2
+        with:
+          files: |
+            ${{ env.IMAGE_PATH }}
+            ${{ env.CHECKSUM_PATH }}

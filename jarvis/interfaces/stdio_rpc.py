@@ -52,6 +52,7 @@ from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.activity_tracker import ActivityTracker
+from jarvis.interfaces.orphan_watchdog import start_orphan_watchdog
 from jarvis.interfaces.sentinel_agent import SentinelGatedAgentService
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.interfaces.voice import (
@@ -1256,6 +1257,7 @@ def run() -> None:
 
     log_path = _configure_backend_log_file(os.environ)
     logger.info("JARVIS backend starting; logging to %s.", log_path)
+    start_orphan_watchdog()
     try:
         runtime = build_default_runtime()
         server = StdioRpcServer(runtime)

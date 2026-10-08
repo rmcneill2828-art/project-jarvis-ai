@@ -52,6 +52,19 @@ def test_a_leading_not_changed_line_does_not_empty_the_list():
     assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"a.py"}
 
 
+def test_a_bold_label_block_ends_at_the_next_bold_label():
+    text = chr(10).join(
+        [
+            "## 12. Section",
+            "**12.4 Commit contents (expected).** Changed: `a.py`, `b.py`.",
+            "",
+            "**12.6 Review record.** It ran `run_reviewer.py` twice.",
+            "",
+        ]
+    )
+    assert pc.eip_commit_contents(text, "**12.4 Commit contents") == {"a.py", "b.py"}
+
+
 def test_parse_pytest_counts_failures_and_errors():
     assert pc.parse_pytest("3 failed, 759 passed, 1 skipped, 2 errors in 51s") == {
         "passed": 759,

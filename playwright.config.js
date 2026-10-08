@@ -41,6 +41,12 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    // WKWebView, the macOS shell's webview, is WebKit (ESR-0061 WP2b,
+    // EBG-0162). Opt-in, so the Linux and Windows runs that have not
+    // installed WebKit are unchanged; the macOS CI job sets PW_WEBKIT=1.
+    ...(process.env.PW_WEBKIT === "1"
+      ? [{ name: "webkit", use: { ...devices["Desktop Safari"] } }]
+      : []),
   ],
   webServer: {
     command: "npm run dev",

@@ -119,3 +119,74 @@ jobs:
       # on the Linux job.
       - run: python scripts/build_backend_sidecar.py
       - run: cargo test --manifest-path src-tauri/Cargo.toml
+
+  # macOS (Apple Silicon) jobs (ESR-0061 WP2b, EBG-0162, EIP-ESR0061-002 Section
+  # 6.5). Like rust-windows, limited to pushes to main and manual runs: macOS
+  # runner minutes cost more than Linux ones (cost rule of ESR-0060 WP2).
+  python-macos:
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e .[dev]
+      - run: ruff check .
+      - run: pytest -q
+      - run: python scripts/validate_repository.py
+
+  # Builds the real sidecar on the Mac runner, proves the process-tree
+  # guarantees with it (graceful stop, force-killed host, group kill), then
+  # tests the Unix process-group guard and bundles the app to check the
+  # Info.plist and minimum macOS version reach the bundle.
+  rust-macos:
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      - uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      - run: python scripts/build_backend_sidecar.py
+      - run: python scripts/smoke_unix_sidecar.py --expect-tree
+      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --tests -- -D warnings
+      - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+      - run: npm ci
+      - run: npm run tauri build -- --bundles app
+      - name: Check the bundle's Info.plist
+        run: |
+          app="$(ls -d src-tauri/target/release/bundle/macos/*.app)"
+          plutil -extract NSMicrophoneUsageDescription raw "$app/Contents/Info.plist"
+          test "$(plutil -extract LSMinimumSystemVersion raw "$app/Contents/Info.plist")" = "13.0"
+          test -x "$app/Contents/MacOS/jarvis-backend"
+
+  # WKWebView is WebKit: the closest CI proxy for the Mac's own webview.
+  # Informational for now (continue-on-error): the existing suite was written
+  # against Chromium, so WebKit-only failures are expected to need triage; the
+  # redesign work package (WP4, "one look on WebView2 and WKWebView") makes it
+  # blocking.
+  playwright-webkit:
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    continue-on-error: true
+    env:
+      PW_WEBKIT: "1"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - run: npx playwright test --project=webkit

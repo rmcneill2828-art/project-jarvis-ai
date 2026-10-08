@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-002 |
 | Title | Engineering Implementation Package: WP2 Platform Hardening and macOS |
-| Version | 0.7 |
-| Status | Draft - WP2a committed (b14c6a0); WP2a-fix built, implementation review Pass, awaiting Programme Sponsor approval of the built result |
+| Version | 0.11 |
+| Status | Draft - WP2a and WP2a-fix committed; WP2b built (CI-verified on Linux, Mac checks at Mac visit 1); implementation review Pass after one Fail (fixed), awaiting Programme Sponsor approval of the built result |
 | Session | ESR-0061 |
 | Work Package | WP2 (WP2a, WP2b) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP2 |
@@ -71,15 +71,52 @@ WP2b's process-tree design depends on how PyInstaller's bootloader behaves on ma
 
 After this, dependency updates before Version 1.0 are taken only for security fixes or a confirmed defect (the "freeze" in the plan's WP2 title).
 
-# 6. WP2b - Outline (full design in a later version)
+# 6. WP2b - Design (macOS, EBG-0162, and non-Windows setup, EBG-0054)
 
-* **Build:** an `aarch64-apple-darwin` sidecar built by `scripts/build_backend_sidecar.py` on GitHub's Apple-Silicon runner (`macos-latest`); consider PyInstaller onedir mode for startup time.
-* **Process tree on macOS** - to be designed after verifying, from PyInstaller's documentation and bootloader source: whether onefile mode forks a child interpreter on macOS and forwards signals to it, and whether onedir mode runs the interpreter in the bootloader's own process. Candidate design: own process group plus group kill from the host (`libc::killpg`), and an orphan watchdog in the backend (exit when the parent process changes), so EBG-0154's guarantee holds on the Mac. No macOS process-tree code is written before that check.
-* **CI and release:** `macos` jobs for pytest and `cargo test`; a Playwright WebKit project; `.dmg` plus checksum in `release.yml`.
-* **Bundle:** `NSMicrophoneUsageDescription`; minimum macOS version; Gatekeeper's one-time "Open Anyway" (D15) documented in WP8.
-* **GIA:** macOS process names, or an honest "not applicable".
-* **EBG-0054:** a `setup-dev-environment.sh` equivalent for macOS (and Linux).
-* **Live check:** Mac visit 1 (week of 20 October 2026).
+Risk class: **High-risk** (process lifecycle, new platform, release pipeline). Reviewed by Antigravity alone under the D19 override for WP2. Real macOS testing is **Mac visit 1** (week of 20 October 2026); everything below is built and tested on CI's `macos-latest` (Apple Silicon) runner first.
+
+**6.1 PyInstaller on macOS - verified, not assumed** (bootloader source `v6.22.3`, `bootloader/src/pyi_utils_posix.c` and `pyi_main.c`; the project pins `pyinstaller>=6.22.3` since WP2a).
+
+| Fact | Evidence | Consequence |
+|---|---|---|
+| **Onefile keeps a resident parent.** The bootloader extracts to `_MEI*`, then `fork()`s a child that runs the program (`pyi_utils_create_child`, `child_pid = fork()`); the parent waits and cleans up. macOS is not an exception. | `pyi_utils_posix.c` around the `fork()` call; `pyi_main.c` `_pyi_main_onefile_parent()` | The backend is **two processes** on macOS, as on Windows (EBG-0154's finding). |
+| **The parent forwards signals; it cannot forward SIGKILL.** `_signal_handler()` does `kill(child_pid, signum)` for every catchable signal except `SIGCHLD`/`SIGTSTP`. | `_signal_handler`, and the loop that installs it | A host `SIGTERM` to the parent reaches the Python child. A host `SIGKILL` of the parent does not: the child is **orphaned**. |
+| **No process group or session is created.** The source has no `setpgid`, `setsid` or `PDEATHSIG` (macOS has no `PDEATHSIG` at all). | grep of `pyi_utils_posix.c` | The child shares the parent's group, so a **group kill from the host reaches both** - if the host made the parent a group leader. |
+| **Re-raise after cleanup.** If the child dies from a signal, the parent cleans `_MEI*` then re-raises it. | `child_signalled` / `raise(child_signal)` | A graceful stop leaves no temp directory behind. |
+| **Onedir does not fork on macOS** (the `execvp` restart is Linux-only); Python runs in the bootloader's own process. | `pyi_main.c` | Onedir would be one process, but Tauri's `externalBin` ships a single file, so onedir needs the bundle `resources` route and per-dylib signing. **Decision: keep onefile on macOS, as on Windows** (one build recipe, one code path). Startup time is measured on Mac visit 1; onedir is a fallback only if it is too slow. |
+
+**6.2 Host side: own process group, group kill** (`src-tauri/src/lib.rs`). The existing `#[cfg(not(windows))]` stubs for `ProcessTree` and `ProcessHandle` (lib.rs:401-444) become a real Unix implementation.
+
+* **Spawn.** `tauri-plugin-shell` starts the sidecar with `std::process::Command` but exposes no hook to set the process group, and `setpgid` on a child that has already `exec`ed fails (`EACCES`), so the group cannot be set after the fact. On Unix the sidecar is therefore spawned directly with `std::process::Command` and `CommandExt::process_group(0)`, the way the development backend already is (`spawn_dev_backend`), reusing `run_dev_reader`. The sidecar path is resolved beside the application executable (Tauri's `externalBin` places it there, name without the target triple). Windows keeps the plugin path unchanged. The dev backend also gets `process_group(0)`.
+* **Guard.** `ProcessTree::adopt(pid)` records the group (`pgid == pid`). `is_empty()` is `killpg(pgid, 0)` returning `ESRCH`. `terminate()` is `killpg(pgid, SIGKILL)`. `ProcessHandle` waits on the direct child. The graceful sequence is unchanged: close stdin, wait the grace period, then force the group. The host keeps the `Child` handle from spawn, so the PID-reuse reasoning of 5.6 holds on macOS too (`killpg` is only called while the leader is still unreaped, and `reap()` runs after).
+* **Dependency.** `libc` as a `cfg(unix)` dependency (a crate already in the lockfile transitively; direct use is the only addition).
+
+**6.3 Backend side: orphan watchdog** (`jarvis/interfaces/`, new small module, wired in `jarvis_backend_entry.py`). A host `SIGKILL` (or crash) cannot reach a busy backend: stdin EOF is only seen when the read loop runs. The host passes its PID (`JARVIS_HOST_PID`); a daemon thread checks every second that the host process exists (`os.kill(pid, 0)`); if it is gone, it logs "host gone" and ends the process with `os._exit(1)`. The bootloader parent then sees its child exit, cleans `_MEI*` and exits, so nothing is left. Watching the host's PID, not `getppid()`, is deliberate: under onefile the Python process's parent is the bootloader, not the host. Active only when `JARVIS_HOST_PID` is set, on every platform (harmless on Windows, where the job object already covers it). Tests: the watchdog ends a helper process when its "host" PID dies; it does nothing when the variable is absent or the host is alive.
+
+**6.4 Build.** `scripts/build_backend_sidecar.py` already reads the host triple from `rustc -vV` and builds extension-less on non-Windows; WP2b adds a test for the `aarch64-apple-darwin` name and confirms the produced file is executable and ad-hoc signed (PyInstaller signs arm64 output ad hoc; an unsigned arm64 binary will not run). No change to the PyInstaller options is expected; a hidden-import or data-file gap found on the macOS runner is fixed in this WP.
+
+**6.5 CI and release.**
+* `ci.yml`: a `python-macos` job (`macos-latest`: ruff, pytest, validator) and a `rust-macos` job (clippy `-D warnings`, `cargo test` including the new Unix guard tests: spawn a process tree in a group, `killpg`, assert empty).
+* Playwright: add a **WebKit** project to `playwright.config.js` (`devices["Desktop Safari"]`), run on the macOS runner (WKWebView is WebKit; this is the closest CI proxy for Mac visit 1, and the first check of UAM-0001's "one look on both engines" goal).
+* `release.yml`: a macOS job builds the `.dmg` for `aarch64-apple-darwin` and publishes it with a SHA-256 checksum beside the Windows installer.
+
+**6.6 Bundle** (`src-tauri/tauri.macos.conf.json`, merged on macOS; `tauri.conf.json` keeps `"targets": ["nsis"]` for Windows). `bundle.targets: ["app", "dmg"]`; `bundle.macOS.minimumSystemVersion` (proposed `13.0`, to be confirmed against the Mac visit machine and the Tahoe 26 target) and an `Info.plist` with `NSMicrophoneUsageDescription` (push-to-talk voice, EBG-0112). Signing: ad hoc (`signingIdentity: "-"`), no Apple Developer account, no notarisation; the user-facing one-time "Open Anyway" step (D15) is documented in WP8. **A Programme Sponsor cost decision, if ever wanted: notarisation needs the US$99/year Apple Developer Program; not proposed (no discretionary budget).**
+
+**6.7 GIA.** `jarvis/gia/observability.py` maps tools to Windows process names (`Code.exe`...). macOS equivalents are not guessed: the map becomes per-platform, macOS entries are added only if verified on Mac visit 1, and until then GIA reports "not observable on this platform" honestly (a tested path), never a wrong "not running".
+
+**6.8 EBG-0054.** `scripts/setup-dev-environment.sh`, a bash equivalent of `setup-dev-environment.ps1` for macOS and Linux (checks Node, Rust, Python 3.12, creates the venv, `npm install`, editable install, hook activation, runs the validator and tests), idempotent, with a `--doctor` flag that only reports. Tested by shellcheck in CI (`apt`/preinstalled on `ubuntu-latest`) and run for real on the macOS runner.
+
+**6.9 Tooling touch (follow-up from WP2a-fix, reviewer Info).** `scripts/post_commit_precheck.py`: a bold-label block ends at the next bold label as well as the next heading. This EIP's own commit list sits under its own heading (13.1) meanwhile.
+
+**6.10 What is not tested until Mac visit 1.** Real `killpg` on a running packaged backend; `_MEI*` cleanup after SIGKILL and SIGTERM on a Mac; sidecar startup time; the `.dmg` install and first launch past Gatekeeper; microphone permission prompt; WKWebView look; GIA macOS process names. WP2b closes as "built, CI-verified on macOS runner" and these are the Mac visit 1 checklist, recorded in the session report.
+
+**6.11 Questions for the Engineering Reviewer.**
+1. Is spawning the sidecar through `std::process::Command` on Unix (instead of the plugin) the right way to get a process group, given `setpgid` after `exec` fails?
+2. Is the watchdog watching the host PID the right choice under onefile, and is a 1-second poll plus `os._exit(1)` acceptable?
+3. Is keeping onefile on macOS sound, given the two-process tree is now handled?
+4. Is ad-hoc signing with documented "Open Anyway" adequate for Version 1.0 under D15?
+
+---
 
 # 7. Evidence Pack (WP2a, TPL-0001 1.0 Section 6)
 
@@ -145,6 +182,10 @@ Not changed (the design listed them; the build did not need them): `jarvis/ident
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.11 | 8 October 2026 | Claude Engineering Implementer | WP2b re-review Pass (Gemini, all Info) after the two fixes; Section 15 completed. Linux full run on the final tree recorded in Section 14. Awaiting Programme Sponsor approval of the built result. |
+| 0.10 | 8 October 2026 | Claude Engineering Implementer | WP2b implementation review Fail (Gemini: 1 High, 1 Medium, 3 Info); both fixed (setup script no longer uses `sort -V`; smoke test checks the backend is alive before the host is killed); the Windows `os.kill(pid, 0)` wording corrected after checking; Section 15 review record. Awaiting re-review. |
+| 0.9 | 8 October 2026 | Claude Engineering Implementer | WP2b design review Pass (Gemini, all Info) and approved by the Programme Sponsor (chat); built. Section 14 build record: Unix process-group guard, orphan watchdog (POSIX-only - corrected from the design), real-sidecar smoke test (not in the design), macOS CI and release jobs, bundle config, GIA, setup script, pre-check fix. Section 13 commit contents finalised. Awaiting implementation review. |
+| 0.8 | 8 October 2026 | Claude Engineering Implementer | WP2b full design (Section 6): PyInstaller macOS behaviour verified in bootloader source (onefile = resident parent plus forked child, signals forwarded, no process group, SIGKILL orphans the child); Unix process-group guard, backend orphan watchdog, macOS CI/release/bundle/GIA/setup script, Mac visit 1 checklist; Section 13 commit contents. Awaiting design review. |
 | 0.7 | 8 October 2026 | Claude Engineering Implementer | WP2a-fix design approved (Programme Sponsor, chat), built; implementation review Pass (Gemini); Linux Docker run 871 passed. Awaiting approval of the built result. |
 | 0.6 | 8 October 2026 | Claude Engineering Implementer | WP2a-fix design review Conditional Pass (Gemini): "Not changed" cut now applies only after the first listed path; two tests added (12.1, 12.2, 12.6). Awaiting Programme Sponsor design approval. |
 | 0.5 | 8 October 2026 | Claude Engineering Implementer | Added Section 12, WP2a-fix: three defects in `scripts/post_commit_precheck.py` found by its first code-commit run and confirmed by the WP2a post-commit review (Pass, Info). Design awaiting review. WP2a post-commit review Pass recorded. |
@@ -176,3 +217,40 @@ Found on the pre-check's first code-commit run (WP2a, `b14c6a0`) and agreed by t
 **12.6 Design review record** (Antigravity CLI, Gemini, through `run_reviewer.py`; 2026-10-08T08:2xZ, `sender: reviewer`): **Conditional Pass**. (1, Info) the three fixes address the defects and work on Section 8's real text. (2, Medium) truncating at the first "Not changed" line is brittle if that line precedes the list - **accepted**, fixed as above; it also suggested a separate heading, adopted as the convention for new EIPs. Q2: pytest-labelled comparison is the right balance for an advisory check. (3, Info) edge cases: a message without "pytest" skips the comparison, acceptable for an advisory. (4, Low) two extra tests - **accepted** (12.2).
 
 **12.7 Implementation review** (Antigravity CLI, Gemini, through `run_reviewer.py`; 2026-10-08T08:4xZ, `sender: reviewer`): **Pass**, all Info. The three fixes are as designed including the accepted finding; the tests listed in 12.2 are present and pass; `eip_commit_contents` on Section 8 matches the 24 files of `b14c6a0` and no false advisory lines remain; no regressions. Two resumes: `python -m pytest` with the path before `-q` (refused; the allow-list wants `-q` first) and `git show --format` with escaped quotes (refused). **Engineering Implementer's own evidence:** the Linux run in `python:3.12-slim` (ruff clean, version sync, pytest 871 passed, validator 0 errors) and the real-data check of the fixed functions against `b14c6a0`.
+
+# 13. WP2b Commit Contents (as built)
+
+New: `jarvis/interfaces/orphan_watchdog.py`, `jarvis/tests/test_orphan_watchdog.py`, `scripts/setup-dev-environment.sh`, `scripts/smoke_unix_sidecar.py`, `scripts/tests/test_build_backend_sidecar.py`, `src-tauri/Info.plist`, `src-tauri/tauri.macos.conf.json`. Changed: `.github/workflows/ci.yml`, `.github/workflows/release.yml`, `jarvis/gia/observability.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/tests/test_gia_observability.py`, `playwright.config.js`, `scripts/post_commit_precheck.py`, `scripts/tests/test_post_commit_precheck.py`, `src-tauri/Cargo.lock`, `src-tauri/Cargo.toml`, `src-tauri/src/lib.rs`, `aiems/governance/reviews/EIP-ESR0061-002_PLATFORM_HARDENING_AND_MACOS.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`.
+
+Differences from the design-time estimate: `scripts/jarvis_backend_entry.py` is not changed (the watchdog starts in `stdio_rpc.run()`, which serves both the dev and the packaged backend); `jarvis/gia/observability.py` and its test are added; `scripts/smoke_unix_sidecar.py` is new; the `.sh` setup script is committed with the executable bit.
+
+# 14. WP2b Build Record (8 October 2026)
+
+| Item | Result |
+|---|---|
+| 6.2 Host | `src-tauri/src/lib.rs`: the dev spawn became `spawn_child_backend()`, shared with the new `spawn_unix_sidecar_backend()` (path: beside the executable, plain name). On Unix it sets `process_group(0)` and `JARVIS_HOST_PID`; the Windows plugin path also passes `JARVIS_HOST_PID`. The `cfg(not(windows))` stub is now a real `cfg(unix)` `process_tree` (`adopt` refuses a process that does not lead its own group, so the host's group can never be killed by mistake; `is_empty` is `killpg(0)` returning `ESRCH`; `terminate` is `killpg(SIGKILL)`), with a stub left only for platforms that are neither. `libc` is now a direct `cfg(unix)` dependency (already in the lockfile). **One change to shared logic:** `ProcessGuard::wait_until` now calls the child-exited closure first for its side effect (`try_wait` reaps the leader), because an unreaped zombie leader keeps its group non-empty on Unix; the tree still decides, so Windows behaviour is unchanged. |
+| 6.3 Watchdog | `jarvis/interfaces/orphan_watchdog.py`, started from `stdio_rpc.run()`. **Correction to the design:** it is POSIX-only and does nothing on Windows - the design said it was "harmless on Windows", but signal 0 is `CTRL_C_EVENT` on Windows (`signal.CTRL_C_EVENT == 0`), so `os.kill(pid, 0)` there sends a Ctrl+C to a console process group instead of testing for existence. (v0.9 first said `TerminateProcess`; the reviewer disputed that and claimed an existence check, which is also wrong - corrected here after checking.) Tests cover that guard, an unusable PID, the exit and no-exit cases, and a real process killed when its real host is killed. |
+| 6.4 Build | `scripts/tests/test_build_backend_sidecar.py`: the `aarch64-apple-darwin` name has no suffix, the executable bit survives the copy, Windows keeps `.exe`, a missing artefact is an error. No PyInstaller option changed. |
+| 6.5 CI and release | `ci.yml`: `python-macos`, `rust-macos` (builds the real sidecar, runs the smoke test, clippy, fmt, `cargo test`, bundles the app and checks `Info.plist`, the minimum version and the sidecar in `Contents/MacOS`), `playwright-webkit`. All three run on pushes to main and manual runs only (macOS minutes cost more, as for `rust-windows`). **Deviation, disclosed:** `playwright-webkit` is `continue-on-error` - the suite was written against Chromium, so WebKit-only failures are expected to need triage; WP4 (UI redesign, "one look on both webviews") makes it blocking. WebKit is opt-in through `PW_WEBKIT=1` so the existing jobs are unchanged. `release.yml`: `release-macos` builds the `.dmg`, runs the smoke test, writes a SHA-256 beside it and publishes to the same release (portable shell: macOS's bash is 3.2, no `mapfile`). |
+| 6.6 Bundle | `tauri.macos.conf.json` (`app` and `dmg`, minimum macOS 13.0 - approved by the Programme Sponsor with the design - and ad-hoc signing) and `Info.plist` (`NSMicrophoneUsageDescription`). `tauri.conf.json` is unchanged, so Windows still builds only NSIS. |
+| 6.7 GIA | `engineering_tools_for()` returns the Windows process names on Windows and an empty map elsewhere, so a Mac reports "no tools observable" instead of every tool "not running". `LocalResourceObserver` takes the map as an optional argument; existing tests pass it explicitly. |
+| 6.8 Setup script | `scripts/setup-dev-environment.sh` with `--doctor` (reports only) and Node 18 / Python 3.12 minimums, compared in plain bash arithmetic (not `sort -V`; review finding 1). shellcheck clean; `--doctor` exercised in Linux (correctly reports npm and cargo missing there). |
+| 6.9 Pre-check | `post_commit_precheck.py`: a bold-label block now ends at the next bold label; test added. |
+| **Not in the design - added** | `scripts/smoke_unix_sidecar.py`, run by `rust-macos` and `release-macos`: with the real built sidecar it checks a `platform.status` answer, that graceful stop ends the tree and leaves no `_MEI*` directory, that a force-killed host's backend (stdin held open, so only the watchdog can end it) ends its whole tree with no `_MEI*` left, and that a group kill ends the tree. |
+| Linux evidence (Docker) | **Real PyInstaller 6.22 onefile sidecar built in `python:3.12-slim` and the smoke test passed with `--expect-tree`: the group held 2 processes** (bootloader plus forked interpreter - confirming 6.1 on a real binary), the answer came back, graceful stop and the orphan case both ended the whole tree with no `_MEI*` left, group kill ended it. Rust (`rust:1` with Tauri's Linux packages): `cargo fmt --check`, `clippy --tests -D warnings` clean, `cargo test` 15 passed including the 3 new process-group tests. Python: ruff clean, version sync, pytest **888 passed**, validator 0 errors, shellcheck clean. |
+| Windows evidence | pytest **884 passed, 4 skipped** (POSIX-only tests skip), ruff clean, validator 0 errors (303 warnings, unchanged), `cargo test` 19 passed (+1 ignored), `cargo fmt --check` and clippy `-D warnings` clean, Playwright 26/26. The ignored live harness for the Windows job object was not re-run: only the order of two calls inside `wait_until` changed there, covered by the existing shutdown tests. |
+| **Not verified, and why** | Everything in 6.10 needs a real Mac (Mac visit 1). Also unverified: the three new macOS CI jobs and the `release-macos` job have never run (they first run on the push; a failure there is fixed forward and reported), the Tauri spawn path under a real `.app` bundle, and the WebKit results. The Linux run proves the process-group logic and the PyInstaller behaviour on Linux; macOS differs in details (`pgrep -g`, temp paths, signing). |
+
+# 15. WP2b Implementation Review Record
+
+**Review 1** (Antigravity CLI, Gemini, through `run_reviewer.py`; 2026-10-08T10:2xZ, `sender: reviewer`): **Fail**.
+
+| # | Finding | Engineering Implementer assessment | Disposition |
+|---|---|---|---|
+| 1 (High) | `setup-dev-environment.sh` uses `sort -V`; macOS's older BSD `sort` may not support it, breaking the script on macOS | **Accepted as a precaution.** Whether a given macOS `sort` has `-V` could not be checked here (no Mac), so the dependency is removed rather than argued about | Version comparison rewritten in plain bash arithmetic (bash 3.2 syntax); ten cases checked, shellcheck clean |
+| 2 (Medium) | The orphan check in the smoke test could pass if the backend had crashed on its own before the host was killed | **Correct** | The smoke test now asserts the backend is alive and its group non-empty just before the host is killed (and before the group kill) |
+| 3 (Info) | The claim that `os.kill(pid, 0)` on Windows calls `TerminateProcess` is incorrect for modern Python; it is an existence check | **Both statements are wrong.** Signal 0 is `CTRL_C_EVENT`; the call sends a Ctrl+C to a console process group. POSIX-only stands | Wording corrected in the EIP, the module docstring and a test comment |
+| 4 (Info) | `lib.rs` changes are safe: `wait_until` reaps the zombie leader, `adopt` refuses the host's own group, the Windows fallback is preserved | Agreed | None |
+| 5 (Info) | The provided pytest, ruff and validator checks pass; the Docker and Windows evidence could not be reproduced | Stated in Section 14 | None |
+
+**Review 2 - re-review** (Antigravity CLI, Gemini; 2026-10-08T10:4xZ, `sender: reviewer`): **Pass**, all Info. `version_at_least` is plain bash arithmetic valid in bash 3.2 and nothing else in the script is missing on stock macOS; the two new smoke assertions remove the false-pass path and the orphan test is sound; it agreed that signal 0 is `CTRL_C_EVENT` on Windows, so the watchdog stays POSIX-only; its local pytest, ruff and validator runs passed. **Process note, disclosed:** it needed four resumes (refused: `dir`, a `cat` of its own task log, a `cat` with a quoted absolute path) and, once finished, gave its Pass in its reply without recording it; a final resume made it record the verdict, and the Engineering Implementer wrote no reviewer entry. **Caveats:** a single reviewer with no web access; it cannot run any macOS or Docker evidence.

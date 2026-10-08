@@ -8,6 +8,7 @@ telemetry. This module is GIA's first real observability slice.
 
 import logging
 import os
+import sys
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -46,6 +47,19 @@ ENGINEERING_TOOLS: dict[str, tuple[str, ...]] = {
     "githubDesktop": ("GitHubDesktop.exe",),
     "chatgpt": ("ChatGPT.exe", "ChatGPT Classic.exe"),
 }
+
+
+def engineering_tools_for(platform: str | None = None) -> dict[str, tuple[str, ...]]:
+    """The engineering tools GIA can observe on `platform` (default: this one).
+
+    ESR-0061 WP2b, EBG-0162: the names above are Windows process names. They
+    would never match on macOS, so GIA would report every tool as "not
+    running" - a wrong observation, not an honest one. Until macOS names are
+    verified on a real Mac (Mac visit 1), other platforms observe no tools, and
+    the snapshot's map is empty: "not observable here".
+    """
+
+    return dict(ENGINEERING_TOOLS) if (platform or sys.platform) == "win32" else {}
 
 
 @dataclass(frozen=True)
@@ -155,8 +169,13 @@ class LocalResourceObserver:
     values it reads; it is a pure read-and-report boundary.
     """
 
-    def __init__(self, reader: ResourceReader | None = None) -> None:
+    def __init__(
+        self,
+        reader: ResourceReader | None = None,
+        engineering_tools: dict[str, tuple[str, ...]] | None = None,
+    ) -> None:
         self._reader = reader or PsutilResourceReader()
+        self._engineering_tools = engineering_tools_for() if engineering_tools is None else engineering_tools
 
     def snapshot(self) -> GiaSnapshot:
         """Return a real, current local resource snapshot.
@@ -172,7 +191,7 @@ class LocalResourceObserver:
         running_names = self._reader.running_process_names()
         engineering_tools_running = {
             tool: any(name in running_names for name in candidates)
-            for tool, candidates in ENGINEERING_TOOLS.items()
+            for tool, candidates in self._engineering_tools.items()
         }
         snapshot = GiaSnapshot(
             cpu_percent=cpu_percent,

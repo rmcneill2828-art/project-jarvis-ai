@@ -40,6 +40,8 @@
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
+#[cfg(unix)]
+use std::os::unix::process::CommandExt;
 use std::path::Path;
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -208,7 +210,13 @@ impl ProcessGuard {
     fn wait_until(&self, deadline: Instant, mut child_exited: impl FnMut() -> bool) -> bool {
         loop {
             let done = match (&self.tree, &self.process) {
-                (Some(tree), _) => tree.is_empty(),
+                // The tree alone decides. `child_exited` is still called, for
+                // its side effect: `try_wait` reaps the direct child, and on
+                // Unix a zombie group leader keeps its group from reading empty.
+                (Some(tree), _) => {
+                    let _ = child_exited();
+                    tree.is_empty()
+                }
                 (None, Some(process)) => child_exited() || process.wait(Duration::ZERO),
                 (None, None) => child_exited(),
             };
@@ -394,11 +402,179 @@ mod process_tree {
     }
 }
 
-/// Non-Windows stand-in: JARVIS ships a Windows installer only, and Unix
-/// process groups are out of scope (EIP-ESR0060-002 Section 4E). Attaching
-/// always fails, so every `ProcessGuard` is empty and shutdown behaves as
-/// before. Exists so the crate still builds and tests on Linux CI.
-#[cfg(not(windows))]
+/// Unix process groups (ESR-0061 WP2b, EBG-0162, EIP-ESR0061-002 Section 6.2).
+///
+/// The host spawns the backend as a process-group leader (`process_group(0)`),
+/// so the group is the whole tree: PyInstaller's resident bootloader and the
+/// interpreter it forks (the bootloader creates no group of its own). The host
+/// holds the leader's `Child` until it is reaped, so the leader's PID cannot be
+/// reused while `killpg` can still be called. A host `SIGKILL` cannot run any
+/// of this - the backend's orphan watchdog covers that case.
+#[cfg(unix)]
+mod process_tree {
+    use std::io;
+    use std::time::{Duration, Instant};
+
+    fn check(rc: libc::c_int) -> io::Result<()> {
+        if rc == 0 {
+            Ok(())
+        } else {
+            Err(io::Error::last_os_error())
+        }
+    }
+
+    fn pid_of(pid: u32) -> io::Result<libc::pid_t> {
+        libc::pid_t::try_from(pid).map_err(|_| io::Error::other("PID out of range"))
+    }
+
+    pub struct ProcessTree {
+        pgid: libc::pid_t,
+    }
+
+    impl ProcessTree {
+        /// Fails unless `pid` really leads its own group: killing a group the
+        /// backend merely belongs to would kill the host as well.
+        pub fn adopt(pid: u32) -> io::Result<Self> {
+            let pid = pid_of(pid)?;
+            // SAFETY: getpgid takes no pointers and has no memory effects.
+            let pgid = unsafe { libc::getpgid(pid) };
+            if pgid < 0 {
+                return Err(io::Error::last_os_error());
+            }
+            if pgid != pid {
+                return Err(io::Error::other(
+                    "backend is not a process-group leader; refusing to adopt its group",
+                ));
+            }
+            Ok(ProcessTree { pgid })
+        }
+
+        /// True once no process remains in the group (an unreaped zombie
+        /// leader still counts, so the caller reaps its child first).
+        pub fn is_empty(&self) -> bool {
+            // SAFETY: killpg with signal 0 only tests for existence.
+            let rc = unsafe { libc::killpg(self.pgid, 0) };
+            rc != 0 && io::Error::last_os_error().raw_os_error() == Some(libc::ESRCH)
+        }
+
+        pub fn terminate(&self) -> io::Result<()> {
+            // SAFETY: killpg takes no pointers; the group is the backend's own.
+            check(unsafe { libc::killpg(self.pgid, libc::SIGKILL) })
+        }
+    }
+
+    /// The direct child (PyInstaller's bootloader for the sidecar).
+    pub struct ProcessHandle {
+        pid: libc::pid_t,
+    }
+
+    impl ProcessHandle {
+        pub fn open(pid: u32) -> io::Result<Self> {
+            let pid = pid_of(pid)?;
+            // SAFETY: signal 0 only tests for existence.
+            check(unsafe { libc::kill(pid, 0) })?;
+            Ok(ProcessHandle { pid })
+        }
+
+        /// Whether the process is gone, polling for up to `timeout`.
+        pub fn wait(&self, timeout: Duration) -> bool {
+            let deadline = Instant::now() + timeout;
+            loop {
+                // SAFETY: signal 0 only tests for existence.
+                let gone = unsafe { libc::kill(self.pid, 0) } != 0
+                    && io::Error::last_os_error().raw_os_error() == Some(libc::ESRCH);
+                if gone {
+                    return true;
+                }
+                if Instant::now() >= deadline {
+                    return false;
+                }
+                std::thread::sleep(Duration::from_millis(10));
+            }
+        }
+
+        pub fn terminate(&self) -> io::Result<()> {
+            // SAFETY: kill takes no pointers.
+            check(unsafe { libc::kill(self.pid, libc::SIGKILL) })
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use std::os::unix::process::CommandExt;
+        use std::process::{Child, Command};
+
+        /// A shell leading its own group, with a background `sleep` beside its
+        /// foreground one: a two-process tree like the packaged backend's.
+        fn spawn_tree() -> Child {
+            Command::new("sh")
+                .args(["-c", "sleep 60 & sleep 60"])
+                .process_group(0)
+                .spawn()
+                .expect("spawn sh")
+        }
+
+        fn wait_until(mut done: impl FnMut() -> bool) -> bool {
+            let deadline = Instant::now() + Duration::from_secs(5);
+            while Instant::now() < deadline {
+                if done() {
+                    return true;
+                }
+                std::thread::sleep(Duration::from_millis(20));
+            }
+            false
+        }
+
+        #[test]
+        fn terminating_the_group_ends_every_process_in_it() {
+            let mut child = spawn_tree();
+            let tree = ProcessTree::adopt(child.id()).expect("leader adopts");
+            assert!(!tree.is_empty());
+
+            tree.terminate().expect("killpg");
+
+            // The leader is a zombie until reaped; reaping is the caller's job
+            // (BackendHandle::shutdown does it through wait_until).
+            assert!(wait_until(|| {
+                let _ = child.try_wait();
+                tree.is_empty()
+            }));
+        }
+
+        #[test]
+        fn a_process_that_does_not_lead_its_group_is_refused() {
+            let mut child = Command::new("sleep")
+                .arg("60")
+                .spawn()
+                .expect("spawn sleep");
+            let result = ProcessTree::adopt(child.id());
+            let _ = child.kill();
+            let _ = child.wait();
+            assert!(result.is_err(), "must not adopt the host's own group");
+        }
+
+        #[test]
+        fn the_handle_sees_the_direct_child_end() {
+            let mut child = Command::new("sleep")
+                .arg("60")
+                .spawn()
+                .expect("spawn sleep");
+            let handle = ProcessHandle::open(child.id()).expect("open");
+            assert!(!handle.wait(Duration::ZERO));
+
+            handle.terminate().expect("kill");
+            let _ = child.wait();
+
+            assert!(handle.wait(Duration::from_secs(5)));
+        }
+    }
+}
+
+/// Stand-in for platforms with neither job objects nor process groups.
+/// Attaching always fails, so every `ProcessGuard` is empty and shutdown
+/// behaves as before. Exists so the crate still builds everywhere.
+#[cfg(not(any(windows, unix)))]
 mod process_tree {
     use std::io;
     use std::time::Duration;
@@ -406,7 +582,7 @@ mod process_tree {
     fn unsupported() -> io::Error {
         io::Error::new(
             io::ErrorKind::Unsupported,
-            "process-tree termination is Windows-only",
+            "process-tree termination is not supported on this platform",
         )
     }
 
@@ -710,10 +886,17 @@ fn spawn_backend(
 ) -> Result<BackendProcess, String> {
     if cfg!(debug_assertions) {
         spawn_dev_backend(app_handle, shared_state)
+    } else if cfg!(unix) {
+        spawn_unix_sidecar_backend(app_handle, shared_state)
     } else {
         spawn_sidecar_backend(app_handle, shared_state)
     }
 }
+
+/// Environment variable carrying the host's PID to the backend, whose orphan
+/// watchdog (`jarvis/interfaces/orphan_watchdog.py`, ESR-0061 WP2b) ends the
+/// backend if the host disappears.
+const HOST_PID_ENV: &str = "JARVIS_HOST_PID";
 
 fn spawn_dev_backend(
     app_handle: &AppHandle,
@@ -729,12 +912,32 @@ fn spawn_dev_backend(
         .parent()
         .ok_or_else(|| "Failed to resolve repository root from CARGO_MANIFEST_DIR.".to_string())?;
 
-    let mut child = Command::new("python")
+    let mut command = Command::new("python");
+    command
         .args(["-m", "jarvis", "--ipc-stdio"])
-        .current_dir(repo_root)
+        .current_dir(repo_root);
+    spawn_child_backend(command, app_handle, shared_state)
+}
+
+/// Starts `command` as the backend and wires its pipes to a reader thread.
+/// Shared by the dev backend and, on Unix, the packaged sidecar (ESR-0061
+/// WP2b): both are plain `std::process::Child` processes, so the host holds
+/// the child handle from spawn and, on Unix, can make the child a process-
+/// group leader before it runs - which `tauri-plugin-shell` cannot do, and
+/// which `setpgid` cannot do after `exec` (EIP-ESR0061-002 Section 6.2).
+fn spawn_child_backend(
+    mut command: Command,
+    app_handle: &AppHandle,
+    shared_state: SharedBackend,
+) -> Result<BackendProcess, String> {
+    command
+        .env(HOST_PID_ENV, std::process::id().to_string())
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
-        .stderr(Stdio::inherit())
+        .stderr(Stdio::inherit());
+    #[cfg(unix)]
+    command.process_group(0);
+    let mut child = command
         .spawn()
         .map_err(|e| format!("Failed to start JARVIS backend process: {e}"))?;
     // Immediately, so the job takes the venv launcher's real interpreter.
@@ -773,6 +976,28 @@ fn spawn_dev_backend(
     })
 }
 
+/// Where Tauri places an `externalBin` sidecar: beside the application
+/// executable (`Contents/MacOS/` in a macOS bundle), under its plain name -
+/// the target triple is dropped at bundle time.
+fn unix_sidecar_path() -> Result<std::path::PathBuf, String> {
+    let exe = std::env::current_exe()
+        .map_err(|e| format!("Failed to locate the JARVIS application: {e}"))?;
+    let dir = exe
+        .parent()
+        .ok_or_else(|| "The JARVIS application has no parent directory.".to_string())?;
+    Ok(dir.join("jarvis-backend"))
+}
+
+/// Unix packaged sidecar (ESR-0061 WP2b, EBG-0162): spawned directly, in its
+/// own process group, so the whole tree - PyInstaller's resident bootloader
+/// and the interpreter it forks - can be ended with one `killpg`.
+fn spawn_unix_sidecar_backend(
+    app_handle: &AppHandle,
+    shared_state: SharedBackend,
+) -> Result<BackendProcess, String> {
+    spawn_child_backend(Command::new(unix_sidecar_path()?), app_handle, shared_state)
+}
+
 fn spawn_sidecar_backend(
     app_handle: &AppHandle,
     shared_state: SharedBackend,
@@ -780,7 +1005,8 @@ fn spawn_sidecar_backend(
     let sidecar_command = app_handle
         .shell()
         .sidecar("jarvis-backend")
-        .map_err(|e| format!("Failed to resolve JARVIS backend sidecar: {e}"))?;
+        .map_err(|e| format!("Failed to resolve JARVIS backend sidecar: {e}"))?
+        .env(HOST_PID_ENV, std::process::id().to_string());
 
     let (receiver, child) = sidecar_command
         .spawn()

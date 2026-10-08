@@ -70,7 +70,11 @@ def eip_commit_contents(eip_text: str, heading: str) -> set[str]:
     if start == -1:
         raise ValueError(f"heading not found in EIP: {heading}")
     rest = eip_text[start + len(heading):]
-    end = re.search(r"(?m)^#{1,6}\s", rest)
+    # A bold label (`**12.4 Commit contents`) also ends at the next line that
+    # starts with another bold label - later bold paragraphs in the same
+    # section are not part of the list (ESR-0061 WP2b, from the WP2a-fix review).
+    stop = r"(?m)^(?:#{1,6}\s|\*\*)" if heading.startswith("**") else r"(?m)^#{1,6}\s"
+    end = re.search(stop, rest)
     block = rest[: end.start()] if end else rest
     # A "Not changed" note names paths the build left alone: stop there, but only
     # once a listed path has been seen, so a leading note cannot empty the list.
