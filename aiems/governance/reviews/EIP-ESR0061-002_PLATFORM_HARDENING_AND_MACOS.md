@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-002 |
 | Title | Engineering Implementation Package: WP2 Platform Hardening and macOS |
-| Version | 0.4 |
-| Status | Draft - WP2a built; implementation review Pass; awaiting Programme Sponsor approval of the built result |
+| Version | 0.7 |
+| Status | Draft - WP2a committed (b14c6a0); WP2a-fix built, implementation review Pass, awaiting Programme Sponsor approval of the built result |
 | Session | ESR-0061 |
 | Work Package | WP2 (WP2a, WP2b) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP2 |
@@ -145,7 +145,34 @@ Not changed (the design listed them; the build did not need them): `jarvis/ident
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.7 | 8 October 2026 | Claude Engineering Implementer | WP2a-fix design approved (Programme Sponsor, chat), built; implementation review Pass (Gemini); Linux Docker run 871 passed. Awaiting approval of the built result. |
+| 0.6 | 8 October 2026 | Claude Engineering Implementer | WP2a-fix design review Conditional Pass (Gemini): "Not changed" cut now applies only after the first listed path; two tests added (12.1, 12.2, 12.6). Awaiting Programme Sponsor design approval. |
+| 0.5 | 8 October 2026 | Claude Engineering Implementer | Added Section 12, WP2a-fix: three defects in `scripts/post_commit_precheck.py` found by its first code-commit run and confirmed by the WP2a post-commit review (Pass, Info). Design awaiting review. WP2a post-commit review Pass recorded. |
 | 0.4 | 6 October 2026 | Claude Engineering Implementer | WP2a implementation review Pass (Gemini only); its one note checked, which led to converting a blank agent-task error; Linux CI steps run in Docker on the final tree (866 passed). Commit contents now include jarvis/agents/contracts.py. Awaiting Programme Sponsor approval of the built result. |
 | 0.3 | 6 October 2026 | Claude Engineering Implementer | WP2a design approved (Programme Sponsor, chat) and built; build record 8A: privacy defect found and fixed (restore errors echoed memory content), fast-lane gap corrected, logging stricter than designed (type and location, never the message), item 8 closed by reasoning, live EBG-0158 checks pass, 0 npm vulnerabilities. Final commit contents fixed (Section 8). Awaiting implementation review. |
 | 0.2 | 6 October 2026 | Claude Engineering Implementer | WP2a design review Fail (Gemini): backup checkpoint step removed (backups are logical); audit keeps type and transient flag, full message to backend.log; fast-lane broken pipe ends the loop; PID-reuse check removed - the race is impossible while the child's handle is held, verified in source. Awaiting re-review. |
 | 0.1 | 6 October 2026 | Claude Engineering Implementer | Initial draft: WP2 split into WP2a (shared hardening and dependency settlement, full design) and WP2b (macOS, outline pending PyInstaller verification). Programme Sponsor override of D19 for WP2 recorded (Gemini-only review). |
+
+# 12. WP2a-fix - Post-Commit Pre-Check Defects
+
+Found on the pre-check's first code-commit run (WP2a, `b14c6a0`) and agreed by the WP2a post-commit review (Antigravity, Pass, Info finding). The commit was correct; the script was wrong. Risk class: low (a read-only reporting script), reviewed by Antigravity under the D19 override for WP2.
+
+**12.1 Defects and fixes** (all in `scripts/post_commit_precheck.py`)
+
+| # | Defect | Fix |
+|---|---|---|
+| 1 | `_PATH_TOKEN` omits `.lock`, so `src-tauri/Cargo.lock` reads as unlisted. | Add `lock`, `sh`, `ps1`, `bat`, `html`, `css` to the extension list, so WP2b's setup script and bundle files are recognised too. |
+| 2 | `eip_commit_contents` reads the whole block, including a "Not changed" paragraph, so paths the design listed but the build did not change count as listed. | End the list at the first line that starts with "Not changed" **and comes after at least one listed path** (v0.6, design review finding 2: a leading "Not changed" line must not empty the list). From WP2b on, EIPs put "Not changed" under its own heading, which the parser already excludes; the line rule only keeps existing EIPs such as Section 8 working. |
+| 3 | `advisory_figures` compares every "N passed" or "N skipped" in the commit message with pytest's count, so cargo's "19 passed" and the Linux "866 passed" are flagged wrongly. | Compare only a figure that follows the word "pytest" within the same clause. Unlabelled figures are not compared, and the advisory line says how many were left out. |
+
+**12.2 Tests** (`scripts/tests/test_post_commit_precheck.py`): a `Cargo.lock` path is parsed; a "Not changed" paragraph is excluded; a cargo or Linux figure raises no advisory; a pytest-labelled mismatch still does; a block with no "Not changed" paragraph is read whole; a "Not changed" line before the first path does not truncate the list; a message with counts but no "pytest" word raises no advisory.
+
+**12.3 Evidence pack.** No new dependency, OS permission, feature or CI change. Platform coverage: pure Python, identical on Windows and Linux; the Linux check runs in Docker before the commit. Re-running the pre-check on `b14c6a0` after the fix must give PASS.
+
+**12.4 Commit contents (expected).** Changed: `scripts/post_commit_precheck.py`, `scripts/tests/test_post_commit_precheck.py`, `aiems/governance/reviews/EIP-ESR0061-002_PLATFORM_HARDENING_AND_MACOS.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
+
+**12.5 Questions for the Engineering Reviewer.** Is ending the block at "Not changed" robust enough, or should the list carry an explicit end marker? Is comparing only "pytest"-labelled figures the right balance between noise and missed mismatches?
+
+**12.6 Design review record** (Antigravity CLI, Gemini, through `run_reviewer.py`; 2026-10-08T08:2xZ, `sender: reviewer`): **Conditional Pass**. (1, Info) the three fixes address the defects and work on Section 8's real text. (2, Medium) truncating at the first "Not changed" line is brittle if that line precedes the list - **accepted**, fixed as above; it also suggested a separate heading, adopted as the convention for new EIPs. Q2: pytest-labelled comparison is the right balance for an advisory check. (3, Info) edge cases: a message without "pytest" skips the comparison, acceptable for an advisory. (4, Low) two extra tests - **accepted** (12.2).
+
+**12.7 Implementation review** (Antigravity CLI, Gemini, through `run_reviewer.py`; 2026-10-08T08:4xZ, `sender: reviewer`): **Pass**, all Info. The three fixes are as designed including the accepted finding; the tests listed in 12.2 are present and pass; `eip_commit_contents` on Section 8 matches the 24 files of `b14c6a0` and no false advisory lines remain; no regressions. Two resumes: `python -m pytest` with the path before `-q` (refused; the allow-list wants `-q` first) and `git show --format` with escaped quotes (refused). **Engineering Implementer's own evidence:** the Linux run in `python:3.12-slim` (ruff clean, version sync, pytest 871 passed, validator 0 errors) and the real-data check of the fixed functions against `b14c6a0`.

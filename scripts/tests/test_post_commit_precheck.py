@@ -28,6 +28,30 @@ def test_eip_commit_contents_reads_only_the_named_block():
     }
 
 
+def _block(*body: str) -> str:
+    return chr(10).join(["## 8. Commit Contents", "", *body, ""])
+
+
+def test_eip_commit_contents_reads_lock_and_script_files():
+    text = _block("`src-tauri/Cargo.lock`, `scripts/setup.sh`")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"src-tauri/Cargo.lock", "scripts/setup.sh"}
+
+
+def test_eip_commit_contents_stops_at_a_not_changed_paragraph():
+    text = _block("Changed: `a.py`.", "", "Not changed (listed by the design): `src/lib.rs`.", "", "## 9. Next")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"a.py"}
+
+
+def test_eip_commit_contents_reads_a_block_with_no_not_changed_paragraph_whole():
+    text = _block("`a.py`", "`b.py`")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"a.py", "b.py"}
+
+
+def test_a_leading_not_changed_line_does_not_empty_the_list():
+    text = _block("Not changed: nothing.", "`a.py`")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"a.py"}
+
+
 def test_parse_pytest_counts_failures_and_errors():
     assert pc.parse_pytest("3 failed, 759 passed, 1 skipped, 2 errors in 51s") == {
         "passed": 759,
@@ -56,7 +80,7 @@ def test_latest_submit_response_ref_takes_the_last_gate(monkeypatch, tmp_path):
 
 def test_advisory_figures_report_differences_without_failing():
     notes = pc.advisory_figures(
-        "pytest 759 passed, 1 skipped; validator 0 errors, 348 warnings",
+        "pytest 759 passed; validator 0 errors, 348 warnings",
         {"passed": 790, "failed": 0, "errors": 0, "skipped": 1},
         (0, 302),
     )
@@ -64,6 +88,13 @@ def test_advisory_figures_report_differences_without_failing():
         "commit message says 759 passed; actual 790",
         "commit message says 348 warnings; validator reports 302",
     ]
+
+
+def test_advisory_ignores_cargo_and_linux_figures_but_not_pytest_ones():
+    counts = {"passed": 865, "failed": 0, "errors": 0, "skipped": 1}
+    assert pc.advisory_figures("cargo test 19 passed; Linux 866 passed; pytest 865 passed", counts, None) == []
+    assert pc.advisory_figures("19 passed", counts, None) == []
+    assert pc.advisory_figures("pytest 800 passed", counts, None) == ["commit message says 800 passed; actual 865"]
 
 
 def _fake_git(outputs: dict[tuple[str, ...], str]):

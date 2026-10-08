@@ -32,7 +32,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TRANSCRIPT_DIR = REPO_ROOT / ".aiems-exchange" / "transcript"
-_PATH_TOKEN = re.compile(r"`([^`\s]+\.(?:md|py|json|jsx|js|rs|toml|yml|yaml|txt))`")
+_PATH_TOKEN = re.compile(r"`([^`\s]+\.(?:md|py|json|jsx|js|rs|toml|yml|yaml|txt|lock|sh|ps1|bat|html|css))`")
 
 
 @dataclass
@@ -72,6 +72,13 @@ def eip_commit_contents(eip_text: str, heading: str) -> set[str]:
     rest = eip_text[start + len(heading):]
     end = re.search(r"(?m)^#{1,6}\s", rest)
     block = rest[: end.start()] if end else rest
+    # A "Not changed" note names paths the build left alone: stop there, but only
+    # once a listed path has been seen, so a leading note cannot empty the list.
+    first_path = _PATH_TOKEN.search(block)
+    if first_path:
+        note = re.search(r"(?m)^Not changed", block[first_path.end():])
+        if note:
+            block = block[: first_path.end() + note.start()]
     return set(_PATH_TOKEN.findall(block))
 
 
@@ -107,7 +114,9 @@ def run(command: list[str]) -> tuple[int, str]:
 
 def advisory_figures(message: str, pytest_counts: dict[str, int], validator: tuple[int, int] | None) -> list[str]:
     notes = []
-    for number, word in re.findall(r"(\d+) (passed|skipped)", message):
+    # Only a figure that follows the word "pytest" in the same clause is compared;
+    # cargo's and the Linux run's counts are different suites.
+    for number, word in re.findall(r"pytest[^;,.\n]{0,30}?(\d+) (passed|skipped)", message):
         actual = pytest_counts[word]
         if int(number) != actual:
             notes.append(f"commit message says {number} {word}; actual {actual}")

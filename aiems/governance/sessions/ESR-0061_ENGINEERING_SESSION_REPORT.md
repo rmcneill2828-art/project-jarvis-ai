@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | ESR-0061 |
 | Title | Engineering Session Report |
-| Version | 0.6 |
+| Version | 0.7 |
 | Status | Open |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -75,10 +75,11 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 |----|-------------|--------|
 | WP0A | Repository Synchronisation | Complete |
 | WP0B | Engineering Session Initialisation | Complete |
-| WP1a | Governance enactment ([[EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING|EIP-ESR0061-001]] Section 5) | Complete - `1978070`, CI green; post-commit High overridden by the Programme Sponsor. Personal-data follow-up `9e6c1ea`, CI green; its post-commit review pending |
+| WP1a | Governance enactment ([[EIP-ESR0061-001_RELEASE_GATE_GOVERNANCE_AND_STREAMLINING|EIP-ESR0061-001]] Section 5) | Complete - `1978070`, CI green; post-commit High overridden by the Programme Sponsor. Personal-data follow-up `9e6c1ea`, CI green, post-commit review Pass |
 | WP1b | Release gate (EBG-0130, 0066, 0134, 0008) | Complete - `23e95bd`, CI green, post-commit review Pass |
-| WP1c | Delivery tooling and second reviewer (EBG-0169) | Design approved; built; awaiting implementation review |
-| WP2a | Shared hardening and dependency settlement ([[EIP-ESR0061-002_PLATFORM_HARDENING_AND_MACOS|EIP-ESR0061-002]]) | Design approved; built; awaiting implementation review |
+| WP1c | Delivery tooling and second reviewer (EBG-0169) | Complete - `7f1fa93`, `77d50e4` (CI fix), CI green, post-commit review Pass |
+| WP2a | Shared hardening and dependency settlement ([[EIP-ESR0061-002_PLATFORM_HARDENING_AND_MACOS|EIP-ESR0061-002]]) | Complete - `b14c6a0`, CI green, post-commit review Pass (Info: pre-check defects) |
+| WP2a-fix | Post-commit pre-check defects (EIP-ESR0061-002, WP2a-fix section) | Design approved; built; implementation review Pass; awaiting approval of the built result |
 | WP2b | macOS (EBG-0162) and non-Windows setup (EBG-0054) | Outlined; design waits on a PyInstaller macOS check |
 | Session-wide | Independent repository verification and baseline determination | Not started - after Mac visit 1 |
 
@@ -88,6 +89,7 @@ Session A of the go-live plan: install the release gate, enact the 2 October 202
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.7 | 8 October 2026 | Claude Engineering Implementer | Day 2. WP1c and WP2a closed (post-commit reviews Pass; the pre-check script's three defects noted as Info). WP2a-fix designed (Conditional Pass, fixed), approved, built and implementation-reviewed (Pass); Linux Docker run 871 passed. Awaiting approval of the built result. |
 | 0.6 | 6 October 2026 | Claude Engineering Implementer | WP1 closed (WP1c-fix 77d50e4, CI green). WP2 designed (Gemini-only review, Programme Sponsor override of D19), design approved, WP2a built (EIP-ESR0061-002 v0.3); awaiting implementation review. |
 | 0.5 | 6 October 2026 | Claude Engineering Implementer | WP1c committed (7f1fa93); post-commit review Pass; CI failed on Linux (addendum matched first) - fix prepared as WP1c-fix. |
 | 0.4 | 6 October 2026 | Claude Engineering Implementer | WP1b and the personal-data commit closed (CI green, post-commit reviews Pass). WP1c designed, design review Fail then Pass after fixes, design approved by the Programme Sponsor, and built (EIP-ESR0061-001 v0.8); awaiting implementation review. |
