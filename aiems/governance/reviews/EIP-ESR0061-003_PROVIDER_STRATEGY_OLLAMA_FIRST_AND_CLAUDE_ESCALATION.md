@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-003 |
 | Title | Engineering Implementation Package: WP3 Provider Strategy, Ollama First and Claude Escalation |
-| Version | 0.10 |
-| Status | Draft - design approved (S1-S6, 8 October 2026); WP3a (6cdbedb) and WP3b (c7d2c93) committed and post-commit reviewed (Pass); live API checks run on 8 October 2026 (refusal, overload and the Console limit not yet exercised); WP3c built under ESR-0061 on the Programme Sponsor's direction, implementation review Conditional Pass (one Medium fixed, one Info accepted); Mac measurements pending Mac visit 1 |
+| Version | 0.11 |
+| Status | Draft - design approved (S1-S6, 8 October 2026); WP3a (6cdbedb), WP3b (c7d2c93) and WP3c (78afcb7) committed and post-commit reviewed (Pass); live Claude checks run on 8 October 2026 (refusal, overload and the Console limit not yet exercised); Mac measurements pending Mac visit 1 |
 | Session | ESR-0061 (drafting only). WP3 belongs to Session B (WP3-WP4) in the plan; its build and commits happen when that session opens. The EIP identifier does not change when it does |
 | Work Package | WP3 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 5 and Section 7, WP3 |
@@ -146,6 +146,7 @@ A refusal returns the existing user-facing denied reply. Tests include a Child a
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.11 | 8 October 2026 | Claude Engineering Implementer | WP3c committed (`78afcb7`) and post-commit review Pass (Section 25). Open items from WP3 listed in Section 26 at the Programme Sponsor's request. |
 | 0.10 | 8 October 2026 | Claude Engineering Implementer | WP3c implementation review Conditional Pass (Gemini, one Medium, one Info, two resumes to keep it to allowed commands). The Medium - a download whose thread could not start left the download state active for good - is fixed with a test. Section 24 review record; evidence counts in Section 22 updated for the fix (Windows 1160, Linux 1164). |
 | 0.9 | 8 October 2026 | Claude Engineering Implementer | WP3c built (Programme Sponsor: "please start WP3c", 8 October 2026): Ollama status, hardware recommendation, guided install, allow-listed background download with progress and cancel, the model choice, the Local AI panel; measurements on the household PC. Section 22 build record, Section 23 commit contents. Mac measurements pending Mac visit 1. |
 | 0.8 | 8 October 2026 | Claude Engineering Implementer | WP3b committed (`c7d2c93`) and post-commit review Pass (Section 20). Live Anthropic checks run with the Programme Sponsor's key (Section 21): API facts confirmed, real call and end-to-end escalation work, cost about US$0.002 of the US$2 allowed. Two corrections to Sections 17 and 19 found by that review: the Windows test count (1068, not 1072) and the wording of the policy rule's letter-case handling. |
@@ -264,3 +265,24 @@ New: `jarvis/config/ollama_models.py`, `jarvis/interfaces/ollama_setup.py`, `jar
 **Review 1** (Antigravity CLI, Gemini, through `run_reviewer.py`; 2026-10-08T18:3xZ, `sender: reviewer`, two resumes - it twice piped `cat` into `awk`, which is refused and aborts a run): **Conditional Pass.** It found the allow-list strictly enforced, nothing downloaded or executed or installed by JARVIS, the roles securely gated, the memory-budget logic matching the table and the caveats honestly stated, and the file lists matching. **Medium:** in `PullManager.start`, `thread.start()` ran after `active` was set, so if the thread could not start `active` stayed true forever and blocked every later download - **fixed** (the state is reset and the error re-raised) with a test that makes the thread fail to start and then starts a download. **Info:** the `ollama.pullFinished` notification is sent after the lock is released, so a download started in that instant could see the previous download's finished event while the new one is active - **accepted, not changed**: the notification is sent outside the lock on purpose, because it writes to the backend's output and holding the state lock across that write could stall the main loop; the consequence is one extra panel refresh, since the panel re-reads the state rather than trusting the event.
 
 **Caveats, disclosed:** a single reviewer, with no web access, and it could not check the live Ollama measurements, the registry facts (tags, sizes, licence) or the behaviour on a Mac. **The fix was made after the review**; it is confirmed by its own test and by the post-commit review, not by a second look at the fixed code before commit. The Windows run (1160 passed, 4 skipped), the Linux run (1164 passed), Playwright (44 passed) and the Rust checks are the Engineering Implementer's own.
+
+# 25. WP3c Post-Commit Record (8 October 2026)
+
+WP3c was committed as `78afcb7` after the Programme Sponsor's real approval (`submit-response` accepted it on the first attempt); the measurement models `qwen3.5:9b` and `llama-guard3:1b` were removed from the household PC at the Programme Sponsor's request. The deterministic pre-check passed every hard check (clean tree, on origin/main, changed files equal Section 23, gated against the parent, pytest 1160 passed and 4 skipped, ruff, validator 0 errors). CI: every job green except `playwright-webkit`, the informational job. Post-commit review (Antigravity, Gemini, `sender: reviewer`, two resumes: its first attempt to record the verdict used single quotes, which the recording command refuses): **Pass, no new findings.** It confirmed that the fix for its Medium finding - a failed `thread.start()` in `PullManager.start` now resets the state and re-raises - is correct and complete and that its test is a real test of it, that the 17 changed files match Section 23, that the commit message is true, that the WP3b post-commit record and the live-check record are consistent with each other and with their two corrections, and that Section 22's measurements and registry facts are stated with honest limits.
+
+# 26. Open Items From WP3 (8 October 2026)
+
+Noted at the Programme Sponsor's request when WP4 started.
+
+| Item | Owner and trigger |
+|---|---|
+| Claude Console spend-limit check: what status and error the Console returns at the limit | Programme Sponsor creates a test workspace with a tiny limit; then about one cent of calls |
+| Live Claude refusal path and HTTP 529 overload | Not provokable safely; covered by injected-transport tests only |
+| Mac model measurements (`scripts/measure_ollama.py` on the household Mac); the half-of-memory rule for Apple Silicon is a prediction until then | Mac visit 1, week of 20 October |
+| Install-location checks for Linux and macOS, and the macOS and Linux branches of the download-page opener | Untested on real machines; CI compiles them |
+| AMD and Intel graphics cards are not detected by the recommendation | Treated as processor-only (a smaller model than possible); no such machine to test |
+| On the 8 GB card the 9B chat model cannot stay loaded beside a moderation model | WP6 chooses: classifier on the processor, a smaller chat model or a larger card; the final measurement with the real moderation model is taken there |
+| STD-0006 and PST-0001 still list the old OpenAI and Gemini keys; the Claude key lives in an environment variable | WP5 (keychain, STD-0006 amendment) |
+| First-run flow around the Local AI panel; the UI half of per-profile memory sharing | WP5 |
+| Restyling of the Ask Claude controls and the Local AI panel | WP4 (this redesign) |
+| Dependabot pull requests (#23, #18 and others) | Open; no WP assigned |
