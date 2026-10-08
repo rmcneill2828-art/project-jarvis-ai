@@ -1208,3 +1208,54 @@ button {
   gap: 8px;
   margin-top: 12px;
 }
+
+/* Local AI setup (ESR-0061 WP3c): functional only; WP4 restyles. */
+.local-ai-panel {
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #dbe3e7;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.88rem;
+}
+
+.local-ai-note {
+  color: #9fb0b8;
+  font-size: 0.8rem;
+}
+
+.local-ai-model {
+  margin-top: 12px;
+}
+
+.local-ai-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.local-ai-panel button {
+  padding: 6px 12px;
+  border: 1px solid rgba(0, 239, 255, 0.4);
+  border-radius: 8px;
+  color: #00efff;
+  background: rgba(0, 239, 255, 0.08);
+  cursor: pointer;
+}
+
+.local-ai-panel button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.local-ai-bar {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.local-ai-bar-fill {
+  height: 100%;
+  background: #00efff;
+  transition: width 0.3s ease;
+}

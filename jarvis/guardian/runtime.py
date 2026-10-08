@@ -17,6 +17,7 @@ from jarvis.interfaces.conversation import (
     ConversationResponse,
 )
 from jarvis.interfaces.escalation import NOT_AVAILABLE_RESPONSE, MeteredCloudConversationProvider
+from jarvis.interfaces.ollama_setup import OllamaSetup
 from jarvis.interfaces.sentinel_agent import AgentOutcome, SentinelGatedAgentService
 from jarvis.interfaces.voice import (
     NOT_CONNECTED_MESSAGE as SPEECH_NOT_CONNECTED_MESSAGE,
@@ -59,11 +60,14 @@ class GuardianRuntime:
         transcription_provider: GuardianTranscriptionProvider | None = None,
         agent_service: SentinelGatedAgentService | None = None,
         escalation_provider: MeteredCloudConversationProvider | None = None,
+        ollama_setup: OllamaSetup | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
         # The cloud route's provider (ESR-0061 WP3b). Used only by escalate(),
         # which only a confirmed escalation reaches - never by converse().
         self._escalation_provider = escalation_provider
+        # Local model setup: status, recommendation, downloads (ESR-0061 WP3c).
+        self._ollama_setup = ollama_setup
         self._conversation_provider = conversation_provider
         self._memory_service = memory_service
         self._speech_provider = speech_provider
@@ -233,6 +237,12 @@ class GuardianRuntime:
         if response.is_model_reply:
             cognitive_core.record_exchange(message, response.message)
         return response
+
+    @property
+    def ollama_setup(self) -> OllamaSetup | None:
+        """Local model setup, or None when the runtime was built without it."""
+
+        return self._ollama_setup
 
     @property
     def escalation_provider(self) -> MeteredCloudConversationProvider | None:

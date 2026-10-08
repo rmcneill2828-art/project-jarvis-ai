@@ -59,6 +59,7 @@ class OllamaProvider:
         self,
         configuration: ProviderConfiguration,
         transport: Transport | None = None,
+        model_source: Callable[[], str] | None = None,
     ) -> None:
         if configuration.credential is not None:
             msg = "Ollama provider configuration must not carry a credential - the local API is unauthenticated."
@@ -68,6 +69,17 @@ class OllamaProvider:
             raise ValueError(msg)
         self._configuration = configuration
         self._transport = transport or _default_transport
+        # Which model to ask for, read on every request, so a model chosen in
+        # the app takes effect without a restart (ESR-0061 WP3c). Falls back to
+        # the configured default when unset or when it returns nothing usable.
+        self._model_source = model_source
+
+    @property
+    def model(self) -> str:
+        """The model the next request will name."""
+
+        chosen = self._model_source() if self._model_source is not None else None
+        return chosen.strip() if isinstance(chosen, str) and chosen.strip() else self._configuration.default_model
 
     @property
     def name(self) -> str:
@@ -86,8 +98,9 @@ class OllamaProvider:
 
     def execute(self, request: ProviderRequest) -> ProviderResponse:
         endpoint = self._configuration.endpoint or DEFAULT_ENDPOINT
+        model = self.model
         payload: dict[str, object] = {
-            "model": self._configuration.default_model,
+            "model": model,
             # EBG-0142 (ESR-0059 WP7): /api/generate takes one prompt, so
             # earlier turns go in as a delimited transcript ahead of the
             # framed current message - in the prompt, never in `system`.
@@ -156,5 +169,5 @@ class OllamaProvider:
             provider_name=self.name,
             content=content,
             capability=request.capability,
-            metadata={"model": self._configuration.default_model},
+            metadata={"model": model},
         )

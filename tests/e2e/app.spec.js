@@ -23,6 +23,7 @@ async function mockTauriIpc(
     restoreMemoryResult,
     memories = [],
     claude = null,
+    ollama = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -42,6 +43,7 @@ async function mockTauriIpc(
       restoreMemoryResult,
       memories,
       claude,
+      ollama,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -116,6 +118,63 @@ async function mockTauriIpc(
             allowance: claudeAllowance,
             message,
           });
+          // Local AI setup (ESR-0061 WP3c). The default is a healthy machine with
+          // the recommended model in use, so other tests see a quiet panel.
+          window.__ollamaCalls = window.__ollamaCalls || [];
+          const model = (tag, label, installed, downloadGb = 3.3) => ({
+            tag,
+            label,
+            downloadGb,
+            note: `${label} note.`,
+            installed,
+          });
+          const ollamaState = (window.__ollamaState = window.__ollamaState || {
+            status: {
+              installed: true,
+              running: true,
+              version: "0.35.0",
+              endpoint: "http://localhost:11434",
+              models: ["qwen3.5:4b"],
+              activeModel: "qwen3.5:4b",
+              activeModelInstalled: true,
+              modelSource: "default",
+              pull: { active: false, model: null, completed: 0, total: 0, status: "idle" },
+              ...(ollama.status || {}),
+            },
+            recommendation: {
+              hardware: { system: "Windows", ramGb: 31.9, gpuGb: 8, unifiedMemory: false, freeDiskGb: 25 },
+              primary: model("qwen3.5:4b", "Qwen3.5 4B (balanced)", true),
+              fallback: model("qwen3.5:2b", "Qwen3.5 2B (light)", false, 2.7),
+              reason: "Chosen for this computer's graphics card (8 GB).",
+              belowMinimum: false,
+              needsDiskGb: 4,
+              diskOk: true,
+              models: [],
+              ...(ollama.recommendation || {}),
+            },
+          });
+          // Copies, as a real IPC reply would be: React ignores a state update that is the same object.
+          if (cmd === "ollama_status") return Promise.resolve(structuredClone(ollamaState.status));
+          if (cmd === "ollama_recommendation") return Promise.resolve(structuredClone(ollamaState.recommendation));
+          if (cmd === "ollama_pull") {
+            window.__ollamaCalls.push(["pull", args.model]);
+            ollamaState.status.pull = { active: true, model: args.model, completed: 0, total: 100, status: "starting" };
+            return Promise.resolve({ started: true, model: args.model });
+          }
+          if (cmd === "ollama_cancel_pull") {
+            window.__ollamaCalls.push(["cancel"]);
+            ollamaState.status.pull = { active: false, model: null, completed: 0, total: 0, status: "cancelled" };
+            return Promise.resolve({ cancelled: true });
+          }
+          if (cmd === "ollama_use_model") {
+            window.__ollamaCalls.push(["use", args.model]);
+            ollamaState.status.activeModel = args.model;
+            return Promise.resolve({ activeModel: args.model, modelSource: "saved" });
+          }
+          if (cmd === "open_ollama_download_page") {
+            window.__ollamaCalls.push(["open-download-page"]);
+            return Promise.resolve(null);
+          }
           if (cmd === "provider_status") {
             if (!claude) return Promise.reject(new Error("provider.status unavailable"));
             return Promise.resolve({
@@ -264,6 +323,7 @@ async function mockTauriIpc(
       restoreMemoryResult,
       memories,
       claude,
+      ollama,
     },
   );
 }
@@ -766,4 +826,166 @@ test("a failed escalation is shown as an error and ends the offer", async ({ pag
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.locator(".escalation-offer")).toHaveCount(0);
   await expect(page.locator(".claude-badge")).toHaveCount(0);
+});
+
+// --- ESR-0061 WP3c (EIP-ESR0061-003 6.9): local AI setup ------------------------------------------------------------
+
+const notInstalled = {
+  status: {
+    installed: false,
+    running: false,
+    version: null,
+    models: [],
+    activeModelInstalled: false,
+    install: {
+      url: "https://ollama.com/download",
+      installed: false,
+      steps: ["Open the Ollama download page.", "Run the installer.", "Come back and press Check again."],
+    },
+  },
+};
+
+test("a healthy machine shows the running version, the active model and the recommendation in use", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  const panel = page.locator(".local-ai-panel");
+  await expect(panel).toContainText("Ollama 0.35.0 is running");
+  await expect(panel).toContainText("Active model: qwen3.5:4b");
+  await expect(panel).toContainText("Chosen for this computer's graphics card (8 GB).");
+  await expect(panel.getByRole("status").filter({ hasText: "In use" })).toBeVisible();
+  await expect(panel.getByRole("alert")).toHaveCount(0);
+});
+
+test("with Ollama not installed the steps are shown and nothing is installed by JARVIS", async ({ page }) => {
+  await mockTauriIpc(page, { ollama: notInstalled });
+  await page.goto("/");
+
+  const panel = page.locator(".local-ai-panel");
+  await expect(panel).toContainText("Ollama is not installed");
+  await expect(panel.getByRole("listitem")).toHaveCount(3);
+  await panel.getByRole("button", { name: "Open download page" }).click();
+  expect(await page.evaluate(() => window.__ollamaCalls)).toEqual([["open-download-page"]]);
+  await expect(panel.getByRole("button", { name: /Download and use/ })).toHaveCount(0);
+});
+
+test("installed but not running is told apart from not installed", async ({ page }) => {
+  await mockTauriIpc(page, {
+    ollama: { status: { ...notInstalled.status, installed: true, install: { ...notInstalled.status.install, installed: true } } },
+  });
+  await page.goto("/");
+
+  const panel = page.locator(".local-ai-panel");
+  await expect(panel).toContainText("installed but not running");
+  await expect(panel.getByRole("button", { name: "Open download page" })).toHaveCount(0);
+  await expect(panel.getByRole("button", { name: "Check again" })).toBeVisible();
+});
+
+test("downloading the recommended model asks for exactly that model and shows progress and a cancel", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [{ id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" }],
+    activeProfile: { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" },
+    ollama: {
+      status: { models: [], activeModel: "qwen3.5:2b", activeModelInstalled: false },
+      recommendation: {
+        primary: { tag: "qwen3.5:4b", label: "Qwen3.5 4B (balanced)", downloadGb: 3.3, note: "n", installed: false },
+      },
+    },
+  });
+  await page.goto("/");
+  const panel = page.locator(".local-ai-panel");
+
+  await panel.getByRole("button", { name: "Download and use" }).first().click();
+
+  await expect(panel.getByRole("progressbar", { name: "Model download progress" })).toBeVisible();
+  expect(await page.evaluate(() => window.__ollamaCalls)).toEqual([["pull", "qwen3.5:4b"]]);
+  await panel.getByRole("button", { name: "Cancel download" }).click();
+  await expect(panel.getByRole("progressbar")).toHaveCount(0);
+  expect(await page.evaluate(() => window.__ollamaCalls)).toEqual([["pull", "qwen3.5:4b"], ["cancel"]]);
+});
+
+test("a download in progress is shown with its percentage", async ({ page }) => {
+  await mockTauriIpc(page, {
+    ollama: { status: { pull: { active: true, model: "qwen3.5:4b", completed: 50, total: 100, status: "pulling" } } },
+  });
+  await page.goto("/");
+
+  const bar = page.locator(".local-ai-panel").getByRole("progressbar");
+  await expect(bar).toHaveAttribute("aria-valuenow", "50");
+  await expect(page.locator(".local-ai-panel")).toContainText("50%");
+});
+
+test("a model already downloaded can be switched to", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [{ id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" }],
+    activeProfile: { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" },
+    ollama: {
+      status: { models: ["qwen3.5:2b", "qwen3.5:4b"], activeModel: "qwen3.5:2b" },
+      recommendation: {
+        primary: { tag: "qwen3.5:4b", label: "Qwen3.5 4B (balanced)", downloadGb: 3.3, note: "n", installed: true },
+      },
+    },
+  });
+  await page.goto("/");
+  const panel = page.locator(".local-ai-panel");
+
+  await panel.getByRole("button", { name: "Use this model" }).first().click();
+
+  expect(await page.evaluate(() => window.__ollamaCalls)).toEqual([["use", "qwen3.5:4b"]]);
+  await expect(panel).toContainText("Active model: qwen3.5:4b");
+});
+
+test("not enough disk space is shown and blocks downloading the recommended model", async ({ page }) => {
+  await mockTauriIpc(page, {
+    ollama: {
+      recommendation: {
+        primary: { tag: "qwen3.5:4b", label: "Qwen3.5 4B (balanced)", downloadGb: 3.3, note: "n", installed: false },
+        diskOk: false,
+        needsDiskGb: 4,
+        hardware: { system: "Windows", ramGb: 32, gpuGb: 8, unifiedMemory: false, freeDiskGb: 1.5 },
+      },
+    },
+  });
+  await page.goto("/");
+  const panel = page.locator(".local-ai-panel");
+
+  await expect(panel.getByRole("alert")).toContainText("Not enough free disk space");
+  await expect(panel.getByRole("button", { name: "Download and use" }).first()).toBeDisabled();
+});
+
+test("a Child profile sees the setup but cannot download or change the model", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [{ id: "p1", displayName: "Young", role: "Child", createdAt: "2026-01-01T00:00:00Z" }],
+    activeProfile: { id: "p1", displayName: "Young", role: "Child", createdAt: "2026-01-01T00:00:00Z" },
+    ollama: {
+      status: { models: [], activeModel: "qwen3.5:2b", activeModelInstalled: false },
+      recommendation: {
+        primary: { tag: "qwen3.5:4b", label: "Qwen3.5 4B (balanced)", downloadGb: 3.3, note: "n", installed: false },
+      },
+    },
+  });
+  await page.goto("/");
+  const panel = page.locator(".local-ai-panel");
+
+  await expect(panel).toContainText("Only an Administrator or Adult profile can download or change models.");
+  await expect(panel.getByRole("button", { name: "Download and use" }).first()).toBeDisabled();
+});
+
+test("a model set by the environment variable says that it overrides the screen", async ({ page }) => {
+  await mockTauriIpc(page, { ollama: { status: { modelSource: "environment" } } });
+  await page.goto("/");
+
+  await expect(page.locator(".local-ai-panel")).toContainText("JARVIS_OLLAMA_MODEL");
+});
+
+test("a failed status read is shown honestly rather than as a healthy panel", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.addInitScript(() => {
+    const original = window.__TAURI_INTERNALS__.invoke;
+    window.__TAURI_INTERNALS__.invoke = (cmd, args) =>
+      cmd === "ollama_status" ? Promise.reject(new Error("backend unavailable")) : original(cmd, args);
+  });
+  await page.goto("/");
+
+  await expect(page.locator(".local-ai-panel").getByRole("alert")).toContainText("Could not read the local AI status");
 });

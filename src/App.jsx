@@ -38,6 +38,7 @@ import { ActiveClustersPanel, KnowledgeMetricsPanel } from "./KnowledgeGraphPane
 import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
 import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
 import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalation.jsx";
+import { LocalAiPanel } from "./LocalAiPanel.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -669,6 +670,11 @@ export function App() {
   const [escalating, setEscalating] = useState(false);
   const [escalationError, setEscalationError] = useState(null);
 
+  // Model download progress and completion, pushed by the backend as
+  // notifications (ESR-0061 WP3c); the Local AI panel acts on them.
+  const [pullProgress, setPullProgress] = useState(null);
+  const [pullFinished, setPullFinished] = useState(null);
+
   // Voice Faculty Increment B (EIP-ESR0047-001): push-to-talk speech input.
   // isRecording drives the mic button's visual state only - the actual
   // MediaRecorder instance and its bounded 30s auto-stop timer live in refs,
@@ -808,6 +814,12 @@ export function App() {
     listen("jarvis://notification", (event) => {
       if (event.payload?.method === "system.heartbeat") {
         setLastHeartbeatAt(new Date());
+      }
+      if (event.payload?.method === "ollama.pullProgress") {
+        setPullProgress(event.payload.params ?? null);
+      }
+      if (event.payload?.method === "ollama.pullFinished") {
+        setPullFinished({ ...(event.payload.params ?? {}), at: Date.now() });
       }
       if (event.payload?.method === "knowledge.cluster_activity") {
         const cluster = event.payload?.params?.cluster;
@@ -1148,6 +1160,7 @@ export function App() {
               />
               <KnowledgeMetricsPanel graph={knowledgeGraph} error={knowledgeGraphError} />
               <ActiveClustersPanel graph={knowledgeGraph} error={knowledgeGraphError} activeClusters={activeClusters} />
+              <LocalAiPanel activeProfile={activeProfile} pullProgress={pullProgress} pullFinished={pullFinished} />
               <AgentFrameworkPanel
                 agents={agents}
                 agentsError={agentsError}

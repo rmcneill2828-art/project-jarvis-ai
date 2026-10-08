@@ -1210,6 +1210,100 @@ async fn set_profile_cloud_memory(
     .await
 }
 
+/// Local model setup (ESR-0061 WP3c, EIP-ESR0061-003 6.9). The backend does the
+/// work and enforces who may download or change the model; these only relay.
+#[tauri::command]
+async fn ollama_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "ollama.status", json!({})).await
+}
+
+#[tauri::command]
+async fn ollama_recommendation(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "ollama.recommendation", json!({})).await
+}
+
+/// Starts a background download of a catalog model; progress arrives as
+/// `ollama.pullProgress` notifications. The backend refuses any other name.
+#[tauri::command]
+async fn ollama_pull(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    model: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "ollama.pull", json!({ "model": model })).await
+}
+
+#[tauri::command]
+async fn ollama_cancel_pull(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "ollama.cancelPull", json!({})).await
+}
+
+#[tauri::command]
+async fn ollama_use_model(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    model: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "ollama.useModel",
+        json!({ "model": model }),
+    )
+    .await
+}
+
+/// The one page JARVIS will open for the person: Ollama's download page. A
+/// fixed address, never one the UI supplies, so this cannot be made to open
+/// anything else. JARVIS does not download or run the installer itself.
+const OLLAMA_DOWNLOAD_URL: &str = "https://ollama.com/download";
+
+fn open_in_default_browser(url: &str) -> std::io::Result<()> {
+    #[cfg(target_os = "windows")]
+    let mut command = {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        let mut command = Command::new("rundll32");
+        command
+            .args(["url.dll,FileProtocolHandler", url])
+            .creation_flags(CREATE_NO_WINDOW);
+        command
+    };
+    #[cfg(target_os = "macos")]
+    let mut command = {
+        let mut command = Command::new("open");
+        command.arg(url);
+        command
+    };
+    #[cfg(all(unix, not(target_os = "macos")))]
+    let mut command = {
+        let mut command = Command::new("xdg-open");
+        command.arg(url);
+        command
+    };
+    let mut child = command.spawn()?;
+    // Reap it so it cannot linger as a zombie; the opener returns at once.
+    thread::spawn(move || {
+        let _ = child.wait();
+    });
+    Ok(())
+}
+
+#[tauri::command]
+fn open_ollama_download_page() -> Result<(), String> {
+    open_in_default_browser(OLLAMA_DOWNLOAD_URL)
+        .map_err(|e| format!("Could not open the download page: {e}"))
+}
+
 #[tauri::command]
 async fn speak_message(
     state: State<'_, BackendState>,
@@ -1410,6 +1504,12 @@ pub fn run() {
             escalate_message,
             provider_status,
             set_profile_cloud_memory,
+            ollama_status,
+            ollama_recommendation,
+            ollama_pull,
+            ollama_cancel_pull,
+            ollama_use_model,
+            open_ollama_download_page,
             speak_message,
             transcribe_audio,
             platform_status,

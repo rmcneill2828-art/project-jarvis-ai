@@ -45,6 +45,7 @@ from jarvis.agents.contracts import AgentRequest, SpecialistAgent
 from jarvis.agents.gia_agent import GiaObservabilityAgent
 from jarvis.agents.gia_engineering_agent import GiaEngineeringAgent
 from jarvis.agents.home_assistant_agent import HomeAssistantClient, HomeAssistantStateQueryAgent
+from jarvis.config.ollama_models import MODELS as OLLAMA_CATALOG
 from jarvis.gia.engineering_observability import EngineeringStateObserver
 from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
@@ -59,6 +60,13 @@ from jarvis.interfaces.escalation import (
     MeteredCloudConversationProvider,
     allowance_payload,
     offer_reason,
+)
+from jarvis.interfaces.ollama_setup import DEFAULT_ENDPOINT as OLLAMA_DEFAULT_ENDPOINT
+from jarvis.interfaces.ollama_setup import (
+    ModelChoice,
+    OllamaSetup,
+    PullManager,
+    read_hardware,
 )
 from jarvis.interfaces.orphan_watchdog import start_orphan_watchdog
 from jarvis.interfaces.sentinel_agent import SentinelGatedAgentService
@@ -136,6 +144,10 @@ USD_PER_GBP_ENV_VAR = "JARVIS_USD_PER_GBP"
 DEFAULT_CLAUDE_CAP_GBP = 30.0
 DEFAULT_USD_PER_GBP = 1.25
 SPEND_DB_FILENAME = "spend.db"
+OLLAMA_MODEL_CHOICE_FILENAME = "ollama_model.json"
+# Downloading or choosing the local model changes what every profile talks to
+# and uses disk and bandwidth, so it is for the household's adults.
+MODEL_MANAGER_ROLES = frozenset({"Administrator", "Adult"})
 CLOUD_NOT_PERMITTED_MESSAGE = "This profile cannot ask Claude. Ask an Administrator or Adult profile."
 
 # Ollama (EBG-0075, EIP-ESR0025-002): unlike the cloud providers above, this
@@ -545,7 +557,15 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
         timeout_seconds=OLLAMA_TIMEOUT_SECONDS,
         max_output_tokens=_max_output_tokens(environ),
     )
-    ollama_provider = OllamaProvider(ollama_configuration)
+    # The model is chosen per request: the environment variable if set, else the
+    # one saved from the app's model setup, else the default (ESR-0061 WP3c).
+    model_choice = ModelChoice(
+        _memory_db_path(environ).parent / OLLAMA_MODEL_CHOICE_FILENAME,
+        default_model=DEFAULT_OLLAMA_MODEL,
+        environment_model=_clean_env(environ, OLLAMA_MODEL_ENV_VAR),
+        catalog_tags=[model.tag for model in OLLAMA_CATALOG],
+    )
+    ollama_provider = OllamaProvider(ollama_configuration, model_source=model_choice.current)
     orchestrator.register_provider(ollama_provider)
     orchestrator.register_route(ProviderRoute(capability=TEXT_GENERATION_CAPABILITY, providers=(ollama_provider.name,)))
 
@@ -597,6 +617,19 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     if anthropic_provider is not None:
         escalation_provider = _build_escalation_provider(environ, gateway, orchestrator, audit_recorder)
 
+    ollama_endpoint = _clean_env(environ, OLLAMA_ENDPOINT_ENV_VAR) or OLLAMA_DEFAULT_ENDPOINT
+    ollama_setup = OllamaSetup(
+        endpoint=ollama_endpoint,
+        choice=model_choice,
+        pulls=PullManager(
+            ollama_endpoint,
+            OLLAMA_CATALOG,
+            disk_free=lambda: read_hardware(environ).free_disk_bytes,
+        ),
+        environ=environ,
+        hardware_reader=lambda: read_hardware(environ),
+    )
+
     runtime = GuardianRuntime(
         conversation_provider=conversation_provider,
         memory_service=memory_service,
@@ -604,6 +637,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
         transcription_provider=transcription_provider,
         agent_service=agent_service,
         escalation_provider=escalation_provider,
+        ollama_setup=ollama_setup,
     )
     runtime.start()
     return runtime
@@ -637,6 +671,9 @@ class StdioRpcServer:
         # thread's notification writes (_heartbeat_loop) so the two can never
         # interleave partial JSON onto the same output line.
         self._write_lock = threading.Lock()
+        # Set by serve_forever(); background work (a model download) reports
+        # through it. None - as under handle_line() in tests - drops them.
+        self._notification_stream: TextIO | None = None
         if heartbeat_interval_seconds is not None:
             self._heartbeat_interval_seconds = heartbeat_interval_seconds
         else:
@@ -676,12 +713,21 @@ class StdioRpcServer:
                 else DEFAULT_IDENTITY_DB_PATH
             )
             self._identity_service = ProfileService(ProfileStore(identity_db_path))
+        setup = self._runtime.ollama_setup
+        if setup is not None:
+            setup.pulls.set_notifier(self._emit_notification)
         self._methods = {
             "guardian.converse": self._guardian_converse,
             "guardian.escalation.offer": self._guardian_escalation_offer,
             "guardian.escalate": self._guardian_escalate,
             "provider.status": self._provider_status,
             "profile.setCloudMemory": self._profile_set_cloud_memory,
+            "ollama.status": self._ollama_status,
+            "ollama.recommendation": self._ollama_recommendation,
+            "ollama.pull": self._ollama_pull,
+            "ollama.pullStatus": self._ollama_pull_status,
+            "ollama.cancelPull": self._ollama_cancel_pull,
+            "ollama.useModel": self._ollama_use_model,
             "guardian.speak": self._guardian_speak,
             "guardian.transcribe": self._guardian_transcribe,
             "guardian.agent.list": self._guardian_agent_list,
@@ -847,6 +893,62 @@ class StdioRpcServer:
             "Only an Administrator profile can change whether memory is shared with Claude.",
         )
         return self._serialize_profile(self._identity_service.set_cloud_memory_sharing(profile_id, enabled))
+
+    def _emit_notification(self, method: str, params: dict[str, Any]) -> None:
+        """Send a JSON-RPC notification (no `id`) from a background thread."""
+
+        stream = self._notification_stream
+        if stream is None:
+            return
+        try:
+            self._write_line(stream, {"jsonrpc": JSONRPC_VERSION, "method": method, "params": params})
+        except (OSError, ValueError):
+            logger.warning("Could not write a %s notification.", method)
+
+    def _ollama(self) -> OllamaSetup:
+        setup = self._runtime.ollama_setup
+        if setup is None:
+            msg = "Local model setup is not available."
+            raise ClientFacingValueError(msg)
+        return setup
+
+    def _ollama_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        setup = self._ollama()
+        return {**setup.status(), "pull": setup.pulls.snapshot()}
+
+    def _ollama_recommendation(self, params: dict[str, Any]) -> dict[str, Any]:
+        return self._ollama().recommendation()
+
+    def _require_model_tag(self, params: dict[str, Any]) -> str:
+        model = params.get("model")
+        if not isinstance(model, str):
+            msg = "params.model must be a string."
+            raise ClientFacingTypeError(msg)
+        return model
+
+    def _require_model_manager(self) -> None:
+        _require_role(
+            self._identity_service.active_profile(),
+            MODEL_MANAGER_ROLES,
+            "Only an Administrator or Adult profile can download or change the local model.",
+        )
+
+    def _ollama_pull(self, params: dict[str, Any]) -> dict[str, Any]:
+        model = self._require_model_tag(params)
+        self._require_model_manager()
+        return self._ollama().pulls.start(model)
+
+    def _ollama_pull_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        return self._ollama().pulls.snapshot()
+
+    def _ollama_cancel_pull(self, params: dict[str, Any]) -> dict[str, Any]:
+        self._require_model_manager()
+        return {"cancelled": self._ollama().pulls.cancel()}
+
+    def _ollama_use_model(self, params: dict[str, Any]) -> dict[str, Any]:
+        model = self._require_model_tag(params)
+        self._require_model_manager()
+        return self._ollama().use_model(model)
 
     def _guardian_speak(self, params: dict[str, Any]) -> dict[str, Any]:
         text = params.get("text")
@@ -1242,6 +1344,7 @@ class StdioRpcServer:
 
         in_stream = in_stream if in_stream is not None else sys.stdin
         out_stream = out_stream if out_stream is not None else sys.stdout
+        self._notification_stream = out_stream
 
         stop_heartbeat = threading.Event()
         heartbeat_thread = threading.Thread(
