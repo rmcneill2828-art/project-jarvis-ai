@@ -293,3 +293,124 @@
     padding: 16px;
   }
 }
+
+/* ---- WP4c: the conversation with a "What is available" column, and the
+   honest capability list ---- */
+.guardian-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+}
+
+.guardian-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.guardian-main > .command-panel {
+  flex: 1 1 auto;
+}
+
+.available-column {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .guardian-body {
+    grid-template-columns: minmax(0, 1fr) 280px;
+  }
+
+  .available-column {
+    display: block;
+    min-height: 0;
+    margin: 0 28px 18px 0;
+    padding: 14px 16px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--bg-panel);
+  }
+
+  .available-column h2 {
+    margin: 0 0 8px;
+    font-size: var(--text-md);
+  }
+}
+
+.capability-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capability-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.capability-item:last-child {
+  border-bottom: 0;
+}
+
+.capability-item h3,
+.capability-item p {
+  margin: 0;
+}
+
+.capability-item p {
+  color: var(--fg-muted);
+  font-size: var(--text-sm, 13px);
+}
+
+.capability-subheading {
+  margin: 16px 0 6px;
+  font-size: var(--text-sm, 13px);
+  color: var(--fg-muted);
+}
+
+.not-built-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--fg-muted);
+}
+
+.cap-state {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cap-ready {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.cap-preparing {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.cap-not-available,
+.cap-unknown {
+  background: var(--grey-soft);
+  color: var(--fg-muted);
+}
+
+.cap-offline {
+  background: var(--red-soft);
+  color: var(--red);
+}

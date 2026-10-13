@@ -4,8 +4,6 @@
 
 /* ---- the card every panel shares ---- */
 .profile-card,
-.status-card,
-.diagnostics-panel,
 .system-health-panel,
 .knowledge-metrics-panel,
 .active-clusters-panel,
@@ -19,7 +17,6 @@
   background: var(--bg-panel);
 }
 
-.diagnostics-panel,
 .system-health-panel,
 .knowledge-metrics-panel,
 .active-clusters-panel,
@@ -30,7 +27,6 @@
   padding: 18px 20px;
 }
 
-.diagnostics-panel > h2,
 .system-health-panel > h2,
 .knowledge-metrics-panel > h2,
 .active-clusters-panel > h2,
@@ -117,93 +113,6 @@
 .dot-unknown,
 .dot-connecting {
   color: var(--fg-muted);
-}
-
-/* ---- status cards, capability rows, diagnostics ---- */
-.status-cards {
-  display: grid;
-  gap: var(--space-3);
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  margin-bottom: var(--space-4);
-}
-
-.status-card {
-  display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: var(--space-3);
-  align-items: center;
-  padding: var(--space-4);
-}
-
-.status-card h2,
-.capability-row h3,
-.diagnostic-item h3 {
-  margin: 0 0 var(--space-1);
-  color: var(--fg);
-  font-size: var(--text-md);
-  line-height: 1.2;
-}
-
-.status-card p,
-.capability-row p,
-.diagnostic-item p {
-  margin: var(--space-2) 0 0;
-  color: var(--fg-muted);
-  font-size: var(--text-sm);
-}
-
-.icon-tile {
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  border-radius: var(--radius-control);
-  background: var(--cyan-soft);
-  color: var(--cyan);
-}
-
-.status-icon {
-  width: 46px;
-  height: 46px;
-}
-
-.capability-stack {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.capability-row {
-  display: grid;
-  grid-template-columns: 46px minmax(0, 1fr);
-  gap: var(--space-3);
-}
-
-.diagnostics-list {
-  display: grid;
-}
-
-.diagnostic-item {
-  display: grid;
-  grid-template-columns: 46px minmax(0, 1fr);
-  gap: var(--space-3);
-  align-items: center;
-  min-height: 64px;
-  border-bottom: 1px solid var(--line);
-}
-
-.diagnostic-item:last-child {
-  border-bottom: 0;
-}
-
-.diagnostic-item p {
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.diagnostic-item .state-dot {
-  width: 8px;
-  height: 8px;
 }
 
 /* ---- label and value rows ---- */

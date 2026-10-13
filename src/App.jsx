@@ -2,30 +2,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
-  Activity,
-  Box,
   ChevronDown,
   CircleUserRound,
-  Cloud,
-  Code2,
-  Database,
-  Grid3X3,
-  Link2,
   Mic,
-  Monitor,
   SendHorizontal,
-  Server,
-  Shield,
-  UsersRound,
   Volume2,
 } from "lucide-react";
 
-import {
-  capabilityStatuses as staticCapabilityStatuses,
-  diagnostics,
-  platformSignals as staticPlatformSignals,
-  STATUS,
-} from "./platformStatus.js";
+import { STATUS } from "./platformStatus.js";
+import { deriveCapabilityList, visibleToGuardianColumn } from "./capabilities.js";
+import { AvailableColumn, CapabilityPanel } from "./CapabilityPanel.jsx";
+import { canAskClaude, viewsForRole } from "./roles.js";
 import { GuardianOrbGraph } from "./GuardianOrbGraph.jsx";
 import { ActiveClustersPanel, KnowledgeMetricsPanel } from "./KnowledgeGraphPanels.jsx";
 import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
@@ -34,7 +21,7 @@ import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalat
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
 import { PresenceOrb } from "./PresenceOrb.jsx";
 import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
-import { NavRail, TopBar } from "./Shell.jsx";
+import { NavRail, TopBar, VIEWS } from "./Shell.jsx";
 
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
@@ -49,83 +36,10 @@ function derivePlatformIndicator(platformState, platformError) {
     : { label: platformState.state.toUpperCase(), status: STATUS.OFFLINE };
 }
 
-function deriveCapabilityStatuses(platformState, platformError, agents, agentsError) {
-  const connected = platformState?.providerConnected === "Online";
-  const memoryConnected = platformState?.memoryConnected === "Online";
-
-  return staticCapabilityStatuses.map((capability) => {
-    if (capability.id === "memory") {
-      if (platformError) {
-        return { ...capability, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
-      }
-      if (!platformState) {
-        return { ...capability, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
-      }
-      return {
-        ...capability,
-        state: memoryConnected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
-        detail: memoryConnected ? "Personal Memory service connected" : "No memory service connected",
-      };
-    }
-
-    // Agent Framework (EIP-ESR0050-001): derived from a real guardian.agent.list
-    // call, not platform.status - a separate live channel, matching the
-    // memory/sentinel/providers connecting/offline/live pattern above.
-    if (capability.id === "agent-framework") {
-      if (agentsError) {
-        return { ...capability, state: STATUS.OFFLINE, detail: "Agent Framework is unavailable" };
-      }
-      if (!agents) {
-        return { ...capability, state: STATUS.CONNECTING, detail: "Connecting to the Agent Framework..." };
-      }
-      if (agents.length === 0) return capability;
-      return {
-        ...capability,
-        state: STATUS.AVAILABLE,
-        detail: `${agents.length} specialist agent${agents.length === 1 ? "" : "s"} available (${agents.join(", ")})`,
-      };
-    }
-
-    if (capability.id !== "sentinel" && capability.id !== "providers") return capability;
-
-    if (platformError) {
-      return { ...capability, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
-    }
-    if (!platformState) {
-      return { ...capability, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
-    }
-    return {
-      ...capability,
-      state: connected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
-      detail: connected ? "Sentinel-gated provider connected" : "No provider adapters connected",
-    };
-  });
-}
-
-function derivePlatformSignals(platformState, platformError) {
-  return staticPlatformSignals.map((signal) => {
-    if (signal.id !== "providers") return signal;
-
-    if (platformError) {
-      return { ...signal, state: STATUS.OFFLINE, detail: "JARVIS backend is unavailable" };
-    }
-    if (!platformState) {
-      return { ...signal, state: STATUS.CONNECTING, detail: "Connecting to the JARVIS backend..." };
-    }
-    const connected = platformState.providerConnected === "Online";
-    return {
-      ...signal,
-      state: connected ? STATUS.OPERATIONAL : STATUS.OFFLINE,
-      detail: connected ? "Sentinel-gated provider connected" : "No providers connected",
-    };
-  });
-}
-
 // System Health panel rows (JRM-0001 Track C Near-term): Guardian, Sentinel
 // and Providers, sourced only from real `platform.status` fields. As of
 // ESR-0023 WP6 (EBG-0073), SystemHealthPanel is these rows' sole owner -
-// DiagnosticsPanel below no longer duplicates them; its remaining rows
-// (boundary, shell, agents) are permanently-static placeholders.
+// the capability list (src/capabilities.js) carries the rest.
 // Must match MAX_MESSAGE_CHARS in jarvis/interfaces/stdio_rpc.py (EBG-0143,
 // ESR-0059 WP8): the backend refuses longer messages, so the input stops
 // accepting typing at the same limit instead of failing after send.
@@ -212,67 +126,12 @@ function SystemHealthPanel({ platformState, platformError, lastHeartbeatAt }) {
 
 const stateClass = (state) => state.toLowerCase().replaceAll(" ", "-");
 
-const capabilityIcons = {
-  sentinel: Shield,
-  "platform-services": Grid3X3,
-  memory: Database,
-  providers: Link2,
-  "agent-framework": UsersRound,
-};
-
-const signalIcons = {
-  platform: Server,
-  services: Box,
-  providers: Cloud,
-};
-
-const diagnosticIcons = {
-  boundary: Code2,
-  shell: Monitor,
-  agents: UsersRound,
-};
-
 function StatusBadge({ state }) {
   return <span className={`status-badge status-${stateClass(state)}`}>{state}</span>;
 }
 
 function StateDot({ state }) {
   return <span className={`state-dot dot-${stateClass(state)}`} aria-hidden="true" />;
-}
-
-function IconTile({ icon: Icon, className = "" }) {
-  return (
-    <span className={`icon-tile ${className}`} aria-hidden="true">
-      <Icon size={24} strokeWidth={2.2} />
-    </span>
-  );
-}
-
-// The capability rows that used to fill the sidebar ("Platform Placeholders"),
-// now a panel in the System view (ESR-0061 WP4a). WP4c replaces them with a
-// list built only from real status.
-function CapabilitiesPanel({ capabilityStatuses }) {
-  return (
-    <section className="capabilities-panel" aria-labelledby="capabilities-heading">
-      <h2 id="capabilities-heading">Capabilities</h2>
-      <div className="capability-stack">
-        {capabilityStatuses.map((capability) => {
-          const Icon = capabilityIcons[capability.id] ?? Shield;
-
-          return (
-            <article className="capability-row" key={capability.id}>
-              <IconTile icon={Icon} />
-              <div>
-                <h3>{capability.label}</h3>
-                <StatusBadge state={capability.state} />
-                <p>{capability.detail}</p>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
 }
 
 // GAM-0001 Section 8.1's Household Role Model - the only roles a profile may
@@ -379,27 +238,6 @@ function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, o
   );
 }
 
-function StatusCards({ platformSignals }) {
-  return (
-    <section className="status-cards" aria-label="Platform service summary">
-      {platformSignals.map((signal) => {
-        const Icon = signalIcons[signal.id] ?? Activity;
-
-        return (
-          <article className="status-card" key={signal.id}>
-            <IconTile icon={Icon} className="status-icon" />
-            <div>
-              <h2>{signal.label}</h2>
-              <StatusBadge state={signal.state} />
-              <p>{signal.detail}</p>
-            </div>
-          </article>
-        );
-      })}
-    </section>
-  );
-}
-
 // Guardian Orb Phase 2 (EBG-0121): a cluster counts as "active" for this
 // long after its most recent recorded RPC activity before illumination
 // fades. Deliberately short - this reflects genuinely current access, not a
@@ -419,32 +257,6 @@ function GuardianOrbit({ knowledgeGraph, knowledgeGraphError, activeClusters }) 
         />
       </div>
     </section>
-  );
-}
-
-function DiagnosticsPanel({ diagnostics }) {
-  return (
-    <aside className="diagnostics-panel" aria-labelledby="diagnostics-heading">
-      <h2 id="diagnostics-heading">Diagnostics</h2>
-      <div className="diagnostics-list">
-        {diagnostics.map((item) => {
-          const Icon = diagnosticIcons[item.id] ?? Activity;
-
-          return (
-            <article className="diagnostic-item" key={item.id}>
-              <IconTile icon={Icon} />
-              <div>
-                <h3>{item.label}</h3>
-                <p>
-                  <StateDot state={item.state} />
-                  <span>{item.detail}</span>
-                </p>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </aside>
   );
 }
 
@@ -672,6 +484,11 @@ export function App() {
   const [memoryRecordCount, setMemoryRecordCount] = useState(null);
   const [memoryStatusError, setMemoryStatusError] = useState(null);
 
+  // The local model's status, read here for the capability list (ESR-0061 WP4c).
+  // The AI models view reads its own copy; this one only feeds the honest list.
+  const [ollamaStatus, setOllamaStatus] = useState(null);
+  const [ollamaStatusError, setOllamaStatusError] = useState(null);
+
   // EIP-ESR0031-002 (Streaming Notifications MVP): the UXP's first live-push
   // channel. platform_status/knowledge_graph above remain one-time mount
   // fetches, unchanged - this is a second, independent channel proving the
@@ -767,6 +584,27 @@ export function App() {
     };
   }, [activeProfile?.id]);
 
+  // Re-read when the profile changes and when a download ends, so the list says
+  // Ready as soon as the chosen model is there.
+  const pullFinishedAt = pullFinished?.at ?? null;
+  useEffect(() => {
+    let cancelled = false;
+    invoke("ollama_status")
+      .then((result) => {
+        if (cancelled) return;
+        setOllamaStatus(result);
+        setOllamaStatusError(null);
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setOllamaStatus(null);
+        setOllamaStatusError(String(error));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeProfile?.id, pullFinishedAt]);
+
   // Switching profile clears the on-screen conversation, any open offer or
   // dialog, and anything in flight (WP4b, EIP item 6.2): the backend keeps each
   // profile's history separate, so the screen must not show the previous
@@ -787,6 +625,9 @@ export function App() {
     setLastTurnFailed(false);
     setOffer(null);
     setConfirmOpen(false);
+    setAgentBusy(false);
+    setAgentResult(null);
+    setAgentInvokeError(null);
     if (audioRef.current) {
       audioRef.current.pause?.();
       audioRef.current = null;
@@ -814,6 +655,14 @@ export function App() {
       .then((result) => setMemoryRecordCount(result.recordCount ?? 0))
       .catch((error) => setMemoryStatusError(String(error)));
   };
+
+  // The count belongs to the profile that is active (the backend counts that
+  // profile's notes and the household's), so it is read again at a switch; the
+  // panel is keyed by profile so the previous profile's opened list goes too.
+  useEffect(() => {
+    if (activeProfile?.id) refreshMemoryStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfile?.id]);
 
   useEffect(() => {
     let unlisten;
@@ -1172,8 +1021,10 @@ export function App() {
     setAgentBusy(true);
     setAgentInvokeError(null);
 
+    const epoch = conversationEpochRef.current;
     invoke("invoke_agent", { agent: agentName, task: "status" })
       .then((result) => {
+        if (epoch !== conversationEpochRef.current) return;
         if (result.status === "denied" || result.status === "unknown_agent") {
           setAgentInvokeError(result.message || `Guardian could not run ${agentName}.`);
           setAgentResult(null);
@@ -1182,10 +1033,11 @@ export function App() {
         setAgentResult({ agent: agentName, status: result.status, payload: result.payload ?? {} });
       })
       .catch((error) => {
+        if (epoch !== conversationEpochRef.current) return;
         setAgentInvokeError(`Could not run ${agentName}: ${error}`);
       })
       .finally(() => {
-        setAgentBusy(false);
+        if (epoch === conversationEpochRef.current) setAgentBusy(false);
       });
   };
 
@@ -1204,7 +1056,25 @@ export function App() {
   });
 
   const platformIndicator = derivePlatformIndicator(platformState, platformError);
-  const capabilityStatusRows = deriveCapabilityStatuses(platformState, platformError, agents, agentsError);
+  const role = activeProfile?.role ?? null;
+  const allowedViews = viewsForRole(role);
+  // A view the role may not use is never shown, even if it was open when the
+  // profile changed: the person lands on the conversation instead.
+  const currentView = allowedViews.includes(view) ? view : "guardian";
+  const capabilityRows = deriveCapabilityList({
+    platformState,
+    platformError,
+    ollama: ollamaStatus,
+    ollamaError: ollamaStatusError,
+    claude: claudeStatus,
+    agents,
+    agentsError,
+    memoryStatusError,
+  });
+  const availableRows = visibleToGuardianColumn(capabilityRows, {
+    mayAskClaude: canAskClaude(role),
+    seesMemory: allowedViews.includes("memory"),
+  });
 
   return (
     <div className="app-shell">
@@ -1231,7 +1101,7 @@ export function App() {
           )
         }
       />
-      <NavRail current={view} onSelect={setView} />
+      <NavRail views={VIEWS.filter((entry) => allowedViews.includes(entry.id))} current={currentView} onSelect={setView} mentionClaude={canAskClaude(role)} />
       <main className="app-main" aria-label="Guardian desktop experience">
         {!activeProfile && (
           <div className="profile-banner">
@@ -1245,7 +1115,7 @@ export function App() {
           </div>
         )}
 
-        {view === "guardian" && (
+        {currentView === "guardian" && (
           <section className="view guardian-view" aria-label="Guardian">
             <div className="guardian-presence">
               <PresenceOrb state={orbState} />
@@ -1257,6 +1127,8 @@ export function App() {
                 How can I help you today?
               </h1>
             </div>
+            <div className="guardian-body">
+              <div className="guardian-main">
             <CommandPanel
               messages={messages}
               inputValue={inputValue}
@@ -1281,15 +1153,20 @@ export function App() {
                 {escalationError}
               </p>
             )}
+              </div>
+              <AvailableColumn rows={availableRows} />
+            </div>
           </section>
         )}
 
-        {view === "memory" && (
+        {currentView === "memory" && (
           <section className="view" aria-label="Memory">
             <div className="view-scroll">
               <h1 className="view-heading">Memory</h1>
               <p className="view-lede">Notes JARVIS keeps on this computer, only after you approve them.</p>
               <MemoryManagementPanel
+                key={activeProfile?.id ?? "no-profile"}
+                role={role}
                 recordCount={memoryRecordCount}
                 statusError={memoryStatusError}
                 onStatusChange={refreshMemoryStatus}
@@ -1298,7 +1175,7 @@ export function App() {
           </section>
         )}
 
-        {view === "knowledge" && (
+        {currentView === "knowledge" && (
           <section className="view" aria-label="Knowledge">
             <div className="view-scroll">
               <h1 className="view-heading">Knowledge</h1>
@@ -1318,7 +1195,7 @@ export function App() {
           </section>
         )}
 
-        {view === "agents" && (
+        {currentView === "agents" && (
           <section className="view" aria-label="Agents">
             <div className="view-scroll">
               <h1 className="view-heading">Agents</h1>
@@ -1335,7 +1212,7 @@ export function App() {
           </section>
         )}
 
-        {view === "models" && (
+        {currentView === "models" && (
           <section className="view" aria-label="AI models">
             <div className="view-scroll">
               <h1 className="view-heading">AI models</h1>
@@ -1351,20 +1228,18 @@ export function App() {
           </section>
         )}
 
-        {view === "system" && (
+        {currentView === "system" && (
           <section className="view" aria-label="System">
             <div className="view-scroll">
               <h1 className="view-heading">System</h1>
-              <p className="view-lede">What is running. JARVIS v0.1.0, shell edition.</p>
-              <StatusCards platformSignals={derivePlatformSignals(platformState, platformError)} />
+              <p className="view-lede">What is running, and what is ready to use.</p>
               <div className="view-grid">
                 <SystemHealthPanel
                   platformState={platformState}
                   platformError={platformError}
                   lastHeartbeatAt={lastHeartbeatAt}
                 />
-                <CapabilitiesPanel capabilityStatuses={capabilityStatusRows} />
-                <DiagnosticsPanel diagnostics={diagnostics} />
+                <CapabilityPanel rows={capabilityRows} />
               </div>
             </div>
           </section>

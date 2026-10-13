@@ -46,7 +46,10 @@ ANTIGRAVITY_BRAIN = Path.home() / ".gemini" / "antigravity-cli" / "brain"
 REVIEWS_DIR = REPO_ROOT / ".aiems-exchange" / "reviews"
 TRANSCRIPT_DIR = REPO_ROOT / ".aiems-exchange" / "transcript"
 
-ANTIGRAVITY_MODEL = "gemini-3.1-pro-high"
+# gemini-3.1-pro-high was withdrawn from Antigravity by 13 October 2026; the Gemini
+# 3.8 Flash model is the only Gemini model it lists (the reasoning level is part of
+# the model name, so no separate --effort flag is passed).
+ANTIGRAVITY_MODEL = "gemini-3.8-flash-high"
 RUN_TIMEOUT_SECONDS = 45 * 60
 
 EXIT_OK, EXIT_USAGE, EXIT_QUOTA, EXIT_REFUSED, EXIT_NO_VERDICT = 0, 2, 3, 4, 5
@@ -120,7 +123,7 @@ def build_command(tool: str, instruction: str, resume: str | None) -> list[str]:
     command = ["agy"]
     if resume is not None:
         command.append("-c")
-    return command + ["-p", instruction, "--model", ANTIGRAVITY_MODEL, "--effort", "high", "--print-timeout", "40m"]
+    return command + ["-p", instruction, "--model", ANTIGRAVITY_MODEL, "--print-timeout", "40m"]
 
 
 def load_allowlist(repo_root: Path = REPO_ROOT) -> list[str]:

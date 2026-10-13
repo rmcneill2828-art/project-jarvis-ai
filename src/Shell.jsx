@@ -29,7 +29,7 @@ export function TopBar({ platformChip, profileSlot }) {
   );
 }
 
-export function NavRail({ views = VIEWS, current, onSelect }) {
+export function NavRail({ views = VIEWS, current, onSelect, mentionClaude = false }) {
   return (
     <nav className="rail" aria-label="Views">
       {views.map(({ id, label, icon: Icon }) => (
@@ -45,7 +45,11 @@ export function NavRail({ views = VIEWS, current, onSelect }) {
           <span>{label}</span>
         </button>
       ))}
-      <p className="rail-note">Everything stays on this computer unless you ask Claude.</p>
+      <p className="rail-note">
+        {mentionClaude
+          ? "Everything stays on this computer unless you ask Claude."
+          : "Everything stays on this computer."}
+      </p>
     </nav>
   );
 }

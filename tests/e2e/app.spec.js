@@ -6,14 +6,19 @@ import { test, expect } from "@playwright/test";
 // actually calls under the hood (confirmed by direct source read,
 // EIP-ESR0032-002). There is no live backend and no bundled Tauri binary
 // in this test - it drives the Vite dev server's React app directly.
+// Most tests are about a signed-in person; by WP4c a role decides which views
+// exist, so the default profile is an Administrator. A test about having no
+// profile passes `profiles: [], activeProfile: null`.
+const DEFAULT_ADMIN = { id: "default-admin", displayName: "Robert", role: "Administrator", createdAt: "2026-07-31T00:00:00Z" };
+
 async function mockTauriIpc(
   page,
   {
     speakResult,
     transcribeResult,
     transcriptionAvailable = false,
-    profiles = [],
-    activeProfile = null,
+    profiles = [DEFAULT_ADMIN],
+    activeProfile = DEFAULT_ADMIN,
     agents = [],
     invokeAgentResult,
     knowledgeGraphOverrides = {},
@@ -27,6 +32,7 @@ async function mockTauriIpc(
     // The presence Orb's inputs (WP4b): platform status overrides, a failing
     // turn, slow turns and transcriptions, and audio that will not play.
     orbMock = {},
+    ollamaFails = false,
   } = {},
 ) {
   await page.addInitScript(
@@ -48,6 +54,7 @@ async function mockTauriIpc(
       claude,
       ollama,
       orbMock,
+      ollamaFails,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -213,6 +220,7 @@ async function mockTauriIpc(
             },
           });
           // Copies, as a real IPC reply would be: React ignores a state update that is the same object.
+          if (cmd === "ollama_status" && ollamaFails) return Promise.reject(new Error("ollama status unavailable"));
           if (cmd === "ollama_status") return Promise.resolve(structuredClone(ollamaState.status));
           if (cmd === "ollama_recommendation") return Promise.resolve(structuredClone(ollamaState.recommendation));
           if (cmd === "ollama_pull") {
@@ -270,14 +278,19 @@ async function mockTauriIpc(
             const reply = failing
               ? { message: "Guardian could not reach an AI provider.", provider: "sentinel-gated", answered: false, model: null }
               : { message: `local-echo: ${message}`, provider: "local-echo", answered: true, model: "qwen3.5:4b" };
-            if (orbMock.sendDelayMs) {
-              return new Promise((resolve) => setTimeout(() => resolve({ ...reply, escalation }), orbMock.sendDelayMs));
+            if (orbMock.holdSend) {
+              // Held until the test releases it, so a slow runner cannot let the answer arrive early.
+              return new Promise((resolve) => {
+                window.__releaseSend = () => resolve({ ...reply, escalation });
+              });
             }
             return Promise.resolve({ ...reply, escalation });
           }
           if (cmd === "speak_message") {
-            if (orbMock.speakDelayMs) {
-              return new Promise((resolve) => setTimeout(() => resolve(speakResult), orbMock.speakDelayMs));
+            if (orbMock.holdSpeak) {
+              return new Promise((resolve) => {
+                window.__releaseSpeak = () => resolve(speakResult);
+              });
             }
             return Promise.resolve(
               speakResult || { status: "not_connected", message: "Guardian has no speech synthesis provider connected." },
@@ -403,6 +416,7 @@ async function mockTauriIpc(
       claude,
       ollama,
       orbMock,
+      ollamaFails,
     },
   );
 }
@@ -541,7 +555,7 @@ test("mic button populates the composer with the transcript without auto-sending
 test("profile create form appears when no profile is active, and creating one shows it as active", async ({
   page,
 }) => {
-  await mockTauriIpc(page);
+  await mockTauriIpc(page, { profiles: [], activeProfile: null });
   await page.goto("/");
 
   await expect(page.getByPlaceholder("Your name")).toBeVisible();
@@ -598,9 +612,7 @@ test("the capability list and the Agents view both reflect a real registered age
   await page.goto("/");
   await openView(page, "System");
 
-  await expect(page.locator(".capability-row", { hasText: "Agent Framework" })).toContainText(
-    "gia-observability",
-  );
+  await expect(page.locator("[data-capability=agents]")).toContainText("gia-observability");
 
   await openView(page, "Agents");
 
@@ -1053,6 +1065,8 @@ test("not enough disk space is shown and blocks downloading the recommended mode
         needsDiskGb: 4,
         hardware: { system: "Windows", ramGb: 32, gpuGb: 8, unifiedMemory: false, freeDiskGb: 1.5 },
       },
+      // The recommended model is not the one in use, so it has a download button.
+      status: { models: [], activeModel: "qwen3.5:2b", activeModelInstalled: false },
     },
   });
   await page.goto("/");
@@ -1063,23 +1077,15 @@ test("not enough disk space is shown and blocks downloading the recommended mode
   await expect(panel.getByRole("button", { name: "Download and use" }).first()).toBeDisabled();
 });
 
-test("a Child profile sees the setup but cannot download or change the model", async ({ page }) => {
+test("a Child profile has no AI models view, so cannot download or change the model", async ({ page }) => {
   await mockTauriIpc(page, {
     profiles: [{ id: "p1", displayName: "Young", role: "Child", createdAt: "2026-01-01T00:00:00Z" }],
     activeProfile: { id: "p1", displayName: "Young", role: "Child", createdAt: "2026-01-01T00:00:00Z" },
-    ollama: {
-      status: { models: [], activeModel: "qwen3.5:2b", activeModelInstalled: false },
-      recommendation: {
-        primary: { tag: "qwen3.5:4b", label: "Qwen3.5 4B (balanced)", downloadGb: 3.3, note: "n", installed: false },
-      },
-    },
   });
   await page.goto("/");
-  await openView(page, "AI models");
-  const panel = page.locator(".local-ai-panel");
 
-  await expect(panel).toContainText("Only an Administrator or Adult profile can download or change models.");
-  await expect(panel.getByRole("button", { name: "Download and use" }).first()).toBeDisabled();
+  await expect(page.getByRole("navigation", { name: "Views" }).getByRole("button", { name: "AI models" })).toHaveCount(0);
+  await expect(page.locator(".local-ai-panel")).toHaveCount(0);
 });
 
 test("a model set by the environment variable says that it overrides the screen", async ({ page }) => {
@@ -1387,13 +1393,14 @@ test("the Orb is idle and says Ready, with the model once one has answered", asy
 });
 
 test("Orb: a request in flight is Thinking, and it returns to Ready when the answer arrives", async ({ page }) => {
-  await mockTauriIpc(page, { orbMock: { sendDelayMs: 600 } });
+  await mockTauriIpc(page, { orbMock: { holdSend: true } });
   await page.goto("/");
 
   await typeAndSend(page, "hello");
 
   await expect(orb(page)).toHaveAttribute("data-orb-state", "thinking");
   await expect(orbReadout(page)).toContainText("Thinking");
+  await page.evaluate(() => window.__releaseSend());
   await expect(page.locator(".conversation-message.guardian")).toHaveCount(1);
   await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
 });
@@ -1559,7 +1566,7 @@ test("the Orb draws on its canvas, and does not need a repository", async ({ pag
 
 test("with reduced motion the Orb draws still frames and the state is still written as text", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await mockTauriIpc(page, { orbMock: { sendDelayMs: 400 } });
+  await mockTauriIpc(page, { orbMock: { holdSend: true } });
   await page.goto("/");
 
   await expect(orb(page)).toHaveAttribute("data-reduced-motion", "true");
@@ -1567,6 +1574,8 @@ test("with reduced motion the Orb draws still frames and the state is still writ
   await typeAndSend(page, "hello");
   await expect(orb(page)).toHaveAttribute("data-orb-state", "thinking");
   await expect(orbReadout(page)).toContainText("Thinking");
+  await page.evaluate(() => window.__releaseSend());
+  await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
 });
 
 test("the Orb state is announced in a polite live region and the canvas is hidden from assistive technology", async ({ page }) => {
@@ -1663,18 +1672,20 @@ test("a Child screen never mentions Claude, even straight after an Adult convers
   await switchProfileTo(page, "Sam");
   await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
 
-  await expect(page.locator("main")).not.toContainText("Claude");
+  await expect(page.locator(".app-shell")).not.toContainText("Claude");
 });
 
 test("an answer that arrives after the profile changed is not shown to the next profile", async ({ page }) => {
-  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, orbMock: { sendDelayMs: 700 } });
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, orbMock: { holdSend: true } });
   await page.goto("/");
 
   await typeAndSend(page, "slow question");
   await expect(orb(page)).toHaveAttribute("data-orb-state", "thinking");
   await switchProfileTo(page, "Sam");
   await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
-  await page.waitForTimeout(1100);
+  // The answer for the previous profile arrives only now, after the switch.
+  await page.evaluate(() => window.__releaseSend());
+  await page.waitForTimeout(300);
 
   await expect(page.locator(".conversation-message")).toHaveCount(0);
   await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
@@ -1709,14 +1720,236 @@ test("switching profile stops reply audio that is playing", async ({ page }) => 
 });
 
 test("audio still being made when the profile changes is never played to the next profile", async ({ page }) => {
-  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, speakResult: SYNTHESIZED, orbMock: { speakDelayMs: 600 } });
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX, speakResult: SYNTHESIZED, orbMock: { holdSpeak: true } });
   await page.goto("/");
   await sendMessage(page, "hello");
   await page.getByRole("button", { name: "Speak this response" }).click();
 
   await switchProfileTo(page, "Sam");
-  await page.waitForTimeout(1000);
+  // The audio for the previous profile is ready only now, after the switch.
+  await page.evaluate(() => window.__releaseSpeak());
+  await page.waitForTimeout(300);
 
   expect(await page.evaluate(() => window.__audios.length)).toBe(0);
   await expect(orb(page)).toHaveAttribute("data-orb-state", "idle");
+});
+
+// ---- WP4c: what each household role sees, and the honest capability list ----
+
+const ADMIN = { id: "r1", displayName: "Robert", role: "Administrator", createdAt: "2026-10-01T00:00:00Z" };
+const GUEST = { id: "r4", displayName: "Visitor", role: "Guest", createdAt: "2026-10-01T00:00:00Z" };
+
+const railNames = async (page) =>
+  (await page.getByRole("navigation", { name: "Views" }).getByRole("button").allInnerTexts()).map((text) => text.trim());
+
+test("an Administrator and an Adult see all six views", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, ALEX], activeProfile: ADMIN });
+  await page.goto("/");
+  expect(await railNames(page)).toEqual(VIEW_NAMES);
+
+  await switchProfileTo(page, "Alex");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Alex");
+  expect(await railNames(page)).toEqual(VIEW_NAMES);
+});
+
+test("a Child sees only Guardian and Memory, and a Guest only Guardian", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [SAM, GUEST], activeProfile: SAM });
+  await page.goto("/");
+  expect(await railNames(page)).toEqual(["Guardian", "Memory"]);
+
+  await switchProfileTo(page, "Visitor");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Visitor");
+  expect(await railNames(page)).toEqual(["Guardian"]);
+});
+
+test("a view the new role may not use is replaced by the conversation at a profile switch", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "System");
+  await expect(page.getByRole("heading", { level: 1, name: "System" })).toBeVisible();
+
+  await switchProfileTo(page, "Sam");
+
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("How can I help you today?");
+  await expect(page.locator(".system-health-panel")).toHaveCount(0);
+});
+
+test("an Administrator can back up and restore; an Adult sees them disabled with the reason", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, ALEX], activeProfile: ADMIN, memories: SAMPLE_MEMORIES });
+  await page.goto("/");
+  await openView(page, "Memory");
+  const panel = page.locator(".memory-management-panel");
+  await expect(panel.getByRole("button", { name: "Back Up..." })).toBeEnabled();
+  await expect(panel.getByRole("button", { name: "Restore..." })).toBeEnabled();
+
+  await switchProfileTo(page, "Alex");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Alex");
+  await openView(page, "Memory");
+  await expect(panel.getByRole("button", { name: "Back Up..." })).toBeDisabled();
+  await expect(panel.getByRole("button", { name: "Restore..." })).toBeDisabled();
+  await expect(panel).toContainText("Only an Administrator can back up or restore memory.");
+  await panel.getByRole("button", { name: "Show memories" }).click();
+  await expect(panel.getByRole("button", { name: "Delete memory: Tea, no sugar." })).toBeVisible();
+});
+
+test("only an Administrator can forget a shared household note", async ({ page }) => {
+  const household = [
+    { id: "h-1", content: "Bins go out on Tuesday.", createdAt: "2026-09-01T10:00:00+00:00", consentDecisionId: "d", profileId: null },
+    ...SAMPLE_MEMORIES,
+  ];
+  await mockTauriIpc(page, { profiles: [ALEX, ADMIN], activeProfile: ALEX, memories: household });
+  await page.goto("/");
+  await openView(page, "Memory");
+  const panel = page.locator(".memory-management-panel");
+  await panel.getByRole("button", { name: "Show memories" }).click();
+  await expect(panel).toContainText("Bins go out on Tuesday.");
+  await expect(panel.getByRole("button", { name: "Delete memory: Bins go out on Tuesday." })).toHaveCount(0);
+  await expect(panel.getByRole("button", { name: "Delete memory: Tea, no sugar." })).toBeVisible();
+
+  await switchProfileTo(page, "Robert");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Robert");
+  await openView(page, "Memory");
+  await panel.getByRole("button", { name: "Show memories" }).click();
+  await expect(panel.getByRole("button", { name: "Delete memory: Bins go out on Tuesday." })).toBeVisible();
+});
+
+test("one profile's opened memory list is not shown to the next profile", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, ADMIN], activeProfile: ALEX, memories: SAMPLE_MEMORIES });
+  await page.goto("/");
+  await openView(page, "Memory");
+  const panel = page.locator(".memory-management-panel");
+  await panel.getByRole("button", { name: "Show memories" }).click();
+  await expect(panel).toContainText("Tea, no sugar.");
+
+  await switchProfileTo(page, "Robert");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Robert");
+
+  await expect(panel).not.toContainText("Tea, no sugar.");
+  await expect(panel.getByRole("button", { name: "Show memories" })).toBeVisible();
+});
+
+test("a Child can read their memories but is not offered forgetting, backup or restore", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [SAM], activeProfile: SAM, memories: SAMPLE_MEMORIES });
+  await page.goto("/");
+  await openView(page, "Memory");
+  const panel = page.locator(".memory-management-panel");
+  await panel.getByRole("button", { name: "Show memories" }).click();
+
+  await expect(panel).toContainText("Tea, no sugar.");
+  await expect(panel.getByRole("button", { name: /Delete/ })).toHaveCount(0);
+  await expect(panel.getByRole("button", { name: "Back Up..." })).toHaveCount(0);
+  await expect(panel.getByRole("button", { name: "Restore..." })).toHaveCount(0);
+});
+
+const capability = (page, id) => page.locator(`[data-capability="${id}"]`).first();
+
+test("the capability list is built from real status, with an icon-and-word state for each row", async ({ page }) => {
+  await mockTauriIpc(page, {
+    agents: ["gia-observability"],
+    claude: {},
+    orbMock: { platform: { speechAvailable: true } },
+    transcriptionAvailable: false,
+  });
+  await page.goto("/");
+  await openView(page, "System");
+  const list = page.locator(".capabilities-panel");
+
+  await expect(list.locator('[data-capability="guardian"]')).toHaveAttribute("data-capability-state", "ready");
+  await expect(list.locator('[data-capability="local-model"]')).toContainText("qwen3.5:4b");
+  await expect(list.locator('[data-capability="local-model"]')).toHaveAttribute("data-capability-state", "ready");
+  await expect(list.locator('[data-capability="claude"]')).toHaveAttribute("data-capability-state", "ready");
+  await expect(list.locator('[data-capability="agents"]')).toContainText("gia-observability");
+  await expect(list.locator('[data-capability="voice-in"]')).toHaveAttribute("data-capability-state", "not-available");
+  await expect(list.locator('[data-capability="voice-out"]')).toHaveAttribute("data-capability-state", "ready");
+  // Every row carries its state as a word.
+  for (const row of await list.locator("[data-capability]").all()) {
+    await expect(row).toContainText(/Ready|Preparing|Not available|Offline|Unknown/);
+  }
+  await expect(list).toContainText("Not available yet");
+  await expect(page.getByText("Placeholder", { exact: false })).toHaveCount(0);
+  await expect(page.getByText("No execution")).toHaveCount(0);
+});
+
+test("a status that cannot be read is Unknown, never Ready", async ({ page }) => {
+  // No `claude` option, so provider_status is refused by the mock itself; the
+  // local model's status read is made to fail by the option below.
+  await mockTauriIpc(page, { ollamaFails: true });
+  await page.goto("/");
+  await openView(page, "System");
+
+  await expect(capability(page, "claude")).toHaveAttribute("data-capability-state", "unknown");
+});
+
+test("Ollama not installed is Not available, and installed but stopped is Offline", async ({ page }) => {
+  await mockTauriIpc(page, { ollama: { status: { installed: false, running: false, models: [], activeModelInstalled: false } } });
+  await page.goto("/");
+  await openView(page, "System");
+  await expect(capability(page, "local-model")).toHaveAttribute("data-capability-state", "not-available");
+});
+
+test("Ollama installed but not running is Offline", async ({ page }) => {
+  await mockTauriIpc(page, { ollama: { status: { installed: true, running: false, models: [], activeModelInstalled: false } } });
+  await page.goto("/");
+  await openView(page, "System");
+  await expect(capability(page, "local-model")).toHaveAttribute("data-capability-state", "offline");
+});
+
+test("the Guardian view lists what is available at 1280, and nothing about Claude for a Child", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 820 });
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN, claude: {} });
+  await page.goto("/");
+  const column = page.locator(".available-column");
+
+  await expect(column).toBeVisible();
+  await expect(column.locator('[data-capability="local-model"]')).toContainText("Ready");
+  await expect(column.locator('[data-capability="claude"]')).toBeVisible();
+
+  await switchProfileTo(page, "Sam");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
+  await expect(column.locator('[data-capability="claude"]')).toHaveCount(0);
+  await expect(page.locator(".app-shell")).not.toContainText("Claude");
+});
+
+test("the available column collapses away below 1100 pixels and the composer stays on screen", async ({ page }) => {
+  await page.setViewportSize({ width: 960, height: 640 });
+  await mockTauriIpc(page);
+  await page.goto("/");
+
+  await expect(page.locator(".available-column")).toBeHidden();
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeVisible();
+});
+
+test("a Child or Guest sees the word Claude nowhere on the screen, rail included", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 820 });
+  await mockTauriIpc(page, { profiles: [SAM, GUEST, ADMIN], activeProfile: SAM, claude: {} });
+  await page.goto("/");
+  await expect(page.locator(".rail-note")).toContainText("Everything stays on this computer.");
+  await expect(page.locator(".app-shell")).not.toContainText("Claude");
+
+  await switchProfileTo(page, "Visitor");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Visitor");
+  await expect(page.locator(".app-shell")).not.toContainText("Claude");
+
+  await switchProfileTo(page, "Robert");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Robert");
+  await expect(page.locator(".rail-note")).toContainText("unless you ask Claude");
+});
+
+test("an agent result from one profile is not shown to the next", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, ALEX],
+    activeProfile: ADMIN,
+    agents: ["gia-observability"],
+    invokeAgentResult: { status: "reported", message: null, payload: { cpuPercent: "12.5" } },
+  });
+  await page.goto("/");
+  await openView(page, "Agents");
+  await page.getByRole("button", { name: "Run gia-observability" }).click();
+  await expect(page.locator(".agent-result-list")).toContainText("12.5");
+
+  await switchProfileTo(page, "Alex");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Alex");
+
+  await expect(page.locator(".agent-result-list")).toHaveCount(0);
 });

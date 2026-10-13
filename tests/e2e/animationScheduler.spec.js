@@ -10,6 +10,22 @@ import { test, expect } from "@playwright/test";
 // clock, so these tests start from a view with no animation: the scheduler's
 // own contract is what is under test, not the app's subscribers.
 async function openQuietView(page) {
+  // A role decides which views exist (WP4c); an Administrator has System. Only
+  // the profile reads are answered: every other call is refused, which the app
+  // shows as its own honest error and which is nothing this contract cares about.
+  await page.addInitScript(() => {
+    const administrator = { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" };
+    window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => {} };
+    window.__TAURI_INTERNALS__ = {
+      transformCallback: () => 0,
+      invoke: (cmd) => {
+        if (cmd === "active_profile") return Promise.resolve({ profile: administrator });
+        if (cmd === "list_profiles") return Promise.resolve({ profiles: [administrator] });
+        if (cmd === "plugin:event|listen") return Promise.resolve(0);
+        return Promise.reject(new Error("not mocked"));
+      },
+    };
+  });
   await page.goto("/");
   await page.getByRole("navigation", { name: "Views" }).getByRole("button", { name: "System", exact: true }).click();
   await expect(page.locator(".presence-orb")).toHaveCount(0);

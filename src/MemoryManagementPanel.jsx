@@ -31,9 +31,14 @@ import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 
+import { canBackupMemory, canForgetHouseholdNote, canForgetMemory, seesBackupControls } from "./roles.js";
+
 const OVERWRITE_REFUSAL_MARKER = "confirm_overwrite=True";
 
-export function MemoryManagementPanel({ recordCount, statusError, onStatusChange }) {
+// `role` is the active profile's household role (ESR-0061 WP4c): it decides
+// which controls are offered, mirroring what the backend enforces. A role that
+// is not given sees the least (reading only).
+export function MemoryManagementPanel({ role = null, recordCount, statusError, onStatusChange }) {
   const [backupBusy, setBackupBusy] = useState(false);
   const [backupResult, setBackupResult] = useState(null);
   const [backupError, setBackupError] = useState(null);
@@ -178,7 +183,7 @@ export function MemoryManagementPanel({ recordCount, statusError, onStatusChange
                     every profile; only an Administrator can delete it. */}
                 {record.profileId === null && <span className="memory-record-shared"> (Household)</span>}
               </span>
-              {pendingDeleteId === record.id ? (
+              {!(record.profileId === null ? canForgetHouseholdNote(role) : canForgetMemory(role)) ? null : pendingDeleteId === record.id ? (
                 <span className="memory-delete-confirm" role="alertdialog" aria-label="Confirm delete">
                   <span className="conversation-error">Delete this memory? This cannot be undone.</span>
                   <button type="button" className="outline-action" onClick={handleConfirmDelete} disabled={deleteBusy}>
@@ -208,14 +213,31 @@ export function MemoryManagementPanel({ recordCount, statusError, onStatusChange
         </p>
       )}
 
-      <div className="memory-action-row">
-        <button type="button" className="outline-action" disabled={backupBusy} onClick={handleBackup}>
-          {backupBusy ? "Backing up..." : "Back Up..."}
-        </button>
-        <button type="button" className="outline-action" disabled={restoreBusy} onClick={handleRestorePick}>
-          {restoreBusy ? "Restoring..." : "Restore..."}
-        </button>
-      </div>
+      {seesBackupControls(role) && (
+        <>
+          <div className="memory-action-row">
+            <button
+              type="button"
+              className="outline-action"
+              disabled={backupBusy || !canBackupMemory(role)}
+              onClick={handleBackup}
+            >
+              {backupBusy ? "Backing up..." : "Back Up..."}
+            </button>
+            <button
+              type="button"
+              className="outline-action"
+              disabled={restoreBusy || !canBackupMemory(role)}
+              onClick={handleRestorePick}
+            >
+              {restoreBusy ? "Restoring..." : "Restore..."}
+            </button>
+          </div>
+          {!canBackupMemory(role) && (
+            <p className="panel-status-message">Only an Administrator can back up or restore memory.</p>
+          )}
+        </>
+      )}
 
       {backupError && (
         <p className="conversation-error" role="alert">

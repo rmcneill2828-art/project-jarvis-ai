@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-004 |
 | Title | Engineering Implementation Package: WP4 Guardian Experience Redesign and Presence Orb |
-| Version | 0.7 |
-| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b built, implementation review Conditional Pass (one Medium fixed), awaiting the Programme Sponsor's approval to commit; WP4c and WP4d not started |
+| Version | 0.10 |
+| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b committed a4bbceb (implementation review Conditional Pass, one Medium fixed; CI green; post-commit review Pass); WP4c built (99 Playwright tests), implementation review Conditional Pass (one Medium, three Low, two Info, all fixed) then Pass, awaiting the Programme Sponsor's approval to commit; WP4d not started |
 | Session | ESR-0061. WP4 is planned for Session B (WP3-WP4); the design is drafted now under D22 |
 | Work Package | WP4 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.5 (Orb criteria) and Section 7, WP4 |
@@ -204,6 +204,9 @@ A control that is shown but unavailable says why in words. Profile creation and 
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.10 | 13 October 2026 | Claude Engineering Implementer | WP4c implementation review: Conditional Pass (one Medium, rail note named Claude to a Child; fixed) then Pass; reviewer model changed to Gemini 3.8 Flash High (Section 27). |
+| 0.9 | 13 October 2026 | Claude Engineering Implementer | WP4c built: role-aware views, honest capability list, Guardian availability column, stale memory list fixed (Sections 25 and 26). |
+| 0.8 | 13 October 2026 | Claude Engineering Implementer | WP4b post-commit record: a4bbceb, CI run 37850375579 green, post-commit review Pass (Section 24); Orb test delays replaced by held promises (test support only). |
 | 0.7 | 8 October 2026 | Claude Engineering Implementer | WP4a-fix committed (`936949e`) and its post-commit review recorded (Section 20). WP4b built: the presence Orb, the Guardian view, the AI disclosure and reply labels, the profile-switch clearing, two small backend additions (Section 21); implementation review Conditional Pass, one Medium fixed (Section 22). Section 23 is the expected commit contents. |
 | 0.6 | 8 October 2026 | Claude Engineering Implementer | WP4a committed (`b3693cb`) and its post-commit review recorded (Section 17), with a correction to my own mistake in the review brief (I read a Dependabot CI run, not the push run). WP4a-fix built for the review's High finding: the switch to a downloaded model now happens in the app, not the panel (Section 18). |
 | 0.5 | 8 October 2026 | Claude Engineering Implementer | WP4a implementation review Conditional Pass (Gemini; one Medium, one Low; two resumes). Both fixed with tests: the Guardian view's heading is now the level-1 heading; the choice to switch to a model when its download ends now survives a visit to another view. Section 16 review record; test counts updated (57); `src/LocalAiPanel.jsx` added to the file list. |
@@ -316,3 +319,51 @@ Re-check of the fix (resume): **Pass.** It confirmed the Medium fixed (the epoch
 # 23. WP4b Commit Contents (expected)
 
 Changed: `jarvis/guardian/runtime.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/tests/test_guardian_runtime.py`, `jarvis/tests/test_stdio_rpc.py`, `src/App.jsx`, `src/PresenceOrb.jsx` (new), `src/orbState.js` (new), `src/panels.css`, `src/shell.css`, `tests/e2e/animationScheduler.spec.js`, `tests/e2e/app.spec.js`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
+
+# 24. WP4b Post-Commit Record (13 October 2026)
+
+WP4b was committed as `a4bbceb` ("ESR-0061 WP4b: Presence Orb, AI disclosure and profile-switch clearing") after the Programme Sponsor's approval through the Sponsor Approval Service. **CI, selected by commit SHA:** push run 37850375579, conclusion success. **Post-commit review** (Antigravity, Gemini, 8 October 2026, 22:04:42Z, `sender: reviewer`): **Pass**. The committed tree matches the reviewed tree including the `handleSpeak` epoch guard, the 14 changed files match Section 23, the commit message is true, Sections 20 to 23 are accurate and the counts (25 new, 84 total Playwright tests) are accepted. The evidence pack carried `VALIDATION: PASSED` and a pytest run of 1168 items.
+
+**Test-stability change (uncommitted at the time of this record, WP4c's commit carries it).** Four Orb tests that used a timed mock delay (`sendDelayMs`, `speakDelayMs`) could let a slow runner deliver the answer before the Thinking state was asserted. The mock now holds the call until the test releases it (`holdSend`, `holdSpeak`, `window.__releaseSend`, `window.__releaseSpeak`). Only test support and the tests that used the delays changed; no product code. Re-run on 13 October 2026: the 17 Orb tests pass on Chromium.
+
+
+# 25. WP4c Build Record (13 October 2026)
+
+Built at the Programme Sponsor's request ("continue ESR-0061", then "yes please" to starting WP4c), under the design approved on 8 October 2026 (Sections 6.5 and 6.7, decisions W1-W10).
+
+| Item | Result |
+|---|---|
+| Role-aware views | New `src/roles.js` mirrors the backend's role rules (`jarvis/interfaces/stdio_rpc.py`: `ADMINISTRATOR_ROLES`, `REVIEW_APPROVER_ROLES`, `MODEL_MANAGER_ROLES`, `ESCALATION_ROLES`, `_sees_household_notes`). Administrator and Adult see six views; a Child sees Guardian and Memory; a Guest sees Guardian. **No profile selected, or a role the app does not know, sees the conversation only** - a decision of mine, not in the design: the backend refuses most calls without a profile, and showing less is the safe way to be wrong. A view the new role may not use is replaced by the conversation at a profile switch (`currentView`), never left on screen |
+| Memory view | The panel is given the role. Administrator: unchanged. Adult: Back Up and Restore shown **disabled with the reason in words** ("Only an Administrator can back up or restore memory."), which is what the backend does. Child: the list is readable; no Delete, no Back Up, no Restore. A shared household note (profile id null) shows Delete only to an Administrator, as the backend requires; an Adult previously saw a button that always failed. Guest has no Memory view |
+| Honest capability list | New `src/capabilities.js` (pure, no I/O) builds eight rows - Conversation, AI model on this computer, Claude (over the internet), Memory, Speaking to JARVIS, JARVIS speaking aloud, Agents, Safety gateway - each Ready, Preparing, Not available, Offline or Unknown, from `platform.status`, `ollama_status`, `provider_status`, `list_agents`, `memory_status` and the two voice flags. A read that failed is Unknown. New `src/CapabilityPanel.jsx` shows each state as an icon **and** a word. "Not available yet" names three things that are not built (seeing images or the camera, searching the internet, controlling smart-home devices) and is the only place they appear |
+| Static claims removed | `platformStatus.js` is reduced to the `STATUS` words. The three static status cards (including "Core Services: All core services healthy" and "Core platform online", which were never read from anything), the static Capabilities panel ("Placeholder" rows) and the Diagnostics panel ("Interface shell only", "No execution") are gone from the System view, along with "JARVIS v0.1.0, shell edition". The System view is now System Health plus the capability list |
+| Guardian view column | The "What is available" column deferred from WP4b: shown from 1100 pixels, hidden below. It lists the local model, speech in and out, and - only for a role that may ask Claude - Claude, and - only for a role with a Memory view - Memory. A Child's screen still never mentions Claude (a test asserts the whole `main` element) |
+| **A real defect found and fixed** | The Memory panel kept its opened list when the profile changed, so the next profile on the same screen saw the previous profile's memories until it closed the list. The panel is now keyed by profile (it remounts) and the stored-memory count is read again at a switch. New test |
+| Test-support changes | The Playwright mock now defaults to a signed-in Administrator (a role decides which views exist; a test about having no profile passes `profiles: [], activeProfile: null`); an `ollamaFails` option; `animationScheduler.spec.js` installs a minimal profile-only mock so it still reaches a view with no animation. Test changes in `app.spec.js`: the Agents capability assertion moved to the new list; the Child AI-models test now asserts the view does not exist; the disk-space test now makes the recommended model not the one in use (previously both buttons were disabled only because there was no profile) |
+| Tests | **97 Playwright tests pass** (Chromium; 84 before, 13 added, one rewritten). Vite build clean. No backend change, so the Python suite is unchanged from WP4b |
+| **Disclosed, not done** | (1) The design table's "Change memory sharing with Claude" row has no screen to gate: that UI is the UI half of EBG-0110 in WP5, so it is not built here. (2) A Child can still create a profile (WP6's PIN work); none of this is a security boundary. (3) The packaged window and the Mac look are not seen by me. (4) The WebKit job (informational) has not been run locally; CI will |
+
+# 26. WP4c Commit Contents (expected)
+
+Changed: `src/App.jsx`, `src/Shell.jsx`, `src/MemoryManagementPanel.jsx`, `src/platformStatus.js`, `src/shell.css`, `src/panels.css`, `scripts/run_reviewer.py`, `tests/e2e/app.spec.js`, `tests/e2e/animationScheduler.spec.js`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`. New: `src/roles.js`, `src/capabilities.js`, `src/CapabilityPanel.jsx`.
+
+The WP4b close-out records (Section 24, the ESR-0061 0.24 row, REG-0001 sync) ride in this commit under rule A3, and so does the Orb-test stability change in `tests/e2e/app.spec.js`.
+
+# 27. WP4c Implementation Review Record (13 October 2026)
+
+**Reviewer model change, disclosed.** The first run failed at start: Antigravity no longer lists `gemini-3.1-pro-high`, the model named in `scripts/run_reviewer.py`. The only Gemini models it now offers are Gemini 3.8 Flash (Low, Medium, High). The Programme Sponsor chose Gemini 3.8 Flash (High) (chat, 13 October 2026), which keeps PBK-0001's rule (a Gemini model, never a Claude model) but is a smaller model than the one it replaces: **a weaker signal than the earlier reviews, and read as such.** `ANTIGRAVITY_MODEL` was changed, and the `--effort` flag dropped because the level is part of the model name; the 58 reviewer-script tests pass.
+
+**Review** (Antigravity CLI, Gemini 3.8 Flash High, through `run_reviewer.py`; 13 October 2026, 08:52:57Z, `sender: reviewer`): **Conditional Pass.** Disclosed deferrals accepted. Findings and dispositions:
+
+| Rating | Finding | Disposition |
+|---|---|---|
+| Medium | The rail's note "Everything stays on this computer unless you ask Claude." showed to a Child and a Guest; it sits outside `main`, where my test looked | **Fixed**: `NavRail` takes `mentionClaude`, true only when the role may ask Claude; otherwise the note stops at "on this computer". The tests now assert the whole `.app-shell`, and a new test walks Child, Guest and Administrator. **This was a real miss of mine**: the WP4b test and the first WP4c test both scoped the assertion to `main` |
+| Low | Four unused role imports in `src/App.jsx` | **Fixed** |
+| Low | Dead CSS from the removed status cards, capability stack and diagnostics | **Fixed** (and their selectors in the shared card rules) |
+| Low | Agent result, error and busy state were not cleared at a profile switch, and a late agent answer was not dropped | **Fixed**: cleared in the profile-switch effect; `handleInvokeAgent` checks the epoch; new test |
+| Info | `scripts/run_reviewer.py` missing from Section 26 | **Fixed** (Section 26 now also lists `src/Shell.jsx` and `src/panels.css`) |
+| Info | Unused `STATUS` words | **Fixed** (only the four in use remain) |
+
+**Re-check** (resume, 08:59:08Z): **Pass**, "all five review findings resolved and verified in the working tree." A first attempt to record it was refused by the reviewer's own tool rules (a long message with escaped quotes) and recorded nothing; a second, short message was recorded. The first attempt's text is not in the transcript and is not relied on.
+
+**Caveats, disclosed:** a single reviewer, smaller than before, judging by reading with no browser; Playwright is 99 passed on Chromium; the WebKit job and the packaged window have not been seen.
