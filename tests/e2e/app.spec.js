@@ -222,6 +222,7 @@ async function mockTauriIpc(
           // Copies, as a real IPC reply would be: React ignores a state update that is the same object.
           if (cmd === "ollama_status" && ollamaFails) return Promise.reject(new Error("ollama status unavailable"));
           if (cmd === "ollama_status") return Promise.resolve(structuredClone(ollamaState.status));
+          if (cmd === "plugin:app|version") return Promise.resolve("0.1.0");
           if (cmd === "ollama_recommendation") return Promise.resolve(structuredClone(ollamaState.recommendation));
           if (cmd === "ollama_pull") {
             window.__ollamaCalls.push(["pull", args.model]);
@@ -1952,4 +1953,213 @@ test("an agent result from one profile is not shown to the next", async ({ page 
   await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Alex");
 
   await expect(page.locator(".agent-result-list")).toHaveCount(0);
+});
+
+// ---- WP4d: the confirmation dialog is a real modal, and every view lays out on both sizes ----
+
+async function openEscalationDialog(page) {
+  await sendMessage(page, "hello");
+  await page.getByRole("button", { name: "Review and ask Claude" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+}
+
+test("the Claude dialog takes focus on Cancel, keeps Tab inside, and Escape returns focus to the button that opened it", async ({ page }) => {
+  await mockTauriIpc(page, { claude: { offerReason: "local_unavailable" } });
+  await page.goto("/");
+  await openEscalationDialog(page);
+  const dialog = page.getByRole("dialog");
+
+  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(dialog.getByRole("button", { name: "Send to Claude" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(dialog.getByRole("button", { name: "Send to Claude" })).toBeFocused();
+
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Review and ask Claude" })).toBeFocused();
+});
+
+test("cancelling the Claude dialog with its button also returns focus", async ({ page }) => {
+  await mockTauriIpc(page, { claude: { offerReason: "local_unavailable" } });
+  await page.goto("/");
+  await openEscalationDialog(page);
+
+  await page.getByRole("dialog").getByRole("button", { name: "Cancel" }).click();
+
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Review and ask Claude" })).toBeFocused();
+});
+
+for (const size of [
+  { width: 1280, height: 820 },
+  { width: 960, height: 640 },
+]) {
+  test(`every view fits ${size.width} x ${size.height} with nothing sideways, and the composer stays on screen`, async ({ page }, testInfo) => {
+    await page.setViewportSize(size);
+    await mockTauriIpc(page, { agents: ["gia-observability"], claude: {}, memories: SAMPLE_MEMORIES });
+    await page.goto("/");
+
+    for (const name of VIEW_NAMES) {
+      await openView(page, name);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow, `${name} at ${size.width}: horizontal overflow`).toBeLessThanOrEqual(0);
+      if (name === "Guardian") {
+        await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeInViewport();
+      }
+      // Kept for the Programme Sponsor's own look at the layout: CI uploads the
+      // folder as an artifact (a passing test's attachments are not kept).
+      const file = `${name.replaceAll(" ", "-").toLowerCase()}-${size.width}x${size.height}.png`;
+      await page.screenshot({ path: `layout-screenshots/${testInfo.project.name}/${file}` });
+    }
+  });
+}
+
+test("the System view shows the app version the shell reports, and the local-time note", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await openView(page, "System");
+
+  await expect(page.locator(".view-lede")).toContainText("JARVIS version 0.1.0.");
+  await expect(page.locator(".view-lede")).toContainText("Times shown are local to this computer.");
+});
+
+// ---- WP4d: Orb frame measurement (EIP-ESR0061-004 item 6.11) ----
+// Not a CI gate: headless timing is not stable enough to fail a build on. Run on
+// the household PC with JARVIS_PERF=1 to record draws per second in each state;
+// CPU use of the packaged window is read by hand in Task Manager.
+const PERF_BUDGET = { idle: 30, offline: 10, thinking: 60, listening: 60, speaking: 60 };
+
+async function measureOrb(page, state) {
+  await page.addInitScript(() => {
+    window.__orbDraws = 0;
+    const original = CanvasRenderingContext2D.prototype.clearRect;
+    CanvasRenderingContext2D.prototype.clearRect = function (...args) {
+      if (this.canvas && this.canvas.closest && this.canvas.closest(".presence-orb")) window.__orbDraws += 1;
+      return original.apply(this, args);
+    };
+  });
+  return page;
+}
+
+for (const state of Object.keys(PERF_BUDGET)) {
+  test(`perf: the Orb in the ${state} state draws within its frame budget`, async ({ page }, testInfo) => {
+    test.skip(!process.env.JARVIS_PERF, "Run with JARVIS_PERF=1 on the household PC.");
+    await measureOrb(page, state);
+    const options = {
+      idle: {},
+      offline: { orbMock: { platform: { state: "Stopped" } } },
+      thinking: { orbMock: { holdSend: true } },
+      listening: { transcriptionAvailable: true },
+      speaking: { speakResult: SYNTHESIZED },
+    }[state];
+    await mockTauriIpc(page, options);
+    await page.goto("/");
+    if (state === "thinking") await typeAndSend(page, "hello");
+    if (state === "listening") await page.getByRole("button", { name: "Speak a message" }).click();
+    if (state === "speaking") {
+      await sendMessage(page, "hello");
+      await page.getByRole("button", { name: "Speak this response" }).click();
+    }
+    await expect(orb(page)).toHaveAttribute("data-orb-state", state);
+
+    const seconds = 5;
+    const result = await page.evaluate(async (windowSeconds) => {
+      const start = window.__orbDraws;
+      const gaps = [];
+      let last = performance.now();
+      const t0 = last;
+      await new Promise((resolve) => {
+        const tick = (now) => {
+          gaps.push(now - last);
+          last = now;
+          if (now - t0 >= windowSeconds * 1000) resolve();
+          else requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+      gaps.sort((a, b) => a - b);
+      return {
+        drawsPerSecond: (window.__orbDraws - start) / windowSeconds,
+        p95FrameGapMs: gaps[Math.floor(gaps.length * 0.95)],
+        worstFrameGapMs: gaps[gaps.length - 1],
+      };
+    }, seconds);
+
+    console.log(`PERF ${state}: ${JSON.stringify(result)}`);
+    await testInfo.attach(`perf-${state}`, { body: JSON.stringify(result, null, 2), contentType: "application/json" });
+    // The budget is an upper bound: the Orb must never be driven harder than it.
+    expect(result.drawsPerSecond).toBeLessThanOrEqual(PERF_BUDGET[state] * 1.1 + 1);
+  });
+}
+
+// ---- WP4d: the functionality-preservation inventory's remaining rows (EIP-ESR0061-004 item 6.12) ----
+
+const platformChip = (page) => page.getByRole("status", { name: "JARVIS platform status" });
+
+test("the top bar chip says JARVIS PLATFORM when running, and the platform's state when not", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await expect(platformChip(page)).toContainText("JARVIS PLATFORM");
+  await expect(platformChip(page)).toContainText("Operational");
+
+  await mockTauriIpc(page, { orbMock: { platform: { state: "Stopped" } } });
+  await page.reload();
+  await expect(platformChip(page)).toContainText("STOPPED");
+  await expect(platformChip(page)).toContainText("Offline");
+});
+
+test("the top bar chip says OFFLINE when the platform call fails", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.addInitScript(() => {
+    const wrap = () => {
+      const original = window.__TAURI_INTERNALS__?.invoke;
+      if (!original || original.__failPlatform) return;
+      const wrapped = (cmd, args) => (cmd === "platform_status" ? Promise.reject(new Error("down")) : original(cmd, args));
+      wrapped.__failPlatform = true;
+      window.__TAURI_INTERNALS__.invoke = wrapped;
+    };
+    wrap();
+    const timer = setInterval(wrap, 5);
+    setTimeout(() => clearInterval(timer), 2000);
+  });
+  await page.goto("/");
+  await expect(platformChip(page)).toContainText("OFFLINE");
+});
+
+test("a shared household note carries the (Household) marker", async ({ page }) => {
+  const household = [
+    { id: "h-1", content: "Bins go out on Tuesday.", createdAt: "2026-09-01T10:00:00+00:00", consentDecisionId: "d", profileId: null },
+    { id: "m-9", content: "Tea, no sugar.", createdAt: "2026-09-02T10:00:00+00:00", consentDecisionId: "d", profileId: "default-admin" },
+  ];
+  await mockTauriIpc(page, { memories: household });
+  await page.goto("/");
+  await openView(page, "Memory");
+  await page.locator(".memory-management-panel").getByRole("button", { name: "Show memories" }).click();
+
+  const shared = page.locator(".memory-record", { hasText: "Bins go out on Tuesday." });
+  await expect(shared).toContainText("(Household)");
+  await expect(page.locator(".memory-record", { hasText: "Tea, no sugar." })).not.toContainText("(Household)");
+});
+
+test("a computer below the usual minimum is told that answers may be slow", async ({ page }) => {
+  await mockTauriIpc(page, { ollama: { recommendation: { belowMinimum: true } } });
+  await page.goto("/");
+  await openView(page, "AI models");
+
+  await expect(page.locator(".local-ai-panel").getByRole("alert")).toContainText("below the usual minimum");
+});
+
+test("the Knowledge view shows the graph figures", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await openView(page, "Knowledge");
+  const metrics = page.locator(".knowledge-metrics-panel");
+  await expect(metrics).toContainText("Nodes");
+  const row = (label) => metrics.locator(".metric-row").filter({ has: page.getByText(label, { exact: true }) });
+  await expect(row("Nodes")).toContainText("2");
+  await expect(row("Connections")).toContainText("1");
 });

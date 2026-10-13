@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { getVersion } from "@tauri-apps/api/app";
 import { listen } from "@tauri-apps/api/event";
 import {
   ChevronDown,
@@ -494,6 +495,21 @@ export function App() {
   // fetches, unchanged - this is a second, independent channel proving the
   // Python-to-Rust-to-React notification plumbing works, not a replacement.
   const [lastHeartbeatAt, setLastHeartbeatAt] = useState(null);
+
+  // The app's own version, as the shell reports it (WP4d: the inventory's
+  // footer row). Absent until read, and absent if it cannot be, never guessed.
+  const [appVersion, setAppVersion] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    getVersion()
+      .then((version) => {
+        if (!cancelled) setAppVersion(version);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -1161,7 +1177,7 @@ export function App() {
 
         {currentView === "memory" && (
           <section className="view" aria-label="Memory">
-            <div className="view-scroll">
+            <div className="view-scroll" tabIndex={0}>
               <h1 className="view-heading">Memory</h1>
               <p className="view-lede">Notes JARVIS keeps on this computer, only after you approve them.</p>
               <MemoryManagementPanel
@@ -1177,7 +1193,7 @@ export function App() {
 
         {currentView === "knowledge" && (
           <section className="view" aria-label="Knowledge">
-            <div className="view-scroll">
+            <div className="view-scroll" tabIndex={0}>
               <h1 className="view-heading">Knowledge</h1>
               <p className="view-lede">The project&rsquo;s engineering knowledge graph, drawn from the repository on this computer.</p>
               <div className="knowledge-stage">
@@ -1197,7 +1213,7 @@ export function App() {
 
         {currentView === "agents" && (
           <section className="view" aria-label="Agents">
-            <div className="view-scroll">
+            <div className="view-scroll" tabIndex={0}>
               <h1 className="view-heading">Agents</h1>
               <p className="view-lede">Helpers that do one job and report back. Each runs only when you ask.</p>
               <AgentFrameworkPanel
@@ -1214,7 +1230,7 @@ export function App() {
 
         {currentView === "models" && (
           <section className="view" aria-label="AI models">
-            <div className="view-scroll">
+            <div className="view-scroll" tabIndex={0}>
               <h1 className="view-heading">AI models</h1>
               <p className="view-lede">JARVIS answers on this computer first. Claude is used only when you ask.</p>
               <LocalAiPanel
@@ -1230,9 +1246,12 @@ export function App() {
 
         {currentView === "system" && (
           <section className="view" aria-label="System">
-            <div className="view-scroll">
+            <div className="view-scroll" tabIndex={0}>
               <h1 className="view-heading">System</h1>
-              <p className="view-lede">What is running, and what is ready to use.</p>
+              <p className="view-lede">
+                What is running, and what is ready to use.
+                {appVersion ? ` JARVIS version ${appVersion}.` : ""} Times shown are local to this computer.
+              </p>
               <div className="view-grid">
                 <SystemHealthPanel
                   platformState={platformState}

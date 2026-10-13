@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-004 |
 | Title | Engineering Implementation Package: WP4 Guardian Experience Redesign and Presence Orb |
-| Version | 0.10 |
-| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b committed a4bbceb (implementation review Conditional Pass, one Medium fixed; CI green; post-commit review Pass); WP4c built (99 Playwright tests), implementation review Conditional Pass (one Medium, three Low, two Info, all fixed) then Pass, awaiting the Programme Sponsor's approval to commit; WP4d not started |
+| Version | 0.13 |
+| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b committed a4bbceb (implementation review Conditional Pass, one Medium fixed; CI green; post-commit review Pass); WP4c committed 247f6da (implementation review Conditional Pass, all findings fixed, then Pass; CI green apart from the informational WebKit job; post-commit review Pass); WP4d built (axe, modal focus, layout on both sizes, Orb frame measurement, the inventory gate), implementation review Pass (two Info notes), awaiting the Programme Sponsor's approval to commit |
 | Session | ESR-0061. WP4 is planned for Session B (WP3-WP4); the design is drafted now under D22 |
 | Work Package | WP4 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.5 (Orb criteria) and Section 7, WP4 |
@@ -204,6 +204,9 @@ A control that is shown but unavailable says why in words. Profile creation and 
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.13 | 13 October 2026 | Claude Engineering Implementer | WP4d implementation review Pass (two Info notes dispositioned, Section 31). |
+| 0.12 | 13 October 2026 | Claude Engineering Implementer | WP4d built: axe checks on every view (one violation fixed), modal focus for the Claude dialog, layout and screenshots on both sizes, Orb frame measurement, inventory signed off (Sections 29 and 30). |
+| 0.11 | 13 October 2026 | Claude Engineering Implementer | WP4c committed 247f6da; pre-check PASS, CI green apart from the informational WebKit job (5 microphone tests, down from 7), post-commit review Pass (Section 28). |
 | 0.10 | 13 October 2026 | Claude Engineering Implementer | WP4c implementation review: Conditional Pass (one Medium, rail note named Claude to a Child; fixed) then Pass; reviewer model changed to Gemini 3.8 Flash High (Section 27). |
 | 0.9 | 13 October 2026 | Claude Engineering Implementer | WP4c built: role-aware views, honest capability list, Guardian availability column, stale memory list fixed (Sections 25 and 26). |
 | 0.8 | 13 October 2026 | Claude Engineering Implementer | WP4b post-commit record: a4bbceb, CI run 37850375579 green, post-commit review Pass (Section 24); Orb test delays replaced by held promises (test support only). |
@@ -367,3 +370,64 @@ The WP4b close-out records (Section 24, the ESR-0061 0.24 row, REG-0001 sync) ri
 **Re-check** (resume, 08:59:08Z): **Pass**, "all five review findings resolved and verified in the working tree." A first attempt to record it was refused by the reviewer's own tool rules (a long message with escaped quotes) and recorded nothing; a second, short message was recorded. The first attempt's text is not in the transcript and is not relied on.
 
 **Caveats, disclosed:** a single reviewer, smaller than before, judging by reading with no browser; Playwright is 99 passed on Chromium; the WebKit job and the packaged window have not been seen.
+
+# 28. WP4c Post-Commit Record (13 October 2026)
+
+WP4c was committed as `247f6da` ("ESR-0061 WP4c: Role-aware views, honest capability list and availability column") after the Programme Sponsor's approval through the Sponsor Approval Service (`submit-response` 09:04:32Z); the push was done by the Programme Sponsor. **Pre-check** (`post_commit_precheck.py`, with `--contents-heading "26. WP4c Commit Contents"`): **PASS** on every hard check - tree clean, on origin/main, the 15 changed files equal Section 26, gated against the parent, pytest 1164 passed and 4 skipped, ruff clean, validator 0 errors.
+
+**CI, selected by commit SHA:** push run 38374093952, conclusion success: `frontend-build`, `playwright`, `python`, `python-macos`, `rust`, `rust-macos` and `rust-windows` all succeeded. The informational `playwright-webkit` job: **94 passed, 5 failed**, against 77 passed and 7 failed on WP4b's run. The two that no longer fail are the Orb Thinking and reduced-motion tests, whose timed mock delays the held-promise change replaced. **The five that remain are all microphone or recording tests** (the two known microphone tests, plus three Orb and profile-switch tests that start a recording): the same WKWebView difference already carried to WP7. It is a test-environment difference until it is seen on the real Mac at visit 1, not a finding about the product.
+
+**Post-commit review** (Antigravity, Gemini 3.8 Flash High, 13 October 2026, `sender: reviewer`): **Pass**, no findings: all 15 changed files match Section 26, the tree is clean, the commit message is true, the records and registers are consistent. Its first run was stopped by its own tool rules on a `git grep -c` (a count it did not need) and resumed. A weaker signal than the Pro-model reviews, as disclosed in Section 27.
+
+# 29. WP4d Build Record (13 October 2026)
+
+Built at the Programme Sponsor's request ("Please start", 13 October 2026), under the design approved on 8 October 2026 (items 6.9 to 6.12). **The one new dependency, `@axe-core/playwright` 4.13.0 (dev only, pinned exactly, published 11 August 2026), was named in item 6.10 of the approved design (rule A4).** One CI change, listed here as A4 asks: both Playwright jobs upload `layout-screenshots/` as an artifact with `actions/upload-artifact` pinned by commit SHA (v4.6.2), `if: always()`.
+
+| Item | Result |
+|---|---|
+| Accessibility checks (6.10) | New `tests/e2e/accessibility.spec.js`: axe (WCAG 2.0 and 2.1, levels A and AA) on each of the six views as an Administrator, on a Child's Guardian and Memory views, and on every view at 960 x 640; the test fails on any **serious or critical** violation. **One real violation found and fixed:** `scrollable-region-focusable` on the scrolling area of the Knowledge and System views (a keyboard user could not scroll it). The scrolling area is now focusable (`tabIndex=0`) with a visible focus ring inset so it is not clipped |
+| The dialog (6.10) | `ClaudeConfirmDialog` was `aria-modal` with no focus handling. Now: focus moves to Cancel (the safe default) on open, Tab and Shift+Tab stay inside, Escape cancels (not while a request is in flight), and focus returns to the control that opened it, however the dialog closes. Three tests |
+| Layout on both sizes (6.9) | Every view at 1280 x 820 and 960 x 640: no horizontal overflow, and the composer is in the viewport in the Guardian view; a screenshot of each is written to `layout-screenshots/<project>/` and uploaded by CI (a passing test's attachments are not kept, so a plain attachment would not have survived). Run on the Chromium and WebKit projects; **Playwright's WebKit is not the Mac's WKWebView** (item 6.9) |
+| Orb frames (6.11) | Five tests (one per Orb state) behind `JARVIS_PERF=1` (not a CI gate: headless timing is not stable enough to fail a build). **Measured on the household PC, Chromium, the development build, 5 seconds a state: idle 30.0 draws a second, offline 10.0, thinking 60.4, listening 60.2, speaking 60.4; worst gap between animation frames 16.8 ms in every state** (no dropped frame in the window). That meets W3's target of at least 50 frames a second in the active states and holds the frame budget exactly. **Not measured: CPU use** (the target is under 5 percent total CPU while idle) - that is read by the Programme Sponsor in Task Manager on the packaged app, and the Mac at visit 1 and visit 2. The Orb's per-frame array allocation (the WP4b Low) shows no jank at 240 points; it is left as is |
+| Inventory gate (6.12) | Table below. **Two rows changed form and are recorded as such:** the Diagnostics panel was removed, not re-pointed (its rows were static text; the real status is in the capability list), and the "Platform, Core Services and External Providers" cards were removed for the same reason. The footer row is met by the System view's lede, which now reads the app version from the shell (`getVersion`) and says times are local; it shows nothing if the version cannot be read |
+| Other | `package.json` and `package-lock.json` (the dev dependency), `.gitignore` (`layout-screenshots/`). Tests: **117 passed and 5 skipped** (the five skipped are the Orb frame measurement, run on request) on Chromium; Python 1164 passed and 4 skipped; ruff, validator and the Vite build clean |
+| **Disclosed, not done** | CPU use of the Orb (by hand, packaged app); the Mac look and measurements (visit 1 and visit 2); the real WKWebView (Playwright's WebKit stands in, with its five known microphone failures); the axe checks run on the mocked app, so they judge the markup and the contrast tokens, not the packaged window; the confirmation dialog is not itself axe-scanned (its focus behaviour is tested directly) |
+
+**Functionality-preservation inventory, signed off row by row (item 6.12).** Every row has a passing test in its new location:
+
+| Row | Test (tests/e2e/app.spec.js unless noted) |
+|---|---|
+| Overall platform status chip | "the top bar chip says JARVIS PLATFORM when running, and the platform's state when not"; "...says OFFLINE when the platform call fails". **The chip's connecting state has no test of its own** (a call held open would need a mock option); disclosed |
+| Platform, Core Services, External Providers cards; sidebar rows | **Removed as static claims**; replaced by "the capability list is built from real status..." and "a status that cannot be read is Unknown, never Ready" |
+| Knowledge Orb with cluster illumination; no-repository case | "a cluster reported active by knowledge.graph's pull field renders as illuminated"; "a cluster with no reported activity renders without the illumination class"; "the Orb draws on its canvas, and does not need a repository" |
+| Knowledge Metrics and Active Clusters | "the Knowledge view shows the graph figures" |
+| Conversation, send, local reply | "sending a message renders the mocked response in the conversation log" |
+| Speak this response | "speak button plays synthesized audio..."; "...shows an inline note when Guardian has no speech provider connected"; "Orb: reply audio playing is Speaking..."; "Orb: audio that errors ends Speaking and says so" |
+| Microphone and transcript | "mic button populates the composer with the transcript without auto-sending"; "mic button does not render when transcription is not available"; "...shows an inline note when Guardian has no transcription provider connected" |
+| Ask Claude, offers, confirmation, badge | "an offer is shown after a local failure and sends nothing until it is confirmed"; "confirming sends the offer's token once and labels the answer as Claude's"; "Ask Claude opens the confirmation for the last message even after a good local answer"; "every reply is labelled with where it came from" |
+| 80 percent warning in the confirmation | "the dialog says when saved memory notes will be sent and warns near the cap" |
+| Previous profile's conversation not shown | "switching profile clears the conversation, the draft, the offer, the dialog and the Claude labels" |
+| Profile create, switch, active | "profile create form appears when no profile is active..."; "selecting a profile from the picker switches the active profile"; "the active profile is in the top bar with its initial and role" |
+| System Health and heartbeat | "app launches and shows JARVIS branding with live system health" and the heartbeat assertion in the System view tests |
+| Agent Framework panel | "the Agents view shows no agents when none are registered"; "running an agent renders its real returned payload"; "a denied agent outcome renders inline rather than silently failing" |
+| Memory count, show, forget, back up, restore | "memory management panel shows the real stored record count"; "stored memory text is hidden until the list is explicitly opened"; "deleting a memory needs confirmation..."; "backing up memory shows the real returned backup path"; "restoring into a non-empty store requires an explicit overwrite confirmation" |
+| "(Household)" marker | "a shared household note carries the (Household) marker" (new) |
+| Local AI panel, all of it | the WP3c tests, re-pointed (status, install steps, download, progress, cancel, switch, disk warning, override note, role limits) and "a computer below the usual minimum is told that answers may be slow" (new) |
+| Diagnostics panel | **Removed as static text**; replaced by the capability list (as above) |
+| Footer: edition, local times | "the System view shows the app version the shell reports, and the local-time note" (new) |
+| The 11 controls that did nothing | "the controls that used to do nothing are gone" |
+
+# 30. WP4d Commit Contents (expected)
+
+Changed: `src/App.jsx`, `src/ClaudeEscalation.jsx`, `src/shell.css`, `tests/e2e/app.spec.js`, `package.json`, `package-lock.json`, `.gitignore`, `.github/workflows/ci.yml`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`. New: `tests/e2e/accessibility.spec.js`.
+
+The WP4c post-commit records (Section 28, ESR-0061 0.27, REG-0001 sync) ride in this commit under rule A3.
+
+# 31. WP4d Implementation Review Record (13 October 2026)
+
+**Review** (Antigravity CLI, Gemini 3.8 Flash High, through `run_reviewer.py`; 13 October 2026, `sender: reviewer`): **Pass.** It found the axe checks real and faithfully mocked with no rule or region excluded, the focusable scroll area and the dialog's trap and focus return correct (the dialog checks that the opener is still connected before restoring focus), the layout tests and artifact upload sound, the frame measurement and version display truthful and permitted, and every inventory row backed by a real test. A single reviewer, smaller than the Pro model of earlier reviews, judging by reading (Section 27's caveat applies). Findings and dispositions:
+
+| Rating | Finding | Disposition |
+|---|---|---|
+| Info | A count in Section 29 did not match the code (it said eight Orb frame tests; there are five, one per state) | **Fixed** in Section 29 |
+| Info | The focusable scroll areas have no accessible name of their own | **Accepted**: each sits inside a section already labelled with the view's name, and axe reports nothing; a second landmark with the same name would repeat it to a screen reader |

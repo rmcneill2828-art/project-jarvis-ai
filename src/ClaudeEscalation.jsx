@@ -3,6 +3,8 @@
 // anything - the dialog states what would be sent, and only its confirm button
 // does, using the one-time token the backend issued for this exact message.
 
+import { useEffect, useRef } from "react";
+
 const OFFER_TEXT = {
   local_unavailable: "The model on this computer could not answer.",
   research_cue: "Claude may give a more thorough answer to this.",
@@ -46,11 +48,59 @@ function money(usd, gbp) {
   return `about £${gbp.toFixed(2)} (US$${usd.toFixed(2)})`;
 }
 
+const FOCUSABLE = "button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+
 export function ClaudeConfirmDialog({ offer, busy, onConfirm, onCancel }) {
   const allowance = offer.allowance;
+  const dialogRef = useRef(null);
+  const cancelRef = useRef(null);
+
+  // A modal dialog (ESR-0061 WP4d, EIP-ESR0061-004 item 6.10): focus moves into
+  // it on open, Tab stays inside it, Escape cancels, and focus returns to what
+  // had it before when it closes. Cancel is the first focus, the safe default.
+  useEffect(() => {
+    const previous = document.activeElement;
+    cancelRef.current?.focus();
+    return () => {
+      if (previous && previous.isConnected && typeof previous.focus === "function") previous.focus();
+    };
+  }, []);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      if (!busy) {
+        event.stopPropagation();
+        onCancel();
+      }
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const items = [...(dialogRef.current?.querySelectorAll(FOCUSABLE) ?? [])];
+    if (items.length === 0) {
+      event.preventDefault();
+      dialogRef.current?.focus();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (!dialogRef.current.contains(active)) {
+      event.preventDefault();
+      first.focus();
+    } else if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   return (
-    <div className="escalation-backdrop">
+    <div className="escalation-backdrop" onKeyDown={handleKeyDown}>
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         className="escalation-dialog"
         role="dialog"
         aria-modal="true"
@@ -80,7 +130,7 @@ export function ClaudeConfirmDialog({ offer, busy, onConfirm, onCancel }) {
           )}
         </div>
         <div className="escalation-actions">
-          <button type="button" onClick={onCancel} disabled={busy}>
+          <button ref={cancelRef} type="button" onClick={onCancel} disabled={busy}>
             Cancel
           </button>
           <button type="button" className="escalation-confirm" onClick={onConfirm} disabled={busy}>

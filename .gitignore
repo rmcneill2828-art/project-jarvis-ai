@@ -57,6 +57,7 @@ node_modules/
 # Playwright (EIP-ESR0032-002)
 # --------------------------------------------------
 test-results/
+layout-screenshots/
 playwright-report/
 blob-report/
 playwright/.cache/

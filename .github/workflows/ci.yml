@@ -62,6 +62,12 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: layout-screenshots-chromium
+          path: layout-screenshots/
+          if-no-files-found: ignore
 
   rust:
     runs-on: ubuntu-latest
@@ -191,3 +197,9 @@ jobs:
       # The suite's global setup warms Vite with Chromium, so both browsers are needed.
       - run: npx playwright install --with-deps chromium webkit
       - run: npx playwright test --project=webkit
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: layout-screenshots-webkit
+          path: layout-screenshots/
+          if-no-files-found: ignore
