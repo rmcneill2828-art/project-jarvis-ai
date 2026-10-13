@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-004 |
 | Title | Engineering Implementation Package: WP4 Guardian Experience Redesign and Presence Orb |
-| Version | 0.13 |
-| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b committed a4bbceb (implementation review Conditional Pass, one Medium fixed; CI green; post-commit review Pass); WP4c committed 247f6da (implementation review Conditional Pass, all findings fixed, then Pass; CI green apart from the informational WebKit job; post-commit review Pass); WP4d built (axe, modal focus, layout on both sizes, Orb frame measurement, the inventory gate), implementation review Pass (two Info notes), awaiting the Programme Sponsor's approval to commit |
+| Version | 0.14 |
+| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b committed a4bbceb (implementation review Conditional Pass, one Medium fixed; CI green; post-commit review Pass); WP4c committed 247f6da (implementation review Conditional Pass, all findings fixed, then Pass; CI green apart from the informational WebKit job; post-commit review Pass); WP4d built (axe, modal focus, layout on both sizes, Orb frame measurement, the inventory gate), committed b15499d, implementation review Pass, post-commit review Pass; **WP4d-fix** (focus returns to the opener in WebKit) built, reviewed (Pass), awaiting the Programme Sponsor's approval to commit |
 | Session | ESR-0061. WP4 is planned for Session B (WP3-WP4); the design is drafted now under D22 |
 | Work Package | WP4 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.5 (Orb criteria) and Section 7, WP4 |
@@ -204,6 +204,7 @@ A control that is shown but unavailable says why in words. Profile creation and 
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.14 | 13 October 2026 | Claude Engineering Implementer | WP4d post-commit record (b15499d, CI green, reviews Pass; pre-check FAIL from a dotfile parsing defect in the script) and WP4d-fix for two WebKit focus failures (Sections 32 and 33). |
 | 0.13 | 13 October 2026 | Claude Engineering Implementer | WP4d implementation review Pass (two Info notes dispositioned, Section 31). |
 | 0.12 | 13 October 2026 | Claude Engineering Implementer | WP4d built: axe checks on every view (one violation fixed), modal focus for the Claude dialog, layout and screenshots on both sizes, Orb frame measurement, inventory signed off (Sections 29 and 30). |
 | 0.11 | 13 October 2026 | Claude Engineering Implementer | WP4c committed 247f6da; pre-check PASS, CI green apart from the informational WebKit job (5 microphone tests, down from 7), post-commit review Pass (Section 28). |
@@ -431,3 +432,21 @@ The WP4c post-commit records (Section 28, ESR-0061 0.27, REG-0001 sync) ride in 
 |---|---|---|
 | Info | A count in Section 29 did not match the code (it said eight Orb frame tests; there are five, one per state) | **Fixed** in Section 29 |
 | Info | The focusable scroll areas have no accessible name of their own | **Accepted**: each sits inside a section already labelled with the view's name, and axe reports nothing; a second landmark with the same name would repeat it to a screen reader |
+
+# 32. WP4d Post-Commit Record and WP4d-fix (13 October 2026)
+
+WP4d was committed as `b15499d` ("ESR-0061 WP4d: Accessibility checks, modal focus, layout on both sizes and the inventory gate") after the Programme Sponsor's approval through the Sponsor Approval Service (`submit-response` 10:21:35Z); the push was the Programme Sponsor's.
+
+**Pre-check: FAIL on one hard check, and the failure is the script's, not the commit's.** `post_commit_precheck.py` (with `--contents-heading "30. WP4d Commit Contents"`) reported "changed files equal the EIP's Commit Contents - not listed: ['.gitignore']". The commit changed exactly 12 files and Section 30 lists all 12 including `.gitignore`. The cause is `_PATH_TOKEN` (line 35), which only matches a backticked path that ends in a known extension, so an extensionless dotfile is never read as a listed path. The other six checks passed (tree clean, on origin/main, gated against the parent, pytest 1164 passed and 4 skipped, ruff, validator 0 errors). **Not fixed here**: it is a change to a controlled script outside WP4d's approved scope, so it is flagged to the Programme Sponsor for a decision (a one-line change plus a test, WP1c's R8 tooling).
+
+**CI, selected by commit SHA:** push run 38382876635, conclusion success on `frontend-build`, `playwright`, `python`, `python-macos`, `rust`, `rust-macos` and `rust-windows`; both layout-screenshot artifacts were uploaded (`layout-screenshots-chromium` 2.1 MB, `layout-screenshots-webkit` 12.4 MB), so the new upload step works. (Two Dependabot runs share the same SHA and were not mistaken for the push run.) The informational `playwright-webkit` job: **110 passed, 7 failed, 5 skipped.** Five are the known microphone and recording tests. **Two were new and were mine: the Claude dialog focus tests.**
+
+**Cause and fix (WP4d-fix).** Safari and WebKit do not focus a button when it is clicked, so at the moment the dialog opened the focused element was the page body and focus could not return to the opener. A mistake in my design of the return, found only because the job ran: my Chromium-only checks could not see it. The app now records the clicked button (`event.currentTarget`) as `dialogOpenerRef` for the Ask Claude and Review buttons, and `ClaudeConfirmDialog` takes it as `returnFocusRef` and focuses it on close if it is still in the page, else the previous active element. Also fixed, found by running WebKit locally (installed with `npx playwright install webkit`; this PC's Windows WebKit is not the CI Mac's): the four rail assertions read the navigation straight after load, before the profile had arrived, and failed intermittently; they now poll.
+
+**Local results after the fix:** Chromium 117 passed and 5 skipped; WebKit (Windows build) 115 passed, then the two rail failures fixed and re-run with the dialog tests, 8 of 8 passed on both engines; the five microphone tests pass on this PC's WebKit but failed on CI's macOS WebKit, so those five remain a Mac-only difference to be seen at visit 1.
+
+**Reviews** (Antigravity, Gemini 3.8 Flash High, 13 October 2026, `sender: reviewer`, one run): **Part A, post-commit review of `b15499d`: Pass** - the 12 files match Section 30, the tree matches what was reviewed, the commit message is true, and the pre-check failure was verified as the regex limitation. **Part B, implementation review of the fix: Pass** - the opener tracking is safe (connection checks), handles the asynchronous offer, keeps Chromium behaviour, and the polling removes the race. Same caveat as before: a smaller single reviewer, judging by reading.
+
+# 33. WP4d-fix Commit Contents (expected)
+
+Changed: `src/App.jsx`, `src/ClaudeEscalation.jsx`, `tests/e2e/app.spec.js`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.

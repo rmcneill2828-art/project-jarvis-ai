@@ -447,6 +447,10 @@ export function App() {
   // showing while a download that takes minutes runs (WP4a implementation
   // review, Low; post-commit review, High).
   const useWhenDoneRef = useRef(null);
+  // The button that opened the Claude dialog, so focus can go back to it:
+  // Safari and WebKit do not focus a button when it is clicked, so what had
+  // focus at the moment of opening is not the opener (WP4d CI finding).
+  const dialogOpenerRef = useRef(null);
 
   // Voice Faculty Increment B (EIP-ESR0047-001): push-to-talk speech input.
   // isRecording drives the mic button's visual state only - the actual
@@ -1161,8 +1165,14 @@ export function App() {
               claudeStatus={claudeStatus}
               offer={offer}
               escalating={escalating}
-              onAskClaude={handleAskClaude}
-              onReviewOffer={() => setConfirmOpen(true)}
+              onAskClaude={(event) => {
+                dialogOpenerRef.current = event?.currentTarget ?? null;
+                handleAskClaude();
+              }}
+              onReviewOffer={(event) => {
+                dialogOpenerRef.current = event?.currentTarget ?? null;
+                setConfirmOpen(true);
+              }}
             />
             {escalationError && (
               <p className="conversation-error" role="alert">
@@ -1268,6 +1278,7 @@ export function App() {
         <ClaudeConfirmDialog
           offer={offer}
           busy={escalating}
+          returnFocusRef={dialogOpenerRef}
           onConfirm={handleConfirmEscalation}
           onCancel={() => setConfirmOpen(false)}
         />

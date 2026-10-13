@@ -1746,21 +1746,21 @@ const railNames = async (page) =>
 test("an Administrator and an Adult see all six views", async ({ page }) => {
   await mockTauriIpc(page, { profiles: [ADMIN, ALEX], activeProfile: ADMIN });
   await page.goto("/");
-  expect(await railNames(page)).toEqual(VIEW_NAMES);
+  await expect.poll(() => railNames(page)).toEqual(VIEW_NAMES);
 
   await switchProfileTo(page, "Alex");
   await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Alex");
-  expect(await railNames(page)).toEqual(VIEW_NAMES);
+  await expect.poll(() => railNames(page)).toEqual(VIEW_NAMES);
 });
 
 test("a Child sees only Guardian and Memory, and a Guest only Guardian", async ({ page }) => {
   await mockTauriIpc(page, { profiles: [SAM, GUEST], activeProfile: SAM });
   await page.goto("/");
-  expect(await railNames(page)).toEqual(["Guardian", "Memory"]);
+  await expect.poll(() => railNames(page)).toEqual(["Guardian", "Memory"]);
 
   await switchProfileTo(page, "Visitor");
   await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Visitor");
-  expect(await railNames(page)).toEqual(["Guardian"]);
+  await expect.poll(() => railNames(page)).toEqual(["Guardian"]);
 });
 
 test("a view the new role may not use is replaced by the conversation at a profile switch", async ({ page }) => {

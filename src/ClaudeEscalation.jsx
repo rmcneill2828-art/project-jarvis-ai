@@ -50,19 +50,23 @@ function money(usd, gbp) {
 
 const FOCUSABLE = "button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
 
-export function ClaudeConfirmDialog({ offer, busy, onConfirm, onCancel }) {
+export function ClaudeConfirmDialog({ offer, busy, returnFocusRef, onConfirm, onCancel }) {
   const allowance = offer.allowance;
   const dialogRef = useRef(null);
   const cancelRef = useRef(null);
 
   // A modal dialog (ESR-0061 WP4d, EIP-ESR0061-004 item 6.10): focus moves into
   // it on open, Tab stays inside it, Escape cancels, and focus returns to what
-  // had it before when it closes. Cancel is the first focus, the safe default.
+  // opened it when it closes. Cancel is the first focus, the safe default.
   useEffect(() => {
     const previous = document.activeElement;
     cancelRef.current?.focus();
     return () => {
-      if (previous && previous.isConnected && typeof previous.focus === "function") previous.focus();
+      // The opener the app recorded, else whatever had focus (a click does not
+      // focus a button in Safari and WebKit, so the latter can be the page body).
+      const opener = returnFocusRef?.current;
+      const target = opener && opener.isConnected ? opener : previous;
+      if (target && target.isConnected && typeof target.focus === "function") target.focus();
     };
   }, []);
 
