@@ -32,7 +32,13 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TRANSCRIPT_DIR = REPO_ROOT / ".aiems-exchange" / "transcript"
-_PATH_TOKEN = re.compile(r"`([^`\s]+\.(?:md|py|json|jsx|js|rs|toml|yml|yaml|txt|lock|sh|ps1|bat|html|css|plist|ini|cfg|xml))`")
+# A listed path ends in a known extension, or is one of the extensionless
+# dotfiles (`.gitignore`): a bare ".py" in prose is an extension, not a path.
+_DOTFILES = "gitignore|gitattributes|editorconfig|npmrc|nvmrc|prettierrc|eslintrc|dockerignore"
+_PATH_TOKEN = re.compile(
+    r"`((?:[^`\s]+\.(?:md|py|json|jsx|js|rs|toml|yml|yaml|txt|lock|sh|ps1|bat|html|css|plist|ini|cfg|xml)"
+    rf"|(?:[^`\s]*/)?\.(?:{_DOTFILES})))`"
+)
 
 
 @dataclass

@@ -37,6 +37,22 @@ def test_eip_commit_contents_reads_lock_and_script_files():
     assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"src-tauri/Cargo.lock", "scripts/setup.sh"}
 
 
+def test_eip_commit_contents_reads_an_extensionless_dotfile():
+    # ESR-0061 WP4d post-commit: `.gitignore` was listed, changed, and reported missing.
+    text = _block("Changed: `src/App.jsx`, `.gitignore`, `.github/workflows/ci.yml`, `docs/.gitignore`.")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {
+        "src/App.jsx",
+        ".gitignore",
+        ".github/workflows/ci.yml",
+        "docs/.gitignore",
+    }
+
+
+def test_a_bare_extension_in_prose_is_not_read_as_a_path():
+    text = _block("Changed: `a.py`. The `.py` and `.md` suffixes are only prose, and so is `.env`.")
+    assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"a.py"}
+
+
 def test_eip_commit_contents_stops_at_a_not_changed_paragraph():
     text = _block("Changed: `a.py`.", "", "Not changed (listed by the design): `src/lib.rs`.", "", "## 9. Next")
     assert pc.eip_commit_contents(text, "## 8. Commit Contents") == {"a.py"}

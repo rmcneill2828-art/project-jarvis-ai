@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-004 |
 | Title | Engineering Implementation Package: WP4 Guardian Experience Redesign and Presence Orb |
-| Version | 0.14 |
-| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b committed a4bbceb (implementation review Conditional Pass, one Medium fixed; CI green; post-commit review Pass); WP4c committed 247f6da (implementation review Conditional Pass, all findings fixed, then Pass; CI green apart from the informational WebKit job; post-commit review Pass); WP4d built (axe, modal focus, layout on both sizes, Orb frame measurement, the inventory gate), committed b15499d, implementation review Pass, post-commit review Pass; **WP4d-fix** (focus returns to the opener in WebKit) built, reviewed (Pass), awaiting the Programme Sponsor's approval to commit |
+| Version | 0.16 |
+| Status | Draft - design approved (prototype and decisions W1-W10 as recommended, 8 October 2026), committed 6081425; WP4a committed b3693cb and post-commit reviewed (Conditional Pass, one High fixed in WP4a-fix, one Medium withdrawn); WP4a-fix committed 936949e and post-commit reviewed (Pass); WP4b committed a4bbceb (implementation review Conditional Pass, one Medium fixed; CI green; post-commit review Pass); WP4c committed 247f6da (implementation review Conditional Pass, all findings fixed, then Pass; CI green apart from the informational WebKit job; post-commit review Pass); WP4d built (axe, modal focus, layout on both sizes, Orb frame measurement, the inventory gate), committed b15499d, implementation review Pass, post-commit review Pass; **WP4d-fix** committed 9ab8032 (pre-check PASS, CI green apart from the informational WebKit job, one Claude-dialog test still failing there); **WP4d-fix2** (Tab handled by hand in the dialog; the pre-check's dotfile parsing, at the Programme Sponsor's request) built and reviewed (Pass), awaiting the Programme Sponsor's approval to commit |
 | Session | ESR-0061. WP4 is planned for Session B (WP3-WP4); the design is drafted now under D22 |
 | Work Package | WP4 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 4.5 (Orb criteria) and Section 7, WP4 |
@@ -204,6 +204,8 @@ A control that is shown but unavailable says why in words. Profile creation and 
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.16 | 13 October 2026 | Claude Engineering Implementer | WP4d-fix2 review recorded: post-commit of 9ab8032 Pass, implementation review Pass (Section 36). |
+| 0.15 | 13 October 2026 | Claude Engineering Implementer | WP4d-fix post-commit record (9ab8032) and WP4d-fix2: Tab handled by hand in the Claude dialog; pre-check dotfile parsing fixed at the Programme Sponsor's request (Sections 34 and 35). |
 | 0.14 | 13 October 2026 | Claude Engineering Implementer | WP4d post-commit record (b15499d, CI green, reviews Pass; pre-check FAIL from a dotfile parsing defect in the script) and WP4d-fix for two WebKit focus failures (Sections 32 and 33). |
 | 0.13 | 13 October 2026 | Claude Engineering Implementer | WP4d implementation review Pass (two Info notes dispositioned, Section 31). |
 | 0.12 | 13 October 2026 | Claude Engineering Implementer | WP4d built: axe checks on every view (one violation fixed), modal focus for the Claude dialog, layout and screenshots on both sizes, Orb frame measurement, inventory signed off (Sections 29 and 30). |
@@ -450,3 +452,22 @@ WP4d was committed as `b15499d` ("ESR-0061 WP4d: Accessibility checks, modal foc
 # 33. WP4d-fix Commit Contents (expected)
 
 Changed: `src/App.jsx`, `src/ClaudeEscalation.jsx`, `tests/e2e/app.spec.js`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
+
+# 34. WP4d-fix Post-Commit Record, and WP4d-fix2 (13 October 2026)
+
+**WP4d-fix `9ab8032`.** Approved through the Sponsor Approval Service (`submit-response` 10:52:49Z); pushed by the Programme Sponsor. **Pre-check: PASS on every hard check**, run on the commit with the working tree stashed so that the uncommitted fix below did not fail the clean-tree check (tree clean, on origin/main, the six changed files equal Section 33, gated against the parent, pytest 1164 passed and 4 skipped, ruff, validator 0 errors). **CI, by commit SHA:** push run 38387211875, success on every job except the informational `playwright-webkit`: **111 passed, 6 failed, 5 skipped** - the five known microphone or recording tests, plus **one of the two dialog tests I added**. The cancel-by-button test now passes (the focus-return fix worked); the Tab and Escape test still fails on CI's macOS WebKit: after Tab, "Send to Claude" was not focused. Cause: Safari and WebKit skip buttons on Tab unless full keyboard access is on, and my trap only acted at the first and last item, so from Cancel the browser's own next stop was outside the dialog. A second mistake of mine in the same dialog, found by the same job. The post-commit review of this commit is part of the single run in Section 34's review paragraph below.
+
+**WP4d-fix2 (two things, working tree).**
+
+1. **Tab inside the dialog is now handled by hand every time** (`src/ClaudeEscalation.jsx`): the handler stops the browser's default, moves to the next or previous focusable item itself with wrap-around, and puts focus on the first or last item if it was outside. It no longer depends on the browser's tab order or the operating system's keyboard setting. The Tab and Escape test passes on Chromium and on this PC's Windows WebKit; **whether it passes on the Mac's WebKit is shown only by the next CI run.**
+2. **The pre-check's dotfile parsing, at the Programme Sponsor's request** ("Please fix the pre-check script", 13 October 2026). `_PATH_TOKEN` in `scripts/post_commit_precheck.py` now also reads the extensionless dotfiles `.gitignore`, `.gitattributes`, `.editorconfig`, `.npmrc`, `.nvmrc`, `.prettierrc`, `.eslintrc` and `.dockerignore`, with or without a directory prefix; a bare extension in prose (`.py`, `.env`) is still not a path. Two new tests in `scripts/tests/test_post_commit_precheck.py` (17 pass). Re-running the check against `b15499d`'s Section 30 now passes "changed files equal the EIP's Commit Contents". The scope is exactly the defect; the explicit list is a decision of mine, so a different dotfile named in a later EIP will need adding.
+
+# 35. WP4d-fix2 Commit Contents (expected)
+
+Changed: `src/ClaudeEscalation.jsx`, `scripts/post_commit_precheck.py`, `scripts/tests/test_post_commit_precheck.py`, `aiems/governance/reviews/EIP-ESR0061-004_GUARDIAN_EXPERIENCE_REDESIGN.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`.
+
+The WP4d-fix post-commit record rides in this commit under rule A3.
+
+# 36. WP4d-fix2 Review Record (13 October 2026)
+
+**Review** (Antigravity CLI, Gemini 3.8 Flash High, 13 October 2026, `sender: reviewer`, one run, `submit-to-review` 11:20:41Z): **Part A, post-commit review of `9ab8032`: Pass** - the six files match Section 33, the commit message is true, Section 34 is accurate. **Part B, implementation review of the working tree: Pass** - the manual Tab wrap-around is safe and correct for Shift+Tab, a disabled button, a single item and focus outside the dialog; Escape still cancels and the container takes focus when the dialog is empty, so there is no keyboard trap; the dotfile pattern has no catastrophic backtracking and no new false positive, the two new tests are real, and an explicit list is acceptable; Sections 34 and 35 are accurate. No findings. Same caveat as before: a smaller single reviewer, judging by reading. **Local results:** `scripts/tests` 223 passed and 2 skipped; Playwright Chromium 117 passed and 5 skipped; the dialog tests pass on this PC's Windows WebKit; **the Mac's WebKit result is shown only by the next CI run.**

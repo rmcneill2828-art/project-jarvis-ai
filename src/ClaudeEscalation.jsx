@@ -85,19 +85,15 @@ export function ClaudeConfirmDialog({ offer, busy, returnFocusRef, onConfirm, on
       dialogRef.current?.focus();
       return;
     }
-    const first = items[0];
-    const last = items[items.length - 1];
+    // Moved by hand, never left to the browser: Safari and WebKit skip buttons
+    // when Tab is pressed unless the person has turned on full keyboard access,
+    // so the browser's own next stop could be outside the dialog (WP4d CI).
+    event.preventDefault();
     const active = document.activeElement;
-    if (!dialogRef.current.contains(active)) {
-      event.preventDefault();
-      first.focus();
-    } else if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    const at = items.indexOf(active);
+    const step = event.shiftKey ? -1 : 1;
+    const next = at === -1 ? (event.shiftKey ? items.length - 1 : 0) : (at + step + items.length) % items.length;
+    items[next].focus();
   };
 
   return (
