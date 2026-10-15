@@ -51,6 +51,8 @@ METHOD_CLUSTERS: dict[str, str] = {
     "profile.select": "jarvis",
     "profile.active": "jarvis",
     "profile.setCloudMemory": "jarvis",
+    "profile.export": "jarvis",
+    "profile.erase": "jarvis",
     "ollama.status": "jarvis",
     "ollama.recommendation": "jarvis",
     "ollama.pull": "jarvis",

@@ -163,6 +163,17 @@ class EscalationOffers:
             del self._open[token]
             return offer.message
 
+    def discard_profile(self, profile_id: str) -> int:
+        """Drop every open offer for a profile, with the question it holds
+        (ESR-0061 WP5c: erasing a profile leaves nothing of theirs in memory).
+        Returns how many were dropped."""
+
+        with self._lock:
+            tokens = [token for token, offer in self._open.items() if offer.profile_id == profile_id]
+            for token in tokens:
+                del self._open[token]
+        return len(tokens)
+
     def _drop_expired(self, now: float) -> None:
         for token in [token for token, offer in self._open.items() if offer.expires_at <= now]:
             del self._open[token]

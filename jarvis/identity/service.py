@@ -76,6 +76,38 @@ class ProfileService:
         assert updated is not None
         return updated
 
+    def get_profile(self, profile_id: str) -> ProfileRecord | None:
+        """Return one profile, or None."""
+
+        return self._store.get(profile_id)
+
+    def check_erasable(self, profile_id: str, active_profile_id: str | None) -> ProfileRecord:
+        """The profile that would be erased, or a refusal in plain words.
+
+        Refused for the signed-in profile (switch away first) and for the last
+        Administrator (the household would have nobody who can manage it).
+        """
+
+        record = self._store.get(profile_id)
+        if record is None:
+            msg = "No such profile."
+            raise ClientFacingValueError(msg)
+        if profile_id == active_profile_id:
+            msg = "Switch to another profile first: the profile you are using cannot be erased."
+            raise ClientFacingValueError(msg)
+        if record.role == "Administrator":
+            administrators = [entry for entry in self._store.list_all() if entry.role == "Administrator"]
+            if len(administrators) <= 1:
+                msg = "This is the last Administrator profile, so it cannot be erased."
+                raise ClientFacingValueError(msg)
+        return record
+
+    def delete_profile(self, profile_id: str) -> bool:
+        """Delete the profile record only. Callers use `check_erasable` first and
+        remove that profile's own data first."""
+
+        return self._store.delete(profile_id)
+
     def active_profile(self) -> ProfileRecord | None:
         """Return the currently active profile, or None if none is selected."""
 

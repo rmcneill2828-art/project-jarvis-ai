@@ -80,6 +80,7 @@ from jarvis.interfaces.voice import (
     SentinelGatedSpeechProvider,
     SentinelGatedTranscriptionProvider,
 )
+from jarvis.memory.profile_export import write_profile_export
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
 from jarvis.shared.errors import (
@@ -752,6 +753,8 @@ class StdioRpcServer:
             "settings.get": self._settings_get,
             "settings.setRetentionDays": self._settings_set_retention_days,
             "profile.setCloudMemory": self._profile_set_cloud_memory,
+            "profile.export": self._profile_export,
+            "profile.erase": self._profile_erase,
             "ollama.status": self._ollama_status,
             "ollama.recommendation": self._ollama_recommendation,
             "ollama.pull": self._ollama_pull,
@@ -1001,6 +1004,65 @@ class StdioRpcServer:
         # A shorter limit applies at once, not at the next daily run.
         retention.run_once()
         return self._settings_payload(retention)
+
+    def _profile_export(self, params: dict[str, Any]) -> dict[str, Any]:
+        """A readable and a portable file of one profile's own data (WP5c, X1).
+
+        An Administrator may export any profile; an Adult only their own; a
+        Child or Guest none (an Administrator runs it for them). The reply names
+        the files and counts the notes, never their content.
+        """
+
+        profile_id = params.get("profileId")
+        directory = params.get("directory")
+        if not isinstance(profile_id, str):
+            msg = "params.profileId must be a string."
+            raise ClientFacingTypeError(msg)
+        if not isinstance(directory, str) or not directory.strip():
+            msg = "params.directory must be a non-empty string."
+            raise ClientFacingTypeError(msg)
+        active = self._identity_service.active_profile()
+        _require_role(
+            active,
+            REVIEW_APPROVER_ROLES,
+            "Only an Administrator or Adult profile can export data. Ask an Administrator to export this profile.",
+        )
+        if active.role != "Administrator" and profile_id != active.id:
+            msg = "An Adult profile can export only its own data. Ask an Administrator for another profile."
+            raise ClientFacingPermissionError(msg)
+        target = self._identity_service.get_profile(profile_id)
+        if target is None:
+            msg = "No such profile."
+            raise ClientFacingValueError(msg)
+        notes = self._runtime.profile_notes(profile_id)
+        markdown_path, json_path = write_profile_export(target, notes, Path(directory))
+        return {"markdownPath": str(markdown_path), "jsonPath": str(json_path), "noteCount": len(notes)}
+
+    def _profile_erase(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Delete a profile and all of its own data (WP5c, E1). Administrator
+        only; the typed name must match; refused for the signed-in profile and
+        the last Administrator. Household notes, consent decisions and earlier
+        backup files are not touched."""
+
+        profile_id = params.get("profileId")
+        confirm_name = params.get("confirmName")
+        if not isinstance(profile_id, str):
+            msg = "params.profileId must be a string."
+            raise ClientFacingTypeError(msg)
+        if not isinstance(confirm_name, str):
+            msg = "params.confirmName must be a string."
+            raise ClientFacingTypeError(msg)
+        active = self._identity_service.active_profile()
+        _require_role(active, ADMINISTRATOR_ROLES, "Only an Administrator profile can erase a profile.")
+        target = self._identity_service.check_erasable(profile_id, active.id)
+        if confirm_name.strip() != target.display_name:
+            msg = "The name typed does not match this profile, so nothing was erased."
+            raise ClientFacingValueError(msg)
+        notes_removed, proposals_discarded = self._runtime.erase_profile_data(profile_id)
+        # An open offer to ask Claude holds the person's question in memory.
+        self._escalation_offers.discard_profile(profile_id)
+        self._identity_service.delete_profile(profile_id)
+        return {"erased": True, "notesRemoved": notes_removed, "proposalsDiscarded": proposals_discarded}
 
     def _profile_set_cloud_memory(self, params: dict[str, Any]) -> dict[str, Any]:
         """Administrator only: whether a profile's retained memory notes may

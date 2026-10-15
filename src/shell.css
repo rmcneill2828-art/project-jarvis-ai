@@ -539,3 +539,51 @@
   gap: var(--space-2);
   align-items: center;
 }
+
+/* ---- WP5c: your data ---- */
+.data-list {
+  display: grid;
+  gap: 0;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.data-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.data-row:last-child {
+  border-bottom: 0;
+}
+
+.data-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.data-row p {
+  margin: var(--space-1) 0 0;
+}
+
+.erase-confirm {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--red);
+  border-radius: var(--radius-control);
+}
+
+.erase-confirm input {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--bg-panel);
+  color: var(--fg);
+}

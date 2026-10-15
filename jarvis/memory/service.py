@@ -160,6 +160,28 @@ class PersonalMemoryService:
     def count_visible(self, profile_id: str | None, *, include_household: bool = True) -> int:
         return self._store.count_visible(profile_id, include_household=include_household)
 
+    def owned_with_agreement(self, profile_id: str) -> tuple[tuple[PersonalMemoryRecord, datetime | None], ...]:
+        """This profile's own notes, each with when it was agreed (read through
+        the note's own consent decision id, never by listing decisions), for a
+        data export (ESR-0061 WP5c). Household notes are not the profile's."""
+
+        found: list[tuple[PersonalMemoryRecord, datetime | None]] = []
+        for record in self._store.list_owned(profile_id):
+            decision = self._store.get_decision(record.consent_decision_id)
+            found.append((record, decision.decided_at if decision is not None else None))
+        return tuple(found)
+
+    def erase_profile(self, profile_id: str) -> tuple[int, int]:
+        """Remove everything of this profile's the service holds (WP5c, E1):
+        its pending proposals first, so a late approval cannot re-create a note,
+        then its own notes. Returns (notes removed, proposals discarded).
+        Consent decisions are kept; they carry no profile id and no content."""
+
+        pending_ids = [key for key, value in self._pending.items() if value.profile_id == profile_id]
+        for key in pending_ids:
+            del self._pending[key]
+        return self._store.delete_owned(profile_id), len(pending_ids)
+
     def delete(self, record_id: str, profile_id: str | None = None, *, is_administrator: bool = False) -> None:
         """Revoke one retained memory (EBG-0145, ESR-0059 WP10).
 

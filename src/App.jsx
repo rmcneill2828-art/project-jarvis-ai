@@ -1264,6 +1264,9 @@ export function App() {
                 role={role}
                 profiles={profiles}
                 activeProfile={activeProfile}
+                onProfileErased={(erasedId) => {
+                  setProfiles((current) => current.filter((entry) => entry.id !== erasedId));
+                }}
                 onProfileUpdated={(updated) => {
                   setProfiles((current) => current.map((entry) => (entry.id === updated.id ? updated : entry)));
                   setActiveProfile((current) => (current && current.id === updated.id ? updated : current));

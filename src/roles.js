@@ -47,6 +47,14 @@ export const canChangeClaudeKey = (role) => role === ROLE.ADMINISTRATOR;
 // backend allows it only for a profile that may ask Claude at all.
 export const profileMayShareMemory = (profileRole) => profileRole === ROLE.ADMINISTRATOR || profileRole === ROLE.ADULT;
 
+// Export: an Administrator for any profile, an Adult for their own only. A Child
+// or Guest has no Settings view; an Administrator runs the export for them.
+export const canExportProfile = (viewerRole, viewerId, profileId) =>
+  viewerRole === ROLE.ADMINISTRATOR || (viewerRole === ROLE.ADULT && viewerId === profileId);
+
+// Erasure is Administrator-only.
+export const canErasePeople = (role) => role === ROLE.ADMINISTRATOR;
+
 // Changing a profile's sharing, and the audit retention, are Administrator-only.
 export const canChangeHouseholdSettings = (role) => role === ROLE.ADMINISTRATOR;
 

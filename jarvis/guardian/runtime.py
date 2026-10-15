@@ -456,6 +456,21 @@ class GuardianRuntime:
         self._require_memory_service()
         self._memory_service.delete(record_id, profile_id, is_administrator=is_administrator)
 
+    def profile_notes(self, profile_id: str):
+        """A profile's own notes with when each was agreed (WP5c)."""
+
+        self._require_memory_service()
+        return self._memory_service.owned_with_agreement(profile_id)
+
+    def erase_profile_data(self, profile_id: str) -> tuple[int, int]:
+        """Remove a profile's notes and pending proposals and drop its in-memory
+        conversation (WP5c, E1). Returns (notes removed, proposals discarded)."""
+
+        self._require_memory_service()
+        removed = self._memory_service.erase_profile(profile_id)
+        self._cognitive_cores.pop(profile_id, None)
+        return removed
+
     def memory_status(self, profile_id: str | None = None, *, include_household: bool = True) -> int:
         """Return how many memories `profile_id` may see (EBG-0131, EBG-0132)."""
 

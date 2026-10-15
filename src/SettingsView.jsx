@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { open } from "@tauri-apps/plugin-dialog";
 
-import { canChangeClaudeKey, canChangeHouseholdSettings, profileMayShareMemory } from "./roles.js";
+import {
+  canChangeClaudeKey,
+  canChangeHouseholdSettings,
+  canErasePeople,
+  canExportProfile,
+  profileMayShareMemory,
+} from "./roles.js";
 
 // The Settings view (ESR-0061 WP5a, EIP-ESR0061-005 6.3 and 6.9). It holds what
 // a household's Administrator decides: the Claude key, and the privacy notice
@@ -48,6 +55,19 @@ export function PrivacyNotice() {
           anything private.
         </li>
         <li>Only an Administrator or an Adult profile can ask Claude. A Child or Guest profile cannot.</li>
+      </ul>
+      <h3>Your rights over what is kept</h3>
+      <ul>
+        <li>
+          Under Your data, a profile&rsquo;s saved notes can be exported to a readable file and a portable file. An
+          Adult can export their own; an Administrator can export any profile.
+        </li>
+        <li>
+          An Administrator can erase a profile and every note saved for it. Erasing does not change notes shared by the
+          household, the record that each note was agreed (which holds no names), or backup files already made. Anything
+          already sent to Claude is subject to Anthropic&rsquo;s own terms.
+        </li>
+        <li>The activity log is deleted after the number of days an Administrator chooses; there is no setting to keep it for ever.</li>
       </ul>
       <h3>Downloads</h3>
       <ul>
@@ -369,7 +389,158 @@ function RetentionSection() {
   );
 }
 
-export function SettingsView({ role, profiles = [], activeProfile = null, onProfileUpdated }) {
+// A profile's own data: a readable and a portable export, and erasure (WP5c).
+// Erasure needs the profile's name typed; it is refused for the profile in use
+// and for the last Administrator, and it says plainly what it does not touch.
+function YourDataSection({ role, profiles, activeProfile, onProfileErased }) {
+  const [busyId, setBusyId] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [problem, setProblem] = useState(null);
+  const [erasing, setErasing] = useState(null);
+  const [typed, setTyped] = useState("");
+
+  const mayErase = canErasePeople(role);
+  const rows = profiles.filter((profile) => canExportProfile(role, activeProfile?.id, profile.id));
+  const administrators = profiles.filter((profile) => profile.role === "Administrator").length;
+
+  const exportData = async (profile) => {
+    setProblem(null);
+    setMessage(null);
+    const folder = await open({ directory: true, multiple: false, title: "Choose a folder for the export" }).catch(
+      () => null,
+    );
+    if (!folder) return;
+    setBusyId(profile.id);
+    invoke("export_profile", { profileId: profile.id, directory: folder })
+      .then((result) => {
+        setMessage(
+          `Exported ${result.noteCount} saved note${result.noteCount === 1 ? "" : "s"} for ${profile.displayName} to ` +
+            `${result.markdownPath} and ${result.jsonPath}.`,
+        );
+      })
+      .catch((error) => setProblem(readable(error)))
+      .finally(() => setBusyId(null));
+  };
+
+  const erase = (profile) => {
+    setBusyId(profile.id);
+    setProblem(null);
+    setMessage(null);
+    invoke("erase_profile", { profileId: profile.id, confirmName: typed })
+      .then((result) => {
+        setErasing(null);
+        setTyped("");
+        onProfileErased?.(profile.id);
+        setMessage(
+          `${profile.displayName} was erased. ${result.notesRemoved} saved note${result.notesRemoved === 1 ? "" : "s"} removed.`,
+        );
+      })
+      .catch((error) => setProblem(readable(error)))
+      .finally(() => setBusyId(null));
+  };
+
+  const whyNotErasable = (profile) => {
+    if (profile.id === activeProfile?.id) return "You are using this profile. Switch to another first.";
+    if (profile.role === "Administrator" && administrators <= 1) return "This is the last Administrator profile.";
+    return null;
+  };
+
+  return (
+    <section className="settings-card your-data" aria-labelledby="your-data-heading">
+      <h2 id="your-data-heading">Your data</h2>
+      <p>
+        Export gives you a readable file and a portable file of what JARVIS keeps for a profile: its own saved notes and
+        when each was agreed. It leaves out other profiles, notes shared by the household, and any key.
+      </p>
+      <ul className="data-list" aria-label="Profiles and their data">
+        {rows.map((profile) => {
+          const reason = mayErase ? whyNotErasable(profile) : null;
+          const isErasing = erasing === profile.id;
+          return (
+            <li key={profile.id} className="data-row" data-profile-id={profile.id}>
+              <div className="data-row-head">
+                <span>
+                  {profile.displayName} <span className="sharing-role">({profile.role})</span>
+                </span>
+                <span className="settings-actions">
+                  <button
+                    type="button"
+                    onClick={() => exportData(profile)}
+                    disabled={busyId === profile.id}
+                    aria-label={`Export data for ${profile.displayName}`}
+                  >
+                    Export
+                  </button>
+                  {mayErase && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setErasing(profile.id);
+                        setTyped("");
+                        setProblem(null);
+                        setMessage(null);
+                      }}
+                      disabled={Boolean(reason) || busyId === profile.id}
+                      aria-label={`Erase ${profile.displayName}`}
+                    >
+                      Erase...
+                    </button>
+                  )}
+                </span>
+              </div>
+              {mayErase && reason && <p className="local-ai-note">{reason}</p>}
+              {isErasing && (
+                <form
+                  className="erase-confirm"
+                  aria-label={`Confirm erasing ${profile.displayName}`}
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    if (typed.trim()) erase(profile);
+                  }}
+                >
+                  <p>
+                    This deletes the profile and every note saved for it. It cannot be undone. It does not change
+                    notes shared by the household, the record that you agreed to each note (which holds no names), or
+                    any backup file made earlier. Anything already sent to Claude is subject to Anthropic&rsquo;s own
+                    terms.
+                  </p>
+                  <label htmlFor={`erase-${profile.id}`}>Type {profile.displayName} to confirm</label>
+                  <input
+                    id={`erase-${profile.id}`}
+                    value={typed}
+                    onChange={(event) => setTyped(event.target.value)}
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  <div className="settings-actions">
+                    <button type="submit" disabled={busyId === profile.id || typed.trim() !== profile.displayName}>
+                      Erase this profile and its notes
+                    </button>
+                    <button type="button" onClick={() => setErasing(null)}>
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      {message && (
+        <p role="status" className="panel-status-message">
+          {message}
+        </p>
+      )}
+      {problem && (
+        <p className="conversation-error" role="alert">
+          {problem}
+        </p>
+      )}
+    </section>
+  );
+}
+
+export function SettingsView({ role, profiles = [], activeProfile = null, onProfileUpdated, onProfileErased }) {
   return (
     <div className="settings-view">
       {canChangeClaudeKey(role) && <ClaudeKeySection />}
@@ -380,6 +551,12 @@ export function SettingsView({ role, profiles = [], activeProfile = null, onProf
         onProfileUpdated={onProfileUpdated}
       />
       {canChangeHouseholdSettings(role) && <RetentionSection />}
+      <YourDataSection
+        role={role}
+        profiles={profiles}
+        activeProfile={activeProfile}
+        onProfileErased={onProfileErased}
+      />
       <PrivacyNotice />
     </div>
   );

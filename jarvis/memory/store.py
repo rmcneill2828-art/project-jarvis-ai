@@ -237,6 +237,25 @@ class PersonalMemoryStore:
             ).fetchall()
         return tuple(_record_from_row(row) for row in rows)
 
+    def list_owned(self, profile_id: str) -> tuple[PersonalMemoryRecord, ...]:
+        """Only the records this profile owns: never a shared household note and
+        never another profile's (ESR-0061 WP5c, export and erasure)."""
+
+        with self._transaction() as connection:
+            rows = connection.execute(
+                f"SELECT {_RECORD_COLUMNS} FROM personal_memory WHERE profile_id = ? ORDER BY created_at",
+                (profile_id,),
+            ).fetchall()
+        return tuple(_record_from_row(row) for row in rows)
+
+    def delete_owned(self, profile_id: str) -> int:
+        """Delete every record this profile owns and nothing else; return how many.
+        Consent decisions are kept, as per-item revocation already keeps them."""
+
+        with self._transaction() as connection:
+            cursor = connection.execute("DELETE FROM personal_memory WHERE profile_id = ?", (profile_id,))
+            return cursor.rowcount
+
     def count_visible(self, profile_id: str | None, *, include_household: bool = True) -> int:
         """Return how many records `profile_id` may see (see list_visible)."""
 

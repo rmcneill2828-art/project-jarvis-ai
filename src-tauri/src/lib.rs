@@ -1235,6 +1235,40 @@ async fn test_claude_key(
     call_backend_off_main_thread(state, app_handle, "provider.testClaudeKey", json!({})).await
 }
 
+/// A profile's own data (ESR-0061 WP5c). The backend enforces who may export or
+/// erase and checks the typed name; these only relay.
+#[tauri::command]
+async fn export_profile(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    profile_id: String,
+    directory: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "profile.export",
+        json!({ "profileId": profile_id, "directory": directory }),
+    )
+    .await
+}
+
+#[tauri::command]
+async fn erase_profile(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    profile_id: String,
+    confirm_name: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "profile.erase",
+        json!({ "profileId": profile_id, "confirmName": confirm_name }),
+    )
+    .await
+}
+
 /// Household settings (ESR-0061 WP5b). Administrator only, enforced by the
 /// backend; these only relay.
 #[tauri::command]
@@ -1575,6 +1609,8 @@ pub fn run() {
             set_claude_key,
             remove_claude_key,
             test_claude_key,
+            export_profile,
+            erase_profile,
             get_settings,
             set_retention_days,
             set_profile_cloud_memory,

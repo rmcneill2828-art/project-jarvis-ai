@@ -162,6 +162,16 @@ class ProfileStore:
             ).fetchone()
         return None if row is None else _profile_from_row(row)
 
+    def delete(self, profile_id: str) -> bool:
+        """Delete one profile (ESR-0061 WP5c, EIP-ESR0061-005 6.6); return whether
+        one was deleted. If it was the stored active profile, that pointer is
+        removed in the same transaction, so nothing is left pointing at it."""
+
+        with self._transaction() as connection:
+            connection.execute("DELETE FROM active_profile WHERE profile_id = ?", (profile_id,))
+            cursor = connection.execute("DELETE FROM profiles WHERE id = ?", (profile_id,))
+            return cursor.rowcount > 0
+
     def set_share_memory_with_cloud(self, profile_id: str, enabled: bool) -> bool:
         """Set the cloud memory-sharing flag; return False if no such profile."""
 

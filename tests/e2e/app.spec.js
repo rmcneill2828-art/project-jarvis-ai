@@ -38,6 +38,8 @@ async function mockTauriIpc(
     keyMock = {},
     // Household settings and note sharing (WP5b).
     settingsMock = {},
+    // A profile's own data: export and erasure (WP5c).
+    dataMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -62,6 +64,7 @@ async function mockTauriIpc(
       ollamaFails,
       keyMock,
       settingsMock,
+      dataMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -230,6 +233,42 @@ async function mockTauriIpc(
           if (cmd === "ollama_status" && ollamaFails) return Promise.reject(new Error("ollama status unavailable"));
           if (cmd === "ollama_status") return Promise.resolve(structuredClone(ollamaState.status));
           if (cmd === "plugin:app|version") return Promise.resolve("0.1.0");
+          // A profile's own data (WP5c): the mock applies the backend's rules, so
+          // the screen is tested against them and not only against itself.
+          window.__dataCalls = window.__dataCalls || [];
+          if (cmd === "export_profile") {
+            window.__dataCalls.push(["export", args.profileId, args.directory]);
+            if (dataMock.failExport) return Promise.reject(new Error("ValueError: The export could not be written."));
+            const viewer = state.active;
+            if (!viewer || !["Administrator", "Adult"].includes(viewer.role)) {
+              return Promise.reject(new Error("PermissionError: Ask an Administrator to export this profile."));
+            }
+            if (viewer.role === "Adult" && viewer.id !== args.profileId) {
+              return Promise.reject(new Error("PermissionError: An Adult profile can export only its own data."));
+            }
+            return Promise.resolve({
+              markdownPath: `${args.directory}\\jarvis-profile-export-20261015-120000.md`,
+              jsonPath: `${args.directory}\\jarvis-profile-export-20261015-120000.json`,
+              noteCount: dataMock.noteCount ?? 2,
+            });
+          }
+          if (cmd === "erase_profile") {
+            window.__dataCalls.push(["erase", args.profileId, args.confirmName]);
+            if (dataMock.failErase) return Promise.reject(new Error("ValueError: This profile could not be erased."));
+            if (!state.active || state.active.role !== "Administrator") {
+              return Promise.reject(new Error("PermissionError: Only an Administrator profile can erase a profile."));
+            }
+            const target = state.profiles.find((profile) => profile.id === args.profileId);
+            if (!target) return Promise.reject(new Error("ValueError: No such profile."));
+            if (target.id === state.active.id) {
+              return Promise.reject(new Error("ValueError: Switch to another profile first."));
+            }
+            if (args.confirmName.trim() !== target.displayName) {
+              return Promise.reject(new Error("ValueError: The name typed does not match this profile, so nothing was erased."));
+            }
+            state.profiles = state.profiles.filter((profile) => profile.id !== target.id);
+            return Promise.resolve({ erased: true, notesRemoved: dataMock.noteCount ?? 2, proposalsDiscarded: 0 });
+          }
           // Household settings and per-profile note sharing (WP5b).
           window.__settingsCalls = window.__settingsCalls || [];
           const settingsState = (window.__settingsState = window.__settingsState || {
@@ -505,6 +544,7 @@ async function mockTauriIpc(
       ollamaFails,
       keyMock,
       settingsMock,
+      dataMock,
     },
   );
 }
@@ -2478,4 +2518,150 @@ test("a retention change that fails is reported", async ({ page }) => {
 
   await expect(page.locator(".retention").getByRole("alert")).toContainText("Could not save");
   await expect(page.getByRole("radio", { name: "90 days" })).toBeChecked();
+});
+
+// ---- WP5c: export and erasure of a profile's own data ----
+
+const dataRow = (page, name) => page.locator(".data-row", { hasText: name });
+
+test("an Administrator can export any profile, and erase any but the one in use", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA, SAM], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.locator(".data-row")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: "Export data for Bea" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Erase Bea" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Erase Robert" })).toBeDisabled();
+  await expect(dataRow(page, "Robert")).toContainText("You are using this profile. Switch to another first.");
+});
+
+test("exporting asks for a folder, then says what was written and how many notes", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: ADMIN, dialogOpenResult: "C:\\Users\\test\\Exports" });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Export data for Bea" }).click();
+
+  const status = page.locator(".your-data").getByRole("status");
+  await expect(status).toContainText("Exported 2 saved notes for Bea");
+  await expect(status).toContainText("jarvis-profile-export-20261015-120000.md");
+  await expect(status).toContainText("jarvis-profile-export-20261015-120000.json");
+  expect(await page.evaluate(() => window.__dataCalls)).toEqual([["export", "r5", "C:\\Users\\test\\Exports"]]);
+});
+
+test("cancelling the folder choice exports nothing", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: ADMIN, dialogOpenResult: null });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Export data for Bea" }).click();
+
+  await expect(page.locator(".your-data").getByRole("status")).toHaveCount(0);
+  expect(await page.evaluate(() => window.__dataCalls || [])).toEqual([]);
+});
+
+test("a failed export is reported", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, BEA],
+    activeProfile: ADMIN,
+    dialogOpenResult: "C:\\Exports",
+    dataMock: { failExport: true },
+  });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Export data for Bea" }).click();
+
+  await expect(page.locator(".your-data").getByRole("alert")).toContainText("could not be written");
+});
+
+test("an Adult can export their own data and has no erase and no other profile's row", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: BEA, dialogOpenResult: "C:\\Exports" });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.locator(".data-row")).toHaveCount(1);
+  await expect(dataRow(page, "Bea")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Erase/ })).toHaveCount(0);
+  await page.getByRole("button", { name: "Export data for Bea" }).click();
+  await expect(page.locator(".your-data").getByRole("status")).toContainText("Exported");
+});
+
+test("erasing needs the exact name typed, says what it does not touch, and removes the profile", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA, SAM], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Erase Bea" }).click();
+  const confirm = page.getByRole("form", { name: "Confirm erasing Bea" });
+  await expect(confirm).toContainText("It cannot be undone");
+  await expect(confirm).toContainText("backup file made earlier");
+  await expect(confirm).toContainText("notes shared by the household");
+  const button = confirm.getByRole("button", { name: "Erase this profile and its notes" });
+  await expect(button).toBeDisabled();
+
+  await confirm.getByLabel("Type Bea to confirm").fill("bea");
+  await expect(button).toBeDisabled();
+  await confirm.getByLabel("Type Bea to confirm").fill("Bea");
+  await expect(button).toBeEnabled();
+  await button.click();
+
+  await expect(page.locator(".your-data").getByRole("status")).toContainText("Bea was erased. 2 saved notes removed.");
+  await expect(page.locator(".data-row")).toHaveCount(2);
+  await expect(dataRow(page, "Bea")).toHaveCount(0);
+  expect(await page.evaluate(() => window.__dataCalls)).toEqual([["erase", "r5", "Bea"]]);
+});
+
+test("the erased profile also disappears from the note-sharing list", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(sharingRow(page, "Bea")).toBeVisible();
+
+  await page.getByRole("button", { name: "Erase Bea" }).click();
+  await page.getByLabel("Type Bea to confirm").fill("Bea");
+  await page.getByRole("button", { name: "Erase this profile and its notes" }).click();
+
+  await expect(page.locator(".data-row", { hasText: "Bea" })).toHaveCount(0);
+  await expect(sharingRow(page, "Bea")).toHaveCount(0);
+});
+
+test("cancelling the erase leaves the profile and sends nothing", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Erase Bea" }).click();
+  await page.getByLabel("Type Bea to confirm").fill("Bea");
+  await page.getByRole("form", { name: "Confirm erasing Bea" }).getByRole("button", { name: "Cancel" }).click();
+
+  await expect(page.getByRole("form", { name: "Confirm erasing Bea" })).toHaveCount(0);
+  await expect(dataRow(page, "Bea")).toBeVisible();
+  expect(await page.evaluate(() => window.__dataCalls || [])).toEqual([]);
+});
+
+test("a refused erase is reported and the profile stays", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: ADMIN, dataMock: { failErase: true } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Erase Bea" }).click();
+  await page.getByLabel("Type Bea to confirm").fill("Bea");
+  await page.getByRole("button", { name: "Erase this profile and its notes" }).click();
+
+  await expect(page.locator(".your-data").getByRole("alert")).toContainText("could not be erased");
+  await expect(dataRow(page, "Bea")).toBeVisible();
+});
+
+test("the privacy notice names the export and erasure rights that now exist, and what erasure leaves", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX], activeProfile: ALEX });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  const notice = page.locator(".privacy-notice");
+  await expect(notice).toContainText("Your rights over what is kept");
+  await expect(notice).toContainText("exported to a readable file and a portable file");
+  await expect(notice).toContainText("Erasing does not change notes shared by the household");
+  await expect(notice).toContainText("no setting to keep it for ever");
 });
