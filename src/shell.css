@@ -587,3 +587,79 @@
   background: var(--bg-panel);
   color: var(--fg);
 }
+
+/* ---- WP5d: first-run setup ---- */
+.firstrun-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.firstrun-steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--fg-muted);
+}
+
+.firstrun-steps li.current {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.firstrun-step-number {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: var(--text-xs);
+}
+
+.firstrun-steps li.current .firstrun-step-number {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.firstrun-card {
+  max-width: 640px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg-panel);
+}
+
+.firstrun-card h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-md);
+}
+
+.firstrun-form {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.firstrun-form input {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--bg-panel);
+  color: var(--fg);
+}
+
+.firstrun-summary {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+  padding-left: 20px;
+}
+
+.firstrun .settings-actions {
+  margin-bottom: var(--space-4);
+}

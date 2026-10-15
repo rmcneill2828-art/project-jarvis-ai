@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-005 |
 | Title | Engineering Implementation Package: WP5 Setup, Settings, Privacy and Data Rights |
-| Version | 0.11 |
-| Status | Draft - design drafted 13 October 2026 at the Programme Sponsor's request ("Please start WP5"); design review Conditional Pass (two High, three Medium, one Low), all addressed in v0.2, re-check Pass; design approved as recommended 15 October 2026; WP5a committed 8cb21e7 (implementation review Pass, Info only; pre-check PASS; CI green apart from the five known microphone tests in the informational WebKit job; post-commit review Pass); WP5b (note sharing screen, closes EBG-0110; audit retention) committed 262b7f6 (implementation review Pass, Info only; pre-check PASS; CI green apart from the five known microphone tests in the informational WebKit job; post-commit review Pass); WP5c (per-profile export and erasure) built and live-checked on the packaged sidecar, implementation review Pass (Info only; one gap found by the Engineer afterwards and fixed), awaiting the Programme Sponsor's approval to commit; WP5d (first run) next |
+| Version | 0.13 |
+| Status | Draft - design drafted 13 October 2026 at the Programme Sponsor's request ("Please start WP5"); design review Conditional Pass (two High, three Medium, one Low), all addressed in v0.2, re-check Pass; design approved as recommended 15 October 2026; WP5a committed 8cb21e7 (implementation review Pass, Info only; pre-check PASS; CI green apart from the five known microphone tests in the informational WebKit job; post-commit review Pass); WP5b (note sharing screen, closes EBG-0110; audit retention) committed 262b7f6 (implementation review Pass, Info only; pre-check PASS; CI green apart from the five known microphone tests in the informational WebKit job; post-commit review Pass); WP5c (per-profile export and erasure) committed 289124a (implementation review Pass, one gap found by the Engineer and fixed; pre-check PASS; CI green apart from the five known microphone tests; post-commit review Pass); WP5d (first-run flow, EBG-0165 closed) built, implementation review Pass (Info only), awaiting the Programme Sponsor's approval to commit |
 | Session | ESR-0061 (the plan puts WP5 in Session C; the Programme Sponsor directed it to start under this session, as WP3 and WP4 did) |
 | Work Package | WP5 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7 (WP5) and Appendix A.3 (privacy requirements) |
@@ -291,12 +291,45 @@ The WP5b post-commit record (Section 20) rides in this commit under rule A3.
 
 **How much the Pass is worth:** the same weak signal as for WP5a and WP5b. The evidence behind this record is Section 21: the rebuilt packaged sidecar, in a temporary data directory, performed one real export (the Adult's two notes, none of the Administrator's) and one real erase (the profile and its two notes gone, the Administrator's note and all three consent decisions kept).
 
+# 24. WP5c Post-Commit Record (15 October 2026)
+
+`289124a` ("ESR-0061 WP5c: Per-profile export and profile erasure") was approved through the Sponsor Approval Service (`submit-response` 11:26:24Z) and pushed by the Programme Sponsor. **Pre-check: PASS on every hard check**, with `--contents-heading "22. WP5c Commit Contents"`: the 19 changed files equal Section 22, pytest 1252 passed and 4 skipped, ruff, validator 0 errors. **CI, by commit SHA:** push run 38727426321, success on every job except the informational `playwright-webkit`: **142 passed, 5 failed, 5 skipped, exactly the known microphone and recording tests**, so the Your data section passes on the Mac's WebKit. **Post-commit review** (Antigravity, Gemini 3.8 Flash High, 15 October 2026, `sender: reviewer`): **Pass**, Info only: the 19 files match, erasure removes only the target's notes and drops the open offers and in-memory conversation, export enforces its roles in the backend and holds no household notes or keys, and the records are accurate. A smaller single reviewer, judging by reading.
+
+# 25. WP5d Build Record (15 October 2026)
+
+Built at the Programme Sponsor's request ("Please start"), under the design approved on 15 October 2026 (6.7, F1).
+
+| Item | Result |
+|---|---|
+| The flow (F1, 6.7) | New `src/FirstRun.jsx`: four steps - (1) the first profile, **created as an Administrator, said plainly, with no role choice**; (2) the local AI model, reusing the existing `LocalAiPanel`; (3) Claude, optional, with the privacy notice and the key section from WP5a; (4) a summary of what is ready and what is still missing. It replaces the main area while open, keeping the top bar |
+| Never trapped (the design review's Medium) | Every step but the first has a skip ("Do this later", "Skip for now"), and the last step lists what is missing and always lets the person finish. The first step cannot be skipped because nothing works without a profile. Tested with no Ollama, no secure store and no key: every step moves on |
+| State from reality | No "done" flag is stored. The summary reads `ollama.status` and the key status when it is shown, so it is true after a restore; a status that cannot be read says "could not be checked" and is never shown as ready. Setup opens by itself only once the profile list has loaded and is empty (a household with profiles is never flashed it while the list is on its way), and stays open after the first profile is created so the later steps follow |
+| Run again | Settings gains **Setup** with "Run setup again" for an Administrator only; it opens at the AI step because a profile exists |
+| EBR-0001 | EBG-0165 set to Completed with the account of WP5a to WP5d and the follow-ons that are not part of it |
+| Tests | Python unchanged at **1252 passed and 4 skipped**. Playwright **155 passed and 5 skipped** (8 new: the walk, the summary from real state, an unreadable status, no first-run for an existing household, Run setup again, an Adult not seeing it, nothing trapping a person; the first-run steps are in the axe checks). The old "profile create form" test is replaced by a fresh-install test; the role choice it exercised is gone from first run (a second profile still chooses a role in the top-bar picker) |
+| Live check (backend half) | Against the packaged sidecar on a clean data directory: no profiles and no active profile; the key methods refuse without a profile; the first profile is created as an Administrator; `ollama.status` answers (installed, not running); the key status and settings answer for it. **The WebView2 window itself was not launched**: the flow was exercised through the mocked IPC in Chromium and, in CI, WebKit |
+| **Disclosed, not done** | The packaged window's first run on a clean machine (Windows Sandbox, the plan's WP9) and on the Mac (visit 1). PST-0001 still lists ESR-0060 as the last closed session and the old provider keys: it is updated at session closure by the plan's own rule (R4), not mid-session |
+
+# 26. WP5d Commit Contents (expected)
+
+Changed: `src/App.jsx`, `src/SettingsView.jsx`, `src/shell.css`, `tests/e2e/app.spec.js`, `tests/e2e/accessibility.spec.js`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/reviews/EIP-ESR0061-005_SETUP_SETTINGS_PRIVACY_AND_DATA_RIGHTS.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`. New: `src/FirstRun.jsx`.
+
+The WP5c post-commit record (Section 24) rides in this commit under rule A3.
+
+# 27. WP5d Implementation Review Record (15 October 2026)
+
+**Review** (Antigravity CLI, Gemini 3.8 Flash High, through `run_reviewer.py`, 15 October 2026, `sender: reviewer`, submitted 11:46:44Z): **Pass**, nine points all Info: every step after the profile has a skip and the last always finishes; the summary reads live status and never shows an unread or inactive configuration as ready; setup opens only after the list has loaded and is empty and does not reappear once closed; the first profile is an Administrator with a plain explanation and a retry on error; Run setup again is Administrator-only and changes nothing by itself; the reused panels integrate without lifecycle or prop problems; the EBG-0165 closure matches the work and states the follow-ons; the tests and axe checks cover every step. The same weak signal as WP5a to WP5c: a smaller single reviewer, judging by reading, no finding on a high-risk package.
+
+**What I checked myself, because the signal is weak.** (a) The packaged window itself was not launched: the flow runs against the mocked IPC and, in CI, WebKit; the backend half ran on the packaged sidecar (Section 25). (b) A household whose profile list fails to load is not shown setup (the profile banner shows instead); that is a deliberate "do not guess" and is untested. (c) "Run setup again" re-shows the privacy notice and the key section; it cannot erase or overwrite anything. (d) Setup replaces the main area, so while it is open no other view is reachable; the Finish button is the only way out and it is always enabled on the last step.
+
 ---
 
 # 11. Version History
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.13 | 15 October 2026 | Claude Engineering Implementer | WP5d implementation review recorded (Pass, Info only; Section 27). |
+| 0.12 | 15 October 2026 | Claude Engineering Implementer | WP5c post-commit record (289124a) and WP5d built: first-run flow (Sections 24 to 26). |
 | 0.11 | 15 October 2026 | Claude Engineering Implementer | WP5c implementation review recorded (Pass, Info only) and one gap found and fixed by the Engineer (open Claude offers dropped on erasure); Section 23. |
 | 0.10 | 15 October 2026 | Claude Engineering Implementer | WP5c built and live-checked on the rebuilt packaged sidecar: per-profile export and erasure (Sections 21 and 22). |
 | 0.9 | 15 October 2026 | Claude Engineering Implementer | WP5b post-commit record (262b7f6): pre-check PASS, CI green apart from the five known microphone tests, post-commit review Pass (Section 20). |

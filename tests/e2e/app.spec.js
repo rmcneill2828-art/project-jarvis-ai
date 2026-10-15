@@ -680,16 +680,19 @@ test("mic button populates the composer with the transcript without auto-sending
 // these two tests cover the two observable states guardian.speak's own tests
 // already established the pattern for: no profile yet selected (create form),
 // and an existing profile that can be switched away from (picker).
-test("profile create form appears when no profile is active, and creating one shows it as active", async ({
+test("on a fresh install the first-run steps appear, and creating the first profile shows it as active", async ({
   page,
 }) => {
   await mockTauriIpc(page, { profiles: [], activeProfile: null });
   await page.goto("/");
 
+  await expect(page.getByRole("heading", { level: 1, name: "Set up JARVIS" })).toBeVisible();
   await expect(page.getByPlaceholder("Your name")).toBeVisible();
+  // The first profile is an Administrator and is not offered as a choice.
+  await expect(page.getByLabel("New profile household role")).toHaveCount(0);
+  await expect(page.locator(".firstrun-card")).toContainText("Administrator");
 
   await page.getByPlaceholder("Your name").fill("Robert");
-  await page.getByLabel("New profile household role").selectOption("Administrator");
   await page.getByRole("button", { name: "Create profile" }).click();
 
   await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Robert");
@@ -2664,4 +2667,136 @@ test("the privacy notice names the export and erasure rights that now exist, and
   await expect(notice).toContainText("exported to a readable file and a portable file");
   await expect(notice).toContainText("Erasing does not change notes shared by the household");
   await expect(notice).toContainText("no setting to keep it for ever");
+});
+
+// ---- WP5d: first-run setup ----
+
+// What the backend reports when Ollama is not installed, install steps included.
+const NOT_INSTALLED = {
+  installed: false,
+  running: false,
+  version: null,
+  models: [],
+  activeModelInstalled: false,
+  install: { url: "https://ollama.com/download", installed: false, steps: ["Open the Ollama download page."] },
+};
+
+const stepNow = (page) => page.getByRole("list", { name: "Setup steps" }).locator('[aria-current="step"]');
+
+async function createFirstProfile(page, name = "Robert") {
+  await page.getByPlaceholder("Your name").fill(name);
+  await page.getByRole("button", { name: "Create profile" }).click();
+}
+
+test("first run walks profile, local AI, Claude and a summary, and each later step can be skipped", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [],
+    activeProfile: null,
+    ollama: { status: NOT_INSTALLED },
+  });
+  await page.goto("/");
+  await expect(stepNow(page)).toContainText("Your profile");
+
+  await createFirstProfile(page);
+  await expect(stepNow(page)).toContainText("AI on this computer");
+  await expect(page.locator(".local-ai-panel")).toBeVisible();
+  await page.getByRole("button", { name: "Do this later" }).click();
+
+  await expect(stepNow(page)).toContainText("Claude");
+  await expect(page.locator(".privacy-notice")).toBeVisible();
+  await expect(page.getByLabel("Claude API key")).toBeVisible();
+  await page.getByRole("button", { name: "Skip for now" }).click();
+
+  await expect(stepNow(page)).toContainText("Ready");
+  const summary = page.getByRole("list", { name: "What is ready" });
+  await expect(summary.locator('[data-item="profile"]')).toHaveAttribute("data-ready", "true");
+  await expect(summary.locator('[data-item="model"]')).toHaveAttribute("data-ready", "false");
+  await expect(summary.locator('[data-item="model"]')).toContainText("not ready yet");
+  await expect(summary.locator('[data-item="claude"]')).toHaveAttribute("data-ready", "false");
+  await expect(summary.locator('[data-item="claude"]')).toContainText("answers on this computer only");
+
+  await page.getByRole("button", { name: "Start using JARVIS" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Set up JARVIS" })).toHaveCount(0);
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeVisible();
+  await expect.poll(() => railNames(page)).toEqual(VIEW_NAMES);
+});
+
+test("the summary reports a ready model and a saved key from the real state", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [], activeProfile: null });
+  await page.goto("/");
+  await createFirstProfile(page);
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  await page.getByLabel("Claude API key").fill("sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789");
+  await page.getByRole("button", { name: "Save key" }).click();
+  await expect(page.locator(".claude-key-status")).toContainText("A key is saved on this computer.");
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  const summary = page.getByRole("list", { name: "What is ready" });
+  await expect(summary.locator('[data-item="model"]')).toHaveAttribute("data-ready", "true");
+  await expect(summary.locator('[data-item="model"]')).toContainText("qwen3.5:4b");
+  await expect(summary.locator('[data-item="claude"]')).toHaveAttribute("data-ready", "true");
+});
+
+test("a status that cannot be read is said so in the summary and never shown as ready", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [], activeProfile: null, ollamaFails: true });
+  await page.goto("/");
+  await createFirstProfile(page);
+  await page.getByRole("button", { name: "Do this later" }).click();
+  await page.getByRole("button", { name: "Skip for now" }).click();
+
+  const model = page.getByRole("list", { name: "What is ready" }).locator('[data-item="model"]');
+  await expect(model).toContainText("could not be checked");
+  await expect(model).toHaveAttribute("data-ready", "false");
+});
+
+test("a household that already has a profile is never shown first-run on its own", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN], activeProfile: ADMIN });
+  await page.goto("/");
+
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Set up JARVIS" })).toHaveCount(0);
+});
+
+test("an Administrator can run setup again from Settings, starting after the profile step", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Run setup again" }).click();
+
+  await expect(page.getByRole("heading", { level: 1, name: "Set up JARVIS" })).toBeVisible();
+  await expect(stepNow(page)).toContainText("AI on this computer");
+  await expect(page.getByPlaceholder("Your name")).toHaveCount(0);
+  await page.getByRole("button", { name: "Do this later" }).click();
+  await page.getByRole("button", { name: "Skip for now" }).click();
+  await page.getByRole("button", { name: "Start using JARVIS" }).click();
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeVisible();
+});
+
+test("an Adult does not see Run setup again", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX], activeProfile: ALEX });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.getByRole("button", { name: "Run setup again" })).toHaveCount(0);
+});
+
+test("no step can trap a person: with no Ollama and no key every step still moves on", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [],
+    activeProfile: null,
+    ollama: { status: NOT_INSTALLED },
+    keyMock: { storeAvailable: false },
+  });
+  await page.goto("/");
+  await createFirstProfile(page);
+
+  await expect(page.locator(".local-ai-panel")).toContainText("not installed");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.locator(".claude-key")).toContainText("no secure place to keep a key");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Start using JARVIS" }).click();
+
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeVisible();
 });

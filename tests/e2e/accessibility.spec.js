@@ -145,3 +145,53 @@ test("axe: every view at the smallest window has no serious or critical violatio
     await expectNoSeriousViolations(page, `${view} at 960 x 640`);
   }
 });
+
+test("axe: the first-run steps have no serious or critical violation", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => {} };
+    const state = { profile: null };
+    window.__TAURI_INTERNALS__ = {
+      transformCallback: () => 0,
+      invoke: (cmd, args) => {
+        if (cmd === "list_profiles") return Promise.resolve({ profiles: state.profile ? [state.profile] : [] });
+        if (cmd === "active_profile") return Promise.resolve({ profile: state.profile });
+        if (cmd === "create_profile") {
+          state.profile = { id: "n1", displayName: args.displayName, role: args.role, createdAt: "2026-10-15T00:00:00Z" };
+          return Promise.resolve(state.profile);
+        }
+        if (cmd === "select_profile") return Promise.resolve(state.profile);
+        if (cmd === "ollama_status") {
+          return Promise.resolve({
+            installed: false,
+            running: false,
+            version: null,
+            models: [],
+            activeModelInstalled: false,
+            install: { url: "https://ollama.com/download", installed: false, steps: ["Open the page."] },
+          });
+        }
+        if (cmd === "ollama_recommendation") return Promise.reject(new Error("not running"));
+        if (cmd === "claude_key_status") return Promise.resolve({ configured: false, source: "none", storeAvailable: true });
+        if (cmd === "plugin:event|listen") return Promise.resolve(0);
+        return Promise.reject(new Error("not mocked: " + cmd));
+      },
+    };
+  });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1, name: "Set up JARVIS" })).toBeVisible();
+  await expectNoSeriousViolations(page, "first run, profile step");
+
+  await page.getByPlaceholder("Your name").fill("Robert");
+  await page.getByRole("button", { name: "Create profile" }).click();
+  await expect(page.getByRole("list", { name: "Setup steps" }).locator('[aria-current="step"]')).toContainText("AI on this computer");
+  await page.waitForTimeout(300);
+  await expectNoSeriousViolations(page, "first run, AI step");
+
+  await page.getByRole("button", { name: "Do this later" }).click();
+  await page.waitForTimeout(300);
+  await expectNoSeriousViolations(page, "first run, Claude step");
+
+  await page.getByRole("button", { name: "Skip for now" }).click();
+  await expect(page.getByRole("list", { name: "What is ready" })).toBeVisible();
+  await expectNoSeriousViolations(page, "first run, ready step");
+});

@@ -80,7 +80,7 @@ export function PrivacyNotice() {
   );
 }
 
-function ClaudeKeySection() {
+export function ClaudeKeySection() {
   const [status, setStatus] = useState(null);
   const [statusError, setStatusError] = useState(null);
   const [draft, setDraft] = useState("");
@@ -540,7 +540,14 @@ function YourDataSection({ role, profiles, activeProfile, onProfileErased }) {
   );
 }
 
-export function SettingsView({ role, profiles = [], activeProfile = null, onProfileUpdated, onProfileErased }) {
+export function SettingsView({
+  role,
+  profiles = [],
+  activeProfile = null,
+  onProfileUpdated,
+  onProfileErased,
+  onRunSetup,
+}) {
   return (
     <div className="settings-view">
       {canChangeClaudeKey(role) && <ClaudeKeySection />}
@@ -557,6 +564,17 @@ export function SettingsView({ role, profiles = [], activeProfile = null, onProf
         activeProfile={activeProfile}
         onProfileErased={onProfileErased}
       />
+      {canChangeHouseholdSettings(role) && onRunSetup && (
+        <section className="settings-card" aria-labelledby="run-setup-heading">
+          <h2 id="run-setup-heading">Setup</h2>
+          <p>Go through the first-run steps again: the AI model on this computer, and Claude.</p>
+          <div className="settings-actions">
+            <button type="button" onClick={onRunSetup}>
+              Run setup again
+            </button>
+          </div>
+        </section>
+      )}
       <PrivacyNotice />
     </div>
   );

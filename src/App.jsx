@@ -21,6 +21,7 @@ import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
 import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalation.jsx";
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
 import { PresenceOrb } from "./PresenceOrb.jsx";
+import { FirstRun } from "./FirstRun.jsx";
 import { SettingsView } from "./SettingsView.jsx";
 import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
 import { NavRail, TopBar, VIEWS } from "./Shell.jsx";
@@ -474,6 +475,12 @@ export function App() {
   const recordingTimeoutRef = useRef(null);
 
   const [profiles, setProfiles] = useState([]);
+  // First-run setup (ESR-0061 WP5d). `profilesLoaded` stops a household that
+  // already has profiles being shown setup while the list is still on its way;
+  // `setupSession` is "first" or "again" while the steps are open and "closed"
+  // once finished. Which steps are done is read from real state, never stored.
+  const [profilesLoaded, setProfilesLoaded] = useState(false);
+  const [setupSession, setSetupSession] = useState(null);
   const [activeProfile, setActiveProfile] = useState(null);
   const [profileError, setProfileError] = useState(null);
 
@@ -551,7 +558,9 @@ export function App() {
 
     invoke("list_profiles")
       .then((result) => {
-        if (!cancelled) setProfiles(result.profiles ?? []);
+        if (cancelled) return;
+        setProfiles(result.profiles ?? []);
+        setProfilesLoaded(true);
       })
       .catch((error) => {
         if (!cancelled) setProfileError(String(error));
@@ -1078,10 +1087,16 @@ export function App() {
 
   const platformIndicator = derivePlatformIndicator(platformState, platformError);
   const role = activeProfile?.role ?? null;
+  // Setup opens by itself when the list has loaded and is empty, and stays open
+  // after the first profile is created so the later steps can follow.
+  useEffect(() => {
+    if (profilesLoaded && profiles.length === 0 && setupSession === null) setSetupSession("first");
+  }, [profilesLoaded, profiles.length, setupSession]);
+  const setupOpen = setupSession === "first" || setupSession === "again";
   const allowedViews = viewsForRole(role);
   // A view the role may not use is never shown, even if it was open when the
   // profile changed: the person lands on the conversation instead.
-  const currentView = allowedViews.includes(view) ? view : "guardian";
+  const currentView = setupOpen ? "setup" : allowedViews.includes(view) ? view : "guardian";
   const capabilityRows = deriveCapabilityList({
     platformState,
     platformError,
@@ -1124,7 +1139,7 @@ export function App() {
       />
       <NavRail views={VIEWS.filter((entry) => allowedViews.includes(entry.id))} current={currentView} onSelect={setView} mentionClaude={canAskClaude(role)} />
       <main className="app-main" aria-label="Guardian desktop experience">
-        {!activeProfile && (
+        {!activeProfile && !setupOpen && (
           <div className="profile-banner">
             <ProfileCard
               profiles={profiles}
@@ -1134,6 +1149,22 @@ export function App() {
               onSelectProfile={handleSelectProfile}
             />
           </div>
+        )}
+
+        {currentView === "setup" && (
+          <FirstRun
+            activeProfile={activeProfile}
+            profileError={profileError}
+            onCreateProfile={handleCreateProfile}
+            onFinish={() => {
+              setSetupSession("closed");
+              setView("guardian");
+            }}
+            pullProgress={pullProgress}
+            pullFinished={pullFinished}
+            useWhenDoneRef={useWhenDoneRef}
+            onPullFinishedHandled={() => setPullFinished(null)}
+          />
         )}
 
         {currentView === "guardian" && (
@@ -1262,6 +1293,7 @@ export function App() {
               <p className="view-lede">What an Administrator decides for the household, and what JARVIS does with your data.</p>
               <SettingsView
                 role={role}
+                onRunSetup={() => setSetupSession("again")}
                 profiles={profiles}
                 activeProfile={activeProfile}
                 onProfileErased={(erasedId) => {
