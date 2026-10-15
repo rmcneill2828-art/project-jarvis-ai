@@ -81,6 +81,7 @@ class AnthropicProvider:
         configuration: ProviderConfiguration,
         transport: Transport | None = None,
         effort: str | None = DEFAULT_EFFORT,
+        credential_source: Callable[[], str | None] | None = None,
     ) -> None:
         if configuration.credential is None:
             msg = "Anthropic provider configuration requires a credential reference."
@@ -94,6 +95,11 @@ class AnthropicProvider:
         self._configuration = configuration
         self._transport = transport or _default_transport
         self._effort = effort
+        # Called at each request for the key (ESR-0061 WP5a, EIP-ESR0061-005
+        # 6.2): lets the app change the key without a restart and without ever
+        # placing it in the process environment. None keeps the original
+        # behaviour of reading the configured environment variable.
+        self._credential_source = credential_source
 
     @property
     def name(self) -> str:
@@ -124,13 +130,17 @@ class AnthropicProvider:
         return self._configuration.max_output_tokens or DEFAULT_MAX_TOKENS
 
     def execute(self, request: ProviderRequest) -> ProviderResponse:
-        api_key = (os.environ.get(self._configuration.credential.environment_variable) or "").strip()
-        if not api_key:
-            msg = (
+        if self._credential_source is not None:
+            api_key = (self._credential_source() or "").strip()
+            missing = "Anthropic credential is not configured."
+        else:
+            api_key = (os.environ.get(self._configuration.credential.environment_variable) or "").strip()
+            missing = (
                 "Anthropic credential not found in environment variable: "
                 f"{self._configuration.credential.environment_variable}."
             )
-            raise RuntimeError(msg)
+        if not api_key:
+            raise RuntimeError(missing)
 
         model = self._configuration.default_model
         endpoint = self._configuration.endpoint or DEFAULT_ENDPOINT

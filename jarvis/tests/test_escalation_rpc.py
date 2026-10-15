@@ -285,7 +285,12 @@ def test_without_a_key_claude_is_never_offered(tmp_path, monkeypatch, network):
     status = client.result("provider.status")["claude"]
     assert status["configured"] is False
     assert status["allowance"] is None
-    assert not (tmp_path / "spend.db").exists()
+    # WP5a (EIP-ESR0061-005 6.2): the route is always built, so the spend
+    # database exists from the start - but with no key nothing was ever spent.
+    import sqlite3
+
+    with sqlite3.connect(tmp_path / "spend.db") as connection:
+        assert connection.execute("SELECT COUNT(*) FROM spend").fetchone()[0] == 0
 
 
 # --- who may escalate: every path a Child, a Guest or nobody could try ---------------------------------------------

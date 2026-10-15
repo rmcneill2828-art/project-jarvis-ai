@@ -11,6 +11,7 @@ from jarvis.guardian.config import GuardianRuntimeConfig
 from jarvis.guardian.diagnostics import GuardianDiagnosticEvent
 from jarvis.guardian.state import GuardianRuntimeState
 from jarvis.guardian.status import GuardianRuntimeStatus
+from jarvis.interfaces.claude_key import ClaudeKeyManager
 from jarvis.interfaces.conversation import (
     ConversationProvider,
     ConversationRequest,
@@ -61,8 +62,12 @@ class GuardianRuntime:
         agent_service: SentinelGatedAgentService | None = None,
         escalation_provider: MeteredCloudConversationProvider | None = None,
         ollama_setup: OllamaSetup | None = None,
+        claude_keys: ClaudeKeyManager | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
+        # Where the Claude key comes from and how the app changes it (ESR-0061
+        # WP5a). None in tests that do not exercise it.
+        self._claude_keys = claude_keys
         # The cloud route's provider (ESR-0061 WP3b). Used only by escalate(),
         # which only a confirmed escalation reaches - never by converse().
         self._escalation_provider = escalation_provider
@@ -253,6 +258,12 @@ class GuardianRuntime:
         """Local model setup, or None when the runtime was built without it."""
 
         return self._ollama_setup
+
+    @property
+    def claude_keys(self) -> ClaudeKeyManager | None:
+        """The Claude key manager, or None if this runtime was built without one."""
+
+        return self._claude_keys
 
     @property
     def escalation_provider(self) -> MeteredCloudConversationProvider | None:

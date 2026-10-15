@@ -21,6 +21,7 @@ import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
 import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalation.jsx";
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
 import { PresenceOrb } from "./PresenceOrb.jsx";
+import { SettingsView } from "./SettingsView.jsx";
 import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
 import { NavRail, TopBar, VIEWS } from "./Shell.jsx";
 
@@ -1250,6 +1251,16 @@ export function App() {
                 useWhenDoneRef={useWhenDoneRef}
                 onPullFinishedHandled={() => setPullFinished(null)}
               />
+            </div>
+          </section>
+        )}
+
+        {currentView === "settings" && (
+          <section className="view" aria-label="Settings">
+            <div className="view-scroll" tabIndex={0}>
+              <h1 className="view-heading">Settings</h1>
+              <p className="view-lede">What an Administrator decides for the household, and what JARVIS does with your data.</p>
+              <SettingsView role={role} />
             </div>
           </section>
         )}

@@ -11,7 +11,7 @@ export const ROLE = Object.freeze({
   GUEST: "Guest",
 });
 
-const ALL_VIEWS = ["guardian", "memory", "knowledge", "agents", "models", "system"];
+const ALL_VIEWS = ["guardian", "memory", "knowledge", "agents", "models", "settings", "system"];
 
 const VIEWS_BY_ROLE = {
   [ROLE.ADMINISTRATOR]: ALL_VIEWS,
@@ -38,6 +38,10 @@ export const seesBackupControls = (role) => role === ROLE.ADMINISTRATOR || role 
 
 // A Child may read their own notes but not forget them.
 export const canForgetMemory = (role) => role === ROLE.ADMINISTRATOR || role === ROLE.ADULT;
+
+// Only an Administrator may set, remove or test the Claude key (the backend
+// enforces it; an Adult sees the privacy notice in Settings and nothing else).
+export const canChangeClaudeKey = (role) => role === ROLE.ADMINISTRATOR;
 
 // Shared household notes (profileId null) can be deleted only by an Administrator.
 export const canForgetHouseholdNote = (role) => role === ROLE.ADMINISTRATOR;

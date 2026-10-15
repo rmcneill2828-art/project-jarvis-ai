@@ -1192,6 +1192,49 @@ async fn provider_status(
     call_backend_off_main_thread(state, app_handle, "provider.status", json!({})).await
 }
 
+/// The Claude key (ESR-0061 WP5a, EIP-ESR0061-005 6.3). The backend holds the
+/// key in the operating system's credential store and enforces that only an
+/// Administrator may change it; these only relay. The key is passed through
+/// once, on `set_claude_key`, and is never logged or returned.
+#[tauri::command]
+async fn claude_key_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "provider.claudeKeyStatus", json!({})).await
+}
+
+#[tauri::command]
+async fn set_claude_key(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    key: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "provider.setClaudeKey",
+        json!({ "key": key }),
+    )
+    .await
+}
+
+#[tauri::command]
+async fn remove_claude_key(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "provider.removeClaudeKey", json!({})).await
+}
+
+#[tauri::command]
+async fn test_claude_key(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "provider.testClaudeKey", json!({})).await
+}
+
 /// Administrator only (the backend enforces it): whether a profile's retained
 /// memory may accompany a question sent to Claude.
 #[tauri::command]
@@ -1503,6 +1546,10 @@ pub fn run() {
             offer_escalation,
             escalate_message,
             provider_status,
+            claude_key_status,
+            set_claude_key,
+            remove_claude_key,
+            test_claude_key,
             set_profile_cloud_memory,
             ollama_status,
             ollama_recommendation,

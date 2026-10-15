@@ -33,6 +33,9 @@ async function mockTauriIpc(
     // turn, slow turns and transcriptions, and audio that will not play.
     orbMock = {},
     ollamaFails = false,
+    // The Claude key store (WP5a): where a key comes from, whether the computer
+    // has a secure store, and a save that fails.
+    keyMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -55,6 +58,7 @@ async function mockTauriIpc(
       ollama,
       orbMock,
       ollamaFails,
+      keyMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -223,6 +227,48 @@ async function mockTauriIpc(
           if (cmd === "ollama_status" && ollamaFails) return Promise.reject(new Error("ollama status unavailable"));
           if (cmd === "ollama_status") return Promise.resolve(structuredClone(ollamaState.status));
           if (cmd === "plugin:app|version") return Promise.resolve("0.1.0");
+          // The Claude key (WP5a): the mock keeps a source flag, never the key
+          // itself, and records what the app sent so a test can assert on it.
+          window.__keyCalls = window.__keyCalls || [];
+          const keyState = (window.__keyState = window.__keyState || {
+            source: keyMock.source || "none",
+            storeAvailable: keyMock.storeAvailable !== false,
+          });
+          const keyStatus = () => ({
+            configured: keyState.source !== "none",
+            source: keyState.source,
+            storeAvailable: keyState.storeAvailable,
+          });
+          if (cmd === "claude_key_status") {
+            if (!state.active || state.active.role !== "Administrator") {
+              return Promise.reject(new Error("PermissionError: Only an Administrator profile can change the Claude key."));
+            }
+            return Promise.resolve(keyStatus());
+          }
+          if (cmd === "set_claude_key") {
+            window.__keyCalls.push(["set", args.key.length]);
+            if (keyMock.failSet) {
+              return Promise.reject(new Error("ValueError: The key could not be saved to this computer's credential store."));
+            }
+            if (!/^sk-ant-[A-Za-z0-9_-]{16,}$/.test(args.key)) {
+              return Promise.reject(
+                new Error("ValueError: That does not look like a Claude API key. Copy it again from the Claude Console."),
+              );
+            }
+            if (keyState.source !== "environment") keyState.source = "store";
+            return Promise.resolve(keyStatus());
+          }
+          if (cmd === "remove_claude_key") {
+            window.__keyCalls.push(["remove"]);
+            if (keyState.source === "store") keyState.source = keyMock.envAlso ? "environment" : "none";
+            return Promise.resolve(keyStatus());
+          }
+          if (cmd === "test_claude_key") {
+            window.__keyCalls.push(["test"]);
+            return Promise.resolve(
+              keyMock.testFails ? { ok: false, failure: "failed" } : { ok: true, failure: null, allowance: null },
+            );
+          }
           if (cmd === "ollama_recommendation") return Promise.resolve(structuredClone(ollamaState.recommendation));
           if (cmd === "ollama_pull") {
             window.__ollamaCalls.push(["pull", args.model]);
@@ -418,6 +464,7 @@ async function mockTauriIpc(
       ollama,
       orbMock,
       ollamaFails,
+      keyMock,
     },
   );
 }
@@ -1112,7 +1159,7 @@ test("a failed status read is shown honestly rather than as a healthy panel", as
 
 // --- ESR-0061 WP4a (EIP-ESR0061-004 items 6.1 and 6.8): the app shell, tokens and fonts -------------------------------
 
-const VIEW_NAMES = ["Guardian", "Memory", "Knowledge", "Agents", "AI models", "System"];
+const VIEW_NAMES = ["Guardian", "Memory", "Knowledge", "Agents", "AI models", "Settings", "System"];
 
 test("the rail lists the six views and marks the current one", async ({ page }) => {
   await mockTauriIpc(page);
@@ -1196,7 +1243,7 @@ test("the controls that used to do nothing are gone", async ({ page }) => {
   await page.goto("/");
   const dead = [
     "Notifications",
-    "Settings",
+    // "Settings" was one of these until WP5: it is now a real view in the rail.
     "Minimize",
     "Maximize",
     "Close",
@@ -2162,4 +2209,146 @@ test("the Knowledge view shows the graph figures", async ({ page }) => {
   const row = (label) => metrics.locator(".metric-row").filter({ has: page.getByText(label, { exact: true }) });
   await expect(row("Nodes")).toContainText("2");
   await expect(row("Connections")).toContainText("1");
+});
+
+// ---- WP5a: the Settings view, the Claude key and the privacy notice ----
+
+const GOOD_KEY = "sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789";
+
+test("an Administrator sees the Claude key section and the privacy notice", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Settings" })).toBeVisible();
+  await expect(page.locator(".claude-key-status")).toContainText("No key is set");
+  await expect(page.getByLabel("Claude API key")).toBeVisible();
+  await expect(page.locator(".privacy-notice")).toContainText("What stays on this computer");
+  await expect(page.locator(".privacy-notice")).toContainText("only when you confirm");
+});
+
+test("an Adult sees the privacy notice and no key controls", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX], activeProfile: ALEX });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.locator(".privacy-notice")).toBeVisible();
+  await expect(page.locator(".claude-key")).toHaveCount(0);
+  await expect(page.getByLabel("Claude API key")).toHaveCount(0);
+});
+
+test("a Child and a Guest have no Settings view", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [SAM, GUEST], activeProfile: SAM });
+  await page.goto("/");
+  await expect.poll(() => railNames(page)).toEqual(["Guardian", "Memory"]);
+  await expect(page.getByRole("navigation", { name: "Views" }).getByRole("button", { name: "Settings" })).toHaveCount(0);
+});
+
+test("saving a key clears the box, says it is saved, and never shows the key again", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  const input = page.getByLabel("Claude API key");
+  await expect(input).toHaveAttribute("type", "password");
+  await input.fill(GOOD_KEY);
+  await page.getByRole("button", { name: "Save key" }).click();
+
+  await expect(page.locator(".claude-key-status")).toContainText("A key is saved on this computer.");
+  await expect(input).toHaveValue("");
+  await expect(page.locator("body")).not.toContainText(GOOD_KEY);
+  expect(await page.evaluate(() => document.documentElement.outerHTML.includes("sk-ant-api03-AbCd"))).toBe(false);
+  await expect(page.getByRole("button", { name: "Remove key" })).toBeVisible();
+});
+
+test("a malformed key is refused with the backend's words and nothing is saved", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByLabel("Claude API key").fill("not-a-key");
+  await page.getByRole("button", { name: "Save key" }).click();
+
+  await expect(page.locator(".claude-key").getByRole("alert")).toContainText("does not look like a Claude API key");
+  await expect(page.locator(".claude-key-status")).toContainText("No key is set");
+});
+
+test("a failed save says so without exposing anything", async ({ page }) => {
+  await mockTauriIpc(page, { keyMock: { failSet: true } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByLabel("Claude API key").fill(GOOD_KEY);
+  await page.getByRole("button", { name: "Save key" }).click();
+
+  await expect(page.locator(".claude-key").getByRole("alert")).toContainText("could not be saved");
+  await expect(page.locator(".claude-key-status")).toContainText("No key is set");
+});
+
+test("removing a saved key puts the screen back to no key", async ({ page }) => {
+  await mockTauriIpc(page, { keyMock: { source: "store" } });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(page.locator(".claude-key-status")).toContainText("A key is saved on this computer.");
+
+  await page.getByRole("button", { name: "Remove key" }).click();
+
+  await expect(page.locator(".claude-key-status")).toContainText("No key is set");
+  await expect(page.getByRole("status").filter({ hasText: "The key was removed" })).toBeVisible();
+});
+
+test("a key from the environment is said to override the screen, and cannot be changed here", async ({ page }) => {
+  await mockTauriIpc(page, { keyMock: { source: "environment" } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.locator(".claude-key-status")).toContainText("ANTHROPIC_API_KEY setting, which overrides this screen");
+  await expect(page.getByLabel("Claude API key")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Remove key" })).toHaveCount(0);
+});
+
+test("with no secure store the screen says to use the setting instead", async ({ page }) => {
+  await mockTauriIpc(page, { keyMock: { storeAvailable: false } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.locator(".claude-key")).toContainText("no secure place to keep a key");
+  await expect(page.getByLabel("Claude API key")).toHaveCount(0);
+});
+
+test("testing a key needs a confirmation and sends nothing until it is given", async ({ page }) => {
+  await mockTauriIpc(page, { keyMock: { source: "store" } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Test this key" }).click();
+  expect(await page.evaluate(() => (window.__keyCalls || []).filter((c) => c[0] === "test").length)).toBe(0);
+  await expect(page.getByRole("group", { name: "Confirm key test" })).toContainText("fraction of a cent");
+
+  await page.getByRole("button", { name: "Send the test" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Claude accepted the key." })).toBeVisible();
+  expect(await page.evaluate(() => window.__keyCalls.filter((c) => c[0] === "test").length)).toBe(1);
+});
+
+test("cancelling the key test sends nothing", async ({ page }) => {
+  await mockTauriIpc(page, { keyMock: { source: "store" } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Test this key" }).click();
+  await page.getByRole("group", { name: "Confirm key test" }).getByRole("button", { name: "Cancel" }).click();
+
+  await expect(page.getByRole("group", { name: "Confirm key test" })).toHaveCount(0);
+  expect(await page.evaluate(() => (window.__keyCalls || []).length)).toBe(0);
+});
+
+test("a key that Claude does not accept is reported plainly", async ({ page }) => {
+  await mockTauriIpc(page, { keyMock: { source: "store", testFails: true } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("button", { name: "Test this key" }).click();
+  await page.getByRole("button", { name: "Send the test" }).click();
+
+  await expect(page.locator(".claude-key").getByRole("alert")).toContainText("did not accept");
 });

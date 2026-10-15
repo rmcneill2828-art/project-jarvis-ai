@@ -85,8 +85,18 @@ def build_sidecar(target_triple: str, work_dir: Path) -> Path:
         "--specpath",
         str(spec_dir),
         "--noconfirm",
+        # keyring (ESR-0061 WP5a): its backends are plug-ins found through package
+        # metadata, which a one-file build does not carry unless asked, and the
+        # Windows backend's ctypes shim is imported by name.
+        "--copy-metadata",
+        "keyring",
+        "--collect-submodules",
+        "keyring.backends",
         str(ENTRY_SCRIPT),
     ]
+    if "windows" in target_triple:
+        # Imported by name by keyring's Windows backend; absent on macOS.
+        command[-1:-1] = ["--hidden-import", "win32ctypes.core"]
 
     result = subprocess.run(command, cwd=REPO_ROOT, check=False)
     if result.returncode != 0:

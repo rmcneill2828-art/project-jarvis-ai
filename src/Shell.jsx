@@ -1,4 +1,4 @@
-import { Activity, Cpu, Database, MessageSquare, Share2, UsersRound } from "lucide-react";
+import { Activity, Cpu, Database, MessageSquare, Settings, Share2, UsersRound } from "lucide-react";
 
 // The app shell (ESR-0061 WP4a, EIP-ESR0061-004 item 6.1): a top bar, a left
 // rail of views and a main area. Which views a household role may see is added
@@ -10,6 +10,7 @@ export const VIEWS = [
   { id: "knowledge", label: "Knowledge", icon: Share2 },
   { id: "agents", label: "Agents", icon: UsersRound },
   { id: "models", label: "AI models", icon: Cpu },
+  { id: "settings", label: "Settings", icon: Settings },
   { id: "system", label: "System", icon: Activity },
 ];
 

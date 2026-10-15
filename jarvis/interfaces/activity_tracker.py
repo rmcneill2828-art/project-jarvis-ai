@@ -58,6 +58,10 @@ METHOD_CLUSTERS: dict[str, str] = {
     "ollama.cancelPull": "jarvis",
     "ollama.useModel": "jarvis",
     "provider.status": "jarvis",
+    "provider.claudeKeyStatus": "jarvis",
+    "provider.setClaudeKey": "jarvis",
+    "provider.removeClaudeKey": "jarvis",
+    "provider.testClaudeKey": "jarvis",
     "gia.status": "jarvis",
     "gia.engineeringStatus": "jarvis",
 }

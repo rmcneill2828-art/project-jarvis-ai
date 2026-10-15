@@ -2,7 +2,7 @@
 
 > *"A credential that never appears in source code cannot leak from source control."*
 
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | Artefact ID | STD-0006 |
 | Title | Configuration and Secrets Standard |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -63,7 +63,7 @@ Where conflict exists, approved AIEMS governance artefacts and Programme Sponsor
 Configuration and secrets handling shall follow these principles:
 
 - No secret value shall ever appear in source code, a committed file, or a controlled artefact.
-- Every credential is a named environment variable, referenced by name only - either via `CredentialReference` (`sentinel/provider_config.py`, used by JARVIS provider adapters) or an equivalent direct `os.environ.get(name)` read by name only (used by the AIEMS Exchange Bridge and Sponsor Approval Service tooling) - never a value held in a configuration object, dataclass default, or test fixture.
+- Every credential is a named environment variable, referenced by name only (the one exception is a key a person types into the application, which is held in the operating system's credential store under Section 6A) - either via `CredentialReference` (`sentinel/provider_config.py`, used by JARVIS provider adapters) or an equivalent direct `os.environ.get(name)` read by name only (used by the AIEMS Exchange Bridge and Sponsor Approval Service tooling) - never a value held in a configuration object, dataclass default, or test fixture.
 - Two distinct failure postures apply depending on what the credential gates (Section 6 defines both): an absent optional-capability credential (e.g. a JARVIS text-generation or Voice provider) degrades honestly to its next fallback; an absent authority-bearing credential (e.g. an AIEMS approval-service token) fails closed - refusing to proceed, not falling back to a weaker check.
 - Test suites shall never depend on, or accidentally exercise, real credentials or real local state present on the host machine running the suite.
 
@@ -74,9 +74,23 @@ Configuration and secrets handling shall follow these principles:
 1. A credential shall be represented in code only as a `CredentialReference` or an equivalent named-environment-variable indirection - never as a literal string value, even a placeholder that could be mistaken for real.
 2. A component requiring a credential shall read it via `os.environ` (or an injected `environ` mapping in tests) at the point of use, never store it in a class attribute, log line, diagnostic event, or audit record.
 3. This standard distinguishes two credential categories, each with its own required failure posture:
-   - **Optional-capability credentials** (e.g. `OPENAI_API_KEY`, `GEMINI_API_KEY`, `JARVIS_PIPER_VOICE_PATH`) gate an optional runtime capability with a defined fallback. Where absent or blank, the component shall degrade to its next honest fallback (a lower-priority provider, `not_connected`, or equivalent) rather than fail startup or fabricate a result - matching `_build_real_provider()` and `_build_speech_provider()`'s established pattern in `jarvis/interfaces/stdio_rpc.py`.
+   - **Optional-capability credentials** (e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `JARVIS_PIPER_VOICE_PATH`) gate an optional runtime capability with a defined fallback. Where absent or blank, the component shall degrade to its next honest fallback (a lower-priority provider, `not_connected`, or equivalent) rather than fail startup or fabricate a result - matching `_build_real_provider()` and `_build_speech_provider()`'s established pattern in `jarvis/interfaces/stdio_rpc.py`.
    - **Authority-bearing credentials** (e.g. `AIEMS_AGENT_TOKEN`, `AIEMS_SPONSOR_TOKEN`) gate an engineering-authority decision with no safe fallback. Where absent or blank, the component shall fail closed - refusing to proceed - matching `scripts/sponsor_approval_service.py` and `scripts/sponsor_client.py`'s established behaviour (both refuse to run without their required token). A missing authority-bearing credential shall never be treated as "capability unavailable, continue anyway."
 4. A present-but-blank non-credential configuration value (e.g. a model name) shall fall through to its documented default, not silently propagate an empty string into a downstream constructor that would reject it.
+
+---
+
+# 6A. A Key a Person Supplies in the Application
+
+Added at ESR-0061 WP5a (EIP-ESR0061-005, decisions K1 to K5). A household member who is not an engineer cannot be asked to set an environment variable, so a key the person types into the application is kept in the operating system's own credential store (Windows Credential Manager, macOS Keychain) and nowhere else. The following apply to it, in addition to Section 6:
+
+1. **One route in and one out.** The store is reached only through `jarvis/shared/secret_store.py`, and the key is read only by the component that needs it, through a credential source function called at each use. No other module imports the underlying library.
+2. **Never a file.** If the computer has no usable credential store, the application says so and the environment variable remains the only route. A key is never written to a file, a configuration object, a database or a backup.
+3. **The environment variable wins.** If both exist, the environment variable is used, and the application says so rather than implying the saved key is in use. This keeps every existing test and developer set-up working.
+4. **Never returned, never logged.** No method returns the key; the screen can only learn whether a key is set and where it comes from. The key is not placed in the process environment, a log line, an exception message, an audit record, a diagnostic event, an RPC reply or a test snapshot. A store or format failure reports fixed wording that does not include the value.
+5. **Only an authorised role changes it,** enforced by the backend and not only by the screen.
+6. **A change takes effect without a restart,** by switching the route that uses it, never by copying the key into the environment.
+7. **Tests use a fake store.** A test never reads or writes the host's real credential store; the default store for a build with an explicit environment is the inert, unavailable one.
 
 ---
 
@@ -138,6 +152,7 @@ Some credentials govern a hard authority boundary between AI engineering collabo
 | A new environment variable uses the correct prefix for its scope (Section 7). | Pass / Fail / N/A |
 | No process reachable by an AI collaborator's own tool calls possesses or reads `AIEMS_SPONSOR_TOKEN`. | Pass / Fail / N/A |
 | An absent authority-bearing credential (e.g. an AIEMS approval-service token) fails closed, never degrades to a weaker check. | Pass / Fail / N/A |
+| A key a person supplies in the application is held only in the operating system's credential store, never returned, logged or placed in the environment, and the environment variable still wins (Section 6A). | Pass / Fail / N/A |
 | A new local database/data file is never committed, has an overridable path, and is `.gitignore`d with an explanatory comment. | Pass / Fail / N/A |
 | New or affected tests pass an explicit `environ`/`tmp_path` override rather than depending on ambient host state. | Pass / Fail / N/A |
 
@@ -182,4 +197,5 @@ This standard shall be reviewed when configuration/secrets practice changes mate
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.1 | 15 October 2026 | Claude Engineering Implementer | ESR-0061 WP5a: added Section 6A (a key a person supplies in the application: operating system credential store only, never a file, never returned or logged, the environment variable wins, no restart) and the matching compliance check; ANTHROPIC_API_KEY named as an optional-capability credential. |
 | 1.0 | 30 July 2026 | Claude Engineering Implementer | Initial Configuration and Secrets Standard created for Project JARVIS AI, formalising already-established repository practice (EBG-0065, ESR-0045). Codex design-reviewed (v0.1 Fail with findings - overstated CredentialReference claim, too-broad degradation rule, inaccurate token-boundary wording; v0.2 Pass after correction). Programme Sponsor approved via the real Sponsor Approval Service. |

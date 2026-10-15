@@ -83,6 +83,7 @@ async function installMock(page, profile) {
             },
             ollama_status: ollama,
             ollama_recommendation: recommendation,
+            claude_key_status: { configured: false, source: "none", storeAvailable: true },
           };
           if (cmd in answers) return Promise.resolve(structuredClone(answers[cmd]));
           if (cmd === "plugin:event|listen") return Promise.resolve(0);
@@ -108,7 +109,7 @@ async function expectNoSeriousViolations(page, label) {
   expect(summary, `${label}: serious or critical accessibility violations`).toEqual([]);
 }
 
-const ADMIN_VIEWS = ["Guardian", "Memory", "Knowledge", "Agents", "AI models", "System"];
+const ADMIN_VIEWS = ["Guardian", "Memory", "Knowledge", "Agents", "AI models", "Settings", "System"];
 
 for (const view of ADMIN_VIEWS) {
   test(`axe: the ${view} view has no serious or critical violation`, async ({ page }) => {

@@ -5,6 +5,9 @@ description = "JARVIS AI Platform"
 requires-python = ">=3.12"
 dependencies = [
     "psutil>=6.0",
+    # The operating system's credential store for the Claude key (ESR-0061
+    # WP5a, EIP-ESR0061-005 K1): Windows Credential Manager, macOS Keychain.
+    "keyring>=25.6,<26",
     "piper-tts>=1.6.0,<2.0",
     "faster-whisper>=1.0,<2.0",
     # Kokoro (EBG-0125, EIP-ESR0053-002): Guardian's production speech-output

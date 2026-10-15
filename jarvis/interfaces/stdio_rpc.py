@@ -53,6 +53,8 @@ from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
 from jarvis.interfaces import knowledge_graph
 from jarvis.interfaces.activity_tracker import ActivityTracker
+from jarvis.interfaces.claude_key import ClaudeKeyManager
+from jarvis.interfaces.conversation import ConversationRequest
 from jarvis.interfaces.escalation import (
     ESCALATION_ROLES,
     REASON_REQUESTED,
@@ -86,13 +88,14 @@ from jarvis.shared.errors import (
     ClientFacingValueError,
     public_type_name,
 )
+from jarvis.shared.secret_store import SecretStore
 from jarvis.shared.spend_ledger import MICRO_DOLLARS_PER_DOLLAR, SpendLedger
 from sentinel.anthropic_provider import AnthropicProvider
 from sentinel.audit import JsonAuditRecorder
 from sentinel.core import SentinelTrustGateway
 from sentinel.kokoro_provider import KokoroProvider
 from sentinel.ollama_provider import OllamaProvider
-from sentinel.orchestrator import ProviderOrchestrator, ProviderRoute
+from sentinel.orchestrator import ProviderHealth, ProviderOrchestrator, ProviderRoute
 from sentinel.policy import TrustTierPolicy
 from sentinel.provider_config import CredentialReference, ProviderConfiguration, RetryPolicy
 from sentinel.providers import CLOUD_TEXT_GENERATION_CAPABILITY, TEXT_GENERATION_CAPABILITY
@@ -300,18 +303,18 @@ INVALID_PARAMS = -32602
 INTERNAL_ERROR = -32000
 
 
-def _build_anthropic_provider(environ: Mapping[str, str]) -> AnthropicProvider | None:
-    """Build the Claude escalation provider, or None if no key is configured.
+def _build_anthropic_provider(environ: Mapping[str, str], key_manager: ClaudeKeyManager) -> AnthropicProvider:
+    """Build the Claude escalation provider.
 
-    An absent or whitespace-only key means "not available on this machine", not
-    a startup failure: escalation is simply never offered, and the local route is
-    unaffected (the honest-degradation pattern of ESR-0017 WP9; EBG-0141). A
-    whitespace-only key is absent, not present (ESR-0059 WP4): treating it as
-    present would offer an escalation that fails on every call.
+    It is always built (ESR-0061 WP5a, EIP-ESR0061-005 6.2): whether Claude is
+    available is the route's health, switched by `ClaudeKeyManager` as a key is
+    set or removed, so a change needs no restart. An absent or whitespace-only
+    key means "not available on this machine", not a startup failure:
+    escalation is simply never offered, and the local route is unaffected (the
+    honest-degradation pattern of ESR-0017 WP9; EBG-0141). The key is read by
+    the manager at each request, never copied into the environment.
     """
 
-    if _clean_env(environ, ANTHROPIC_KEY_ENV_VAR) is None:
-        return None
     configuration = ProviderConfiguration(
         provider_name="anthropic",
         default_capability=CLOUD_TEXT_GENERATION_CAPABILITY,
@@ -321,7 +324,7 @@ def _build_anthropic_provider(environ: Mapping[str, str]) -> AnthropicProvider |
         retry_policy=CLOUD_RETRY_POLICY,
         max_output_tokens=_max_output_tokens(environ),
     )
-    return AnthropicProvider(configuration)
+    return AnthropicProvider(configuration, credential_source=key_manager.resolve)
 
 
 def _build_speech_provider(
@@ -497,7 +500,9 @@ def _warn_about_legacy_provider_settings(environ: Mapping[str, str]) -> None:
         )
 
 
-def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianRuntime:
+def build_default_runtime(
+    environ: Mapping[str, str] | None = None, secret_store: SecretStore | None = None
+) -> GuardianRuntime:
     """Build and start the production Guardian+Sentinel stack.
 
     Version 1.0 provider strategy (ADR-0023, ESR-0061 WP3a, EIP-ESR0061-003):
@@ -534,6 +539,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     credentials that happen to be set on the host machine.
     """
 
+    use_host_store = environ is None
     environ = os.environ if environ is None else environ
 
     # EBG-0144 (ESR-0059 WP9): one durable, rotating audit trail shared by the
@@ -569,13 +575,26 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
     orchestrator.register_provider(ollama_provider)
     orchestrator.register_route(ProviderRoute(capability=TEXT_GENERATION_CAPABILITY, providers=(ollama_provider.name,)))
 
-    anthropic_provider = _build_anthropic_provider(environ)
-    escalation_provider: MeteredCloudConversationProvider | None = None
-    if anthropic_provider is not None:
-        orchestrator.register_provider(anthropic_provider)
-        orchestrator.register_route(
-            ProviderRoute(capability=CLOUD_TEXT_GENERATION_CAPABILITY, providers=(anthropic_provider.name,))
+    # Tests pass an explicit environment and never see the host's credential
+    # store; the real process (environ is os.environ) uses the operating
+    # system's.
+    key_manager = ClaudeKeyManager(
+        secret_store if secret_store is not None else (SecretStore() if use_host_store else SecretStore.unavailable()),
+        environ,
+    )
+    anthropic_provider = _build_anthropic_provider(environ, key_manager)
+    orchestrator.register_provider(anthropic_provider)
+    orchestrator.register_route(
+        ProviderRoute(capability=CLOUD_TEXT_GENERATION_CAPABILITY, providers=(anthropic_provider.name,))
+    )
+
+    def _switch_claude_route(enabled: bool) -> None:
+        orchestrator.set_health(
+            anthropic_provider.name, ProviderHealth.HEALTHY if enabled else ProviderHealth.UNAVAILABLE
         )
+
+    # The route starts switched to match whether a key exists right now.
+    key_manager.bind(_switch_claude_route)
     conversation_provider = SentinelGatedConversationProvider(
         gateway=gateway,
         orchestrator=orchestrator,
@@ -614,8 +633,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
 
     agent_service = SentinelGatedAgentService(gateway=gateway, agents=agents)
 
-    if anthropic_provider is not None:
-        escalation_provider = _build_escalation_provider(environ, gateway, orchestrator, audit_recorder)
+    escalation_provider = _build_escalation_provider(environ, gateway, orchestrator, audit_recorder)
 
     ollama_endpoint = _clean_env(environ, OLLAMA_ENDPOINT_ENV_VAR) or OLLAMA_DEFAULT_ENDPOINT
     ollama_setup = OllamaSetup(
@@ -638,6 +656,7 @@ def build_default_runtime(environ: Mapping[str, str] | None = None) -> GuardianR
         agent_service=agent_service,
         escalation_provider=escalation_provider,
         ollama_setup=ollama_setup,
+        claude_keys=key_manager,
     )
     runtime.start()
     return runtime
@@ -721,6 +740,10 @@ class StdioRpcServer:
             "guardian.escalation.offer": self._guardian_escalation_offer,
             "guardian.escalate": self._guardian_escalate,
             "provider.status": self._provider_status,
+            "provider.claudeKeyStatus": self._provider_claude_key_status,
+            "provider.setClaudeKey": self._provider_set_claude_key,
+            "provider.removeClaudeKey": self._provider_remove_claude_key,
+            "provider.testClaudeKey": self._provider_test_claude_key,
             "profile.setCloudMemory": self._profile_set_cloud_memory,
             "ollama.status": self._ollama_status,
             "ollama.recommendation": self._ollama_recommendation,
@@ -878,6 +901,54 @@ class StdioRpcServer:
                     else None
                 ),
             }
+        }
+
+    # -- the Claude key (ESR-0061 WP5a, EIP-ESR0061-005 6.3) ---------------------
+    # Administrator only, enforced here and not in the screen. The key is never
+    # in a reply, a log line or an error message.
+
+    def _claude_key_manager(self) -> ClaudeKeyManager:
+        _require_role(
+            self._identity_service.active_profile(),
+            ADMINISTRATOR_ROLES,
+            "Only an Administrator profile can change the Claude key.",
+        )
+        manager = self._runtime.claude_keys
+        if manager is None:
+            msg = "Claude key setup is not available in this build."
+            raise ClientFacingValueError(msg)
+        return manager
+
+    def _provider_claude_key_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        return self._claude_key_manager().status()
+
+    def _provider_set_claude_key(self, params: dict[str, Any]) -> dict[str, Any]:
+        manager = self._claude_key_manager()
+        key = params.get("key")
+        if not isinstance(key, str):
+            msg = "params.key must be a string."
+            raise ClientFacingTypeError(msg)
+        return manager.set_key(key)
+
+    def _provider_remove_claude_key(self, params: dict[str, Any]) -> dict[str, Any]:
+        return self._claude_key_manager().remove_key()
+
+    def _provider_test_claude_key(self, params: dict[str, Any]) -> dict[str, Any]:
+        """One tiny real request, only when the screen has the person's
+        confirmation. It goes through the same metered, Sentinel-gated route as
+        any question, so its cost is in the ledger like any other."""
+
+        self._claude_key_manager()
+        provider = self._runtime.escalation_provider
+        if provider is None or not self._runtime.escalation_available:
+            return {"ok": False, "failure": "no_key"}
+        response = provider.generate(
+            ConversationRequest(message="Reply with the single word OK.", requester_role="Administrator")
+        )
+        return {
+            "ok": bool(response.is_model_reply),
+            "failure": None if response.is_model_reply else (response.failure or "failed"),
+            "allowance": allowance_payload(provider.ledger.snapshot(), provider.usd_per_gbp),
         }
 
     def _profile_set_cloud_memory(self, params: dict[str, Any]) -> dict[str, Any]:
