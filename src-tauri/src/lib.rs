@@ -1235,6 +1235,31 @@ async fn test_claude_key(
     call_backend_off_main_thread(state, app_handle, "provider.testClaudeKey", json!({})).await
 }
 
+/// Household settings (ESR-0061 WP5b). Administrator only, enforced by the
+/// backend; these only relay.
+#[tauri::command]
+async fn get_settings(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "settings.get", json!({})).await
+}
+
+#[tauri::command]
+async fn set_retention_days(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    days: i64,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "settings.setRetentionDays",
+        json!({ "days": days }),
+    )
+    .await
+}
+
 /// Administrator only (the backend enforces it): whether a profile's retained
 /// memory may accompany a question sent to Claude.
 #[tauri::command]
@@ -1550,6 +1575,8 @@ pub fn run() {
             set_claude_key,
             remove_claude_key,
             test_claude_key,
+            get_settings,
+            set_retention_days,
             set_profile_cloud_memory,
             ollama_status,
             ollama_recommendation,

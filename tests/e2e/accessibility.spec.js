@@ -84,6 +84,7 @@ async function installMock(page, profile) {
             ollama_status: ollama,
             ollama_recommendation: recommendation,
             claude_key_status: { configured: false, source: "none", storeAvailable: true },
+            get_settings: { auditRetentionDays: 90, allowedRetentionDays: [30, 90, 365], lastPrune: null },
           };
           if (cmd in answers) return Promise.resolve(structuredClone(answers[cmd]));
           if (cmd === "plugin:event|listen") return Promise.resolve(0);

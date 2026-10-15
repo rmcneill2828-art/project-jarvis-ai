@@ -62,6 +62,8 @@ METHOD_CLUSTERS: dict[str, str] = {
     "provider.setClaudeKey": "jarvis",
     "provider.removeClaudeKey": "jarvis",
     "provider.testClaudeKey": "jarvis",
+    "settings.get": "jarvis",
+    "settings.setRetentionDays": "jarvis",
     "gia.status": "jarvis",
     "gia.engineeringStatus": "jarvis",
 }

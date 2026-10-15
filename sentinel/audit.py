@@ -1,11 +1,13 @@
 """Sentinel audit trail: records what Sentinel decided and executed, and why."""
 
 import json
+import logging
+import os
 import threading
 from collections import deque
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import MappingProxyType
 from typing import Protocol
@@ -81,6 +83,18 @@ class MemoryAuditRecorder:
         return tuple(self._events)
 
 
+logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class PruneResult:
+    """What a retention prune did, as counts only."""
+
+    removed: int
+    kept: int
+    unreadable_kept: int
+
+
 # Rotation defaults for the durable audit log (EBG-0144, ESR-0059 WP9).
 DEFAULT_AUDIT_MAX_BYTES = 5_000_000
 DEFAULT_AUDIT_BACKUP_COUNT = 3
@@ -134,23 +148,88 @@ class JsonAuditRecorder:
         self._path.replace(self._path.with_name(f"{self._path.name}.1"))
 
     def events(self) -> tuple[AuditEvent, ...]:
-        if not self._path.exists():
-            return ()
+        # Under the same lock as writing, rotating and pruning, so a reader
+        # never sees a file half way through being replaced (WP5b).
+        with self._lock:
+            if not self._path.exists():
+                return ()
 
-        events: list[AuditEvent] = []
-        with self._path.open("r", encoding="utf-8") as handle:
-            for line in handle:
-                line = line.strip()
-                if not line:
-                    continue
-                data = json.loads(line)
-                events.append(
-                    AuditEvent(
-                        event_type=data["event_type"],
-                        outcome=data["outcome"],
-                        summary=data["summary"],
-                        metadata=data.get("metadata", {}),
-                        recorded_at=datetime.fromisoformat(data["recorded_at"]),
+            events: list[AuditEvent] = []
+            with self._path.open("r", encoding="utf-8") as handle:
+                for line in handle:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    data = json.loads(line)
+                    events.append(
+                        AuditEvent(
+                            event_type=data["event_type"],
+                            outcome=data["outcome"],
+                            summary=data["summary"],
+                            metadata=data.get("metadata", {}),
+                            recorded_at=datetime.fromisoformat(data["recorded_at"]),
+                        )
                     )
-                )
-        return tuple(events)
+            return tuple(events)
+
+    def prune_older_than(self, days: int, *, now: datetime | None = None) -> PruneResult:
+        """Remove events recorded more than `days` days ago (ESR-0061 WP5b,
+        EIP-ESR0061-005 6.4), from the live file and from every rotated copy.
+
+        Takes the recorder's own lock, so it cannot interleave with a write or
+        a rotation. Each file is rewritten to a temporary file in the same
+        directory and swapped in with `os.replace`, so a crash leaves either the
+        old file or the new one. A line whose time cannot be read is KEPT and
+        counted: a prune must not destroy a record it cannot judge. A rotated
+        copy left with nothing in it is deleted.
+        """
+
+        if days < 1:
+            msg = "Audit retention must be at least one day."
+            raise ValueError(msg)
+        cutoff = (now or datetime.now(UTC)) - timedelta(days=days)
+        removed = kept = unreadable = 0
+        with self._lock:
+            paths = [self._path] + [
+                self._path.with_name(f"{self._path.name}.{index}") for index in range(1, self._backup_count + 1)
+            ]
+            for path in paths:
+                if not path.exists():
+                    continue
+                keep_lines: list[str] = []
+                file_removed = 0
+                with path.open("r", encoding="utf-8") as handle:
+                    for raw in handle:
+                        line = raw.strip()
+                        if not line:
+                            continue
+                        recorded_at = _line_time(line)
+                        if recorded_at is None:
+                            unreadable += 1
+                            keep_lines.append(line)
+                        elif recorded_at < cutoff:
+                            file_removed += 1
+                        else:
+                            keep_lines.append(line)
+                removed += file_removed
+                kept += len(keep_lines)
+                if file_removed == 0:
+                    continue
+                if not keep_lines:
+                    path.unlink()
+                    continue
+                temporary = path.with_name(f"{path.name}.prune")
+                temporary.write_text("\n".join(keep_lines) + "\n", encoding="utf-8")
+                os.replace(temporary, path)
+        logger.info("Audit retention: %d removed, %d kept, %d unreadable kept.", removed, kept, unreadable)
+        return PruneResult(removed=removed, kept=kept, unreadable_kept=unreadable)
+
+
+def _line_time(line: str) -> datetime | None:
+    """The recorded time of one audit line, or None if it cannot be read."""
+
+    try:
+        stamp = datetime.fromisoformat(json.loads(line)["recorded_at"])
+    except (ValueError, KeyError, TypeError):
+        return None
+    return stamp if stamp.tzinfo is not None else stamp.replace(tzinfo=UTC)

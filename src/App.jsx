@@ -1260,7 +1260,15 @@ export function App() {
             <div className="view-scroll" tabIndex={0}>
               <h1 className="view-heading">Settings</h1>
               <p className="view-lede">What an Administrator decides for the household, and what JARVIS does with your data.</p>
-              <SettingsView role={role} />
+              <SettingsView
+                role={role}
+                profiles={profiles}
+                activeProfile={activeProfile}
+                onProfileUpdated={(updated) => {
+                  setProfiles((current) => current.map((entry) => (entry.id === updated.id ? updated : entry)));
+                  setActiveProfile((current) => (current && current.id === updated.id ? updated : current));
+                }}
+              />
             </div>
           </section>
         )}

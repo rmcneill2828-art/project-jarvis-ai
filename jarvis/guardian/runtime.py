@@ -19,6 +19,7 @@ from jarvis.interfaces.conversation import (
 )
 from jarvis.interfaces.escalation import NOT_AVAILABLE_RESPONSE, MeteredCloudConversationProvider
 from jarvis.interfaces.ollama_setup import OllamaSetup
+from jarvis.interfaces.retention import RetentionService
 from jarvis.interfaces.sentinel_agent import AgentOutcome, SentinelGatedAgentService
 from jarvis.interfaces.voice import (
     NOT_CONNECTED_MESSAGE as SPEECH_NOT_CONNECTED_MESSAGE,
@@ -63,11 +64,14 @@ class GuardianRuntime:
         escalation_provider: MeteredCloudConversationProvider | None = None,
         ollama_setup: OllamaSetup | None = None,
         claude_keys: ClaudeKeyManager | None = None,
+        retention: RetentionService | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
         # Where the Claude key comes from and how the app changes it (ESR-0061
         # WP5a). None in tests that do not exercise it.
         self._claude_keys = claude_keys
+        # Audit retention (ESR-0061 WP5b). None in tests that do not exercise it.
+        self._retention = retention
         # The cloud route's provider (ESR-0061 WP3b). Used only by escalate(),
         # which only a confirmed escalation reaches - never by converse().
         self._escalation_provider = escalation_provider
@@ -258,6 +262,10 @@ class GuardianRuntime:
         """Local model setup, or None when the runtime was built without it."""
 
         return self._ollama_setup
+
+    @property
+    def retention(self) -> RetentionService | None:
+        return self._retention
 
     @property
     def claude_keys(self) -> ClaudeKeyManager | None:

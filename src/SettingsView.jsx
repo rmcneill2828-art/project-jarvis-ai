@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
-import { canChangeClaudeKey } from "./roles.js";
+import { canChangeClaudeKey, canChangeHouseholdSettings, profileMayShareMemory } from "./roles.js";
 
 // The Settings view (ESR-0061 WP5a, EIP-ESR0061-005 6.3 and 6.9). It holds what
 // a household's Administrator decides: the Claude key, and the privacy notice
@@ -228,10 +228,158 @@ function ClaudeKeySection() {
   );
 }
 
-export function SettingsView({ role }) {
+// Which profiles' saved notes may go to Claude with a question (EBG-0110, the
+// screen half). An Administrator sets it for any profile that can ask Claude at
+// all; an Adult sees their own, switched off or on, with the reason it is not
+// theirs to change; a Child or Guest never sees this section.
+function MemorySharingSection({ role, profiles, activeProfile, onProfileUpdated }) {
+  const [busyId, setBusyId] = useState(null);
+  const [problem, setProblem] = useState(null);
+  const mayChange = canChangeHouseholdSettings(role);
+  const rows = mayChange ? profiles : profiles.filter((profile) => profile.id === activeProfile?.id);
+
+  const change = (profile, enabled) => {
+    setBusyId(profile.id);
+    setProblem(null);
+    invoke("set_profile_cloud_memory", { profileId: profile.id, enabled })
+      .then((updated) => onProfileUpdated?.(updated))
+      .catch((error) => setProblem(readable(error)))
+      .finally(() => setBusyId(null));
+  };
+
+  return (
+    <section className="settings-card memory-sharing" aria-labelledby="memory-sharing-heading">
+      <h2 id="memory-sharing-heading">Notes and Claude</h2>
+      <p>
+        When this is on for a profile, that profile&rsquo;s saved notes go to Claude together with a question it asks,
+        after the usual confirmation, which says so. When it is off, Claude never receives them. It is off unless an
+        Administrator turns it on.
+      </p>
+      {!mayChange && (
+        <p className="local-ai-note">Only an Administrator can change this, so it is shown here for you to read.</p>
+      )}
+      <ul className="sharing-list" aria-label="Profiles and note sharing">
+        {rows.map((profile) => {
+          const eligible = profileMayShareMemory(profile.role);
+          const inputId = `share-${profile.id}`;
+          return (
+            <li key={profile.id} className="sharing-row" data-profile-id={profile.id}>
+              <div>
+                <label htmlFor={inputId}>
+                  {profile.displayName} <span className="sharing-role">({profile.role})</span>
+                </label>
+                {!eligible && (
+                  <p className="local-ai-note">This profile cannot ask Claude, so none of its notes are ever sent.</p>
+                )}
+              </div>
+              <input
+                id={inputId}
+                type="checkbox"
+                role="switch"
+                checked={eligible && Boolean(profile.shareMemoryWithCloud)}
+                disabled={!mayChange || !eligible || busyId === profile.id}
+                onChange={(event) => change(profile, event.target.checked)}
+              />
+            </li>
+          );
+        })}
+      </ul>
+      {problem && (
+        <p className="conversation-error" role="alert">
+          {problem}
+        </p>
+      )}
+    </section>
+  );
+}
+
+// How long the activity log is kept (R1). Never "for ever": there is always a
+// limit, and a shorter one takes effect at once.
+function RetentionSection() {
+  const [settings, setSettings] = useState(null);
+  const [statusError, setStatusError] = useState(null);
+  const [problem, setProblem] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    invoke("get_settings")
+      .then((result) => {
+        if (!cancelled) setSettings(result);
+      })
+      .catch((error) => {
+        if (!cancelled) setStatusError(readable(error));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const choose = (days) => {
+    setBusy(true);
+    setProblem(null);
+    invoke("set_retention_days", { days })
+      .then((result) => setSettings(result))
+      .catch((error) => setProblem(readable(error)))
+      .finally(() => setBusy(false));
+  };
+
+  const labels = { 30: "30 days", 90: "90 days", 365: "One year" };
+
+  return (
+    <section className="settings-card retention" aria-labelledby="retention-heading">
+      <h2 id="retention-heading">Activity log</h2>
+      <p>
+        JARVIS keeps a log of what it did, such as a question being sent to Claude or a request being refused. It never
+        holds what was said. Entries older than the limit you choose are deleted.
+      </p>
+      {statusError && (
+        <p className="conversation-error" role="alert">
+          The setting could not be read: {statusError}
+        </p>
+      )}
+      {settings && (
+        <fieldset className="retention-choices" disabled={busy}>
+          <legend>Keep the activity log for</legend>
+          {settings.allowedRetentionDays.map((days) => (
+            <label key={days} className="retention-choice">
+              <input
+                type="radio"
+                name="audit-retention"
+                value={days}
+                checked={settings.auditRetentionDays === days}
+                onChange={() => choose(days)}
+              />
+              {labels[days] ?? `${days} days`}
+            </label>
+          ))}
+        </fieldset>
+      )}
+      {settings?.lastPrune && (
+        <p className="local-ai-note" role="status">
+          Last tidy-up: {settings.lastPrune.removed} old entr{settings.lastPrune.removed === 1 ? "y" : "ies"} deleted.
+        </p>
+      )}
+      {problem && (
+        <p className="conversation-error" role="alert">
+          {problem}
+        </p>
+      )}
+    </section>
+  );
+}
+
+export function SettingsView({ role, profiles = [], activeProfile = null, onProfileUpdated }) {
   return (
     <div className="settings-view">
       {canChangeClaudeKey(role) && <ClaudeKeySection />}
+      <MemorySharingSection
+        role={role}
+        profiles={profiles}
+        activeProfile={activeProfile}
+        onProfileUpdated={onProfileUpdated}
+      />
+      {canChangeHouseholdSettings(role) && <RetentionSection />}
       <PrivacyNotice />
     </div>
   );

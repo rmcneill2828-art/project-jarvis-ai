@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-005 |
 | Title | Engineering Implementation Package: WP5 Setup, Settings, Privacy and Data Rights |
-| Version | 0.5 |
-| Status | Draft - design drafted 13 October 2026 at the Programme Sponsor's request ("Please start WP5"); design review Conditional Pass (two High, three Medium, one Low), all addressed in v0.2, re-check Pass; design approved as recommended 15 October 2026; WP5a built, implementation review Pass (Info only), awaiting the Programme Sponsor's approval to commit |
+| Version | 0.8 |
+| Status | Draft - design drafted 13 October 2026 at the Programme Sponsor's request ("Please start WP5"); design review Conditional Pass (two High, three Medium, one Low), all addressed in v0.2, re-check Pass; design approved as recommended 15 October 2026; WP5a committed 8cb21e7 (implementation review Pass, Info only; pre-check PASS; CI green apart from the five known microphone tests in the informational WebKit job; post-commit review Pass); WP5b (note sharing screen, closes EBG-0110; audit retention) built, implementation review Pass (Info only), awaiting the Programme Sponsor's approval to commit |
 | Session | ESR-0061 (the plan puts WP5 in Session C; the Programme Sponsor directed it to start under this session, as WP3 and WP4 did) |
 | Work Package | WP5 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7 (WP5) and Appendix A.3 (privacy requirements) |
@@ -226,12 +226,47 @@ The EIP-ESR0061-004 record changes (WP4d-fix post-commit, WP4d-fix2 post-commit)
 
 **How much that is worth, said plainly.** This is a high-risk package and a single, smaller reviewer found nothing to fix, as it did for WP3b (disclosed in EIP-ESR0061-003 Section 19): a weak signal that the package is clean. What the Pass does not replace is the evidence in Section 13: the packaged sidecar was run against the real Windows Credential Manager, a real test request was made, and the key was searched for in every reply, the sidecar's standard error and the log files, and was in none of them. **The Mac Keychain and a second reader for the privacy wording remain open**: the Programme Sponsor should read the notice in Settings (the text is in `src/SettingsView.jsx`) before the build is approved.
 
+# 16. WP5a Post-Commit Record (15 October 2026)
+
+`8cb21e7` ("ESR-0061 WP5a: The Claude key in the credential store, Settings view and privacy notice") was approved through the Sponsor Approval Service (`submit-response` 09:58:56Z) and pushed by the Programme Sponsor. **Pre-check: PASS on every hard check**, with `--contents-heading "14. WP5a Commit Contents"`: tree clean, on origin/main, the 23 changed files equal Section 14 (the dotfile fix of WP4d-fix2 in use), gated against the parent, pytest 1186 passed and 4 skipped, ruff, validator 0 errors. **CI, by commit SHA:** push run 38718001555, success on `frontend-build`, `playwright`, `python`, `python-macos`, `rust`, `rust-macos` and `rust-windows`. The informational `playwright-webkit` job: **125 passed, 5 failed, 5 skipped; the five failures are exactly the known microphone and recording tests**, so the new Settings view and key flows pass on the Mac's WebKit. **`python-macos` and `rust-macos` passing is the first evidence that the new `keyring` dependency installs and imports on macOS; it is not evidence that the Keychain works**, which only a Mac can show (visit 1). **Post-commit review** (Antigravity, Gemini 3.8 Flash High, 15 October 2026, `sender: reviewer`): **Pass**, Info only: the 23 files match Section 14, the commit message and records are accurate, and a fresh read found no path for the key to a log, an error, a reply, the audit log or the environment. A smaller single reviewer, judging by reading.
+
+# 17. WP5b Build Record (15 October 2026)
+
+Built at the Programme Sponsor's request ("Please start"), under the design approved on 15 October 2026 (6.4, 6.9, R1, S1).
+
+| Item | Result |
+|---|---|
+| Retention in the recorder (6.4) | `JsonAuditRecorder.prune_older_than(days)` takes the recorder's own lock, rewrites each file (the live file and every rotated copy) to a temporary file in the same directory and swaps it in with `os.replace`, deletes a rotated copy left empty, and **keeps and counts a line whose time cannot be read** (a naive time is read as UTC). `events()` now reads under the same lock, which the design review required: before, a reader could race a rotation. It returns counts only |
+| The setting (R1) | New `jarvis/shared/settings.py`: one JSON file beside the databases holding `auditRetentionDays`, allowed values 30, 90 and 365, **default 90; a missing, damaged or out-of-range file reads as the default**, never an error and never "keep for ever". Atomic write under a lock |
+| When it runs | New `jarvis/interfaces/retention.py` (`RetentionService`): once at start and then daily on its own daemon thread (so a slow prune cannot hold up a request), and at once when an Administrator changes the setting. A failure is logged by exception type and never stops the backend |
+| RPC | `settings.get` and `settings.setRetentionDays` (Administrator only, in the backend, with the allowed values checked there as well as in the screen); added to the activity tracker's method map; two Tauri commands relay them. The existing `profile.setCloudMemory` is unchanged |
+| The screen (EBG-0110 UI half, S1) | Settings gains **Notes and Claude**: a switch per profile. An Administrator sees every profile and may change any that can ask Claude; a Child or Guest profile's row says it cannot ask Claude, so none of its notes are ever sent, and has no usable switch; an Adult sees only their own row, disabled, with "Only an Administrator can change this". And **Activity log**: three choices (30 days, 90 days, One year), a note of the last tidy-up, and no option to keep it for ever. A refused change is shown and the control returns to its true state. The profile list and the signed-in profile update from the reply, so the confirmation dialog's "notes will be sent" line follows at once |
+| Tests | Python **1224 passed and 4 skipped** (38 new in `jarvis/tests/test_audit_retention.py`: older and newer events, unreadable and naive times, rotated copies and an emptied one, an emptied live file, writes racing a prune lose nothing, the setting's default, persistence, rejected values and damaged files, the service surviving a failure and stopping when told, and the methods by role and for bad values). Playwright **137 passed and 5 skipped** on Chromium (7 new for sharing and retention). ruff clean, validator 0 errors, cargo check clean |
+| Live check | A copy of this PC's real audit log (the live log was untouched) pruned at 365, 90 and 30 days: 2 events, none removed, no error. The log is only two days old, so this shows the code runs on real data, **not** that old entries are removed; that is shown by the tests with controlled times |
+| EBR-0001 | EBG-0110 set to Completed, with the account of both halves |
+| **Disclosed, not done** | The macOS-specific behaviour of `os.replace` over an open file is not exercised (Mac visit 1); the packaged sidecar was not rebuilt for this sub-WP (no new dependency or build flag), so the retention thread has run only from source; the daily interval is a constant, not a setting |
+
+# 18. WP5b Commit Contents (expected)
+
+Changed: `sentinel/audit.py`, `jarvis/guardian/runtime.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/interfaces/activity_tracker.py`, `src-tauri/src/lib.rs`, `src/App.jsx`, `src/SettingsView.jsx`, `src/roles.js`, `src/shell.css`, `tests/e2e/app.spec.js`, `tests/e2e/accessibility.spec.js`, `aiems/governance/registers/EBR-0001_ENGINEERING_BACKLOG_REGISTER.md`, `aiems/governance/reviews/EIP-ESR0061-005_SETUP_SETTINGS_PRIVACY_AND_DATA_RIGHTS.md`, `aiems/governance/sessions/ESR-0061_ENGINEERING_SESSION_REPORT.md`, `aiems/governance/registers/REG-0001_CONTROLLED_ARTEFACT_REGISTER.md`. New: `jarvis/shared/settings.py`, `jarvis/interfaces/retention.py`, `jarvis/tests/test_audit_retention.py`.
+
+The WP5a post-commit record (Section 16) rides in this commit under rule A3.
+
+# 19. WP5b Implementation Review Record (15 October 2026)
+
+**Review** (Antigravity CLI, Gemini 3.8 Flash High, through `run_reviewer.py`, 15 October 2026, `sender: reviewer`, submitted 10:30:01Z): **Pass**, seven points all reported as Info: the prune serialises under the recorder's lock with record, rotate and `events()`, replaces atomically, keeps unreadable lines and naive times, and deletes a rotated copy only when this prune emptied it; the setting enforces 30, 90 and 365 with a 90 default, falls back safely and rejects booleans and numeric strings; the retention service runs on its own daemon thread and a failure never stops the server; every settings method and the sharing change require an Administrator in the backend and an Adult sees only their own disabled row; the screen state follows the backend; EBG-0110 is delivered across the backend and the screen; the tests are not vacuous.
+
+**How much that is worth.** The same smaller single reviewer, no finding on a high-risk package: a weak signal, as for WP3b and WP5a. What stands behind this record is the evidence in Section 17, notably the test in which a writer thread records continuously while the prune runs twenty times and every written event is still present afterwards. **EBG-0110's closure is my judgement** of both halves against the item's concern (retained notes reach a provider only on a confirmed escalation, by a profile that may ask Claude and whose sharing is on); the Programme Sponsor may reopen it if the item meant a Sentinel policy distinction in the strict sense (the register row still says that `SimpleApprovalPolicy` is the core default, tracked as EBG-0074).
+
 ---
 
 # 11. Version History
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.8 | 15 October 2026 | Claude Engineering Implementer | WP5b implementation review recorded (Pass, Info only; Section 19). |
+| 0.7 | 15 October 2026 | Claude Engineering Implementer | WP5b built (note sharing screen, audit retention); build record and commit contents (Sections 17 and 18). |
+| 0.6 | 15 October 2026 | Claude Engineering Implementer | WP5a post-commit record (8cb21e7): pre-check PASS, CI green apart from the five known microphone tests, post-commit review Pass (Section 16). |
 | 0.5 | 15 October 2026 | Claude Engineering Implementer | WP5a implementation review recorded (Pass, Info only; a weak signal, disclosed) - Section 15. |
 | 0.4 | 15 October 2026 | Claude Engineering Implementer | Design approval recorded (Section 12); WP5a built and live-checked (Sections 13 and 14). |
 | 0.3 | 15 October 2026 | Claude Engineering Implementer | WP5 design re-check recorded (Pass); status line updated. |

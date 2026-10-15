@@ -36,6 +36,8 @@ async function mockTauriIpc(
     // The Claude key store (WP5a): where a key comes from, whether the computer
     // has a secure store, and a save that fails.
     keyMock = {},
+    // Household settings and note sharing (WP5b).
+    settingsMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -59,6 +61,7 @@ async function mockTauriIpc(
       orbMock,
       ollamaFails,
       keyMock,
+      settingsMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -227,6 +230,42 @@ async function mockTauriIpc(
           if (cmd === "ollama_status" && ollamaFails) return Promise.reject(new Error("ollama status unavailable"));
           if (cmd === "ollama_status") return Promise.resolve(structuredClone(ollamaState.status));
           if (cmd === "plugin:app|version") return Promise.resolve("0.1.0");
+          // Household settings and per-profile note sharing (WP5b).
+          window.__settingsCalls = window.__settingsCalls || [];
+          const settingsState = (window.__settingsState = window.__settingsState || {
+            auditRetentionDays: settingsMock.days || 90,
+            lastPrune: null,
+          });
+          const settingsPayload = () => ({
+            auditRetentionDays: settingsState.auditRetentionDays,
+            allowedRetentionDays: [30, 90, 365],
+            lastPrune: settingsState.lastPrune,
+          });
+          const requireAdmin = () =>
+            !state.active || state.active.role !== "Administrator"
+              ? Promise.reject(new Error("PermissionError: Only an Administrator profile can change household settings."))
+              : null;
+          if (cmd === "get_settings") return requireAdmin() || Promise.resolve(settingsPayload());
+          if (cmd === "set_retention_days") {
+            window.__settingsCalls.push(["retention", args.days]);
+            if (settingsMock.failSet) return Promise.reject(new Error("ValueError: Could not save the setting."));
+            const denied = requireAdmin();
+            if (denied) return denied;
+            settingsState.auditRetentionDays = args.days;
+            settingsState.lastPrune = { removed: settingsMock.removed || 0, kept: 5, unreadableKept: 0 };
+            return Promise.resolve(settingsPayload());
+          }
+          if (cmd === "set_profile_cloud_memory") {
+            window.__settingsCalls.push(["share", args.profileId, args.enabled]);
+            if (settingsMock.failShare) {
+              return Promise.reject(new Error("ValueError: A Child profile cannot share memory with the cloud service."));
+            }
+            const target = state.profiles.find((profile) => profile.id === args.profileId);
+            if (!target) return Promise.reject(new Error("ValueError: no such profile"));
+            target.shareMemoryWithCloud = args.enabled;
+            if (state.active && state.active.id === target.id) state.active = { ...state.active, shareMemoryWithCloud: args.enabled };
+            return Promise.resolve({ ...target });
+          }
           // The Claude key (WP5a): the mock keeps a source flag, never the key
           // itself, and records what the app sent so a test can assert on it.
           window.__keyCalls = window.__keyCalls || [];
@@ -465,6 +504,7 @@ async function mockTauriIpc(
       orbMock,
       ollamaFails,
       keyMock,
+      settingsMock,
     },
   );
 }
@@ -2351,4 +2391,91 @@ test("a key that Claude does not accept is reported plainly", async ({ page }) =
   await page.getByRole("button", { name: "Send the test" }).click();
 
   await expect(page.locator(".claude-key").getByRole("alert")).toContainText("did not accept");
+});
+
+// ---- WP5b: note sharing with Claude (closes EBG-0110) and audit retention ----
+
+const BEA = { id: "r5", displayName: "Bea", role: "Adult", createdAt: "2026-10-01T00:00:00Z", shareMemoryWithCloud: false };
+const sharingRow = (page, name) => page.locator(".sharing-row", { hasText: name });
+
+test("an Administrator sees every profile and can switch note sharing on for one that may ask Claude", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA, SAM], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  const bea = sharingRow(page, "Bea").getByRole("switch");
+  await expect(bea).toBeEnabled();
+  await expect(bea).not.toBeChecked();
+  await bea.check();
+
+  await expect(bea).toBeChecked();
+  expect(await page.evaluate(() => window.__settingsCalls)).toEqual([["share", "r5", true]]);
+});
+
+test("a Child's row says it cannot ask Claude and has no switch to turn on", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  const row = sharingRow(page, "Sam");
+  await expect(row).toContainText("cannot ask Claude, so none of its notes are ever sent");
+  await expect(row.getByRole("switch")).toBeDisabled();
+  await expect(row.getByRole("switch")).not.toBeChecked();
+});
+
+test("an Adult sees only their own row, disabled, with the reason, and no retention control", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: BEA });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.locator(".sharing-row")).toHaveCount(1);
+  await expect(sharingRow(page, "Bea").getByRole("switch")).toBeDisabled();
+  await expect(page.locator(".memory-sharing")).toContainText("Only an Administrator can change this");
+  await expect(page.locator(".retention")).toHaveCount(0);
+});
+
+test("a refused change is reported and the switch is not left on", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, BEA], activeProfile: ADMIN, settingsMock: { failShare: true } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await sharingRow(page, "Bea").getByRole("switch").click();
+
+  await expect(page.locator(".memory-sharing").getByRole("alert")).toContainText("cannot share memory");
+  await expect(sharingRow(page, "Bea").getByRole("switch")).not.toBeChecked();
+});
+
+test("the retention setting shows 90 days by default and an Administrator can choose another", async ({ page }) => {
+  await mockTauriIpc(page, { settingsMock: { removed: 3 } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.getByRole("radio", { name: "90 days" })).toBeChecked();
+  await expect(page.getByRole("radio", { name: "One year" })).toBeVisible();
+  expect(await page.getByRole("radio").count()).toBe(3);
+  await page.getByRole("radio", { name: "30 days" }).check();
+
+  await expect(page.getByRole("radio", { name: "30 days" })).toBeChecked();
+  await expect(page.locator(".retention")).toContainText("3 old entries deleted");
+  expect(await page.evaluate(() => window.__settingsCalls)).toEqual([["retention", 30]]);
+});
+
+test("there is no way to keep the activity log for ever", async ({ page }) => {
+  await mockTauriIpc(page);
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await expect(page.locator(".retention")).not.toContainText(/for ever|forever|never delete|indefinite/i);
+  await expect(page.locator(".retention").getByRole("radio")).toHaveCount(3);
+});
+
+test("a retention change that fails is reported", async ({ page }) => {
+  await mockTauriIpc(page, { settingsMock: { failSet: true } });
+  await page.goto("/");
+  await openView(page, "Settings");
+
+  await page.getByRole("radio", { name: "One year" }).click();
+
+  await expect(page.locator(".retention").getByRole("alert")).toContainText("Could not save");
+  await expect(page.getByRole("radio", { name: "90 days" })).toBeChecked();
 });

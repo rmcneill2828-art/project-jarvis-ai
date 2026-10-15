@@ -43,5 +43,12 @@ export const canForgetMemory = (role) => role === ROLE.ADMINISTRATOR || role ===
 // enforces it; an Adult sees the privacy notice in Settings and nothing else).
 export const canChangeClaudeKey = (role) => role === ROLE.ADMINISTRATOR;
 
+// Whether a profile of this role could ever have its notes sent to Claude: the
+// backend allows it only for a profile that may ask Claude at all.
+export const profileMayShareMemory = (profileRole) => profileRole === ROLE.ADMINISTRATOR || profileRole === ROLE.ADULT;
+
+// Changing a profile's sharing, and the audit retention, are Administrator-only.
+export const canChangeHouseholdSettings = (role) => role === ROLE.ADMINISTRATOR;
+
 // Shared household notes (profileId null) can be deleted only by an Administrator.
 export const canForgetHouseholdNote = (role) => role === ROLE.ADMINISTRATOR;

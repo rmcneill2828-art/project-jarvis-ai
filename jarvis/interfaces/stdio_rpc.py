@@ -71,6 +71,7 @@ from jarvis.interfaces.ollama_setup import (
     read_hardware,
 )
 from jarvis.interfaces.orphan_watchdog import start_orphan_watchdog
+from jarvis.interfaces.retention import RetentionService
 from jarvis.interfaces.sentinel_agent import SentinelGatedAgentService
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.interfaces.voice import (
@@ -89,6 +90,7 @@ from jarvis.shared.errors import (
     public_type_name,
 )
 from jarvis.shared.secret_store import SecretStore
+from jarvis.shared.settings import ALLOWED_RETENTION_DAYS, SETTINGS_FILENAME, SettingsStore
 from jarvis.shared.spend_ledger import MICRO_DOLLARS_PER_DOLLAR, SpendLedger
 from sentinel.anthropic_provider import AnthropicProvider
 from sentinel.audit import JsonAuditRecorder
@@ -657,6 +659,9 @@ def build_default_runtime(
         escalation_provider=escalation_provider,
         ollama_setup=ollama_setup,
         claude_keys=key_manager,
+        retention=RetentionService(
+            audit_recorder, SettingsStore(_memory_db_path(environ).parent / SETTINGS_FILENAME)
+        ),
     )
     runtime.start()
     return runtime
@@ -744,6 +749,8 @@ class StdioRpcServer:
             "provider.setClaudeKey": self._provider_set_claude_key,
             "provider.removeClaudeKey": self._provider_remove_claude_key,
             "provider.testClaudeKey": self._provider_test_claude_key,
+            "settings.get": self._settings_get,
+            "settings.setRetentionDays": self._settings_set_retention_days,
             "profile.setCloudMemory": self._profile_set_cloud_memory,
             "ollama.status": self._ollama_status,
             "ollama.recommendation": self._ollama_recommendation,
@@ -950,6 +957,50 @@ class StdioRpcServer:
             "failure": None if response.is_model_reply else (response.failure or "failed"),
             "allowance": allowance_payload(provider.ledger.snapshot(), provider.usd_per_gbp),
         }
+
+    # -- household settings (ESR-0061 WP5b) -----------------------------------------
+
+    def _retention_service(self) -> RetentionService:
+        _require_role(
+            self._identity_service.active_profile(),
+            ADMINISTRATOR_ROLES,
+            "Only an Administrator profile can change household settings.",
+        )
+        retention = self._runtime.retention
+        if retention is None:
+            msg = "Household settings are not available in this build."
+            raise ClientFacingValueError(msg)
+        return retention
+
+    @staticmethod
+    def _settings_payload(retention: RetentionService) -> dict[str, Any]:
+        last = retention.last_result()
+        return {
+            "auditRetentionDays": retention.settings.retention_days(),
+            "allowedRetentionDays": list(ALLOWED_RETENTION_DAYS),
+            "lastPrune": (
+                {"removed": last.removed, "kept": last.kept, "unreadableKept": last.unreadable_kept}
+                if last is not None
+                else None
+            ),
+        }
+
+    def _settings_get(self, params: dict[str, Any]) -> dict[str, Any]:
+        return self._settings_payload(self._retention_service())
+
+    def _settings_set_retention_days(self, params: dict[str, Any]) -> dict[str, Any]:
+        retention = self._retention_service()
+        days = params.get("days")
+        if not isinstance(days, int) or isinstance(days, bool):
+            msg = "params.days must be a whole number."
+            raise ClientFacingTypeError(msg)
+        try:
+            retention.settings.set_retention_days(days)
+        except ValueError as exc:
+            raise ClientFacingValueError(str(exc)) from exc
+        # A shorter limit applies at once, not at the next daily run.
+        retention.run_once()
+        return self._settings_payload(retention)
 
     def _profile_set_cloud_memory(self, params: dict[str, Any]) -> dict[str, Any]:
         """Administrator only: whether a profile's retained memory notes may
@@ -1431,6 +1482,16 @@ class StdioRpcServer:
             name="jarvis-heartbeat",
         )
         heartbeat_thread.start()
+        # Audit retention (ESR-0061 WP5b): once now, then daily, on its own
+        # daemon thread so a slow prune can never hold up a request.
+        retention = self._runtime.retention
+        if retention is not None:
+            threading.Thread(
+                target=retention.run_forever,
+                args=(stop_heartbeat,),
+                daemon=True,
+                name="jarvis-retention",
+            ).start()
 
         # EBG-0139 (ESR-0059 WP5): a dedicated worker for SLOW_METHODS - see
         # that constant for why it is exactly one thread.
