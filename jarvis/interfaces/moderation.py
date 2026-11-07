@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import json
 import re
+import unicodedata
 import urllib.error
 import urllib.request
 from collections.abc import Callable
@@ -112,13 +113,32 @@ CHILD_SAFETY_LAYER = (
 CHILD_NAME_LINE = "Call them {name}, not Sir."
 CHILD_NO_NAME_LINE = "Do not call them Sir."
 CHILD_NAME_MAX_CHARS = 40
+# The first name only: the first word of the display name, and only if it is
+# letters (a hyphen or apostrophe may join letters, as in Anne-Marie or
+# O'Neill). One word cannot carry an instruction into the persona the way a
+# 40-character phrase could (WP6b post-commit review, Low L1; WP6d).
+_FIRST_NAME = re.compile(r"[^\W\d_]+(?:['’-][^\W\d_]+)*")
+
+
+def child_first_name(name: str | None) -> str | None:
+    """The child's first name as the persona may use it, or None."""
+
+    # Composed form first, so "Zoë" typed as "Zoe" plus a combining mark is
+    # still one word of letters (WP6d review, Low).
+    words = unicodedata.normalize("NFC", name or "").split()
+    if not words:
+        return None
+    first = words[0]
+    if len(first) > CHILD_NAME_MAX_CHARS or _FIRST_NAME.fullmatch(first) is None:
+        return None
+    return first
 
 
 def child_safety_layer(name: str | None) -> str:
-    """The S1 layer, naming the child when a name is given."""
+    """The S1 layer, naming the child by their first name when it is one."""
 
-    cleaned = " ".join((name or "").split())[:CHILD_NAME_MAX_CHARS]
-    line = CHILD_NAME_LINE.format(name=cleaned) if cleaned else CHILD_NO_NAME_LINE
+    first = child_first_name(name)
+    line = CHILD_NAME_LINE.format(name=first) if first else CHILD_NO_NAME_LINE
     return f"{CHILD_SAFETY_LAYER} {line}"
 
 

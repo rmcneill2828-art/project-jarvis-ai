@@ -44,9 +44,9 @@ const RECOMMENDATION = {
   models: [],
 };
 
-async function installMock(page, profile, { others = [], consent = null } = {}) {
+async function installMock(page, profile, { others = [], consent = null, disclosure = null, safety = null } = {}) {
   await page.addInitScript(
-    ({ profile, others, consent, platform, ollama, recommendation }) => {
+    ({ profile, others, consent, disclosure, safety, platform, ollama, recommendation }) => {
       window.__callbacks = {};
       window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => {} };
       window.__TAURI_INTERNALS__ = {
@@ -89,6 +89,9 @@ async function installMock(page, profile, { others = [], consent = null } = {}) 
             pin_status: { set: false, locked: false, lockedForSeconds: 0 },
             // Claude for a Child (WP6c): allowed by a grown-up, not yet acknowledged.
             consent_status: consent || { profileId: "c", recorded: false, acknowledged: false, allowed: false },
+            // The Child's first-use explanation and the safety summary (WP6d).
+            disclosure_status: disclosure || { required: false, acknowledged: true, acknowledgedAt: null },
+            safety_summary: safety || { profiles: [] },
           };
           if (cmd in answers) return Promise.resolve(structuredClone(answers[cmd]));
           if (cmd === "plugin:event|listen") return Promise.resolve(0);
@@ -96,7 +99,7 @@ async function installMock(page, profile, { others = [], consent = null } = {}) 
         },
       };
     },
-    { profile, others, consent, platform: PLATFORM, ollama: OLLAMA_STATUS, recommendation: RECOMMENDATION },
+    { profile, others, consent, disclosure, safety, platform: PLATFORM, ollama: OLLAMA_STATUS, recommendation: RECOMMENDATION },
   );
 }
 
@@ -271,4 +274,35 @@ test("axe: Settings with a child to allow has no serious or critical violation",
   await expect(page.getByRole("heading", { name: "Claude for a child" })).toBeVisible();
   await page.waitForTimeout(300);
   await expectNoSeriousViolations(page, "Settings, Claude for a child");
+});
+
+// --- ESR-0061 WP6d: the Child's first-use explanation and Children and safety ------------------------------------
+
+test("axe: the child's first-use explanation has no serious or critical violation", async ({ page }) => {
+  await installMock(page, PROFILES.Child, { disclosure: { required: true, acknowledged: false, acknowledgedAt: null } });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Before you start" })).toBeVisible();
+  await expectNoSeriousViolations(page, "Child first-use explanation");
+});
+
+test("axe: Children and safety with stopped turns has no serious or critical violation", async ({ page }) => {
+  await installMock(page, PROFILES.Administrator, {
+    others: [PROFILES.Child],
+    safety: {
+      profiles: [
+        {
+          profileId: PROFILES.Child.id,
+          displayName: PROFILES.Child.displayName,
+          role: "Child",
+          events: [{ day: "2026-11-07", category: "violent_crimes", direction: "input", count: 2 }],
+        },
+      ],
+    },
+  });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(page.getByRole("heading", { name: "Children and safety" })).toBeVisible();
+  await expect(page.getByRole("table")).toBeVisible();
+  await page.waitForTimeout(300);
+  await expectNoSeriousViolations(page, "Settings, Children and safety");
 });

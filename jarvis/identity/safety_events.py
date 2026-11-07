@@ -37,6 +37,21 @@ class SafetyEventStore:
             ).fetchall()
         return [{"category": row[0], "direction": row[1], "at": row[2]} for row in rows]
 
+    def daily_counts(self, profile_id: str | None) -> list[dict[str, object]]:
+        """How many turns were stopped, per day, category and side, newest day
+        first (the Administrator's view, WP6d 6.7). `None` means turns taken
+        with nobody signed in (moderated as a Guest). Counts only: there is no
+        text to show, because none is kept."""
+
+        where = "profile_id IS NULL" if profile_id is None else "profile_id = ?"
+        with self._store.transaction() as connection:
+            rows = connection.execute(
+                "SELECT substr(at, 1, 10) AS day, category, direction, COUNT(*) FROM safety_events "
+                f"WHERE {where} GROUP BY day, category, direction ORDER BY day DESC, category, direction",
+                () if profile_id is None else (profile_id,),
+            ).fetchall()
+        return [{"day": row[0], "category": row[1], "direction": row[2], "count": int(row[3])} for row in rows]
+
     def count(self) -> int:
         with self._store.transaction() as connection:
             return int(connection.execute("SELECT COUNT(*) FROM safety_events").fetchone()[0])

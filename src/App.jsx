@@ -24,6 +24,14 @@ import { PresenceOrb } from "./PresenceOrb.jsx";
 import { FirstRun } from "./FirstRun.jsx";
 import { PinDialog, PinNotices } from "./AdminPin.jsx";
 import { ChildAcknowledgementCard } from "./ChildConsent.jsx";
+import { ChildFirstUse } from "./ChildDisclosure.jsx";
+
+// Only a Child profile is ever held at the first-use explanation (WP6d, D1);
+// everyone else goes straight to the conversation.
+function ChildFirstUseGate({ active, profileId, children }) {
+  if (!active) return children;
+  return <ChildFirstUse profileId={profileId}>{children}</ChildFirstUse>;
+}
 import { SettingsView } from "./SettingsView.jsx";
 import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
 import { NavRail, TopBar, VIEWS } from "./Shell.jsx";
@@ -1269,6 +1277,7 @@ export function App() {
             </div>
             <div className="guardian-body">
               <div className="guardian-main">
+            <ChildFirstUseGate active={role === "Child" && Boolean(activeProfile)} profileId={activeProfile?.id}>
             {role === "Child" && activeProfile && (
               <ChildAcknowledgementCard
                 profileId={activeProfile.id}
@@ -1310,6 +1319,7 @@ export function App() {
                 {escalationError}
               </p>
             )}
+            </ChildFirstUseGate>
               </div>
               <AvailableColumn rows={availableRows} />
             </div>

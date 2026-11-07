@@ -522,6 +522,37 @@
   flex: 0 0 auto;
 }
 
+/* ---- WP6d: Children and safety ---- */
+.settings-card h4 {
+  margin: var(--space-3) 0 var(--space-1);
+  font-size: var(--text-sm, 13px);
+}
+
+.safety-events {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm, 13px);
+}
+
+.safety-events th,
+.safety-events td {
+  padding: 6px 8px 6px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.safety-events th {
+  color: var(--fg-muted);
+  font-weight: 600;
+}
+
+.safety-events td:last-child,
+.safety-events th:last-child {
+  text-align: right;
+  padding-right: 0;
+}
+
 .retention-choices {
   display: flex;
   flex-wrap: wrap;

@@ -108,6 +108,17 @@ PROFILE_MIGRATIONS: tuple[tuple[str, ...], ...] = (
         """,
         "CREATE INDEX IF NOT EXISTS child_consents_profile ON child_consents (profile_id)",
     ),
+    # Migration 6 (ESR-0061 WP6d, EIP-ESR0061-006 D1, 6.7): when a Child
+    # profile said it understood the first-use explanation. One row per
+    # profile, deleted with it.
+    (
+        """
+        CREATE TABLE IF NOT EXISTS child_disclosures (
+            profile_id TEXT PRIMARY KEY,
+            acknowledged_at TEXT NOT NULL
+        )
+        """,
+    ),
 )
 
 HOUSEHOLD_ROLES = ("Administrator", "Adult", "Child", "Guest")

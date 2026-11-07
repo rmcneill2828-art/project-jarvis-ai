@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-006 |
 | Title | Engineering Implementation Package: WP6 Household Safety, Administrator PIN, Child Moderation and Consent |
-| Version | 0.8 |
+| Version | 0.9 |
 | Status | Approved design - drafted 15 October 2026 at the Programme Sponsor's request ("please draft"); design review **Fail** (two High, four Medium, two Low, two Info), all addressed in v0.2, re-check Pass; **design approved as recommended 7 November 2026** (Section 10B); WP6a built and independently reviewed (Section 10C: Copilot Conditional Pass with its Medium fixed, Antigravity Pass); awaiting the Programme Sponsor's approval of the built result |
 | Session | ESR-0061 (the plan puts WP6 in Session C; started under this session as WP3 to WP5 were) |
 | Work Package | WP6 |
@@ -346,13 +346,91 @@ Each has a recommendation. If the Programme Sponsor approves the design "as reco
 
 **Approval:** the four texts above approved by the Programme Sponsor in direct chat; **WP6c approved through the Sponsor Approval Service** (decision 2026-11-07T18:23:50Z on 5ef3637); the DRAFT markers in `src/ChildConsent.jsx` and `src/ClaudeEscalation.jsx` replaced with the approval note.
 
-**Commit Contents (WP6c):** `jarvis/identity/child_consent.py` (new), `jarvis/identity/store.py`, `jarvis/identity/service.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/interfaces/activity_tracker.py`, `jarvis/interfaces/conversation.py`, `jarvis/interfaces/sentinel_conversation.py`, `jarvis/interfaces/escalation.py`, `jarvis/guardian/runtime.py`, `sentinel/policy.py`, `jarvis/tests/test_child_consent.py` (new), `jarvis/tests/test_schema_migrations.py`, `src-tauri/src/lib.rs`, `src/ChildConsent.jsx` (new), `src/App.jsx`, `src/SettingsView.jsx`, `src/ClaudeEscalation.jsx`, `src/shell.css`, `tests/e2e/app.spec.js`, `tests/e2e/accessibility.spec.js`; records: this EIP, `aiems/models/AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE.md` (L3 wording), ESR-0061, REG-0001.
+**Commit Contents (WP6c):** `jarvis/identity/child_consent.py` (new), `jarvis/identity/store.py`, `jarvis/identity/service.py`, `jarvis/identity/admin_pin.py` (the PIN reset revokes consents, L1; added to this list after the post-commit review), `jarvis/interfaces/stdio_rpc.py`, `jarvis/interfaces/activity_tracker.py`, `jarvis/interfaces/conversation.py`, `jarvis/interfaces/sentinel_conversation.py`, `jarvis/interfaces/escalation.py`, `jarvis/guardian/runtime.py`, `sentinel/policy.py`, `jarvis/tests/test_child_consent.py` (new), `jarvis/tests/test_schema_migrations.py`, `src-tauri/src/lib.rs`, `src/ChildConsent.jsx` (new), `src/App.jsx`, `src/SettingsView.jsx`, `src/ClaudeEscalation.jsx`, `src/shell.css`, `tests/e2e/app.spec.js`, `tests/e2e/accessibility.spec.js`; records: this EIP, `aiems/models/AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE.md` (L3 wording), ESR-0061, REG-0001.
+
+**WP6c commit and post-commit review (7 November 2026):** committed as **e5faa77** after `submit-response` (decision 18:23:50Z on 5ef3637, response 18:29:11Z). Copilot's review of the real diff: **Pass, no High or Medium.** The dispositions of M1 and L1-L3 are in the commit as recorded; the only changes after the reviews were the approval notes and the records; the four approved texts are in the code exactly as approved; the only route to Claude passes the full consent rule, re-checked at send, with Sentinel as the second check and no client parameter reaching the consent flag (58 tests re-run). Low L1: `jarvis/identity/admin_pin.py` was in the commit but missing from the Commit Contents list above; **corrected**. Info: decision 1, already named.
+
+---
+
+# 10F. WP6d Build Record (7 November 2026)
+
+**Built as designed** (D1, 6.7, 6.8, and the attribution carried from 10D item 5):
+
+* **The Child's first-use explanation (D1)** (`src/ChildDisclosure.jsx`, `jarvis/identity/child_disclosure.py`, migration 6 `child_disclosures`): the first time a Child profile is used, the page is shown **in place of the conversation** until the child presses **I understand**; recorded once per profile (the time only), deleted with the profile. RPC `disclosure.status` (the signed-in profile's own) and `disclosure.acknowledge` (a Child, for itself only). The permanent "You are talking to JARVIS, an AI" line stays. The explanation comes before the WP6c "You can ask Claude" card.
+* **Children and safety (6.7)** (`src/ChildrenSafety.jsx`, Settings, Administrator only): the safety checker's state (ready, not installed, or Ollama not running, from the existing `ollama.status`), the **"Built with Llama" attribution** with the Llama 3.2 Community License and Meta's Acceptable Use Policy (Llama 3.2 licence, section 1.b.i), the WP6c **Claude for a child** rows (moved inside this section), and **what the safety check stopped**: per Child and Guest profile, a count per day, kind and side (their message or JARVIS's reply). RPC `safety.summary`, Administrator only; **counts only, no text**, because none is kept (tested: the words sent never appear in the summary).
+* **Measurements (6.8)**: `scripts/measure_moderation.py`, through the product's own `ModerationService` and chat options, on the real models (figures below).
+
+**The carried Lows, disposed:**
+
+| From | Finding | Disposition |
+|---|---|---|
+| WP6a post-commit L1 | A household upgraded from before WP6a with no Administrator can never add one | **Fixed** with a command-line tool, `python -m jarvis.tools.add_administrator "Name"`, run on the computer like the PIN reset: it adds one Administrator **only when the household has none**, refuses otherwise and refuses with no household. Not in the app, where a child could use it. 4 tests |
+| WP6a post-commit L2 | The command-line PIN reset loses a pending count of wrong tries | **No change, with the reason**: the count protects the PIN that the reset deletes; a new PIN starts a new count; the reset already leaves the notice the next Administrator sign-in shows |
+| WP6b post-commit L1 | A 40-character display name could carry a short instruction into the local persona | **Fixed**: the persona uses the **first word** of the display name only, and only if it is letters (a hyphen or apostrophe may join letters, as in Anne-Marie or O'Neill), at most 40 characters; otherwise the nameless line. One word cannot carry an instruction. One existing test case changed on purpose (a 90-letter name was cut to 40; it now gets no name); 9 cases. AAM-0001 0.11 records it |
+
+**Build decisions, named for the reviewers and the Programme Sponsor:**
+
+1. **The explanation is a disclosure, not a gate in the backend.** It holds the conversation screen until acknowledged, but the backend still answers an unacknowledged Child (moderated as always): the protection is moderation, which never depends on it (tested). If the status cannot be read, the conversation is shown.
+2. **Guest profiles are in the safety summary** beside Child profiles: both are moderated (M6), and their events are already kept.
+3. **The Claude for a child rows moved into Children and safety** (WP6c decision 4), with their texts unchanged.
+4. **Links are shown as text** (`llama.com/llama3_2/license`), not opened from the app: the app has no external-link opener, and adding one is not needed for the attribution.
+
+**Wording, approved by the Programme Sponsor 7 November 2026** (direct chat "Approved", before WP6d was committed, including the review's two corrections and the Llama line):
+
+| Where | Approved text |
+|---|---|
+| Child's first-use explanation (D1) | Heading "Before you start". "JARVIS is an AI, not a person, and it can make mistakes." / "It runs on this computer. What you say to it stays here, unless a grown-up has allowed you to ask Claude and you choose to." / "JARVIS forgets your conversation when it is closed. It only keeps notes that a grown-up has agreed to save for you, and a grown-up can get a copy of them." / "A safety check looks at what you say and at what JARVIS answers. If it stops something, a grown-up can see that it happened, on which day, and what kind of thing it was, but not your words." / "The safety check is Llama Guard 3, made by Meta and built with Llama." / "If anything worries you, tell a grown-up." Button "I understand". |
+| Children and safety, explanation | "A Child's or Guest's conversation is checked by a safety checker on this computer: each message before JARVIS sees it, and each reply before it is shown. If it finds something unsafe, or cannot check, the conversation shows a fixed reply instead. Below is how often that happened, and what kind of thing it was. The words themselves are never kept, so they cannot be shown." |
+| Children and safety, limits | "The safety checker can miss things, and can stop things that were fine. It is a help, not a guarantee." |
+| Attribution | "The safety checker is Llama Guard 3 by Meta, built with Llama. It is used under the Llama 3.2 Community License (llama.com/llama3_2/license) and Meta's Acceptable Use Policy (llama.com/llama3_2/use-policy)." |
+| Kinds of thing stopped | Violence or violent crime; Other crime; Sex-related crime; Sexual exploitation of children; Saying untrue, harmful things about a real person; Specialist advice (medical, legal or financial); Private information about someone; Copying someone else's work; Weapons that can harm many people; Hate; Self-harm or suicide; Sexual content; Elections; Misuse of computer code; Unsafe (kind not given); Not checked: the safety checker was not available. Sides: "their message", "JARVIS's reply". Turns with nobody signed in: "Nobody signed in (treated as a Guest)" |
+
+**Checked against the code, claim by claim (D1):** the conversation is held in memory per profile and lost when JARVIS closes (`GuardianCognitiveCore`, no persistence); a Child's note is saved only with an Administrator's or Adult's approval (`memory.approve`), and an Administrator can export any profile's notes (WP5c); speech is local (Kokoro, Whisper), and agents act only on an explicit command; the only route off the computer for a child's words is Claude, under WP6c's rule; a safety event holds the category, side and time, never text (WP6b).
+
+**Measurements on the PC (Ryzen 5 5600, 32 GB, RTX 4060 8 GB; Ollama, the real `llama-guard3:1b` and `qwen3.5:4b`; 7 November 2026):**
+
+| Measure | Result | Target (M1) |
+|---|---|---|
+| Classifier, first check from cold (loads it) | 16.6 s (first run); 3.0 s once the file is in the disk cache | - |
+| Message check, 20 different sentences (every other line of the set) | **median 0.69 s, worst 0.80 s** | median at most 2 s: **met** |
+| Reply check, five different typical replies of about 1,300 characters | **median 2.68 s, worst 3.68 s** | median at most 2 s: **missed**; **accepted by the Programme Sponsor** (option A, below) |
+| Chat answer with the classifier loaded | first 4.2 s, then median 3.8 s (short answers) | - |
+| Memory | classifier 1.68 GiB, **none on the graphics card**; `qwen3.5:4b` 2.92 GiB, all on the card | the classifier never on the card: **met** |
+| Fixed sentence set (40, kept outside the public repository) | **unsafe stopped 20 of 20; safe allowed 19 of 20** (one safe question, asking for a fantasy book for a 15-year-old, was stopped) | recorded as a fact, not a promise |
+
+**The reply-check target is missed, so M1's decision falls to the Programme Sponsor:** a slower check, or a smaller chat answer limit. A Child's turn with a typical answer is therefore about 7 seconds on this PC (0.7 s message check, about 3.8 s answer, about 2.7 s reply check); the reply check grows with the answer's length (a reply is capped at roughly 4,000 characters, checked in pieces). **Recommendation: accept the slower check**; a shorter answer limit makes every answer to a child worse to save about a second, and the check must never be cut short (M1). **Programme Sponsor decision, 7 November 2026: option A, accept the slower check**; the answer limit is unchanged. The text is never truncated to meet the target. (The first figures recorded here, 0.10 s, were Ollama answering a repeated reply from its cache; Copilot's review caught it, and the script now checks a different reply each time.)
+
+The sentence set (40 sentences, SHA-256 `c0e733c5f50ea41735981f143e09ce9c01ad06b9a65bdffd6858cbeced47b9fd`) is kept at `i:\tmp\jarvis-wp6d\moderation_sentences.txt`, out of the repository because the repository is public and a list of sentences the checker misses would be a list of ways past it; the script reads it from a path given on the command line and prints line numbers only. **The Mac figures move to the next session** with the new Mac (10B). A first measuring run without the product's chat options (`think` off, `num_ctx` 4096) gave a 13 GiB chat model spilling off the card and two-minute answers; the figures above use the product's own options, which the script now imports.
+
+**Backlog:** EBG-0166 **Completed** at the WP6d commit (WP6a-WP6d; the Mac measurements carried as a named item to the next session, under EBG-0162). **EBG-0170 registered**: `run_reviewer.py` names its output file by the second, so two reviewers started in the same second share one file (10C); reviewers are run one after the other until it is fixed.
+
+**Implementation review: Copilot** (`sender: reviewer`, 19:01Z): **Conditional Pass, no High.** It confirmed every D1 claim holds for the Tauri app (only escalation sends words off the computer; the audit log and logs hold no text; no transcript is stored); `safety.summary` is Administrator only with counts and fixed labels; a Child acknowledges only for itself, deleted on erasure; build decision 1 acceptable because moderation does not depend on it; the Claude rows unchanged in behaviour; "no change" right for the PIN-reset count; the changed name test stricter, not weaker (115 tests run).
+
+| Finding | Summary | Disposition |
+|---|---|---|
+| Medium M1 | "Built with Llama" only in Administrator-only Settings, not where 10D item 5 put it (the disclosure page) | **Fixed**: the child's explanation now says "The safety check is Llama Guard 3, made by Meta and built with Llama."; the README gains a Third-Party Models section with the attribution, the licence and policy links and Meta's copyright notice. No copy of the licence ships because JARVIS does not distribute the model: Ollama downloads it from Meta's published build |
+| Note (D1) | "A grown-up can see those notes" holds only through an Administrator's export or at approval; the summary shows the day, not the time | **Fixed in the wording**: "a grown-up can get a copy of them"; "on which day" |
+| Low L1 | The legacy Tkinter GUI (`jarvis` console script) has no profiles or moderation and can export transcripts | **Named, no change**: it is the retired "First Light" shell, not in the packaged product and not reachable from the Tauri app; the D1 claims are about the product |
+| Low L2 | Turns with nobody signed in (moderated as a Guest) were never shown | **Fixed**: one more entry, "Nobody signed in (treated as a Guest)", when there are any; 1 test |
+| Low L3 | A name typed with a decomposed accent got no name | **Fixed**: normalised (NFC) first; 1 test case |
+| Low L4 | `add_administrator` checked and added in separate transactions | **Fixed**: both in one `BEGIN IMMEDIATE` transaction; 1 test |
+| Low L5 | The reply timings reused one text (Ollama's cache answered), and the latency sample was the first 20 lines | **Fixed and re-measured**: five different replies; every other line of the set. This changed a result: the reply check misses the target (above) |
+| Info | Keep the sentence set outside the repository; record its location and a hash | **Done** (above) |
+
+**Antigravity** (second reviewer, after Copilot's fixes; `sender: reviewer`, 19:11Z): **Pass, no High, Medium or Low.** It verified every D1 claim against the runtime (no leakage through logs, audit, voice, agents or RPC), `safety.summary` Administrator only with counts only, the Claude rows unchanged, the disclosure per profile and erased with it, build decision 1 sound, `add_administrator` safe in one transaction, the PIN-reset disposition, the first-word name rule, the attribution satisfying the Llama 3.2 licence section 1.b.i, the measurement script using the product's settings, no weakened assertion, and the reply-check recommendation "technically sound, safety-focused, and honestly documented".
+
+**Evidence (main tree, after the review fixes):** Python 1455 passed, 4 skipped (`jarvis/tests/test_child_disclosure.py` 13 new, the name rule 10 new cases); ruff clean; Linux in Docker (python:3.12-slim) 1459 passed, ruff, the version check and the validator clean; Playwright (chromium, both specs) 192 passed, 5 skipped (6 new app tests, 2 new axe checks); Rust 19 passed; measurements as above.
+
+**Approval:** the wording above approved by the Programme Sponsor in direct chat; the reply-check target decided (option A); **WP6d approved through the Sponsor Approval Service** (decision 2026-11-07T19:21:21Z on e5faa77); the DRAFT markers in `src/ChildDisclosure.jsx` and `src/ChildrenSafety.jsx` replaced with the approval note.
+
+**Commit Contents (WP6d):** `jarvis/identity/child_disclosure.py` (new), `jarvis/identity/store.py`, `jarvis/identity/service.py`, `jarvis/identity/safety_events.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/interfaces/activity_tracker.py`, `jarvis/interfaces/moderation.py`, `jarvis/tools/add_administrator.py` (new), `jarvis/tests/test_child_disclosure.py` (new), `jarvis/tests/test_moderation.py`, `jarvis/tests/test_schema_migrations.py`, `scripts/measure_moderation.py` (new), `README.md` (the Llama attribution), `src-tauri/src/lib.rs`, `src/ChildDisclosure.jsx` (new), `src/ChildrenSafety.jsx` (new), `src/ChildConsent.jsx`, `src/App.jsx`, `src/SettingsView.jsx`, `src/shell.css`, `tests/e2e/app.spec.js`, `tests/e2e/accessibility.spec.js`; records: this EIP, AAM-0001 0.11, ESR-0061, REG-0001, EBR-0001.
 ---
 
 # 11. Version History
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.9 | 7 November 2026 | Claude Engineering Implementer | WP6c committed (e5faa77), post-commit Pass (L1 list corrected). WP6d built (Section 10F): first-use explanation, Children and safety, the Llama attribution, the carried Lows disposed, PC measurements; Copilot Conditional Pass (Medium fixed), Antigravity Pass; reply-check target decided (option A); wording approved; approved via the Sponsor Approval Service (decision 2026-11-07T19:21:21Z on e5faa77). |
 | 0.8 | 7 November 2026 | Claude Engineering Implementer | WP6b post-commit review recorded (Pass; L2 decided: disclose the child's name). WP6c built (Section 10E): consent records, the rule, both checks, screens; reviews (Copilot Conditional Pass, M1 decided: disclose; Antigravity Pass); wording approved and WP6c approved through the Sponsor Approval Service (decision 2026-11-07T18:23:50Z on 5ef3637). |
 | 0.7 | 7 November 2026 | Claude Engineering Implementer | WP6b approved (14:23:03Z) and committed with the wording table approved; earlier the same day, Programme Sponsor decisions applied: a child is called by their first name (local model only, never sent to Claude), a neutral Guest wording set, classifier licence confirmed. "Nothing was sent anywhere" left open with a recommendation. |
 | 0.6 | 7 November 2026 | Claude Engineering Implementer | WP6a implementation reviews recorded (Copilot Conditional Pass, Medium M1 fixed; Antigravity Pass after a first run lost to a run_reviewer.py defect); add-profile screen built on the Programme Sponsor's decision; final evidence incl. Linux 1341 passed. Awaiting approval of the built result. |

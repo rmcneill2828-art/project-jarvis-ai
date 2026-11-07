@@ -13,6 +13,7 @@ from typing import Any
 
 from jarvis.identity.admin_pin import AdminPin
 from jarvis.identity.child_consent import ChildConsentStore
+from jarvis.identity.child_disclosure import ChildDisclosureStore
 from jarvis.identity.safety_events import SafetyEventStore
 from jarvis.identity.store import ProfileRecord, ProfileStore, utc_now
 from jarvis.shared.errors import ClientFacingPermissionError, ClientFacingValueError
@@ -54,6 +55,49 @@ class ProfileService:
         self.safety_events = SafetyEventStore(store)
         # A Child's consent to ask Claude, in the same database (WP6c, C2).
         self.child_consents = ChildConsentStore(store)
+        # A Child's acknowledgement of the first-use explanation (WP6d, D1).
+        self.child_disclosures = ChildDisclosureStore(store)
+
+    # -- The Child's first-use explanation and the safety summary (WP6d) -------
+
+    def disclosure_status(self, record: ProfileRecord | None) -> dict[str, Any]:
+        """Whether the signed-in profile must see the first-use explanation:
+        a Child, until it has said it understands."""
+
+        if record is None or record.role != "Child":
+            return {"required": False, "acknowledged": False, "acknowledgedAt": None}
+        at = self.child_disclosures.acknowledged_at(record.id)
+        return {"required": at is None, "acknowledged": at is not None, "acknowledgedAt": at}
+
+    def acknowledge_disclosure(self, child: ProfileRecord) -> dict[str, Any]:
+        """The child's own acknowledgement, for itself only."""
+
+        if child.role != "Child":
+            msg = "Only a Child profile acknowledges this, for itself."
+            raise ClientFacingPermissionError(msg)
+        self.child_disclosures.acknowledge(child.id)
+        return self.disclosure_status(child)
+
+    def safety_summary(self) -> list[dict[str, Any]]:
+        """For each Child and Guest profile (the two moderated roles): how many
+        turns the safety checker stopped, by day and category. Never text.
+        Turns taken with nobody signed in (moderated as a Guest) are one more
+        entry, with no profile id, when there are any (WP6d review, Low)."""
+
+        entries: list[dict[str, Any]] = [
+            {
+                "profileId": record.id,
+                "displayName": record.display_name,
+                "role": record.role,
+                "events": self.safety_events.daily_counts(record.id),
+            }
+            for record in self._store.list_all()
+            if record.role in ("Child", "Guest")
+        ]
+        unsigned = self.safety_events.daily_counts(None)
+        if unsigned:
+            entries.append({"profileId": None, "displayName": "Nobody signed in", "role": "Guest", "events": unsigned})
+        return entries
 
     # -- Claude for a Child (ESR-0061 WP6c, EIP-ESR0061-006 C1, C2, 6.6) --------
 

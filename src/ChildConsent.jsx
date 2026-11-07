@@ -38,7 +38,8 @@ function statusText(status, name) {
   return `On. Allowed by ${status.recordedBy ?? "an Administrator"}; ${name} has said they understand.`;
 }
 
-// Settings, Administrator only: one row per Child profile.
+// Settings, Administrator only: one row per Child profile. Part of Children
+// and safety (WP6d, ChildrenSafety.jsx).
 export function ChildClaudeSection({ profiles = [] }) {
   const children = profiles.filter((profile) => profile.role === "Child");
   const [statuses, setStatuses] = useState({});
@@ -75,11 +76,8 @@ export function ChildClaudeSection({ profiles = [] }) {
   };
 
   return (
-    <section
-      className="settings-card child-claude"
-      aria-labelledby="child-claude-heading"
-    >
-      <h2 id="child-claude-heading">Claude for a child</h2>
+    <section className="child-claude" aria-labelledby="child-claude-heading">
+      <h3 id="child-claude-heading">Claude for a child</h3>
       <p>{PARENT_EXPLANATION}</p>
       <ul
         className="sharing-list consent-list"

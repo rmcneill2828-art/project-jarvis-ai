@@ -1604,6 +1604,35 @@ async fn acknowledge_consent(
     call_backend_off_main_thread(state, app_handle, "consent.acknowledge", json!({})).await
 }
 
+/// The Child's first-use explanation (ESR-0061 WP6d, D1): whether the signed-in
+/// profile must see it.
+#[tauri::command]
+async fn disclosure_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "disclosure.status", json!({})).await
+}
+
+/// The child's own acknowledgement of the explanation, for itself only.
+#[tauri::command]
+async fn acknowledge_disclosure(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "disclosure.acknowledge", json!({})).await
+}
+
+/// Administrator only (WP6d, 6.7): stopped turns per Child and Guest profile,
+/// counted by day and category. Never text.
+#[tauri::command]
+async fn safety_summary(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "safety.summary", json!({})).await
+}
+
 #[tauri::command]
 async fn active_profile(
     state: State<'_, BackendState>,
@@ -1755,6 +1784,9 @@ pub fn run() {
             record_consent,
             revoke_consent,
             acknowledge_consent,
+            disclosure_status,
+            acknowledge_disclosure,
+            safety_summary,
             list_agents,
             invoke_agent,
             memory_status,

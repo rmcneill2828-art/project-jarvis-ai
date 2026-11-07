@@ -800,6 +800,9 @@ class StdioRpcServer:
             "consent.record": self._consent_record,
             "consent.revoke": self._consent_revoke,
             "consent.acknowledge": self._consent_acknowledge,
+            "disclosure.status": self._disclosure_status,
+            "disclosure.acknowledge": self._disclosure_acknowledge,
+            "safety.summary": self._safety_summary,
             "gia.status": self._gia_status,
             "gia.engineeringStatus": self._gia_engineering_status,
         }
@@ -1145,6 +1148,8 @@ class StdioRpcServer:
         self._identity_service.safety_events.delete_for_profile(profile_id)
         # So do its consent records (WP6c, C2).
         self._identity_service.child_consents.delete_for_profile(profile_id)
+        # And its acknowledgement of the first-use explanation (WP6d, D1).
+        self._identity_service.child_disclosures.delete_for_profile(profile_id)
         # An open offer to ask Claude holds the person's question in memory.
         self._escalation_offers.discard_profile(profile_id)
         self._identity_service.delete_profile(profile_id)
@@ -1191,6 +1196,28 @@ class StdioRpcServer:
             msg = "Only a Child profile acknowledges this, for itself."
             raise ClientFacingPermissionError(msg)
         return self._identity_service.acknowledge_child_consent(active)
+
+    def _disclosure_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        """The signed-in profile's own: whether the Child's first-use
+        explanation must be shown (WP6d, D1)."""
+
+        return self._identity_service.disclosure_status(self._identity_service.active_profile())
+
+    def _disclosure_acknowledge(self, params: dict[str, Any]) -> dict[str, Any]:
+        active = self._identity_service.active_profile()
+        if active is None:
+            msg = "Only a Child profile acknowledges this, for itself."
+            raise ClientFacingPermissionError(msg)
+        return self._identity_service.acknowledge_disclosure(active)
+
+    def _safety_summary(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Administrator only (WP6d, 6.7): per Child and Guest profile, how many
+        turns the safety checker stopped, by day and category. Never text."""
+
+        _require_role(
+            self._identity_service.active_profile(), ADMINISTRATOR_ROLES, "Only an Administrator profile can see this."
+        )
+        return {"profiles": self._identity_service.safety_summary()}
 
     def _profile_set_cloud_memory(self, params: dict[str, Any]) -> dict[str, Any]:
         """Administrator only: whether a profile's retained memory notes may

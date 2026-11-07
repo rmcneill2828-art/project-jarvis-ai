@@ -44,6 +44,11 @@ async function mockTauriIpc(
     pinMock = {},
     // Claude for a Child (WP6c): { [profileId]: { recorded, acknowledged, recordedBy } }.
     consentMock = {},
+    // The Child's first-use explanation (WP6d): ids of Child profiles that have
+    // not yet acknowledged it. Every other profile is treated as acknowledged.
+    disclosureMock = [],
+    // The safety summary (WP6d): { [profileId]: [{ day, category, direction, count }] }.
+    safetyMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -71,6 +76,8 @@ async function mockTauriIpc(
       dataMock,
       pinMock,
       consentMock,
+      disclosureMock,
+      safetyMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -449,6 +456,39 @@ async function mockTauriIpc(
             entry.acknowledged = true;
             return Promise.resolve(consentStatus(state.active.id));
           }
+          // The Child's first-use explanation (WP6d, D1), as the backend.
+          const disclosureState = (window.__disclosureState = window.__disclosureState || {
+            pending: [...disclosureMock],
+            calls: [],
+          });
+          if (cmd === "disclosure_status") {
+            const child = state.active && state.active.role === "Child";
+            const required = Boolean(child && disclosureState.pending.includes(state.active.id));
+            return Promise.resolve({ required, acknowledged: Boolean(child && !required), acknowledgedAt: null });
+          }
+          if (cmd === "acknowledge_disclosure") {
+            disclosureState.calls.push(state.active && state.active.id);
+            if (!state.active || state.active.role !== "Child") {
+              return Promise.reject(new Error("PermissionError: Only a Child profile acknowledges this, for itself."));
+            }
+            disclosureState.pending = disclosureState.pending.filter((id) => id !== state.active.id);
+            return Promise.resolve({ required: false, acknowledged: true, acknowledgedAt: "2026-11-07T19:00:00+00:00" });
+          }
+          if (cmd === "safety_summary") {
+            if (!state.active || state.active.role !== "Administrator") {
+              return Promise.reject(new Error("PermissionError: Only an Administrator profile can see this."));
+            }
+            return Promise.resolve({
+              profiles: state.profiles
+                .filter((profile) => ["Child", "Guest"].includes(profile.role))
+                .map((profile) => ({
+                  profileId: profile.id,
+                  displayName: profile.displayName,
+                  role: profile.role,
+                  events: safetyMock[profile.id] || [],
+                })),
+            });
+          }
           if (cmd === "escalate_message") {
             window.__escalateCalls.push(args.token);
             if (claude && claude.escalateError) return Promise.reject(new Error(claude.escalateError));
@@ -700,6 +740,8 @@ async function mockTauriIpc(
       dataMock,
       pinMock,
       consentMock,
+      disclosureMock,
+      safetyMock,
     },
   );
 }
@@ -3383,4 +3425,92 @@ test("a child with no consent sees no card and no Claude controls", async ({ pag
   await sendMessage(page, "research volcanoes");
   await expect(page.locator(".child-acknowledgement")).toHaveCount(0);
   await expect(page.getByRole("button", { name: /Claude/ })).toHaveCount(0);
+});
+// --- ESR-0061 WP6d: the Child's first-use explanation and Children and safety (EIP-ESR0061-006 D1, 6.7) -----------
+
+test("a child sees the first-use explanation instead of the conversation until they say they understand", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, disclosureMock: ["p2"] });
+  await page.goto("/");
+  const page1 = page.locator(".child-disclosure");
+  await expect(page1.getByRole("heading", { name: "Before you start" })).toBeVisible();
+  await expect(page1).toContainText("JARVIS is an AI, not a person, and it can make mistakes.");
+  await expect(page1).toContainText("but not your words");
+  await expect(page1).toContainText("built with Llama");
+  await expect(page.getByRole("textbox")).toHaveCount(0);
+
+  await page1.getByRole("button", { name: "I understand" }).click();
+  await expect(page1).toHaveCount(0);
+  await sendMessage(page, "hello");
+  expect(await page.evaluate(() => window.__disclosureState.calls)).toEqual(["p2"]);
+});
+
+test("an acknowledged child, and every other role, go straight to the conversation", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN, disclosureMock: ["p2"] });
+  await page.goto("/");
+  await expect(page.locator(".child-disclosure")).toHaveCount(0);
+  await sendMessage(page, "hello");
+});
+
+test("the explanation comes before the Claude card for a child who is allowed to ask Claude", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, SAM],
+    activeProfile: SAM,
+    pinMock: { set: true, pin: PIN },
+    claude: {},
+    consentMock: { p2: { recorded: true, recordedBy: "Robert" } },
+    disclosureMock: ["p2"],
+  });
+  await page.goto("/");
+  await expect(page.locator(".child-disclosure")).toBeVisible();
+  await expect(page.locator(".child-acknowledgement")).toHaveCount(0);
+  await page.locator(".child-disclosure").getByRole("button", { name: "I understand" }).click();
+  await expect(page.locator(".child-acknowledgement").getByRole("heading", { name: "You can ask Claude" })).toBeVisible();
+});
+
+test("Children and safety shows the checker, the Llama attribution and counts of stopped turns, never words", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, SAM, GUEST],
+    activeProfile: ADMIN,
+    pinMock: { set: true, pin: PIN },
+    ollama: { status: { classifier: { model: "llama-guard3:1b", installed: true } } },
+    safetyMock: {
+      p2: [
+        { day: "2026-11-07", category: "violent_crimes", direction: "input", count: 2 },
+        { day: "2026-11-06", category: "self_harm", direction: "output", count: 1 },
+      ],
+    },
+  });
+  await page.goto("/");
+  await openView(page, "Settings");
+  const section = page.locator(".children-safety");
+  await expect(section.getByRole("heading", { name: "Children and safety", level: 2 })).toBeVisible();
+  await expect(page.getByTestId("safety-checker-state")).toHaveText("The safety checker is installed and ready.");
+  await expect(page.getByTestId("llama-attribution")).toContainText("built with Llama");
+  await expect(page.getByTestId("llama-attribution")).toContainText("llama.com/llama3_2/license");
+  // The Claude rows (WP6c) now live inside this section.
+  await expect(section.getByRole("heading", { name: "Claude for a child" })).toBeVisible();
+
+  const sam = page.getByTestId("safety-p2");
+  await expect(sam.getByRole("row")).toHaveCount(3);
+  await expect(sam.getByRole("row").nth(1)).toContainText("2026-11-07");
+  await expect(sam.getByRole("row").nth(1)).toContainText("Violence or violent crime");
+  await expect(sam.getByRole("row").nth(1)).toContainText("their message");
+  await expect(sam.getByRole("row").nth(2)).toContainText("Self-harm or suicide");
+  await expect(sam.getByRole("row").nth(2)).toContainText("JARVIS's reply");
+  await expect(page.getByTestId("safety-r4")).toContainText("Nothing has been stopped.");
+});
+
+test("Children and safety says plainly when the safety checker is missing", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(page.getByTestId("safety-checker-state")).toContainText("not installed");
+  await expect(page.getByTestId("safety-checker-state")).toContainText("refused until it is");
+});
+
+test("an Adult does not see Children and safety", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, ALEX, SAM], activeProfile: ALEX });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(page.locator(".children-safety")).toHaveCount(0);
 });

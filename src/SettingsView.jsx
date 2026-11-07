@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 
 import { PinSection } from "./AdminPin.jsx";
-import { ChildClaudeSection } from "./ChildConsent.jsx";
+import { ChildrenAndSafety } from "./ChildrenSafety.jsx";
 
 import {
   canChangeClaudeKey,
@@ -664,7 +664,7 @@ export function SettingsView({
       {canChangeHouseholdSettings(role) && <PinSection onStatusChanged={() => setPinVersion((value) => value + 1)} />}
       {canChangeHouseholdSettings(role) && <AddProfileSection pinVersion={pinVersion} onProfileAdded={onProfileAdded} />}
       {canChangeClaudeKey(role) && <ClaudeKeySection />}
-      {canChangeHouseholdSettings(role) && <ChildClaudeSection profiles={profiles} />}
+      {canChangeHouseholdSettings(role) && <ChildrenAndSafety profiles={profiles} />}
       <MemorySharingSection
         role={role}
         profiles={profiles}

@@ -302,6 +302,15 @@ Engineering work is evidence-led: context is gathered before implementation, dec
 
 ---
 
+## Third-Party Models
+
+JARVIS does not ship any AI model; it downloads them through Ollama on the user's computer.
+
+- **Built with Llama.** The safety checker for Child and Guest profiles is Meta's Llama Guard 3 (`llama-guard3:1b`), used under the [Llama 3.2 Community License](https://www.llama.com/llama3_2/license/) and Meta's [Acceptable Use Policy](https://www.llama.com/llama3_2/use-policy/). Llama 3.2 is licensed under the Llama 3.2 Community License, Copyright © Meta Platforms, Inc. All Rights Reserved.
+- The default chat models are the Qwen3.5 family, under the Apache License 2.0.
+
+---
+
 # Current Roadmap
 
 ## Phase 0 - Foundation
