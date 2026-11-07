@@ -13,6 +13,7 @@ from jarvis.interfaces.conversation import ConversationResponse
 from jarvis.interfaces.stdio_rpc import StdioRpcServer, build_default_runtime
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
+from jarvis.tests.household import join_household
 from sentinel.core import SentinelTrustGateway
 
 
@@ -30,9 +31,7 @@ def _call(server, method, params):
 
 
 def _as(server, role):
-    created = _call(server, "profile.create", {"displayName": role, "role": role})["result"]
-    _call(server, "profile.select", {"profileId": created["id"]})
-    return created["id"]
+    return join_household(server, role, role)
 
 
 def _propose(server, content):

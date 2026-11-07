@@ -1,8 +1,10 @@
 // What each household role may see and do in the app (ESR-0061 WP4c,
 // EIP-ESR0061-004 item 6.5). The backend enforces these rules at the RPC
 // boundary (jarvis/interfaces/stdio_rpc.py); this file only mirrors them so
-// the screen never offers what would be refused. Profiles are not
-// authenticated, so none of this is a security boundary.
+// the screen never offers what would be refused. None of this is a security
+// boundary: the backend is. Since ESR-0061 WP6a, once an Administrator PIN is
+// set, switching up to an Administrator, or out of a Child or Guest profile to
+// an Adult one, needs the PIN, and only an Administrator adds profiles.
 
 export const ROLE = Object.freeze({
   ADMINISTRATOR: "Administrator",

@@ -19,6 +19,7 @@ from jarvis.interfaces.sentinel_conversation import (
     PROVIDER_UNAVAILABLE_RESPONSE,
 )
 from jarvis.interfaces.stdio_rpc import StdioRpcServer, build_default_runtime
+from jarvis.tests.household import join_household, switch_to
 
 KEY = "test-key-not-a-real-credential"
 OLLAMA_URL_PREFIX = "http://127.0.0.1:1"
@@ -115,12 +116,10 @@ class _Client:
         return response["result"]
 
     def as_profile(self, name: str, role: str) -> str:
-        created = self.result("profile.create", displayName=name, role=role)
-        self.result("profile.select", profileId=created["id"])
-        return created["id"]
+        return join_household(self.server, name, role)
 
     def select(self, profile_id: str) -> None:
-        self.result("profile.select", profileId=profile_id)
+        switch_to(self.server, profile_id)
 
     def ask(self, message: str) -> dict:
         return self.result("guardian.converse", message=message)

@@ -1594,7 +1594,8 @@ def test_profile_create_list_select_active_round_trip(tmp_path):
     select_response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 3, "method": "profile.select", "params": {"profileId": created["id"]}})
     )
-    assert select_response["result"] == created
+    # No PIN yet, so no notices for the Administrator signing in (ESR-0061 WP6a).
+    assert select_response["result"] == {**created, "pinNotices": []}
 
     active_response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 4, "method": "profile.active", "params": {}})

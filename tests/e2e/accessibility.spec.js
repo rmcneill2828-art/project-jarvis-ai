@@ -85,6 +85,8 @@ async function installMock(page, profile) {
             ollama_recommendation: recommendation,
             claude_key_status: { configured: false, source: "none", storeAvailable: true },
             get_settings: { auditRetentionDays: 90, allowedRetentionDays: [30, 90, 365], lastPrune: null },
+            // No PIN yet, so Settings shows the warning and the form to set one (WP6a).
+            pin_status: { set: false, locked: false, lockedForSeconds: 0 },
           };
           if (cmd in answers) return Promise.resolve(structuredClone(answers[cmd]));
           if (cmd === "plugin:event|listen") return Promise.resolve(0);
@@ -159,7 +161,12 @@ test("axe: the first-run steps have no serious or critical violation", async ({ 
           state.profile = { id: "n1", displayName: args.displayName, role: args.role, createdAt: "2026-10-15T00:00:00Z" };
           return Promise.resolve(state.profile);
         }
-        if (cmd === "select_profile") return Promise.resolve(state.profile);
+        if (cmd === "select_profile") return Promise.resolve({ ...state.profile, pinNotices: [] });
+        if (cmd === "pin_status") return Promise.resolve({ set: Boolean(state.pinSet), locked: false, lockedForSeconds: 0 });
+        if (cmd === "set_pin") {
+          state.pinSet = true;
+          return Promise.resolve({ set: true, locked: false, lockedForSeconds: 0 });
+        }
         if (cmd === "ollama_status") {
           return Promise.resolve({
             installed: false,
@@ -183,7 +190,15 @@ test("axe: the first-run steps have no serious or critical violation", async ({ 
 
   await page.getByPlaceholder("Your name").fill("Robert");
   await page.getByRole("button", { name: "Create profile" }).click();
-  await expect(page.getByRole("list", { name: "Setup steps" }).locator('[aria-current="step"]')).toContainText("AI on this computer");
+  const current = page.getByRole("list", { name: "Setup steps" }).locator('[aria-current="step"]');
+  await expect(current).toContainText("Administrator PIN");
+  await page.waitForTimeout(300);
+  await expectNoSeriousViolations(page, "first run, PIN step");
+
+  await page.getByLabel("New PIN (6 to 12 digits)").fill("246810");
+  await page.getByLabel("The same PIN again").fill("246810");
+  await page.getByRole("button", { name: "Set PIN and continue" }).click();
+  await expect(current).toContainText("AI on this computer");
   await page.waitForTimeout(300);
   await expectNoSeriousViolations(page, "first run, AI step");
 
@@ -194,4 +209,36 @@ test("axe: the first-run steps have no serious or critical violation", async ({ 
   await page.getByRole("button", { name: "Skip for now" }).click();
   await expect(page.getByRole("list", { name: "What is ready" })).toBeVisible();
   await expectNoSeriousViolations(page, "first run, ready step");
+});
+
+test("axe: the Administrator PIN prompt has no serious or critical violation", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => {} };
+    const child = { id: "c1", displayName: "Sam", role: "Child", createdAt: "2026-10-01T00:00:00Z" };
+    const admin = { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-10-01T00:00:00Z" };
+    window.__TAURI_INTERNALS__ = {
+      transformCallback: () => 0,
+      invoke: (cmd) => {
+        if (cmd === "list_profiles") return Promise.resolve({ profiles: [admin, child] });
+        if (cmd === "active_profile") return Promise.resolve({ profile: child });
+        if (cmd === "profile_switch_requirements") {
+          return Promise.resolve({ pinRequired: true, set: true, locked: false, lockedForSeconds: 0 });
+        }
+        if (cmd === "select_profile") return Promise.reject(new Error("PermissionError: That PIN is not right. Try again."));
+        if (cmd === "plugin:event|listen") return Promise.resolve(0);
+        return Promise.reject(new Error("not mocked: " + cmd));
+      },
+    };
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Switch Guardian profile" }).click();
+  await page.getByRole("list", { name: "Other profiles" }).getByRole("button", { name: /Robert/ }).click();
+  const dialog = page.getByRole("dialog", { name: "Administrator PIN needed" });
+  await expect(dialog).toBeVisible();
+  await expectNoSeriousViolations(page, "PIN prompt");
+
+  await dialog.getByLabel("PIN").fill("123456");
+  await dialog.getByRole("button", { name: "Switch" }).click();
+  await expect(dialog.getByRole("alert")).toBeVisible();
+  await expectNoSeriousViolations(page, "PIN prompt with a refusal");
 });

@@ -17,6 +17,7 @@ from jarvis.interfaces.conversation import ConversationResponse
 from jarvis.interfaces.stdio_rpc import StdioRpcServer, build_default_runtime
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
+from jarvis.tests.household import join_household, switch_to
 from sentinel.core import SentinelTrustGateway
 
 
@@ -122,9 +123,7 @@ def _call(server, method, params, request_id=1):
 
 
 def _profile(server, name, role):
-    created = _call(server, "profile.create", {"displayName": name, "role": role})["result"]
-    _call(server, "profile.select", {"profileId": created["id"]})
-    return created["id"]
+    return join_household(server, name, role)
 
 
 def _remember(server, content):
@@ -149,7 +148,7 @@ def test_profiles_see_only_their_own_memories_over_rpc(tmp_path):
     assert [r["content"] for r in ben_view] == ["Ben's favourite dinosaur."]
     assert _call(server, "memory.status", {})["result"]["recordCount"] == 1
 
-    _call(server, "profile.select", {"profileId": alice})
+    switch_to(server, alice)
     alice_view = _call(server, "memory.list", {})["result"]["records"]
     assert [r["content"] for r in alice_view] == ["Alice's surprise party plan."]
     assert alice_view[0]["profileId"] == alice

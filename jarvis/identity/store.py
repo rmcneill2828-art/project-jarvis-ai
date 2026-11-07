@@ -46,6 +46,35 @@ PROFILE_MIGRATIONS: tuple[tuple[str, ...], ...] = (
     # retained memory notes may accompany a question escalated to the cloud.
     # Off for every profile, existing ones included.
     ("ALTER TABLE profiles ADD COLUMN share_memory_with_cloud INTEGER NOT NULL DEFAULT 0",),
+    # Migration 3 (ESR-0061 WP6a, EIP-ESR0061-006 6.1): the household's one
+    # Administrator PIN, held only as a scrypt hash, with its persisted
+    # lock-out; and the notices the next Administrator sign-in shows (the PIN
+    # was set, the PIN was reset). Never the PIN itself.
+    (
+        """
+        CREATE TABLE IF NOT EXISTS admin_pin (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            salt BLOB NOT NULL,
+            pin_hash BLOB NOT NULL,
+            scrypt_n INTEGER NOT NULL,
+            scrypt_r INTEGER NOT NULL,
+            scrypt_p INTEGER NOT NULL,
+            set_at TEXT NOT NULL,
+            failed_count INTEGER NOT NULL DEFAULT 0,
+            locked_until TEXT,
+            wrong_since_signin INTEGER NOT NULL DEFAULT 0,
+            last_wrong_at TEXT
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS pin_notices (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kind TEXT NOT NULL,
+            at TEXT NOT NULL,
+            detail TEXT
+        )
+        """,
+    ),
 )
 
 HOUSEHOLD_ROLES = ("Administrator", "Adult", "Child", "Guest")
@@ -120,6 +149,27 @@ class ProfileStore:
         connection = self._connect()
         try:
             with connection:
+                yield connection
+        finally:
+            connection.close()
+
+    def transaction(self) -> contextlib.AbstractContextManager[sqlite3.Connection]:
+        """`_transaction` for the identity database's other tables (the
+        Administrator PIN), which share this file and its migrations."""
+
+        return self._transaction()
+
+    @contextlib.contextmanager
+    def write_transaction(self) -> Iterator[sqlite3.Connection]:
+        """A transaction that takes the write lock before its first read
+        (`BEGIN IMMEDIATE`), for read-check-update sequences that must not
+        interleave with another writer: the Administrator PIN's lock-out
+        (`jarvis/identity/admin_pin.py`)."""
+
+        connection = self._connect()
+        try:
+            with connection:
+                connection.execute("BEGIN IMMEDIATE")
                 yield connection
         finally:
             connection.close()

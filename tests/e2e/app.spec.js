@@ -40,6 +40,8 @@ async function mockTauriIpc(
     settingsMock = {},
     // A profile's own data: export and erasure (WP5c).
     dataMock = {},
+    // The Administrator PIN (WP6a): { set, pin, notices, lockSeconds }.
+    pinMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -65,6 +67,7 @@ async function mockTauriIpc(
       keyMock,
       settingsMock,
       dataMock,
+      pinMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -436,9 +439,82 @@ async function mockTauriIpc(
               },
             );
           }
-          if (cmd === "list_profiles") return Promise.resolve({ profiles: state.profiles });
+          if (cmd === "list_profiles") return Promise.resolve({ profiles: [...state.profiles] });
           if (cmd === "active_profile") return Promise.resolve({ profile: state.active });
+          // The Administrator PIN (WP6a), mirroring the backend's rules: the
+          // elevation rule, profile creation, the lock-out after 5 wrong tries,
+          // and the notices an Administrator signing in is shown once.
+          const pinState = (window.__pinState = window.__pinState || {
+            set: Boolean(pinMock.set),
+            pin: pinMock.pin || "246810",
+            failed: 0,
+            lockedUntil: 0,
+            lockSeconds: pinMock.lockSeconds || 30,
+            notices: pinMock.notices ? [...pinMock.notices] : [],
+            calls: [],
+          });
+          const lockedFor = () => Math.max(0, Math.ceil((pinState.lockedUntil - Date.now()) / 1000));
+          const pinStatus = () => ({ set: pinState.set, locked: lockedFor() > 0, lockedForSeconds: lockedFor() });
+          const lockedRoles = ["Child", "Guest"];
+          const needsPin = (from, to) => {
+            if (from && from.id === to.id) return false;
+            if (!from || lockedRoles.includes(from.role)) return !lockedRoles.includes(to.role);
+            return to.role === "Administrator" && from.role !== "Administrator";
+          };
+          const checkPin = (typed) => {
+            if (lockedFor() > 0) {
+              return Promise.reject(new Error(`PermissionError: Too many wrong tries. Try again in ${lockedFor()} seconds.`));
+            }
+            if (typed === pinState.pin) {
+              pinState.failed = 0;
+              return null;
+            }
+            pinState.failed += 1;
+            if (pinState.failed % 5 === 0) {
+              pinState.lockedUntil = Date.now() + pinState.lockSeconds * 1000;
+              return Promise.reject(
+                new Error(`PermissionError: That PIN is not right. Too many wrong tries: try again in ${pinState.lockSeconds} seconds.`),
+              );
+            }
+            return Promise.reject(new Error("PermissionError: That PIN is not right. Try again."));
+          };
+          if (cmd === "pin_status") return Promise.resolve(pinStatus());
+          if (cmd === "take_pin_notices") {
+            if (!state.active || state.active.role !== "Administrator") {
+              return Promise.reject(new Error("PermissionError: Only an Administrator can read the PIN notices."));
+            }
+            return Promise.resolve({ pinNotices: pinState.notices.splice(0) });
+          }
+          if (cmd === "set_pin") {
+            pinState.calls.push("set");
+            if (!state.active || state.active.role !== "Administrator") {
+              return Promise.reject(new Error("PermissionError: Only an Administrator can set the PIN."));
+            }
+            if (pinState.set) return Promise.reject(new Error("ValueError: A PIN is already set. Change it with the current PIN."));
+            if (!/^[0-9]{6,12}$/.test(args.pin || "")) return Promise.reject(new Error("ValueError: The PIN must be 6 to 12 digits."));
+            pinState.set = true;
+            pinState.pin = args.pin;
+            return Promise.resolve(pinStatus());
+          }
+          if (cmd === "change_pin") {
+            pinState.calls.push("change");
+            const refused = checkPin(args.currentPin);
+            if (refused) return refused;
+            pinState.pin = args.newPin;
+            return Promise.resolve(pinStatus());
+          }
+          if (cmd === "profile_switch_requirements") {
+            const target = state.profiles.find((profile) => profile.id === args.profileId);
+            if (!target) return Promise.reject(new Error("ValueError: No such profile."));
+            return Promise.resolve({ pinRequired: pinState.set && needsPin(state.active, target), ...pinStatus() });
+          }
           if (cmd === "create_profile") {
+            if (state.profiles.length > 0) {
+              if (!state.active || state.active.role !== "Administrator") {
+                return Promise.reject(new Error("PermissionError: Only an Administrator can add a profile."));
+              }
+              if (!pinState.set) return Promise.reject(new Error("PermissionError: Set an Administrator PIN before adding profiles."));
+            }
             const created = {
               id: `profile-${nextId++}`,
               displayName: args.displayName,
@@ -451,8 +527,17 @@ async function mockTauriIpc(
           if (cmd === "select_profile") {
             const selected = state.profiles.find((profile) => profile.id === args.profileId);
             if (!selected) return Promise.reject(new Error(`No such profile: ${args.profileId}`));
+            pinState.calls.push(args.pin === undefined ? "select" : "select-with-pin");
+            if (pinState.set && needsPin(state.active, selected)) {
+              if (args.pin === undefined) {
+                return Promise.reject(new Error("PermissionError: The Administrator PIN is needed to switch to this profile."));
+              }
+              const refused = checkPin(args.pin);
+              if (refused) return refused;
+            }
             state.active = selected;
-            return Promise.resolve(selected);
+            const pinNotices = selected.role === "Administrator" ? pinState.notices.splice(0) : [];
+            return Promise.resolve({ ...selected, pinNotices });
           }
           if (cmd === "list_agents") return Promise.resolve({ agents });
           if (cmd === "invoke_agent") {
@@ -545,6 +630,7 @@ async function mockTauriIpc(
       keyMock,
       settingsMock,
       dataMock,
+      pinMock,
     },
   );
 }
@@ -2688,7 +2774,12 @@ async function createFirstProfile(page, name = "Robert") {
   await page.getByRole("button", { name: "Create profile" }).click();
 }
 
-test("first run walks profile, local AI, Claude and a summary, and each later step can be skipped", async ({ page }) => {
+async function setPinInForm(page, pin) {
+  await page.getByLabel("New PIN (6 to 12 digits)").fill(pin);
+  await page.getByLabel("The same PIN again").fill(pin);
+}
+
+test("first run walks profile, PIN, local AI, Claude and a summary, and each later step can be skipped", async ({ page }) => {
   await mockTauriIpc(page, {
     profiles: [],
     activeProfile: null,
@@ -2698,6 +2789,10 @@ test("first run walks profile, local AI, Claude and a summary, and each later st
   await expect(stepNow(page)).toContainText("Your profile");
 
   await createFirstProfile(page);
+  await expect(stepNow(page)).toContainText("Administrator PIN");
+  await expect(page.locator(".firstrun-card")).toContainText("safety features are not enforced");
+  await page.getByRole("button", { name: "Do this later" }).click();
+
   await expect(stepNow(page)).toContainText("AI on this computer");
   await expect(page.locator(".local-ai-panel")).toBeVisible();
   await page.getByRole("button", { name: "Do this later" }).click();
@@ -2710,6 +2805,8 @@ test("first run walks profile, local AI, Claude and a summary, and each later st
   await expect(stepNow(page)).toContainText("Ready");
   const summary = page.getByRole("list", { name: "What is ready" });
   await expect(summary.locator('[data-item="profile"]')).toHaveAttribute("data-ready", "true");
+  await expect(summary.locator('[data-item="pin"]')).toHaveAttribute("data-ready", "false");
+  await expect(summary.locator('[data-item="pin"]')).toContainText("Safety features are not enforced");
   await expect(summary.locator('[data-item="model"]')).toHaveAttribute("data-ready", "false");
   await expect(summary.locator('[data-item="model"]')).toContainText("not ready yet");
   await expect(summary.locator('[data-item="claude"]')).toHaveAttribute("data-ready", "false");
@@ -2725,6 +2822,9 @@ test("the summary reports a ready model and a saved key from the real state", as
   await mockTauriIpc(page, { profiles: [], activeProfile: null });
   await page.goto("/");
   await createFirstProfile(page);
+  await setPinInForm(page, "246810");
+  await page.getByRole("button", { name: "Set PIN and continue" }).click();
+  await expect(stepNow(page)).toContainText("AI on this computer");
   await page.getByRole("button", { name: "Continue" }).click();
 
   await page.getByLabel("Claude API key").fill("sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789");
@@ -2736,12 +2836,15 @@ test("the summary reports a ready model and a saved key from the real state", as
   await expect(summary.locator('[data-item="model"]')).toHaveAttribute("data-ready", "true");
   await expect(summary.locator('[data-item="model"]')).toContainText("qwen3.5:4b");
   await expect(summary.locator('[data-item="claude"]')).toHaveAttribute("data-ready", "true");
+  await expect(summary.locator('[data-item="pin"]')).toHaveAttribute("data-ready", "true");
 });
 
 test("a status that cannot be read is said so in the summary and never shown as ready", async ({ page }) => {
   await mockTauriIpc(page, { profiles: [], activeProfile: null, ollamaFails: true });
   await page.goto("/");
   await createFirstProfile(page);
+  await page.getByRole("button", { name: "Do this later" }).click();
+  await expect(stepNow(page)).toContainText("AI on this computer");
   await page.getByRole("button", { name: "Do this later" }).click();
   await page.getByRole("button", { name: "Skip for now" }).click();
 
@@ -2766,8 +2869,10 @@ test("an Administrator can run setup again from Settings, starting after the pro
   await page.getByRole("button", { name: "Run setup again" }).click();
 
   await expect(page.getByRole("heading", { level: 1, name: "Set up JARVIS" })).toBeVisible();
-  await expect(stepNow(page)).toContainText("AI on this computer");
+  await expect(stepNow(page)).toContainText("Administrator PIN");
   await expect(page.getByPlaceholder("Your name")).toHaveCount(0);
+  await page.getByRole("button", { name: "Do this later" }).click();
+  await expect(stepNow(page)).toContainText("AI on this computer");
   await page.getByRole("button", { name: "Do this later" }).click();
   await page.getByRole("button", { name: "Skip for now" }).click();
   await page.getByRole("button", { name: "Start using JARVIS" }).click();
@@ -2791,6 +2896,7 @@ test("no step can trap a person: with no Ollama and no key every step still move
   });
   await page.goto("/");
   await createFirstProfile(page);
+  await page.getByRole("button", { name: "Do this later" }).click();
 
   await expect(page.locator(".local-ai-panel")).toContainText("not installed");
   await page.getByRole("button", { name: "Continue" }).click();
@@ -2799,4 +2905,295 @@ test("no step can trap a person: with no Ollama and no key every step still move
   await page.getByRole("button", { name: "Start using JARVIS" }).click();
 
   await expect(page.getByPlaceholder("Ask Guardian anything...")).toBeVisible();
+});
+
+// --- ESR-0061 WP6a: the Administrator PIN (EIP-ESR0061-006 P1-P5, 6.3) -----------------------------------------
+
+const PIN = "246810";
+
+async function switchTo(page, name) {
+  await page.getByRole("button", { name: "Switch Guardian profile" }).click();
+  await page.getByRole("list", { name: "Other profiles" }).getByRole("button", { name: new RegExp(name) }).click();
+}
+
+const pinDialog = (page) => page.getByRole("dialog", { name: "Administrator PIN needed" });
+
+test("a Child switching to the Administrator is asked for the PIN, and a wrong PIN changes nothing", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+
+  await switchTo(page, "Robert");
+  const dialog = pinDialog(page);
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText("Robert");
+  await expect(dialog.getByLabel("PIN")).toBeFocused();
+  await expect(dialog.getByLabel("PIN")).toHaveAttribute("type", "password");
+
+  await dialog.getByLabel("PIN").fill("111111");
+  await dialog.getByRole("button", { name: "Switch" }).click();
+  await expect(dialog.getByRole("alert")).toHaveText("That PIN is not right. Try again.");
+  await expect(dialog.getByLabel("PIN")).toHaveValue("");
+  await expect(page.locator(".profile-summary")).toContainText("Sam");
+
+  await dialog.getByLabel("PIN").fill(PIN);
+  await dialog.getByRole("button", { name: "Switch" }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.locator(".profile-summary")).toContainText("Robert");
+  expect(await page.evaluate(() => window.__pinState.calls)).toEqual(["select-with-pin", "select-with-pin"]);
+});
+
+test("the Switch button waits for a PIN of 6 to 12 digits, and letters cannot be typed", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await switchTo(page, "Robert");
+  const field = pinDialog(page).getByLabel("PIN");
+
+  await field.fill("12a45");
+  await expect(field).toHaveValue("1245");
+  await expect(pinDialog(page).getByRole("button", { name: "Switch" })).toBeDisabled();
+  await field.fill("123456");
+  await expect(pinDialog(page).getByRole("button", { name: "Switch" })).toBeEnabled();
+});
+
+test("five wrong PINs lock the prompt and say how long to wait", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, pinMock: { set: true, pin: PIN, lockSeconds: 30 } });
+  await page.goto("/");
+  await switchTo(page, "Robert");
+  const dialog = pinDialog(page);
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    await dialog.getByLabel("PIN").fill("000000");
+    await dialog.getByRole("button", { name: "Switch" }).click();
+    await expect(dialog.getByLabel("PIN")).toBeEnabled();
+  }
+  await expect(dialog.getByTestId("pin-locked")).toContainText(/Too many wrong tries\. Try again in (30|29|28) seconds\./);
+  await dialog.getByLabel("PIN").fill(PIN);
+  await expect(dialog.getByRole("button", { name: "Switch" })).toBeDisabled();
+});
+
+test("a lock-out already running is shown as soon as the prompt opens", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, pinMock: { set: true, pin: PIN } });
+  await page.addInitScript(() => {
+    window.__pinState = undefined;
+  });
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.__pinState.lockedUntil = Date.now() + 45000;
+  });
+  await switchTo(page, "Robert");
+  await expect(pinDialog(page).getByTestId("pin-locked")).toContainText(/Try again in 4\d seconds/);
+});
+
+test("Escape cancels the PIN prompt and focus returns to the profile button", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await switchTo(page, "Robert");
+  await expect(pinDialog(page)).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(pinDialog(page)).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toBeFocused();
+  await expect(page.locator(".profile-summary")).toContainText("Sam");
+});
+
+test("Tab stays inside the PIN prompt", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await switchTo(page, "Robert");
+  await pinDialog(page).getByLabel("PIN").fill(PIN);
+  for (let press = 0; press < 5; press += 1) {
+    await page.keyboard.press("Tab");
+    expect(await page.evaluate(() => Boolean(document.activeElement.closest(".pin-dialog")))).toBe(true);
+  }
+});
+
+test("switches the rule leaves free never ask for the PIN", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, ALEX, SAM, GUEST], activeProfile: ADMIN, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+
+  await switchTo(page, "Sam");
+  await expect(page.locator(".profile-summary")).toContainText("Sam");
+  await switchTo(page, "Visitor");
+  await expect(page.locator(".profile-summary")).toContainText("Visitor");
+  await switchTo(page, "Sam");
+  await expect(page.locator(".profile-summary")).toContainText("Sam");
+  await expect(pinDialog(page)).toHaveCount(0);
+
+  await switchTo(page, "Alex");
+  await expect(pinDialog(page)).toBeVisible();
+});
+
+test("with no PIN set, switching stays open as before", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM });
+  await page.goto("/");
+  await switchTo(page, "Robert");
+  await expect(page.locator(".profile-summary")).toContainText("Robert");
+  await expect(pinDialog(page)).toHaveCount(0);
+});
+
+test("an Administrator signing in is shown the PIN notices once", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, SAM],
+    activeProfile: SAM,
+    pinMock: {
+      set: true,
+      pin: PIN,
+      notices: [
+        { kind: "pinSet", at: "2026-11-07T10:00:00+00:00", byProfile: "Robert" },
+        { kind: "wrongTries", count: 3, at: "2026-11-07T11:00:00+00:00" },
+      ],
+    },
+  });
+  await page.goto("/");
+  await switchTo(page, "Robert");
+  await pinDialog(page).getByLabel("PIN").fill(PIN);
+  await pinDialog(page).getByRole("button", { name: "Switch" }).click();
+
+  const notices = page.getByRole("region", { name: "Since an Administrator last signed in" });
+  await expect(notices).toContainText("An Administrator PIN was set on");
+  await expect(notices).toContainText("from the Robert profile");
+  await expect(notices).toContainText("3 wrong PIN tries since an Administrator last signed in");
+  await notices.getByRole("button", { name: "Dismiss" }).click();
+  await expect(notices).toHaveCount(0);
+});
+
+test("a fresh start with profiles but none signed in offers the profiles, and the Administrator needs the PIN", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: null, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  const chooser = page.getByRole("region", { name: "Choose a Guardian profile" });
+  await expect(chooser).toBeVisible();
+  await expect(page.getByPlaceholder("Your name")).toHaveCount(0);
+
+  await chooser.getByRole("button", { name: /Robert/ }).click();
+  await expect(pinDialog(page)).toBeVisible();
+  await page.keyboard.press("Escape");
+  await chooser.getByRole("button", { name: /Sam/ }).click();
+  await expect(page.locator(".profile-summary")).toContainText("Sam");
+});
+
+test("Settings: with no PIN the Administrator is warned and can set one", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+  const section = page.locator(".admin-pin");
+  await expect(section.getByTestId("no-pin-warning")).toContainText("safety features are not enforced");
+
+  await setPinInForm(page, PIN);
+  await page.getByLabel("The same PIN again").fill("246811");
+  await expect(section).toContainText("The two PINs are not the same.");
+  await expect(section.getByRole("button", { name: "Set PIN" })).toBeDisabled();
+  await page.getByLabel("The same PIN again").fill(PIN);
+  await section.getByRole("button", { name: "Set PIN" }).click();
+
+  await expect(section).toContainText("A PIN is set.");
+  await expect(section.getByTestId("no-pin-warning")).toHaveCount(0);
+  await expect(section.getByLabel("Current PIN")).toBeVisible();
+  expect(await page.evaluate(() => window.__pinState.pin)).toBe(PIN);
+});
+
+test("Settings: changing the PIN needs the current one", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN], activeProfile: ADMIN, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await openView(page, "Settings");
+  const section = page.locator(".admin-pin");
+
+  await section.getByLabel("Current PIN").fill("999999");
+  await section.getByLabel("New PIN (6 to 12 digits)").fill("13579135");
+  await section.getByLabel("The same new PIN again").fill("13579135");
+  await section.getByRole("button", { name: "Change PIN" }).click();
+  await expect(section.getByRole("alert")).toHaveText("That PIN is not right. Try again.");
+  await expect(section.getByLabel("Current PIN")).toHaveValue("");
+
+  await section.getByLabel("Current PIN").fill(PIN);
+  await section.getByLabel("New PIN (6 to 12 digits)").fill("13579135");
+  await section.getByLabel("The same new PIN again").fill("13579135");
+  await section.getByRole("button", { name: "Change PIN" }).click();
+  await expect(section).toContainText("The PIN was changed.");
+  expect(await page.evaluate(() => window.__pinState.pin)).toBe("13579135");
+});
+
+test("only an Administrator sees the PIN in Settings", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX], activeProfile: ALEX });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(page.locator(".settings-view")).toBeVisible();
+  await expect(page.locator(".admin-pin")).toHaveCount(0);
+});
+test("an Administrator already signed in when the app opens is shown the PIN notices", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN],
+    activeProfile: ADMIN,
+    pinMock: { set: false, notices: [{ kind: "pinReset", at: "2026-11-07T10:00:00+00:00" }] },
+  });
+  await page.goto("/");
+  const notices = page.getByRole("region", { name: "Since an Administrator last signed in" });
+  await expect(notices).toContainText("The Administrator PIN was reset from the command line on");
+  expect(await page.evaluate(() => window.__pinState.notices.length)).toBe(0);
+});
+
+test("a Child signed in when the app opens is never shown the PIN notices", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, SAM],
+    activeProfile: SAM,
+    pinMock: { set: true, pin: PIN, notices: [{ kind: "pinReset", at: "2026-11-07T10:00:00+00:00" }] },
+  });
+  await page.goto("/");
+  await expect(page.locator(".profile-summary")).toContainText("Sam");
+  await expect(page.getByRole("region", { name: "Since an Administrator last signed in" })).toHaveCount(0);
+  expect(await page.evaluate(() => window.__pinState.notices.length)).toBe(1);
+});
+// --- Adding a profile (WP6a, Programme Sponsor decision 7 November 2026) ------------------------------------------
+
+test("an Administrator with a PIN adds a Child and stays signed in, and the Child then needs the PIN to come back", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN], activeProfile: ADMIN, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await openView(page, "Settings");
+  const section = page.locator(".add-profile");
+
+  await section.getByLabel("Name").fill("Sam");
+  await section.getByLabel("Household role").selectOption("Child");
+  await section.getByRole("button", { name: "Add profile" }).click();
+  await expect(section.getByRole("status")).toContainText("Sam (Child) was added. You are still signed in as yourself.");
+  await expect(section.getByLabel("Name")).toHaveValue("");
+  await expect(page.locator(".profile-summary")).toContainText("Robert");
+
+  await switchTo(page, "Sam");
+  await expect(page.locator(".profile-summary")).toContainText("Sam");
+  await switchTo(page, "Robert");
+  await expect(pinDialog(page)).toBeVisible();
+});
+
+test("with no PIN the add-profile form is not offered, and appears once a PIN is set", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN], activeProfile: ADMIN });
+  await page.goto("/");
+  await openView(page, "Settings");
+  const section = page.locator(".add-profile");
+  await expect(section.getByTestId("add-profile-needs-pin")).toBeVisible();
+  await expect(section.getByRole("button", { name: "Add profile" })).toHaveCount(0);
+
+  await setPinInForm(page, PIN);
+  await page.locator(".admin-pin").getByRole("button", { name: "Set PIN" }).click();
+  await expect(section.getByRole("button", { name: "Add profile" })).toBeVisible();
+  await expect(section.getByTestId("add-profile-needs-pin")).toHaveCount(0);
+});
+
+test("an Adult does not see Add a profile", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX], activeProfile: ALEX, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(page.locator(".settings-view")).toBeVisible();
+  await expect(page.locator(".add-profile")).toHaveCount(0);
+});
+
+test("a refused add is reported and nothing is added", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN], activeProfile: ADMIN, pinMock: { set: true, pin: PIN } });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await page.evaluate(() => {
+    window.__pinState.set = false;
+  });
+  const section = page.locator(".add-profile");
+  await section.getByLabel("Name").fill("Sam");
+  await section.getByRole("button", { name: "Add profile" }).click();
+  await expect(section.getByRole("alert")).toHaveText("Set an Administrator PIN before adding profiles.");
+  await page.getByRole("button", { name: "Switch Guardian profile" }).click();
+  await expect(page.getByRole("list", { name: "Other profiles" })).toHaveCount(0);
 });

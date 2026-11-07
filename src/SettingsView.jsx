@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 
+import { PinSection } from "./AdminPin.jsx";
+
 import {
   canChangeClaudeKey,
   canChangeHouseholdSettings,
@@ -17,7 +19,8 @@ import {
 
 // An error from the backend arrives as "ValueError: message"; the person sees
 // the message.
-const readable = (error) => String(error).replace(/^[A-Za-z]*Error:\s*/, "");
+// Strips every leading "XError: " (an Error wrapping a backend reply adds a second one).
+const readable = (error) => String(error).replace(/^(?:[A-Za-z]*Error:\s*)+/, "");
 
 export function PrivacyNotice() {
   return (
@@ -540,16 +543,121 @@ function YourDataSection({ role, profiles, activeProfile, onProfileErased }) {
   );
 }
 
+const HOUSEHOLD_ROLES = ["Administrator", "Adult", "Child", "Guest"];
+
+// Adding a profile (ESR-0061 WP6a, the Programme Sponsor's decision of
+// 7 November 2026 to include it). Administrator only, and only once a PIN is
+// set: the backend refuses otherwise, so the form is not offered until then.
+// The Administrator stays signed in after adding someone.
+function AddProfileSection({ pinVersion, onProfileAdded }) {
+  const [pinSet, setPinSet] = useState(null);
+  const [name, setName] = useState("");
+  const [newRole, setNewRole] = useState("Child");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [problem, setProblem] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    invoke("pin_status")
+      .then((status) => {
+        if (!cancelled) setPinSet(Boolean(status.set));
+      })
+      .catch((error) => {
+        if (!cancelled) setProblem(readable(error));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [pinVersion]);
+
+  const submit = () => {
+    const trimmed = name.trim();
+    setBusy(true);
+    setProblem(null);
+    setMessage(null);
+    invoke("create_profile", { displayName: trimmed, role: newRole })
+      .then((created) => {
+        setName("");
+        setMessage(`${created.displayName} (${created.role}) was added. You are still signed in as yourself.`);
+        onProfileAdded?.(created);
+      })
+      .catch((error) => setProblem(readable(error)))
+      .finally(() => setBusy(false));
+  };
+
+  return (
+    <section className="settings-card add-profile" aria-labelledby="add-profile-heading">
+      <h2 id="add-profile-heading">Add a profile</h2>
+      <p>
+        Give each person in the household their own profile. A Child or Guest profile is locked: leaving it for an
+        Adult or Administrator profile needs the PIN.
+      </p>
+      {pinSet === false && (
+        <p className="local-ai-note" data-testid="add-profile-needs-pin">
+          Set an Administrator PIN above before adding profiles. Without one, anyone could switch to any profile.
+        </p>
+      )}
+      {pinSet && (
+        <form
+          className="claude-key-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (name.trim() && !busy) submit();
+          }}
+        >
+          <label htmlFor="add-profile-name">Name</label>
+          <input
+            id="add-profile-name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            autoComplete="off"
+            disabled={busy}
+          />
+          <label htmlFor="add-profile-role">Household role</label>
+          <select id="add-profile-role" value={newRole} onChange={(event) => setNewRole(event.target.value)} disabled={busy}>
+            {HOUSEHOLD_ROLES.map((entry) => (
+              <option key={entry} value={entry}>
+                {entry}
+              </option>
+            ))}
+          </select>
+          <div className="settings-actions">
+            <button type="submit" disabled={busy || name.trim().length === 0}>
+              Add profile
+            </button>
+          </div>
+        </form>
+      )}
+      {message && (
+        <p role="status" className="panel-status-message">
+          {message}
+        </p>
+      )}
+      {problem && (
+        <p className="conversation-error" role="alert">
+          {problem}
+        </p>
+      )}
+    </section>
+  );
+}
+
 export function SettingsView({
   role,
   profiles = [],
   activeProfile = null,
   onProfileUpdated,
   onProfileErased,
+  onProfileAdded,
   onRunSetup,
 }) {
+  // Bumped when the PIN is set, so the add-profile form appears at once.
+  const [pinVersion, setPinVersion] = useState(0);
   return (
     <div className="settings-view">
+      {canChangeHouseholdSettings(role) && <PinSection onStatusChanged={() => setPinVersion((value) => value + 1)} />}
+      {canChangeHouseholdSettings(role) && <AddProfileSection pinVersion={pinVersion} onProfileAdded={onProfileAdded} />}
       {canChangeClaudeKey(role) && <ClaudeKeySection />}
       <MemorySharingSection
         role={role}

@@ -13,6 +13,7 @@ from jarvis.interfaces.stdio_rpc import StdioRpcServer, build_default_runtime
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
 from jarvis.shared.secret_store import SecretStore
+from jarvis.tests.household import ensure_administrator_with_pin, switch_to
 from sentinel.core import SentinelTrustGateway
 
 KEY = "sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789_-abcdEFGH"
@@ -67,11 +68,20 @@ class World:
         return response["error"]["message"]
 
     def make(self, name, role):
-        self.ids[name] = self.result("profile.create", displayName=name, role=role)["id"]
+        """Add a profile the way the app requires (an Administrator with a PIN
+        adds it); leaves that Administrator signed in."""
+
+        if role == "Administrator" and not any(
+            profile["role"] == "Administrator" for profile in self.result("profile.list")["profiles"]
+        ):
+            self.ids[name] = ensure_administrator_with_pin(self.server, name)
+        else:
+            ensure_administrator_with_pin(self.server)
+            self.ids[name] = self.result("profile.create", displayName=name, role=role)["id"]
         return self.ids[name]
 
     def use(self, name):
-        self.result("profile.select", profileId=self.ids[name])
+        switch_to(self.server, self.ids[name])
 
     def save_note(self, text):
         """Save a note for the signed-in profile (an Administrator or Adult)."""

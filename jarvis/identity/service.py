@@ -9,21 +9,54 @@ pattern in `jarvis/memory/store.py`.
 from __future__ import annotations
 
 import uuid
+from typing import Any
 
+from jarvis.identity.admin_pin import AdminPin
 from jarvis.identity.store import ProfileRecord, ProfileStore, utc_now
-from jarvis.shared.errors import ClientFacingValueError
+from jarvis.shared.errors import ClientFacingPermissionError, ClientFacingValueError
 
 CLOUD_MEMORY_SHARING_ROLES = frozenset({"Administrator", "Adult"})
 
+# A Child or Guest session is a locked session (EIP-ESR0061-006 P2): leaving it
+# for any profile that is not itself Child or Guest needs the PIN.
+LOCKED_SESSION_ROLES = frozenset({"Child", "Guest"})
+
+
+def pin_required_to_switch(active: ProfileRecord | None, target: ProfileRecord) -> bool:
+    """The elevation rule (EIP-ESR0061-006 P2, 6.2), the one place it lives.
+
+    From a Child or Guest profile, or from no profile at all (a fresh start is
+    the lowest privilege), switching to an Adult or Administrator profile
+    needs the PIN; between Child and Guest it is free. From an Adult profile,
+    only switching to an Administrator needs it. An Administrator switches
+    freely. Staying on the same profile is not a switch.
+    """
+
+    if active is not None and active.id == target.id:
+        return False
+    if active is None or active.role in LOCKED_SESSION_ROLES:
+        return target.role not in LOCKED_SESSION_ROLES
+    if target.role == "Administrator":
+        return active.role != "Administrator"
+    return False
+
 
 class ProfileService:
-    """Create, list and select local Guardian profiles."""
+    """Create, list and select local Guardian profiles, under the household
+    PIN's rules (ESR-0061 WP6a)."""
 
-    def __init__(self, store: ProfileStore) -> None:
+    def __init__(self, store: ProfileStore, pin: AdminPin | None = None) -> None:
         self._store = store
+        self.pin = pin or AdminPin(store)
 
     def create_profile(self, display_name: str, role: str) -> ProfileRecord:
         """Create and persist a new profile.
+
+        The household's first profile can be created by anyone and must be an
+        Administrator (otherwise nobody could ever manage the household). Every
+        later profile needs an Administrator signed in **and** a PIN set
+        (EIP-ESR0061-006 P2, P3): with no PIN, anyone can become the
+        Administrator, so a new profile then protects nothing.
 
         `role` validation happens in `ProfileRecord.__post_init__` - an
         invalid role raises `ValueError` before the store is ever touched.
@@ -35,15 +68,45 @@ class ProfileService:
             role=role,
             created_at=utc_now(),
         )
+        if not self._store.list_all():
+            if role != "Administrator":
+                msg = "The first profile must be an Administrator, who manages JARVIS for the household."
+                raise ClientFacingValueError(msg)
+            return self._store.create(record)
+        active = self._store.get_active()
+        if active is None or active.role != "Administrator":
+            msg = "Only an Administrator can add a profile."
+            raise ClientFacingPermissionError(msg)
+        if not self.pin.is_set():
+            msg = "Set an Administrator PIN before adding profiles."
+            raise ClientFacingPermissionError(msg)
         return self._store.create(record)
+
+    def switch_requirements(self, profile_id: str) -> dict[str, Any]:
+        """What switching to `profile_id` would need, for the screen to ask for
+        the PIN only when it is needed. The backend still decides in
+        `select_profile`."""
+
+        target = self._store.get(profile_id)
+        if target is None:
+            msg = "No such profile."
+            raise ClientFacingValueError(msg)
+        status = self.pin.status()
+        needed = pin_required_to_switch(self._store.get_active(), target) and status.is_set
+        return {"pinRequired": needed, **status.to_payload()}
 
     def list_profiles(self) -> tuple[ProfileRecord, ...]:
         """Return every stored profile."""
 
         return self._store.list_all()
 
-    def select_profile(self, profile_id: str) -> ProfileRecord:
+    def select_profile(self, profile_id: str, pin: object = None) -> ProfileRecord:
         """Mark `profile_id` as the active profile and return it.
+
+        When the elevation rule (`pin_required_to_switch`) applies and a PIN is
+        set, `pin` must be the household PIN: a wrong one is refused and counted
+        towards the lock-out. With no PIN set, switching stays open as before
+        (EIP-ESR0061-006 P3), and the screen says safety is not enforced.
 
         Raises `ValueError` if no profile with that id exists.
         """
@@ -52,8 +115,43 @@ class ProfileService:
         if record is None:
             msg = f"Cannot select profile {profile_id!r}: no such profile exists."
             raise ClientFacingValueError(msg)
+        if pin_required_to_switch(self._store.get_active(), record) and self.pin.is_set():
+            if pin is None:
+                msg = "The Administrator PIN is needed to switch to this profile."
+                raise ClientFacingPermissionError(msg)
+            self.pin.verify(pin)
         self._store.set_active(profile_id)
         return record
+
+    def set_first_pin(self, pin: object) -> None:
+        """Set the household's first PIN: an Administrator must be signed in.
+        Recorded, with the profile's name, for the next Administrator sign-in."""
+
+        active = self._require_administrator("Only an Administrator can set the PIN.")
+        self.pin.set_first(pin, active.display_name)
+
+    def change_pin(self, current_pin: object, new_pin: object) -> None:
+        """Change the PIN: an Administrator signed in, and the current PIN."""
+
+        self._require_administrator("Only an Administrator can change the PIN.")
+        if not self.pin.is_set():
+            msg = "No PIN is set yet."
+            raise ClientFacingValueError(msg)
+        self.pin.change(current_pin, new_pin)
+
+    def signin_notices(self, record: ProfileRecord) -> list[dict[str, Any]]:
+        """For an Administrator just signed in, the PIN notices waiting for
+        them (then cleared); nothing for anyone else."""
+
+        if record.role != "Administrator":
+            return []
+        return self.pin.take_notices()
+
+    def _require_administrator(self, message: str) -> ProfileRecord:
+        active = self._store.get_active()
+        if active is None or active.role != "Administrator":
+            raise ClientFacingPermissionError(message)
+        return active
 
     def set_cloud_memory_sharing(self, profile_id: str, enabled: bool) -> ProfileRecord:
         """Allow or stop a profile's retained memory notes accompanying an

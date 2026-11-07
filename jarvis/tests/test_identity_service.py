@@ -5,10 +5,31 @@ import pytest
 from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
 
+PIN = "135790"
+
 
 @pytest.fixture
 def service(tmp_path):
     return ProfileService(ProfileStore(tmp_path / "profiles.db"))
+
+
+def _administrator_with_pin(service):
+    """The household's first profile, signed in, with a PIN set: since WP6a
+    only this can add further profiles."""
+
+    admin = service.create_profile("Robert", "Administrator")
+    service.select_profile(admin.id)
+    service.set_first_pin(PIN)
+    return admin
+
+
+def _member(service, name, role):
+    _administrator_with_pin(service)
+    return service.create_profile(name, role)
+
+
+def _stored(service, profile_id):
+    return next(profile for profile in service.list_profiles() if profile.id == profile_id)
 
 
 def test_create_profile_persists_and_returns_record(service):
@@ -50,13 +71,13 @@ def test_select_profile_sets_and_returns_active(service):
 
 
 def test_select_profile_switches_active_selection(service):
-    first = service.create_profile("Robert", "Administrator")
+    first = _administrator_with_pin(service)
     second = service.create_profile("Alex", "Child")
 
-    service.select_profile(first.id)
     service.select_profile(second.id)
-
     assert service.active_profile().id == second.id
+    service.select_profile(first.id, PIN)
+    assert service.active_profile().id == first.id
 
 
 def test_select_profile_rejects_unknown_id(service):
@@ -75,21 +96,21 @@ def test_a_new_profile_shares_no_memory_with_the_cloud(service):
 
 @pytest.mark.parametrize("role", ["Administrator", "Adult"])
 def test_memory_sharing_can_be_turned_on_and_off_for_an_administrator_or_adult(service, role):
-    record = service.create_profile("Pat", role)
+    record = service.create_profile("Pat", role) if role == "Administrator" else _member(service, "Pat", role)
 
     assert service.set_cloud_memory_sharing(record.id, True).share_memory_with_cloud is True
-    assert service.list_profiles()[0].share_memory_with_cloud is True
+    assert _stored(service, record.id).share_memory_with_cloud is True
     assert service.set_cloud_memory_sharing(record.id, False).share_memory_with_cloud is False
 
 
 @pytest.mark.parametrize("role", ["Child", "Guest"])
 def test_memory_sharing_cannot_be_turned_on_for_a_child_or_guest(service, role):
-    record = service.create_profile("Sam", role)
+    record = _member(service, "Sam", role)
 
     with pytest.raises(ValueError, match="cannot share memory"):
         service.set_cloud_memory_sharing(record.id, True)
 
-    assert service.list_profiles()[0].share_memory_with_cloud is False
+    assert _stored(service, record.id).share_memory_with_cloud is False
     assert service.set_cloud_memory_sharing(record.id, False).share_memory_with_cloud is False
 
 

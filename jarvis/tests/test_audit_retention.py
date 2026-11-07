@@ -12,6 +12,7 @@ from jarvis.identity.store import ProfileStore
 from jarvis.interfaces.retention import RetentionService
 from jarvis.interfaces.stdio_rpc import StdioRpcServer, build_default_runtime
 from jarvis.shared.settings import DEFAULT_RETENTION_DAYS, SettingsStore
+from jarvis.tests.household import join_household
 from sentinel.audit import AuditEvent, JsonAuditRecorder
 
 NOW = datetime(2026, 10, 15, 12, 0, tzinfo=UTC)
@@ -232,8 +233,7 @@ class _Client:
         return response["error"]["message"]
 
     def sign_in(self, name, role):
-        created = self.result("profile.create", displayName=name, role=role)
-        self.result("profile.select", profileId=created["id"])
+        join_household(self.server, name, role)
 
 
 def _client(tmp_path, role="Administrator"):

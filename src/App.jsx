@@ -22,6 +22,7 @@ import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalat
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
 import { PresenceOrb } from "./PresenceOrb.jsx";
 import { FirstRun } from "./FirstRun.jsx";
+import { PinDialog, PinNotices } from "./AdminPin.jsx";
 import { SettingsView } from "./SettingsView.jsx";
 import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
 import { NavRail, TopBar, VIEWS } from "./Shell.jsx";
@@ -141,10 +142,44 @@ function StateDot({ state }) {
 // be created with (EIP-ESR0046-001).
 const HOUSEHOLD_ROLES = ["Administrator", "Adult", "Child", "Guest"];
 
-function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, onSelectProfile, inTopBar = false }) {
+function ProfileCard({
+  profiles,
+  activeProfile,
+  profileError,
+  onCreateProfile,
+  onSelectProfile,
+  inTopBar = false,
+  summaryRef,
+}) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState("");
   const [newRole, setNewRole] = useState(HOUSEHOLD_ROLES[0]);
+
+  // Profiles exist but none is signed in (a fresh start): choose one. Choosing
+  // an Adult or Administrator asks for the PIN when one is set (ESR-0061 WP6a);
+  // only an Administrator can add profiles, so no create form is offered here.
+  if (!activeProfile && (profiles ?? []).length > 0) {
+    return (
+      <section className="profile-card profile-card-create" aria-label="Choose a Guardian profile">
+        <p>Who is using JARVIS?</p>
+        <ul className="profile-picker profile-chooser" aria-label="Profiles">
+          {profiles.map((profile) => (
+            <li key={profile.id}>
+              <button type="button" onClick={() => onSelectProfile(profile.id)}>
+                <strong>{profile.displayName}</strong>
+                <span>{profile.role}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        {profileError && (
+          <p className="profile-error" role="alert">
+            {profileError}
+          </p>
+        )}
+      </section>
+    );
+  }
 
   if (!activeProfile) {
     return (
@@ -199,6 +234,7 @@ function ProfileCard({ profiles, activeProfile, profileError, onCreateProfile, o
   return (
     <section className={`profile-card${inTopBar ? " in-topbar" : ""}`} aria-label="Signed in profile">
       <button
+        ref={summaryRef}
         type="button"
         className="profile-summary"
         onClick={() => setPickerOpen((open) => !open)}
@@ -483,6 +519,11 @@ export function App() {
   const [setupSession, setSetupSession] = useState(null);
   const [activeProfile, setActiveProfile] = useState(null);
   const [profileError, setProfileError] = useState(null);
+  // The Administrator PIN (ESR-0061 WP6a): a switch waiting for the PIN, and the
+  // notices an Administrator is shown once on signing in.
+  const [pinPrompt, setPinPrompt] = useState(null);
+  const [pinNotices, setPinNotices] = useState(null);
+  const profileSummaryRef = useRef(null);
 
   // Agent Framework (EIP-ESR0050-001): agents null = connecting, [] = empty,
   // otherwise the real registered agent name list from guardian.agent.list.
@@ -568,7 +609,18 @@ export function App() {
 
     invoke("active_profile")
       .then((result) => {
-        if (!cancelled) setActiveProfile(result.profile ?? null);
+        if (cancelled) return;
+        const profile = result.profile ?? null;
+        setActiveProfile(profile);
+        // An Administrator already signed in at startup never switches in, so
+        // the PIN notices are fetched here instead (WP6a review M1).
+        if (profile?.role === "Administrator") {
+          invoke("take_pin_notices")
+            .then((taken) => {
+              if (!cancelled && taken.pinNotices?.length) setPinNotices(taken.pinNotices);
+            })
+            .catch(() => {});
+        }
       })
       .catch((error) => {
         if (!cancelled) setProfileError(String(error));
@@ -1012,16 +1064,28 @@ export function App() {
     }
   };
 
+  // A switch's reply carries the PIN notices for an Administrator signing in
+  // (ESR-0061 WP6a); they are shown once, never kept on the profile.
+  const applySelected = (selected) => {
+    const { pinNotices: notices = [], ...profile } = selected;
+    setActiveProfile(profile);
+    setPinNotices(notices.length > 0 ? notices : null);
+  };
+
   const handleCreateProfile = (displayName, role) => {
     setProfileError(null);
+    // Only the household's first profile is created and signed in here. Every
+    // later one is added by an Administrator, who stays signed in (switching into
+    // a Child profile would lock them out of their own until the PIN).
+    const isFirst = profiles.length === 0;
 
     invoke("create_profile", { displayName, role })
       .then((created) => {
         setProfiles((current) => [...current, created]);
-        return invoke("select_profile", { profileId: created.id });
+        return isFirst ? invoke("select_profile", { profileId: created.id }) : null;
       })
       .then((selected) => {
-        setActiveProfile(selected);
+        if (selected) applySelected(selected);
       })
       .catch((error) => {
         setProfileError(`Could not create profile: ${error}`);
@@ -1030,10 +1094,17 @@ export function App() {
 
   const handleSelectProfile = (profileId) => {
     setProfileError(null);
+    const target = profiles.find((profile) => profile.id === profileId);
 
-    invoke("select_profile", { profileId })
-      .then((selected) => {
-        setActiveProfile(selected);
+    // The backend says whether this switch needs the PIN; it still checks again
+    // when the switch is made.
+    invoke("profile_switch_requirements", { profileId })
+      .then((needs) => {
+        if (needs.pinRequired && target) {
+          setPinPrompt({ target, lockedForSeconds: needs.lockedForSeconds ?? 0 });
+          return null;
+        }
+        return invoke("select_profile", { profileId }).then(applySelected);
       })
       .catch((error) => {
         setProfileError(`Could not switch profile: ${error}`);
@@ -1126,6 +1197,7 @@ export function App() {
           activeProfile ? (
             <ProfileCard
               inTopBar
+              summaryRef={profileSummaryRef}
               profiles={profiles}
               activeProfile={activeProfile}
               profileError={profileError}
@@ -1148,6 +1220,12 @@ export function App() {
               onCreateProfile={handleCreateProfile}
               onSelectProfile={handleSelectProfile}
             />
+          </div>
+        )}
+
+        {pinNotices && !setupOpen && (
+          <div className="profile-banner">
+            <PinNotices notices={pinNotices} onDismiss={() => setPinNotices(null)} />
           </div>
         )}
 
@@ -1296,6 +1374,7 @@ export function App() {
                 onRunSetup={() => setSetupSession("again")}
                 profiles={profiles}
                 activeProfile={activeProfile}
+                onProfileAdded={(created) => setProfiles((current) => [...current, created])}
                 onProfileErased={(erasedId) => {
                   setProfiles((current) => current.filter((entry) => entry.id !== erasedId));
                 }}
@@ -1335,6 +1414,18 @@ export function App() {
           returnFocusRef={dialogOpenerRef}
           onConfirm={handleConfirmEscalation}
           onCancel={() => setConfirmOpen(false)}
+        />
+      )}
+      {pinPrompt && (
+        <PinDialog
+          target={pinPrompt.target}
+          lockedForSeconds={pinPrompt.lockedForSeconds}
+          returnFocusRef={profileSummaryRef}
+          onSignedIn={(selected) => {
+            setPinPrompt(null);
+            applySelected(selected);
+          }}
+          onCancel={() => setPinPrompt(null)}
         />
       )}
     </div>

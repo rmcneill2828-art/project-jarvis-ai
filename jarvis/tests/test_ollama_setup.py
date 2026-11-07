@@ -32,6 +32,7 @@ from jarvis.interfaces.ollama_setup import (
     recommend,
 )
 from jarvis.interfaces.stdio_rpc import StdioRpcServer
+from jarvis.tests.household import join_household
 from sentinel.ollama_provider import OllamaProvider
 from sentinel.provider_config import ProviderConfiguration
 from sentinel.providers import ProviderRequest
@@ -697,8 +698,7 @@ def _call(server, method, **params):
 
 
 def _as(server, role):
-    created = _call(server, "profile.create", displayName="P", role=role)["result"]
-    _call(server, "profile.select", profileId=created["id"])
+    join_household(server, "P", role)
 
 
 def test_status_and_recommendation_are_readable_by_any_profile_including_a_child(tmp_path):

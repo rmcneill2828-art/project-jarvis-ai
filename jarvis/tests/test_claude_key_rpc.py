@@ -24,6 +24,7 @@ from jarvis.interfaces.claude_key import (
 )
 from jarvis.interfaces.stdio_rpc import StdioRpcServer, build_default_runtime
 from jarvis.shared.secret_store import SERVICE_NAME, SecretStore, SecretStoreError
+from jarvis.tests.household import join_household
 
 REAL_LOOKING_KEY = "sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789_-abcdEFGH"
 OTHER_KEY = "sk-ant-api03-ZzYyXxWwVvUuTtSsRrQqPpOoNnMmLlKkJjIiHh9876543210"
@@ -146,9 +147,7 @@ class _Client:
         return response["error"]["message"]
 
     def sign_in(self, name, role):
-        created = self.result("profile.create", displayName=name, role=role)
-        self.result("profile.select", profileId=created["id"])
-        return created["id"]
+        return join_household(self.server, name, role)
 
 
 def _admin(tmp_path, store=None, environ_extra=None):

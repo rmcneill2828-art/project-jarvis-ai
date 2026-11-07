@@ -3,12 +3,14 @@ import { invoke } from "@tauri-apps/api/core";
 
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
 import { ClaudeKeySection, PrivacyNotice } from "./SettingsView.jsx";
+import { NO_PIN_WARNING, PinExplanation, SetPinForm } from "./AdminPin.jsx";
 
 // First-run setup (ESR-0061 WP5d, EIP-ESR0061-005 6.7, decision F1).
 //
-// Four steps: (1) the first profile, which is an Administrator and says so;
-// (2) the local AI model, using the existing panel; (3) Claude, optional, with
-// the privacy notice; (4) what is ready and what is still missing.
+// Five steps: (1) the first profile, which is an Administrator and says so;
+// (2) the Administrator PIN (ESR-0061 WP6a, EIP-ESR0061-006 P3); (3) the local
+// AI model, using the existing panel; (4) Claude, optional, with the privacy
+// notice; (5) what is ready and what is still missing.
 //
 // Nothing here is remembered as "done". Which steps are finished is read from
 // the real state (a profile exists, a model is installed, a key is set), so the
@@ -17,7 +19,7 @@ import { ClaudeKeySection, PrivacyNotice } from "./SettingsView.jsx";
 // to finish: a person can never be trapped by a missing Ollama or a failed
 // download.
 
-const STEPS = ["Your profile", "AI on this computer", "Claude", "Ready"];
+const STEPS = ["Your profile", "Administrator PIN", "AI on this computer", "Claude", "Ready"];
 
 function StepList({ current }) {
   return (
@@ -79,14 +81,71 @@ function ProfileStep({ onCreateProfile, profileError }) {
   );
 }
 
+// The Administrator PIN (ESR-0061 WP6a). Can be put off, with the plain warning
+// that safety is not enforced until it is set (EIP-ESR0061-006 P3); a PIN that
+// is already set is only reported, and changed under Settings.
+function PinStep({ onContinue }) {
+  const [status, setStatus] = useState(null);
+  const [problem, setProblem] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    invoke("pin_status")
+      .then((result) => {
+        if (!cancelled) setStatus(result);
+      })
+      .catch((error) => {
+        if (!cancelled) setProblem(String(error));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <section className="firstrun-card" aria-labelledby="firstrun-pin-heading">
+      <h2 id="firstrun-pin-heading">Choose an Administrator PIN</h2>
+      <PinExplanation />
+      {problem && (
+        <p className="conversation-error" role="alert">
+          The PIN&rsquo;s status could not be read: {problem}
+        </p>
+      )}
+      {status?.set && (
+        <>
+          <p role="status">A PIN is set. You can change it under Settings.</p>
+          <div className="settings-actions">
+            <button type="button" onClick={onContinue}>
+              Continue
+            </button>
+          </div>
+        </>
+      )}
+      {status && !status.set && (
+        <>
+          <SetPinForm submitLabel="Set PIN and continue" onSaved={onContinue} />
+          <p className="local-ai-note">{NO_PIN_WARNING} You can set one later under Settings.</p>
+          <div className="settings-actions">
+            <button type="button" onClick={onContinue}>
+              Do this later
+            </button>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
 function ReadyStep({ onFinish }) {
   const [state, setState] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.allSettled([invoke("ollama_status"), invoke("claude_key_status")]).then(([ollama, claude]) => {
+    Promise.allSettled([invoke("ollama_status"), invoke("claude_key_status"), invoke("pin_status")]).then(
+      ([ollama, claude, pin]) => {
       if (cancelled) return;
       setState({
+        pin: pin.status === "fulfilled" ? Boolean(pin.value.set) : null,
         model:
           ollama.status === "fulfilled"
             ? Boolean(ollama.value.running && ollama.value.activeModelInstalled)
@@ -94,7 +153,8 @@ function ReadyStep({ onFinish }) {
         modelName: ollama.status === "fulfilled" ? ollama.value.activeModel : null,
         claude: claude.status === "fulfilled" ? Boolean(claude.value.configured) : null,
       });
-    });
+      },
+    );
     return () => {
       cancelled = true;
     };
@@ -110,6 +170,15 @@ function ReadyStep({ onFinish }) {
         <ul className="firstrun-summary" aria-label="What is ready">
           <li data-item="profile" data-ready="true">
             <strong>Your profile:</strong> ready.
+          </li>
+          <li data-item="pin" data-ready={String(state.pin === true)}>
+            <strong>Administrator PIN:</strong>{" "}
+            {line(
+              state.pin,
+              "set.",
+              "not set. Safety features are not enforced until it is. You can set it any time under Settings.",
+              "could not be checked. You can look under Settings.",
+            )}
           </li>
           <li data-item="model" data-ready={String(state.model === true)}>
             <strong>AI on this computer:</strong>{" "}
@@ -166,7 +235,9 @@ export function FirstRun({
 
         {step === 0 && <ProfileStep onCreateProfile={onCreateProfile} profileError={profileError} />}
 
-        {step === 1 && (
+        {step === 1 && <PinStep onContinue={() => setStep(2)} />}
+
+        {step === 2 && (
           <div>
             <p className="view-lede">
               JARVIS answers on this computer, with an AI model that runs here. Check it below and install one if you
@@ -180,17 +251,17 @@ export function FirstRun({
               onPullFinishedHandled={onPullFinishedHandled}
             />
             <div className="settings-actions">
-              <button type="button" onClick={() => setStep(2)}>
+              <button type="button" onClick={() => setStep(3)}>
                 Continue
               </button>
-              <button type="button" onClick={() => setStep(2)}>
+              <button type="button" onClick={() => setStep(3)}>
                 Do this later
               </button>
             </div>
           </div>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <div>
             <p className="view-lede">
               Claude is optional. Without it JARVIS still works, on this computer. Read what is shared before you
@@ -199,17 +270,17 @@ export function FirstRun({
             <PrivacyNotice />
             <ClaudeKeySection />
             <div className="settings-actions">
-              <button type="button" onClick={() => setStep(3)}>
+              <button type="button" onClick={() => setStep(4)}>
                 Continue
               </button>
-              <button type="button" onClick={() => setStep(3)}>
+              <button type="button" onClick={() => setStep(4)}>
                 Skip for now
               </button>
             </div>
           </div>
         )}
 
-        {step === 3 && <ReadyStep onFinish={onFinish} />}
+        {step === 4 && <ReadyStep onFinish={onFinish} />}
       </div>
     </section>
   );

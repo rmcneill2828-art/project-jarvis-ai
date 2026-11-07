@@ -778,7 +778,12 @@ class StdioRpcServer:
             "profile.list": self._profile_list,
             "profile.create": self._profile_create,
             "profile.select": self._profile_select,
+            "profile.switchRequirements": self._profile_switch_requirements,
             "profile.active": self._profile_active,
+            "pin.status": self._pin_status,
+            "pin.set": self._pin_set,
+            "pin.change": self._pin_change,
+            "pin.takeNotices": self._pin_take_notices,
             "gia.status": self._gia_status,
             "gia.engineeringStatus": self._gia_engineering_status,
         }
@@ -1441,12 +1446,57 @@ class StdioRpcServer:
         return self._serialize_profile(record)
 
     def _profile_select(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Switch profile. `pin` is needed when the elevation rule applies and a
+        PIN is set (ESR-0061 WP6a, EIP-ESR0061-006 P2); the rule itself lives
+        in `ProfileService`. An Administrator signing in also receives the PIN
+        notices waiting for them (P1, P3, P5). The PIN is never echoed."""
+
+        profile_id = params.get("profileId")
+        pin = params.get("pin")
+        if not isinstance(profile_id, str):
+            msg = "params.profileId must be a string."
+            raise ClientFacingTypeError(msg)
+        if pin is not None and not isinstance(pin, str):
+            msg = "params.pin must be a string when provided."
+            raise ClientFacingTypeError(msg)
+        record = self._identity_service.select_profile(profile_id, pin)
+        return {**self._serialize_profile(record), "pinNotices": self._identity_service.signin_notices(record)}
+
+    def _profile_switch_requirements(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Whether switching to a profile needs the PIN, and the lock-out state,
+        so the screen asks for the PIN only when it is needed."""
+
         profile_id = params.get("profileId")
         if not isinstance(profile_id, str):
             msg = "params.profileId must be a string."
             raise ClientFacingTypeError(msg)
-        record = self._identity_service.select_profile(profile_id)
-        return self._serialize_profile(record)
+        return self._identity_service.switch_requirements(profile_id)
+
+    def _pin_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Any caller: whether a PIN is set and whether it is locked out."""
+
+        return self._identity_service.pin.status().to_payload()
+
+    def _pin_take_notices(self, params: dict[str, Any]) -> dict[str, Any]:
+        """The PIN notices for an Administrator who is already signed in when the
+        app starts, and so never switches in (WP6a review, Copilot Medium M1).
+        Administrator only; handed over once, like those in `profile.select`."""
+
+        active = self._identity_service.active_profile()
+        _require_role(active, ADMINISTRATOR_ROLES, "Only an Administrator can read the PIN notices.")
+        return {"pinNotices": self._identity_service.signin_notices(active)}
+
+    def _pin_set(self, params: dict[str, Any]) -> dict[str, Any]:
+        """The household's first PIN; an Administrator signed in, none set yet."""
+
+        self._identity_service.set_first_pin(params.get("pin"))
+        return self._pin_status({})
+
+    def _pin_change(self, params: dict[str, Any]) -> dict[str, Any]:
+        """A new PIN; an Administrator signed in, and the current PIN."""
+
+        self._identity_service.change_pin(params.get("currentPin"), params.get("newPin"))
+        return self._pin_status({})
 
     def _profile_active(self, params: dict[str, Any]) -> dict[str, Any]:
         record = self._identity_service.active_profile()

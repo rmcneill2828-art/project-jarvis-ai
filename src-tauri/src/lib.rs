@@ -1471,8 +1471,25 @@ async fn create_profile(
     .await
 }
 
+/// Switch profile. `pin` is passed through only when the screen asked for it;
+/// the backend decides whether it is needed (ESR-0061 WP6a, EIP-ESR0061-006
+/// P2). It is never logged or stored here.
 #[tauri::command]
 async fn select_profile(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    profile_id: String,
+    pin: Option<String>,
+) -> Result<Value, String> {
+    let params = match pin {
+        Some(pin) => json!({ "profileId": profile_id, "pin": pin }),
+        None => json!({ "profileId": profile_id }),
+    };
+    call_backend_off_main_thread(state, app_handle, "profile.select", params).await
+}
+
+#[tauri::command]
+async fn profile_switch_requirements(
     state: State<'_, BackendState>,
     app_handle: AppHandle,
     profile_id: String,
@@ -1480,8 +1497,53 @@ async fn select_profile(
     call_backend_off_main_thread(
         state,
         app_handle,
-        "profile.select",
+        "profile.switchRequirements",
         json!({ "profileId": profile_id }),
+    )
+    .await
+}
+
+/// The Administrator PIN (ESR-0061 WP6a). The backend enforces who may set or
+/// change it; these only relay, and keep nothing.
+#[tauri::command]
+async fn pin_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "pin.status", json!({})).await
+}
+
+/// The PIN notices for an Administrator already signed in at startup
+/// (Administrator only; handed over once).
+#[tauri::command]
+async fn take_pin_notices(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "pin.takeNotices", json!({})).await
+}
+
+#[tauri::command]
+async fn set_pin(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    pin: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "pin.set", json!({ "pin": pin })).await
+}
+
+#[tauri::command]
+async fn change_pin(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    current_pin: String,
+    new_pin: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "pin.change",
+        json!({ "currentPin": current_pin, "newPin": new_pin }),
     )
     .await
 }
@@ -1627,7 +1689,12 @@ pub fn run() {
             list_profiles,
             create_profile,
             select_profile,
+            profile_switch_requirements,
             active_profile,
+            pin_status,
+            take_pin_notices,
+            set_pin,
+            change_pin,
             list_agents,
             invoke_agent,
             memory_status,

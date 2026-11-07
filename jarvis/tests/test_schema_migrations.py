@@ -21,7 +21,7 @@ def test_a_new_memory_store_is_created_at_the_latest_version(tmp_path):
 def test_a_new_profile_store_is_created_at_the_latest_version(tmp_path):
     ProfileStore(tmp_path / "p.db")
 
-    assert schema_version(tmp_path / "p.db") == len(PROFILE_MIGRATIONS) == 2
+    assert schema_version(tmp_path / "p.db") == len(PROFILE_MIGRATIONS) == 3
 
 
 def test_an_existing_profile_database_gains_the_cloud_memory_flag_switched_off(tmp_path):
@@ -39,7 +39,11 @@ def test_an_existing_profile_database_gains_the_cloud_memory_flag_switched_off(t
 
     store = ProfileStore(path)
 
-    assert schema_version(path) == 2
+    # Migrated to the latest version: migration 3 (ESR-0061 WP6a) adds the PIN
+    # tables, with no PIN set, so an upgraded household is not locked out.
+    assert schema_version(path) == 3
+    with sqlite3.connect(path) as check:
+        assert check.execute("SELECT COUNT(*) FROM admin_pin").fetchone()[0] == 0
     record = store.get("p1")
     assert record is not None
     assert record.share_memory_with_cloud is False
