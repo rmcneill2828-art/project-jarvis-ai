@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 3.45
+**Version:** 3.46
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 3.45 |
+| Version | 3.46 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -60,13 +60,13 @@ This artefact does not record detailed engineering decisions. Detailed decisions
 | Engineering System | AI Engineering Management System (AIEMS) |
 | Repository | project-jarvis-ai |
 | Primary Branch | main |
-| Current Mode | [[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]] is the latest **closed** session (1 October 2026). No session is currently open. Run **review-first** by Programme Sponsor decision: **WP1** discharged EBG-0153, the retrospective GitHub Copilot CLI review of ESR-0059 WP4 to WP14 owed since Copilot's quota ran out (three batches: Conditional Pass, Pass, Pass); **WP1b** fixed the two real defects it found - `JARVIS_PRIMARY_PROVIDER` matched case-sensitively (and a blank value), silently ignoring a credentialed provider (EBG-0155), and a deadline expiry counted as a provider fault (EBG-0156); **WP2** backend process-tree termination (EBG-0154) - a Windows job object per backend, graceful then forced shutdown outside the lock, a `rust-windows` CI job. Every step genuinely reviewed by Copilot CLI. Session-wide **WP3** genuine Copilot CLI review - Pass; **WP4** Establish [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]]. Full detail in [[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]]. |
-| Current Repository Baseline | [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]], accepted at ESR-0060 WP4. |
-| Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.20 - content-refreshed across ESR-0059 (provider route with credentialed secondary, echo fallback removed, profile-scoped memory with household role enforcement); pointer-synced to RBL-0040 at ESR-0060, with no capability change that session. [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.20, same. |
+| Current Mode | [[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]] is the latest **closed** session (7 November 2026). No session is currently open. It was **Session A of the go-live plan**, extended to WP1-WP6 and closed after WP6 with the Mac checks carried forward: release gate and governance (WP1), platform hardening and macOS builds (WP2), **Ollama first with confirmed, metered Claude escalation** (WP3), the **Guardian experience redesign** (WP4), **setup, settings and per-profile data rights** (WP5), and **household safety** - the Administrator PIN, moderation of Child and Guest conversations, consent before a child may ask Claude, the child's first-use explanation (WP6). Session-wide **WP7** (Copilot Conditional Pass, all dispositioned; Antigravity's technology and security review triaged); **WP8** Establish [[RBL-0041_REPOSITORY_BASELINE|RBL-0041]]. Full detail in [[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]]. |
+| Current Repository Baseline | [[RBL-0041_REPOSITORY_BASELINE|RBL-0041]], accepted at ESR-0061 WP8. |
+| Current Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v3.1 - content re-audited at ESR-0061 WP1b (6 October 2026); **the capabilities WP3 to WP6 added are not yet re-audited into it** (RBL-0041 handover item 2). [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v3.1, same. |
 | Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] completed and accepted. |
-| Current Phase | No session currently open. [[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]] closed (1 October 2026) / retrospective review discharged, two defects it found fixed, backend process-tree termination delivered, plus session-wide verification and baseline determination. |
-| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. Every commit gated through the real Sponsor Approval Service (`submit-to-review`/`submit-response`), with implementation and closure commits separately approved. GitHub Copilot CLI is the permanent Engineering Reviewer; its monthly quota resets on the 1st, and with Codex CLI unavailable (`402 deactivated_workspace`) it is the only independent review path. CI is a working gate with branch protection on `main`, now including a `rust-windows` job on pushes to `main`. |
-| Current Engineering Objective | No session currently open. [[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]] closed: EBG-0153, EBG-0154, EBG-0155 and EBG-0156 closed Completed; EBG-0157 and EBG-0158 registered and carried forward with EBG-0149 to EBG-0151 and EBG-0130. RBL-0040 established. See [[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]] for full detail. |
+| Current Phase | No session currently open. [[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]] closed (7 November 2026) / go-live Session A delivered; go-live WP7 to WP9 (voice provisioning, guides and the "Children and privacy" page, clean-machine first run) and the Mac visit remain. |
+| Current Workflow | AIEMS Engineering Workflow v3 with Engineering Ecosystem Synchronisation working practice. Every commit gated through the real Sponsor Approval Service (`submit-response`). Two independent reviewers, run one after the other: GitHub Copilot CLI (permanent Engineering Reviewer; monthly quota resets on the 1st) and Antigravity (D19 second reviewer); a local `gpt-oss-20b` advisory pre-screen (D29). Child-facing wording needs the Programme Sponsor's own approval. CI is a working gate with branch protection on `main`, including macOS and Windows jobs. |
+| Current Engineering Objective | No session currently open. [[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]] closed: EBG-0110, 0130, 0157, 0161, 0163, 0164, 0165, 0166 and 0169 Completed; EBG-0170 to EBG-0177 registered. RBL-0041 established. See [[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]] Section 6A for everything carried forward. |
 
 ---
 
@@ -100,23 +100,29 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]] is **Closed** (1 October 2026). Opened at the Programme Sponsor's direct request after ESR-0059 closed. Neither independent reviewer was available at opening, so the Programme Sponsor chose **review-first**: no implementation before the retrospective review RBL-0039 owed.
+[[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]] is **Closed** (7 November 2026). Opened 6 October 2026 at the Programme Sponsor's direct request as **Session A of the go-live plan** ([[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]]), extended by Programme Sponsor direction to WP3-WP6, paused for a household PC rebuild and resumed 7 November 2026.
 
-**WP0A/WP0B** (Complete): Repository Synchronisation and Session Initialisation. EIP-ESR0059-001 Section 4G verified live against the real packaged sidecar - a busy or hung backend survived teardown and app exit; EBG-0154 registered and WP2's design drafted.
+**WP1** (Complete): go-live governance, the v1.0 release gate (EBG-0130), the register status check and Antigravity as the second reviewer (EBG-0169).
 
-**WP1** (Complete): EBG-0153 discharged - three genuine scoped Copilot CLI reviews of ESR-0059 WP4 to WP14 (Conditional Pass, Pass, Pass). WP5's GIL-reliant thread safety confirmed for the paths it covers.
+**WP2** (Complete): platform hardening and macOS builds in CI (EBG-0162 stays open for the real-Mac checks).
 
-**WP1b** (Complete, [[EIP-ESR0060-001_PROVIDER_SELECTION_AND_DEADLINE_HEALTH_FIXES|EIP-ESR0060-001]]): added by Programme Sponsor decision. Provider-name normalisation, blank-means-default and unknown-name warnings (EBG-0155); deadline expiry no longer a provider fault (EBG-0156).
+**WP3** (Complete, ADR-0023): Ollama on each machine for every conversation; Claude only on a confirmed, profile-bound, metered escalation; OpenAI and Gemini unregistered; local model setup (EBG-0163).
 
-**WP2** (Complete, [[EIP-ESR0060-002_BACKEND_PROCESS_TREE_TERMINATION|EIP-ESR0060-002]]): backend process-tree termination (EBG-0154) - a Windows job object per backend, graceful then forced shutdown outside the lock; live-verified (normal close graceful in 826 ms, busy tree ended at 3.0 s, killed host's tree gone in 96 ms). A `rust-windows` CI job added by Programme Sponsor decision.
+**WP4** (Complete): the Guardian experience redesign and presence Orb (EBG-0164).
 
-**Real gaps found while implementing, missed by every design review**: a fourth `windows-sys` feature (`Win32_Security`) needed for `CreateJobObjectW`; the CI `rust` job runs on Linux, so the Windows tests had compiled out in CI; and an unchecked forced termination that could have hung teardown (found by the implementation review).
+**WP5** (Complete): setup, settings, privacy and per-profile data rights (EBG-0165, EBG-0110).
 
-**Engineering Reviewer coverage**: genuine GitHub Copilot CLI review at every step - retrospective, design, implementation, CI change, post-commit and session-wide.
+**WP6** (Complete, EBG-0166): the Administrator PIN; local moderation of Child and Guest conversations (Llama Guard 3, on the processor, failing closed); consent before a child may ask Claude, **kept off until the "Children and privacy" page is published** (Programme Sponsor); the child's first-use explanation and the Children and safety view. Every child-facing text approved by the Programme Sponsor.
 
-**Session-wide WP3** (Independent Repository Verification): genuine Copilot CLI review across `cd8c06e..679c7dd` (6 commits, 14 files) - **Pass**; every commit gated, CI green throughout, 759 tests, Playwright 26/26, cargo and validator clean, `sentinel/policy.py` untouched. Three handover findings addressed; EBG-0158 registered for the pending `tauri-plugin-shell` bump.
+**Session-wide WP7**: Copilot Conditional Pass (six Mediums: the export fixed in code, the records corrected, the Claude-for-a-Child rule decided); Antigravity's independent technology and security review ([[WR-ESR0061-002_TECHNOLOGY_AND_SECURITY_LANDSCAPE_REVIEW|WR-ESR0061-002]]) triaged - an Adult or Administrator session no longer survives a restart once a PIN is set, and the rest registered (EBG-0171 to EBG-0175), with the Programme Sponsor's camera items (EBG-0176, the priority; EBG-0177, after go-live).
 
-**Session-wide WP4** (Repository Baseline Determination): **Establish** [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]].
+**Session-wide WP8** (Repository Baseline Determination): **Establish** [[RBL-0041_REPOSITORY_BASELINE|RBL-0041]].
+
+---
+
+## Prior Session: ESR-0060
+
+[[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]] is **Closed** (1 October 2026). Review-first: the retrospective Copilot CLI review of ESR-0059 WP4 to WP14 (EBG-0153), the two defects it found fixed (EBG-0155, EBG-0156), and backend process-tree termination (EBG-0154). Session-wide WP3 Pass; WP4 Establish - RBL-0040 accepted; retained for lineage, no longer the latest closed session or latest baseline. Full detail in [[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]].
 
 ---
 
@@ -132,13 +138,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 ---
 
-## Prior Session: ESR-0057
-
-[[ESR-0057_ENGINEERING_SESSION_REPORT|ESR-0057]] is **Closed** (14 September 2026). Three Work Packages: JRM-0001 19-row staleness sweep (WP1); BRD-0001 guidance plus Personal Memory export/backup (WP2); Home Assistant/smart-home assessment (WP3). Mid-session finding: Codex confirmed retired on cost grounds, not merely unavailable; a same-session Antigravity CLI substitute blocked twice by Claude Code's own harness - EBG-0126 registered, every Work Package from WP1 onward closed via Programme Sponsor direct review plus Engineering Implementer self-verification instead of genuine independent AI review. Session-wide WP6 self-verified (no independent AI available) - Pass, disclosed as materially weaker than the standing template. Session-wide WP7: Establish - RBL-0037 accepted; retained for lineage, no longer the latest closed session or latest baseline; EBG-0126 (the gap this session surfaced) resolved the following session, ESR-0058. Full detail in [[ESR-0057_ENGINEERING_SESSION_REPORT|ESR-0057]].
-
----
-
-PST-0001 records ESR-0060 as closed, with no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
+PST-0001 records ESR-0061 as closed, with no session currently open. It does not itself approve implementation outside separately authorised engineering work. Full historical detail remains in each session's own report and [[REG-0001_CONTROLLED_ARTEFACT_REGISTER|REG-0001]]'s version history.
 
 ---
 
@@ -369,8 +369,8 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Product Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] | v2.20 - content-refreshed during ESR-0059, pointer-synced at ESR-0060 WP4 (RBL-0040). Sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.20, same. |
 | Current Roadmap | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | v1.16 (corrected from a stale v1.13 citation found during this same ESR-0031 sweep) - the programme's forward-looking sequencing artefact, cross-referenced from PBK-0001's Backlog Progression Analysis. Its own Track A/B tables have been separately flagged (PST-0001 history, ESR-0028/ESR-0029/ESR-0030) as not reflecting several sessions' progress - not re-verified or corrected by this sweep, which addressed this row's version citation only. |
 | Current Review State | See Section 4A (Current Engineering Focus) | Restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. |
-| Next Required Activity | None - ESR-0060 formally closed. Next: Programme Sponsor to select the next engineering session's objective (see Next Work Package Candidate). | [[ESR-0060_ENGINEERING_SESSION_REPORT|ESR-0060]] Engineering Session Report v1.0 authored and the session formally closed. |
-| Next Work Package Candidate | Refreshed at ESR-0060 WP4. In order: EBG-0158 - re-verify graceful backend shutdown before merging Dependabot's open `tauri-plugin-shell` 2.4.0 and `tauri` 2.12.0 bumps; EBG-0157 - the low-severity hardening cluster from the retrospective review and WP2; EBG-0149, EBG-0150, EBG-0151 (Low); EBG-0130 (v1.0 release-gate contradiction, a Programme Sponsor judgement). | Not decided by this status update - candidates only. |
+| Next Required Activity | None - ESR-0061 formally closed. Next: Programme Sponsor to select the next engineering session's objective (see Next Work Package Candidate). | [[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]] Engineering Session Report v1.0 and the session formally closed. |
+| Next Work Package Candidate | Refreshed at ESR-0061 WP8. The go-live plan's Session B: the Mac visit (EBG-0162, on the new Mac); EBG-0171 (household notes reaching a Child, a design choice) and EBG-0172 (backend hardening); go-live WP7 voice provisioning (EBG-0167), WP8 guides and the "Children and privacy" page (EBG-0168, which Claude for a Child waits on), WP9 clean-machine first run; the PCB-0001 re-audit; the Programme Sponsor's camera priority EBG-0176 (timing a scope decision); EBG-0173 (streaming). See ESR-0061 Section 6A. | Not decided by this status update - candidates only. |
 | ESR-0032 Delivered Scope | See Section 4A (Current Engineering Focus) for full detail. | Restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently, avoiding the previous per-session-named-row pattern (`ESR-0026 Delivered Scope`) that had itself gone stale for five sessions. |
 | GIA-BOOT Proof of Concept | Complete | Accepted as Proof of Concept; further GIA implementation deferred - blocks Knowledge Graph Phases 3-4 (EBG-0055 note). |
 | Deferred Work | Recorded | Guardian Memory implementation (MDS-0001 Section 6.2 Personal Memory delivered at ESR-0027 WP1 as EBG-0080, `jarvis/memory/` now holds a real consent-gated implementation; MDS-0001 Section 6.3 Shared Family Memory not yet built), Conversation Engine expansion, Guardian Developer Console, Guardian Orb knowledge-graph Phases 2-4 ([[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055 - Phase 1-2 delivered), true 3D rendering and live animation of the Orb (explicitly deferred), a real network-facing Guardian interface (requirements now defined by ADR-0020, none built) remain deferred. **EAC and GDP-0001** tracked as EBG-0059/GDP-0001 per the ESR-0021 WP6 historical audit, superseded in intent by JRM-0001. Both OpenAI and Gemini are live-validated and one is wired into the default production route (EBG-0070, Complete); Ollama is now also wired as a local fallback (EBG-0075, ESR-0026 WP1, Complete); Sentinel's `TrustTierPolicy` classification model is now wired into that same production runtime as of ESR-0024 WP1 (EBG-0074, Complete), so [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]]'s authority model is genuinely in the decision path - though no production call site yet varies request shape per Guardian action, so this is not yet observable as a live behaviour change (Guardian's Action faculty remains Not Started, gated behind EBG-0021). Anthropic/OpenRouter provider adapters approved in principle (PEM-001) but not yet implemented. Claude&harr;Codex engineering bridge (EBG-0057) is now proven in genuine real use across seven consecutive entire sessions (ESR-0026 through ESR-0032); REA (execution-automation agent) remains its own future-phase scope, not yet actioned. |
@@ -384,11 +384,11 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Item | Status |
 |------|--------|
 | Repository Health | Good |
-| Repository Acceptance | Accepted through [[RBL-0040_REPOSITORY_BASELINE|RBL-0040]] |
+| Repository Acceptance | Accepted through [[RBL-0041_REPOSITORY_BASELINE|RBL-0041]] |
 | Current Repository Baseline | See Section 3 (Current Mode block) - restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. |
-| Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v2.20 (content-refreshed during ESR-0059; pointer-synced at ESR-0060 WP4); sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v2.20 (same) |
+| Product Capability Baseline | [[PCB-0001_PRODUCT_CAPABILITY_BASELINE|PCB-0001]] v3.1 (content re-audited at ESR-0061 WP1b; WP3 to WP6 not yet re-audited); sibling [[JARVIS_CAPABILITY_READINESS_MATRIX|JARVIS Capability Readiness Matrix]] v3.1 (same) |
 | Latest Repository Product Capability Assessment | [[RPCA-0001_REPOSITORY_PRODUCT_CAPABILITY_ASSESSMENT|RPCA-0001]] |
-| Current Activity | See Section 3 (Current Mode) / Section 4A (Current Engineering Focus) - restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. Latest figures (ESR-0060 WP3, genuine GitHub Copilot CLI session-wide review, re-run by the Engineering Implementer): `python scripts/validate_repository.py` 0 errors, 333 warnings; `python -m pytest` 759 passed, 1 skipped; `npx playwright test` 26 passed; `cargo test` 19 passed, 1 ignored. Corrected at ESR-0060 WP4 - this row had still quoted ESR-0058's figures. |
+| Current Activity | See Section 3 (Current Mode) / Section 4A (Current Engineering Focus) - restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. Latest figures (ESR-0061 closure, re-run by the Engineering Implementer): `python scripts/validate_repository.py` 0 errors, 311 warnings; pytest 1461 passed, 4 skipped (Windows), 1465 passed (Linux); Playwright 192 passed, 5 skipped; cargo test 19 passed, 1 ignored. |
 
 ---
 
@@ -743,6 +743,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.46 | 7 November 2026 | Claude Engineering Implementer | ESR-0061 formally closed: full closure sweep - Current Mode, Baseline (RBL-0041), Product Baseline (PCB-0001 v3.1, re-audit owed; the stale v2.20 citation corrected), Phase, Workflow and Objective; Section 4A rewritten for ESR-0061; the Prior Session window shifted (ESR-0060 added, ESR-0057 dropped); Next Required Activity, Next Work Package Candidate and Repository Health refreshed. |
 | 3.45 | 1 October 2026 | Claude Engineering Implementer | ESR-0060 formally closed: full closure sweep - Current Mode, Baseline (RBL-0040), Product Baseline, Phase, Workflow and Objective; Section 4A rewritten for ESR-0060; Prior Session window shifted (ESR-0059 added, ESR-0056 dropped); Next Required Activity and Next Work Package Candidate refreshed; Repository Health 'Latest figures' corrected (still quoted ESR-0058). |
 | 3.44 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 formally closed: full closure sweep - Current Mode, Baseline (RBL-0039), Phase, Workflow and Objective; Section 4A rewritten for ESR-0059; Prior Session window shifted (ESR-0058 added, ESR-0055 dropped); product-baseline rows. Documentation Debt corrected: the Next Required Activity row (named ESR-0033) and the Next Work Package Candidate row (pre-ESR-0048) refreshed. |
 | 3.43 | 29 September 2026 | Claude Engineering Implementer | ESR-0059 WP4: provider route now includes the other cloud provider as a credential-gated secondary (EIP-ESR0059-004). |
