@@ -58,12 +58,16 @@ export function PrivacyNotice() {
           Anthropic&rsquo;s own terms say how long it keeps what it receives; read them before you use Claude for
           anything private.
         </li>
-        <li>Only an Administrator or an Adult profile can ask Claude. A Child or Guest profile cannot.</li>
+        <li>
+          An Administrator or an Adult profile can ask Claude. A Child profile can ask Claude only if an Administrator
+          turns it on for that child and the child says they understand; a Guest profile never can.
+        </li>
       </ul>
       <h3>Your rights over what is kept</h3>
       <ul>
         <li>
-          Under Your data, a profile&rsquo;s saved notes can be exported to a readable file and a portable file. An
+          Under Your data, a profile&rsquo;s saved notes and household-safety records can be exported to a readable
+          file and a portable file. An
           Adult can export their own; an Administrator can export any profile.
         </li>
         <li>
@@ -458,7 +462,9 @@ function YourDataSection({ role, profiles, activeProfile, onProfileErased }) {
       <h2 id="your-data-heading">Your data</h2>
       <p>
         Export gives you a readable file and a portable file of what JARVIS keeps for a profile: its own saved notes and
-        when each was agreed. It leaves out other profiles, notes shared by the household, and any key.
+        when each was agreed, and what household safety keeps about it (when the safety check stopped something, never
+        the words; any permission to ask Claude; when the first-use explanation was understood). It leaves out other
+        profiles, notes shared by the household, and any key.
       </p>
       <ul className="data-list" aria-label="Profiles and their data">
         {rows.map((profile) => {

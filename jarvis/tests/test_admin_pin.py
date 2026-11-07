@@ -550,3 +550,62 @@ def test_an_administrator_signed_in_at_startup_gets_the_notices_once_and_no_one_
     taken = rpc(restarted, "pin.takeNotices")["pinNotices"]
     assert [notice["kind"] for notice in taken] == ["pinReset"]
     assert rpc(restarted, "pin.takeNotices")["pinNotices"] == []
+
+# --- A new start never inherits an Adult or Administrator session (ESR-0061 WP7, review finding F6) -------------------
+
+
+def _household_db(tmp_path, *, with_pin=True):
+    path = tmp_path / "profiles.db"
+    service = ProfileService(ProfileStore(path))
+    admin = service.create_profile("Robert", "Administrator")
+    service.select_profile(admin.id)
+    if with_pin:
+        service.set_first_pin(TEST_PIN)
+    adult = service.create_profile("Jo", "Adult") if with_pin else None
+    child = service.create_profile("Sam", "Child") if with_pin else None
+    return path, service, admin, adult, child
+
+
+def test_an_administrator_session_is_not_carried_over_to_a_new_start(tmp_path):
+    path, _service, _admin, _adult, _child = _household_db(tmp_path)
+    restarted = ProfileService(ProfileStore(path))
+    assert restarted.begin_app_session() is True
+    assert restarted.active_profile() is None
+
+
+def test_an_adult_session_is_not_carried_over_either(tmp_path):
+    path, service, _admin, adult, _child = _household_db(tmp_path)
+    service.select_profile(adult.id)
+    restarted = ProfileService(ProfileStore(path))
+    assert restarted.begin_app_session() is True
+    assert restarted.active_profile() is None
+
+
+def test_a_child_session_is_kept_because_it_is_already_the_lowest_level(tmp_path):
+    path, service, _admin, _adult, child = _household_db(tmp_path)
+    service.select_profile(child.id)
+    restarted = ProfileService(ProfileStore(path))
+    assert restarted.begin_app_session() is False
+    assert restarted.active_profile().id == child.id
+
+
+def test_with_no_pin_set_the_session_is_kept(tmp_path):
+    path, _service, admin, _adult, _child = _household_db(tmp_path, with_pin=False)
+    restarted = ProfileService(ProfileStore(path))
+    assert restarted.begin_app_session() is False
+    assert restarted.active_profile().id == admin.id
+
+
+def test_the_real_backend_start_clears_an_administrator_session(tmp_path, monkeypatch):
+    from jarvis.interfaces import stdio_rpc
+
+    path, _service, admin, _adult, _child = _household_db(tmp_path)
+    monkeypatch.setenv(stdio_rpc.IDENTITY_DB_PATH_ENV_VAR, str(path))
+    runtime = build_default_runtime(
+        environ={"JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1", "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db")}
+    )
+    server = StdioRpcServer(runtime)
+    response = server.handle_line('{"jsonrpc": "2.0", "id": 1, "method": "profile.active", "params": {}}')
+    assert response["result"]["profile"] is None
+    # Coming back as the Administrator needs the PIN, as for anyone switching up.
+    assert ProfileService(ProfileStore(path)).switch_requirements(admin.id)["pinRequired"] is True

@@ -295,6 +295,12 @@ class ProfileStore:
                 (_ACTIVE_PROFILE_ROW_ID, profile_id),
             )
 
+    def clear_active(self) -> None:
+        """Forget the active profile, so the next start has none selected."""
+
+        with self._transaction() as connection:
+            connection.execute("DELETE FROM active_profile WHERE id = ?", (_ACTIVE_PROFILE_ROW_ID,))
+
     def get_active(self) -> ProfileRecord | None:
         """Return the currently active profile, or None if none has ever been
         selected, or the previously-active profile has since been deleted.

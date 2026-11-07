@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-006 |
 | Title | Engineering Implementation Package: WP6 Household Safety, Administrator PIN, Child Moderation and Consent |
-| Version | 0.9 |
-| Status | Approved design - drafted 15 October 2026 at the Programme Sponsor's request ("please draft"); design review **Fail** (two High, four Medium, two Low, two Info), all addressed in v0.2, re-check Pass; **design approved as recommended 7 November 2026** (Section 10B); WP6a built and independently reviewed (Section 10C: Copilot Conditional Pass with its Medium fixed, Antigravity Pass); awaiting the Programme Sponsor's approval of the built result |
+| Version | 0.10 |
+| Status | Complete - design approved 7 November 2026 (Section 10B); WP6a (ef17f1d), WP6b (5ef3637), WP6c (e5faa77) and WP6d (82103e6) committed, each approved through the Sponsor Approval Service, CI green, post-commit reviews Pass; the Mac measurements are carried to the next session |
 | Session | ESR-0061 (the plan puts WP6 in Session C; started under this session as WP3 to WP5 were) |
 | Work Package | WP6 |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 5.3 (what Anthropic requires for minors), Section 5.4 (hardware), Section 7 (WP6) and Appendix A.3 (privacy requirements) |
@@ -423,13 +423,26 @@ The sentence set (40 sentences, SHA-256 `c0e733c5f50ea41735981f143e09ce9c01ad06b
 
 **Approval:** the wording above approved by the Programme Sponsor in direct chat; the reply-check target decided (option A); **WP6d approved through the Sponsor Approval Service** (decision 2026-11-07T19:21:21Z on e5faa77); the DRAFT markers in `src/ChildDisclosure.jsx` and `src/ChildrenSafety.jsx` replaced with the approval note.
 
+**WP6d commit and post-commit review (7 November 2026):** committed as **82103e6** after `submit-response` (19:30:40Z). Copilot's review of the real diff: **Pass, no High, Medium or Low** (every review fix present, the texts exactly as approved, nothing else changed, 106 tests re-run). CI run 42407146772 green; the informational WebKit job fails the same five microphone tests it failed before WP6 (run 38748715306 at d5428a1).
+
 **Commit Contents (WP6d):** `jarvis/identity/child_disclosure.py` (new), `jarvis/identity/store.py`, `jarvis/identity/service.py`, `jarvis/identity/safety_events.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/interfaces/activity_tracker.py`, `jarvis/interfaces/moderation.py`, `jarvis/tools/add_administrator.py` (new), `jarvis/tests/test_child_disclosure.py` (new), `jarvis/tests/test_moderation.py`, `jarvis/tests/test_schema_migrations.py`, `scripts/measure_moderation.py` (new), `README.md` (the Llama attribution), `src-tauri/src/lib.rs`, `src/ChildDisclosure.jsx` (new), `src/ChildrenSafety.jsx` (new), `src/ChildConsent.jsx`, `src/App.jsx`, `src/SettingsView.jsx`, `src/shell.css`, `tests/e2e/app.spec.js`, `tests/e2e/accessibility.spec.js`; records: this EIP, AAM-0001 0.11, ESR-0061, REG-0001, EBR-0001.
+
+---
+
+# 10G. After WP6 (ESR-0061 WP7, 7 November 2026)
+
+* **Claude for a Child stays off until the public "Children and privacy" page is published** (go-live WP8, EBG-0168): Programme Sponsor decision on the session-wide review's Medium M3, because ADR-0023 conditions a Child's use of Claude on Anthropic's safeguards for minors, that page among them. A rule for the household, not a lock in code: it is off by default and only an Administrator can turn it on.
+* **An Adult or Administrator session is not carried over a restart once a PIN is set** (WR-ESR0061-002 F6, fixed in WP7): without it, the next person to open JARVIS was signed in as the Administrator with no PIN asked, which defeated P2 and P3.
+* **The privacy notice now says a Child can ask Claude only when allowed** (WR-ESR0061-002 F5, missed in WP6c; wording approved).
+* **The per-profile export now includes the WP6 records** (session-wide review Medium M1): safety events, Claude consents and the first-use acknowledgement, never text.
+
 ---
 
 # 11. Version History
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.10 | 7 November 2026 | Claude Engineering Implementer | WP6d committed (82103e6), post-commit Pass; status Complete. Section 10G: Claude for a Child off until the Children and privacy page is published (Programme Sponsor); F6 and F5 fixed in WP7; the export includes the WP6 records. |
 | 0.9 | 7 November 2026 | Claude Engineering Implementer | WP6c committed (e5faa77), post-commit Pass (L1 list corrected). WP6d built (Section 10F): first-use explanation, Children and safety, the Llama attribution, the carried Lows disposed, PC measurements; Copilot Conditional Pass (Medium fixed), Antigravity Pass; reply-check target decided (option A); wording approved; approved via the Sponsor Approval Service (decision 2026-11-07T19:21:21Z on e5faa77). |
 | 0.8 | 7 November 2026 | Claude Engineering Implementer | WP6b post-commit review recorded (Pass; L2 decided: disclose the child's name). WP6c built (Section 10E): consent records, the rule, both checks, screens; reviews (Copilot Conditional Pass, M1 decided: disclose; Antigravity Pass); wording approved and WP6c approved through the Sponsor Approval Service (decision 2026-11-07T18:23:50Z on 5ef3637). |
 | 0.7 | 7 November 2026 | Claude Engineering Implementer | WP6b approved (14:23:03Z) and committed with the wording table approved; earlier the same day, Programme Sponsor decisions applied: a child is called by their first name (local model only, never sent to Claude), a neutral Guest wording set, classifier licence confirmed. "Nothing was sent anywhere" left open with a recommendation. |

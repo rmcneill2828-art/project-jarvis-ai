@@ -134,7 +134,9 @@ def test_an_export_holds_the_profiles_own_notes_and_nothing_else(world, tmp_path
 
     assert reply["noteCount"] == 2
     portable = _read_json(reply["jsonPath"])
-    assert portable["schemaVersion"] == 1
+    # Version 2 adds householdSafety (ESR-0061 session-wide review, Medium M1).
+    assert portable["schemaVersion"] == 2
+    assert portable["householdSafety"] == {"safetyEvents": [], "claudeConsents": [], "explanationAcknowledgedAt": None}
     assert portable["profile"]["displayName"] == "Bea"
     assert sorted(n["text"] for n in portable["notes"]) == ["Bea is allergic to penicillin.", "Bea runs on Tuesdays."]
     assert all(n["agreedAt"] is not None for n in portable["notes"])

@@ -78,6 +78,29 @@ class ProfileService:
         self.child_disclosures.acknowledge(child.id)
         return self.disclosure_status(child)
 
+    def household_safety_record(self, profile_id: str) -> dict[str, Any]:
+        """What the household-safety tables (WP6) keep about one profile, for
+        its own export: its safety events (kind, side, time; never text), its
+        Claude consents (revoked ones too) and when it acknowledged the
+        first-use explanation (ESR-0061 session-wide review, Medium M1)."""
+
+        consents = []
+        for row in self.child_consents.history(profile_id):
+            giver = self._store.get(str(row["consentedBy"]))
+            consents.append(
+                {
+                    "recordedAt": row["recordedAt"],
+                    "recordedBy": giver.display_name if giver is not None else "a profile since removed",
+                    "acknowledgedAt": row["acknowledgedAt"],
+                    "revokedAt": row["revokedAt"],
+                }
+            )
+        return {
+            "safetyEvents": self.safety_events.list_for_profile(profile_id),
+            "claudeConsents": consents,
+            "explanationAcknowledgedAt": self.child_disclosures.acknowledged_at(profile_id),
+        }
+
     def safety_summary(self) -> list[dict[str, Any]]:
         """For each Child and Guest profile (the two moderated roles): how many
         turns the safety checker stopped, by day and category. Never text.
@@ -338,3 +361,23 @@ class ProfileService:
         """Return the currently active profile, or None if none is selected."""
 
         return self._store.get_active()
+
+    def begin_app_session(self) -> bool:
+        """Called once when the backend starts (ESR-0061 WP7; Antigravity
+        technology and security review, F6).
+
+        The signed-in profile is stored, so without this an Administrator who
+        closed JARVIS would leave the next person, perhaps a child, signed in as
+        the Administrator with no PIN asked, able to change Settings and allow
+        themselves Claude. Once a PIN is set, an Adult or Administrator session
+        is therefore not carried over: JARVIS starts with no profile selected
+        (the lowest privilege, moderated as a Guest), and switching up needs the
+        PIN as usual. A Child or Guest session is kept, because it already is the
+        lowest level; with no PIN set there is nothing to protect yet (P3).
+        Returns whether a session was cleared."""
+
+        active = self._store.get_active()
+        if active is None or active.role in LOCKED_SESSION_ROLES or not self.pin.is_set():
+            return False
+        self._store.clear_active()
+        return True

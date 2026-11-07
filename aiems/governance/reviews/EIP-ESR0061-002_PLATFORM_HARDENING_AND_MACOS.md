@@ -9,7 +9,7 @@
 | Artefact ID | EIP-ESR0061-002 |
 | Title | Engineering Implementation Package: WP2 Platform Hardening and macOS |
 | Version | 0.13 |
-| Status | Draft - WP2a, WP2a-fix and WP2b committed (post-commit reviews Pass; WP2b real-Mac checks at Mac visit 1); WP2c follow-ups built, implementation review Pass, awaiting Programme Sponsor approval of the built result |
+| Status | Complete - WP2a (b14c6a0), WP2a-fix (65c4100), WP2b (dd946a2) and WP2c (d67e3ef) committed, CI green, post-commit reviews Pass; the real-Mac checks are carried to the next session (ESR-0061 Section 6A) |
 | Session | ESR-0061 |
 | Work Package | WP2 (WP2a, WP2b) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP2 |

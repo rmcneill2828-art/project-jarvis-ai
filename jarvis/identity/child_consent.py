@@ -91,6 +91,22 @@ class ChildConsentStore:
                 (self._clock().isoformat(), profile_id),
             ).rowcount
 
+    def history(self, profile_id: str) -> list[dict[str, str | None]]:
+        """Every consent row for the profile, oldest first, revoked ones
+        included: for the profile's own export (ESR-0061 session-wide review,
+        Medium M1)."""
+
+        with self._store.transaction() as connection:
+            rows = connection.execute(
+                "SELECT consented_by, scope, recorded_at, acknowledged_at, revoked_at FROM child_consents "
+                "WHERE profile_id = ? ORDER BY id",
+                (profile_id,),
+            ).fetchall()
+        return [
+            {"consentedBy": row[0], "scope": row[1], "recordedAt": row[2], "acknowledgedAt": row[3], "revokedAt": row[4]}
+            for row in rows
+        ]
+
     def delete_for_profile(self, profile_id: str) -> int:
         with self._store.transaction() as connection:
             return connection.execute("DELETE FROM child_consents WHERE profile_id = ?", (profile_id,)).rowcount

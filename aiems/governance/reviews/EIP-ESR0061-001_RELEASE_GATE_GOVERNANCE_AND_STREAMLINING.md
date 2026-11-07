@@ -9,7 +9,7 @@
 | Artefact ID | EIP-ESR0061-001 |
 | Title | Engineering Implementation Package: WP1 Release Gate, Governance and Streamlining |
 | Version | 0.9 |
-| Status | Draft - WP1c committed; CI Linux fix (WP1c-fix) awaiting review and approval |
+| Status | Complete - WP1a (1978070), WP1b (23e95bd), WP1c (7f1fa93) and WP1c-fix (77d50e4) committed, CI green, post-commit reviews recorded |
 | Session | ESR-0061 |
 | Work Package | WP1 (WP1a, WP1b, WP1c) |
 | Plan | [[WR-ESR0061-001_GO_LIVE_READINESS_REVIEW_AND_WORK_PACKAGE_PLAN|WR-ESR0061-001]] Section 7, WP1 |

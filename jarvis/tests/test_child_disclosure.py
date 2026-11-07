@@ -180,3 +180,34 @@ def test_the_tool_checks_and_adds_in_one_transaction(tmp_path):
     with pytest.raises(tool.AdministratorExistsError):
         tool.add_administrator(path, "Second")
     assert [profile.display_name for profile in store.list_all() if profile.role == "Administrator"] == ["First"]
+
+
+# --- the per-profile export holds the WP6 records (session-wide review, Medium M1) ----------------------------------
+
+
+def test_a_childs_export_holds_its_household_safety_records_but_no_words(tmp_path, monkeypatch, network):
+    import json
+    from pathlib import Path
+
+    client, admin, child = _household(tmp_path, monkeypatch)
+    client.select(admin)
+    client.result("consent.record", profileId=child)
+    client.select(child)
+    client.result("consent.acknowledge")
+    client.result("disclosure.acknowledge")
+    network.classifier = "unsafe\nS1"
+    client.ask("a secret unsafe sentence")
+    client.select(admin)
+    client.result("consent.revoke", profileId=child)
+
+    reply = client.result("profile.export", profileId=child, directory=str(tmp_path / "out"))
+    portable = json.loads(Path(reply["jsonPath"]).read_text(encoding="utf-8"))
+    safety = portable["householdSafety"]
+    assert [(event["category"], event["direction"]) for event in safety["safetyEvents"]] == [("violent_crimes", "input")]
+    assert len(safety["claudeConsents"]) == 1
+    consent = safety["claudeConsents"][0]
+    assert consent["recordedBy"] == "Robert" and consent["acknowledgedAt"] and consent["revokedAt"]
+    assert safety["explanationAcknowledgedAt"] is not None
+    markdown = Path(reply["markdownPath"]).read_text(encoding="utf-8")
+    assert "## Household safety" in markdown and "violent crimes" in markdown
+    assert "secret" not in markdown and "secret" not in json.dumps(portable)

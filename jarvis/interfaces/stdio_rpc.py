@@ -747,6 +747,10 @@ class StdioRpcServer:
                 else DEFAULT_IDENTITY_DB_PATH
             )
             self._identity_service = ProfileService(ProfileStore(identity_db_path))
+            # A new start never inherits an Adult or Administrator session once
+            # a PIN is set (ESR-0061 WP7, review finding F6).
+            if self._identity_service.begin_app_session():
+                logger.info("An Adult or Administrator session was not carried over to this start.")
         # Safety events are kept for the same days as the activity log (WP6b, M5).
         if self._runtime.retention is not None:
             self._runtime.retention.add_pruner(self._identity_service.safety_events.prune_older_than)
@@ -1120,7 +1124,9 @@ class StdioRpcServer:
             msg = "No such profile."
             raise ClientFacingValueError(msg)
         notes = self._runtime.profile_notes(profile_id)
-        markdown_path, json_path = write_profile_export(target, notes, Path(directory))
+        markdown_path, json_path = write_profile_export(
+            target, notes, Path(directory), safety=self._identity_service.household_safety_record(profile_id)
+        )
         return {"markdownPath": str(markdown_path), "jsonPath": str(json_path), "noteCount": len(notes)}
 
     def _profile_erase(self, params: dict[str, Any]) -> dict[str, Any]:
