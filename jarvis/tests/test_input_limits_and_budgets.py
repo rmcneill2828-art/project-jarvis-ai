@@ -80,7 +80,12 @@ def test_frontend_message_limit_matches_the_backend():
     app = (Path(__file__).resolve().parents[2] / "src" / "App.jsx").read_text(encoding="utf-8")
 
     assert f"const MAX_MESSAGE_CHARS = {MAX_MESSAGE_CHARS};" in app
-    assert "maxLength={MAX_MESSAGE_CHARS}" in app
+    # ESR-0061 WP6b: a Child's or Guest's limit is shorter, and also matches.
+    from jarvis.interfaces.stdio_rpc import MODERATED_MESSAGE_CHARS
+
+    assert f"const MODERATED_MESSAGE_CHARS = {MODERATED_MESSAGE_CHARS};" in app
+    assert "maxChars = MAX_MESSAGE_CHARS," in app
+    assert "maxLength={maxChars}" in app
 
 
 def test_history_entries_are_truncated_with_a_visible_marker():

@@ -57,6 +57,20 @@ class ConversationResponse:
     # The provider's string-only usage figures for the spend ledger. Not part
     # of equality, so existing comparisons of responses are unchanged.
     metadata: Mapping[str, str] = field(default_factory=dict, compare=False)
+    # Set when moderation blocked this turn (ESR-0061 WP6b): the category label
+    # and which side was blocked, never the text. The message is then a fixed
+    # reply and `is_model_reply` is False.
+    blocked: "ModerationBlock | None" = field(default=None, compare=False)
+
+
+@dataclass(frozen=True)
+class ModerationBlock:
+    """Why a moderated turn was blocked: a category label (or
+    "moderation_unavailable" when the classifier could not check it) and
+    "input" or "output". Recorded as a safety event; never shown to the child."""
+
+    category: str
+    direction: str
 
 
 @dataclass(frozen=True)

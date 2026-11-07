@@ -16,8 +16,19 @@ from jarvis.interfaces.conversation import (
     ConversationProvider,
     ConversationRequest,
     ConversationResponse,
+    ModerationBlock,
 )
 from jarvis.interfaces.escalation import NOT_AVAILABLE_RESPONSE, MeteredCloudConversationProvider
+from jarvis.interfaces.moderation import (
+    INPUT,
+    MODERATED_ROLES,
+    OUTPUT,
+    UNCHECKED,
+    ModerationService,
+    ModerationVerdict,
+    blocked_text,
+    child_safety_layer,
+)
 from jarvis.interfaces.ollama_setup import OllamaSetup
 from jarvis.interfaces.retention import RetentionService
 from jarvis.interfaces.sentinel_agent import AgentOutcome, SentinelGatedAgentService
@@ -65,8 +76,12 @@ class GuardianRuntime:
         ollama_setup: OllamaSetup | None = None,
         claude_keys: ClaudeKeyManager | None = None,
         retention: RetentionService | None = None,
+        moderation: ModerationService | None = None,
     ) -> None:
         self._config = config or GuardianRuntimeConfig()
+        # The classifier for Child and Guest conversations (ESR-0061 WP6b). None
+        # means no check is possible, so those conversations fail closed (M3).
+        self._moderation = moderation
         # Where the Claude key comes from and how the app changes it (ESR-0061
         # WP5a). None in tests that do not exercise it.
         self._claude_keys = claude_keys
@@ -205,8 +220,45 @@ class GuardianRuntime:
             core = self._cognitive_cores[profile_id] = GuardianCognitiveCore()
         return core
 
+    @property
+    def moderation(self) -> ModerationService | None:
+        return self._moderation
+
+    def _moderate(self, check) -> ModerationVerdict:
+        """Run one check, failing closed when there is no classifier (M3)."""
+
+        if self._moderation is None:
+            return UNCHECKED
+        return check(self._moderation)
+
+    @staticmethod
+    def _blocked(verdict: ModerationVerdict, direction: str, role: str | None) -> ConversationResponse:
+        """The fixed reply for a blocked turn (M4): not a model reply, so it never
+        enters history, carrying only the category and the side blocked."""
+
+        return ConversationResponse(
+            message=blocked_text(verdict, role),
+            provider="guardian-moderation",
+            blocked=ModerationBlock(category=verdict.category or "unspecified", direction=direction),
+        )
+
+    def _persona_for(self, role: str | None, name: str | None = None) -> str:
+        """The approved persona, with the child-safety layer appended for a
+        Child profile only (EIP-ESR0061-006 S1, AAM-0001 amendment). `name` is
+        given only for the local model, never for Claude."""
+
+        if role == "Child":
+            return f"{self._config.persona}\n\n{child_safety_layer(name)}"
+        return self._config.persona
+
     def converse(
-        self, message: str, profile_id: str | None = None, *, include_household: bool = True
+        self,
+        message: str,
+        profile_id: str | None = None,
+        *,
+        include_household: bool = True,
+        role: str | None = None,
+        name: str | None = None,
     ) -> ConversationResponse:
         """Route a message through the connected conversation provider.
 
@@ -221,12 +273,23 @@ class GuardianRuntime:
         Cognitive Core (EBG-0108 Phase 1) - the latter two as separate data,
         never inside the system prompt (EBG-0142, ESR-0059 WP7). The
         exchange is recorded only once a genuine model reply comes back.
+
+        For a Child or Guest (`role`, the server-held active profile's), the
+        message is checked before any model is called and the model's reply
+        before it is returned (ESR-0061 WP6b, M1-M6); a blocked turn returns a
+        fixed reply and is never added to history.
         """
 
         if self._conversation_provider is None:
             return ConversationResponse(message=NOT_CONNECTED_RESPONSE, provider="guardian-boundary")
         if self._state is not GuardianRuntimeState.RUNNING:
             return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
+
+        moderated = role in MODERATED_ROLES
+        if moderated:
+            verdict = self._moderate(lambda service: service.check_input(message))
+            if not verdict.allowed:
+                return self._blocked(verdict, INPUT, role)
 
         # EBG-0132 (ESR-0059 WP13): only this profile's memories plus shared
         # household notes, and only this profile's own recent history.
@@ -242,11 +305,15 @@ class GuardianRuntime:
         response = self._conversation_provider.generate(
             ConversationRequest(
                 message=message,
-                persona=self._config.persona,
+                persona=self._persona_for(role, name),
                 history=cognitive_core.history(),
                 memory_notes=cognitive_core.memory_notes(memory_records),
             )
         )
+        if moderated and response.is_model_reply:
+            verdict = self._moderate(lambda service: service.check_output(message, response.message))
+            if not verdict.allowed:
+                return self._blocked(verdict, OUTPUT, role)
         # Only genuine model replies enter Cognitive Core history
         # (EIP-ESR0039-001 Implementation Requirement 6). Decided by the
         # typed flag, not by matching message text (EBG-0141, ESR-0059 WP3):
@@ -309,6 +376,14 @@ class GuardianRuntime:
         if self._state is not GuardianRuntimeState.RUNNING:
             return ConversationResponse(message=NOT_RUNNING_RESPONSE, provider="guardian-boundary")
 
+        # A Child's question to Claude (WP6c) is moderated like a local turn:
+        # checked before it is sent, and the reply before it is shown (6.4, 6.6).
+        moderated = role in MODERATED_ROLES
+        if moderated:
+            verdict = self._moderate(lambda service: service.check_input(message))
+            if not verdict.allowed:
+                return self._blocked(verdict, INPUT, role)
+
         cognitive_core = self._cognitive_core_for(profile_id)
         history = cognitive_core.history()
         # The local attempt at this same message may already be the newest
@@ -323,12 +398,18 @@ class GuardianRuntime:
         response = self._escalation_provider.generate(
             ConversationRequest(
                 message=message,
-                persona=self._config.persona,
+                # A Child's question to Claude gets the child-safety layer too
+                # (WP6b review, Copilot Low L-3).
+                persona=self._persona_for(role),
                 history=history,
                 memory_notes=memory_notes,
                 requester_role=role,
             )
         )
+        if moderated and response.is_model_reply:
+            verdict = self._moderate(lambda service: service.check_output(message, response.message))
+            if not verdict.allowed:
+                return self._blocked(verdict, OUTPUT, role)
         if response.is_model_reply:
             cognitive_core.record_exchange(message, response.message)
         return response

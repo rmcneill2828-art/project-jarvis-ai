@@ -48,6 +48,11 @@ function derivePlatformIndicator(platformState, platformError) {
 // ESR-0059 WP8): the backend refuses longer messages, so the input stops
 // accepting typing at the same limit instead of failing after send.
 const MAX_MESSAGE_CHARS = 4000;
+// A Child's or Guest's message is shorter, so the safety checker reads all of
+// it (MODERATED_MESSAGE_CHARS, ESR-0061 WP6b); so is one sent with no profile
+// signed in once the household has profiles.
+const MODERATED_MESSAGE_CHARS = 1000;
+const MODERATED_ROLES = ["Child", "Guest"];
 
 const SYSTEM_HEALTH_LABELS = { guardian: "Guardian", sentinel: "Sentinel", providers: "Providers" };
 
@@ -351,6 +356,7 @@ function CommandPanel({
   escalating,
   onAskClaude,
   onReviewOffer,
+  maxChars = MAX_MESSAGE_CHARS,
 }) {
   const lastUserMessage = [...messages].reverse().find((entry) => entry.role === "user");
   return (
@@ -416,7 +422,7 @@ function CommandPanel({
         <input
           value={inputValue}
           onChange={(event) => onInputChange(event.target.value)}
-          maxLength={MAX_MESSAGE_CHARS}
+          maxLength={maxChars}
           placeholder="Ask Guardian anything..."
           disabled={sending}
         />
@@ -1260,6 +1266,11 @@ export function App() {
             <div className="guardian-body">
               <div className="guardian-main">
             <CommandPanel
+              maxChars={
+                MODERATED_ROLES.includes(role) || (!activeProfile && profiles.length > 0)
+                  ? MODERATED_MESSAGE_CHARS
+                  : MAX_MESSAGE_CHARS
+              }
               messages={messages}
               inputValue={inputValue}
               onInputChange={setInputValue}

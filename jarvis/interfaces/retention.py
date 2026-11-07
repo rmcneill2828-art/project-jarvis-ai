@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import threading
+from collections.abc import Callable
 
 from jarvis.shared.settings import SettingsStore
 from sentinel.audit import JsonAuditRecorder, PruneResult
@@ -23,6 +24,14 @@ class RetentionService:
         self._settings = settings
         self._last: PruneResult | None = None
         self._lock = threading.Lock()
+        # Other records kept for the same number of days (ESR-0061 WP6b: the
+        # safety events in the identity database). Each takes the days.
+        self._extra_pruners: list[Callable[[int], object]] = []
+
+    def add_pruner(self, prune: Callable[[int], object]) -> None:
+        """Prune another record by the same retention setting."""
+
+        self._extra_pruners.append(prune)
 
     @property
     def settings(self) -> SettingsStore:
@@ -36,6 +45,11 @@ class RetentionService:
         except Exception as exc:  # noqa: BLE001 - retention must never take the backend down
             logger.warning("Audit retention could not run (%s).", type(exc).__name__)
             return None
+        for prune in list(self._extra_pruners):
+            try:
+                prune(self._settings.retention_days())
+            except Exception as exc:  # noqa: BLE001 - retention must never take the backend down
+                logger.warning("A retention pruner could not run (%s).", type(exc).__name__)
         with self._lock:
             self._last = result
         return result

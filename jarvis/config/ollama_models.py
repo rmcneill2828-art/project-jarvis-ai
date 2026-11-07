@@ -93,3 +93,19 @@ class BudgetRules:
 
 
 BUDGET_RULES = BudgetRules()
+
+# The safety checker for Child and Guest conversations (ESR-0061 WP6b,
+# EIP-ESR0061-006 M1-M2): Meta's Llama Guard 3, 1 billion parameters. Never a
+# conversation model: it is downloadable through the same allow-listed pull,
+# but not in MODELS, so it can never be chosen to answer. It runs on the
+# processor, so it needs no graphics memory (min_budget_gb 0). Its licence
+# (the Llama 3.2 Community License and Meta's acceptable use policy) was
+# confirmed by the Programme Sponsor on 7 November 2026 (M2).
+CLASSIFIER = CatalogModel(
+    tag="llama-guard3:1b",
+    label="Llama Guard 3 1B (safety checker for Child and Guest profiles)",
+    download_bytes=1_600_000_000,
+    min_budget_gb=0.0,
+    license="Llama 3.2 Community License",
+    note="Checks what a Child or Guest asks and what they are told. Runs on the processor.",
+)

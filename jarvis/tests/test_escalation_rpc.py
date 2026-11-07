@@ -67,6 +67,10 @@ class _Network:
             )
             return _FakeResponse(self.claude_payload)
         self.other_calls.append(url)
+        # The Child and Guest classifier (ESR-0061 WP6b) answers "safe", so these
+        # tests still reach the role gate and Sentinel they are about.
+        if url.startswith(OLLAMA_URL_PREFIX) and url.endswith("/api/chat"):
+            return _FakeResponse({"message": {"role": "assistant", "content": "safe"}, "done": True})
         if url.startswith(OLLAMA_URL_PREFIX) and self.local_answer is not None:
             return _FakeResponse({"response": self.local_answer, "done": True})
         raise urllib.error.URLError("connection refused")

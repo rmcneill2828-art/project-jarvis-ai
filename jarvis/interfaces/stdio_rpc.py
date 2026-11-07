@@ -45,6 +45,7 @@ from jarvis.agents.contracts import AgentRequest, SpecialistAgent
 from jarvis.agents.gia_agent import GiaObservabilityAgent
 from jarvis.agents.gia_engineering_agent import GiaEngineeringAgent
 from jarvis.agents.home_assistant_agent import HomeAssistantClient, HomeAssistantStateQueryAgent
+from jarvis.config.ollama_models import CLASSIFIER as OLLAMA_CLASSIFIER
 from jarvis.config.ollama_models import MODELS as OLLAMA_CATALOG
 from jarvis.gia.engineering_observability import EngineeringStateObserver
 from jarvis.gia.observability import LocalResourceObserver
@@ -63,6 +64,7 @@ from jarvis.interfaces.escalation import (
     allowance_payload,
     offer_reason,
 )
+from jarvis.interfaces.moderation import MODERATED_ROLES, ModerationService
 from jarvis.interfaces.ollama_setup import DEFAULT_ENDPOINT as OLLAMA_DEFAULT_ENDPOINT
 from jarvis.interfaces.ollama_setup import (
     ModelChoice,
@@ -271,6 +273,9 @@ DEFAULT_IDENTITY_DB_PATH = Path.home() / ".jarvis" / "identity" / "profiles.db"
 # jarvis/guardian/cognitive_core.py) - inside Ollama's 4096-token context
 # (DEFAULT_NUM_CTX), which otherwise silently truncates the prompt.
 MAX_MESSAGE_CHARS = 4_000
+# A Child's or Guest's message is shorter, so the classifier always checks it
+# whole within its context (ESR-0061 WP6b, EIP-ESR0061-006 M1).
+MODERATED_MESSAGE_CHARS = 1_000
 MAX_SPEAK_CHARS = 5_000
 MAX_AUDIO_BASE64_CHARS = 20_000_000  # about 15 MB of audio - minutes of push-to-talk speech
 MAX_MEMORY_CHARS = 2_000
@@ -644,7 +649,8 @@ def build_default_runtime(
         choice=model_choice,
         pulls=PullManager(
             ollama_endpoint,
-            OLLAMA_CATALOG,
+            # The catalog plus the safety checker (WP6b): both may be downloaded.
+            (*OLLAMA_CATALOG, OLLAMA_CLASSIFIER),
             disk_free=lambda: read_hardware(environ).free_disk_bytes,
         ),
         environ=environ,
@@ -663,6 +669,9 @@ def build_default_runtime(
         retention=RetentionService(
             audit_recorder, SettingsStore(_memory_db_path(environ).parent / SETTINGS_FILENAME)
         ),
+        # Child and Guest conversations are checked by a local classifier on the
+        # same Ollama, on the processor (ESR-0061 WP6b, EIP-ESR0061-006 M1-M3).
+        moderation=ModerationService(ollama_endpoint),
     )
     runtime.start()
     return runtime
@@ -738,6 +747,9 @@ class StdioRpcServer:
                 else DEFAULT_IDENTITY_DB_PATH
             )
             self._identity_service = ProfileService(ProfileStore(identity_db_path))
+        # Safety events are kept for the same days as the activity log (WP6b, M5).
+        if self._runtime.retention is not None:
+            self._runtime.retention.add_pruner(self._identity_service.safety_events.prune_older_than)
         setup = self._runtime.ollama_setup
         if setup is not None:
             setup.pulls.set_notifier(self._emit_notification)
@@ -795,11 +807,19 @@ class StdioRpcServer:
             raise ClientFacingTypeError(msg)
         _require_max_length(message, MAX_MESSAGE_CHARS, "params.message")
         active = self._identity_service.active_profile()
+        moderation_role = self._moderation_role(active)
+        if moderation_role in MODERATED_ROLES:
+            _require_max_length(message, MODERATED_MESSAGE_CHARS, "params.message")
         response = self._runtime.converse(
             message,
             active.id if active is not None else None,
             include_household=_sees_household_notes(active),
+            role=moderation_role,
+            # A Child is called by their first name, by the local model only.
+            name=active.display_name if active is not None and moderation_role == "Child" else None,
         )
+        if response.blocked is not None:
+            return self._blocked_payload(active, response)
         return {
             "message": response.message,
             "provider": response.provider,
@@ -809,6 +829,33 @@ class StdioRpcServer:
             "answered": response.is_model_reply,
             "model": response.metadata.get("model") if response.is_model_reply else None,
             "escalation": self._escalation_offer(active, message, offer_reason(response, message)),
+        }
+
+    def _moderation_role(self, active) -> str | None:
+        """The role moderation acts on: the signed-in profile's; and, once the
+        household has any profile, "Guest" when none is signed in - no profile
+        is the lowest privilege (WP6a 6.2), so it is never an unmoderated route
+        (ESR-0061 WP6b, P2/M6)."""
+
+        if active is not None:
+            return active.role
+        return "Guest" if self._identity_service.list_profiles() else None
+
+    def _blocked_payload(self, active, response) -> dict[str, Any]:
+        """A turn moderation blocked: the fixed reply, recorded as a safety event
+        (category, side, time, profile; never text), with no offer to ask
+        Claude."""
+
+        self._identity_service.safety_events.record(
+            active.id if active is not None else None, response.blocked.category, response.blocked.direction
+        )
+        return {
+            "message": response.message,
+            "provider": response.provider,
+            "answered": False,
+            "model": None,
+            "blocked": True,
+            "escalation": None,
         }
 
     def _escalation_offer(self, active, message: str, reason: str | None) -> dict[str, Any]:
@@ -855,6 +902,10 @@ class StdioRpcServer:
             raise ClientFacingValueError(msg)
         _require_max_length(message, MAX_MESSAGE_CHARS, "params.message")
         active = self._identity_service.active_profile()
+        # A moderated role's question is as short on this path as in conversation
+        # (WP6b review, Copilot Low L-1; reachable once WP6c opens it to a Child).
+        if self._moderation_role(active) in MODERATED_ROLES:
+            _require_max_length(message, MODERATED_MESSAGE_CHARS, "params.message")
         _require_role(active, ESCALATION_ROLES, CLOUD_NOT_PERMITTED_MESSAGE)
         if not self._runtime.escalation_available:
             msg = "Asking Claude is not set up on this computer."
@@ -890,6 +941,8 @@ class StdioRpcServer:
             include_household=_sees_household_notes(active),
             share_memory=active.share_memory_with_cloud,
         )
+        if response.blocked is not None:
+            self._identity_service.safety_events.record(active.id, response.blocked.category, response.blocked.direction)
         provider = self._runtime.escalation_provider
         return {
             "message": response.message,
@@ -1064,6 +1117,8 @@ class StdioRpcServer:
             msg = "The name typed does not match this profile, so nothing was erased."
             raise ClientFacingValueError(msg)
         notes_removed, proposals_discarded = self._runtime.erase_profile_data(profile_id)
+        # Its safety events go with it (ESR-0061 WP6b, M5).
+        self._identity_service.safety_events.delete_for_profile(profile_id)
         # An open offer to ask Claude holds the person's question in memory.
         self._escalation_offers.discard_profile(profile_id)
         self._identity_service.delete_profile(profile_id)

@@ -41,7 +41,7 @@ from typing import Any
 
 import psutil
 
-from jarvis.config.ollama_models import BUDGET_RULES, MODELS, BudgetRules, CatalogModel
+from jarvis.config.ollama_models import BUDGET_RULES, CLASSIFIER, MODELS, BudgetRules, CatalogModel
 from jarvis.shared.errors import ClientFacingValueError
 
 logger = logging.getLogger(__name__)
@@ -541,6 +541,9 @@ class OllamaSetup:
             "activeModel": active,
             "activeModelInstalled": tags is not None and active in tags,
             "modelSource": self._choice.source,
+            # The Child and Guest safety checker (ESR-0061 WP6b). Without it those
+            # conversations are refused, by design (fail closed, M3).
+            "classifier": {"model": CLASSIFIER.tag, "installed": tags is not None and CLASSIFIER.tag in tags},
         }
         if not running:
             result["install"] = {"url": DOWNLOAD_PAGE_URL, "steps": list(install_steps(self._system)), "installed": installed}
@@ -577,6 +580,8 @@ class OllamaSetup:
             "needsDiskGb": round(advice.needs_disk_bytes / GIB, 1),
             "diskOk": advice.disk_ok,
             "models": [describe(model) for model in self._models],
+            # Needed only for Child or Guest profiles; about 1.6 GB more on disk.
+            "classifier": describe(CLASSIFIER),
         }
 
     def use_model(self, tag: str) -> dict[str, Any]:

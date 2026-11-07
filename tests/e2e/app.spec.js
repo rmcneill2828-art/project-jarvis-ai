@@ -350,7 +350,10 @@ async function mockTauriIpc(
               keyMock.testFails ? { ok: false, failure: "failed" } : { ok: true, failure: null, allowance: null },
             );
           }
-          if (cmd === "ollama_recommendation") return Promise.resolve(structuredClone(ollamaState.recommendation));
+          if (cmd === "ollama_recommendation") {
+            const advice = ollama.classifier ? { ...ollamaState.recommendation, classifier: ollama.classifier } : ollamaState.recommendation;
+            return Promise.resolve(structuredClone(advice));
+          }
           if (cmd === "ollama_pull") {
             window.__ollamaCalls.push(["pull", args.model]);
             ollamaState.status.pull = { active: true, model: args.model, completed: 0, total: 100, status: "starting" };
@@ -405,7 +408,10 @@ async function mockTauriIpc(
             const failing = orbMock.sendFails || window.__sendCount <= (orbMock.failFirst || 0);
             const reply = failing
               ? { message: "Guardian could not reach an AI provider.", provider: "sentinel-gated", answered: false, model: null }
-              : { message: `local-echo: ${message}`, provider: "local-echo", answered: true, model: "qwen3.5:4b" };
+              : orbMock.blocked
+                ? // A turn moderation blocked (WP6b): a fixed reply, not a model answer, no offer.
+                  { message: orbMock.blocked, provider: "guardian-moderation", answered: false, model: null, blocked: true }
+                : { message: `local-echo: ${message}`, provider: "local-echo", answered: true, model: "qwen3.5:4b" };
             if (orbMock.holdSend) {
               // Held until the test releases it, so a slow runner cannot let the answer arrive early.
               return new Promise((resolve) => {
@@ -3196,4 +3202,49 @@ test("a refused add is reported and nothing is added", async ({ page }) => {
   await expect(section.getByRole("alert")).toHaveText("Set an Administrator PIN before adding profiles.");
   await page.getByRole("button", { name: "Switch Guardian profile" }).click();
   await expect(page.getByRole("list", { name: "Other profiles" })).toHaveCount(0);
+});
+// --- ESR-0061 WP6b: moderation of Child and Guest conversations -------------------------------------------------
+
+test("a Child or Guest message box takes at most 1000 characters; an Adult's 4000", async ({ page }) => {
+  for (const [profile, limit] of [
+    [SAM, "1000"],
+    [GUEST, "1000"],
+    [ALEX, "4000"],
+  ]) {
+    const context = await page.context().browser().newContext();
+    const tab = await context.newPage();
+    await mockTauriIpc(tab, { profiles: [ADMIN, profile], activeProfile: profile });
+    await tab.goto("/");
+    await expect(tab.getByPlaceholder("Ask Guardian anything...")).toHaveAttribute("maxlength", limit);
+    await context.close();
+  }
+});
+
+test("a blocked turn shows the fixed reply, with no model label and no offer to ask Claude", async ({ page }) => {
+  const fixed = "I can't help with that one. You could ask a grown-up.";
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: SAM, orbMock: { blocked: fixed } });
+  await page.goto("/");
+  await page.getByPlaceholder("Ask Guardian anything...").fill("something");
+  await page.getByPlaceholder("Ask Guardian anything...").press("Enter");
+  await expect(page.getByText(fixed)).toBeVisible();
+  await expect(page.getByText("qwen3.5:4b")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Claude/ })).toHaveCount(0);
+});
+
+test("the Local AI panel offers the safety checker, and says what happens without it", async ({ page }) => {
+  const classifier = {
+    tag: "llama-guard3:1b",
+    label: "Llama Guard 3 1B (safety checker for Child and Guest profiles)",
+    downloadGb: 1.5,
+    note: "Checks what a Child or Guest asks and what they are told. Runs on the processor.",
+    installed: false,
+  };
+  await mockTauriIpc(page, { ollama: { classifier } });
+  await page.goto("/");
+  await openView(page, "AI models");
+  const row = page.getByTestId("safety-checker");
+  await expect(row).toContainText("Safety checker for Child and Guest profiles");
+  await expect(row).toContainText("it asks them to ask a grown-up");
+  await row.getByRole("button", { name: "Download safety checker" }).click();
+  await expect.poll(() => page.evaluate(() => window.__ollamaCalls)).toContainEqual(["pull", "llama-guard3:1b"]);
 });

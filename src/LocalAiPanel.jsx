@@ -189,6 +189,32 @@ export function LocalAiPanel({ activeProfile, pullProgress, pullFinished, useWhe
               {fallback && modelAction(fallback, true)}
             </>
           )}
+          {recommendation?.classifier && (
+            // The safety checker for Child and Guest profiles (ESR-0061 WP6b). It is
+            // downloaded like a model but never answers; without it, a Child or
+            // Guest is told to ask a grown-up instead of being answered.
+            <div className="local-ai-model local-ai-classifier" data-testid="safety-checker">
+              <p>
+                <strong>Safety checker for Child and Guest profiles:</strong> {recommendation.classifier.label},{" "}
+                {recommendation.classifier.downloadGb} GB to download.
+              </p>
+              <p className="local-ai-note">
+                {recommendation.classifier.note} Without it, JARVIS does not answer a Child or Guest profile: it asks
+                them to ask a grown-up.
+              </p>
+              {recommendation.classifier.installed ? (
+                <p role="status">Installed</p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => startDownload(recommendation.classifier.tag, false)}
+                  disabled={!canManage || busy || downloading}
+                >
+                  Download safety checker
+                </button>
+              )}
+            </div>
+          )}
           {!canManage && <p className="local-ai-note">Only an Administrator or Adult profile can download or change models.</p>}
         </div>
       )}

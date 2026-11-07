@@ -75,6 +75,21 @@ PROFILE_MIGRATIONS: tuple[tuple[str, ...], ...] = (
         )
         """,
     ),
+    # Migration 4 (ESR-0061 WP6b, EIP-ESR0061-006 M5): safety events - a
+    # category label, input or output, the time and the profile. Never any
+    # text. Pruned with the audit retention setting, deleted with the profile.
+    (
+        """
+        CREATE TABLE IF NOT EXISTS safety_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            profile_id TEXT,
+            category TEXT NOT NULL,
+            direction TEXT NOT NULL,
+            at TEXT NOT NULL
+        )
+        """,
+        "CREATE INDEX IF NOT EXISTS safety_events_at ON safety_events (at)",
+    ),
 )
 
 HOUSEHOLD_ROLES = ("Administrator", "Adult", "Child", "Guest")

@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-006 |
 | Title | Engineering Implementation Package: WP6 Household Safety, Administrator PIN, Child Moderation and Consent |
-| Version | 0.6 |
+| Version | 0.7 |
 | Status | Approved design - drafted 15 October 2026 at the Programme Sponsor's request ("please draft"); design review **Fail** (two High, four Medium, two Low, two Info), all addressed in v0.2, re-check Pass; **design approved as recommended 7 November 2026** (Section 10B); WP6a built and independently reviewed (Section 10C: Copilot Conditional Pass with its Medium fixed, Antigravity Pass); awaiting the Programme Sponsor's approval of the built result |
 | Session | ESR-0061 (the plan puts WP6 in Session C; started under this session as WP3 to WP5 were) |
 | Work Package | WP6 |
@@ -229,10 +229,79 @@ Each has a recommendation. If the Programme Sponsor approves the design "as reco
 
 ---
 
+**WP6a approval and commit (7 November 2026):** approved by the Programme Sponsor through the Sponsor Approval Service (decision 2026-11-07T13:54:38Z on d5428a1); `submit-response` passed at 14:12:17Z; committed as **ef17f1d** (32 files, as listed above). Not pushed: pushing is the Programme Sponsor's.
+
+**WP6a post-commit review** (Copilot, the real committed diff, 14:12Z): **Pass, no High or Medium.** The commit is exactly the Commit Contents list; the M1 fix is present; nothing slipped in (no debug code, secret or WP6b change, no weakened assertion). Low L1: a household upgraded from before WP6a whose profiles include no Administrator can never add one, because creation needs an Administrator signed in and the first-profile rule only covers an empty household. Low L2: the command-line reset deletes the PIN row, so a pending count of wrong tries is lost (the reset notice is still left). Both carried to WP6d for disposition.
+
+# 10D. WP6b Build Record (7 November 2026, built while WP6a's approval is held)
+
+**Context.** The Programme Sponsor went out for about four hours and asked for work to continue automatically, with every approval held until their return. WP6a had completed both independent reviews, so WP6b was built (design approved 7 November 2026, Section 10B) **in a separate git worktree** (`I:\tmp\wp6b-work`) carrying WP6a's uncommitted files byte for byte, so the WP6a tree the reviewers checked is untouched. Nothing is committed. WP6b moves into the main tree only after WP6a is committed.
+
+**Built as designed** (M1-M6, S1, 6.4-6.5):
+
+* `jarvis/interfaces/moderation.py`: `ModerationService` over Ollama `/api/chat` with `llama-guard3:1b`, `num_gpu` 0, `num_ctx` 4096, temperature 0; a strict reader (only a first line exactly "safe" allows; "unsafe" blocks by category, self-harm first; anything else fails closed); the fixed replies (M4) and the child-safety layer (S1) as named constants, **both draft wording**.
+* `GuardianRuntime.converse` (and `escalate`, ready for WP6c) takes the role: for Child or Guest the message is checked before any model is called and the reply before it is returned; a block returns the fixed reply, is not a model reply and never enters history; no classifier means fail closed. The layer is appended for a Child only.
+* Safety events (M5): migration 4 adds `safety_events` (profile, category, input/output, time; never text) to the identity database; recorded by the RPC layer on a block, deleted with the profile on erasure, pruned by the audit retention days (the retention service gained a pruner hook).
+* RPC: a Child's or Guest's message is limited to 1,000 characters (M1); a blocked turn carries `blocked: true` and no offer to ask Claude.
+* The safety checker in the local AI setup: downloadable through the same allow-listed pull but never selectable as the chat model; status and the recommendation report it; the Local AI panel offers "Download safety checker" and says what happens without it. A Child's or Guest's message box stops at 1,000 characters.
+* AAM-0001 0.10: the amendment for S1 (draft text, with an open point below).
+
+**Decisions made while building, named for the reviewers and the Programme Sponsor:**
+
+1. **No profile signed in is moderated as a Guest once the household has any profile** (the lowest privilege, as in WP6a 6.2), so "no profile" is never an unmoderated route. Before any profile exists (a fresh install before setup), it is not moderated.
+2. **A Guest's message is also limited to 1,000 characters** (M1 named the Child; M6 moderates a Guest like a Child, and the checker must read it whole).
+3. **An unreadable classifier answer fails closed** with the "can't check" reply, the same as no classifier.
+4. **The escalation path already moderates a Child or Guest** (input and output), so WP6c only has to open the gate.
+5. **The classifier is not in the chat-model catalog**; its licence entry is the Llama 3.2 Community License, **confirmed by the Programme Sponsor on 7 November 2026** (M2). Carried to WP6d: the disclosure page should name the safety checker as Meta's Llama Guard 3 ("Built with Llama") and link the licence and Meta's acceptable use policy.
+
+**Wording for the Programme Sponsor to approve before WP6b is committed (Section 5, "(wording)"):**
+
+| Where | Draft text |
+|---|---|
+| M4 general block | "I can't help with that one. You could ask a grown-up." |
+| M4 self-harm | "That sounds like something to talk about with someone you trust, like a parent, a carer or a teacher. If you want to talk to someone right now, you can call Childline for free on 0800 1111. If you or someone else is in danger, tell a grown-up straight away or call 999." |
+| M3 checker unavailable | "I can't check that it is safe to answer right now, so please ask a grown-up." |
+| Guest general block | "I can't help with that on this computer." |
+| Guest self-harm | "If you're struggling, you don't have to deal with it alone. You can call Samaritans for free, any time, on 116 123. If you or someone else is in danger, call 999." |
+| Guest checker unavailable | "I can't check that it is safe to answer right now, so I can't reply. Please try again later." |
+| S1 child-safety layer | as in 6.5 and AAM-0001 0.10, plus the name line below |
+| S1 name line | Local model: "Call them {first name}, not Sir." (the profile's display name, made one line, at most 40 characters). Claude (WP6c): "Do not call them Sir." with no name, so the child's name is never sent to Anthropic through this layer. |
+
+**Programme Sponsor decisions, 7 November 2026:** (1) a child is called by their first name, not Sir: built as the name line above; (2) a Guest gets a neutral set: built, Guest texts above (draft, for approval); (3) the safety checker's licence is confirmed. **Still open:** adding "Nothing was sent anywhere." to the "can't check" reply. Not added: it is true when the question itself could not be checked (nothing reached any model), but **not** when the reply could not be checked, because then the question had already gone to the chat model, and in WP6c possibly to Claude. Recommendation: leave it out, or add it to the question-side reply only, which would mean two "can't check" texts. **Settled the same day:** the three Guest texts approved as drafted; "Nothing was sent anywhere." left out (the Programme Sponsor took the recommendation); WP6b approved through the Sponsor Approval Service (decision 2026-11-07T14:23:03Z on ef17f1d), which approves the wording table above as built: every Child and Guest text, the S1 layer and the name line. The code comments' "DRAFT" markers were replaced to say so (comments only, no behaviour change).
+
+**Evidence:**
+
+* Python (worktree, after the round-1 fixes): **1404 passed, 4 skipped** on Windows. **Linux in Docker** (before the fixes): ruff clean, 1392 passed, 1 failed, validator 0 errors; the failure was `test_frontend_message_limit_matches_the_backend`, which reads `App.jsx` and had not been updated for the 1,000-character limit; it now checks both limits against the backend (stricter, not weaker) and passes. (Docker needed a container-local git repository: a worktree's `.git` is a pointer to a Windows path.) Earlier figure: 1387 passed before the setup tests; `test_moderation.py` 52 tests (the reader, the request sent, fail-closed cases, the runtime both ways and history, the layer for a Child only, safety events with no text, the 1,000 limit by role, no-profile sessions, erasure, retention, the checker in setup).
+* Playwright (Chromium, worktree): 177 passed including 3 new WP6b tests; **1 failure, the bundled-fonts test**, which passed in the main tree today and is attributed to the worktree's `node_modules` being a junction to the main tree (WP6b touches no fonts); to be re-run in the main tree.
+* **Measured on the rebuilt PC (Ryzen 5 5600, 6 cores)**, the checker on the processor: first check 3.4 s (loading), then about 0.6 s for a new sentence, 0.09 s median for a repeated one; uses **no graphics memory** (`size_vram` 0) beside `qwen3.5:4b` (3.1 GB on the card). Within M1's 2 s target. WP6d repeats this formally.
+* **Live check** (real backend, real Ollama, a Child profile): a safe question answered by `qwen3.5:4b`; a weapons question blocked in 0.7 s with the fixed reply; a self-harm sentence given the Childline reply; a 1,001-character message refused; two safety events recorded (violent_crimes, self_harm, input) for the child, with none of the text in the database or logs. **Observation for WP6d:** the first answer took 70 s, the 4B model's first load on this PC.
+* **Not yet:** the packaged window.
+
+**Implementation review, WP6b round 1 (Copilot, `sender: reviewer`, verdict starting "WP6b:", 7 November 2026; its first attempt read nothing because the worktree's review folder was a link outside its permitted folder, so the folder was made a real copy and the verdict copied back to the main transcript):** **Conditional Pass, no High**, conditional on M-1. It confirmed every model call is preceded by the input check and every model reply followed by the output check, blocked turns never reach history, speech and transcription feed only `converse`, no-profile sessions are moderated as Guest, num_gpu/num_ctx/temperature are sent on every request, the strict reader, no text in safety events, logs or replies, erasure and retention, all five build decisions reasonable, and no assertion weakened.
+
+| Rating | Finding | Disposition |
+|---|---|---|
+| **Medium M-1** | No reply cap exists (num_predict is set only if a setting asks), so a long reply (a long story) could overflow the classifier's 4096-token context, which Ollama silently shortens: an unsafe part could go unchecked | **Fixed**: text longer than 4,000 characters is checked in overlapping 4,000-character pieces (400 overlap) covering every character; any piece unchecked fails the whole closed; any unsafe piece blocks, self-harm first; the question shown with a reply is context only, limited to 1,000 characters. 4 new tests, including an unsafe ending 10,800 characters in. The design's "reply capped at roughly 4,000 characters" was not true of the code; this replaces it |
+| Low L-1 | The Claude offer path allowed 4,000 characters for a moderated role | **Fixed** (1,000 for Child/Guest, as in conversation); 1 test |
+| Low L-2 | `converse`/`escalate` default `role` to None, which is unmoderated: a future caller that forgets the role fails open | **Accepted, recorded**: the only callers (the RPC layer) always pass it, from server-held state; making it required changes every existing caller and test. Revisit if a second caller appears |
+| Low L-3 | `escalate` sent the plain persona, so a Child asking Claude (WP6c) would miss the S1 layer | **Fixed** (`_persona_for(role)`); 1 test |
+| Low L-4 | Wording: the Childline and grown-up replies are also shown to a Guest, who may be an adult; the "can't check" reply does not say nothing was sent to a model; the Sir point | **Added to the wording questions below for the Programme Sponsor** |
+
+**Antigravity** (second reviewer, high-risk; `sender: reviewer`, started 10:19Z; its first run stopped on a refused `return-findings --help` and was resumed with the exact command): **Pass, no High or Medium.** It ran the 67 moderation tests and the validator, confirmed fail-closed for Child, Guest and no-profile sessions, the request options, the strict reader, **Copilot's M-1 fix (verified)**, safety events with no text, erasure and retention, the five build decisions, S1 for a Child only with an accurate AAM-0001 amendment, the wording safe with the open points correctly left to the Programme Sponsor, and no weakened assertion.
+
+**Both WP6b independent reviews are complete with no open High or Medium.** WP6b waits for: WP6a's commit, the Programme Sponsor's approval of the wording (below and the table above), any wording changes, a re-run in the main tree (including Playwright's fonts test and Linux), then the Programme Sponsor's approval of the built result.
+
+**Wording questions added by the review (for the Programme Sponsor):** (a) a Guest sees the child replies; keep one set for both, or a neutral Guest set (for example "I can't help with that one."); (b) add to the "can't check" reply "Nothing was sent anywhere."? **Answered 7 November 2026:** (a) a neutral Guest set, built; (b) still open, see the recommendation above the evidence.
+
+**Main tree, after the WP6a commit (7 November 2026):** WP6b moved from the worktree into the main tree (checked first: every shared file differs from the committed WP6a only by additions). Windows 1412 Python passed, 4 skipped; Linux in Docker (python:3.12-slim) 1416 passed, ruff, the version check and the validator clean; Playwright (chromium) 178 passed, 5 skipped (the JARVIS_PERF timing tests), including the bundled-fonts test that failed only in the worktree.
+
+---
+
 # 11. Version History
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.7 | 7 November 2026 | Claude Engineering Implementer | WP6b approved (14:23:03Z) and committed with the wording table approved; earlier the same day, Programme Sponsor decisions applied: a child is called by their first name (local model only, never sent to Claude), a neutral Guest wording set, classifier licence confirmed. "Nothing was sent anywhere" left open with a recommendation. |
 | 0.6 | 7 November 2026 | Claude Engineering Implementer | WP6a implementation reviews recorded (Copilot Conditional Pass, Medium M1 fixed; Antigravity Pass after a first run lost to a run_reviewer.py defect); add-profile screen built on the Programme Sponsor's decision; final evidence incl. Linux 1341 passed. Awaiting approval of the built result. |
 | 0.5 | 7 November 2026 | Claude Engineering Implementer | WP6a built (Section 10C): PIN, elevation rule, creation gating, notices, reset tool, screens; five build decisions named; one scope flag (no add-profile screen) for the Programme Sponsor. Awaiting independent implementation review. |
 | 0.4 | 7 November 2026 | Claude Engineering Implementer | Design approved as recommended (Section 10B): C1 built, last and off by default; child-facing wording still to be approved per sub-WP. PC rebuild and Mac replacement recorded; Mac measurements carried to the next session. |

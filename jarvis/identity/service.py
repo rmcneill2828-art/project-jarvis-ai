@@ -12,6 +12,7 @@ import uuid
 from typing import Any
 
 from jarvis.identity.admin_pin import AdminPin
+from jarvis.identity.safety_events import SafetyEventStore
 from jarvis.identity.store import ProfileRecord, ProfileStore, utc_now
 from jarvis.shared.errors import ClientFacingPermissionError, ClientFacingValueError
 
@@ -48,6 +49,8 @@ class ProfileService:
     def __init__(self, store: ProfileStore, pin: AdminPin | None = None) -> None:
         self._store = store
         self.pin = pin or AdminPin(store)
+        # Moderation's safety events share the identity database (WP6b, M5).
+        self.safety_events = SafetyEventStore(store)
 
     def create_profile(self, display_name: str, role: str) -> ProfileRecord:
         """Create and persist a new profile.
