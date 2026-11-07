@@ -89,12 +89,14 @@ class TrustTierPolicy:
     _LOCAL_AGENT_PAYLOAD_TYPES = frozenset({"local_agent", "device_control"})
     _EMERGENCY_PAYLOAD_TYPES = frozenset({"emergency_control", "family_safety"})
     # The one capability that sends household data to a third party, and the
-    # household roles allowed to use it. Child is not on the list until WP6
-    # delivers consent and moderation (decision S6); Guest never is. A request
-    # with no role is refused: the role is supplied by the server from the
-    # active profile, so its absence means something is wrong.
+    # household roles allowed to use it. A Child is allowed only with a
+    # recorded, acknowledged consent (ESR-0061 WP6c, EIP-ESR0061-006 C1, 6.6),
+    # which the server states as `child_consent: recorded`; Guest never is. A
+    # request with no role is refused: the role is supplied by the server from
+    # the active profile, so its absence means something is wrong.
     _CLOUD_CAPABILITY = "text-generation-cloud"
     _CLOUD_ESCALATION_ROLES = frozenset({"administrator", "adult"})
+    _CLOUD_CONSENTED_ROLE = "child"
 
     def evaluate(self, request: SentinelRequest) -> PolicyDecision:
         category = self.classify(request)
@@ -149,10 +151,14 @@ class TrustTierPolicy:
             return TrustCategory.EMERGENCY_CONTROL
         if payload_type in self._LOCAL_AGENT_PAYLOAD_TYPES or capability == "local_agent":
             return TrustCategory.LOCAL_AGENT_ACTION
-        if capability == self._CLOUD_CAPABILITY and (
-            request.metadata.get("role", "").strip().lower() not in self._CLOUD_ESCALATION_ROLES
-        ):
+        if capability == self._CLOUD_CAPABILITY and not self._may_use_cloud(request):
             return TrustCategory.CLOUD_ESCALATION_NOT_PERMITTED
         if request.requires_approval:
             return TrustCategory.HUMAN_APPROVAL_REQUIRED
         return TrustCategory.ROUTINE_INTERACTION
+
+    def _may_use_cloud(self, request: SentinelRequest) -> bool:
+        role = request.metadata.get("role", "").strip().lower()
+        if role in self._CLOUD_ESCALATION_ROLES:
+            return True
+        return role == self._CLOUD_CONSENTED_ROLE and request.metadata.get("child_consent", "") == "recorded"

@@ -492,7 +492,8 @@
   list-style: none;
 }
 
-.sharing-row {
+.sharing-row,
+.consent-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -501,11 +502,13 @@
   border-bottom: 1px solid var(--line);
 }
 
-.sharing-row:last-child {
+.sharing-row:last-child,
+.consent-row:last-child {
   border-bottom: 0;
 }
 
-.sharing-row p {
+.sharing-row p,
+.consent-row p {
   margin: 2px 0 0;
 }
 

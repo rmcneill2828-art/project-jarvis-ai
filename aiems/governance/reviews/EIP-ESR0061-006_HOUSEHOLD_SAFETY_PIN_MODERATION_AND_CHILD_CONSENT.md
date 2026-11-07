@@ -8,7 +8,7 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0061-006 |
 | Title | Engineering Implementation Package: WP6 Household Safety, Administrator PIN, Child Moderation and Consent |
-| Version | 0.7 |
+| Version | 0.8 |
 | Status | Approved design - drafted 15 October 2026 at the Programme Sponsor's request ("please draft"); design review **Fail** (two High, four Medium, two Low, two Info), all addressed in v0.2, re-check Pass; **design approved as recommended 7 November 2026** (Section 10B); WP6a built and independently reviewed (Section 10C: Copilot Conditional Pass with its Medium fixed, Antigravity Pass); awaiting the Programme Sponsor's approval of the built result |
 | Session | ESR-0061 (the plan puts WP6 in Session C; started under this session as WP3 to WP5 were) |
 | Work Package | WP6 |
@@ -235,16 +235,16 @@ Each has a recommendation. If the Programme Sponsor approves the design "as reco
 
 # 10D. WP6b Build Record (7 November 2026, built while WP6a's approval is held)
 
-**Context.** The Programme Sponsor went out for about four hours and asked for work to continue automatically, with every approval held until their return. WP6a had completed both independent reviews, so WP6b was built (design approved 7 November 2026, Section 10B) **in a separate git worktree** (`I:\tmp\wp6b-work`) carrying WP6a's uncommitted files byte for byte, so the WP6a tree the reviewers checked is untouched. Nothing is committed. WP6b moves into the main tree only after WP6a is committed.
+**Context.** The Programme Sponsor went out for about four hours and asked for work to continue automatically, with every approval held until their return. WP6a had completed both independent reviews, so WP6b was built (design approved 7 November 2026, Section 10B) **in a separate git worktree** (`I:\tmp\wp6b-work`) carrying WP6a's uncommitted files byte for byte, so the WP6a tree the reviewers checked is untouched. Nothing was committed at that point; WP6b moved into the main tree after WP6a was committed (ef17f1d) and was itself committed as 5ef3637 (see the end of this section).
 
 **Built as designed** (M1-M6, S1, 6.4-6.5):
 
-* `jarvis/interfaces/moderation.py`: `ModerationService` over Ollama `/api/chat` with `llama-guard3:1b`, `num_gpu` 0, `num_ctx` 4096, temperature 0; a strict reader (only a first line exactly "safe" allows; "unsafe" blocks by category, self-harm first; anything else fails closed); the fixed replies (M4) and the child-safety layer (S1) as named constants, **both draft wording**.
+* `jarvis/interfaces/moderation.py`: `ModerationService` over Ollama `/api/chat` with `llama-guard3:1b`, `num_gpu` 0, `num_ctx` 4096, temperature 0; a strict reader (only a first line exactly "safe" allows; "unsafe" blocks by category, self-harm first; anything else fails closed); the fixed replies (M4) and the child-safety layer (S1) as named constants (draft wording at build; **approved 7 November 2026**, see the decisions below).
 * `GuardianRuntime.converse` (and `escalate`, ready for WP6c) takes the role: for Child or Guest the message is checked before any model is called and the reply before it is returned; a block returns the fixed reply, is not a model reply and never enters history; no classifier means fail closed. The layer is appended for a Child only.
 * Safety events (M5): migration 4 adds `safety_events` (profile, category, input/output, time; never text) to the identity database; recorded by the RPC layer on a block, deleted with the profile on erasure, pruned by the audit retention days (the retention service gained a pruner hook).
 * RPC: a Child's or Guest's message is limited to 1,000 characters (M1); a blocked turn carries `blocked: true` and no offer to ask Claude.
 * The safety checker in the local AI setup: downloadable through the same allow-listed pull but never selectable as the chat model; status and the recommendation report it; the Local AI panel offers "Download safety checker" and says what happens without it. A Child's or Guest's message box stops at 1,000 characters.
-* AAM-0001 0.10: the amendment for S1 (draft text, with an open point below).
+* AAM-0001 0.10: the amendment for S1 (draft text at build, with the Sir point open; both settled 7 November 2026, see below).
 
 **Decisions made while building, named for the reviewers and the Programme Sponsor:**
 
@@ -295,12 +295,65 @@ Each has a recommendation. If the Programme Sponsor approves the design "as reco
 
 **Main tree, after the WP6a commit (7 November 2026):** WP6b moved from the worktree into the main tree (checked first: every shared file differs from the committed WP6a only by additions). Windows 1412 Python passed, 4 skipped; Linux in Docker (python:3.12-slim) 1416 passed, ruff, the version check and the validator clean; Playwright (chromium) 178 passed, 5 skipped (the JARVIS_PERF timing tests), including the bundled-fonts test that failed only in the worktree.
 
+
+**WP6b commit and post-commit review (7 November 2026):** committed as **5ef3637** after `submit-response` (decision 14:23:03Z on ef17f1d). Copilot's review of the real diff: **Pass, no High or Medium.** Low L1: a 40-character display name could still carry a short instruction into the local persona (display names are set by an Administrator; letters-only names would close it; carried to WP6d). Low L2: when a Child may ask Claude (WP6c), the recent conversation and any notes sent with the question may contain the child's name, which the nameless persona line does not cover; **the Programme Sponsor decided 7 November 2026 to disclose this, not scrub it** (built in WP6c, Section 10E). Low L3: stale "draft" wording in this section and the AAM-0001 0.10 history row; corrected.
+
+---
+
+# 10E. WP6c Build Record (7 November 2026)
+
+**Built as designed** (C1, C2, 6.6), after WP6b's post-commit review:
+
+* **Consent records** (`jarvis/identity/child_consent.py`, migration 5 `child_consents`): profile, the Administrator who consented, the fixed scope `question_and_recent_conversation`, recorded, acknowledged and revoked times. Revoked rows are kept (who allowed what, when); all are deleted with the child's profile.
+* **The rule, in one place** (`ProfileService.child_may_ask_claude`): a Child may ask Claude only while its consent is recorded, **acknowledged by the child**, unrevoked, given by a profile that is **still an Administrator here**, and the **PIN is set**. It is evaluated on every offer and every send, so revoking, erasing the Administrator who consented, or a PIN reset switches it off at once.
+* **RPC** (`consent.status`, `consent.record`, `consent.revoke`, `consent.acknowledge`): record and revoke are Administrator only, and record needs the PIN set; acknowledge is the signed-in Child for itself only; a Child sees only its own status. The role is always the server-held active profile's. Revoking discards the child's open offer.
+* **The two independent checks** (6.8): the RPC layer's check (`_may_escalate`, used by the offer, the explicit "Ask Claude" offer, the send and `provider.status`), re-checked at send time; and **Sentinel's cloud rule**, which now admits a Child only when the request carries `child_consent: recorded`, set by the runtime from the server's own records (`ConversationRequest.child_cloud_consent`), never from the client. A Guest or no role is still refused whatever the flag says.
+* **Never a Child's notes:** the offer says `sendsMemory: false` for a Child, the RPC passes `share_memory` false, and the runtime refuses notes for a Child whatever it is passed (tested with the database flag forced on).
+* **Moderated both ways** (already built in WP6b): the question is checked before it is sent and Claude's answer before it is shown; with no checker, nothing is sent.
+* **Screens:** Settings gains **Claude for a child** (Administrator only, one row per Child, Allow / Turn off, with the parent's explanation); a Child's conversation screen shows a one-time **You can ask Claude** card until they press **I understand**; the "Send this question to Claude?" confirmation gains a line for a child; a child's note-sharing row now says notes are never sent even when the child may ask Claude. Four Tauri commands.
+
+**Build decisions, named for the reviewers and the Programme Sponsor:**
+
+1. **No separate classifier probe before the offer.** The design said the offer exists only when the classifier is available. Instead, the question is checked before anything is sent and that check fails closed, so with no checker the child gets the "can't check" reply and nothing reaches Claude (tested). A probe on every turn would add a network call for no extra protection.
+2. **A consent does not outlive its giver or the PIN:** checked at use, not by deleting rows, so the history stays.
+3. **Re-recording while a consent is current keeps it** (and its acknowledgement); after a revoke, a new consent needs a new acknowledgement.
+4. **The Children and safety view (6.7) is still WP6d.** The Settings section here is the minimum needed to record and revoke; WP6d folds it into that view.
+
+**Disclosure of the child's name (Programme Sponsor decision, 7 November 2026: disclose, not scrub).** The parent's explanation, the child's card and the child's confirmation line each say the conversation sent may include the child's name.
+
+**Wording, approved by the Programme Sponsor 7 November 2026** (direct chat "Approved", before WP6c was committed):
+
+| Where | Approved text |
+|---|---|
+| Settings, parent's explanation | "This is off unless you turn it on, for each child separately. When it is on, the child can choose to send a question to Claude, a service run by Anthropic, and confirms each time. Their question and their recent conversation with JARVIS (the last few messages, up to six) are sent, and that conversation might include their name. Their saved notes are not sent themselves, but something JARVIS said using them may be part of that conversation. Anthropic handles what is sent under its own privacy terms. The safety checker checks each question before it goes and each answer before it is shown. It only starts working once the child has said they understand, and you can turn it off at any time: it stops at once." |
+| Child's card (C2 acknowledgement) | Heading "You can ask Claude". "A grown-up has said you can ask Claude. Claude is an AI made by a company called Anthropic. It is not a person, and it can make mistakes. When you choose to ask Claude, your question and your last few messages with JARVIS are sent to Anthropic over the internet. They might include your name, or something JARVIS said using your notes. Your notes themselves are never sent. If anything Claude says worries you, tell a grown-up." Button "I understand". |
+| Child's confirmation line | "Your recent conversation might include your name, or something JARVIS said using your notes. Claude is an AI, not a person, and it can make mistakes." |
+| Child's note-sharing row | "A child's notes are never sent to Claude themselves. When the child may ask Claude, something JARVIS said using them can be part of the recent conversation that is sent." |
+
+**Implementation review: Copilot** (`sender: reviewer`, 14:50Z): **Conditional Pass, no High.** It confirmed every path to Claude goes through the consent rule, re-checked at send; Sentinel is a real second check the client cannot set; a Child cannot record, revoke or acknowledge for another, and an Administrator cannot acknowledge for a child; moderation fails closed both ways (56 tests run).
+
+| Finding | Summary | Disposition |
+|---|---|---|
+| Medium M1 | A Child's notes reach Claude indirectly: a local reply that used a note is in the recent conversation sent | **Programme Sponsor decision, 7 November 2026: disclose** (option B; option A, send only the question for a Child, was recommended and not taken). All four texts now say the notes are not sent themselves but something JARVIS said using them may be |
+| Low L1 | After a PIN reset and a new PIN, an old consent came back with no Administrator action | **Fixed**: the PIN reset revokes every current consent in the same transaction; test extended |
+| Low L2 | Re-recording kept a consent whose giver was no longer an Administrator | **Fixed**: such a consent is revoked and replaced, so the new one is this Administrator's and needs a new acknowledgement; 1 test |
+| Low L3 | The parent's text did not say what "recent" means or what Anthropic does with the data | **Fixed in the wording**: "the last few messages, up to six" and "Anthropic handles what is sent under its own privacy terms" (no specific retention claim made, because not verified) |
+| Note | Decision 1 (no classifier probe before the offer) is a deviation the Programme Sponsor should note: with no checker a child can see the offer and then the "can't check" reply | **Named to the Programme Sponsor**, 7 November 2026 |
+
+**Antigravity** (second reviewer, high-risk; `sender: reviewer`, after Copilot's fixes): **Pass, no High or Medium.** It verified the default-off rule on every path, Sentinel as a genuine second check the client cannot forge, the consent lifecycle (giver, PIN reset, erasure, revocation of an open offer), the L1 and L2 fixes, and that the option B disclosure is accurate on every screen; it judged all four build decisions sound. Info: with the checker down, a child can see the offer and then the "can't check" reply (decision 1, already named).
+
+**Evidence (main tree):** Linux in Docker (python:3.12-slim) 1436 passed, ruff, the version check and the validator clean (re-run after the review fixes: 1437 passed). Python 1433 passed, 4 skipped after the review fixes (21 in `jarvis/tests/test_child_consent.py`); ruff clean; Playwright (chromium, both specs) 184 passed, 5 skipped (4 new app tests and 2 new axe checks; one existing text updated on purpose); Rust 19 passed.
+
+**Approval:** the four texts above approved by the Programme Sponsor in direct chat; **WP6c approved through the Sponsor Approval Service** (decision 2026-11-07T18:23:50Z on 5ef3637); the DRAFT markers in `src/ChildConsent.jsx` and `src/ClaudeEscalation.jsx` replaced with the approval note.
+
+**Commit Contents (WP6c):** `jarvis/identity/child_consent.py` (new), `jarvis/identity/store.py`, `jarvis/identity/service.py`, `jarvis/interfaces/stdio_rpc.py`, `jarvis/interfaces/activity_tracker.py`, `jarvis/interfaces/conversation.py`, `jarvis/interfaces/sentinel_conversation.py`, `jarvis/interfaces/escalation.py`, `jarvis/guardian/runtime.py`, `sentinel/policy.py`, `jarvis/tests/test_child_consent.py` (new), `jarvis/tests/test_schema_migrations.py`, `src-tauri/src/lib.rs`, `src/ChildConsent.jsx` (new), `src/App.jsx`, `src/SettingsView.jsx`, `src/ClaudeEscalation.jsx`, `src/shell.css`, `tests/e2e/app.spec.js`, `tests/e2e/accessibility.spec.js`; records: this EIP, `aiems/models/AAM-0001_GUARDIAN_IDENTITY_AND_COGNITIVE_ARCHITECTURE.md` (L3 wording), ESR-0061, REG-0001.
 ---
 
 # 11. Version History
 
 | Version | Date | Author | Summary |
 |---|---|---|---|
+| 0.8 | 7 November 2026 | Claude Engineering Implementer | WP6b post-commit review recorded (Pass; L2 decided: disclose the child's name). WP6c built (Section 10E): consent records, the rule, both checks, screens; reviews (Copilot Conditional Pass, M1 decided: disclose; Antigravity Pass); wording approved and WP6c approved through the Sponsor Approval Service (decision 2026-11-07T18:23:50Z on 5ef3637). |
 | 0.7 | 7 November 2026 | Claude Engineering Implementer | WP6b approved (14:23:03Z) and committed with the wording table approved; earlier the same day, Programme Sponsor decisions applied: a child is called by their first name (local model only, never sent to Claude), a neutral Guest wording set, classifier licence confirmed. "Nothing was sent anywhere" left open with a recommendation. |
 | 0.6 | 7 November 2026 | Claude Engineering Implementer | WP6a implementation reviews recorded (Copilot Conditional Pass, Medium M1 fixed; Antigravity Pass after a first run lost to a run_reviewer.py defect); add-profile screen built on the Programme Sponsor's decision; final evidence incl. Linux 1341 passed. Awaiting approval of the built result. |
 | 0.5 | 7 November 2026 | Claude Engineering Implementer | WP6a built (Section 10C): PIN, elevation rule, creation gating, notices, reset tool, screens; five build decisions named; one scope flag (no add-profile screen) for the Programme Sponsor. Awaiting independent implementation review. |

@@ -44,9 +44,9 @@ const RECOMMENDATION = {
   models: [],
 };
 
-async function installMock(page, profile) {
+async function installMock(page, profile, { others = [], consent = null } = {}) {
   await page.addInitScript(
-    ({ profile, platform, ollama, recommendation }) => {
+    ({ profile, others, consent, platform, ollama, recommendation }) => {
       window.__callbacks = {};
       window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => {} };
       window.__TAURI_INTERNALS__ = {
@@ -66,7 +66,7 @@ async function installMock(page, profile) {
               edges: [{ source: "n1", target: "n2" }],
               active_clusters: [],
             },
-            list_profiles: { profiles: [profile] },
+            list_profiles: { profiles: [profile, ...others] },
             active_profile: { profile },
             list_agents: { agents: ["gia-observability"] },
             memory_status: { recordCount: 2 },
@@ -87,6 +87,8 @@ async function installMock(page, profile) {
             get_settings: { auditRetentionDays: 90, allowedRetentionDays: [30, 90, 365], lastPrune: null },
             // No PIN yet, so Settings shows the warning and the form to set one (WP6a).
             pin_status: { set: false, locked: false, lockedForSeconds: 0 },
+            // Claude for a Child (WP6c): allowed by a grown-up, not yet acknowledged.
+            consent_status: consent || { profileId: "c", recorded: false, acknowledged: false, allowed: false },
           };
           if (cmd in answers) return Promise.resolve(structuredClone(answers[cmd]));
           if (cmd === "plugin:event|listen") return Promise.resolve(0);
@@ -94,7 +96,7 @@ async function installMock(page, profile) {
         },
       };
     },
-    { profile, platform: PLATFORM, ollama: OLLAMA_STATUS, recommendation: RECOMMENDATION },
+    { profile, others, consent, platform: PLATFORM, ollama: OLLAMA_STATUS, recommendation: RECOMMENDATION },
   );
 }
 
@@ -241,4 +243,32 @@ test("axe: the Administrator PIN prompt has no serious or critical violation", a
   await dialog.getByRole("button", { name: "Switch" }).click();
   await expect(dialog.getByRole("alert")).toBeVisible();
   await expectNoSeriousViolations(page, "PIN prompt with a refusal");
+});
+
+// --- ESR-0061 WP6c: Claude for a Child -------------------------------------------------------------------------------
+
+const WAITING_CONSENT = {
+  profileId: "c",
+  recorded: true,
+  recordedBy: "Robert",
+  recordedAt: "2026-11-07T15:00:00+00:00",
+  acknowledged: false,
+  acknowledgedAt: null,
+  allowed: false,
+};
+
+test("axe: the child's 'You can ask Claude' card has no serious or critical violation", async ({ page }) => {
+  await installMock(page, PROFILES.Child, { consent: WAITING_CONSENT });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "You can ask Claude" })).toBeVisible();
+  await expectNoSeriousViolations(page, "Child acknowledgement card");
+});
+
+test("axe: Settings with a child to allow has no serious or critical violation", async ({ page }) => {
+  await installMock(page, PROFILES.Administrator, { others: [PROFILES.Child], consent: WAITING_CONSENT });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await expect(page.getByRole("heading", { name: "Claude for a child" })).toBeVisible();
+  await page.waitForTimeout(300);
+  await expectNoSeriousViolations(page, "Settings, Claude for a child");
 });

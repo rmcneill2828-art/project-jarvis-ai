@@ -90,6 +90,24 @@ PROFILE_MIGRATIONS: tuple[tuple[str, ...], ...] = (
         """,
         "CREATE INDEX IF NOT EXISTS safety_events_at ON safety_events (at)",
     ),
+    # Migration 5 (ESR-0061 WP6c, EIP-ESR0061-006 C1, C2, 6.6): an
+    # Administrator's consent for a Child profile to ask Claude, and the
+    # child's own acknowledgement. Revoked rows are kept (who allowed what,
+    # when), deleted with the child's profile.
+    (
+        """
+        CREATE TABLE IF NOT EXISTS child_consents (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            profile_id TEXT NOT NULL,
+            consented_by TEXT NOT NULL,
+            scope TEXT NOT NULL,
+            recorded_at TEXT NOT NULL,
+            acknowledged_at TEXT,
+            revoked_at TEXT
+        )
+        """,
+        "CREATE INDEX IF NOT EXISTS child_consents_profile ON child_consents (profile_id)",
+    ),
 )
 
 HOUSEHOLD_ROLES = ("Administrator", "Adult", "Child", "Guest")

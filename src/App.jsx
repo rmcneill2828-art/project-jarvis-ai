@@ -23,6 +23,7 @@ import { LocalAiPanel } from "./LocalAiPanel.jsx";
 import { PresenceOrb } from "./PresenceOrb.jsx";
 import { FirstRun } from "./FirstRun.jsx";
 import { PinDialog, PinNotices } from "./AdminPin.jsx";
+import { ChildAcknowledgementCard } from "./ChildConsent.jsx";
 import { SettingsView } from "./SettingsView.jsx";
 import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
 import { NavRail, TopBar, VIEWS } from "./Shell.jsx";
@@ -477,6 +478,8 @@ export function App() {
   // offer, with the message it is for; nothing is sent until the dialog's
   // confirm button spends the offer's one-time token.
   const [claudeStatus, setClaudeStatus] = useState(null);
+  // Bumped when a child says they understand (WP6c), so Claude appears at once.
+  const [claudeStatusVersion, setClaudeStatusVersion] = useState(0);
   const [offer, setOffer] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [escalating, setEscalating] = useState(false);
@@ -670,7 +673,7 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, [activeProfile?.id]);
+  }, [activeProfile?.id, claudeStatusVersion]);
 
   // Re-read when the profile changes and when a download ends, so the list says
   // Ready as soon as the chosen model is there.
@@ -1185,7 +1188,8 @@ export function App() {
     memoryStatusError,
   });
   const availableRows = visibleToGuardianColumn(capabilityRows, {
-    mayAskClaude: canAskClaude(role),
+    // A Child with consent (WP6c) may too: the server says so.
+    mayAskClaude: canAskClaude(role) || Boolean(claudeStatus?.mayEscalate),
     seesMemory: allowedViews.includes("memory"),
   });
 
@@ -1215,7 +1219,7 @@ export function App() {
           )
         }
       />
-      <NavRail views={VIEWS.filter((entry) => allowedViews.includes(entry.id))} current={currentView} onSelect={setView} mentionClaude={canAskClaude(role)} />
+      <NavRail views={VIEWS.filter((entry) => allowedViews.includes(entry.id))} current={currentView} onSelect={setView} mentionClaude={canAskClaude(role) || Boolean(claudeStatus?.mayEscalate)} />
       <main className="app-main" aria-label="Guardian desktop experience">
         {!activeProfile && !setupOpen && (
           <div className="profile-banner">
@@ -1265,6 +1269,12 @@ export function App() {
             </div>
             <div className="guardian-body">
               <div className="guardian-main">
+            {role === "Child" && activeProfile && (
+              <ChildAcknowledgementCard
+                profileId={activeProfile.id}
+                onAcknowledged={() => setClaudeStatusVersion((value) => value + 1)}
+              />
+            )}
             <CommandPanel
               maxChars={
                 MODERATED_ROLES.includes(role) || (!activeProfile && profiles.length > 0)

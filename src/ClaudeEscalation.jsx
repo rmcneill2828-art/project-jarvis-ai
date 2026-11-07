@@ -5,6 +5,13 @@
 
 import { useEffect, useRef } from "react";
 
+// For a Child allowed to ask Claude (ESR-0061 WP6c): what the conversation may
+// hold, disclosed rather than removed (Programme Sponsor decision, 7 November
+// 2026). Wording approved by the Programme Sponsor, 7 November 2026.
+export const CHILD_SEND_NOTE =
+  "Your recent conversation might include your name, or something JARVIS said using your notes. Claude " +
+  "is an AI, not a person, and it can make mistakes.";
+
 const OFFER_TEXT = {
   local_unavailable: "The model on this computer could not answer.",
   research_cue: "Claude may give a more thorough answer to this.",
@@ -118,6 +125,7 @@ export function ClaudeConfirmDialog({ offer, busy, returnFocusRef, onConfirm, on
               ? "Your saved memory notes will also be sent."
               : "Your saved memory notes will not be sent."}
           </p>
+          {offer.child && <p className="escalation-child-note">{CHILD_SEND_NOTE}</p>}
           <blockquote className="escalation-message">{offer.message}</blockquote>
           <p>
             This costs money. A question costs a few cents at most. Allowance left this month:{" "}

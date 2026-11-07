@@ -12,6 +12,7 @@ import uuid
 from typing import Any
 
 from jarvis.identity.admin_pin import AdminPin
+from jarvis.identity.child_consent import ChildConsentStore
 from jarvis.identity.safety_events import SafetyEventStore
 from jarvis.identity.store import ProfileRecord, ProfileStore, utc_now
 from jarvis.shared.errors import ClientFacingPermissionError, ClientFacingValueError
@@ -51,6 +52,86 @@ class ProfileService:
         self.pin = pin or AdminPin(store)
         # Moderation's safety events share the identity database (WP6b, M5).
         self.safety_events = SafetyEventStore(store)
+        # A Child's consent to ask Claude, in the same database (WP6c, C2).
+        self.child_consents = ChildConsentStore(store)
+
+    # -- Claude for a Child (ESR-0061 WP6c, EIP-ESR0061-006 C1, C2, 6.6) --------
+
+    def _child(self, profile_id: str) -> ProfileRecord:
+        record = self._store.get(profile_id)
+        if record is None:
+            msg = "No such profile."
+            raise ClientFacingValueError(msg)
+        if record.role != "Child":
+            msg = "Consent to ask Claude is only for a Child profile."
+            raise ClientFacingValueError(msg)
+        return record
+
+    def record_child_consent(self, administrator: ProfileRecord, profile_id: str) -> dict[str, Any]:
+        """An Administrator allows a Child profile to ask Claude. Needs the PIN
+        set (P3), so the child cannot simply switch up and allow it themselves."""
+
+        if administrator.role != "Administrator":
+            msg = "Only an Administrator profile can allow a child to ask Claude."
+            raise ClientFacingPermissionError(msg)
+        if not self.pin.is_set():
+            msg = "Set the Administrator PIN first: without it, a child could switch profiles and allow this themselves."
+            raise ClientFacingValueError(msg)
+        self._child(profile_id)
+        current = self.child_consents.current(profile_id)
+        if current is not None and not self._giver_is_administrator(current.consented_by):
+            # A consent whose giver is no longer an Administrator is replaced,
+            # not kept, so the new one is this Administrator's (review Low L2).
+            self.child_consents.revoke(profile_id)
+        self.child_consents.record(profile_id, administrator.id)
+        return self.child_consent_status(profile_id)
+
+    def _giver_is_administrator(self, profile_id: str) -> bool:
+        giver = self._store.get(profile_id)
+        return giver is not None and giver.role == "Administrator"
+
+    def revoke_child_consent(self, profile_id: str) -> dict[str, Any]:
+        self._child(profile_id)
+        self.child_consents.revoke(profile_id)
+        return self.child_consent_status(profile_id)
+
+    def acknowledge_child_consent(self, child: ProfileRecord) -> dict[str, Any]:
+        """The child's own acknowledgement, for themselves only."""
+
+        if child.role != "Child":
+            msg = "Only a Child profile acknowledges this, for itself."
+            raise ClientFacingPermissionError(msg)
+        if not self.child_consents.acknowledge(child.id):
+            msg = "Nobody has allowed this profile to ask Claude."
+            raise ClientFacingValueError(msg)
+        return self.child_consent_status(child.id)
+
+    def child_may_ask_claude(self, record: ProfileRecord | None) -> bool:
+        """True only for a Child whose consent is recorded, acknowledged and
+        unrevoked, given by a profile that is still an Administrator, with the
+        PIN set. Checked on every offer and every send, so revoking takes
+        effect at once."""
+
+        if record is None or record.role != "Child" or not self.pin.is_set():
+            return False
+        consent = self.child_consents.current(record.id)
+        if consent is None or consent.acknowledged_at is None:
+            return False
+        return self._giver_is_administrator(consent.consented_by)
+
+    def child_consent_status(self, profile_id: str) -> dict[str, Any]:
+        record = self._child(profile_id)
+        consent = self.child_consents.current(profile_id)
+        giver = None if consent is None else self._store.get(consent.consented_by)
+        return {
+            "profileId": profile_id,
+            "recorded": consent is not None,
+            "recordedAt": None if consent is None else consent.recorded_at,
+            "recordedBy": None if giver is None else giver.display_name,
+            "acknowledged": consent is not None and consent.acknowledged_at is not None,
+            "acknowledgedAt": None if consent is None else consent.acknowledged_at,
+            "allowed": self.child_may_ask_claude(record),
+        }
 
     def create_profile(self, display_name: str, role: str) -> ProfileRecord:
         """Create and persist a new profile.

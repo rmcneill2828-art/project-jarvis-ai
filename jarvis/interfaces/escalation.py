@@ -21,7 +21,8 @@ use it has *confirmed*, and the month's cap has room:
 Who may escalate is decided in two independent places (6.8): the RPC layer,
 from the server-held active profile, and Sentinel's `TrustTierPolicy`, which
 refuses the cloud capability to any requester that is not an Administrator or
-an Adult - Child until WP6, Guest always, and anyone with no role.
+an Adult, or a Child with a recorded and acknowledged consent (ESR-0061 WP6c):
+never a Guest or anyone with no role.
 """
 
 from __future__ import annotations
@@ -51,8 +52,8 @@ from sentinel.providers import CLOUD_TEXT_GENERATION_CAPABILITY
 
 logger = logging.getLogger(__name__)
 
-# Household roles that may use the cloud route. Child is excluded until WP6
-# supplies consent and moderation (decision S6); Guest never escalates.
+# Household roles that may always use the cloud route. A Child may only with
+# consent (ProfileService.child_may_ask_claude, ESR-0061 WP6c); a Guest never.
 ESCALATION_ROLES = frozenset({"Administrator", "Adult"})
 
 OFFER_TTL_SECONDS = 600.0

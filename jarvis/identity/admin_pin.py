@@ -243,6 +243,12 @@ class AdminPin:
                     "INSERT INTO pin_notices (kind, at, detail) VALUES (?, ?, NULL)",
                     (NOTICE_RESET, _iso(self._clock())),
                 )
+                # Every child's consent to ask Claude ends with the PIN, so a new
+                # PIN never revives an old consent unasked (WP6c review, Low L1).
+                connection.execute(
+                    "UPDATE child_consents SET revoked_at = ? WHERE revoked_at IS NULL",
+                    (_iso(self._clock()),),
+                )
         return removed
 
     def take_notices(self) -> list[dict[str, Any]]:

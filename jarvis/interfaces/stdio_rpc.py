@@ -796,6 +796,10 @@ class StdioRpcServer:
             "pin.set": self._pin_set,
             "pin.change": self._pin_change,
             "pin.takeNotices": self._pin_take_notices,
+            "consent.status": self._consent_status,
+            "consent.record": self._consent_record,
+            "consent.revoke": self._consent_revoke,
+            "consent.acknowledge": self._consent_acknowledge,
             "gia.status": self._gia_status,
             "gia.engineeringStatus": self._gia_engineering_status,
         }
@@ -872,8 +876,7 @@ class StdioRpcServer:
             reason is None
             or provider is None
             or not self._runtime.escalation_available
-            or active is None
-            or active.role not in ESCALATION_ROLES
+            or not self._may_escalate(active)
         ):
             return not_offered
         snapshot = provider.ledger.snapshot()
@@ -885,10 +888,28 @@ class StdioRpcServer:
             "token": self._escalation_offers.issue(active.id, message),
             "expiresInSeconds": int(self._escalation_offers.ttl_seconds),
             "model": provider.model,
-            # What the confirmation must tell the person is being sent.
-            "sendsMemory": active.share_memory_with_cloud,
+            # What the confirmation must tell the person is being sent. A
+            # Child's notes are never sent; their recent conversation may hold
+            # their name, which the confirmation says (WP6c, disclosed).
+            "sendsMemory": active.share_memory_with_cloud and active.role != "Child",
+            "child": active.role == "Child",
             "allowance": allowance_payload(snapshot, provider.usd_per_gbp),
         }
+
+    def _may_escalate(self, active) -> bool:
+        """The RPC layer's role check (the first of two; Sentinel's is the
+        second): an Administrator or Adult, or a Child with consent (WP6c)."""
+
+        if active is None:
+            return False
+        return active.role in ESCALATION_ROLES or self._identity_service.child_may_ask_claude(active)
+
+    def _require_may_escalate(self, active) -> None:
+        if active is None:
+            msg = "Select a profile first."
+            raise ClientFacingPermissionError(msg)
+        if not self._may_escalate(active):
+            raise ClientFacingPermissionError(CLOUD_NOT_PERMITTED_MESSAGE)
 
     def _guardian_escalation_offer(self, params: dict[str, Any]) -> dict[str, Any]:
         """Ask Claude: an offer for a message the person chose, at any time."""
@@ -906,7 +927,7 @@ class StdioRpcServer:
         # (WP6b review, Copilot Low L-1; reachable once WP6c opens it to a Child).
         if self._moderation_role(active) in MODERATED_ROLES:
             _require_max_length(message, MODERATED_MESSAGE_CHARS, "params.message")
-        _require_role(active, ESCALATION_ROLES, CLOUD_NOT_PERMITTED_MESSAGE)
+        self._require_may_escalate(active)
         if not self._runtime.escalation_available:
             msg = "Asking Claude is not set up on this computer."
             raise ClientFacingValueError(msg)
@@ -929,7 +950,9 @@ class StdioRpcServer:
             msg = "params.token must be a string."
             raise ClientFacingTypeError(msg)
         active = self._identity_service.active_profile()
-        _require_role(active, ESCALATION_ROLES, CLOUD_NOT_PERMITTED_MESSAGE)
+        # Checked again at send time, so a consent revoked after the offer
+        # stops the question here (WP6c).
+        self._require_may_escalate(active)
         message = self._escalation_offers.redeem(token, active.id)
         if message is None:
             msg = "This offer has expired or was already used. Ask again."
@@ -939,7 +962,8 @@ class StdioRpcServer:
             active.id,
             role=active.role,
             include_household=_sees_household_notes(active),
-            share_memory=active.share_memory_with_cloud,
+            share_memory=active.share_memory_with_cloud and active.role != "Child",
+            child_consent=self._identity_service.child_may_ask_claude(active),
         )
         if response.blocked is not None:
             self._identity_service.safety_events.record(active.id, response.blocked.category, response.blocked.direction)
@@ -962,7 +986,7 @@ class StdioRpcServer:
             "claude": {
                 "configured": configured,
                 "model": provider.model if configured and provider is not None else None,
-                "mayEscalate": active is not None and active.role in ESCALATION_ROLES,
+                "mayEscalate": self._may_escalate(active),
                 "allowance": (
                     allowance_payload(provider.ledger.snapshot(), provider.usd_per_gbp)
                     if configured and provider is not None
@@ -1119,10 +1143,54 @@ class StdioRpcServer:
         notes_removed, proposals_discarded = self._runtime.erase_profile_data(profile_id)
         # Its safety events go with it (ESR-0061 WP6b, M5).
         self._identity_service.safety_events.delete_for_profile(profile_id)
+        # So do its consent records (WP6c, C2).
+        self._identity_service.child_consents.delete_for_profile(profile_id)
         # An open offer to ask Claude holds the person's question in memory.
         self._escalation_offers.discard_profile(profile_id)
         self._identity_service.delete_profile(profile_id)
         return {"erased": True, "notesRemoved": notes_removed, "proposalsDiscarded": proposals_discarded}
+
+    # -- Claude for a Child (ESR-0061 WP6c, EIP-ESR0061-006 C1, C2, 6.6) ---------
+    # Off by default. An Administrator records and revokes; the child
+    # acknowledges for themselves; the role is always the server-held active
+    # profile's, never a parameter.
+
+    def _consent_target(self, params: dict[str, Any]) -> str:
+        profile_id = params.get("profileId")
+        if not isinstance(profile_id, str):
+            msg = "params.profileId must be a string."
+            raise ClientFacingTypeError(msg)
+        return profile_id
+
+    def _consent_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        """An Administrator, for any Child; a Child, for itself only."""
+
+        active = self._identity_service.active_profile()
+        if active is not None and active.role == "Child" and params.get("profileId") in (None, active.id):
+            return self._identity_service.child_consent_status(active.id)
+        _require_role(active, ADMINISTRATOR_ROLES, "Only an Administrator profile can see this.")
+        return self._identity_service.child_consent_status(self._consent_target(params))
+
+    def _consent_record(self, params: dict[str, Any]) -> dict[str, Any]:
+        active = self._identity_service.active_profile()
+        _require_role(active, ADMINISTRATOR_ROLES, "Only an Administrator profile can allow a child to ask Claude.")
+        return self._identity_service.record_child_consent(active, self._consent_target(params))
+
+    def _consent_revoke(self, params: dict[str, Any]) -> dict[str, Any]:
+        active = self._identity_service.active_profile()
+        _require_role(active, ADMINISTRATOR_ROLES, "Only an Administrator profile can turn this off.")
+        profile_id = self._consent_target(params)
+        status = self._identity_service.revoke_child_consent(profile_id)
+        # An open offer would otherwise still hold the child's question.
+        self._escalation_offers.discard_profile(profile_id)
+        return status
+
+    def _consent_acknowledge(self, params: dict[str, Any]) -> dict[str, Any]:
+        active = self._identity_service.active_profile()
+        if active is None:
+            msg = "Only a Child profile acknowledges this, for itself."
+            raise ClientFacingPermissionError(msg)
+        return self._identity_service.acknowledge_child_consent(active)
 
     def _profile_set_cloud_memory(self, params: dict[str, Any]) -> dict[str, Any]:
         """Administrator only: whether a profile's retained memory notes may

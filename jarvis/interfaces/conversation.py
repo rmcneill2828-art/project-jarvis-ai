@@ -33,6 +33,11 @@ class ConversationRequest:
     # active profile - never from a client parameter (ESR-0061 WP3b,
     # EIP-ESR0061-003 6.8). Sentinel's policy reads it for the cloud route.
     requester_role: str | None = None
+    # True only for a Child whose consent to ask Claude is recorded,
+    # acknowledged and unrevoked, decided by the server from its own records
+    # (ESR-0061 WP6c, EIP-ESR0061-006 6.6). Sentinel's cloud rule admits a
+    # Child only with it.
+    child_cloud_consent: bool = False
 
 
 @dataclass(frozen=True)

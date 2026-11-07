@@ -1548,6 +1548,62 @@ async fn change_pin(
     .await
 }
 
+/// Claude for a Child (ESR-0061 WP6c): the consent status of a Child profile.
+/// An Administrator names the profile; a Child sees only its own (no id).
+#[tauri::command]
+async fn consent_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    profile_id: Option<String>,
+) -> Result<Value, String> {
+    let params = match profile_id {
+        Some(id) => json!({ "profileId": id }),
+        None => json!({}),
+    };
+    call_backend_off_main_thread(state, app_handle, "consent.status", params).await
+}
+
+/// An Administrator allows a Child profile to ask Claude.
+#[tauri::command]
+async fn record_consent(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    profile_id: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "consent.record",
+        json!({ "profileId": profile_id }),
+    )
+    .await
+}
+
+/// An Administrator turns it off again.
+#[tauri::command]
+async fn revoke_consent(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    profile_id: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "consent.revoke",
+        json!({ "profileId": profile_id }),
+    )
+    .await
+}
+
+/// The child's own acknowledgement, for the signed-in Child profile only.
+#[tauri::command]
+async fn acknowledge_consent(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "consent.acknowledge", json!({})).await
+}
+
 #[tauri::command]
 async fn active_profile(
     state: State<'_, BackendState>,
@@ -1695,6 +1751,10 @@ pub fn run() {
             take_pin_notices,
             set_pin,
             change_pin,
+            consent_status,
+            record_consent,
+            revoke_consent,
+            acknowledge_consent,
             list_agents,
             invoke_agent,
             memory_status,

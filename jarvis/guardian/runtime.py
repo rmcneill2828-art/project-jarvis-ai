@@ -360,6 +360,7 @@ class GuardianRuntime:
         role: str | None,
         include_household: bool,
         share_memory: bool,
+        child_consent: bool = False,
     ) -> ConversationResponse:
         """Answer `message` through the cloud provider (ESR-0061 WP3b).
 
@@ -391,7 +392,8 @@ class GuardianRuntime:
         if history and history[-1][0] == message:
             history = history[:-1]
         memory_notes: tuple[str, ...] = ()
-        if share_memory and self._memory_service is not None:
+        # A Child's notes never go to Claude, whatever is passed (C2).
+        if share_memory and role != "Child" and self._memory_service is not None:
             memory_notes = cognitive_core.memory_notes(
                 self._memory_service.list_visible(profile_id, include_household=include_household)
             )
@@ -404,6 +406,7 @@ class GuardianRuntime:
                 history=history,
                 memory_notes=memory_notes,
                 requester_role=role,
+                child_cloud_consent=child_consent and role == "Child",
             )
         )
         if moderated and response.is_model_reply:

@@ -76,6 +76,9 @@ class SentinelGatedConversationProvider:
             # Server-derived (see ConversationRequest); Sentinel's policy needs
             # it to gate the cloud route.
             metadata["role"] = request.requester_role
+        if request.child_cloud_consent:
+            # Server-derived too: the Child's consent record (ESR-0061 WP6c).
+            metadata["child_consent"] = "recorded"
         sentinel_request = SentinelRequest(
             source=self._source,
             intent=self._intent,

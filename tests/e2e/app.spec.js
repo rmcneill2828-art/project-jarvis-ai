@@ -42,6 +42,8 @@ async function mockTauriIpc(
     dataMock = {},
     // The Administrator PIN (WP6a): { set, pin, notices, lockSeconds }.
     pinMock = {},
+    // Claude for a Child (WP6c): { [profileId]: { recorded, acknowledged, recordedBy } }.
+    consentMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -68,6 +70,7 @@ async function mockTauriIpc(
       settingsMock,
       dataMock,
       pinMock,
+      consentMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -193,10 +196,31 @@ async function mockTauriIpc(
             token: `token-${window.__escalateCalls.length + 1}`,
             expiresInSeconds: 600,
             model: "claude-sonnet-5-5",
-            sendsMemory: Boolean(claude && claude.sendsMemory),
+            sendsMemory: Boolean(claude && claude.sendsMemory) && !(state.active && state.active.role === "Child"),
+            child: Boolean(state.active && state.active.role === "Child"),
             allowance: claudeAllowance,
             message,
           });
+          // Claude for a Child (WP6c), as the backend: recorded by an
+          // Administrator, acknowledged by the child, both needed.
+          const consentState = (window.__consentState = window.__consentState || {
+            byId: JSON.parse(JSON.stringify(consentMock)),
+            calls: [],
+          });
+          const consentStatus = (id) => {
+            const entry = consentState.byId[id] || {};
+            const recorded = Boolean(entry.recorded);
+            const acknowledged = recorded && Boolean(entry.acknowledged);
+            return {
+              profileId: id,
+              recorded,
+              recordedAt: recorded ? "2026-11-07T15:00:00+00:00" : null,
+              recordedBy: recorded ? entry.recordedBy || "Robert" : null,
+              acknowledged,
+              acknowledgedAt: acknowledged ? "2026-11-07T15:05:00+00:00" : null,
+              allowed: acknowledged,
+            };
+          };
           // Local AI setup (ESR-0061 WP3c). The default is a healthy machine with
           // the recommended model in use, so other tests see a quiet panel.
           window.__ollamaCalls = window.__ollamaCalls || [];
@@ -381,12 +405,50 @@ async function mockTauriIpc(
                 model: "claude-sonnet-5-5",
                 // As the backend: only an Administrator or an Adult may ask Claude.
                 mayEscalate:
-                  claude.mayEscalate !== false && (!state.active || ["Administrator", "Adult"].includes(state.active.role)),
+                  claude.mayEscalate !== false &&
+                  (!state.active ||
+                    ["Administrator", "Adult"].includes(state.active.role) ||
+                    (state.active.role === "Child" && consentStatus(state.active.id).allowed)),
                 allowance: claudeAllowance,
               },
             });
           }
           if (cmd === "offer_escalation") return Promise.resolve(claudeOffer("requested", args.message));
+          if (cmd === "consent_status") {
+            const child = state.active && state.active.role === "Child";
+            if (child && (args.profileId === undefined || args.profileId === state.active.id)) {
+              return Promise.resolve(consentStatus(state.active.id));
+            }
+            if (!state.active || state.active.role !== "Administrator") {
+              return Promise.reject(new Error("PermissionError: Only an Administrator profile can see this."));
+            }
+            return Promise.resolve(consentStatus(args.profileId));
+          }
+          if (cmd === "record_consent" || cmd === "revoke_consent") {
+            consentState.calls.push([cmd, args.profileId]);
+            if (!state.active || state.active.role !== "Administrator") {
+              return Promise.reject(new Error("PermissionError: Only an Administrator profile can do this."));
+            }
+            if (cmd === "record_consent" && !(window.__pinState && window.__pinState.set) && !pinMock.set) {
+              return Promise.reject(
+                new Error("ValueError: Set the Administrator PIN first: without it, a child could switch profiles and allow this themselves."),
+              );
+            }
+            consentState.byId[args.profileId] =
+              cmd === "record_consent"
+                ? { ...(consentState.byId[args.profileId] || {}), recorded: true, recordedBy: state.active.displayName }
+                : {};
+            return Promise.resolve(consentStatus(args.profileId));
+          }
+          if (cmd === "acknowledge_consent") {
+            consentState.calls.push([cmd]);
+            const entry = state.active && consentState.byId[state.active.id];
+            if (!state.active || state.active.role !== "Child" || !entry || !entry.recorded) {
+              return Promise.reject(new Error("ValueError: Nobody has allowed this profile to ask Claude."));
+            }
+            entry.acknowledged = true;
+            return Promise.resolve(consentStatus(state.active.id));
+          }
           if (cmd === "escalate_message") {
             window.__escalateCalls.push(args.token);
             if (claude && claude.escalateError) return Promise.reject(new Error(claude.escalateError));
@@ -637,6 +699,7 @@ async function mockTauriIpc(
       settingsMock,
       dataMock,
       pinMock,
+      consentMock,
     },
   );
 }
@@ -2547,13 +2610,14 @@ test("an Administrator sees every profile and can switch note sharing on for one
   expect(await page.evaluate(() => window.__settingsCalls)).toEqual([["share", "r5", true]]);
 });
 
-test("a Child's row says it cannot ask Claude and has no switch to turn on", async ({ page }) => {
+test("a Child's row says its notes are never sent to Claude and has no switch to turn on", async ({ page }) => {
   await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN });
   await page.goto("/");
   await openView(page, "Settings");
 
   const row = sharingRow(page, "Sam");
-  await expect(row).toContainText("cannot ask Claude, so none of its notes are ever sent");
+  // WP6c: a child may now be allowed to ask Claude, but never with their notes.
+  await expect(row).toContainText("A child's notes are never sent to Claude themselves.");
   await expect(row.getByRole("switch")).toBeDisabled();
   await expect(row.getByRole("switch")).not.toBeChecked();
 });
@@ -3247,4 +3311,76 @@ test("the Local AI panel offers the safety checker, and says what happens withou
   await expect(row).toContainText("it asks them to ask a grown-up");
   await row.getByRole("button", { name: "Download safety checker" }).click();
   await expect.poll(() => page.evaluate(() => window.__ollamaCalls)).toContainEqual(["pull", "llama-guard3:1b"]);
+});
+// --- ESR-0061 WP6c: Claude for a Child (EIP-ESR0061-006 C1, C2, 6.6) --------------------------------------------
+
+test("an Administrator allows a child to ask Claude from Settings, and can turn it off", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN, pinMock: { set: true, pin: PIN }, claude: {} });
+  await page.goto("/");
+  await openView(page, "Settings");
+  const section = page.locator(".child-claude");
+  await expect(section.getByRole("heading", { name: "Claude for a child" })).toBeVisible();
+  await expect(section).toContainText("might include their name");
+  await expect(section).toContainText("Their saved notes are not sent themselves, but something JARVIS said using them");
+  await expect(section).toContainText("up to six");
+  await expect(page.getByTestId("consent-status-p2")).toHaveText("Off.");
+
+  await section.getByRole("button", { name: "Allow Sam to ask Claude" }).click();
+  await expect(page.getByTestId("consent-status-p2")).toHaveText(
+    "Allowed by Robert. Waiting for Sam to say they understand.",
+  );
+  await section.getByRole("button", { name: "Turn off for Sam" }).click();
+  await expect(page.getByTestId("consent-status-p2")).toHaveText("Off.");
+  expect(await page.evaluate(() => window.__consentState.calls)).toEqual([
+    ["record_consent", "p2"],
+    ["revoke_consent", "p2"],
+  ]);
+});
+
+test("without a PIN, allowing a child is refused with the reason", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ADMIN, SAM], activeProfile: ADMIN, pinMock: { set: false }, claude: {} });
+  await page.goto("/");
+  await openView(page, "Settings");
+  await page.getByRole("button", { name: "Allow Sam to ask Claude" }).click();
+  await expect(page.locator(".child-claude").getByRole("alert")).toHaveText(/Set the Administrator PIN first/);
+});
+
+test("a child sees nothing about Claude until allowed, then says they understand and can ask", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, SAM],
+    activeProfile: SAM,
+    pinMock: { set: true, pin: PIN },
+    claude: { offerReason: "research_cue" },
+    consentMock: { p2: { recorded: true, recordedBy: "Robert" } },
+  });
+  await page.goto("/");
+  const card = page.locator(".child-acknowledgement");
+  await expect(card.getByRole("heading", { name: "You can ask Claude" })).toBeVisible();
+  await expect(card).toContainText("It is not a person");
+  await expect(card).toContainText("might include your name, or something JARVIS said using your notes");
+  await expect(page.getByRole("button", { name: "Ask Claude" })).toHaveCount(0);
+
+  await card.getByRole("button", { name: "I understand" }).click();
+  await expect(card).toHaveCount(0);
+
+  await sendMessage(page, "research volcanoes");
+  await page.getByRole("button", { name: "Review and ask Claude" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toContainText("Your saved memory notes will not be sent.");
+  await expect(dialog).toContainText("Your recent conversation might include your name, or something JARVIS said using your notes.");
+  await dialog.getByRole("button", { name: "Send to Claude" }).click();
+  await expect(page.locator(".conversation-message.guardian").last()).toContainText("Claude says");
+});
+
+test("a child with no consent sees no card and no Claude controls", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [ADMIN, SAM],
+    activeProfile: SAM,
+    pinMock: { set: true, pin: PIN },
+    claude: { offerReason: "research_cue" },
+  });
+  await page.goto("/");
+  await sendMessage(page, "research volcanoes");
+  await expect(page.locator(".child-acknowledgement")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Claude/ })).toHaveCount(0);
 });

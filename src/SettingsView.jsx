@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 
 import { PinSection } from "./AdminPin.jsx";
+import { ChildClaudeSection } from "./ChildConsent.jsx";
 
 import {
   canChangeClaudeKey,
@@ -292,7 +293,11 @@ function MemorySharingSection({ role, profiles, activeProfile, onProfileUpdated 
                   {profile.displayName} <span className="sharing-role">({profile.role})</span>
                 </label>
                 {!eligible && (
-                  <p className="local-ai-note">This profile cannot ask Claude, so none of its notes are ever sent.</p>
+                  <p className="local-ai-note">
+                    {profile.role === "Child"
+                      ? "A child's notes are never sent to Claude themselves. When the child may ask Claude, something JARVIS said using them can be part of the recent conversation that is sent."
+                      : "This profile cannot ask Claude, so none of its notes are ever sent."}
+                  </p>
                 )}
               </div>
               <input
@@ -659,6 +664,7 @@ export function SettingsView({
       {canChangeHouseholdSettings(role) && <PinSection onStatusChanged={() => setPinVersion((value) => value + 1)} />}
       {canChangeHouseholdSettings(role) && <AddProfileSection pinVersion={pinVersion} onProfileAdded={onProfileAdded} />}
       {canChangeClaudeKey(role) && <ClaudeKeySection />}
+      {canChangeHouseholdSettings(role) && <ChildClaudeSection profiles={profiles} />}
       <MemorySharingSection
         role={role}
         profiles={profiles}
