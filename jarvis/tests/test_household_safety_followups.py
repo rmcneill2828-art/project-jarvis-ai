@@ -458,11 +458,21 @@ def test_a_real_system_folder_is_refused_in_any_case():
     if sys.platform == "win32":
         system_root = os.environ.get("SystemRoot", "C:\\Windows")
         candidates = [system_root, system_root.upper(), system_root.lower()]
+    elif sys.platform == "darwin":
+        # Not /etc: on macOS it is a link to /private/etc, refused as a link
+        # before the system-folder test (found by the macOS CI job, ESR-0062 WP2).
+        candidates = ["/usr", "/USR", "/Library"]
     else:
         candidates = ["/etc", "/usr"]
     for candidate in candidates:
         with pytest.raises(ClientFacingValueError, match="system folders"):
             checked_user_path(candidate, kind="directory")
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="macOS's /etc is a link to /private/etc")
+def test_macos_etc_is_refused_too():
+    with pytest.raises(ClientFacingValueError):
+        checked_user_path("/etc", kind="directory")
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="Windows device and share paths")
@@ -520,7 +530,8 @@ def test_system_locations_per_platform(platform, path, inside):
 def test_export_refuses_a_system_folder_through_the_rpc(tmp_path):
     server = _server(tmp_path)
     admin = ensure_administrator_with_pin(server)
-    system_folder = os.environ.get("SystemRoot", "C:\\Windows") if sys.platform == "win32" else "/etc"
+    # /usr, not /etc: /etc is a link on macOS (see above).
+    system_folder = os.environ.get("SystemRoot", "C:\\Windows") if sys.platform == "win32" else "/usr"
 
     reply = _call(server, "profile.export", profileId=admin, directory=system_folder)
 

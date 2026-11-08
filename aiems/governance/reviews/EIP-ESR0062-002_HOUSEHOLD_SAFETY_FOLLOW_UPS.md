@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0062-002 |
 | Title | Engineering Implementation Package: WP2 Household Safety Follow-ups - Household Notes Hidden from a Child, Idle Lock, Backend Hardening |
-| Version | 0.4 |
-| Status | Built and reviewed (Copilot Pass, Antigravity Pass); awaiting Programme Sponsor approval of the built result |
+| Version | 0.5 |
+| Status | Implemented - committed `765b5f6`; CI green apart from a macOS test defect fixed in the WP3 commit; post-commit review Pass (Copilot, Antigravity) |
 | Session | ESR-0062 |
 | Work Package | WP2 |
 | Risk class | Elevated (changes who sees what, and when a signed-in Adult or Administrator is signed out). Copilot for design; both reviewers for the built result. |
@@ -206,12 +206,22 @@ Windows pytest; Linux pytest, ruff and validator in `python:3.12-slim` Docker; `
 
 **After the fixes:** Windows pytest **1549 passed, 4 skipped**; Linux (Docker) **1548 passed, 5 skipped**, ruff clean, version check agrees, validator 0 errors, pip-audit no known vulnerabilities; Playwright (Chromium) **197 passed, 5 skipped**; `vite build` succeeds; Rust unchanged since the Section 11.3 run.
 
+## 11.5 Approval, commit and post-commit (v0.5)
+
+| Step | Record |
+|---|---|
+| Built-result approval | **Approved** by the Programme Sponsor through the Sponsor Approval Service on parent `a21984e`; `submit-response ESR-0062 WP2` accepted (8 November 2026, 19:16 UTC), its own pytest and validator run clean. The optional 15-minute manual idle-lock check on the PC was not run; it is on the Mac visit 1 list (WP4) |
+| Commit | **`765b5f6`**, 32 files, carrying the WP1 completion records; pushed by the Programme Sponsor |
+| CI | Run 42515310482: python, frontend-build, playwright, rust, rust-windows and rust-macos passed. playwright-webkit (allowed to fail) failed the same 5 microphone tests as before WP1. **python-macos failed two new WP2 tests**: they used `/etc` as the system folder, which on macOS is a link to `/private/etc`, so `checked_user_path` refused it with the link message, not the system-folder message the tests expected. The folder was still refused; the tests named the wrong folder. Fixed in the WP3 commit: macOS uses `/usr`, `/USR` and `/Library`, plus a test that `/etc` is still refused |
+| Post-commit review | **Copilot Pass** (no High or Medium): the commit is the reviewed tree, 32 expected paths, nothing revealing the private sentence set; the macOS failure a test defect only. Low: CI stays red on python-macos until the WP3 commit lands. Info: note that a link to a system folder reports the link message - it does, because a link at the leaf is refused before any location test, whatever it points to. **Antigravity Pass** (no High or Medium), the same conclusions |
+
 ---
 
 # 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.5 | 8 November 2026 | Claude Engineering Implementer | Approved and committed (`765b5f6`); CI green apart from a macOS-only test defect (`/etc` is a link there), fixed in the WP3 commit; post-commit review Pass from Copilot and Antigravity (Section 11.5). |
 | 0.4 | 8 November 2026 | Claude Engineering Implementer | Implementation review: Copilot Pass (L-1, L-2, L-5, L-6 and an Info fixed; L-3, L-4 accepted), Antigravity Pass after the fixes (Section 11.4). |
 | 0.3 | 8 November 2026 | Claude Engineering Implementer | Design approved (D-1 15 minutes, D-2 backend validation, D-3 every role). Built (Section 11): six deviations and clarifications disclosed, including a bad Ollama address falling back to the default and a Linux-only case-folding bug found and fixed before review; evidence on Windows, Linux, Rust and the frontend. |
 | 0.2 | 8 November 2026 | Claude Engineering Implementer | Design review Conditional Pass (Copilot): H-1 accepted (household notes only for an Adult or Administrator, or with no profiles at all); M-1 to M-6 and L-1 to L-4 accepted (backend timer and mutex, fail-closed timestamp, sleep-safe clock, F1 rewritten, activity-tracker exclusion and e2e mocks, F4 bound and scope, OpenAI provider added to F3, command-form detail). |

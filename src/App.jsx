@@ -20,6 +20,7 @@ import { AgentFrameworkPanel } from "./AgentFrameworkPanel.jsx";
 import { MemoryManagementPanel } from "./MemoryManagementPanel.jsx";
 import { ClaudeBadge, ClaudeConfirmDialog, EscalationBar } from "./ClaudeEscalation.jsx";
 import { LocalAiPanel } from "./LocalAiPanel.jsx";
+import { VoicePanel } from "./VoicePanel.jsx";
 import { PresenceOrb } from "./PresenceOrb.jsx";
 import { FirstRun } from "./FirstRun.jsx";
 import { PinDialog, PinNotices } from "./AdminPin.jsx";
@@ -504,6 +505,8 @@ export function App() {
   // Model download progress and completion, pushed by the backend as
   // notifications (ESR-0061 WP3c); the Local AI panel acts on them.
   const [pullProgress, setPullProgress] = useState(null);
+  // The latest voice notification, for the Voice panel (ESR-0062 WP3).
+  const [voiceEvent, setVoiceEvent] = useState(null);
   const [pullFinished, setPullFinished] = useState(null);
   // Which model the person asked to switch to once its download ends. Held here,
   // and acted on here when the download ends, so it works whichever view is
@@ -860,6 +863,17 @@ export function App() {
       }
       if (event.payload?.method === "ollama.pullProgress") {
         setPullProgress(event.payload.params ?? null);
+      }
+      // Voice setup (ESR-0062 WP3): the panel shows progress; when a voice comes
+      // on or goes off, the platform status is re-read so the speak and
+      // microphone buttons follow without a restart.
+      if (event.payload?.method === "voice.downloadProgress" || event.payload?.method === "voice.changed") {
+        setVoiceEvent({ method: event.payload.method, params: event.payload.params ?? {}, at: Date.now() });
+      }
+      if (event.payload?.method === "voice.changed") {
+        invoke("platform_status")
+          .then((status) => setPlatformState(status))
+          .catch(() => {});
       }
       if (event.payload?.method === "ollama.pullFinished") {
         const finished = event.payload.params ?? {};
@@ -1485,6 +1499,7 @@ export function App() {
                 useWhenDoneRef={useWhenDoneRef}
                 onPullFinishedHandled={() => setPullFinished(null)}
               />
+              <VoicePanel activeProfile={activeProfile} voiceEvent={voiceEvent} />
             </div>
           </section>
         )}

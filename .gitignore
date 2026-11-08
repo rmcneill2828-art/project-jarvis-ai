@@ -90,3 +90,6 @@ playwright/.cache/
 # separately by src-tauri/.gitignore.
 # --------------------------------------------------
 .sidecar-build/
+
+# Voice models fetched for the release jobs' real voice round trip (ESR-0062 WP3, V11).
+.voice-models/

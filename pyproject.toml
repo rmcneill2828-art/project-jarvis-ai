@@ -10,6 +10,11 @@ dependencies = [
     "keyring>=25.7.0,<26",
     "piper-tts>=1.8.0,<2.0",
     "faster-whisper>=1.2.1,<2.0",
+    # PyAV decodes recordings for faster-whisper. Capped below 19 (ESR-0062 WP3,
+    # found by the Linux check): faster-whisper 1.2.1, the latest, calls
+    # av.open(..., metadata_errors=...), which PyAV 19 removed, so every
+    # transcription fails on a fresh install. Lift once faster-whisper adapts.
+    "av>=18.0.0,<19",
     # Kokoro (EBG-0125, EIP-ESR0053-002): Guardian's production speech-output
     # provider as of this addition, replacing Piper. Promoted here from the
     # now-removed evaluation-only `voice-eval` optional group once the live

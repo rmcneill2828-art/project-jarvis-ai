@@ -10,6 +10,7 @@
 .agent-framework-panel,
 .memory-management-panel,
 .local-ai-panel,
+.voice-panel,
 .capabilities-panel,
 .command-panel {
   border: 1px solid var(--line);
@@ -23,7 +24,8 @@
 .agent-framework-panel,
 .memory-management-panel,
 .capabilities-panel,
-.local-ai-panel {
+.local-ai-panel,
+.voice-panel {
   padding: 18px 20px;
 }
 
@@ -33,7 +35,8 @@
 .agent-framework-panel > h2,
 .memory-management-panel > h2,
 .capabilities-panel > h2,
-.local-ai-panel > h2 {
+.local-ai-panel > h2,
+.voice-panel > h2 {
   margin: 0 0 var(--space-3);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--line);
@@ -251,6 +254,7 @@
 .outline-action,
 .agent-invoke-button,
 .local-ai-panel button,
+.voice-panel button,
 .escalation-actions button,
 .escalation-offer button,
 .ask-claude-button,
@@ -266,6 +270,7 @@
 .outline-action:hover:not(:disabled),
 .agent-invoke-button:hover:not(:disabled),
 .local-ai-panel button:hover:not(:disabled),
+.voice-panel button:hover:not(:disabled),
 .profile-create-fields button:hover:not(:disabled) {
   background: rgba(143, 123, 255, 0.26);
 }
@@ -273,6 +278,7 @@
 .outline-action:disabled,
 .agent-invoke-button:disabled,
 .local-ai-panel button:disabled,
+.voice-panel button:disabled,
 .escalation-actions button:disabled,
 .escalation-offer button:disabled,
 .ask-claude-button:disabled,

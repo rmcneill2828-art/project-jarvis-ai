@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.236
+**Version:** 1.237
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.236 |
+| Version | 1.237 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -287,6 +287,7 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 | EBG-0176 | Vision Faculty: the Computer's Camera on Request (Phase 6 Increment C) | Programme Sponsor direction, 7 November 2026, during ESR-0061 WP7 ("A as the priority and B as a must after go live"); JRM-0001 Phase 6 Increment C (Vision); GAM-0001 Section 8.3; registered ESR-0061 WP7 | Approved Backlog | High | Programme Sponsor | **The Programme Sponsor's priority of the two camera items.** Let a person show JARVIS something through the computer's camera on request ("what is this?", reading a document or a label), the way push-to-talk works for speech: on demand only, never always-on, a visible indicator while the camera is in use, processed on this computer by a local vision model by default, nothing stored unless the person asks, and Sentinel-gated (GAM-0001 Section 8.3: observation only). It needs its own design before any build: per-profile consent and what the Child role may do (a child's image is the most sensitive data the product would touch), whether any image may ever go to Claude, the model and hardware fit (the 8 GB card already holds the chat model), and the Mac camera permission. **Timing to be set at the next session's planning**: before go-live would add scope to the go-live plan and must be an explicit Programme Sponsor decision. No implementation authorised by this entry. **Timing decided at ESR-0062 opening (Programme Sponsor, 8 November 2026): after go-live**, not added to the go-live scope; its design may be drafted during ESR-0062 if time allows (D22), and the build follows go-live. |
 | EBG-0177 | Home Cameras through Home Assistant (Security Monitoring) | Programme Sponsor direction, 7 November 2026, during ESR-0061 WP7 ("A as the priority and B as a must after go live"); JRM-0001 Phase 6 Increment C (Vision); GAM-0001 Section 8.3; registered ESR-0061 WP7 | Approved Backlog | Medium | Programme Sponsor | **Required after go-live** (Programme Sponsor). Read-only access to the household's cameras through Home Assistant: "is anyone at the front door?", snapshots on request, security monitoring and incident logging, within GAM-0001 Section 8.3 (approved camera access, observation only, never control) and 8.4 (pre-approved emergency actions only). Builds on EBG-0174 (read-only home state in conversation) and the existing read-only Home Assistant agent. Needs its own design: which cameras an Administrator exposes, who may view them (not a Child by default), retention of any snapshot, and no footage leaving the house. No implementation authorised by this entry. |
 | EBG-0178 | Copilot Reviewer Rules Name the Accepted Command Form | ESR-0062 WP1 post-commit review (8 November 2026): Copilot was refused every shell command and recorded no verdict; a re-run with a plain-commands instruction worked; registered ESR-0062 WP2 with the Programme Sponsor's agreement | Approved Backlog | Low | Programme Sponsor | `scripts/run_reviewer.py` gives Copilot narrow read-only `--allow-tool` rules, and its standing `TOOL_RULES` name the allowed commands but not their form, so a compound or piped command is refused and the run can end with no verdict. Add the command-form rule (one plain command at a time; no `cd`, `;`, `&&`, pipes or redirections). Allocated to ESR-0062 WP2 ([[EIP-ESR0062-002_HOUSEHOLD_SAFETY_FOLLOW_UPS|EIP-ESR0062-002]] R1); implementation follows that WP's approved EIP. |
+| EBG-0179 | A Voice Model That Fails to Load Stops the Backend Starting | ESR-0062 WP3 investigation (8 November 2026): the packaged Windows backend, started with the Kokoro variables set, exited with an uncaught `RuntimeError` from `KokoroProvider` | Approved Backlog | Medium | Programme Sponsor | `_build_speech_provider` / `_build_transcription_provider` let a load error escape `build_default_runtime`, so a missing, damaged or partly downloaded voice file leaves the app with no backend. A voice problem must cost only the voice: leave the provider off, log the exception type, report it so the screen can offer a fresh download. Allocated to ESR-0062 WP3 ([[EIP-ESR0062-003_VOICE_PROVISIONING|EIP-ESR0062-003]] V6), subject to the Programme Sponsor's agreement at design approval; implementation follows that WP's approved EIP. |
 ---
 
 # 5A. Active Backlog View
@@ -417,6 +418,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.237 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP3: EBG-0179 registered (a voice model that fails to load stops the backend starting; proposed for WP3, EIP-ESR0062-003 V6). |
 | 1.236 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP2: EBG-0178 registered (Copilot reviewer command form; allocated to WP2 with the Programme Sponsor's agreement); EBG-0172 noted as brought forward to ESR-0062 WP2. |
 | 1.235 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 opening: Programme Sponsor decisions recorded - EBG-0171 option A (household notes hidden from a Child; allocated to ESR-0062 WP2); EBG-0176 timing after go-live (design may be drafted in ESR-0062). |
 | 1.234 | 7 November 2026 | Claude Engineering Implementer | ESR-0061 WP7: WR-ESR0061-002 (Antigravity technology and security review) triaged; EBG-0171 to EBG-0175 registered; notes added to EBG-0128 and EBG-0150. EBG-0176 (the computer's camera on request, the Programme Sponsor's priority) and EBG-0177 (home cameras through Home Assistant, required after go-live) registered at the Programme Sponsor's direction. |

@@ -50,6 +50,34 @@ def detect_target_triple() -> str:
     raise BuildError("'rustc -vV' output did not contain a 'host:' line.")
 
 
+# Voice (ESR-0062 WP3, EIP-ESR0062-003 V9). Each of these reads data files or
+# native libraries that sit beside its own code - kokoro_onnx's config.json,
+# espeak-ng's library and data, Whisper's voice-activity model, PyAV's codecs,
+# CTranslate2's and ONNX Runtime's libraries - which a one-file build leaves
+# out unless asked. Without them the packaged voice fails only on the
+# household's computer; `--voice-self-check` (V10) proves they are present.
+VOICE_PACKAGING = (
+    "--collect-data",
+    "kokoro_onnx",
+    "--collect-data",
+    "faster_whisper",
+    *(
+        option
+        for package in (
+            "espeakng_loader",
+            "phonemizer",
+            "language_tags",
+            "segments",
+            "csvw",
+            "av",
+            "ctranslate2",
+            "onnxruntime",
+            "tokenizers",
+        )
+        for option in ("--collect-all", package)
+    ),
+)
+
 def build_sidecar(target_triple: str, work_dir: Path) -> Path:
     """Run PyInstaller, returning the path to the produced sidecar executable.
 
@@ -92,6 +120,7 @@ def build_sidecar(target_triple: str, work_dir: Path) -> Path:
         "keyring",
         "--collect-submodules",
         "keyring.backends",
+        *VOICE_PACKAGING,
         str(ENTRY_SCRIPT),
     ]
     if "windows" in target_triple:

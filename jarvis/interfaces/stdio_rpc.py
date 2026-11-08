@@ -37,7 +37,7 @@ import sys
 import threading
 import traceback
 from collections import OrderedDict
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
@@ -49,6 +49,16 @@ from jarvis.agents.gia_engineering_agent import GiaEngineeringAgent
 from jarvis.agents.home_assistant_agent import HomeAssistantClient, HomeAssistantStateQueryAgent
 from jarvis.config.ollama_models import CLASSIFIER as OLLAMA_CLASSIFIER
 from jarvis.config.ollama_models import MODELS as OLLAMA_CATALOG
+from jarvis.config.voice_models import (
+    KOKORO as KOKORO_VOICE_MODEL,
+)
+from jarvis.config.voice_models import (
+    KOKORO_MODEL_FILE,
+    KOKORO_VOICES_FILE,
+    VOICE_MODELS,
+    WHISPER_BASE_EN,
+    VoiceModel,
+)
 from jarvis.gia.engineering_observability import EngineeringStateObserver
 from jarvis.gia.observability import LocalResourceObserver
 from jarvis.guardian.runtime import GuardianRuntime
@@ -79,11 +89,11 @@ from jarvis.interfaces.retention import RetentionService
 from jarvis.interfaces.sentinel_agent import SentinelGatedAgentService
 from jarvis.interfaces.sentinel_conversation import SentinelGatedConversationProvider
 from jarvis.interfaces.voice import (
-    GuardianSpeechProvider,
-    GuardianTranscriptionProvider,
     SentinelGatedSpeechProvider,
     SentinelGatedTranscriptionProvider,
 )
+from jarvis.interfaces.voice_setup import Location as VoiceLocation
+from jarvis.interfaces.voice_setup import VoiceSetup
 from jarvis.memory.profile_export import write_profile_export
 from jarvis.memory.service import PersonalMemoryService
 from jarvis.memory.store import PersonalMemoryStore
@@ -167,6 +177,8 @@ DEFAULT_CLAUDE_CAP_GBP = 30.0
 DEFAULT_USD_PER_GBP = 1.25
 SPEND_DB_FILENAME = "spend.db"
 OLLAMA_MODEL_CHOICE_FILENAME = "ollama_model.json"
+# Voice model folders live under ~/.jarvis/models (ESR-0062 WP3, V1).
+VOICE_MODELS_DIRNAME = "models"
 # Downloading or choosing the local model changes what every profile talks to
 # and uses disk and bandwidth, so it is for the household's adults.
 MODEL_MANAGER_ROLES = frozenset({"Administrator", "Adult"})
@@ -368,65 +380,76 @@ def _build_anthropic_provider(environ: Mapping[str, str], key_manager: ClaudeKey
     return AnthropicProvider(configuration, credential_source=key_manager.resolve)
 
 
-def _build_speech_provider(
-    gateway: SentinelTrustGateway, environ: Mapping[str, str]
-) -> GuardianSpeechProvider | None:
-    """Build a Sentinel-gated Kokoro speech provider, or None if unconfigured.
+def _voice_loader(gateway: SentinelTrustGateway) -> Callable[[VoiceModel, VoiceLocation], Any]:
+    """Build a Sentinel-gated provider for a voice model whose files have been
+    found and checked (ESR-0062 WP3; called by `VoiceSetup` on a background
+    thread, never during start-up).
 
-    Mirrors `_build_real_provider()`'s absent-credential handling: an absent
-    or blank `JARVIS_KOKORO_MODEL_PATH` or `JARVIS_KOKORO_VOICES_PATH` means
-    the capability is not available on this machine, not a startup failure -
-    `GuardianRuntime.speak()` already returns the honest `not_connected`
-    outcome for a None provider. A present-but-invalid path is a deliberate
-    exception, not softened here (EIP-ESR0044-001 Section 8 item 2, carried
-    over unchanged from Piper) - `KokoroProvider`'s own constructor already
-    raises `RuntimeError` on an unloadable model.
-
-    Reuses the caller's `gateway` instance rather than constructing a second
-    one, so conversation, memory and speech all share one trust boundary and
-    audit trail (matching how `memory_service` already reuses it).
+    Speech uses Kokoro (`bm_george`, fallback `bf_isabella`, British English,
+    EIP-ESR0053-002); listening uses `faster-whisper`. Both reuse the caller's
+    `gateway`, so conversation, memory and voice share one trust boundary and
+    audit trail. A load error propagates to `VoiceSetup`, which leaves that
+    voice off and logs the exception type (EBG-0179).
     """
 
-    model_path = environ.get(KOKORO_MODEL_PATH_ENV_VAR)
-    voices_path = environ.get(KOKORO_VOICES_PATH_ENV_VAR)
-    if not model_path or not voices_path:
-        return None
-    kokoro_provider = KokoroProvider(
-        ProviderConfiguration(
-            provider_name="kokoro",
-            endpoint=model_path,
-            metadata={
-                "voices_path": voices_path,
-                "voice": KOKORO_VOICE,
-                "fallback_voice": KOKORO_FALLBACK_VOICE,
-                "lang": KOKORO_LANG,
-            },
+    def load(model: VoiceModel, location: VoiceLocation) -> Any:
+        if model.purpose == "speaking":
+            kokoro_provider = KokoroProvider(
+                ProviderConfiguration(
+                    provider_name="kokoro",
+                    endpoint=str(location.files[KOKORO_MODEL_FILE]),
+                    metadata={
+                        "voices_path": str(location.files[KOKORO_VOICES_FILE]),
+                        "voice": KOKORO_VOICE,
+                        "fallback_voice": KOKORO_FALLBACK_VOICE,
+                        "lang": KOKORO_LANG,
+                    },
+                )
+            )
+            return SentinelGatedSpeechProvider(gateway=gateway, provider=kokoro_provider)
+        target = str(location.folder) if location.folder is not None else location.name
+        whisper_provider = WhisperProvider(ProviderConfiguration(provider_name="whisper", endpoint=target))
+        return SentinelGatedTranscriptionProvider(gateway=gateway, provider=whisper_provider)
+
+    return load
+
+
+def _voice_overrides(environ: Mapping[str, str]) -> dict[str, VoiceLocation]:
+    """The developer settings that override the voice folders.
+
+    `JARVIS_KOKORO_MODEL_PATH` and `JARVIS_KOKORO_VOICES_PATH` (both needed)
+    name Kokoro's two files; `JARVIS_WHISPER_MODEL_PATH` names a Whisper model
+    folder, or a model name such as `base.en`. Files at the catalog's sizes
+    are hash-checked before use; anything else is a developer's own model,
+    loaded as given, as before WP3 (EIP-ESR0062-003 V1).
+    """
+
+    overrides: dict[str, VoiceLocation] = {}
+    model_path = _clean_env(environ, KOKORO_MODEL_PATH_ENV_VAR)
+    voices_path = _clean_env(environ, KOKORO_VOICES_PATH_ENV_VAR)
+    if model_path and voices_path:
+        overrides[KOKORO_VOICE_MODEL.key] = VoiceLocation(
+            files={KOKORO_MODEL_FILE: Path(model_path), KOKORO_VOICES_FILE: Path(voices_path)},
+            from_environment=True,
         )
-    )
-    return SentinelGatedSpeechProvider(gateway=gateway, provider=kokoro_provider)
+    whisper = _clean_env(environ, WHISPER_MODEL_PATH_ENV_VAR)
+    if whisper:
+        folder = Path(whisper)
+        if folder.is_dir():
+            overrides[WHISPER_BASE_EN.key] = VoiceLocation(
+                files={item.name: folder / item.name for item in WHISPER_BASE_EN.files},
+                folder=folder,
+                from_environment=True,
+            )
+        else:
+            overrides[WHISPER_BASE_EN.key] = VoiceLocation(files={}, name=whisper, from_environment=True)
+    return overrides
 
 
-def _build_transcription_provider(
-    gateway: SentinelTrustGateway, environ: Mapping[str, str]
-) -> GuardianTranscriptionProvider | None:
-    """Build a Sentinel-gated Whisper transcription provider, or None if unconfigured.
+def _voice_models_root(environ: Mapping[str, str]) -> Path:
+    """`~/.jarvis/models`: beside `memory/` and `logs/` in the JARVIS data folder."""
 
-    Mirrors `_build_speech_provider()` exactly, for the opposite data
-    direction: an absent or blank `JARVIS_WHISPER_MODEL_PATH` means speech
-    input is not available on this machine, not a startup failure -
-    `GuardianRuntime.transcribe()` already returns the honest
-    `not_connected` outcome for a None provider. Per EIP-ESR0047-001
-    Section 5.2, setting this variable is itself the deployment-level
-    enablement act this capability is gated on.
-    """
-
-    model_path = environ.get(WHISPER_MODEL_PATH_ENV_VAR)
-    if not model_path:
-        return None
-    whisper_provider = WhisperProvider(
-        ProviderConfiguration(provider_name="whisper", endpoint=model_path)
-    )
-    return SentinelGatedTranscriptionProvider(gateway=gateway, provider=whisper_provider)
+    return _memory_db_path(environ).parent.parent / VOICE_MODELS_DIRNAME
 
 
 def _build_home_assistant_agent(environ: Mapping[str, str]) -> HomeAssistantStateQueryAgent | None:
@@ -650,9 +673,6 @@ def build_default_runtime(
     # against - one trust boundary, not two (EIP-ESR0027-001 Section 4).
     memory_service = PersonalMemoryService(gateway=gateway, store=memory_store)
 
-    speech_provider = _build_speech_provider(gateway, environ)
-    transcription_provider = _build_transcription_provider(gateway, environ)
-
     # Agent Framework Phase 3 (EIP-ESR0049-001): unlike speech/transcription,
     # the GIA observability agent has no external credential or model
     # dependency, so it is always registered, reusing the same shared
@@ -695,8 +715,6 @@ def build_default_runtime(
     runtime = GuardianRuntime(
         conversation_provider=conversation_provider,
         memory_service=memory_service,
-        speech_provider=speech_provider,
-        transcription_provider=transcription_provider,
         agent_service=agent_service,
         escalation_provider=escalation_provider,
         ollama_setup=ollama_setup,
@@ -707,6 +725,24 @@ def build_default_runtime(
         # Child and Guest conversations are checked by a local classifier on the
         # same Ollama, on the processor (ESR-0061 WP6b, EIP-ESR0061-006 M1-M3).
         moderation=ModerationService(ollama_endpoint),
+    )
+    # Voice is checked and loaded in the background once the server starts,
+    # never here (ESR-0062 WP3, V5): start-up never waits for, or fails
+    # because of, a voice model (EBG-0179).
+    def _install_voice(model: VoiceModel, provider: Any) -> None:
+        if model.purpose == "speaking":
+            runtime.set_speech_provider(provider)
+        else:
+            runtime.set_transcription_provider(provider)
+
+    runtime.attach_voice_setup(
+        VoiceSetup(
+            _voice_models_root(environ),
+            VOICE_MODELS,
+            load=_voice_loader(gateway),
+            install=_install_voice,
+            overrides=_voice_overrides(environ),
+        )
     )
     runtime.start()
     return runtime
@@ -799,6 +835,9 @@ class StdioRpcServer:
         setup = self._runtime.ollama_setup
         if setup is not None:
             setup.pulls.set_notifier(self._emit_notification)
+        voice = self._runtime.voice_setup
+        if voice is not None:
+            voice.set_notifier(self._emit_notification)
         self._methods = {
             "guardian.converse": self._remembering_reply(self._guardian_converse),
             "guardian.escalation.offer": self._guardian_escalation_offer,
@@ -821,6 +860,9 @@ class StdioRpcServer:
             "ollama.pullStatus": self._ollama_pull_status,
             "ollama.cancelPull": self._ollama_cancel_pull,
             "ollama.useModel": self._ollama_use_model,
+            "voice.status": self._voice_status,
+            "voice.download": self._voice_download,
+            "voice.cancelDownload": self._voice_cancel_download,
             "guardian.speak": self._guardian_speak,
             "guardian.transcribe": self._guardian_transcribe,
             "guardian.agent.list": self._guardian_agent_list,
@@ -1435,6 +1477,41 @@ class StdioRpcServer:
         self._require_model_manager()
         return self._ollama().use_model(model)
 
+    def _voice(self) -> VoiceSetup:
+        setup = self._runtime.voice_setup
+        if setup is None:
+            msg = "Voice setup is not available."
+            raise ClientFacingValueError(msg)
+        return setup
+
+    def _voice_status(self, params: dict[str, Any]) -> dict[str, Any]:
+        active = self._identity_service.active_profile()
+        return {
+            **self._voice().status(),
+            "mayDownload": active is not None and active.role in MODEL_MANAGER_ROLES,
+        }
+
+    def _require_voice_manager(self) -> None:
+        # The same rule as the local model (EIP-ESR0062-003 V4, D-3), checked here
+        # in the backend; the screen only mirrors it.
+        _require_role(
+            self._identity_service.active_profile(),
+            MODEL_MANAGER_ROLES,
+            "Only an Administrator or Adult profile can download a voice.",
+        )
+
+    def _voice_download(self, params: dict[str, Any]) -> dict[str, Any]:
+        model = params.get("model")
+        if not isinstance(model, str):
+            msg = "params.model must be a string."
+            raise ClientFacingTypeError(msg)
+        self._require_voice_manager()
+        return self._voice().download(model)
+
+    def _voice_cancel_download(self, params: dict[str, Any]) -> dict[str, Any]:
+        self._require_voice_manager()
+        return {"cancelled": self._voice().cancel()}
+
     def _guardian_speak(self, params: dict[str, Any]) -> dict[str, Any]:
         text = params.get("text")
         if not isinstance(text, str):
@@ -1891,6 +1968,10 @@ class StdioRpcServer:
         self._notification_stream = out_stream
 
         stop_heartbeat = threading.Event()
+        # Voice is checked and loaded in the background (ESR-0062 WP3, V5).
+        voice = self._runtime.voice_setup
+        if voice is not None:
+            voice.start()
         heartbeat_thread = threading.Thread(
             target=self._heartbeat_loop,
             args=(out_stream, stop_heartbeat),

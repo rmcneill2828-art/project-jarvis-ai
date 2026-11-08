@@ -2,7 +2,7 @@
 
 > *"A programme moves faster when its current state is clear, trusted and easy to reload."*
 
-**Version:** 3.48
+**Version:** 3.49
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | Artefact ID | PST-0001 |
 | Title | Programme Status |
-| Version | 3.48 |
+| Version | 3.49 |
 | Status | Approved |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Approved By | Programme Sponsor |
@@ -100,7 +100,7 @@ These practices are not formal AIEMS standards unless separately reviewed and st
 
 # 4A. Current Engineering Focus
 
-[[ESR-0062_ENGINEERING_SESSION_REPORT|ESR-0062]] is **Open** (8 November 2026), at the Programme Sponsor's direct request, as **Session B of the go-live plan**. The Programme Sponsor approved the objective and Work Package order: **WP1** repository hygiene (CI to Node 24, Dependabot triage, the moderation sentence set moved to a durable place); **WP2** household safety follow-ups (EBG-0171 option A, the idle lock, EBG-0172); **WP3** voice provisioning (EBG-0167); **WP4** Mac visit 1 (EBG-0162, about 21 November 2026); **WP5** guides and the "Children and privacy" page (EBG-0168). Camera on request (EBG-0176) comes after go-live; its design may be drafted in this session. **WP1 complete** (`a21984e`, 8 November 2026): CI on Node 24 with every action pinned to a verified commit, the open pull requests settled, dependencies updated; post-commit review Pass from both reviewers.
+[[ESR-0062_ENGINEERING_SESSION_REPORT|ESR-0062]] is **Open** (8 November 2026), at the Programme Sponsor's direct request, as **Session B of the go-live plan**. The Programme Sponsor approved the objective and Work Package order: **WP1** repository hygiene (CI to Node 24, Dependabot triage, the moderation sentence set moved to a durable place); **WP2** household safety follow-ups (EBG-0171 option A, the idle lock, EBG-0172); **WP3** voice provisioning (EBG-0167); **WP4** Mac visit 1 (EBG-0162, about 21 November 2026); **WP5** guides and the "Children and privacy" page (EBG-0168). Camera on request (EBG-0176) comes after go-live; its design may be drafted in this session. **WP1 complete** (`a21984e`, 8 November 2026): CI on Node 24 with every action pinned to a verified commit, the open pull requests settled, dependencies updated; post-commit review Pass from both reviewers. **WP2 complete** (`765b5f6`, 8 November 2026): household notes only for an Adult or Administrator, the 15-minute idle lock, backend hardening of paths, addresses and speech; post-commit review Pass from both reviewers.
 
 ## Prior Session: ESR-0061
 
@@ -374,7 +374,7 @@ Approved standards remain current. ESR-0007 methodology outcomes are working pra
 | Current Roadmap | [[JRM-0001_PROJECT_ROADMAP|JRM-0001]] | v1.16 (corrected from a stale v1.13 citation found during this same ESR-0031 sweep) - the programme's forward-looking sequencing artefact, cross-referenced from PBK-0001's Backlog Progression Analysis. Its own Track A/B tables have been separately flagged (PST-0001 history, ESR-0028/ESR-0029/ESR-0030) as not reflecting several sessions' progress - not re-verified or corrected by this sweep, which addressed this row's version citation only. |
 | Current Review State | See Section 4A (Current Engineering Focus) | Restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently. |
 | Next Required Activity | None - ESR-0061 formally closed. Next: Programme Sponsor to select the next engineering session's objective (see Next Work Package Candidate). | [[ESR-0061_ENGINEERING_SESSION_REPORT|ESR-0061]] Engineering Session Report v1.0 and the session formally closed. |
-| Next Work Package Candidate | Refreshed at ESR-0062 opening (8 November 2026). Decided by the Programme Sponsor: [[ESR-0062_ENGINEERING_SESSION_REPORT|ESR-0062]] WP2 (household safety follow-ups: EBG-0171 option A, the idle lock, EBG-0172), then WP3 to WP5 in the order of its Section 6. WP1 (repository hygiene) committed `a21984e`, 8 November 2026. Still to place after ESR-0062: go-live WP9 clean-machine first run; the PCB-0001 re-audit; EBG-0173 (streaming); EBG-0176 (camera on request, after go-live by Programme Sponsor decision). | ESR-0062 WP2 decided; the rest candidates only. |
+| Next Work Package Candidate | Refreshed at ESR-0062 opening (8 November 2026). Decided by the Programme Sponsor: [[ESR-0062_ENGINEERING_SESSION_REPORT|ESR-0062]] WP3 (voice provisioning, EBG-0167 with EBG-0179; design approved 8 November 2026), then WP4 and WP5 in the order of its Section 6. WP1 committed `a21984e` and WP2 committed `765b5f6`, 8 November 2026. Still to place after ESR-0062: go-live WP9 clean-machine first run; the PCB-0001 re-audit; EBG-0173 (streaming); EBG-0176 (camera on request, after go-live by Programme Sponsor decision). | ESR-0062 WP2 decided; the rest candidates only. |
 | ESR-0032 Delivered Scope | See Section 4A (Current Engineering Focus) for full detail. | Restructured at ESR-0031 (Documentation Debt Discipline) to reference the single authoritative source rather than restate it independently, avoiding the previous per-session-named-row pattern (`ESR-0026 Delivered Scope`) that had itself gone stale for five sessions. |
 | GIA-BOOT Proof of Concept | Complete | Accepted as Proof of Concept; further GIA implementation deferred - blocks Knowledge Graph Phases 3-4 (EBG-0055 note). |
 | Deferred Work | Recorded | Guardian Memory implementation (MDS-0001 Section 6.2 Personal Memory delivered at ESR-0027 WP1 as EBG-0080, `jarvis/memory/` now holds a real consent-gated implementation; MDS-0001 Section 6.3 Shared Family Memory not yet built), Conversation Engine expansion, Guardian Developer Console, Guardian Orb knowledge-graph Phases 2-4 ([[EBR-0001_ENGINEERING_BACKLOG_REGISTER|EBR-0001]] EBG-0055 - Phase 1-2 delivered), true 3D rendering and live animation of the Orb (explicitly deferred), a real network-facing Guardian interface (requirements now defined by ADR-0020, none built) remain deferred. **EAC and GDP-0001** tracked as EBG-0059/GDP-0001 per the ESR-0021 WP6 historical audit, superseded in intent by JRM-0001. Both OpenAI and Gemini are live-validated and one is wired into the default production route (EBG-0070, Complete); Ollama is now also wired as a local fallback (EBG-0075, ESR-0026 WP1, Complete); Sentinel's `TrustTierPolicy` classification model is now wired into that same production runtime as of ESR-0024 WP1 (EBG-0074, Complete), so [[GAM-0001_GUARDIAN_AUTHORITY_AND_BOUNDARY_MODEL|GAM-0001]]'s authority model is genuinely in the decision path - though no production call site yet varies request shape per Guardian action, so this is not yet observable as a live behaviour change (Guardian's Action faculty remains Not Started, gated behind EBG-0021). Anthropic/OpenRouter provider adapters approved in principle (PEM-001) but not yet implemented. Claude&harr;Codex engineering bridge (EBG-0057) is now proven in genuine real use across seven consecutive entire sessions (ESR-0026 through ESR-0032); REA (execution-automation agent) remains its own future-phase scope, not yet actioned. |
@@ -747,6 +747,7 @@ PST-0001 should remain concise and must not duplicate detailed controlled artefa
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.49 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP2 complete (765b5f6); Next Work Package Candidate moved to WP3. |
 | 3.48 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP1 complete (a21984e); Next Work Package Candidate moved to WP2. |
 | 3.47 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 opened (go-live Session B): Current Mode, Phase, Engineering Objective, Section 4A and Next Work Package Candidate updated; ESR-0061 moved to Prior Session. ESR-0062 registered in REG-0001 (0.1, Open). |
 | 3.46 | 7 November 2026 | Claude Engineering Implementer | ESR-0061 formally closed: full closure sweep - Current Mode, Baseline (RBL-0041), Product Baseline (PCB-0001 v3.1, re-audit owed; the stale v2.20 citation corrected), Phase, Workflow and Objective; Section 4A rewritten for ESR-0061; the Prior Session window shifted (ESR-0060 added, ESR-0057 dropped); Next Required Activity, Next Work Package Candidate and Repository Health refreshed. |

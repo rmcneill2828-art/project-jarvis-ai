@@ -49,6 +49,8 @@ async function mockTauriIpc(
     disclosureMock = [],
     // The safety summary (WP6d): { [profileId]: [{ day, category, direction, count }] }.
     safetyMock = {},
+    // Voice setup (ESR-0062 WP3): { models: { [key]: { state, fromEnvironment } } }.
+    voiceMock = {},
   } = {},
 ) {
   await page.addInitScript(
@@ -78,6 +80,7 @@ async function mockTauriIpc(
       consentMock,
       disclosureMock,
       safetyMock,
+      voiceMock,
     }) => {
       // Voice Faculty Increment B (EIP-ESR0047-001): navigator.mediaDevices
       // and MediaRecorder are real browser APIs the app calls directly,
@@ -184,7 +187,13 @@ async function mockTauriIpc(
           }
           if (cmd === "plugin:event|unlisten") return Promise.resolve(null);
           if (cmd === "platform_status") {
-            return Promise.resolve({ ...platformStatus, transcriptionAvailable, ...(orbMock.platform || {}) });
+            // __platformOverride: what a voice coming on changes (ESR-0062 WP3).
+            return Promise.resolve({
+              ...platformStatus,
+              transcriptionAvailable,
+              ...(orbMock.platform || {}),
+              ...(window.__platformOverride || {}),
+            });
           }
           if (cmd === "knowledge_graph") return Promise.resolve(knowledgeGraph);
           // Asking Claude (ESR-0061 WP3b): `claude` is null for a machine with no
@@ -710,6 +719,62 @@ async function mockTauriIpc(
             state.memoryRecordCount = restoredCount;
             return Promise.resolve({ recordCount: restoredCount });
           }
+          // Voice setup (ESR-0062 WP3), mirroring the backend: only an Adult or
+          // Administrator may download, one download at a time.
+          window.__voiceCalls = window.__voiceCalls || [];
+          const voiceModels = voiceMock.models || {};
+          const voiceState = (window.__voiceState = window.__voiceState || {
+            models: [
+              {
+                key: "kokoro",
+                label: "Speaking (Kokoro, British English)",
+                purpose: "speaking",
+                state: "missing",
+                totalBytes: 353746785,
+                fromEnvironment: false,
+                ...(voiceModels.kokoro || {}),
+              },
+              {
+                key: "whisper-base.en",
+                label: "Listening (Whisper base.en)",
+                purpose: "listening",
+                state: "missing",
+                totalBytes: 147769510,
+                fromEnvironment: false,
+                ...(voiceModels["whisper-base.en"] || {}),
+              },
+            ],
+            download: { active: false, model: null, receivedBytes: 0, totalBytes: 0, outcome: null, message: null },
+          });
+          const mayManageVoice = () => ["Administrator", "Adult"].includes(state.active?.role);
+          if (cmd === "voice_status") {
+            return Promise.resolve({ ...structuredClone(voiceState), freeBytes: 10 ** 11, mayDownload: mayManageVoice() });
+          }
+          if (cmd === "voice_download") {
+            if (!mayManageVoice()) {
+              return Promise.reject(new Error("PermissionError: Only an Administrator or Adult profile can download a voice."));
+            }
+            window.__voiceCalls.push(["download", args.model]);
+            const chosen = voiceState.models.find((entry) => entry.key === args.model);
+            chosen.state = "downloading";
+            voiceState.download = {
+              active: true,
+              model: args.model,
+              receivedBytes: 0,
+              totalBytes: chosen.totalBytes,
+              outcome: null,
+              message: null,
+            };
+            return Promise.resolve({ started: true, model: args.model });
+          }
+          if (cmd === "voice_cancel_download") {
+            window.__voiceCalls.push(["cancel"]);
+            voiceState.download = { ...voiceState.download, active: false, outcome: "cancelled" };
+            voiceState.models.forEach((entry) => {
+              if (entry.state === "downloading") entry.state = "missing";
+            });
+            return Promise.resolve({ cancelled: true });
+          }
           return Promise.reject(new Error(`Unmocked Tauri command: ${cmd}`));
         },
       };
@@ -755,6 +820,7 @@ async function mockTauriIpc(
       consentMock,
       disclosureMock,
       safetyMock,
+      voiceMock,
     },
   );
 }
@@ -3594,4 +3660,115 @@ test("choosing a profile after nobody was signed in clears what was typed before
   await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
   await expect(page.getByPlaceholder("Ask Guardian anything...")).toHaveValue("");
   await expect(lockNotice(page)).toHaveCount(0);
+});
+
+// --- Voice setup (ESR-0062 WP3, EIP-ESR0062-003 V8) ---------------------------------------------------------------
+
+const VOICE_ADMIN = { id: "a1", displayName: "Robert", role: "Administrator", createdAt: "2026-01-01T00:00:00Z" };
+
+test("an Administrator can download a voice and watch it come on", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [VOICE_ADMIN], activeProfile: VOICE_ADMIN });
+  await page.goto("/");
+  await openView(page, "AI models");
+  const panel = page.getByTestId("voice-panel");
+  await expect(panel.getByRole("heading", { name: "Voice" })).toBeVisible();
+  const listening = panel.getByTestId("voice-whisper-base.en");
+  await expect(listening.getByRole("status")).toHaveText("Not downloaded");
+  await expect(page.getByRole("button", { name: "Speak a message" })).toHaveCount(0);
+
+  await listening.getByRole("button", { name: /^Download \(141 MB\)$/ }).click();
+  await expect(page.getByRole("progressbar", { name: "Voice download progress" })).toBeVisible();
+  expect(await page.evaluate(() => window.__voiceCalls)).toEqual([["download", "whisper-base.en"]]);
+
+  await page.evaluate(() =>
+    window.__emit("jarvis://notification", {
+      method: "voice.downloadProgress",
+      params: { model: "whisper-base.en", state: "downloading", receivedBytes: 73884755, totalBytes: 147769510 },
+    }),
+  );
+  await expect(panel.getByText("50%")).toBeVisible();
+
+  // The backend finishes, checks and loads the model, then says it is on.
+  await page.evaluate(() => {
+    const entry = window.__voiceState.models.find((model) => model.key === "whisper-base.en");
+    entry.state = "on";
+    window.__voiceState.download = { ...window.__voiceState.download, active: false, outcome: "completed" };
+    window.__platformOverride = { transcriptionAvailable: true };
+    window.__emit("jarvis://notification", {
+      method: "voice.downloadProgress",
+      params: { model: "whisper-base.en", state: "completed", receivedBytes: 147769510, totalBytes: 147769510 },
+    });
+    window.__emit("jarvis://notification", { method: "voice.changed", params: { model: "whisper-base.en", state: "on" } });
+  });
+
+  await expect(listening.getByRole("status")).toHaveText("On");
+  await expect(listening.getByRole("button")).toHaveCount(0);
+  await expect(page.getByRole("progressbar", { name: "Voice download progress" })).toHaveCount(0);
+  // The microphone appears without a restart.
+  await openView(page, "Guardian");
+  await expect(page.getByRole("button", { name: "Speak a message" })).toBeVisible();
+});
+
+test("an Adult can download a voice too, and cancel it", async ({ page }) => {
+  const adult = { id: "u1", displayName: "Sam", role: "Adult", createdAt: "2026-01-01T00:00:00Z" };
+  await mockTauriIpc(page, { profiles: [VOICE_ADMIN, adult], activeProfile: adult });
+  await page.goto("/");
+  await openView(page, "AI models");
+  const speaking = page.getByTestId("voice-kokoro");
+
+  await speaking.getByRole("button", { name: /^Download \(337 MB\)$/ }).click();
+  await page.getByTestId("voice-panel").getByRole("button", { name: "Cancel download" }).click();
+
+  await expect(speaking.getByRole("status")).toHaveText("Not downloaded");
+  expect(await page.evaluate(() => window.__voiceCalls)).toEqual([["download", "kokoro"], ["cancel"]]);
+});
+
+test("a failed voice download says why and offers it again", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [VOICE_ADMIN], activeProfile: VOICE_ADMIN });
+  await page.goto("/");
+  await openView(page, "AI models");
+  const speaking = page.getByTestId("voice-kokoro");
+  await speaking.getByRole("button", { name: /^Download/ }).click();
+
+  await page.evaluate(() => {
+    window.__voiceState.models.find((model) => model.key === "kokoro").state = "missing";
+    window.__voiceState.download = { ...window.__voiceState.download, active: false, outcome: "failed" };
+    window.__emit("jarvis://notification", {
+      method: "voice.downloadProgress",
+      params: { model: "kokoro", state: "failed", receivedBytes: 10, totalBytes: 353746785, message: "The download was damaged. Try again." },
+    });
+  });
+
+  await expect(page.getByTestId("voice-panel").getByRole("alert")).toHaveText("The download was damaged. Try again.");
+  await expect(speaking.getByRole("button", { name: /^Download/ })).toBeEnabled();
+});
+
+test("a damaged or unstartable voice offers a fresh download", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [VOICE_ADMIN],
+    activeProfile: VOICE_ADMIN,
+    voiceMock: { models: { kokoro: { state: "damaged" }, "whisper-base.en": { state: "failed" } } },
+  });
+  await page.goto("/");
+  await openView(page, "AI models");
+
+  await expect(page.getByTestId("voice-kokoro").getByRole("status")).toHaveText(
+    "The files are damaged. Download again to fix this.",
+  );
+  await expect(page.getByTestId("voice-kokoro").getByRole("button", { name: /^Download again/ })).toBeVisible();
+  await expect(page.getByTestId("voice-whisper-base.en").getByRole("button", { name: /^Download again/ })).toBeVisible();
+});
+
+test("a voice set by a developer setting is shown but not downloaded here", async ({ page }) => {
+  await mockTauriIpc(page, {
+    profiles: [VOICE_ADMIN],
+    activeProfile: VOICE_ADMIN,
+    voiceMock: { models: { kokoro: { state: "on", fromEnvironment: true } } },
+  });
+  await page.goto("/");
+  await openView(page, "AI models");
+  const speaking = page.getByTestId("voice-kokoro");
+
+  await expect(speaking.getByText("Set by a developer setting, which overrides this screen.")).toBeVisible();
+  await expect(speaking.getByRole("button")).toHaveCount(0);
 });

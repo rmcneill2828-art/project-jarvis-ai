@@ -124,6 +124,10 @@ jobs:
       # generate_context!() needs the externalBin sidecar at compile time, as
       # on the Linux job.
       - run: python scripts/build_backend_sidecar.py
+      # Voice (ESR-0062 WP3, V10): every part the packaged voice needs is in the build.
+      - name: Voice self-check on the built sidecar
+        shell: bash
+        run: src-tauri/binaries/jarvis-backend-* --voice-self-check
       - run: cargo test --manifest-path src-tauri/Cargo.toml
 
   # macOS (Apple Silicon) jobs (ESR-0061 WP2b, EBG-0162, EIP-ESR0061-002 Section
@@ -164,6 +168,10 @@ jobs:
           python-version: "3.12"
       - run: pip install -e .[dev]
       - run: python scripts/build_backend_sidecar.py
+      # Voice (ESR-0062 WP3, V10): every part the packaged voice needs is in the build.
+      - name: Voice self-check on the built sidecar
+        shell: bash
+        run: src-tauri/binaries/jarvis-backend-* --voice-self-check
       - run: python scripts/smoke_unix_sidecar.py --expect-tree
       - run: cargo clippy --manifest-path src-tauri/Cargo.toml --tests -- -D warnings
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check

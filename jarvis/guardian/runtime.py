@@ -1,6 +1,7 @@
 """Guardian runtime foundation."""
 
 import logging
+import threading
 from collections.abc import Mapping
 from pathlib import Path
 from types import MappingProxyType
@@ -47,6 +48,7 @@ from jarvis.interfaces.voice import (
     SpeechOutcome,
     TranscriptionOutcome,
 )
+from jarvis.interfaces.voice_setup import VoiceSetup
 from jarvis.memory.service import PendingMemoryRequest, PersonalMemoryService
 from jarvis.memory.store import ConsentDecisionRecord, PersonalMemoryRecord
 from jarvis.services import JarvisService, ServiceHealth, ServiceStatus
@@ -74,6 +76,7 @@ class GuardianRuntime:
         agent_service: SentinelGatedAgentService | None = None,
         escalation_provider: MeteredCloudConversationProvider | None = None,
         ollama_setup: OllamaSetup | None = None,
+        voice_setup: VoiceSetup | None = None,
         claude_keys: ClaudeKeyManager | None = None,
         retention: RetentionService | None = None,
         moderation: ModerationService | None = None,
@@ -92,6 +95,13 @@ class GuardianRuntime:
         self._escalation_provider = escalation_provider
         # Local model setup: status, recommendation, downloads (ESR-0061 WP3c).
         self._ollama_setup = ollama_setup
+        # Voice setup: checking, loading and downloading the voice models
+        # (ESR-0062 WP3). It installs each provider through the setters below.
+        self._voice_setup = voice_setup
+        # A provider may be installed from a background thread while the slow
+        # lane is speaking; each swap is one assignment under this lock, and
+        # speak() and transcribe() read the provider once (EIP-ESR0062-003 V5).
+        self._voice_lock = threading.Lock()
         self._conversation_provider = conversation_provider
         self._memory_service = memory_service
         self._speech_provider = speech_provider
@@ -325,6 +335,30 @@ class GuardianRuntime:
         return response
 
     @property
+    def voice_setup(self) -> VoiceSetup | None:
+        """Voice setup, or None when the runtime was built without it."""
+
+        return self._voice_setup
+
+    def attach_voice_setup(self, voice_setup: VoiceSetup) -> None:
+        """Attach voice setup after construction: it installs providers into
+        this runtime, so it is built with a reference to it."""
+
+        self._voice_setup = voice_setup
+
+    def set_speech_provider(self, provider: GuardianSpeechProvider | None) -> None:
+        """Install (or remove) the speech provider while running (ESR-0062 WP3, V5)."""
+
+        with self._voice_lock:
+            self._speech_provider = provider
+
+    def set_transcription_provider(self, provider: GuardianTranscriptionProvider | None) -> None:
+        """Install (or remove) the transcription provider while running (ESR-0062 WP3, V5)."""
+
+        with self._voice_lock:
+            self._transcription_provider = provider
+
+    @property
     def ollama_setup(self) -> OllamaSetup | None:
         """Local model setup, or None when the runtime was built without it."""
 
@@ -433,11 +467,13 @@ class GuardianRuntime:
         not introduce a new unrelated speech-generation entry point.
         """
 
-        if self._speech_provider is None:
+        # Read once: a provider installed meanwhile never splits this call (V5).
+        provider = self._speech_provider
+        if provider is None:
             return SpeechOutcome(status=STATUS_NOT_CONNECTED, message=SPEECH_NOT_CONNECTED_MESSAGE)
         if self._state is not GuardianRuntimeState.RUNNING:
             return SpeechOutcome(status=STATUS_NOT_RUNNING, message=SPEECH_NOT_RUNNING_MESSAGE)
-        return self._speech_provider.synthesize(text)
+        return provider.synthesize(text)
 
     def transcribe(self, audio_bytes: bytes, mime_type: str) -> TranscriptionOutcome:
         """Transcribe `audio_bytes` into text via the connected transcription provider.
@@ -454,13 +490,15 @@ class GuardianRuntime:
         no-auto-submit requirement.
         """
 
-        if self._transcription_provider is None:
+        # Read once: a provider installed meanwhile never splits this call (V5).
+        provider = self._transcription_provider
+        if provider is None:
             return TranscriptionOutcome(
                 status=STATUS_NOT_CONNECTED, message=TRANSCRIPTION_NOT_CONNECTED_MESSAGE
             )
         if self._state is not GuardianRuntimeState.RUNNING:
             return TranscriptionOutcome(status=STATUS_NOT_RUNNING, message=SPEECH_NOT_RUNNING_MESSAGE)
-        return self._transcription_provider.transcribe(audio_bytes, mime_type)
+        return provider.transcribe(audio_bytes, mime_type)
 
     def invoke_agent(self, agent_name: str, request: AgentRequest) -> AgentOutcome:
         """Invoke a specialist agent via the connected, Sentinel-gated agent service.

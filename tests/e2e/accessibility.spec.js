@@ -95,6 +95,16 @@ async function installMock(page, profile, { others = [], consent = null, disclos
             // The idle lock (ESR-0062 WP2): still signed in.
             session_activity: { activeProfileId: profile.id, idleLockMinutes: 15 },
             session_idle_check: { activeProfileId: profile.id, idleLockMinutes: 15 },
+            // Voice setup (ESR-0062 WP3): nothing downloaded yet.
+            voice_status: {
+              models: [
+                { key: "kokoro", label: "Speaking (Kokoro, British English)", purpose: "speaking", state: "missing", totalBytes: 353746785, fromEnvironment: false },
+                { key: "whisper-base.en", label: "Listening (Whisper base.en)", purpose: "listening", state: "missing", totalBytes: 147769510, fromEnvironment: false },
+              ],
+              download: { active: false, model: null, receivedBytes: 0, totalBytes: 0, outcome: null, message: null },
+              freeBytes: 100000000000,
+              mayDownload: ["Administrator", "Adult"].includes(profile.role),
+            },
           };
           if (cmd in answers) return Promise.resolve(structuredClone(answers[cmd]));
           if (cmd === "plugin:event|listen") return Promise.resolve(0);

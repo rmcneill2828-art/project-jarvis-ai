@@ -1364,6 +1364,42 @@ async fn ollama_use_model(
     .await
 }
 
+/// Voice setup (ESR-0062 WP3, EIP-ESR0062-003 V7). The backend checks, downloads
+/// and loads the voice models and enforces who may download; these only relay.
+/// Progress arrives as `voice.downloadProgress` and `voice.changed` notifications.
+#[tauri::command]
+async fn voice_status(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "voice.status", json!({})).await
+}
+
+/// Starts a background download of a catalog voice. The backend refuses any
+/// other name, and anyone but an Adult or Administrator.
+#[tauri::command]
+async fn voice_download(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+    model: String,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(
+        state,
+        app_handle,
+        "voice.download",
+        json!({ "model": model }),
+    )
+    .await
+}
+
+#[tauri::command]
+async fn voice_cancel_download(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "voice.cancelDownload", json!({})).await
+}
+
 /// The one page JARVIS will open for the person: Ollama's download page. A
 /// fixed address, never one the UI supplies, so this cannot be made to open
 /// anything else. JARVIS does not download or run the installer itself.
@@ -1785,6 +1821,9 @@ pub fn run() {
             ollama_recommendation,
             ollama_pull,
             ollama_cancel_pull,
+            voice_status,
+            voice_download,
+            voice_cancel_download,
             ollama_use_model,
             open_ollama_download_page,
             speak_message,

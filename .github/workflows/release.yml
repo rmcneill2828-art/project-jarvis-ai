@@ -45,6 +45,21 @@ jobs:
           fi
       - run: python scripts/sync_product_version.py --check
       - run: python scripts/build_backend_sidecar.py
+      # Voice (ESR-0062 WP3, V10-V11): every part is in the build, and the built
+      # sidecar really speaks a sentence and hears it back. The models (about
+      # 500 MB) are fetched the way the app fetches them - HTTPS, size- and
+      # SHA-256-checked - and cached by the catalog that pins them.
+      - name: Voice self-check on the built sidecar
+        shell: bash
+        run: src-tauri/binaries/jarvis-backend-* --voice-self-check
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .voice-models
+          key: voice-models-${{ hashFiles('jarvis/config/voice_models.py') }}
+      - run: python scripts/fetch_voice_models.py .voice-models
+      - name: Voice round trip on the built sidecar
+        shell: bash
+        run: src-tauri/binaries/jarvis-backend-* --voice-round-trip .voice-models
       - run: npm run tauri build
       # Locates the exact installer Tauri just produced rather than a broad
       # glob - fails loudly if zero or more than one match, rather than
@@ -98,6 +113,21 @@ jobs:
           fi
       - run: python scripts/sync_product_version.py --check
       - run: python scripts/build_backend_sidecar.py
+      # Voice (ESR-0062 WP3, V10-V11): every part is in the build, and the built
+      # sidecar really speaks a sentence and hears it back. The models (about
+      # 500 MB) are fetched the way the app fetches them - HTTPS, size- and
+      # SHA-256-checked - and cached by the catalog that pins them.
+      - name: Voice self-check on the built sidecar
+        shell: bash
+        run: src-tauri/binaries/jarvis-backend-* --voice-self-check
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .voice-models
+          key: voice-models-${{ hashFiles('jarvis/config/voice_models.py') }}
+      - run: python scripts/fetch_voice_models.py .voice-models
+      - name: Voice round trip on the built sidecar
+        shell: bash
+        run: src-tauri/binaries/jarvis-backend-* --voice-round-trip .voice-models
       - run: python scripts/smoke_unix_sidecar.py --expect-tree
       - run: npm run tauri build -- --bundles dmg
       - name: Locate the disk image and compute checksum

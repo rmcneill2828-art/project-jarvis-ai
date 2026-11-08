@@ -33,6 +33,14 @@ from sentinel.speech_providers import SpeechSynthesisResponse
 from sentinel.transcription_providers import TranscriptionResponse
 
 
+def _voice_ready(runtime):
+    """Voice loads in the background once the server starts (ESR-0062 WP3,
+    V5); a test that sets voice through the environment waits for it here."""
+
+    runtime.voice_setup.load_now()
+    return runtime
+
+
 class _FakeKokoroProvider:
     """Stands in for a real `KokoroProvider` without ever loading a model or
     importing `kokoro_onnx` - `jarvis.interfaces.stdio_rpc.KokoroProvider` is
@@ -311,13 +319,13 @@ def test_build_default_runtime_wires_speech_provider_when_kokoro_paths_present(t
     KokoroProvider is importable."""
 
     with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
-        runtime = build_default_runtime(
+        runtime = _voice_ready(build_default_runtime(
             environ={
                 "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                 "JARVIS_KOKORO_MODEL_PATH": "/fake/voices/kokoro-v1.0.onnx",
                 "JARVIS_KOKORO_VOICES_PATH": "/fake/voices/voices-v1.0.bin",
             }
-        )
+        ))
 
     outcome = runtime.speak("hello")
 
@@ -331,13 +339,13 @@ def test_build_default_runtime_reuses_the_same_gateway_for_speech_and_conversati
     boundary and audit trail, matching how memory_service already reuses it."""
 
     with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
-        runtime = build_default_runtime(
+        runtime = _voice_ready(build_default_runtime(
             environ={
                 "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                 "JARVIS_KOKORO_MODEL_PATH": "/fake/voices/kokoro-v1.0.onnx",
                 "JARVIS_KOKORO_VOICES_PATH": "/fake/voices/voices-v1.0.bin",
             }
-        )
+        ))
 
     speech_gateway = runtime._speech_provider.gateway
     assert speech_gateway is runtime.sentinel_gateway()
@@ -360,14 +368,14 @@ def test_build_default_runtime_reuses_the_same_gateway_for_agent_service(tmp_pat
 def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
     with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
         server = StdioRpcServer(
-            build_default_runtime(
+            _voice_ready(build_default_runtime(
                 environ={
                     "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
                     "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                     "JARVIS_KOKORO_MODEL_PATH": "/fake/voices/kokoro-v1.0.onnx",
                     "JARVIS_KOKORO_VOICES_PATH": "/fake/voices/voices-v1.0.bin",
                 }
-            ),
+            )),
             identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
         )
 
@@ -421,12 +429,12 @@ def test_build_default_runtime_wires_transcription_provider_when_whisper_path_pr
     actually produces - not merely that WhisperProvider is importable."""
 
     with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
-        runtime = build_default_runtime(
+        runtime = _voice_ready(build_default_runtime(
             environ={
                 "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                 "JARVIS_WHISPER_MODEL_PATH": "base.en",
             }
-        )
+        ))
 
     outcome = runtime.transcribe(b"fake-audio", "audio/webm")
 
@@ -440,12 +448,12 @@ def test_build_default_runtime_reuses_the_same_gateway_for_transcription_and_con
     trust boundary and audit trail, matching speech/memory's own reuse."""
 
     with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
-        runtime = build_default_runtime(
+        runtime = _voice_ready(build_default_runtime(
             environ={
                 "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                 "JARVIS_WHISPER_MODEL_PATH": "base.en",
             }
-        )
+        ))
 
     transcription_gateway = runtime._transcription_provider.gateway
     assert transcription_gateway is runtime.sentinel_gateway()
@@ -459,13 +467,13 @@ def test_platform_status_reports_transcription_available_when_whisper_path_prese
 
     with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
         server = StdioRpcServer(
-            build_default_runtime(
+            _voice_ready(build_default_runtime(
                 environ={
                     "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
                     "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                     "JARVIS_WHISPER_MODEL_PATH": "base.en",
                 }
-            ),
+            )),
             identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
         )
 
@@ -480,14 +488,14 @@ def test_platform_status_reports_speech_available_when_a_speech_provider_is_conn
 
     with patch("jarvis.interfaces.stdio_rpc.KokoroProvider", _FakeKokoroProvider):
         server = StdioRpcServer(
-            build_default_runtime(
+            _voice_ready(build_default_runtime(
                 environ={
                     "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
                     "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                     "JARVIS_KOKORO_MODEL_PATH": "kokoro.onnx",
                     "JARVIS_KOKORO_VOICES_PATH": "voices.bin",
                 }
-            ),
+            )),
             identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
         )
 
@@ -497,13 +505,13 @@ def test_platform_status_reports_speech_available_when_a_speech_provider_is_conn
 def test_guardian_transcribe_rpc_returns_transcribed_shape(tmp_path):
     with patch("jarvis.interfaces.stdio_rpc.WhisperProvider", _FakeWhisperProvider):
         server = StdioRpcServer(
-            build_default_runtime(
+            _voice_ready(build_default_runtime(
                 environ={
                     "JARVIS_OLLAMA_ENDPOINT": "http://127.0.0.1:1",
                     "JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"),
                     "JARVIS_WHISPER_MODEL_PATH": "base.en",
                 }
-            ),
+            )),
             identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
         )
 
