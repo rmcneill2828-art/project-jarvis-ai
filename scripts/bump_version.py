@@ -53,7 +53,7 @@ def _today_display_date() -> str:
     library), so the day is formatted separately rather than relying on one.
     """
 
-    today = date.today()  # noqa: DTZ011 - Version History date cosmetic, intentionally local wall-clock date
+    today = date.today()  # Version History date cosmetic, intentionally local wall-clock date
     return f"{today.day} {today.strftime('%B %Y')}"
 
 

@@ -23,7 +23,7 @@ def _transcript_filename(export_format: str) -> str:
     """
 
     extension = ".md" if export_format == TRANSCRIPT_FORMAT_MARKDOWN else ".txt"
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S%f")  # noqa: DTZ005 - filename cosmetic, intentionally local wall-clock time
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S%f")  # Filename cosmetic, intentionally local wall-clock time
     return f"jarvis_transcript_{timestamp}{extension}"
 
 

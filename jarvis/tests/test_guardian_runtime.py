@@ -133,7 +133,7 @@ def test_guardian_diagnostic_event_requires_timezone_aware_timestamp() -> None:
             name="guardian.test",
             state=GuardianRuntimeState.STOPPED,
             message="Test event.",
-            occurred_at=datetime(2026, 1, 1),  # noqa: DTZ001 - deliberately naive, this test asserts it gets rejected
+            occurred_at=datetime(2026, 1, 1),  # Deliberately naive, this test asserts it gets rejected
         )
     except ValueError as exc:
         assert str(exc) == "Guardian diagnostic event timestamp must be timezone-aware."
