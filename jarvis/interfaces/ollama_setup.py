@@ -43,6 +43,7 @@ import psutil
 
 from jarvis.config.ollama_models import BUDGET_RULES, CLASSIFIER, MODELS, BudgetRules, CatalogModel
 from jarvis.shared.errors import ClientFacingValueError
+from jarvis.shared.safe_locations import checked_http_url
 
 logger = logging.getLogger(__name__)
 
@@ -330,7 +331,8 @@ class PullManager:
         disk_free: Callable[[], int | None] = lambda: None,
         rules: BudgetRules = BUDGET_RULES,
     ) -> None:
-        self._endpoint = endpoint.rstrip("/")
+        # Only http:// or https:// (ESR-0062 WP2, F3): urllib would open file://.
+        self._endpoint = checked_http_url(endpoint).rstrip("/")
         self._models = {model.tag: model for model in models}
         self._opener = opener
         self._clock = clock
@@ -482,7 +484,7 @@ class OllamaSetup:
         hardware_reader: Callable[[], HardwareInfo] | None = None,
         models: tuple[CatalogModel, ...] = MODELS,
     ) -> None:
-        self._endpoint = (endpoint or DEFAULT_ENDPOINT).rstrip("/")
+        self._endpoint = checked_http_url(endpoint or DEFAULT_ENDPOINT).rstrip("/")
         self._choice = choice
         self._pulls = pulls
         self._environ = os.environ if environ is None else environ

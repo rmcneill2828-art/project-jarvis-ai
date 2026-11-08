@@ -23,6 +23,7 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 
+from sentinel.endpoints import require_http_endpoint
 from sentinel.provider_config import ProviderConfiguration, RetryPolicy
 from sentinel.providers import (
     TRANSIENT_HTTP_STATUSES,
@@ -143,7 +144,7 @@ class AnthropicProvider:
             raise RuntimeError(missing)
 
         model = self._configuration.default_model
-        endpoint = self._configuration.endpoint or DEFAULT_ENDPOINT
+        endpoint = require_http_endpoint(self._configuration.endpoint or DEFAULT_ENDPOINT, "Claude")
         # Earlier turns in their own roles; retained notes (when the caller
         # allows them at all) framed inside the current user message
         # (EBG-0142, ESR-0059 WP7).

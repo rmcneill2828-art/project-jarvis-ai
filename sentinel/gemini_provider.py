@@ -13,6 +13,7 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 
+from sentinel.endpoints import require_http_endpoint
 from sentinel.provider_config import ProviderConfiguration, RetryPolicy
 from sentinel.providers import (
     TRANSIENT_HTTP_STATUSES,
@@ -112,9 +113,10 @@ class GeminiProvider:
             raise RuntimeError(msg)
 
         model = self._configuration.default_model
-        endpoint = (
+        endpoint = require_http_endpoint(
             self._configuration.endpoint
-            or f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+            or f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+            "Gemini",
         )
         # EBG-0142 (ESR-0059 WP7): earlier turns in their own roles (Gemini
         # calls the assistant role "model"), retained notes framed inside the

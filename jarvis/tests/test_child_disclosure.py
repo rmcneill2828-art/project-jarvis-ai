@@ -200,6 +200,7 @@ def test_a_childs_export_holds_its_household_safety_records_but_no_words(tmp_pat
     client.select(admin)
     client.result("consent.revoke", profileId=child)
 
+    (tmp_path / "out").mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     reply = client.result("profile.export", profileId=child, directory=str(tmp_path / "out"))
     portable = json.loads(Path(reply["jsonPath"]).read_text(encoding="utf-8"))
     safety = portable["householdSafety"]

@@ -129,6 +129,7 @@ def _read_json(path):
 
 def test_an_export_holds_the_profiles_own_notes_and_nothing_else(world, tmp_path):
     out = tmp_path / "exports"
+    out.mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
 
     reply = world.result("profile.export", profileId=world.ids["Bea"], directory=str(out))
 
@@ -150,6 +151,7 @@ def test_an_export_holds_the_profiles_own_notes_and_nothing_else(world, tmp_path
 def test_an_export_never_holds_the_claude_key_and_names_files_without_the_profile_name(world, tmp_path):
     world.result("provider.setClaudeKey", key=KEY)
     out = tmp_path / "exports"
+    out.mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
 
     reply = world.result("profile.export", profileId=world.ids["Bea"], directory=str(out))
 
@@ -161,12 +163,14 @@ def test_an_export_never_holds_the_claude_key_and_names_files_without_the_profil
 
 
 def test_the_reply_names_files_and_counts_but_never_content(world, tmp_path):
+    (tmp_path / "e").mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     reply = world.result("profile.export", profileId=world.ids["Bea"], directory=str(tmp_path / "e"))
     assert set(reply) == {"markdownPath", "jsonPath", "noteCount"}
     assert "penicillin" not in json.dumps(reply)
 
 
 def test_a_profile_with_no_notes_exports_a_valid_empty_file(world, tmp_path):
+    (tmp_path / "e").mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     reply = world.result("profile.export", profileId=world.ids["Sam"], directory=str(tmp_path / "e"))
     assert reply["noteCount"] == 0
     assert _read_json(reply["jsonPath"])["notes"] == []
@@ -174,11 +178,13 @@ def test_a_profile_with_no_notes_exports_a_valid_empty_file(world, tmp_path):
 
 
 def test_an_administrator_exports_any_profile_including_a_childs(world, tmp_path):
+    (tmp_path / "e").mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     assert world.result("profile.export", profileId=world.ids["Sam"], directory=str(tmp_path / "e"))["noteCount"] == 0
     assert world.result("profile.export", profileId=world.ids["Bea"], directory=str(tmp_path / "e"))["noteCount"] == 2
 
 
 def test_an_adult_can_export_only_their_own_data(world, tmp_path):
+    (tmp_path / "e").mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     world.use("Bea")
     assert world.result("profile.export", profileId=world.ids["Bea"], directory=str(tmp_path / "e"))["noteCount"] == 2
     assert "only its own data" in world.error(

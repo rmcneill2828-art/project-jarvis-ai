@@ -88,6 +88,11 @@ TOOL RULES (any other tool use is refused and aborts your whole run, losing your
 TOOL RULES: you may read files and run only read-only git (log, show, diff, status, grep, ls-files,
 rev-parse, cat-file), python -m pytest, python -m ruff check, python scripts/validate_repository.py
 and the return-findings command below. Do not create, edit or delete any file.
+COMMAND FORM (anything else is refused, and a refused run records no verdict): one plain command at
+a time, in the repository root, which is already the working directory. Put the git subcommand
+directly after git, with no global options such as -C or --no-pager. Never cd, ;, &&, pipes (|),
+redirections (>, 2>&1) or environment-variable prefixes. python scripts/validate_repository.py takes
+no arguments. If a command is refused, try a plainer form of it before giving up.
 """,
 }
 

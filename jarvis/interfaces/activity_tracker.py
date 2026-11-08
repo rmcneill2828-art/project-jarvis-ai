@@ -28,6 +28,12 @@ import time
 # `test_method_clusters_covers_every_dispatched_rpc_method` for the
 # coverage test enforcing this (Codex design-review requirement,
 # EIP-ESR0051-002).
+# Methods deliberately left out of METHOD_CLUSTERS (ESR-0062 WP2, EIP-ESR0062-002
+# M5): the idle lock's activity report and check run on every input burst and
+# every 30 seconds, so mapping them would light the Orb and send a
+# knowledge.cluster_activity notification for nothing a person asked for.
+UNTRACKED_METHODS: frozenset[str] = frozenset({"session.activity", "session.idleCheck"})
+
 METHOD_CLUSTERS: dict[str, str] = {
     "guardian.converse": "jarvis",
     "guardian.escalation.offer": "jarvis",

@@ -1665,6 +1665,26 @@ async fn invoke_agent(
     .await
 }
 
+/// The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L2): a person used JARVIS.
+/// The screen sends it at most once a minute; the reply says who is signed in.
+#[tauri::command]
+async fn session_activity(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "session.activity", json!({})).await
+}
+
+/// The idle lock (ESR-0062 WP2, L3): who is signed in, after the backend's
+/// own check. Never counts as activity.
+#[tauri::command]
+async fn session_idle_check(
+    state: State<'_, BackendState>,
+    app_handle: AppHandle,
+) -> Result<Value, String> {
+    call_backend_off_main_thread(state, app_handle, "session.idleCheck", json!({})).await
+}
+
 /// EBG-0131 (Memory Management UXP Surface): a record count only, never
 /// full record content - matches `memory.status`'s own deliberately
 /// narrow backend response shape.
@@ -1790,6 +1810,8 @@ pub fn run() {
             list_agents,
             invoke_agent,
             memory_status,
+            session_activity,
+            session_idle_check,
             list_memory,
             delete_memory,
             backup_memory,

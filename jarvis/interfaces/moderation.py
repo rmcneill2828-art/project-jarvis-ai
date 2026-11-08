@@ -29,6 +29,8 @@ import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
 
+from jarvis.shared.safe_locations import checked_http_url
+
 DEFAULT_CLASSIFIER_MODEL = "llama-guard3:1b"
 CLASSIFIER_NUM_CTX = 4096
 # Generous: the first check after start loads the model from disk. The target
@@ -232,7 +234,8 @@ class ModerationService:
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         transport: Transport | None = None,
     ) -> None:
-        self._endpoint = endpoint.rstrip("/")
+        # Only http:// or https:// (ESR-0062 WP2, F3): urllib would open file://.
+        self._endpoint = checked_http_url(endpoint).rstrip("/")
         self._model = model
         self._timeout = timeout_seconds
         self._transport = transport or _default_transport

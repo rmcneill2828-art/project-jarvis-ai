@@ -3,7 +3,7 @@ EIP-ESR0051-002)."""
 
 from jarvis.identity.service import ProfileService
 from jarvis.identity.store import ProfileStore
-from jarvis.interfaces.activity_tracker import METHOD_CLUSTERS, ActivityTracker
+from jarvis.interfaces.activity_tracker import METHOD_CLUSTERS, UNTRACKED_METHODS, ActivityTracker
 from jarvis.interfaces.stdio_rpc import StdioRpcServer
 
 
@@ -98,4 +98,8 @@ def test_method_clusters_covers_every_dispatched_rpc_method(tmp_path):
     )
     server = StdioRpcServer(runtime, identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")))
 
-    assert set(METHOD_CLUSTERS.keys()) == set(server._methods.keys())  # the exact coverage this test exists to enforce
+    # The exact coverage this test exists to enforce, less the named exclusions
+    # (ESR-0062 WP2, M5), which must be real methods and never also mapped.
+    assert set(METHOD_CLUSTERS.keys()) == set(server._methods.keys()) - UNTRACKED_METHODS
+    assert UNTRACKED_METHODS <= set(server._methods.keys())
+    assert not UNTRACKED_METHODS & set(METHOD_CLUSTERS.keys())

@@ -23,6 +23,7 @@ import urllib.error
 import urllib.request
 
 from jarvis.agents.contracts import AgentRequest, AgentResult
+from jarvis.shared.safe_locations import checked_http_url
 
 STATUS_REPORTED = "reported"
 
@@ -48,6 +49,8 @@ class HomeAssistantClient:
         if not base_url.strip():
             msg = "Home Assistant base_url must not be empty."
             raise ValueError(msg)
+        # Only http:// or https:// (ESR-0062 WP2, F3): urllib would open file://.
+        checked_http_url(base_url.strip())
         if not token.strip():
             msg = "Home Assistant token must not be empty."
             raise ValueError(msg)

@@ -211,3 +211,15 @@ def test_refusal_report_ignores_a_previous_runs_refusal(tmp_path):
 
     assert "--format=%B" not in report
     assert report.startswith("git show x | grep 'y' -B 2") and "last command attempted" in report
+
+
+def test_copilot_rules_name_the_accepted_command_form():
+    """EBG-0178 (ESR-0062 WP2, R1): Copilot's narrow allow-list refuses compound
+    or piped commands, and a run refused that way records no verdict, so its
+    standing rules say which form is accepted."""
+
+    rules = run_reviewer.TOOL_RULES["copilot"]
+    flat = " ".join(rules.split())
+    for phrase in ("one plain command at a time", "no global options such as -C", "Never cd, ;, &&, pipes", "takes no arguments"):
+        assert phrase in flat
+

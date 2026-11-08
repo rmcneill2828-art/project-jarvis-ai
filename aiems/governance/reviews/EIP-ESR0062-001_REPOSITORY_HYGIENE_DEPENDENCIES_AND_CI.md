@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0062-001 |
 | Title | Engineering Implementation Package: WP1 Repository Hygiene - Dependencies and CI |
-| Version | 0.3 |
-| Status | Built and reviewed (Copilot Pass, Antigravity Pass); awaiting Programme Sponsor approval of the built result |
+| Version | 0.4 |
+| Status | Implemented - committed `a21984e`, CI green, post-commit review Pass (Copilot, Antigravity) |
 | Session | ESR-0062 |
 | Work Package | WP1 |
 | Risk class | Standard (dependency and CI updates; no product behaviour change intended). One reviewer (Copilot) for design; both reviewers for the built result, because it touches the release workflow. |
@@ -185,10 +185,23 @@ Written 8 November 2026: 40 sentences (20 unsafe across violence, self-harm, the
 
 The message check meets its 2 s target in both runs; the reply check is slower than the WP6d figure (2.68 s) and the target, which the Programme Sponsor accepted under option A. The timings vary with what else the PC is doing; the counts do not. **The two misses are the request for a sexual story and the request for how to make poison from garden plants; the false stop is a request for adventure books for a 12-year-old.** These are facts about the classifier, not changed by this WP; reported to the Programme Sponsor.
 
+## 11.4 Approval, commit and post-commit (v0.4)
+
+| Step | Record |
+|---|---|
+| Built-result approval | **Approved** by the Programme Sponsor through the Sponsor Approval Service on parent `8a40497`, including deviation 1; `submit-response ESR-0062 WP1` accepted (8 November 2026, 14:20 UTC), its own pytest and validator run clean |
+| Commit | **`a21984e`**, 17 files; pushed by the Programme Sponsor |
+| Pull requests | All 21 settled. 16 closed with a comment naming `a21984e` (#40, #39, #38, #36, #35, #33, #32, #30, #29, #18, #8, #7, #6, #4, #2, #1); #21 closed as already in the tree. Dependabot itself closed #34, #23 (React 19), #9 (indexmap 2) and #28 (windows-sys) on the new ignore rules; #28 was in fact taken, and a comment on it says so |
+| CI | Run 42489517516 **success** on Node 24 with the new pins: python, python-macos, rust, rust-windows, rust-macos, frontend-build, playwright all passed. playwright-webkit (allowed to fail) failed on the **same 5 microphone tests** as before WP1 (run 42481470366), 5 skipped: no change. `release.yml` stays untested until the next tag |
+| Post-commit review | **Copilot Pass** (no High or Medium; Low: Section 11.3 names one near-miss example, harmless). **Antigravity Pass** (no High or Medium). Both confirmed the commit is exactly the reviewed tree, 17 expected paths, nothing revealing the private sentence set |
+| Reviewer tooling | Copilot's first post-commit attempt was refused every shell command, so it recorded no verdict. The cause is most likely compound or piped command forms that the narrow read-only allow-list does not match. A re-run with a "plain commands only" instruction in the prompt worked. Proposed as a backlog item: add that instruction to `run_reviewer.py`'s standing tool rules |
+| Left open | Nine Dependabot pull requests (#41 to #49, minor and patch) opened after the push; outside WP1's approved scope, placement put to the Programme Sponsor |
+
 # 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.4 | 8 November 2026 | Claude Engineering Implementer | Built result approved (deviation 1 included) and committed a21984e; CI green on Node 24; 21 pull requests settled; post-commit review Copilot Pass, Antigravity Pass (Section 11.4). |
 | 0.3 | 8 November 2026 | Claude Engineering Implementer | Design approved (D-1 yes, D-2 agreed, D-3 private location). Built (Section 11): every update applied; deviation 1 - #28 windows-sys 0.61 taken after Tauri's crates moved to it (needs explicit approval); evidence; the replacement sentence set written and measured. |
 | 0.2 | 8 November 2026 | Claude Engineering Implementer | Design review Conditional Pass (Copilot): all findings addressed. New action SHAs verified as commits; release.yml caveat in D-1; #28 windows-sys not taken (deliberate pin, confirmed with cargo tree); package.json floors raised. |
 | 0.1 | 8 November 2026 | Claude Engineering Implementer | Drafted at ESR-0062 WP1 from the pull request triage. Real defect found: the action-gh-release pin is a tag object, not a commit. The moderation sentence set found lost. |

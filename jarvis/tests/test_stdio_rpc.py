@@ -114,6 +114,13 @@ def _server_with_profile(tmp_path) -> StdioRpcServer:
     return server
 
 
+def _existing(folder):
+    """A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1)."""
+
+    folder.mkdir(parents=True, exist_ok=True)
+    return folder
+
+
 def test_build_default_runtime_is_started_and_connected(tmp_path):
     runtime = build_default_runtime(environ={"JARVIS_MEMORY_DB_PATH": str(tmp_path / "personal.db"), })
 
@@ -364,6 +371,7 @@ def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
             identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
         )
 
+    server._remember_reply(None, "hello")  # A reply JARVIS gave (ESR-0062 WP2, F4).
     result = server._methods["guardian.speak"]({"text": "hello"})
 
     assert result["status"] == "synthesized"
@@ -373,6 +381,7 @@ def test_guardian_speak_rpc_returns_synthesized_shape(tmp_path):
 
 def test_guardian_speak_rpc_returns_not_connected_shape_without_audio(tmp_path):
     server = _server(tmp_path)
+    server._remember_reply(None, "hello")  # A reply JARVIS gave (ESR-0062 WP2, F4).
 
     result = server._methods["guardian.speak"]({"text": "hello"})
 
@@ -1187,6 +1196,7 @@ def test_serve_forever_emits_cluster_activity_notification_with_no_id_key(tmp_pa
         heartbeat_interval_seconds=9999.0,
         identity_service=ProfileService(ProfileStore(tmp_path / "profiles.db")),
     )
+    server._remember_reply(None, "hi")  # A reply JARVIS gave (ESR-0062 WP2, F4).
     in_stream = io.StringIO(
         json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.speak", "params": {"text": "hi"}}) + "\n"
     )
@@ -1230,6 +1240,7 @@ def test_knowledge_graph_response_includes_active_clusters_pull_field(tmp_path):
 
     server = _server(tmp_path)
 
+    server._remember_reply(None, "hi")  # A reply JARVIS gave (ESR-0062 WP2, F4).
     server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 1, "method": "guardian.speak", "params": {"text": "hi"}}))
     response = server.handle_line(json.dumps({"jsonrpc": "2.0", "id": 2, "method": "knowledge.graph", "params": {}}))
 
@@ -1431,6 +1442,7 @@ def test_memory_backup_writes_file_with_both_tables(tmp_path):
         json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.approve", "params": {"pendingId": pending_id}})
     )
     backup_dir = tmp_path / "backups"
+    backup_dir.mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
 
     backup_response = server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.backup", "params": {"backupDir": str(backup_dir)}})
@@ -1459,6 +1471,7 @@ def test_memory_restore_round_trips_through_a_real_backup_file(tmp_path):
         json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.approve", "params": {"pendingId": pending_id}})
     )
     backup_dir = tmp_path / "backups"
+    backup_dir.mkdir()  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     backup_response = source_server.handle_line(
         json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.backup", "params": {"backupDir": str(backup_dir)}})
     )
@@ -1486,7 +1499,7 @@ def test_memory_restore_refuses_non_empty_store_without_confirm_overwrite(tmp_pa
         json.dumps({"jsonrpc": "2.0", "id": 2, "method": "memory.approve", "params": {"pendingId": pending_id}})
     )
     backup_response = server.handle_line(
-        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.backup", "params": {"backupDir": str(tmp_path / "backups")}})
+        json.dumps({"jsonrpc": "2.0", "id": 3, "method": "memory.backup", "params": {"backupDir": str(_existing(tmp_path / "backups"))}})
     )
     backup_path = backup_response["result"]["path"]
 

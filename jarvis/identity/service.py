@@ -8,7 +8,10 @@ pattern in `jarvis/memory/store.py`.
 
 from __future__ import annotations
 
+import threading
+import time
 import uuid
+from collections.abc import Callable
 from typing import Any
 
 from jarvis.identity.admin_pin import AdminPin
@@ -23,6 +26,12 @@ CLOUD_MEMORY_SHARING_ROLES = frozenset({"Administrator", "Adult"})
 # A Child or Guest session is a locked session (EIP-ESR0061-006 P2): leaving it
 # for any profile that is not itself Child or Guest needs the PIN.
 LOCKED_SESSION_ROLES = frozenset({"Child", "Guest"})
+
+# The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L1-L3): once a PIN is set, an
+# Adult or Administrator left without use for this long is signed out, as
+# `begin_app_session` does at a restart. Fixed in v1.0 (decision D-1).
+IDLE_LOCK_SECONDS = 15 * 60
+IDLE_LOCK_ROLES = frozenset({"Adult", "Administrator"})
 
 
 def pin_required_to_switch(active: ProfileRecord | None, target: ProfileRecord) -> bool:
@@ -48,9 +57,26 @@ class ProfileService:
     """Create, list and select local Guardian profiles, under the household
     PIN's rules (ESR-0061 WP6a)."""
 
-    def __init__(self, store: ProfileStore, pin: AdminPin | None = None) -> None:
+    def __init__(
+        self,
+        store: ProfileStore,
+        pin: AdminPin | None = None,
+        *,
+        wall_clock: Callable[[], float] = time.time,
+        monotonic_clock: Callable[[], float] = time.monotonic,
+        idle_lock_seconds: float = IDLE_LOCK_SECONDS,
+    ) -> None:
         self._store = store
         self.pin = pin or AdminPin(store)
+        # The idle lock (WP2 L1-L3). The last activity is kept in memory only (a
+        # restart already signs out), as a (wall, monotonic) pair for the
+        # profile it belongs to; one mutex makes the check-and-clear happen
+        # exactly once however many threads ask.
+        self._wall_clock = wall_clock
+        self._monotonic_clock = monotonic_clock
+        self.idle_lock_seconds = idle_lock_seconds
+        self._idle_mutex = threading.Lock()
+        self._last_activity: tuple[str, float, float] | None = None
         # Moderation's safety events share the identity database (WP6b, M5).
         self.safety_events = SafetyEventStore(store)
         # A Child's consent to ask Claude, in the same database (WP6c, C2).
@@ -272,6 +298,7 @@ class ProfileService:
                 raise ClientFacingPermissionError(msg)
             self.pin.verify(pin)
         self._store.set_active(profile_id)
+        self._touch()
         return record
 
     def set_first_pin(self, pin: object) -> None:
@@ -280,6 +307,8 @@ class ProfileService:
 
         active = self._require_administrator("Only an Administrator can set the PIN.")
         self.pin.set_first(pin, active.display_name)
+        # The lock starts counting from here, never from an older session (L2).
+        self._touch()
 
     def change_pin(self, current_pin: object, new_pin: object) -> None:
         """Change the PIN: an Administrator signed in, and the current PIN."""
@@ -289,6 +318,7 @@ class ProfileService:
             msg = "No PIN is set yet."
             raise ClientFacingValueError(msg)
         self.pin.change(current_pin, new_pin)
+        self._touch()
 
     def signin_notices(self, record: ProfileRecord) -> list[dict[str, Any]]:
         """For an Administrator just signed in, the PIN notices waiting for
@@ -361,6 +391,59 @@ class ProfileService:
         """Return the currently active profile, or None if none is selected."""
 
         return self._store.get_active()
+
+    # -- The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L1-L3) ----------------
+
+    def lock_if_idle(self) -> bool:
+        """Sign out an idle Adult or Administrator; return whether this call did.
+
+        Applies only once a PIN is set (P3). A session with no recorded
+        activity is stamped now rather than left unlockable (L2). Elapsed time
+        is the larger of wall-clock and monotonic elapsed, so a computer that
+        slept is locked on waking and a clock set back cannot hold a session
+        open (L3)."""
+
+        with self._idle_mutex:
+            return self._lock_if_idle_held()
+
+    def record_activity(self) -> bool:
+        """A person used JARVIS. A session already due is locked, never revived
+        (L2); otherwise the signed-in profile's activity is stamped now.
+        Returns whether the session was locked."""
+
+        with self._idle_mutex:
+            if self._lock_if_idle_held():
+                return True
+            active = self._store.get_active()
+            self._last_activity = None if active is None else self._stamp(active.id)
+            return False
+
+    def _touch(self) -> None:
+        """Stamp the signed-in profile's activity without the due check: for a
+        select or a PIN change, whose request passed that check just before,
+        so a lock here could never be announced (implementation review L-1)."""
+
+        with self._idle_mutex:
+            active = self._store.get_active()
+            self._last_activity = None if active is None else self._stamp(active.id)
+
+    def _stamp(self, profile_id: str) -> tuple[str, float, float]:
+        return (profile_id, self._wall_clock(), self._monotonic_clock())
+
+    def _lock_if_idle_held(self) -> bool:
+        active = self._store.get_active()
+        if active is None or active.role not in IDLE_LOCK_ROLES or not self.pin.is_set():
+            return False
+        last = self._last_activity
+        if last is None or last[0] != active.id:
+            self._last_activity = self._stamp(active.id)
+            return False
+        elapsed = max(self._wall_clock() - last[1], self._monotonic_clock() - last[2])
+        if elapsed < self.idle_lock_seconds:
+            return False
+        self._store.clear_active()
+        self._last_activity = None
+        return True
 
     def begin_app_session(self) -> bool:
         """Called once when the backend starts (ESR-0061 WP7; Antigravity

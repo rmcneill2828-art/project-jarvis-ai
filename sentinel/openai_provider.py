@@ -6,6 +6,7 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 
+from sentinel.endpoints import require_http_endpoint
 from sentinel.provider_config import ProviderConfiguration, RetryPolicy
 from sentinel.providers import (
     TRANSIENT_HTTP_STATUSES,
@@ -91,7 +92,9 @@ class OpenAIProvider:
             )
             raise RuntimeError(msg)
 
-        endpoint = self._configuration.endpoint or "https://api.openai.com/v1/chat/completions"
+        endpoint = require_http_endpoint(
+            self._configuration.endpoint or "https://api.openai.com/v1/chat/completions", "OpenAI"
+        )
         messages: list[dict[str, str]] = []
         if request.system_prompt:
             messages.append({"role": "system", "content": request.system_prompt})

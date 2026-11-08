@@ -36,6 +36,14 @@ import { SettingsView } from "./SettingsView.jsx";
 import { deriveOrbState, isConnecting, isOffline, orbReadout } from "./orbState.js";
 import { NavRail, TopBar, VIEWS } from "./Shell.jsx";
 
+// The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L2-L4): who may be signed out,
+// what counts as a person's use, and how often the screen reports and asks.
+const IDLE_LOCKED_ROLES = ["Adult", "Administrator"];
+const IDLE_LOCK_DEFAULT_MINUTES = 15;
+const ACTIVITY_EVENTS = ["pointerdown", "keydown", "wheel", "touchstart"];
+const ACTIVITY_REPORT_MS = 60_000;
+const IDLE_CHECK_MS = 30_000;
+
 // Live overrides for platformStatus.js's static defaults, sourced from a real
 // `platform.status` JSON-RPC call through the Tauri sidecar bridge
 // (ADR-0019, ESR-0017 WP9). Per the WP9 design, a failed or not-yet-resolved
@@ -541,6 +549,9 @@ export function App() {
   const [pinPrompt, setPinPrompt] = useState(null);
   const [pinNotices, setPinNotices] = useState(null);
   const profileSummaryRef = useRef(null);
+  // The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L4): minutes, once signed out.
+  const [lockNotice, setLockNotice] = useState(null);
+  const activeProfileRef = useRef(null);
 
   // Agent Framework (EIP-ESR0050-001): agents null = connecting, [] = empty,
   // otherwise the real registered agent name list from guardian.agent.list.
@@ -711,7 +722,9 @@ export function App() {
   useEffect(() => {
     const previous = previousProfileIdRef.current;
     previousProfileIdRef.current = activeProfile?.id ?? null;
-    if (previous === null || previous === (activeProfile?.id ?? null)) return;
+    // From none to a profile clears too (ESR-0062 WP2, review L-3): anything
+    // typed before anyone signed in must not carry into the next person's.
+    if (previous === (activeProfile?.id ?? null)) return;
     conversationEpochRef.current += 1;
     setMessages([]);
     setInputValue("");
@@ -745,6 +758,76 @@ export function App() {
     setTranscribing(false);
   }, [activeProfile?.id]);
 
+  // The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L2-L4). The backend decides;
+  // the screen reports a person's use, asks when it may have missed a lock
+  // (window focused or shown again, and every 30 seconds), and clears itself
+  // through the ordinary switch path when told.
+  useEffect(() => {
+    activeProfileRef.current = activeProfile;
+    if (activeProfile) setLockNotice(null);
+  }, [activeProfile]);
+
+  const signOutAfterIdle = (minutes) => {
+    setActiveProfile(null);
+    setPinPrompt(null);
+    setPinNotices(null);
+    setLockNotice(minutes ?? IDLE_LOCK_DEFAULT_MINUTES);
+  };
+
+  // The backend's answer says who is signed in; a screen still showing someone
+  // else has missed a lock. An answer is compared only with the profile shown
+  // when it was asked, so a switch made meanwhile is never mistaken for a lock
+  // (implementation review L-2).
+  const askSession = (command) => {
+    const askedFor = activeProfileRef.current?.id ?? null;
+    invoke(command)
+      .then((result) => {
+        const shown = activeProfileRef.current;
+        if (!shown || shown.id !== askedFor || !result) return;
+        if (result.activeProfileId !== shown.id) signOutAfterIdle(result.idleLockMinutes);
+      })
+      .catch(() => {});
+  };
+
+  const lockable = Boolean(activeProfile && IDLE_LOCKED_ROLES.includes(activeProfile.role));
+
+  useEffect(() => {
+    if (!lockable) return undefined;
+    let lastReported = 0;
+    const report = () => {
+      const now = Date.now();
+      if (now - lastReported < ACTIVITY_REPORT_MS) return;
+      lastReported = now;
+      askSession("session_activity");
+    };
+    const check = () => askSession("session_idle_check");
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") check();
+    };
+    for (const name of ACTIVITY_EVENTS) window.addEventListener(name, report, { passive: true });
+    window.addEventListener("focus", check);
+    document.addEventListener("visibilitychange", onVisibility);
+    const poll = setInterval(check, IDLE_CHECK_MS);
+    return () => {
+      for (const name of ACTIVITY_EVENTS) window.removeEventListener(name, report);
+      window.removeEventListener("focus", check);
+      document.removeEventListener("visibilitychange", onVisibility);
+      clearInterval(poll);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfile?.id, lockable]);
+
+  // Recording or listening to a reply is use too, though nobody touches
+  // anything (review L-2): reported now and each minute while it lasts.
+  useEffect(() => {
+    if (!lockable || !(isRecording || speaking)) return undefined;
+    const report = () => askSession("session_activity");
+    report();
+    const timer = setInterval(report, ACTIVITY_REPORT_MS);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lockable, isRecording, speaking]);
+
   // Re-reads the real count after a restore, rather than trusting the
   // restore response's own recordCount as a proxy for the store's new
   // total - restoring into a non-empty store (once ever allowed) would
@@ -770,6 +853,10 @@ export function App() {
     listen("jarvis://notification", (event) => {
       if (event.payload?.method === "system.heartbeat") {
         setLastHeartbeatAt(new Date());
+      }
+      // The backend signed out an idle Adult or Administrator (WP2, L3-L4).
+      if (event.payload?.method === "profile.locked") {
+        signOutAfterIdle(event.payload.params?.minutes);
       }
       if (event.payload?.method === "ollama.pullProgress") {
         setPullProgress(event.payload.params ?? null);
@@ -1229,6 +1316,13 @@ export function App() {
       />
       <NavRail views={VIEWS.filter((entry) => allowedViews.includes(entry.id))} current={currentView} onSelect={setView} mentionClaude={canAskClaude(role) || Boolean(claudeStatus?.mayEscalate)} />
       <main className="app-main" aria-label="Guardian desktop experience">
+        {!activeProfile && !setupOpen && lockNotice && (
+          <div className="profile-banner">
+            <p className="lock-notice" role="status">
+              Signed out after {lockNotice} minutes without use. Choose a profile to continue.
+            </p>
+          </div>
+        )}
         {!activeProfile && !setupOpen && (
           <div className="profile-banner">
             <ProfileCard

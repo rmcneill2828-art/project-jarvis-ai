@@ -92,6 +92,9 @@ async function installMock(page, profile, { others = [], consent = null, disclos
             // The Child's first-use explanation and the safety summary (WP6d).
             disclosure_status: disclosure || { required: false, acknowledged: true, acknowledgedAt: null },
             safety_summary: safety || { profiles: [] },
+            // The idle lock (ESR-0062 WP2): still signed in.
+            session_activity: { activeProfileId: profile.id, idleLockMinutes: 15 },
+            session_idle_check: { activeProfileId: profile.id, idleLockMinutes: 15 },
           };
           if (cmd in answers) return Promise.resolve(structuredClone(answers[cmd]));
           if (cmd === "plugin:event|listen") return Promise.resolve(0);

@@ -27,6 +27,7 @@ line.
 """
 
 import base64
+import hashlib
 import json
 import logging
 import logging.handlers
@@ -35,6 +36,7 @@ import os
 import sys
 import threading
 import traceback
+from collections import OrderedDict
 from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
@@ -92,6 +94,7 @@ from jarvis.shared.errors import (
     ClientFacingValueError,
     public_type_name,
 )
+from jarvis.shared.safe_locations import checked_http_url, checked_user_path
 from jarvis.shared.secret_store import SecretStore
 from jarvis.shared.settings import ALLOWED_RETENTION_DAYS, SETTINGS_FILENAME, SettingsStore
 from jarvis.shared.spend_ledger import MICRO_DOLLARS_PER_DOLLAR, SpendLedger
@@ -122,6 +125,17 @@ logger = logging.getLogger(__name__)
 SLOW_METHODS = frozenset(
     {"guardian.converse", "guardian.escalate", "guardian.speak", "guardian.transcribe", "guardian.agent.invoke"}
 )
+
+# The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L3): how often the backend's
+# own timer checks, so a minimised window is locked on time too.
+IDLE_LOCK_CHECK_SECONDS = 5.0
+
+# Who sees shared household notes (ESR-0062 WP2 H1, EBG-0171 option A).
+HOUSEHOLD_NOTE_ROLES = frozenset({"Adult", "Administrator"})
+
+# Speech is bound to JARVIS's own replies (ESR-0062 WP2, F4): how many replies
+# per profile are remembered, by hash, for the speak button.
+SPOKEN_REPLY_MEMORY = 500
 
 # Retry policy for the cloud providers (EBG-0140, ESR-0059 WP6): one retry
 # after a transient failure (rate limit, server error, network failure),
@@ -170,6 +184,25 @@ OLLAMA_MODEL_ENV_VAR = "JARVIS_OLLAMA_MODEL"
 OLLAMA_ENDPOINT_ENV_VAR = "JARVIS_OLLAMA_ENDPOINT"
 DEFAULT_OLLAMA_MODEL = "qwen3.5:2b"
 OLLAMA_TIMEOUT_SECONDS = 90.0
+
+
+def _checked_env_url(environ: Mapping[str, str], name: str) -> str | None:
+    """A configured service address, or None when unset - or when it is not an
+    http:// or https:// address (ESR-0062 WP2, F3), in which case it is ignored
+    as if unset and the log names the variable, never its value (it may hold a
+    user name and password)."""
+
+    value = _clean_env(environ, name)
+    if value is None:
+        return None
+    try:
+        return checked_http_url(value)
+    except ValueError:
+        logger.warning(
+            "%s is not an http:// or https:// address with a host, so it is ignored. Include http:// or https://.",
+            name,
+        )
+        return None
 
 
 def _clean_env(environ: Mapping[str, str], name: str) -> str | None:
@@ -406,7 +439,7 @@ def _build_home_assistant_agent(environ: Mapping[str, str]) -> HomeAssistantStat
     `HomeAssistantClient` only calls out when an actual query is executed.
     """
 
-    base_url = environ.get(HOME_ASSISTANT_URL_ENV_VAR)
+    base_url = _checked_env_url(environ, HOME_ASSISTANT_URL_ENV_VAR)
     token = environ.get(HOME_ASSISTANT_TOKEN_ENV_VAR)
     if not base_url or not token:
         return None
@@ -564,10 +597,12 @@ def build_default_runtime(
     # so a local failure never reaches a cloud service. Claude has its own
     # capability, used only by a confirmed escalation.
     ollama_model = _clean_env(environ, OLLAMA_MODEL_ENV_VAR) or DEFAULT_OLLAMA_MODEL
+    # Checked once (ESR-0062 WP2, F3), so a bad value is logged once.
+    ollama_endpoint_setting = _checked_env_url(environ, OLLAMA_ENDPOINT_ENV_VAR)
     ollama_configuration = ProviderConfiguration(
         provider_name="ollama",
         default_model=ollama_model,
-        endpoint=_clean_env(environ, OLLAMA_ENDPOINT_ENV_VAR),
+        endpoint=ollama_endpoint_setting,
         timeout_seconds=OLLAMA_TIMEOUT_SECONDS,
         max_output_tokens=_max_output_tokens(environ),
     )
@@ -643,7 +678,7 @@ def build_default_runtime(
 
     escalation_provider = _build_escalation_provider(environ, gateway, orchestrator, audit_recorder)
 
-    ollama_endpoint = _clean_env(environ, OLLAMA_ENDPOINT_ENV_VAR) or OLLAMA_DEFAULT_ENDPOINT
+    ollama_endpoint = ollama_endpoint_setting or OLLAMA_DEFAULT_ENDPOINT
     ollama_setup = OllamaSetup(
         endpoint=ollama_endpoint,
         choice=model_choice,
@@ -689,8 +724,15 @@ class StdioRpcServer:
         identity_service: ProfileService | None = None,
         activity_tracker: ActivityTracker | None = None,
         escalation_offers: EscalationOffers | None = None,
+        idle_check_interval_seconds: float = IDLE_LOCK_CHECK_SECONDS,
     ) -> None:
         self._runtime = runtime
+        # The idle lock's own timer (ESR-0062 WP2, L3).
+        self._idle_check_interval_seconds = idle_check_interval_seconds
+        # Speech is bound to JARVIS's own replies (WP2, F4): SHA-256 of the
+        # replies returned to each profile in this run (None: no profile).
+        self._spoken_replies: dict[str | None, OrderedDict[str, None]] = {}
+        self._spoken_replies_lock = threading.Lock()
         # Confirmation tokens for escalating a question to Claude (ESR-0061
         # WP3b). Held in memory only; injectable so tests can control time.
         self._escalation_offers = escalation_offers if escalation_offers is not None else EscalationOffers()
@@ -758,9 +800,11 @@ class StdioRpcServer:
         if setup is not None:
             setup.pulls.set_notifier(self._emit_notification)
         self._methods = {
-            "guardian.converse": self._guardian_converse,
+            "guardian.converse": self._remembering_reply(self._guardian_converse),
             "guardian.escalation.offer": self._guardian_escalation_offer,
-            "guardian.escalate": self._guardian_escalate,
+            "guardian.escalate": self._remembering_reply(self._guardian_escalate),
+            "session.activity": self._session_activity,
+            "session.idleCheck": self._session_idle_check,
             "provider.status": self._provider_status,
             "provider.claudeKeyStatus": self._provider_claude_key_status,
             "provider.setClaudeKey": self._provider_set_claude_key,
@@ -811,6 +855,82 @@ class StdioRpcServer:
             "gia.engineeringStatus": self._gia_engineering_status,
         }
 
+    def _remembering_reply(self, handler):
+        """Wrap converse or escalate so every message string it returns is
+        remembered, by hash, for the profile it was returned to (F4)."""
+
+        def remembering(params: dict[str, Any]) -> dict[str, Any]:
+            profile_id = self._active_profile_id()
+            result = handler(params)
+            message = result.get("message") if isinstance(result, dict) else None
+            if isinstance(message, str):
+                self._remember_reply(profile_id, message)
+            return result
+
+        return remembering
+
+    @staticmethod
+    def _reply_hash(text: str) -> str:
+        return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+    def _remember_reply(self, profile_id: str | None, text: str) -> None:
+        digest = self._reply_hash(text)
+        with self._spoken_replies_lock:
+            replies = self._spoken_replies.setdefault(profile_id, OrderedDict())
+            replies[digest] = None
+            replies.move_to_end(digest)
+            while len(replies) > SPOKEN_REPLY_MEMORY:
+                replies.popitem(last=False)
+
+    def _was_replied(self, profile_id: str | None, text: str) -> bool:
+        with self._spoken_replies_lock:
+            return self._reply_hash(text) in self._spoken_replies.get(profile_id, {})
+
+    # -- The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L1-L4) ------------------
+
+    def _enforce_idle_lock(self) -> bool:
+        """Sign out an idle Adult or Administrator, and tell the screen once."""
+
+        if not self._identity_service.lock_if_idle():
+            return False
+        self._announce_lock()
+        return True
+
+    def _announce_lock(self) -> None:
+        minutes = round(self._identity_service.idle_lock_seconds / 60)
+        logger.info("An Adult or Administrator session was signed out after %s minutes without use.", minutes)
+        self._emit_notification("profile.locked", {"reason": "idle", "minutes": minutes})
+
+    def _idle_lock_loop(self, stop_event: threading.Event) -> None:
+        """The backend's own check (L3b), so a minimised window locks on time."""
+
+        while not stop_event.wait(self._idle_check_interval_seconds):
+            try:
+                self._enforce_idle_lock()
+            except Exception:  # The timer must outlive any one failed check.
+                logger.exception("The idle-lock check failed.")
+
+    def _session_state(self) -> dict[str, Any]:
+        active = self._identity_service.active_profile()
+        return {
+            "activeProfileId": active.id if active is not None else None,
+            "idleLockMinutes": round(self._identity_service.idle_lock_seconds / 60),
+        }
+
+    def _session_activity(self, params: dict[str, Any]) -> dict[str, Any]:
+        """A person used JARVIS (L2). A session already due is locked, not
+        revived; the reply says who is signed in afterwards."""
+
+        if self._identity_service.record_activity():
+            self._announce_lock()
+        return self._session_state()
+
+    def _session_idle_check(self, params: dict[str, Any]) -> dict[str, Any]:
+        """Who is signed in, after the check every request runs (L3c). Never
+        counts as activity."""
+
+        return self._session_state()
+
     def _guardian_converse(self, params: dict[str, Any]) -> dict[str, Any]:
         message = params.get("message")
         if not isinstance(message, str):
@@ -824,7 +944,7 @@ class StdioRpcServer:
         response = self._runtime.converse(
             message,
             active.id if active is not None else None,
-            include_household=_sees_household_notes(active),
+            include_household=self._sees_household_notes(active),
             role=moderation_role,
             # A Child is called by their first name, by the local model only.
             name=active.display_name if active is not None and moderation_role == "Child" else None,
@@ -851,6 +971,17 @@ class StdioRpcServer:
         if active is not None:
             return active.role
         return "Guest" if self._identity_service.list_profiles() else None
+
+    def _sees_household_notes(self, active) -> bool:
+        """Shared household notes reach only an Adult or Administrator (ESR-0062
+        WP2 H1; EBG-0171 option A, Programme Sponsor decision). A Child, a Guest
+        (GAM-0001 Section 8.1), and no profile selected once the household has
+        any - the state a restart and the idle lock leave - never get them. With
+        no profile at all (first setup) there is nobody to protect yet."""
+
+        if active is not None:
+            return active.role in HOUSEHOLD_NOTE_ROLES
+        return not self._identity_service.list_profiles()
 
     def _blocked_payload(self, active, response) -> dict[str, Any]:
         """A turn moderation blocked: the fixed reply, recorded as a safety event
@@ -968,7 +1099,7 @@ class StdioRpcServer:
             message,
             active.id,
             role=active.role,
-            include_household=_sees_household_notes(active),
+            include_household=self._sees_household_notes(active),
             share_memory=active.share_memory_with_cloud and active.role != "Child",
             child_consent=self._identity_service.child_may_ask_claude(active),
         )
@@ -1123,9 +1254,11 @@ class StdioRpcServer:
         if target is None:
             msg = "No such profile."
             raise ClientFacingValueError(msg)
+        # Never any string as given (ESR-0062 WP2, F1; WR-ESR0061-002 F1).
+        export_dir = checked_user_path(directory, kind="directory")
         notes = self._runtime.profile_notes(profile_id)
         markdown_path, json_path = write_profile_export(
-            target, notes, Path(directory), safety=self._identity_service.household_safety_record(profile_id)
+            target, notes, export_dir, safety=self._identity_service.household_safety_record(profile_id)
         )
         return {"markdownPath": str(markdown_path), "jsonPath": str(json_path), "noteCount": len(notes)}
 
@@ -1159,6 +1292,8 @@ class StdioRpcServer:
         # An open offer to ask Claude holds the person's question in memory.
         self._escalation_offers.discard_profile(profile_id)
         self._identity_service.delete_profile(profile_id)
+        with self._spoken_replies_lock:
+            self._spoken_replies.pop(profile_id, None)
         return {"erased": True, "notesRemoved": notes_removed, "proposalsDiscarded": proposals_discarded}
 
     # -- Claude for a Child (ESR-0061 WP6c, EIP-ESR0061-006 C1, C2, 6.6) ---------
@@ -1306,6 +1441,11 @@ class StdioRpcServer:
             msg = "params.text must be a string."
             raise ClientFacingTypeError(msg)
         _require_max_length(text, MAX_SPEAK_CHARS, "params.text")
+        # Only JARVIS's own replies to whoever is signed in (ESR-0062 WP2, F4;
+        # WR-ESR0061-002 F4): the screen speaks nothing else.
+        if not self._was_replied(self._active_profile_id(), text):
+            msg = "Guardian can speak only its own replies."
+            raise ClientFacingPermissionError(msg)
         outcome = self._runtime.speak(text)
         result: dict[str, Any] = {"status": outcome.status, "message": outcome.message}
         if outcome.status == "synthesized":
@@ -1456,7 +1596,7 @@ class StdioRpcServer:
     def _memory_list(self, params: dict[str, Any]) -> dict[str, Any]:
         active = self._identity_service.active_profile()
         records = self._runtime.list_memory(
-            active.id if active is not None else None, include_household=_sees_household_notes(active)
+            active.id if active is not None else None, include_household=self._sees_household_notes(active)
         )
         return {
             "records": [
@@ -1496,7 +1636,7 @@ class StdioRpcServer:
 
         active = self._identity_service.active_profile()
         count = self._runtime.memory_status(
-            active.id if active is not None else None, include_household=_sees_household_notes(active)
+            active.id if active is not None else None, include_household=self._sees_household_notes(active)
         )
         return {"recordCount": count}
 
@@ -1523,6 +1663,9 @@ class StdioRpcServer:
             ADMINISTRATOR_ROLES,
             "Only an Administrator profile can back up memory.",
         )
+        if backup_dir_param:
+            # A caller's folder is never taken as given (ESR-0062 WP2, F1).
+            backup_dir = checked_user_path(backup_dir_param, kind="directory")
         path = self._runtime.backup_memory(backup_dir)
         return {"path": str(path)}
 
@@ -1556,7 +1699,9 @@ class StdioRpcServer:
             ADMINISTRATOR_ROLES,
             "Only an Administrator profile can restore memory.",
         )
-        count = self._runtime.restore_memory(Path(backup_path_param), confirm_overwrite=confirm_overwrite)
+        # Never any string as given (ESR-0062 WP2, F1).
+        backup_path = checked_user_path(backup_path_param, kind="file")
+        count = self._runtime.restore_memory(backup_path, confirm_overwrite=confirm_overwrite)
         known_profile_ids = {profile.id for profile in self._identity_service.list_profiles()}
         reassigned = self._runtime.reassign_unknown_memory_owners(known_profile_ids, active_profile_id)
         return {"recordCount": count, "reassignedToActiveProfile": reassigned}
@@ -1687,6 +1832,9 @@ class StdioRpcServer:
             return self._error(request_id, METHOD_NOT_FOUND, f"Method not found: {method}.")
 
         try:
+            # No request ever runs as an idle Adult or Administrator (ESR-0062
+            # WP2, L3a): a session that is due is signed out first.
+            self._enforce_idle_lock()
             result = handler(params)
         except ClientFacingError as exc:
             # Written for the person using JARVIS (the UI shows it); named by
@@ -1750,6 +1898,12 @@ class StdioRpcServer:
             name="jarvis-heartbeat",
         )
         heartbeat_thread.start()
+        threading.Thread(
+            target=self._idle_lock_loop,
+            args=(stop_heartbeat,),
+            daemon=True,
+            name="jarvis-idle-lock",
+        ).start()
         # Audit retention (ESR-0061 WP5b): once now, then daily, on its own
         # daemon thread so a slow prune can never hold up a request.
         retention = self._runtime.retention
@@ -1857,12 +2011,6 @@ def _require_role(active, allowed: frozenset[str], message: str) -> None:
         raise ClientFacingPermissionError(msg)
     if active.role not in allowed:
         raise ClientFacingPermissionError(message)
-
-
-def _sees_household_notes(active) -> bool:
-    """A Guest has no access to family-shared memory (GAM-0001 Section 8.1)."""
-
-    return active is None or active.role != "Guest"
 
 
 def _require_max_length(value: str, limit: int, name: str) -> None:

@@ -144,6 +144,7 @@ def test_an_administrator_can_back_up(tmp_path):
     server = _server(tmp_path)
     _as(server, "Administrator")
 
+    (tmp_path / "backups").mkdir(exist_ok=True)  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     response = _call(server, "memory.backup", {"backupDir": str(tmp_path / "backups")})
 
     assert response["result"]["path"].endswith(".json")

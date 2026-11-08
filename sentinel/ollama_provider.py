@@ -14,6 +14,7 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 
+from sentinel.endpoints import require_http_endpoint
 from sentinel.provider_config import ProviderConfiguration, RetryPolicy
 from sentinel.providers import (
     TRANSIENT_HTTP_STATUSES,
@@ -97,7 +98,7 @@ class OllamaProvider:
         return self._configuration.retry_policy
 
     def execute(self, request: ProviderRequest) -> ProviderResponse:
-        endpoint = self._configuration.endpoint or DEFAULT_ENDPOINT
+        endpoint = require_http_endpoint(self._configuration.endpoint or DEFAULT_ENDPOINT, "Ollama")
         model = self.model
         payload: dict[str, object] = {
             "model": model,

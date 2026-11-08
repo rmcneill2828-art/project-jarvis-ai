@@ -160,6 +160,12 @@ async function mockTauriIpc(
           .filter((entry) => entry.event === event)
           .forEach((entry) => window.__callbacks[entry.handler]?.({ event, id: entry.id, payload }));
       };
+      // The backend signing an idle Adult or Administrator out (ESR-0062 WP2):
+      // its stored session is cleared; `notify` also sends profile.locked.
+      window.__lockSession = (notify) => {
+        state.active = null;
+        if (notify) window.__emit("jarvis://notification", { method: "profile.locked", params: { reason: "idle", minutes: 15 } });
+      };
       window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener: () => {} };
       window.__TAURI_INTERNALS__ = {
         transformCallback: (callback) => {
@@ -658,6 +664,13 @@ async function mockTauriIpc(
             );
           }
           if (cmd === "memory_status") return Promise.resolve({ recordCount: state.memoryRecordCount });
+          // The idle lock (ESR-0062 WP2): each report and check is recorded, and
+          // a test can sign the session out as the backend would (__lockSession).
+          if (cmd === "session_activity" || cmd === "session_idle_check") {
+            window.__sessionCalls = window.__sessionCalls || [];
+            window.__sessionCalls.push(cmd);
+            return Promise.resolve({ activeProfileId: state.active ? state.active.id : null, idleLockMinutes: 15 });
+          }
           // EBG-0145 (ESR-0059 WP10): list and revoke, mirroring the real
           // backend - an unknown id is an error, not a silent success.
           if (cmd === "list_memory") return Promise.resolve({ records: state.memories });
@@ -3513,4 +3526,72 @@ test("an Adult does not see Children and safety", async ({ page }) => {
   await page.goto("/");
   await openView(page, "Settings");
   await expect(page.locator(".children-safety")).toHaveCount(0);
+});
+
+// --- The idle lock (ESR-0062 WP2, EIP-ESR0062-002 L2-L4) ------------------------------------
+
+const lockNotice = (page) => page.locator(".lock-notice");
+
+test("the backend signing out an idle Adult clears the screen and says why", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX });
+  await page.goto("/");
+  await sendMessage(page, "a private question");
+  await page.getByPlaceholder("Ask Guardian anything...").fill("unsent draft");
+
+  await page.evaluate(() => window.__lockSession(true));
+
+  await expect(lockNotice(page)).toHaveText("Signed out after 15 minutes without use. Choose a profile to continue.");
+  await expect(page.locator(".conversation-message")).toHaveCount(0);
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toHaveValue("");
+  await expect(page.getByRole("region", { name: "Choose a Guardian profile" })).toBeVisible();
+});
+
+test("a lock missed while the window was in the background is caught when it is focused again", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX });
+  await page.goto("/");
+  await sendMessage(page, "a private question");
+
+  await page.evaluate(() => {
+    window.__lockSession(false);
+    window.dispatchEvent(new Event("focus"));
+  });
+
+  await expect(lockNotice(page)).toBeVisible();
+  await expect(page.locator(".conversation-message")).toHaveCount(0);
+});
+
+test("a person's use is reported, at most once a minute", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX });
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Alex");
+
+  for (let press = 0; press < 5; press += 1) await page.keyboard.press("Shift");
+
+  await expect.poll(() => page.evaluate(() => (window.__sessionCalls || []).filter((c) => c === "session_activity").length)).toBe(1);
+});
+
+test("a Child's screen sends no activity and no idle checks", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: SAM });
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
+
+  await page.keyboard.press("Shift");
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await page.waitForTimeout(300);
+
+  expect(await page.evaluate(() => window.__sessionCalls || [])).toEqual([]);
+});
+
+test("choosing a profile after nobody was signed in clears what was typed before", async ({ page }) => {
+  await mockTauriIpc(page, { profiles: [ALEX, SAM], activeProfile: ALEX });
+  await page.goto("/");
+  await page.evaluate(() => window.__lockSession(true));
+  await expect(lockNotice(page)).toBeVisible();
+  await page.getByPlaceholder("Ask Guardian anything...").fill("typed with nobody signed in");
+
+  await page.getByRole("region", { name: "Choose a Guardian profile" }).getByRole("button", { name: /Sam/ }).click();
+
+  await expect(page.getByRole("button", { name: "Switch Guardian profile" })).toContainText("Sam");
+  await expect(page.getByPlaceholder("Ask Guardian anything...")).toHaveValue("");
+  await expect(lockNotice(page)).toHaveCount(0);
 });

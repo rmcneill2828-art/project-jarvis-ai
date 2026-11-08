@@ -158,6 +158,7 @@ def test_restore_gives_memories_from_unknown_profiles_to_the_restoring_profile(t
     source = _server(tmp_path / "source")
     _profile(source, "Old device user", "Administrator")  # backup is Administrator-only (WP14)
     _remember(source, "Tea, no sugar.")
+    (tmp_path / "backups").mkdir(exist_ok=True)  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     backup = _call(source, "memory.backup", {"backupDir": str(tmp_path / "backups")})["result"]["path"]
 
     target = _server(tmp_path / "target")
@@ -173,6 +174,7 @@ def test_restore_without_a_selected_profile_is_refused(tmp_path):
     source = _server(tmp_path / "source")
     _profile(source, "Robert", "Administrator")
     _remember(source, "Tea, no sugar.")
+    (tmp_path / "backups").mkdir(exist_ok=True)  # A caller's folder must exist, as the dialog's does (ESR-0062 WP2, F1).
     backup = _call(source, "memory.backup", {"backupDir": str(tmp_path / "backups")})["result"]["path"]
 
     response = _call(_server(tmp_path / "target"), "memory.restore", {"backupPath": backup})
