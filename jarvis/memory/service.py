@@ -180,7 +180,9 @@ class PersonalMemoryService:
         pending_ids = [key for key, value in self._pending.items() if value.profile_id == profile_id]
         for key in pending_ids:
             del self._pending[key]
-        return self._store.delete_owned(profile_id), len(pending_ids)
+        removed = self._store.delete_owned(profile_id)
+        self._store.scrub()
+        return removed, len(pending_ids)
 
     def delete(self, record_id: str, profile_id: str | None = None, *, is_administrator: bool = False) -> None:
         """Revoke one retained memory (EBG-0145, ESR-0059 WP10).
@@ -206,6 +208,7 @@ class PersonalMemoryService:
             raise ClientFacingPermissionError(msg)
         if not self._store.delete(record_id):
             raise ClientFacingKeyError(not_found)
+        self._store.scrub()
         logger.info("Memory record revoked: record_id=%s", record_id)
 
     def record_count(self) -> int:

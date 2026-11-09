@@ -19,7 +19,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from jarvis.shared.errors import ClientFacingValueError
-from jarvis.shared.schema_migrations import apply_migrations, connect
+from jarvis.shared.schema_migrations import apply_migrations, connect, scrub
 
 # Schema history (EBG-0147, ESR-0059 WP12). Migration N brings the schema to
 # version N; append new migrations, never edit a released one. Migration 1
@@ -103,6 +103,12 @@ class PersonalMemoryStore:
 
     def _connect(self) -> sqlite3.Connection:
         return connect(self._db_path)
+
+    def scrub(self) -> bool:
+        """Leave no copy of deleted data in the files (ESR-0062 WP5, see
+        `jarvis.shared.schema_migrations.scrub`)."""
+
+        return scrub(self._db_path)
 
     @contextlib.contextmanager
     def _transaction(self) -> Iterator[sqlite3.Connection]:

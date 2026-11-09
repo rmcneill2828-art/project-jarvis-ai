@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0062-004 |
 | Title | Engineering Implementation Package: WP4 Mac Visit 1 - Preparation, On-Visit Checks and Measurements on the Household Mac |
-| Version | 0.3 |
-| Status | Design approved; P1 (version 0.2.0) built; awaiting Programme Sponsor approval, then the v0.2.0 release (P2) |
+| Version | 0.6 |
+| Status | Design approved; P1 committed (`dccc40c`), the `v0.2.0` release published (P2), the PC baseline run (P3); D-1 amended to install `v0.2.1` (C15, C16 added); awaiting the visit (about 21 November 2026) |
 | Session | ESR-0062 |
 | Work Package | WP4 |
 | Risk class | Standard (a verification visit; the only code change is a version number). Copilot for design; the results are recorded, and any defect found becomes its own backlog item and Work Package. |
@@ -187,8 +187,19 @@ The release jobs' logs (voice round trip on both platforms, checksums); P3's PC 
 |---|---|
 | P1 | `sync_product_version.py 0.2.0` updated `VERSION`, `pyproject.toml`, `package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`; `npm install --package-lock-only` and `cargo update --workspace` changed only the project's own version line in `package-lock.json` (two lines) and `src-tauri/Cargo.lock` (one line), no dependency; `--check` agrees; the script tests (224 passed) and `cargo check` pass. Line endings kept LF |
 | Implementation review | **Copilot Pass** and **Antigravity Pass** (bridge `ESR-0062`/`WP4`): only version lines changed, no dependency moved, the tag check will accept `v0.2.0`, the WP3 completion records match the facts. Both noted REG-0001's history order (3.846 above 3.845), which is the newest-first convention: no change |
-| P2 | After the Programme Sponsor's approval, this commit and its push: the Programme Sponsor tags and pushes `v0.2.0` |
-| P3 | The PC baseline with the replacement sentence set: to run on the PC before the visit (it needs the set, which the Programme Sponsor holds) |
+| P1 commit | `submit-response ESR-0062 WP4` accepted (9 November 2026, 10:27 UTC) on the Programme Sponsor's approval; committed **`dccc40c`**, carrying the WP3 completion records |
+| P2 | **The first tag was early**: `v0.2.0` was pushed on `56f4080` (VERSION 0.1.0) before `dccc40c` existed. Release run 42600468400 stopped at its first step in both jobs ("Tag v0.2.0 does not match VERSION (0.1.0)"), before any build: **nothing was published**. The Programme Sponsor pushed `dccc40c`, deleted the tag locally and on GitHub, and tagged `dccc40c`. Release run **42608153959 success**: both jobs passed the voice self-check and the **real voice round trip** - on Windows and on Apple Silicon, Kokoro spoke the sentence and Whisper heard "Good evening, this is a voice test." (the models fetched through the app's own checked download) - then published. Release `v0.2.0` (not a pre-release) holds `JARVIS.Guardian.Shell_0.2.0_aarch64.dmg` (98 MB, SHA-256 `e2935f865ba2b288d1bd0ae4834de46fd29bb4447ffe6c6b5aabdabc0a7d5898`) and `JARVIS.Guardian.Shell_0.2.0_x64-setup.exe` (128 MB, SHA-256 `475f430f9488b3a7458f8921db6440418daad982896ac1d06f76f3a2e2141d8c`), each with its `.sha256`. **WP3 V11 has now run and passed on both platforms** |
+| P1 post-commit review | **Copilot Pass** and **Antigravity Pass** on `dccc40c`: 13 expected files, version lines only, no stray files, nothing revealing the private sentence set; the tag `v0.2.0` resolves to `dccc40c` |
+| P3 | **Run by the Programme Sponsor on the PC, 9 November 2026** (`measure_moderation.py`; llama-guard3:1b as the classifier, on the processor, 1.68 GiB; qwen3.5:4b as the chat model, on the graphics card, 2.92 GiB). Sentence set: 40 sentences, SHA-256 `c0e733c5f50ea41735981f143e09ce9c01ad06b9a65bdffd6858cbeced47b9fd`. First check (loading the classifier) 15.66 s; **message check median 0.66 s**, worst 0.79 s (20 sentences); **reply check median 2.46 s**, worst 3.81 s (5 replies of about 1,280 characters); chat answers with the classifier loaded: first 25.64 s, then median 2.78 s. Unsafe stopped **20 of 20**, safe allowed **19 of 20** (one false stop, line 29); nothing unchecked. **Deviation:** the hash is the **original** set's (EIP-ESR0061-006 Section 10F), which EIP-ESR0062-001 recorded as lost, not the replacement written in WP1 (`8999477985738afa32f0eebee1612c15d480e56e964f770eb1593f2ed722dfc4`). The results agree with that set's ESR-0061 run (20 of 20, 19 of 20; medians 0.69 s and 2.68 s). **Decision D-4** (Programme Sponsor, 9 November 2026, direct chat: "A"): **M2 uses the original set only** - it has two agreeing PC runs, and only one private file goes on the Mac. The USB stick carries that set alone; R0 deletes it; a master copy of each set is kept off the Mac |
+
+## 11.1 The visit installs 0.2.1 (9 November 2026)
+
+**D-1 amended** by the Programme Sponsor's decision on WP5's review finding H1 (EIP-ESR0062-005, "Release 0.2.1"): the visit installs **`v0.2.1`**, not `v0.2.0`, because 0.2.1 carries WP5's fixes and the guides describe it. C2 uses the 0.2.1 `.dmg` and its checksum; everything else in Section 4 is unchanged. 0.2.0's own release stays as published. Two checks are added for what 0.2.1 brings:
+
+| # | Check | How | Pass when |
+|---|---|---|---|
+| **C15** | PIN reset from Terminal | With JARVIS closed: `"/Applications/JARVIS Guardian Shell.app/Contents/MacOS/jarvis-backend" --reset-admin-pin`; open JARVIS and sign in as the Administrator; set the PIN again | The command reports the PIN removed; the sign-in shows the reset notice |
+| **C16** | Erasure leaves no copy | Make a test Child profile, erase it, then `grep -c` its name in `~/.jarvis/identity/profiles.db` and `profiles.db-wal` | 0 in each |
 
 ---
 
@@ -196,6 +207,9 @@ The release jobs' logs (voice round trip on both platforms, checksums); P3's PC 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.6 | 9 November 2026 | Claude Engineering Implementer | D-1 amended: the visit installs v0.2.1 (WP5 H1, option A); C15 PIN reset and C16 erasure checks added (Section 11.1). |
+| 0.5 | 9 November 2026 | Claude Engineering Implementer | P3 run on the PC: message check median 0.66 s, reply check median 2.46 s, 20 of 20 unsafe stopped and 19 of 20 safe allowed; the set measured is the original (believed lost), not the replacement - decision D-4: M2 uses the original set only (Section 11). |
+| 0.4 | 9 November 2026 | Claude Engineering Implementer | P1 committed (`dccc40c`); P2 done: the `v0.2.0` release published after an early tag on the old commit was stopped by the tag check and redone; both release jobs' real voice round trips passed; checksums recorded (Section 11). |
 | 0.3 | 9 November 2026 | Claude Engineering Implementer | Design approved (D-1 to D-3 as recommended); P1 built: version 0.2.0 in VERSION, the four build files and the two lock files' own version lines (Section 11). |
 | 0.2 | 8 November 2026 | Claude Engineering Implementer | Design review Conditional Pass (Copilot), six Mediums accepted: the real app path; the sentence set's handling (USB only, mode-700 folder, Spotlight and history, redaction, master copy); a PC baseline for the replacement set first (P3); a minimal measuring environment; release recovery, lock files and downloading the `.dmg` on the Mac; test data cleaned from the Child's account (R0). Lows accepted: thresholds, the merged microphone check, the idle-lock tolerance, a SIGTERM case; the Console checks out of scope. Checks renumbered C1 to C14. |
 | 0.1 | 8 November 2026 | Claude Engineering Implementer | Drafted at ESR-0062 WP4: preparation (a `v0.2.0` release for the Mac installer, which also runs WP3's real voice round trip), 15 on-visit checks, 5 measurements, recording rules; three decisions for the Programme Sponsor (installer source, measurement tools on the household Mac, the private sentence set). |

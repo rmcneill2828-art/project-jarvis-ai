@@ -1438,7 +1438,7 @@ export function App() {
           <section className="view" aria-label="Memory">
             <div className="view-scroll" tabIndex={0}>
               <h1 className="view-heading">Memory</h1>
-              <p className="view-lede">Notes JARVIS keeps on this computer, only after you approve them.</p>
+              <p className="view-lede">Notes kept on this computer. This version cannot save a new note from here.</p>
               <MemoryManagementPanel
                 key={activeProfile?.id ?? "no-profile"}
                 role={role}

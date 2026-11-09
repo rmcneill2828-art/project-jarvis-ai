@@ -8,6 +8,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { CHILDREN_AND_PRIVACY_URL } from "./publicPages";
 
 const readable = (error) =>
   String(error).replace(/^(?:[A-Za-z]*Error:\s*)+/, "");
@@ -79,6 +80,11 @@ export function ChildClaudeSection({ profiles = [] }) {
     <section className="child-claude" aria-labelledby="child-claude-heading">
       <h3 id="child-claude-heading">Claude for a child</h3>
       <p>{PARENT_EXPLANATION}</p>
+      {/* ESR-0062 WP5 (L1): selectable text, not a link - the app has no
+          general way to open an address. */}
+      <p className="privacy-page-address" data-testid="privacy-page-address">
+        Read Children and privacy before you agree: <span className="selectable">{CHILDREN_AND_PRIVACY_URL}</span>
+      </p>
       <ul
         className="sharing-list consent-list"
         aria-label="Children and Claude"

@@ -22,11 +22,14 @@ never write to a schema it does not understand.
 
 from __future__ import annotations
 
+import logging
 import sqlite3
 from collections.abc import Sequence
 from pathlib import Path
 
 Migration = Sequence[str]
+
+logger = logging.getLogger(__name__)
 
 # ESR-0061 WP2a (EBG-0157 item 1): since ESR-0059 WP5 the slow lane
 # (conversation, which reads memory) and the main thread (memory writes) can
@@ -38,11 +41,43 @@ BUSY_TIMEOUT_MS = 5000
 
 
 def connect(db_path: Path) -> sqlite3.Connection:
-    """Open a connection to a JARVIS store with the busy timeout set."""
+    """Open a connection to a JARVIS store with the busy timeout set and
+    overwrite-on-delete on."""
 
     connection = sqlite3.connect(db_path, timeout=BUSY_TIMEOUT_MS / 1000)
     connection.execute(f"PRAGMA busy_timeout = {BUSY_TIMEOUT_MS:d}")
+    # ESR-0062 WP5 (EIP-ESR0062-005 B2): SQLite otherwise only marks a
+    # deleted row's space as free, so an erased note or name stays readable
+    # in the file until the space is reused. With this on, it is overwritten
+    # with zeros when deleted. Per connection, so it is set on every one.
+    connection.execute("PRAGMA secure_delete = ON")
     return connection
+
+
+def scrub(db_path: Path) -> bool:
+    """Rebuild the database and empty its write-ahead log, so no copy of
+    deleted data is left in either file; return whether both completed.
+
+    `secure_delete` covers deletions from now on; VACUUM also removes what
+    was deleted before it was turned on, and the truncating checkpoint
+    clears earlier page copies kept in the `-wal` file. Run after an
+    erasure or a note deletion. A failure (another connection holding a
+    lock past the busy timeout) is logged, never raised: the deletion itself
+    has already been committed."""
+
+    connection = connect(db_path)
+    connection.isolation_level = None
+    try:
+        connection.execute("VACUUM")
+        busy = int(connection.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()[0])
+    except sqlite3.Error as exc:
+        logger.warning("Database scrub did not complete (%s).", type(exc).__name__)
+        return False
+    finally:
+        connection.close()
+    if busy:
+        logger.warning("Database scrub: the log could not be emptied while another connection was reading.")
+    return not busy
 
 
 class SchemaVersionError(RuntimeError):

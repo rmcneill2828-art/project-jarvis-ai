@@ -385,7 +385,11 @@ class ProfileService:
         """Delete the profile record only. Callers use `check_erasable` first and
         remove that profile's own data first."""
 
-        return self._store.delete(profile_id)
+        deleted = self._store.delete(profile_id)
+        # The profile database also holds its safety, consent and
+        # disclosure rows, removed by the caller first (ESR-0062 WP5).
+        self._store.scrub()
+        return deleted
 
     def active_profile(self) -> ProfileRecord | None:
         """Return the currently active profile, or None if none is selected."""

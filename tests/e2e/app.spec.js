@@ -3444,6 +3444,10 @@ test("an Administrator allows a child to ask Claude from Settings, and can turn 
   await expect(section).toContainText("might include their name");
   await expect(section).toContainText("Their saved notes are not sent themselves, but something JARVIS said using them");
   await expect(section).toContainText("up to six");
+  // ESR-0062 WP5 (L1): the public page's address, as text a parent can select.
+  await expect(page.getByTestId("privacy-page-address")).toHaveText(
+    "Read Children and privacy before you agree: https://rmcneill2828-art.github.io/AI-Project/",
+  );
   await expect(page.getByTestId("consent-status-p2")).toHaveText("Off.");
 
   await section.getByRole("button", { name: "Allow Sam to ask Claude" }).click();

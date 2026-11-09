@@ -490,6 +490,12 @@
 }
 
 /* ---- WP5b: note sharing and retention ---- */
+/* ESR-0062 WP5 (L1): one click selects the whole address. */
+.privacy-page-address .selectable {
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+
 .sharing-list {
   display: grid;
   gap: 0;

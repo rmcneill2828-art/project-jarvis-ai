@@ -34,8 +34,8 @@ export function PrivacyNotice() {
           anywhere to be answered.
         </li>
         <li>
-          Things JARVIS remembers are saved on this computer, and only after you approve each one. You can see them and
-          remove them in Memory.
+          Notes are kept on this computer. This version cannot save a new note from the app: the notes in Memory are
+          ones restored from a backup. You can see them and remove them there.
         </li>
         <li>
           The recent conversation is kept in memory only, one per profile, and is gone when JARVIS closes. The activity

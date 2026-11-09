@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.238
+**Version:** 1.239
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.238 |
+| Version | 1.239 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -288,6 +288,7 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 | EBG-0177 | Home Cameras through Home Assistant (Security Monitoring) | Programme Sponsor direction, 7 November 2026, during ESR-0061 WP7 ("A as the priority and B as a must after go live"); JRM-0001 Phase 6 Increment C (Vision); GAM-0001 Section 8.3; registered ESR-0061 WP7 | Approved Backlog | Medium | Programme Sponsor | **Required after go-live** (Programme Sponsor). Read-only access to the household's cameras through Home Assistant: "is anyone at the front door?", snapshots on request, security monitoring and incident logging, within GAM-0001 Section 8.3 (approved camera access, observation only, never control) and 8.4 (pre-approved emergency actions only). Builds on EBG-0174 (read-only home state in conversation) and the existing read-only Home Assistant agent. Needs its own design: which cameras an Administrator exposes, who may view them (not a Child by default), retention of any snapshot, and no footage leaving the house. No implementation authorised by this entry. |
 | EBG-0178 | Copilot Reviewer Rules Name the Accepted Command Form | ESR-0062 WP1 post-commit review (8 November 2026): Copilot was refused every shell command and recorded no verdict; a re-run with a plain-commands instruction worked; registered ESR-0062 WP2 with the Programme Sponsor's agreement | Approved Backlog | Low | Programme Sponsor | `scripts/run_reviewer.py` gives Copilot narrow read-only `--allow-tool` rules, and its standing `TOOL_RULES` name the allowed commands but not their form, so a compound or piped command is refused and the run can end with no verdict. Add the command-form rule (one plain command at a time; no `cd`, `;`, `&&`, pipes or redirections). Allocated to ESR-0062 WP2 ([[EIP-ESR0062-002_HOUSEHOLD_SAFETY_FOLLOW_UPS|EIP-ESR0062-002]] R1); implementation follows that WP's approved EIP. |
 | EBG-0179 | A Voice Model That Fails to Load Stops the Backend Starting | ESR-0062 WP3 investigation (8 November 2026): the packaged Windows backend, started with the Kokoro variables set, exited with an uncaught `RuntimeError` from `KokoroProvider` | Completed | Medium | Programme Sponsor | `_build_speech_provider` / `_build_transcription_provider` let a load error escape `build_default_runtime`, so a missing, damaged or partly downloaded voice file leaves the app with no backend. A voice problem must cost only the voice: leave the provider off, log the exception type, report it so the screen can offer a fresh download. Allocated to ESR-0062 WP3 ([[EIP-ESR0062-003_VOICE_PROVISIONING|EIP-ESR0062-003]] V6), subject to the Programme Sponsor's agreement at design approval; implementation follows that WP's approved EIP. **Completed at ESR-0062 WP3** (`56f4080`): voice loads in the background after start, a model failing to load is left off and logged by exception type, and a damaged file is never loaded. |
+| EBG-0180 | The Installed App Cannot Save a Note | ESR-0062 WP5 fact-finding (9 November 2026): writing the guides from the code found that `src-tauri/src/` never calls `memory.propose`, `memory.approve` or `memory.deny`, and never has; registered with the Programme Sponsor's decision (option A, 9 November 2026) | Approved Backlog | Medium | Programme Sponsor | The backend's consent-gated note flow (propose, then an Administrator or Adult approves or refuses; EBG-0080, EBG-0132) is complete and tested, but the desktop app offers no way to reach it: Memory can list, delete, back up and restore notes only, so a household can never create one, and a Child's note can never be approved. The guides and the public page (EIP-ESR0062-005) state this; the in-app privacy text was corrected in the same WP so it no longer promises it. Needs its own design: where a note is offered (a save action on a reply, or JARVIS proposing one), the approve-or-refuse screen, and how a grown-up approves a Child's note when pending proposals live only in the running backend's memory. No implementation authorised by this entry. |
 ---
 
 # 5A. Active Backlog View
@@ -418,6 +419,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.239 | 9 November 2026 | Claude Engineering Implementer | ESR-0062 WP5: EBG-0180 registered (the installed app cannot save a note; Programme Sponsor option A). |
 | 1.238 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP3 complete: EBG-0179 Completed; EBG-0167 delivered, open until the real-Mac check at WP4. |
 | 1.237 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP3: EBG-0179 registered (a voice model that fails to load stops the backend starting; proposed for WP3, EIP-ESR0062-003 V6). |
 | 1.236 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP2: EBG-0178 registered (Copilot reviewer command form; allocated to WP2 with the Programme Sponsor's agreement); EBG-0172 noted as brought forward to ESR-0062 WP2. |
