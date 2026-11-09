@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0062-003 |
 | Title | Engineering Implementation Package: WP3 Voice Provisioning on Windows and macOS - In-App Voice Download, Packaged Voice, Start-Up Without Voice |
-| Version | 0.4 |
-| Status | Built and reviewed (Copilot Pass, Antigravity Pass); awaiting Programme Sponsor approval of the built result |
+| Version | 0.5 |
+| Status | Implemented - committed `56f4080`, CI green, post-commit review Pass (Copilot, Antigravity) |
 | Session | ESR-0062 |
 | Work Package | WP3 |
 | Risk class | Elevated (downloads files from the internet onto the household's computers, and changes what the packaged backend contains). Copilot for design; both reviewers for the built result. |
@@ -194,12 +194,22 @@ Windows pytest; Linux pytest, ruff and validator in `python:3.12-slim` Docker; `
 
 **Antigravity (second reviewer, after the fixes): Pass**, no findings above Low; L2 and L3 verified in code and tests, L1 accepted. Its first run ended while waiting on a background test run and recorded nothing; it was resumed with the test results already in hand and recorded its verdict.
 
+## 11.5 Approval, commit and post-commit (v0.5)
+
+| Step | Record |
+|---|---|
+| Built-result approval | **Approved** by the Programme Sponsor through the Sponsor Approval Service on parent `765b5f6`; `submit-response ESR-0062 WP3` accepted (8 November 2026, 21:26 UTC), its own pytest and validator run clean. The optional manual check in the app on the PC was not run; it is on the Mac visit 1 list (WP4) with the Mac's own |
+| Commit | **`56f4080`**, 28 files, carrying WP2's completion records and the macOS test fix; pushed by the Programme Sponsor |
+| CI | Run 42525817585 **success**: python, python-macos (green again: the WP2 test fix works), rust, rust-windows, rust-macos, frontend-build, playwright. **The voice self-check passed all five parts on both real CI builds**, Windows and macOS (Apple Silicon, PyAV 18.1.0 arm64 wheel). playwright-webkit (allowed to fail) failed the same 5 microphone tests as before. The release jobs' real round trip (V11) runs only on the next version tag, so it is untested until then |
+| Post-commit review | **Copilot Pass** (no High or Medium): all 28 paths expected, deviations present, no stray files, nothing revealing the private sentence set. Low: the commit message cites the Windows pytest count from before the L2 and L3 fixes (1596; the voice tests then added two, one Windows-skipped) - recorded here, not amended in a pushed commit. Info: `voice.status` is readable by any profile, exposing only model state; download and cancel are restricted. **Antigravity Pass**, the same conclusions |
+
 ---
 
 # 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.5 | 8 November 2026 | Claude Engineering Implementer | Approved and committed (`56f4080`); CI green, the voice self-check passing on the real Windows and macOS builds; post-commit review Pass from Copilot and Antigravity (Section 11.5). |
 | 0.4 | 8 November 2026 | Claude Engineering Implementer | Implementation review: Copilot Pass (L2, L3 fixed with tests; L1 accepted), Antigravity Pass after the fixes (Section 11.4). |
 | 0.3 | 8 November 2026 | Claude Engineering Implementer | Design approved (D-1 to D-3 as recommended, EBG-0179 folded in). Built (Section 11): nine deviations and clarifications disclosed, notably PyAV capped below 19 (found by the Linux check: PyAV 19 breaks faster-whisper's decoding, already affecting CI-built sidecars); evidence includes a real download, the packaged sidecar's self-check and round trip, a self-check failing on a build without the packaging, and the packaged backend over JSON-RPC. |
 | 0.2 | 8 November 2026 | Claude Engineering Implementer | Design review Conditional Pass (Copilot): M1 accepted (hash-checked before first load, `verified.json`, a damaged model never loaded), M2 (background loading), M3 (download details), M4 (provider read once, atomic setters, no download over a loaded model), M5 (fuller self-check against the built executable, more collected packages; real voice in the release jobs only, V11); Lows accepted. |

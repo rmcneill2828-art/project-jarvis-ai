@@ -2,7 +2,7 @@
 
 > *"You cannot govern what you cannot identify."*
 
-**Version:** 3.844
+**Version:** 3.846
 
 
 ---
@@ -119,11 +119,11 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | ADR-0021 | Architecture Decision Record | Guardian Orb Rendering Engine | 1.4 | Approved-implemented | Programme Sponsor & Chief Engineering Advisor | ESR-0028 | `aiems/governance/decisions/` |
 | ADR-0022 | Architecture Decision Record | Sponsor Approval Service | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0029 | `aiems/governance/decisions/` |
 | ADR-0023 | Architecture Decision Record | Version 1.0 Provider Strategy | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0061 | `aiems/governance/decisions/` |
-| REG-0001 | Register | Controlled Artefact Register | 3.844 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| REG-0001 | Register | Controlled Artefact Register | 3.846 | In Review | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.237 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.238 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -255,7 +255,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | GDE-0001 | Guide | Project Knowledge Map | 1.4 | Approved | Programme Sponsor | ESR-0014 | `aiems/guides/` |
 | RBA-0001 | Repository Baseline Assessment | ESR-0004 Repository Baseline Assessment | 1.0 | Complete - Pending Programme Sponsor Acceptance | Programme Sponsor | CHR-0001 | `aiems/governance/reviews/` |
 | RPCA-0001 | Repository Product Capability Assessment | Repository Product Capability Assessment | 1.0 | Implementation Complete | Programme Sponsor | ESR-0007 | `aiems/governance/reviews/` |
-| PST-0001 | Programme Status | Programme Status | 3.49 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
+| PST-0001 | Programme Status | Programme Status | 3.50 | Approved | Programme Sponsor | CHR-0001 | `aiems/governance/status/` |
 | PEM-001 | Evaluation Matrix | AI Provider Evaluation Matrix | 1.1 | Approved | Programme Sponsor & Chief Engineering Advisor | ESR-0014 | `aiems/evaluations/` |
 | ESR-0001 | Engineering Session Report | Engineering Session Report | 1.1 | Completed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
 | ESR-0002 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor | CHR-0001 | `aiems/governance/sessions/` |
@@ -343,7 +343,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0060-001 | Engineering Implementation Package | Provider-Selection and Deadline-Health Fixes | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0060-002 | Engineering Implementation Package | Backend Process-Tree Termination | 1.0 | Approved - implemented | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | ESR-0061 | Engineering Session Report | Engineering Session Report | 1.0 | Closed | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
-| ESR-0062 | Engineering Session Report | Engineering Session Report | 0.4 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
+| ESR-0062 | Engineering Session Report | Engineering Session Report | 0.5 | Open | Programme Sponsor & Chief Engineering Advisor | CHR-0001 | `aiems/governance/sessions/` |
 | EIP-ESR0061-001 | Engineering Implementation Package | Release Gate, Governance and Streamlining | 0.9 | Complete - WP1a (1978070), WP1b (23e95bd), WP1c (7f1fa93) and WP1c-fix (77d50e4) committed, CI green, post-commit reviews recorded | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0061-002 | Engineering Implementation Package | Platform Hardening and macOS | 0.13 | Complete - WP2a (b14c6a0), WP2a-fix (65c4100), WP2b (dd946a2) and WP2c (d67e3ef) committed, CI green, post-commit reviews Pass; the real-Mac checks are carried to the next session (ESR-0061 Section 6A) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0061-003 | Engineering Implementation Package | Provider Strategy: Ollama First and Claude Escalation | 0.11 | Draft - design approved (S1-S6, 8 October 2026); WP3a (6cdbedb), WP3b (c7d2c93) and WP3c (78afcb7) committed and post-commit reviewed (Pass); live Claude checks run on 8 October 2026 (refusal, overload and the Console limit not yet exercised); Mac measurements pending Mac visit 1 | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
@@ -352,7 +352,8 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0061-006 | Engineering Implementation Package | Household Safety: Administrator PIN, Child Moderation and Consent | 0.11 | Complete - design approved 7 November 2026 (Section 10B); WP6a (ef17f1d), WP6b (5ef3637), WP6c (e5faa77) and WP6d (82103e6) committed, each approved through the Sponsor Approval Service, CI green, post-commit reviews Pass; the Mac measurements are carried to the next session | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0062-001 | Engineering Implementation Package | Repository Hygiene: Dependencies and CI | 0.4 | Implemented - committed `a21984e`, CI green, post-commit review Pass (Copilot, Antigravity) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0062-002 | Engineering Implementation Package | Household Safety Follow-ups: Notes, Idle Lock, Backend Hardening | 0.5 | Implemented - committed `765b5f6`; CI green apart from a macOS test defect fixed in the WP3 commit; post-commit review Pass (Copilot, Antigravity) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0062-003 | Engineering Implementation Package | Voice Provisioning on Windows and macOS | 0.4 | Built and reviewed (Copilot Pass, Antigravity Pass); awaiting Programme Sponsor approval of the built result | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0062-003 | Engineering Implementation Package | Voice Provisioning on Windows and macOS | 0.5 | Implemented - committed `56f4080`, CI green, post-commit review Pass (Copilot, Antigravity) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0062-004 | Engineering Implementation Package | Mac Visit 1: Plan and Checklist | 0.3 | Design approved; P1 (version 0.2.0) built; awaiting Programme Sponsor approval, then the v0.2.0 release (P2) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
@@ -467,6 +468,8 @@ If a Controlled Artefact is not recorded within this Register, it shall not be r
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 3.846 | 8 November 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.237 to 1.238) following: ESR-0062 WP3 complete: EBG-0179 Completed; EBG-0167 delivered, open until the real-Mac check at WP4. |
+| 3.845 | 8 November 2026 | Claude Engineering Implementer | ESR-0062 WP3 complete: EIP-ESR0062-003 to 0.5, ESR-0062 to 0.5, PST-0001 to 3.50. |
 | 3.844 | 8 November 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.236 to 1.237) following: ESR-0062 WP3: EBG-0179 registered (a voice model that fails to load stops the backend starting; proposed for WP3, EIP-ESR0062-003 V6). Also: EIP-ESR0062-003 registered (0.1, then 0.2 after design review); EIP-ESR0062-002 to 0.5, ESR-0062 to 0.4 and PST-0001 to 3.49 for WP2's completion. |
 | 3.843 | 8 November 2026 | Claude Engineering Implementer | Aligned EBR-0001 version (1.235 to 1.236) following: ESR-0062 WP2: EBG-0178 registered (Copilot reviewer command form; allocated to WP2 with the Programme Sponsor's agreement); EBG-0172 noted as brought forward to ESR-0062 WP2. |
 | 3.842 | 8 November 2026 | Claude Engineering Implementer | Aligned PST-0001 version (3.47 to 3.48) following: ESR-0062 WP1 complete (a21984e); Next Work Package Candidate moved to WP2. |
