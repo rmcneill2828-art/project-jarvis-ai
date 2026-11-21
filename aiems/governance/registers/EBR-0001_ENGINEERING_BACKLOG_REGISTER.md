@@ -2,7 +2,7 @@
 
 > *"Deferred work remains governed work."*
 
-**Version:** 1.241
+**Version:** 1.242
 
 ---
 
@@ -12,7 +12,7 @@
 |------|-------|
 | Artefact ID | EBR-0001 |
 | Title | Engineering Backlog Register |
-| Version | 1.241 |
+| Version | 1.242 |
 | Status | Draft |
 | Owner | Programme Sponsor & Chief Engineering Advisor |
 | Classification | Internal |
@@ -292,6 +292,7 @@ No implementation is authorised by this backlog entry; a proper Engineering Impl
 | EBG-0181 | A Failed Audit Prune Skips the Safety-Event Prune | Found 21 November 2026 while verifying a local-model reasoning test against `jarvis/interfaces/retention.py`; behaviour confirmed by running `RetentionService.run_once` with a recorder whose prune raises; registered at the Programme Sponsor's request | Approved Backlog | Low | Programme Sponsor | `RetentionService.run_once` returns early when the audit recorder's `prune_older_than` raises, so the extra pruners added with `add_pruner` (the safety events in the identity database, ESR-0061 WP6b) do not run that cycle either. A single audit-log failure therefore keeps safety events past the household's retention setting until a later run succeeds (the next daily run, a restart or a settings change). Each pruner should run independently: log the audit failure by type, still run the extra pruners, and keep `last_result` meaning the audit result. Add a test with a failing recorder that proves the safety-event pruner still runs. No implementation authorised by this entry. |
 | EBG-0182 | Guardian Honesty and Sycophancy Test Suite | Programme Sponsor concern, 21 November 2026 (after a Directors Forum discussion of AI systems deferring to their users): how to keep JARVIS and Guardian honest; registered at the Programme Sponsor's request | Approved Backlog | Medium | Programme Sponsor | Nothing measures whether Guardian stays honest under social pressure, and because conversation text is never stored (D23) it cannot be reviewed afterwards, so pre-release testing is the only assurance. Build a local, cost-free test suite run against the real stack (approved persona, Child safety layer, the default Ollama model) covering: holding a correct answer after "are you sure?" and repeated pushback without new evidence; correcting false premises; refusing undeserved praise; and Child-role scenarios (wrong homework presented as right, a risky plan seeking approval, a rumour presented as fact). Fixed answer key written before any run; scored per model and per prompt change; reusable as a selection criterion for the default local model (cf. the 21 November 2026 local-reviewer scorecard method). Llama Guard moderation does not cover sycophancy, so this is a gap the existing Child controls leave open. Relevant to Child-role go-live scope. No implementation authorised by this entry. |
 | EBG-0183 | Concrete Honesty and Pushback Behaviours in the Guardian Persona and Child Safety Layer | Programme Sponsor concern, 21 November 2026 (after a Directors Forum discussion of AI systems deferring to their users): how to keep JARVIS and Guardian honest; registered at the Programme Sponsor's request | Approved Backlog | Medium | Programme Sponsor | The approved persona (`DEFAULT_GUARDIAN_PERSONA`, AAM-0001) states honesty and "mild, reasoned pushback" only as general principles, and its deferential register ("Sir", "respect human authority") can read to a small local model as licence to agree. The Child safety layer (`CHILD_SAFETY_LAYER`, AAM-0001 0.10) asks for kind, simple words but says nothing about truthfulness. Propose concrete behaviours, for example: keep a correct answer when challenged without new evidence and explain why; correct a mistaken premise before answering; never agree or praise just to please; for a Child, be kind and truthful at once. Both texts are governed: any wording change goes through AAM-0001 first and needs the Programme Sponsor's approval of the exact text. Measure before and after with EBG-0182. Relevant to Child-role go-live scope. No implementation authorised by this entry. |
+| EBG-0184 | Dependency Update Batch: Ten Open Dependabot Pull Requests (November 2026) | Programme Sponsor decision, 21 November 2026 (option 2): libc 0.2.191 (#49) applied alone through the gate; the remaining open Dependabot pull requests grouped into one work package | Approved Backlog | Low | Programme Sponsor | Apply locally in one gated commit, per the EIP-ESR0062-001 rule (a GitHub merge would put commits on `main` outside `submit-response`), then close each pull request with a comment naming the commit. Low risk: #44 tauri-build 2.7.2, #53 ruff 0.17.5, #47 @playwright/test 1.64.1, #43 @vitejs/plugin-react 6.2.1, #48 lucide-react 1.69.0, #42 actions/setup-python 7.1.0. Needs care: #46 and #50 tauri-plugin-shell 2.6.0 (Rust crate and npm package must move together; check the app's shell-command allow-list still holds); #51 `av` >=19.0.2 (major version, used by voice transcription; run the voice tests and a live round trip on Windows and macOS); #41 softprops/action-gh-release 3.0.4 (not while a release run is in progress; the next release proves it). Run the CI Python steps in Docker first. No implementation authorised by this entry. |
 ---
 
 # 5A. Active Backlog View
@@ -422,6 +423,7 @@ Updates to this register shall preserve unique backlog identifiers and maintain 
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.242 | 21 November 2026 | Claude Engineering Implementer | EBG-0184 registered (the ten remaining open Dependabot pull requests as one work package; libc #49 applied separately). Programme Sponsor decision. |
 | 1.241 | 21 November 2026 | Claude Engineering Implementer | EBG-0182 (Guardian honesty and sycophancy test suite) and EBG-0183 (concrete honesty and pushback behaviours in the persona and Child safety layer) registered; Programme Sponsor request. |
 | 1.240 | 21 November 2026 | Claude Engineering Implementer | EBG-0181 registered (a failed audit prune skips the safety-event prune; Programme Sponsor request). |
 | 1.239 | 9 November 2026 | Claude Engineering Implementer | ESR-0062 WP5: EBG-0180 registered (the installed app cannot save a note; Programme Sponsor option A). |
