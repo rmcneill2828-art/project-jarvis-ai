@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0062-005 |
 | Title | Engineering Implementation Package: WP5 User Guide, Parents' Guide, Data Map and the Public "Children and Privacy" Page |
-| Version | 0.8 |
-| Status | Design approved; built; implementation review Copilot Conditional Pass (addressed), Antigravity Pass; release 0.2.1 (H1); awaiting Programme Sponsor approval |
+| Version | 0.9 |
+| Status | Design approved; built; implementation review Copilot Conditional Pass (addressed), Antigravity Pass; committed `db0f9ef`, post-commit Pass (both); awaiting the `v0.2.1` release and the page's publication |
 | Session | ESR-0062 |
 | Work Package | WP5 |
 | Risk class | **High-risk** for content (a public statement about a child's data, which Anthropic's terms for serving minors rely on, and which households will act on); low-risk for code (one line of text in one dialog and one test). Copilot reviews the design; Copilot and Antigravity both review the built result and **check every factual claim against the code**. |
@@ -297,12 +297,19 @@ The Programme Sponsor chose option A: the WP5 commit sets version **0.2.1**, and
 
 Order after the commit: the Programme Sponsor pushes, then tags `v0.2.1` on the commit (the release workflow refuses a tag that does not match `VERSION`); the release builds both installers and runs the voice round trip; the page is published only once that release exists (so L1's address and every guide claim match an installer that can be downloaded); then the Programme Sponsor installs 0.2.1 on the PC once and runs the Windows PIN-reset command from the real install folder (L4). The Mac visit installs 0.2.1 (EIP-ESR0062-004 Section 11.1).
 
+## 11.8 Commit and post-commit review (9 November 2026)
+
+**Approved** by the Programme Sponsor in the Sponsor Approval Service (`ESR-0062`/`WP5`); `submit-response` accepted (22:50 UTC); committed **`db0f9ef`** (31 files; the pre-commit validator passed, 0 errors). **Post-commit review: Copilot Pass** (`20261109T225255Z`) and **Antigravity Pass** (`20261109T225658Z`): the 31 files match Section 4A and 11.1 to 11.7; no stray file, secret or sentence-set content (hashes only); the fixes present; version lines only, so `v0.2.1` on this commit passes the release's tag check; LF throughout. Both noted a trailing blank line at the end of `jarvis/tests/test_packaged_recovery.py` (Low; Info): removed, with these records.
+
+**The page, built** from `CHILDREN_AND_PRIVACY.md` at `db0f9ef` with markdown-it (CommonMark with tables) into one `index.html` (no scripts, nothing loaded from elsewhere, light and dark styles; no sideways scroll at 390 px) plus an empty `.nojekyll`: 11,001 bytes, SHA-256 `86c51bd96d8c20a675a85dced056831cd0927e54b5927b6a55050bf0b791331c`. Published after the `v0.2.1` release exists (Section 11.6).
+
 ---
 
 # 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 0.9 | 9 November 2026 | Claude Engineering Implementer | Committed `db0f9ef`; post-commit review Copilot Pass, Antigravity Pass; the page built (SHA-256 recorded) (Section 11.8). |
 | 0.8 | 9 November 2026 | Claude Engineering Implementer | Antigravity implementation review Pass; its Low fixed (Section 11.7). Awaiting Programme Sponsor approval. |
 | 0.7 | 9 November 2026 | Claude Engineering Implementer | H1 decided (option A): version 0.2.1, the release and publication order (Section 11.6). |
 | 0.6 | 9 November 2026 | Claude Engineering Implementer | Copilot implementation review, Conditional Pass: M1, M2 and the Lows fixed; H1 (the release) for the Programme Sponsor (Section 11.5). |

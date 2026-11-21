@@ -78,4 +78,3 @@ def test_a_mistyped_recovery_command_explains_itself_and_changes_nothing(tmp_pat
         assert "Usage" in result.stdout and "Nothing was changed" in result.stdout
     assert AdminPin(ProfileStore(db_path)).is_set() is True
     assert _roles(db_path) == []
-

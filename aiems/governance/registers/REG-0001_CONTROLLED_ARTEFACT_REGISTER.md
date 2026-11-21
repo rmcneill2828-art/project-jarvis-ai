@@ -123,7 +123,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | REG-0002 | Register | Architectural Decision Register | 2.15 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0003 | Register | Risk Register | 2.2 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | REG-0004 | Register | Action Register | 2.4 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
-| EBR-0001 | Register | Engineering Backlog Register | 1.239 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
+| EBR-0001 | Register | Engineering Backlog Register | 1.241 | Draft | Programme Sponsor | CHR-0001 | `aiems/governance/registers/` |
 | STD-0001 | Standard | Controlled Artefact Standard | 1.3 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0002 | Standard | Engineering Documentation Standard | 1.2 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
 | STD-0003 | Standard | Software / Python Engineering Standard | 1.1 | Approved | Programme Sponsor | CHR-0002 | `aiems/standards/` |
@@ -354,7 +354,7 @@ Repository integrity shall be verified during Repository Hygiene activities and 
 | EIP-ESR0062-002 | Engineering Implementation Package | Household Safety Follow-ups: Notes, Idle Lock, Backend Hardening | 0.5 | Implemented - committed `765b5f6`; CI green apart from a macOS test defect fixed in the WP3 commit; post-commit review Pass (Copilot, Antigravity) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0062-003 | Engineering Implementation Package | Voice Provisioning on Windows and macOS | 0.5 | Implemented - committed `56f4080`, CI green, post-commit review Pass (Copilot, Antigravity) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | EIP-ESR0062-004 | Engineering Implementation Package | Mac Visit 1: Plan and Checklist | 0.6 | Design approved; P1 committed (`dccc40c`), the `v0.2.0` release published (P2), the PC baseline run (P3); D-1 amended to install `v0.2.1` (C15, C16 added); awaiting the visit (about 21 November 2026) | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
-| EIP-ESR0062-005 | Engineering Implementation Package | User Guide, Parents' Guide and the Public "Children and Privacy" Page | 0.8 | Design approved; built; implementation review Copilot Conditional Pass (addressed), Antigravity Pass; release 0.2.1 (H1); awaiting Programme Sponsor approval | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
+| EIP-ESR0062-005 | Engineering Implementation Package | User Guide, Parents' Guide and the Public "Children and Privacy" Page | 0.9 | Design approved; built; implementation review Copilot Conditional Pass (addressed), Antigravity Pass; committed `db0f9ef`, post-commit Pass (both); awaiting the `v0.2.1` release and the page's publication | Programme Sponsor & Chief Engineering Advisor | EBR-0001 | `aiems/governance/reviews/` |
 | HST-0001 | Historical Session Record | ESR-0001 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0001 | `aiems/History/` |
 | HST-0002 | Historical Session Record | ESR-0002 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0002 | `aiems/History/` |
 | HST-0003 | Historical Session Record | ESR-0003 Chat History | 1.0 | Archived | Programme Sponsor & Chief Engineering Advisor | ESR-0003 | `aiems/History/` |
