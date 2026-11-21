@@ -8,8 +8,8 @@
 |-------|-------|
 | Artefact ID | EIP-ESR0062-005 |
 | Title | Engineering Implementation Package: WP5 User Guide, Parents' Guide, Data Map and the Public "Children and Privacy" Page |
-| Version | 0.9 |
-| Status | Design approved; built; implementation review Copilot Conditional Pass (addressed), Antigravity Pass; committed `db0f9ef`, post-commit Pass (both); awaiting the `v0.2.1` release and the page's publication |
+| Version | 1.0 |
+| Status | Design approved; built; implementation review Copilot Conditional Pass (addressed), Antigravity Pass; committed `db0f9ef`, post-commit Pass (both); `v0.2.1` released; the page published (21 November 2026) |
 | Session | ESR-0062 |
 | Work Package | WP5 |
 | Risk class | **High-risk** for content (a public statement about a child's data, which Anthropic's terms for serving minors rely on, and which households will act on); low-risk for code (one line of text in one dialog and one test). Copilot reviews the design; Copilot and Antigravity both review the built result and **check every factual claim against the code**. |
@@ -303,12 +303,21 @@ Order after the commit: the Programme Sponsor pushes, then tags `v0.2.1` on the 
 
 **The page, built** from `CHILDREN_AND_PRIVACY.md` at `db0f9ef` with markdown-it (CommonMark with tables) into one `index.html` (no scripts, nothing loaded from elsewhere, light and dark styles; no sideways scroll at 390 px) plus an empty `.nojekyll`: 11,001 bytes, SHA-256 `86c51bd96d8c20a675a85dced056831cd0927e54b5927b6a55050bf0b791331c`. Published after the `v0.2.1` release exists (Section 11.6).
 
+## 11.9 Release and publication (21 November 2026)
+
+**Release:** the Programme Sponsor tagged `v0.2.1` on `db0f9ef` and pushed it; the Release workflow passed (run `44953608183`: Windows 10 min, macOS 5 min, including the voice round trip) and published release `v0.2.1` with `JARVIS.Guardian.Shell_0.2.1_x64-setup.exe` and `JARVIS.Guardian.Shell_0.2.1_aarch64.dmg`, each with its `.sha256`.
+
+**The page:** rebuilt from `CHILDREN_AND_PRIVACY.md` at `db0f9ef` (unchanged since) with the same build as Section 11.8, recovered from that session's record: identical, 11,001 bytes, SHA-256 `86c51bd96d8c20a675a85dced056831cd0927e54b5927b6a55050bf0b791331c`. Committed to `rmcneill2828-art/AI-Project` as `c6693c9` (`index.html` and an empty `.nojekyll` only, D-1) and **pushed by the Programme Sponsor**, who turned on Pages (deploy from `main`, root). **Live at `https://rmcneill2828-art.github.io/AI-Project/`**, the address in the app (`src/publicPages.js`, L1); the served file was fetched and matches the SHA-256 above. Its links resolve (the data map is in this repository, which is public).
+
+The blocker on Claude for a Child is removed. Turning it on stays the Programme Sponsor's separate decision (D-4).
+
 ---
 
 # 10. Version History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
+| 1.0 | 21 November 2026 | Claude Engineering Implementer | `v0.2.1` released; the page published at `https://rmcneill2828-art.github.io/AI-Project/`, served file matches the reviewed build (Section 11.9). |
 | 0.9 | 9 November 2026 | Claude Engineering Implementer | Committed `db0f9ef`; post-commit review Copilot Pass, Antigravity Pass; the page built (SHA-256 recorded) (Section 11.8). |
 | 0.8 | 9 November 2026 | Claude Engineering Implementer | Antigravity implementation review Pass; its Low fixed (Section 11.7). Awaiting Programme Sponsor approval. |
 | 0.7 | 9 November 2026 | Claude Engineering Implementer | H1 decided (option A): version 0.2.1, the release and publication order (Section 11.6). |
